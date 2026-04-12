@@ -61,12 +61,23 @@ export default function Home() {
   const [interviewStarted, setInterviewStarted] = useState(false);
   const [interviewFinished, setInterviewFinished] = useState(false);
 
-  const totalQuestions = 5;
-  const currentQuestionNumber = results.length + 1;
-
-  const recognitionRef = useRef<any>(null);
   const [voiceSupported, setVoiceSupported] = useState(false);
   const [isListening, setIsListening] = useState(false);
+  const [cleaningTranscript, setCleaningTranscript] = useState(false);
+
+  const [speakerEnabled, setSpeakerEnabled] = useState(false);
+  const [isSpeakingQuestion, setIsSpeakingQuestion] = useState(false);
+  const [hasUserInteracted, setHasUserInteracted] = useState(false);
+
+  const recognitionRef = useRef<any>(null);
+  const finalTranscriptRef = useRef("");
+  const interimTranscriptRef = useRef("");
+  const lastSpokenQuestionRef = useRef("");
+  const voicesRef = useRef<SpeechSynthesisVoice[]>([]);
+  const autoStartListeningAfterSpeechRef = useRef(false);
+
+  const totalQuestions = 5;
+  const currentQuestionNumber = results.length + 1;
 
   useEffect(() => {
     const stored = localStorage.getItem("aim_sessions");
@@ -85,26 +96,95 @@ export default function Home() {
       if (SpeechRecognitionClass) {
         setVoiceSupported(true);
         const recognition = new SpeechRecognitionClass();
+
         recognition.continuous = true;
         recognition.interimResults = true;
         recognition.lang = "en-GB";
 
         recognition.onresult = (event: any) => {
-          let transcript = "";
+          let newFinalText = "";
+          let newInterimText = "";
+
           for (let i = event.resultIndex; i < event.results.length; i++) {
-            transcript += event.results[i][0].transcript;
+            const transcriptPart = event.results[i][0].transcript;
+
+            if (event.results[i].isFinal) {
+              newFinalText += transcriptPart + " ";
+            } else {
+              newInterimText += transcriptPart;
+            }
           }
-          setAnswer(transcript);
+
+          if (newFinalText) {
+            finalTranscriptRef.current =
+              (finalTranscriptRef.current + " " + newFinalText).trim();
+          }
+
+          interimTranscriptRef.current = newInterimText.trim();
+
+          const combined = [
+            finalTranscriptRef.current,
+            interimTranscriptRef.current,
+          ]
+            .filter(Boolean)
+            .join(" ")
+            .trim();
+
+          setAnswer(combined);
         };
 
         recognition.onend = () => {
+          setIsListening(false);
+
+          const combined = [
+            finalTranscriptRef.current,
+            interimTranscriptRef.current,
+          ]
+            .filter(Boolean)
+            .join(" ")
+            .trim();
+
+          if (combined) {
+            setAnswer(combined);
+          }
+        };
+
+        recognition.onerror = () => {
           setIsListening(false);
         };
 
         recognitionRef.current = recognition;
       }
+
+      const loadVoices = () => {
+        voicesRef.current = window.speechSynthesis.getVoices();
+      };
+
+      loadVoices();
+      window.speechSynthesis.onvoiceschanged = loadVoices;
     }
+
+    return () => {
+      if (typeof window !== "undefined" && window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.onvoiceschanged = null;
+      }
+    };
   }, []);
+
+  useEffect(() => {
+    if (
+      !question ||
+      !speakerEnabled ||
+      !hasUserInteracted ||
+      question === lastSpokenQuestionRef.current
+    ) {
+      return;
+    }
+
+    speakQuestion(question, true);
+    lastSpokenQuestionRef.current = question;
+  }, [question, speakerEnabled, hasUserInteracted]);
 
   const averageQuestionScore = useMemo(() => {
     if (results.length === 0) return 0;
@@ -130,16 +210,187 @@ export default function Home() {
     localStorage.setItem("aim_sessions", JSON.stringify(nextSessions));
   };
 
-  const startVoiceInput = () => {
-    if (!recognitionRef.current) return;
-    setIsListening(true);
-    recognitionRef.current.start();
+  const getPreferredFemaleVoice = () => {
+    const voices = voicesRef.current;
+
+    const preferredNames = [
+      "Sonia",
+      "Libby",
+      "Olivia",
+      "Aria",
+      "Serena",
+      "Samantha",
+      "Karen",
+      "Moira",
+      "Natasha",
+      "Victoria",
+      "Emma",
+      "Amy",
+      "Zira",
+    ];
+
+    for (const name of preferredNames) {
+      const match = voices.find(
+        (voice) =>
+          voice.name.toLowerCase().includes(name.toLowerCase()) &&
+          voice.lang.toLowerCase().startsWith("en")
+      );
+      if (match) return match;
+    }
+
+    const englishFemaleHint = voices.find(
+      (voice) =>
+        voice.lang.toLowerCase().startsWith("en") &&
+        /female|woman|girl|aria|serena|samantha|karen|zira|natasha|olivia|amy|emma|sonia|libby/i.test(
+          voice.name
+        )
+    );
+    if (englishFemaleHint) return englishFemaleHint;
+
+    const britishEnglish = voices.find((voice) =>
+      voice.lang.toLowerCase().startsWith("en-gb")
+    );
+    if (britishEnglish) return britishEnglish;
+
+    const anyEnglish = voices.find((voice) =>
+      voice.lang.toLowerCase().startsWith("en")
+    );
+    if (anyEnglish) return anyEnglish;
+
+    return voices[0];
   };
 
-  const stopVoiceInput = () => {
+  const stopQuestionSpeech = () => {
+    autoStartListeningAfterSpeechRef.current = false;
+
+    if (typeof window !== "undefined" && window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+    }
+
+    setIsSpeakingQuestion(false);
+  };
+
+  const startVoiceInput = () => {
     if (!recognitionRef.current) return;
+
+    try {
+      interimTranscriptRef.current = "";
+      setIsListening(true);
+      recognitionRef.current.start();
+    } catch {
+      setIsListening(false);
+    }
+  };
+
+  const speakQuestion = (text: string, autoStartListening: boolean) => {
+    if (typeof window === "undefined" || !window.speechSynthesis || !text.trim()) {
+      if (autoStartListening) {
+        startVoiceInput();
+      }
+      return;
+    }
+
+    stopQuestionSpeech();
+    autoStartListeningAfterSpeechRef.current = autoStartListening;
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 1;
+    utterance.pitch = 1;
+    utterance.volume = 1;
+    utterance.lang = "en-GB";
+
+    const preferredVoice = getPreferredFemaleVoice();
+    if (preferredVoice) {
+      utterance.voice = preferredVoice;
+      utterance.lang = preferredVoice.lang;
+    }
+
+    utterance.onstart = () => {
+      setIsSpeakingQuestion(true);
+    };
+
+    utterance.onend = () => {
+      setIsSpeakingQuestion(false);
+
+      if (autoStartListeningAfterSpeechRef.current) {
+        autoStartListeningAfterSpeechRef.current = false;
+        startVoiceInput();
+      }
+    };
+
+    utterance.onerror = () => {
+      setIsSpeakingQuestion(false);
+
+      if (autoStartListeningAfterSpeechRef.current) {
+        autoStartListeningAfterSpeechRef.current = false;
+        startVoiceInput();
+      }
+    };
+
+    setIsSpeakingQuestion(true);
+    window.speechSynthesis.speak(utterance);
+  };
+
+  const stopVoiceInput = async () => {
+    if (!recognitionRef.current) return;
+
     recognitionRef.current.stop();
     setIsListening(false);
+
+    const combined = [
+      finalTranscriptRef.current,
+      interimTranscriptRef.current,
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .trim();
+
+    if (combined) {
+      setAnswer(combined);
+      await cleanTranscript(combined);
+    }
+  };
+
+  const clearVoiceAnswer = () => {
+    if (recognitionRef.current && isListening) {
+      recognitionRef.current.stop();
+    }
+
+    finalTranscriptRef.current = "";
+    interimTranscriptRef.current = "";
+    setIsListening(false);
+    setAnswer("");
+  };
+
+  const cleanTranscript = async (rawTranscript: string) => {
+    if (!rawTranscript.trim()) return;
+
+    try {
+      setCleaningTranscript(true);
+
+      const res = await fetch("/api/clean-transcript", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          transcript: rawTranscript,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.cleanedTranscript) {
+        const cleaned = data.cleanedTranscript.trim();
+        finalTranscriptRef.current = cleaned;
+        interimTranscriptRef.current = "";
+        setAnswer(cleaned);
+      }
+    } catch (error) {
+      console.error("Transcript cleanup failed:", error);
+    } finally {
+      setCleaningTranscript(false);
+    }
   };
 
   const resetInterview = () => {
@@ -153,7 +404,18 @@ export default function Home() {
     setQuestionLoading(false);
     setFeedbackLoading(false);
     setSummaryLoading(false);
-    stopVoiceInput();
+    setCleaningTranscript(false);
+
+    if (recognitionRef.current && isListening) {
+      recognitionRef.current.stop();
+    }
+
+    stopQuestionSpeech();
+
+    finalTranscriptRef.current = "";
+    interimTranscriptRef.current = "";
+    lastSpokenQuestionRef.current = "";
+    setIsListening(false);
   };
 
   const fetchQuestion = async (questionNumber: number, history: ResultItem[]) => {
@@ -162,6 +424,8 @@ export default function Home() {
       setQuestion("");
       setAnswer("");
       setFeedback(null);
+      finalTranscriptRef.current = "";
+      interimTranscriptRef.current = "";
 
       const res = await fetch("/api/interview", {
         method: "POST",
@@ -195,15 +459,18 @@ export default function Home() {
   };
 
   const startInterview = async () => {
+    setHasUserInteracted(true);
     setInterviewStarted(true);
     setInterviewFinished(false);
     setResults([]);
     setSummary(null);
+    lastSpokenQuestionRef.current = "";
     await fetchQuestion(1, []);
   };
 
   const getFeedback = async () => {
     try {
+      setHasUserInteracted(true);
       setFeedbackLoading(true);
       setFeedback(null);
 
@@ -262,12 +529,15 @@ export default function Home() {
   const nextStep = async () => {
     if (!feedback) return;
 
+    setHasUserInteracted(true);
+
     const updatedResults = [...results, { question, answer, feedback }];
     setResults(updatedResults);
 
     if (updatedResults.length >= totalQuestions) {
       setInterviewFinished(true);
       setSummaryLoading(true);
+      stopQuestionSpeech();
 
       try {
         const res = await fetch("/api/summary", {
@@ -334,11 +604,14 @@ export default function Home() {
         setQuestion("");
         setAnswer("");
         setFeedback(null);
+        finalTranscriptRef.current = "";
+        interimTranscriptRef.current = "";
       }
 
       return;
     }
 
+    lastSpokenQuestionRef.current = "";
     await fetchQuestion(updatedResults.length + 1, updatedResults);
   };
 
@@ -352,7 +625,7 @@ export default function Home() {
             </h1>
             <p className="max-w-2xl text-gray-400">
               Multi-question interview practice with AI coaching, detailed scoring,
-              session history, voice answers, and authentication.
+              session history, voice answers, and an optional speaking coach avatar.
             </p>
           </div>
 
@@ -386,6 +659,41 @@ export default function Home() {
                   onChange={(e) => setRole(e.target.value)}
                 />
 
+                <div className="mb-4 flex flex-wrap items-center gap-3 rounded-xl border border-gray-800 bg-gray-900 p-4">
+                  <div className="text-sm text-gray-300">Question delivery:</div>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setHasUserInteracted(true);
+                      setSpeakerEnabled(false);
+                      stopQuestionSpeech();
+                    }}
+                    className={`rounded-lg px-4 py-2 font-semibold transition ${
+                      !speakerEnabled
+                        ? "bg-purple-600 text-white"
+                        : "bg-gray-800 text-gray-300 hover:bg-gray-700"
+                    }`}
+                  >
+                    Text Only
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setHasUserInteracted(true);
+                      setSpeakerEnabled(true);
+                    }}
+                    className={`rounded-lg px-4 py-2 font-semibold transition ${
+                      speakerEnabled
+                        ? "bg-purple-600 text-white"
+                        : "bg-gray-800 text-gray-300 hover:bg-gray-700"
+                    }`}
+                  >
+                    Speaker + Text
+                  </button>
+                </div>
+
                 <button
                   onClick={startInterview}
                   disabled={!role || questionLoading}
@@ -398,19 +706,107 @@ export default function Home() {
 
             {interviewStarted && !interviewFinished && (
               <>
-                <div className="mb-6 rounded-2xl border border-gray-800 bg-gray-900 p-6">
-                  <div className="mb-3 flex items-center justify-between">
-                    <h2 className="text-xl font-semibold text-purple-300">
-                      Question {currentQuestionNumber} of {totalQuestions}
-                    </h2>
-                    <span className="text-sm text-gray-400">
-                      Average score so far: {averageQuestionScore}/10
-                    </span>
+                <div className="mb-6 rounded-2xl border border-gray-800 bg-gray-950 p-6">
+                  <div className="mb-5 flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+                    <div>
+                      <h2 className="text-xl font-semibold text-purple-300">
+                        Question {currentQuestionNumber} of {totalQuestions}
+                      </h2>
+                      <span className="text-sm text-gray-400">
+                        Average score so far: {averageQuestionScore}/10
+                      </span>
+                    </div>
+
+                    <div className="flex flex-wrap gap-3">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setHasUserInteracted(true);
+                          setSpeakerEnabled(false);
+                          stopQuestionSpeech();
+                        }}
+                        className={`rounded-lg px-4 py-2 text-sm font-semibold transition ${
+                          !speakerEnabled
+                            ? "bg-purple-600 text-white"
+                            : "bg-gray-800 text-gray-300 hover:bg-gray-700"
+                        }`}
+                      >
+                        Text Only
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setHasUserInteracted(true);
+                          setSpeakerEnabled(true);
+                          if (question) {
+                            speakQuestion(question, true);
+                          }
+                        }}
+                        className={`rounded-lg px-4 py-2 text-sm font-semibold transition ${
+                          speakerEnabled
+                            ? "bg-purple-600 text-white"
+                            : "bg-gray-800 text-gray-300 hover:bg-gray-700"
+                        }`}
+                      >
+                        Speaker + Text
+                      </button>
+
+                      {speakerEnabled && question && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setHasUserInteracted(true);
+                            if (isSpeakingQuestion) {
+                              stopQuestionSpeech();
+                            } else {
+                              speakQuestion(question, true);
+                            }
+                          }}
+                          className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold hover:bg-blue-700"
+                        >
+                          {isSpeakingQuestion ? "Stop Voice" : "Play Question"}
+                        </button>
+                      )}
+                    </div>
                   </div>
 
-                  <p className="leading-7 text-gray-100">
-                    {questionLoading ? "Generating question..." : question}
-                  </p>
+                  <div className="mb-5 rounded-2xl border border-gray-800 bg-gray-900 p-5">
+                    <div className="flex items-center gap-4">
+                      <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 via-blue-500 to-cyan-400">
+                        <div
+                          className={`absolute inset-0 rounded-full ${
+                            isSpeakingQuestion ? "animate-ping bg-purple-400/30" : ""
+                          }`}
+                        />
+                        <div className="relative flex h-16 w-16 items-center justify-center rounded-full bg-gray-950 text-2xl font-bold text-white">
+                          AI
+                        </div>
+                      </div>
+
+                      <div className="flex-1">
+                        <p className="text-lg font-semibold text-white">AIM Coach</p>
+                        <p className="text-sm text-gray-400">
+                          {speakerEnabled
+                            ? isSpeakingQuestion
+                              ? "Speaking the interview question..."
+                              : isListening
+                              ? "Listening for your answer..."
+                              : "Speaker mode is enabled."
+                            : "Text-only mode is enabled."}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="rounded-2xl border border-gray-800 bg-gray-900 p-6">
+                    <p className="mb-2 text-sm font-medium uppercase tracking-wide text-gray-400">
+                      Interview Question
+                    </p>
+                    <p className="leading-7 text-gray-100">
+                      {questionLoading ? "Generating question..." : question}
+                    </p>
+                  </div>
                 </div>
 
                 {question && (
@@ -421,31 +817,58 @@ export default function Home() {
 
                     <textarea
                       className="mb-4 min-h-[180px] w-full rounded-lg border border-gray-700 bg-gray-800 p-3 text-white placeholder-gray-400 outline-none"
-                      placeholder="Write or dictate your answer here..."
+                      placeholder={
+                        speakerEnabled
+                          ? "Once the question finishes, just start speaking. Click Stop Voice Answer when you’re done."
+                          : "Write your answer here..."
+                      }
                       value={answer}
-                      onChange={(e) => setAnswer(e.target.value)}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        setAnswer(value);
+                        finalTranscriptRef.current = value;
+                        interimTranscriptRef.current = "";
+                      }}
                     />
 
                     {voiceSupported && (
-                      <div className="mb-4 flex gap-3">
-                        {!isListening ? (
-                          <button
-                            onClick={startVoiceInput}
-                            className="rounded-lg bg-blue-600 px-4 py-2 font-semibold hover:bg-blue-700"
-                          >
-                            Start Voice Answer
-                          </button>
-                        ) : (
+                      <div className="mb-4 flex flex-wrap gap-3">
+                        {isListening ? (
                           <button
                             onClick={stopVoiceInput}
                             className="rounded-lg bg-red-600 px-4 py-2 font-semibold hover:bg-red-700"
                           >
                             Stop Voice Answer
                           </button>
+                        ) : (
+                          <button
+                            onClick={() => {
+                              setHasUserInteracted(true);
+                              startVoiceInput();
+                            }}
+                            className="rounded-lg bg-blue-600 px-4 py-2 font-semibold hover:bg-blue-700"
+                          >
+                            Start Voice Answer
+                          </button>
                         )}
 
+                        <button
+                          onClick={clearVoiceAnswer}
+                          className="rounded-lg bg-gray-700 px-4 py-2 font-semibold hover:bg-gray-600"
+                        >
+                          Clear Voice Answer
+                        </button>
+
                         <span className="self-center text-sm text-gray-400">
-                          {isListening ? "Listening..." : "Voice input ready"}
+                          {isSpeakingQuestion
+                            ? "Question is being read aloud..."
+                            : isListening
+                            ? "Listening for your answer..."
+                            : cleaningTranscript
+                            ? "Tidying punctuation..."
+                            : speakerEnabled
+                            ? "Question voice will auto-start transcription when it finishes."
+                            : "Voice input ready"}
                         </span>
                       </div>
                     )}
@@ -453,7 +876,7 @@ export default function Home() {
                     {!feedback && (
                       <button
                         onClick={getFeedback}
-                        disabled={!answer || feedbackLoading}
+                        disabled={!answer || feedbackLoading || cleaningTranscript || isSpeakingQuestion}
                         className="w-full rounded-lg bg-green-600 px-6 py-3 font-semibold transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         {feedbackLoading ? "Evaluating..." : "Get AI Feedback"}
@@ -644,6 +1067,9 @@ export default function Home() {
                 <p>✓ Improved answer rewrite</p>
                 <p>✓ Final interview summary</p>
                 <p>✓ Voice answer input</p>
+                <p>✓ Voice transcript cleanup</p>
+                <p>✓ Female speaking avatar priority</p>
+                <p>✓ Auto-listen after question playback</p>
                 <p>✓ Local session history</p>
                 <p>✓ Sign-in with Clerk</p>
               </div>
