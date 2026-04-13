@@ -3,8 +3,9 @@ import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "AIM – AI Mentor",
-  description: "AI-powered interview and career coaching platform",
+  title: "AI Career Mentor",
+  description:
+    "AI-powered interview coaching platform for communication, presentation, and career success.",
 };
 
 export default function RootLayout({

@@ -621,11 +621,10 @@ export default function Home() {
         <div className="mb-8 flex items-center justify-between rounded-2xl border border-gray-800 bg-gray-950 p-6">
           <div>
             <h1 className="mb-3 text-4xl font-bold md:text-5xl">
-              AIM – AI Mentor 🚀
+              AI Career Mentor
             </h1>
             <p className="max-w-2xl text-gray-400">
-              Multi-question interview practice with AI coaching, detailed scoring,
-              session history, voice answers, and an optional speaking coach avatar.
+              Premium AI-powered interview coaching with real-time feedback on content, communication, and delivery.
             </p>
           </div>
 
@@ -785,7 +784,7 @@ export default function Home() {
                       </div>
 
                       <div className="flex-1">
-                        <p className="text-lg font-semibold text-white">AIM Coach</p>
+                        <p className="text-lg font-semibold text-white">AI Career Coach</p>
                         <p className="text-sm text-gray-400">
                           {speakerEnabled
                             ? isSpeakingQuestion
