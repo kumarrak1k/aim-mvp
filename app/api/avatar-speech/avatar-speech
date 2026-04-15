@@ -1,0 +1,70 @@
+import { NextResponse } from "next/server";
+import sdk from "microsoft-cognitiveservices-speech-sdk";
+
+export async function POST(req: Request) {
+  try {
+    const { text } = (await req.json()) as { text?: string };
+
+    if (!text?.trim()) {
+      return NextResponse.json({ error: "Missing text." }, { status: 400 });
+    }
+
+    const speechKey = process.env.AZURE_SPEECH_KEY;
+    const speechRegion = process.env.AZURE_SPEECH_REGION;
+
+    if (!speechKey || !speechRegion) {
+      return NextResponse.json(
+        { error: "Missing Azure Speech credentials." },
+        { status: 500 }
+      );
+    }
+
+    const speechConfig = sdk.SpeechConfig.fromSubscription(
+      speechKey,
+      speechRegion
+    );
+    speechConfig.speechSynthesisVoiceName = "en-GB-RyanNeural";
+
+    const synthesizer = new sdk.SpeechSynthesizer(speechConfig);
+
+    const visemes: Array<{ offsetMs: number; visemeId: number }> = [];
+
+    synthesizer.visemeReceived = (_sender, event) => {
+      visemes.push({
+        offsetMs: Math.round(event.audioOffset / 10000),
+        visemeId: event.visemeId,
+      });
+    };
+
+    const result = await new Promise<sdk.SpeechSynthesisResult>(
+      (resolve, reject) => {
+        synthesizer.speakTextAsync(
+          text,
+          (speechResult) => resolve(speechResult),
+          (error) => reject(error)
+        );
+      }
+    );
+
+    synthesizer.close();
+
+    if (result.reason !== sdk.ResultReason.SynthesizingAudioCompleted) {
+      return NextResponse.json(
+        { error: "Speech synthesis failed." },
+        { status: 500 }
+      );
+    }
+
+    const audioBase64 = Buffer.from(result.audioData).toString("base64");
+
+    return NextResponse.json({
+      audioBase64,
+      visemes,
+    });
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "Unknown avatar speech error.";
+
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
+}
