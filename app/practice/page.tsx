@@ -506,7 +506,7 @@ export default function Home() {
     )) as FaceTrackerModule;
 
     const vision = await visionModule.FilesetResolver.forVisionTasks(
-      "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm"
+      "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm"
     );
 
     const landmarker = await visionModule.FaceLandmarker.createFromOptions(
