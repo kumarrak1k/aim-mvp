@@ -7,8 +7,9 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-black text-white">
       <div className="mx-auto max-w-6xl px-6 py-10">
+        
         {/* HEADER */}
-        <header className="mb-12 flex items-center justify-between">
+        <header className="mb-10 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img
               src="/brand/logo.png"
@@ -42,7 +43,7 @@ export default function Home() {
         </header>
 
         {/* HERO */}
-        <section className="mb-12">
+        <section className="mb-10">
           <h1 className="mb-4 text-4xl font-bold leading-tight md:text-5xl">
             Practice like the interview already matters
           </h1>
@@ -84,7 +85,7 @@ export default function Home() {
         </section>
 
         {/* CTA */}
-        <section className="mt-12 text-center">
+        <section className="mt-10 text-center">
           <Link href="/practice">
             <button className="rounded-full bg-purple-600 px-8 py-3 font-semibold hover:bg-purple-700">
               Start your interview now
