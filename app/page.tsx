@@ -1563,6 +1563,7 @@ export default function Home() {
               Multi-question interview practice with AI coaching, detailed
               content feedback, voice analysis, camera engagement scoring, and
               optional question playback.
+              Premium AI-powered interview coaching with real-time feedback on content, communication, and delivery.
             </p>
           </div>
 
