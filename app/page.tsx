@@ -11,12 +11,78 @@ type CategoryScores = {
   confidence: number;
 };
 
+type SectionFeedbackItem = {
+  score: number;
+  feedback: string;
+  improvement: string;
+};
+
 type Feedback = {
   overall_score: number;
   category_scores: CategoryScores;
+  pace_score?: number;
+  section_feedback?: {
+    content: SectionFeedbackItem;
+    clarity: SectionFeedbackItem;
+    relevance: SectionFeedbackItem;
+    structure: SectionFeedbackItem;
+    confidence: SectionFeedbackItem;
+    pace: SectionFeedbackItem;
+  };
   strengths: string[];
   improvements: string[];
   improved_answer: string;
+  error?: string;
+};
+
+type AudioMetrics = {
+  averageVolume: number;
+  peakVolume: number;
+  volumeVariation: number;
+  silenceRatio: number;
+  lowVolumeRatio: number;
+  estimatedPauseCount: number;
+  longPauseCount: number;
+  voicedFrameRatio: number;
+};
+
+type VoiceAnalysis = {
+  paceScore: number;
+  fillerScore: number;
+  confidenceScore: number;
+  energyScore: number;
+  clarityScore?: number;
+  structureScore?: number;
+  overallVoiceScore: number;
+  metrics: {
+    wordCount: number;
+    sentenceCount: number;
+    fillerCount: number;
+    fillerRate: number;
+    hedgeCount: number;
+    hedgeRate?: number;
+    repetitionCount: number;
+    structureMarkerCount: number;
+    exampleMarkerCount: number;
+    estimatedWPM: number;
+    averageSentenceLength: number;
+    averageVolume: number;
+    peakVolume: number;
+    volumeVariation: number;
+    silenceRatio: number;
+    lowVolumeRatio: number;
+    estimatedPauseCount: number;
+    longPauseCount: number;
+    voicedFrameRatio: number;
+  };
+  feedback: {
+    strengths: string[];
+    improvements: string[];
+  };
+  evidence: {
+    fillersDetected: string[];
+    hedgesDetected: string[];
+  };
   error?: string;
 };
 
@@ -24,6 +90,7 @@ type ResultItem = {
   question: string;
   answer: string;
   feedback: Feedback;
+  voiceAnalysis?: VoiceAnalysis | null;
 };
 
 type InterviewSummary = {
@@ -45,11 +112,23 @@ type SavedSession = {
   hireSignal: string;
 };
 
+const defaultAudioMetrics: AudioMetrics = {
+  averageVolume: 0,
+  peakVolume: 0,
+  volumeVariation: 0,
+  silenceRatio: 1,
+  lowVolumeRatio: 1,
+  estimatedPauseCount: 0,
+  longPauseCount: 0,
+  voicedFrameRatio: 0,
+};
+
 export default function Home() {
   const [role, setRole] = useState("");
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
   const [feedback, setFeedback] = useState<Feedback | null>(null);
+  const [voiceAnalysis, setVoiceAnalysis] = useState<VoiceAnalysis | null>(null);
   const [results, setResults] = useState<ResultItem[]>([]);
   const [summary, setSummary] = useState<InterviewSummary | null>(null);
   const [savedSessions, setSavedSessions] = useState<SavedSession[]>([]);
@@ -57,6 +136,7 @@ export default function Home() {
   const [questionLoading, setQuestionLoading] = useState(false);
   const [feedbackLoading, setFeedbackLoading] = useState(false);
   const [summaryLoading, setSummaryLoading] = useState(false);
+  const [voiceAnalysisLoading, setVoiceAnalysisLoading] = useState(false);
 
   const [interviewStarted, setInterviewStarted] = useState(false);
   const [interviewFinished, setInterviewFinished] = useState(false);
@@ -76,6 +156,16 @@ export default function Home() {
   const voicesRef = useRef<SpeechSynthesisVoice[]>([]);
   const autoStartListeningAfterSpeechRef = useRef(false);
 
+  const recordingStartRef = useRef<number | null>(null);
+  const answerDurationSecondsRef = useRef<number | null>(null);
+
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const audioStreamRef = useRef<MediaStream | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const audioSourceRef = useRef<MediaStreamAudioSourceNode | null>(null);
+  const audioIntervalRef = useRef<number | null>(null);
+  const audioSamplesRef = useRef<number[]>([]);
+
   const totalQuestions = 5;
   const currentQuestionNumber = results.length + 1;
 
@@ -91,7 +181,8 @@ export default function Home() {
 
     if (typeof window !== "undefined") {
       const SpeechRecognitionClass =
-        (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+        (window as any).SpeechRecognition ||
+        (window as any).webkitSpeechRecognition;
 
       if (SpeechRecognitionClass) {
         setVoiceSupported(true);
@@ -165,6 +256,8 @@ export default function Home() {
     }
 
     return () => {
+      cleanupAudioMonitoring();
+
       if (typeof window !== "undefined" && window.speechSynthesis) {
         window.speechSynthesis.cancel();
         window.speechSynthesis.onvoiceschanged = null;
@@ -208,6 +301,270 @@ export default function Home() {
     const nextSessions = [newSession, ...savedSessions].slice(0, 8);
     setSavedSessions(nextSessions);
     localStorage.setItem("aim_sessions", JSON.stringify(nextSessions));
+  };
+
+  const cleanupAudioMonitoring = () => {
+    if (audioIntervalRef.current) {
+      window.clearInterval(audioIntervalRef.current);
+      audioIntervalRef.current = null;
+    }
+
+    if (audioSourceRef.current) {
+      try {
+        audioSourceRef.current.disconnect();
+      } catch {}
+      audioSourceRef.current = null;
+    }
+
+    if (analyserRef.current) {
+      try {
+        analyserRef.current.disconnect();
+      } catch {}
+      analyserRef.current = null;
+    }
+
+    if (audioStreamRef.current) {
+      audioStreamRef.current.getTracks().forEach((track) => track.stop());
+      audioStreamRef.current = null;
+    }
+
+    if (audioContextRef.current) {
+      void audioContextRef.current.close().catch(() => undefined);
+      audioContextRef.current = null;
+    }
+  };
+
+  const startAudioMonitoring = async () => {
+    cleanupAudioMonitoring();
+    audioSamplesRef.current = [];
+
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    audioStreamRef.current = stream;
+
+    const AudioContextClass =
+      window.AudioContext || (window as any).webkitAudioContext;
+
+    if (!AudioContextClass) {
+      throw new Error("AudioContext is not supported.");
+    }
+
+    const audioContext = new AudioContextClass();
+    audioContextRef.current = audioContext;
+
+    const source = audioContext.createMediaStreamSource(stream);
+    audioSourceRef.current = source;
+
+    const analyser = audioContext.createAnalyser();
+    analyser.fftSize = 2048;
+    analyser.smoothingTimeConstant = 0.35;
+    analyserRef.current = analyser;
+
+    source.connect(analyser);
+
+    const bufferLength = analyser.fftSize;
+    const dataArray = new Uint8Array(bufferLength);
+
+    audioIntervalRef.current = window.setInterval(() => {
+      analyser.getByteTimeDomainData(dataArray);
+
+      let sumSquares = 0;
+
+      for (let i = 0; i < dataArray.length; i++) {
+        const centred = (dataArray[i] - 128) / 128;
+        sumSquares += centred * centred;
+      }
+
+      const rms = Math.sqrt(sumSquares / dataArray.length);
+      const scaledVolume = rms * 100;
+      audioSamplesRef.current.push(scaledVolume);
+    }, 100);
+  };
+
+  const calculateAudioMetrics = (): AudioMetrics => {
+    const samples = audioSamplesRef.current;
+
+    if (!samples.length) {
+      return { ...defaultAudioMetrics };
+    }
+
+    const averageVolume =
+      samples.reduce((sum, value) => sum + value, 0) / samples.length;
+
+    const peakVolume = Math.max(...samples);
+
+    const variance =
+      samples.reduce(
+        (sum, value) => sum + Math.pow(value - averageVolume, 2),
+        0
+      ) / samples.length;
+
+    const volumeVariation = Math.sqrt(variance);
+
+    const silenceThreshold = 6;
+    const lowVolumeThreshold = 12;
+
+    let silenceFrames = 0;
+    let lowVolumeFrames = 0;
+    let voicedFrames = 0;
+    let estimatedPauseCount = 0;
+    let longPauseCount = 0;
+    let currentSilentRun = 0;
+
+    for (const sample of samples) {
+      if (sample < silenceThreshold) {
+        silenceFrames += 1;
+        currentSilentRun += 1;
+      } else {
+        voicedFrames += 1;
+
+        if (currentSilentRun >= 3) {
+          estimatedPauseCount += 1;
+        }
+
+        if (currentSilentRun >= 8) {
+          longPauseCount += 1;
+        }
+
+        currentSilentRun = 0;
+      }
+
+      if (sample >= silenceThreshold && sample < lowVolumeThreshold) {
+        lowVolumeFrames += 1;
+      }
+    }
+
+    if (currentSilentRun >= 3) estimatedPauseCount += 1;
+    if (currentSilentRun >= 8) longPauseCount += 1;
+
+    return {
+      averageVolume: Number(averageVolume.toFixed(2)),
+      peakVolume: Number(peakVolume.toFixed(2)),
+      volumeVariation: Number(volumeVariation.toFixed(2)),
+      silenceRatio: Number((silenceFrames / samples.length).toFixed(3)),
+      lowVolumeRatio: Number((lowVolumeFrames / samples.length).toFixed(3)),
+      estimatedPauseCount,
+      longPauseCount,
+      voicedFrameRatio: Number((voicedFrames / samples.length).toFixed(3)),
+    };
+  };
+
+  const runVoiceAnalysis = async (
+    transcript: string,
+    durationSeconds: number | null,
+    audioMetrics: AudioMetrics
+  ) => {
+    if (!transcript.trim()) return null;
+
+    try {
+      setVoiceAnalysisLoading(true);
+
+      const res = await fetch("/api/voice-analysis", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          transcript,
+          durationSeconds,
+          audioMetrics,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || data.error) {
+        const fallback: VoiceAnalysis = {
+          paceScore: 0,
+          fillerScore: 0,
+          confidenceScore: 0,
+          energyScore: 0,
+          clarityScore: 0,
+          structureScore: 0,
+          overallVoiceScore: 0,
+          metrics: {
+            wordCount: 0,
+            sentenceCount: 0,
+            fillerCount: 0,
+            fillerRate: 0,
+            hedgeCount: 0,
+            hedgeRate: 0,
+            repetitionCount: 0,
+            structureMarkerCount: 0,
+            exampleMarkerCount: 0,
+            estimatedWPM: 0,
+            averageSentenceLength: 0,
+            averageVolume: audioMetrics.averageVolume,
+            peakVolume: audioMetrics.peakVolume,
+            volumeVariation: audioMetrics.volumeVariation,
+            silenceRatio: audioMetrics.silenceRatio,
+            lowVolumeRatio: audioMetrics.lowVolumeRatio,
+            estimatedPauseCount: audioMetrics.estimatedPauseCount,
+            longPauseCount: audioMetrics.longPauseCount,
+            voicedFrameRatio: audioMetrics.voicedFrameRatio,
+          },
+          feedback: {
+            strengths: [],
+            improvements: [],
+          },
+          evidence: {
+            fillersDetected: [],
+            hedgesDetected: [],
+          },
+          error: data.error || "Voice analysis failed.",
+        };
+
+        setVoiceAnalysis(fallback);
+        return fallback;
+      }
+
+      setVoiceAnalysis(data);
+      return data as VoiceAnalysis;
+    } catch {
+      const fallback: VoiceAnalysis = {
+        paceScore: 0,
+        fillerScore: 0,
+        confidenceScore: 0,
+        energyScore: 0,
+        clarityScore: 0,
+        structureScore: 0,
+        overallVoiceScore: 0,
+        metrics: {
+          wordCount: 0,
+          sentenceCount: 0,
+          fillerCount: 0,
+          fillerRate: 0,
+          hedgeCount: 0,
+          hedgeRate: 0,
+          repetitionCount: 0,
+          structureMarkerCount: 0,
+          exampleMarkerCount: 0,
+          estimatedWPM: 0,
+          averageSentenceLength: 0,
+          averageVolume: audioMetrics.averageVolume,
+          peakVolume: audioMetrics.peakVolume,
+          volumeVariation: audioMetrics.volumeVariation,
+          silenceRatio: audioMetrics.silenceRatio,
+          lowVolumeRatio: audioMetrics.lowVolumeRatio,
+          estimatedPauseCount: audioMetrics.estimatedPauseCount,
+          longPauseCount: audioMetrics.longPauseCount,
+          voicedFrameRatio: audioMetrics.voicedFrameRatio,
+        },
+        feedback: {
+          strengths: [],
+          improvements: [],
+        },
+        evidence: {
+          fillersDetected: [],
+          hedgesDetected: [],
+        },
+        error: "Something went wrong while analysing voice delivery.",
+      };
+
+      setVoiceAnalysis(fallback);
+      return fallback;
+    } finally {
+      setVoiceAnalysisLoading(false);
+    }
   };
 
   const getPreferredFemaleVoice = () => {
@@ -270,22 +627,34 @@ export default function Home() {
     setIsSpeakingQuestion(false);
   };
 
-  const startVoiceInput = () => {
+  const startVoiceInput = async () => {
     if (!recognitionRef.current) return;
 
     try {
       interimTranscriptRef.current = "";
+      audioSamplesRef.current = [];
+      recordingStartRef.current = Date.now();
+      setVoiceAnalysis(null);
+
+      await startAudioMonitoring();
+
       setIsListening(true);
       recognitionRef.current.start();
     } catch {
       setIsListening(false);
+      recordingStartRef.current = null;
+      cleanupAudioMonitoring();
     }
   };
 
   const speakQuestion = (text: string, autoStartListening: boolean) => {
-    if (typeof window === "undefined" || !window.speechSynthesis || !text.trim()) {
+    if (
+      typeof window === "undefined" ||
+      !window.speechSynthesis ||
+      !text.trim()
+    ) {
       if (autoStartListening) {
-        startVoiceInput();
+        void startVoiceInput();
       }
       return;
     }
@@ -314,7 +683,7 @@ export default function Home() {
 
       if (autoStartListeningAfterSpeechRef.current) {
         autoStartListeningAfterSpeechRef.current = false;
-        startVoiceInput();
+        void startVoiceInput();
       }
     };
 
@@ -323,7 +692,7 @@ export default function Home() {
 
       if (autoStartListeningAfterSpeechRef.current) {
         autoStartListeningAfterSpeechRef.current = false;
-        startVoiceInput();
+        void startVoiceInput();
       }
     };
 
@@ -337,17 +706,25 @@ export default function Home() {
     recognitionRef.current.stop();
     setIsListening(false);
 
-    const combined = [
-      finalTranscriptRef.current,
-      interimTranscriptRef.current,
-    ]
+    const durationSeconds = recordingStartRef.current
+      ? Math.max(1, Math.round((Date.now() - recordingStartRef.current) / 1000))
+      : null;
+
+    answerDurationSecondsRef.current = durationSeconds;
+    recordingStartRef.current = null;
+
+    const audioMetrics = calculateAudioMetrics();
+    cleanupAudioMonitoring();
+
+    const combined = [finalTranscriptRef.current, interimTranscriptRef.current]
       .filter(Boolean)
       .join(" ")
       .trim();
 
     if (combined) {
       setAnswer(combined);
-      await cleanTranscript(combined);
+      const cleaned = await cleanTranscript(combined);
+      await runVoiceAnalysis(cleaned || combined, durationSeconds, audioMetrics);
     }
   };
 
@@ -356,14 +733,19 @@ export default function Home() {
       recognitionRef.current.stop();
     }
 
+    cleanupAudioMonitoring();
+
     finalTranscriptRef.current = "";
     interimTranscriptRef.current = "";
+    recordingStartRef.current = null;
+    answerDurationSecondsRef.current = null;
     setIsListening(false);
     setAnswer("");
+    setVoiceAnalysis(null);
   };
 
   const cleanTranscript = async (rawTranscript: string) => {
-    if (!rawTranscript.trim()) return;
+    if (!rawTranscript.trim()) return rawTranscript;
 
     try {
       setCleaningTranscript(true);
@@ -385,9 +767,13 @@ export default function Home() {
         finalTranscriptRef.current = cleaned;
         interimTranscriptRef.current = "";
         setAnswer(cleaned);
+        return cleaned;
       }
+
+      return rawTranscript;
     } catch (error) {
       console.error("Transcript cleanup failed:", error);
+      return rawTranscript;
     } finally {
       setCleaningTranscript(false);
     }
@@ -397,6 +783,7 @@ export default function Home() {
     setQuestion("");
     setAnswer("");
     setFeedback(null);
+    setVoiceAnalysis(null);
     setResults([]);
     setSummary(null);
     setInterviewStarted(false);
@@ -405,16 +792,20 @@ export default function Home() {
     setFeedbackLoading(false);
     setSummaryLoading(false);
     setCleaningTranscript(false);
+    setVoiceAnalysisLoading(false);
 
     if (recognitionRef.current && isListening) {
       recognitionRef.current.stop();
     }
 
+    cleanupAudioMonitoring();
     stopQuestionSpeech();
 
     finalTranscriptRef.current = "";
     interimTranscriptRef.current = "";
     lastSpokenQuestionRef.current = "";
+    recordingStartRef.current = null;
+    answerDurationSecondsRef.current = null;
     setIsListening(false);
   };
 
@@ -424,8 +815,12 @@ export default function Home() {
       setQuestion("");
       setAnswer("");
       setFeedback(null);
+      setVoiceAnalysis(null);
       finalTranscriptRef.current = "";
       interimTranscriptRef.current = "";
+      recordingStartRef.current = null;
+      answerDurationSecondsRef.current = null;
+      audioSamplesRef.current = [];
 
       const res = await fetch("/api/interview", {
         method: "POST",
@@ -464,6 +859,7 @@ export default function Home() {
     setInterviewFinished(false);
     setResults([]);
     setSummary(null);
+    setVoiceAnalysis(null);
     lastSpokenQuestionRef.current = "";
     await fetchQuestion(1, []);
   };
@@ -474,6 +870,18 @@ export default function Home() {
       setFeedbackLoading(true);
       setFeedback(null);
 
+      let latestVoiceAnalysis = voiceAnalysis;
+
+      if (!latestVoiceAnalysis && answer.trim() && answerDurationSecondsRef.current) {
+        latestVoiceAnalysis = await runVoiceAnalysis(
+          answer,
+          answerDurationSecondsRef.current,
+          audioSamplesRef.current.length
+            ? calculateAudioMetrics()
+            : defaultAudioMetrics
+        );
+      }
+
       const res = await fetch("/api/feedback", {
         method: "POST",
         headers: {
@@ -482,6 +890,7 @@ export default function Home() {
         body: JSON.stringify({
           question,
           answer,
+          voiceAnalysis: latestVoiceAnalysis,
         }),
       });
 
@@ -497,6 +906,7 @@ export default function Home() {
             structure: 0,
             confidence: 0,
           },
+          pace_score: 0,
           strengths: [],
           improvements: [],
           improved_answer: "",
@@ -516,6 +926,7 @@ export default function Home() {
           structure: 0,
           confidence: 0,
         },
+        pace_score: 0,
         strengths: [],
         improvements: [],
         improved_answer: "",
@@ -531,7 +942,10 @@ export default function Home() {
 
     setHasUserInteracted(true);
 
-    const updatedResults = [...results, { question, answer, feedback }];
+    const updatedResults = [
+      ...results,
+      { question, answer, feedback, voiceAnalysis },
+    ];
     setResults(updatedResults);
 
     if (updatedResults.length >= totalQuestions) {
@@ -604,6 +1018,7 @@ export default function Home() {
         setQuestion("");
         setAnswer("");
         setFeedback(null);
+        setVoiceAnalysis(null);
         finalTranscriptRef.current = "";
         interimTranscriptRef.current = "";
       }
@@ -621,11 +1036,12 @@ export default function Home() {
         <div className="mb-8 flex items-center justify-between rounded-2xl border border-gray-800 bg-gray-950 p-6">
           <div>
             <h1 className="mb-3 text-4xl font-bold md:text-5xl">
-              AIM – AI Mentor 🚀
+              AI Career Mentor
             </h1>
             <p className="max-w-2xl text-gray-400">
-              Multi-question interview practice with AI coaching, detailed scoring,
-              session history, voice answers, and an optional speaking coach avatar.
+              Multi-question interview practice with AI coaching, detailed
+              content feedback, stricter voice analysis, session history, and
+              optional question playback.
             </p>
           </div>
 
@@ -776,7 +1192,9 @@ export default function Home() {
                       <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 via-blue-500 to-cyan-400">
                         <div
                           className={`absolute inset-0 rounded-full ${
-                            isSpeakingQuestion ? "animate-ping bg-purple-400/30" : ""
+                            isSpeakingQuestion
+                              ? "animate-ping bg-purple-400/30"
+                              : ""
                           }`}
                         />
                         <div className="relative flex h-16 w-16 items-center justify-center rounded-full bg-gray-950 text-2xl font-bold text-white">
@@ -785,7 +1203,9 @@ export default function Home() {
                       </div>
 
                       <div className="flex-1">
-                        <p className="text-lg font-semibold text-white">AIM Coach</p>
+                        <p className="text-lg font-semibold text-white">
+                          AI Career Coach
+                        </p>
                         <p className="text-sm text-gray-400">
                           {speakerEnabled
                             ? isSpeakingQuestion
@@ -819,7 +1239,7 @@ export default function Home() {
                       className="mb-4 min-h-[180px] w-full rounded-lg border border-gray-700 bg-gray-800 p-3 text-white placeholder-gray-400 outline-none"
                       placeholder={
                         speakerEnabled
-                          ? "Once the question finishes, just start speaking. Click Stop Voice Answer when you’re done."
+                          ? "Once the question finishes, start speaking. Click Stop Voice Answer when you’re done."
                           : "Write your answer here..."
                       }
                       value={answer}
@@ -828,6 +1248,7 @@ export default function Home() {
                         setAnswer(value);
                         finalTranscriptRef.current = value;
                         interimTranscriptRef.current = "";
+                        setVoiceAnalysis(null);
                       }}
                     />
 
@@ -844,7 +1265,7 @@ export default function Home() {
                           <button
                             onClick={() => {
                               setHasUserInteracted(true);
-                              startVoiceInput();
+                              void startVoiceInput();
                             }}
                             className="rounded-lg bg-blue-600 px-4 py-2 font-semibold hover:bg-blue-700"
                           >
@@ -863,9 +1284,11 @@ export default function Home() {
                           {isSpeakingQuestion
                             ? "Question is being read aloud..."
                             : isListening
-                            ? "Listening for your answer..."
+                            ? "Listening and measuring voice delivery..."
                             : cleaningTranscript
                             ? "Tidying punctuation..."
+                            : voiceAnalysisLoading
+                            ? "Analysing voice delivery..."
                             : speakerEnabled
                             ? "Question voice will auto-start transcription when it finishes."
                             : "Voice input ready"}
@@ -873,10 +1296,82 @@ export default function Home() {
                       </div>
                     )}
 
+                    {voiceAnalysis && !voiceAnalysis.error && (
+                      <div className="mb-4 rounded-xl border border-cyan-900 bg-cyan-950/30 p-4">
+                        <h3 className="mb-3 text-lg font-semibold text-cyan-300">
+                          Voice Analysis
+                        </h3>
+
+                        <div className="mb-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
+                          <ScoreCard
+                            label="Voice"
+                            value={voiceAnalysis.overallVoiceScore}
+                          />
+                          <ScoreCard label="Pace" value={voiceAnalysis.paceScore} />
+                          <ScoreCard
+                            label="Fillers"
+                            value={voiceAnalysis.fillerScore}
+                          />
+                          <ScoreCard
+                            label="Confidence"
+                            value={voiceAnalysis.confidenceScore}
+                          />
+                          <ScoreCard
+                            label="Energy"
+                            value={voiceAnalysis.energyScore}
+                          />
+                          <ScoreCard
+                            label="Structure"
+                            value={voiceAnalysis.structureScore ?? 0}
+                          />
+                        </div>
+
+                        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                          <MetricCard
+                            label="Words"
+                            value={String(voiceAnalysis.metrics.wordCount)}
+                          />
+                          <MetricCard
+                            label="WPM"
+                            value={String(voiceAnalysis.metrics.estimatedWPM)}
+                          />
+                          <MetricCard
+                            label="Fillers"
+                            value={String(voiceAnalysis.metrics.fillerCount)}
+                          />
+                          <MetricCard
+                            label="Long pauses"
+                            value={String(voiceAnalysis.metrics.longPauseCount)}
+                          />
+                        </div>
+
+                        {voiceAnalysis.feedback.improvements.length > 0 && (
+                          <div className="mt-4">
+                            <p className="mb-2 font-semibold text-orange-300">
+                              Voice improvements
+                            </p>
+                            <ul className="list-disc space-y-1 pl-5 text-sm text-gray-200">
+                              {voiceAnalysis.feedback.improvements.map(
+                                (item, index) => (
+                                  <li key={index}>{item}</li>
+                                )
+                              )}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
                     {!feedback && (
                       <button
                         onClick={getFeedback}
-                        disabled={!answer || feedbackLoading || cleaningTranscript || isSpeakingQuestion}
+                        disabled={
+                          !answer ||
+                          feedbackLoading ||
+                          cleaningTranscript ||
+                          isSpeakingQuestion ||
+                          voiceAnalysisLoading
+                        }
                         className="w-full rounded-lg bg-green-600 px-6 py-3 font-semibold transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         {feedbackLoading ? "Evaluating..." : "Get AI Feedback"}
@@ -902,13 +1397,66 @@ export default function Home() {
                           </span>
                         </p>
 
-                        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-                          <ScoreCard label="Content" value={feedback.category_scores.content} />
-                          <ScoreCard label="Clarity" value={feedback.category_scores.clarity} />
-                          <ScoreCard label="Relevance" value={feedback.category_scores.relevance} />
-                          <ScoreCard label="Structure" value={feedback.category_scores.structure} />
-                          <ScoreCard label="Confidence" value={feedback.category_scores.confidence} />
+                        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
+                          <ScoreCard
+                            label="Content"
+                            value={feedback.category_scores.content}
+                          />
+                          <ScoreCard
+                            label="Clarity"
+                            value={feedback.category_scores.clarity}
+                          />
+                          <ScoreCard
+                            label="Relevance"
+                            value={feedback.category_scores.relevance}
+                          />
+                          <ScoreCard
+                            label="Structure"
+                            value={feedback.category_scores.structure}
+                          />
+                          <ScoreCard
+                            label="Confidence"
+                            value={feedback.category_scores.confidence}
+                          />
+                          <ScoreCard
+                            label="Pace"
+                            value={feedback.pace_score ?? voiceAnalysis?.paceScore ?? 0}
+                          />
                         </div>
+
+                        {feedback.section_feedback && (
+                          <div>
+                            <h3 className="mb-3 text-lg font-semibold text-cyan-300">
+                              Section-by-section feedback
+                            </h3>
+                            <div className="grid gap-4 md:grid-cols-2">
+                              <SectionFeedbackCard
+                                title="Content"
+                                item={feedback.section_feedback.content}
+                              />
+                              <SectionFeedbackCard
+                                title="Clarity"
+                                item={feedback.section_feedback.clarity}
+                              />
+                              <SectionFeedbackCard
+                                title="Relevance"
+                                item={feedback.section_feedback.relevance}
+                              />
+                              <SectionFeedbackCard
+                                title="Structure"
+                                item={feedback.section_feedback.structure}
+                              />
+                              <SectionFeedbackCard
+                                title="Confidence"
+                                item={feedback.section_feedback.confidence}
+                              />
+                              <SectionFeedbackCard
+                                title="Pace"
+                                item={feedback.section_feedback.pace}
+                              />
+                            </div>
+                          </div>
+                        )}
 
                         <div>
                           <h3 className="mb-2 text-lg font-semibold text-blue-300">
@@ -934,7 +1482,7 @@ export default function Home() {
 
                         <div>
                           <h3 className="mb-2 text-lg font-semibold text-purple-300">
-                            Improved Answer
+                            Model Answer — 8+/10 Standard
                           </h3>
                           <div className="rounded-lg border border-gray-700 bg-gray-950 p-4 leading-7 text-gray-100">
                             {feedback.improved_answer}
@@ -962,7 +1510,9 @@ export default function Home() {
                   Final Interview Summary
                 </h2>
 
-                {summaryLoading && <p className="text-gray-400">Generating summary...</p>}
+                {summaryLoading && (
+                  <p className="text-gray-400">Generating summary...</p>
+                )}
 
                 {summary && (
                   <div className="space-y-6">
@@ -1006,7 +1556,9 @@ export default function Home() {
                       <h3 className="mb-2 text-lg font-semibold text-purple-300">
                         Final Recommendation
                       </h3>
-                      <p className="text-gray-100">{summary.final_recommendation}</p>
+                      <p className="text-gray-100">
+                        {summary.final_recommendation}
+                      </p>
                     </div>
 
                     <div>
@@ -1040,7 +1592,8 @@ export default function Home() {
 
               <Show when="signed-out">
                 <p className="mb-4 text-sm text-gray-400">
-                  Sign in to make AIM feel more like a real product and prepare for saved accounts.
+                  Sign in to make AI Career Mentor feel more like a real product
+                  and prepare for saved accounts.
                 </p>
                 <SignInButton mode="modal">
                   <button className="w-full rounded-lg bg-purple-600 px-4 py-2 font-semibold hover:bg-purple-700">
@@ -1063,12 +1616,13 @@ export default function Home() {
               </h2>
               <div className="space-y-2 text-sm text-gray-400">
                 <p>✓ 5-question interview flow</p>
-                <p>✓ Detailed category scoring</p>
-                <p>✓ Improved answer rewrite</p>
+                <p>✓ Section-by-section content feedback</p>
+                <p>✓ Stricter voice delivery scoring</p>
+                <p>✓ Pace, fillers, confidence, energy</p>
+                <p>✓ Stronger 8+/10 model answer</p>
                 <p>✓ Final interview summary</p>
                 <p>✓ Voice answer input</p>
                 <p>✓ Voice transcript cleanup</p>
-                <p>✓ Female speaking avatar priority</p>
                 <p>✓ Auto-listen after question playback</p>
                 <p>✓ Local session history</p>
                 <p>✓ Sign-in with Clerk</p>
@@ -1114,6 +1668,39 @@ function ScoreCard({ label, value }: { label: string; value: number }) {
     <div className="rounded-xl border border-gray-800 bg-gray-950 p-4 text-center">
       <p className="text-sm text-gray-400">{label}</p>
       <p className="mt-2 text-2xl font-bold text-white">{value}/10</p>
+    </div>
+  );
+}
+
+function MetricCard({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-xl border border-gray-800 bg-gray-950 p-4 text-center">
+      <p className="text-sm text-gray-400">{label}</p>
+      <p className="mt-2 text-xl font-bold text-white">{value}</p>
+    </div>
+  );
+}
+
+function SectionFeedbackCard({
+  title,
+  item,
+}: {
+  title: string;
+  item: SectionFeedbackItem;
+}) {
+  return (
+    <div className="rounded-xl border border-gray-800 bg-gray-950 p-4">
+      <div className="mb-2 flex items-center justify-between gap-3">
+        <h4 className="font-semibold text-white">{title}</h4>
+        <span className="rounded-full bg-purple-600/20 px-3 py-1 text-sm font-semibold text-purple-200">
+          {item.score}/10
+        </span>
+      </div>
+      <p className="mb-3 text-sm leading-6 text-gray-300">{item.feedback}</p>
+      <p className="text-sm leading-6 text-orange-200">
+        <span className="font-semibold">Improve: </span>
+        {item.improvement}
+      </p>
     </div>
   );
 }
