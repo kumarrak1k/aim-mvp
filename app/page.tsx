@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Show, SignInButton, UserButton } from "@clerk/nextjs";
 
 export default function Home() {
   return (
@@ -35,11 +36,25 @@ export default function Home() {
             </a>
           </nav>
 
-          <Link href="/practice">
-            <button className="rounded-full bg-white px-5 py-2.5 text-sm font-black text-black hover:bg-purple-100">
-              Start Practice
-            </button>
-          </Link>
+          <div className="flex items-center gap-3">
+            <Show when="signed-out">
+              <SignInButton mode="modal">
+                <button className="rounded-full border border-white/10 bg-white/[0.06] px-5 py-2.5 text-sm font-black text-white hover:bg-white/[0.1]">
+                  Sign In
+                </button>
+              </SignInButton>
+            </Show>
+
+            <Show when="signed-in">
+              <UserButton />
+            </Show>
+
+            <Link href="/practice">
+              <button className="rounded-full bg-white px-5 py-2.5 text-sm font-black text-black hover:bg-purple-100">
+                Start Practice
+              </button>
+            </Link>
+          </div>
         </div>
       </header>
 
