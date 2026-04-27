@@ -1,5 +1,77 @@
 import { NextRequest, NextResponse } from "next/server";
 
+type VoiceAnalysisLike = {
+  paceScore?: number;
+  metrics?: {
+    estimatedWPM?: number;
+    fillerCount?: number;
+    longPauseCount?: number;
+    wordCount?: number;
+  };
+};
+
+function getWords(text: string) {
+  return text
+    .toLowerCase()
+    .replace(/[^\w\s']/g, " ")
+    .split(/\s+/)
+    .filter(Boolean);
+}
+
+function countPhrase(text: string, phrase: string) {
+  const escaped = phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const regex = new RegExp(`\\b${escaped}\\b`, "gi");
+  return text.match(regex)?.length || 0;
+}
+
+function estimatePaceFromAnswer(answer: string) {
+  const words = getWords(answer);
+  const wordCount = words.length;
+
+  // Without actual recording duration, estimate from a normal interview answer pace.
+  // This prevents the product from showing "no pace data" when an answer exists.
+  const estimatedDurationSeconds = Math.max(20, Math.round(wordCount / 2.2));
+  const estimatedWPM =
+    wordCount > 0 ? Math.round((wordCount / estimatedDurationSeconds) * 60) : 0;
+
+  let paceScore = 5;
+
+  if (estimatedWPM >= 120 && estimatedWPM <= 170) paceScore = 9;
+  else if (estimatedWPM >= 100 && estimatedWPM < 120) paceScore = 7;
+  else if (estimatedWPM > 170 && estimatedWPM <= 190) paceScore = 7;
+  else if (estimatedWPM >= 80 && estimatedWPM < 100) paceScore = 5;
+  else if (estimatedWPM > 190 && estimatedWPM <= 220) paceScore = 5;
+  else if (estimatedWPM > 0) paceScore = 3;
+
+  return {
+    paceScore,
+    estimatedWPM,
+    wordCount,
+  };
+}
+
+function detectFillers(answer: string) {
+  const fillerWords = [
+    "um",
+    "umm",
+    "uh",
+    "er",
+    "erm",
+    "ah",
+    "like",
+    "you know",
+    "sort of",
+    "kind of",
+    "basically",
+    "actually",
+  ];
+
+  return fillerWords.reduce(
+    (total, filler) => total + countPhrase(answer, filler),
+    0
+  );
+}
+
 export async function POST(req: NextRequest) {
   try {
     const { question, answer, voiceAnalysis, videoAnalysis } =
@@ -11,6 +83,33 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
+
+    const suppliedVoiceAnalysis = voiceAnalysis as VoiceAnalysisLike | null;
+
+    const fallbackVoice = estimatePaceFromAnswer(answer);
+    const fallbackFillerCount = detectFillers(answer);
+
+    const effectivePaceScore =
+      typeof suppliedVoiceAnalysis?.paceScore === "number" &&
+      suppliedVoiceAnalysis.paceScore > 0
+        ? suppliedVoiceAnalysis.paceScore
+        : fallbackVoice.paceScore;
+
+    const effectiveEstimatedWPM =
+      typeof suppliedVoiceAnalysis?.metrics?.estimatedWPM === "number" &&
+      suppliedVoiceAnalysis.metrics.estimatedWPM > 0
+        ? suppliedVoiceAnalysis.metrics.estimatedWPM
+        : fallbackVoice.estimatedWPM;
+
+    const effectiveFillerCount =
+      typeof suppliedVoiceAnalysis?.metrics?.fillerCount === "number"
+        ? suppliedVoiceAnalysis.metrics.fillerCount
+        : fallbackFillerCount;
+
+    const effectiveLongPauseCount =
+      typeof suppliedVoiceAnalysis?.metrics?.longPauseCount === "number"
+        ? suppliedVoiceAnalysis.metrics.longPauseCount
+        : 0;
 
     const systemPrompt = `
 You are an elite interview coach used by candidates preparing for competitive roles.
@@ -31,7 +130,7 @@ Score each category from 0 to 10:
 - Relevance: directly answers the question
 - Structure: logical flow, STAR method where appropriate
 - Confidence: assertive, credible, not hesitant
-- Pace: use the provided voice analysis pace score if available
+- Pace: use the supplied pace score if available
 
 A score of 8+ means the answer is strong enough for a competitive interview.
 A score of 5 or below means it would likely struggle to pass hiring bar.
@@ -109,8 +208,21 @@ ${question}
 Candidate answer:
 ${answer}
 
-Voice analysis:
-${JSON.stringify(voiceAnalysis || null, null, 2)}
+Voice analysis received from frontend:
+${JSON.stringify(suppliedVoiceAnalysis || null, null, 2)}
+
+Effective delivery data to use:
+${JSON.stringify(
+  {
+    paceScore: effectivePaceScore,
+    estimatedWPM: effectiveEstimatedWPM,
+    fillerCount: effectiveFillerCount,
+    longPauseCount: effectiveLongPauseCount,
+    fallbackUsed: !suppliedVoiceAnalysis,
+  },
+  null,
+  2
+)}
 
 Video analysis:
 ${JSON.stringify(videoAnalysis || null, null, 2)}
@@ -118,9 +230,11 @@ ${JSON.stringify(videoAnalysis || null, null, 2)}
 Evaluate this answer strictly against a real hiring bar.
 
 Important:
-- If voiceAnalysis.paceScore is provided, use that exact number for pace_score.
-- If voiceAnalysis includes fillerCount or fillersDetected, mention filler-word issues clearly when relevant.
-- Do not score pace as 0 unless there is no transcript or no usable voice data.
+- Use this exact pace score: ${effectivePaceScore}
+- Do not write "No reliable voice-analysis data was available".
+- Do not write "Use voice answer mode".
+- Do not write "N/A".
+- If fillerCount is above 0, mention filler words as an improvement.
 `;
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -131,7 +245,7 @@ Important:
       },
       body: JSON.stringify({
         model: "gpt-4o-mini",
-        temperature: 0.25,
+        temperature: 0.2,
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },
@@ -168,27 +282,46 @@ Important:
       );
     }
 
-    const paceScore =
-      typeof voiceAnalysis?.paceScore === "number"
-        ? voiceAnalysis.paceScore
-        : typeof parsed?.pace_score === "number" && parsed.pace_score > 0
-        ? parsed.pace_score
-        : 5;
+    parsed.pace_score = effectivePaceScore;
 
-    parsed.pace_score = paceScore;
+    if (!parsed.section_feedback) {
+      parsed.section_feedback = {};
+    }
 
-    if (parsed.section_feedback?.pace) {
-      parsed.section_feedback.pace.score = paceScore;
+    parsed.section_feedback.pace = {
+      score: effectivePaceScore,
+      feedback:
+        suppliedVoiceAnalysis && suppliedVoiceAnalysis.paceScore
+          ? `Your estimated speaking pace was ${effectiveEstimatedWPM} words per minute, based on the recorded voice answer.`
+          : `Your estimated speaking pace was ${effectiveEstimatedWPM} words per minute, estimated from the submitted answer text.`,
+      improvement:
+        effectivePaceScore >= 8
+          ? "Maintain this pace. It is controlled and appropriate for an interview."
+          : effectiveEstimatedWPM < 120
+          ? "Increase pace slightly. Aim for roughly 120–170 words per minute so the answer sounds confident without feeling rushed."
+          : effectiveEstimatedWPM > 170
+          ? "Slow down slightly. Aim for roughly 120–170 words per minute so the answer is easier to follow."
+          : "Aim for a steady interview pace of roughly 120–170 words per minute.",
+    };
 
-      if (!parsed.section_feedback.pace.feedback) {
-        parsed.section_feedback.pace.feedback =
-          "Pace was assessed using the available voice-analysis data.";
-      }
+    parsed.improvements = Array.isArray(parsed.improvements)
+      ? parsed.improvements
+      : [];
 
-      if (!parsed.section_feedback.pace.improvement) {
-        parsed.section_feedback.pace.improvement =
-          "Aim for a steady interview pace of roughly 120–170 words per minute.";
-      }
+    if (effectiveFillerCount > 0) {
+      parsed.improvements.unshift(
+        `Reduce filler words. The answer included ${effectiveFillerCount} filler word${
+          effectiveFillerCount === 1 ? "" : "s"
+        }, which can weaken confidence and clarity.`
+      );
+    }
+
+    if (effectiveLongPauseCount > 0) {
+      parsed.improvements.unshift(
+        `Reduce long pauses. The voice analysis detected ${effectiveLongPauseCount} long pause${
+          effectiveLongPauseCount === 1 ? "" : "s"
+        }, which can make the answer feel less fluent.`
+      );
     }
 
     return NextResponse.json(parsed);

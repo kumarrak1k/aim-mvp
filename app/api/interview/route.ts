@@ -1,68 +1,122 @@
-import OpenAI from "openai";
+import { NextRequest, NextResponse } from "next/server";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+type InterviewHistoryItem = {
+  question: string;
+  answer: string;
+};
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
-    const role = body.role || "General candidate";
-    const questionNumber = Number(body.questionNumber || 1);
-    const totalQuestions = Number(body.totalQuestions || 5);
-    const history = Array.isArray(body.history) ? body.history : [];
+    const { role, questionNumber, totalQuestions, history } = await req.json();
 
-    const formattedHistory =
-      history.length > 0
-        ? history
+    if (!role || typeof role !== "string") {
+      return NextResponse.json(
+        { error: "Missing target role or profile." },
+        { status: 400 }
+      );
+    }
+
+    const safeQuestionNumber =
+      typeof questionNumber === "number" && questionNumber > 0
+        ? questionNumber
+        : 1;
+
+    const safeTotalQuestions =
+      typeof totalQuestions === "number" && totalQuestions > 0
+        ? totalQuestions
+        : 5;
+
+    const safeHistory: InterviewHistoryItem[] = Array.isArray(history)
+      ? history
+      : [];
+
+    const systemPrompt = `
+You are an expert interview coach.
+
+Your job is to generate realistic interview questions for candidates.
+
+Rules:
+- Ask one question only.
+- Do not include explanations.
+- Do not include numbering.
+- Do not include markdown.
+- Make the question relevant to the candidate's target role/profile.
+- Make the question realistic for a real interview.
+- Vary the question style across the interview.
+- Avoid repeating previous questions.
+- Use clear, professional language.
+
+Question mix:
+- Early questions can test motivation, background, and role fit.
+- Middle questions should test experience, examples, problem-solving, teamwork, communication, and resilience.
+- Later questions can test judgement, self-awareness, growth, and impact.
+`;
+
+    const historyText =
+      safeHistory.length > 0
+        ? safeHistory
             .map(
-              (item: { question: string; answer: string }, index: number) =>
-                `Previous Q${index + 1}: ${item.question}\nPrevious A${index + 1}: ${item.answer}`
+              (item, index) =>
+                `Previous question ${index + 1}: ${item.question}\nCandidate answer ${index + 1}: ${item.answer}`
             )
             .join("\n\n")
         : "No previous questions yet.";
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      temperature: 0.8,
-      messages: [
-        {
-          role: "system",
-          content: `
-You are AIM, an elite AI interview coach.
+    const userPrompt = `
+Candidate target role/profile:
+${role}
 
-Your task:
-- Generate ONE realistic interview question at a time
-- Match the user's profile and level
-- Support graduates, students, placement candidates, interns, and professionals
-- Increase difficulty slightly as the interview progresses
-- Avoid repeating previous questions
-- Ask only the question
-- Do not greet
-- Do not explain anything
-- Output only plain text
+Question number:
+${safeQuestionNumber} of ${safeTotalQuestions}
 
-Interview context:
-- This is question ${questionNumber} of ${totalQuestions}
-- Candidate profile: ${role}
+Previous interview history:
+${historyText}
 
-Previous questions and answers:
-${formattedHistory}
-          `.trim(),
-        },
-      ],
+Generate the next best interview question.
+`;
+
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: "gpt-4o-mini",
+        temperature: 0.7,
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userPrompt },
+        ],
+      }),
     });
 
-    return Response.json({
-      question: response.choices[0].message.content?.trim() || "Tell me about yourself.",
+    const data = await response.json();
+
+    if (!response.ok) {
+      return NextResponse.json(
+        { error: data.error?.message || "Failed to generate interview question." },
+        { status: 500 }
+      );
+    }
+
+    const question = data.choices?.[0]?.message?.content?.trim();
+
+    if (!question) {
+      return NextResponse.json(
+        { error: "No question returned from AI." },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({
+      question,
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error("INTERVIEW API ERROR:", error);
 
-    return Response.json(
-      {
-        error: "Failed to generate interview question",
-      },
+    return NextResponse.json(
+      { error: "Something went wrong while generating the question." },
       { status: 500 }
     );
   }
