@@ -1174,6 +1174,21 @@ export default function Home() {
       utterance.lang = preferredVoice.lang;
     }
 
+    const clearTranscriptBeforeAnswer = () => {
+      finalTranscriptRef.current = "";
+      interimTranscriptRef.current = "";
+      setAnswer("");
+    };
+
+    const beginListeningAfterQuestion = () => {
+      clearTranscriptBeforeAnswer();
+
+      window.setTimeout(() => {
+        clearTranscriptBeforeAnswer();
+        void startVoiceInput();
+      }, 700);
+    };
+
     utterance.onstart = () => {
       setIsSpeakingQuestion(true);
     };
@@ -1183,7 +1198,7 @@ export default function Home() {
 
       if (autoStartListeningAfterSpeechRef.current) {
         autoStartListeningAfterSpeechRef.current = false;
-        void startVoiceInput();
+        beginListeningAfterQuestion();
       }
     };
 
@@ -1192,7 +1207,7 @@ export default function Home() {
 
       if (autoStartListeningAfterSpeechRef.current) {
         autoStartListeningAfterSpeechRef.current = false;
-        void startVoiceInput();
+        beginListeningAfterQuestion();
       }
     };
 
@@ -1392,7 +1407,11 @@ export default function Home() {
       let latestVoiceAnalysis = voiceAnalysis;
       let latestVideoAnalysis = videoAnalysis;
 
-      if (!latestVoiceAnalysis && answer.trim() && answerDurationSecondsRef.current) {
+      if (
+        !latestVoiceAnalysis &&
+        answer.trim() &&
+        answerDurationSecondsRef.current
+      ) {
         latestVoiceAnalysis = await runVoiceAnalysis(
           answer,
           answerDurationSecondsRef.current,

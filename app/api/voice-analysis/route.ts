@@ -1,278 +1,207 @@
-import { NextResponse } from "next/server";
-
-type AudioMetrics = {
-  averageVolume?: number;
-  peakVolume?: number;
-  volumeVariation?: number;
-  silenceRatio?: number;
-  lowVolumeRatio?: number;
-  estimatedPauseCount?: number;
-  longPauseCount?: number;
-  voicedFrameRatio?: number;
-};
+import { NextRequest, NextResponse } from "next/server";
 
 const fillerWords = [
   "um",
+  "umm",
   "uh",
-  "erm",
   "er",
+  "erm",
+  "ah",
   "like",
   "you know",
   "sort of",
   "kind of",
   "basically",
-  "literally",
   "actually",
+  "literally",
 ];
 
 const hedgeWords = [
   "maybe",
+  "perhaps",
   "probably",
+  "possibly",
   "i think",
   "i guess",
   "i suppose",
-  "perhaps",
-  "not sure",
-  "hopefully",
-  "possibly",
+  "kind of",
+  "sort of",
 ];
 
-function clamp(value: number, min = 0, max = 10) {
-  return Math.max(min, Math.min(max, value));
+function clampScore(value: number) {
+  return Math.max(0, Math.min(10, Math.round(value)));
 }
 
-function round1(value: number) {
-  return Math.round(value * 10) / 10;
+function countPhrase(text: string, phrase: string) {
+  const escaped = phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const regex = new RegExp(`\\b${escaped}\\b`, "gi");
+  return text.match(regex)?.length || 0;
 }
 
-function countMatches(text: string, phrases: string[]) {
-  return phrases.reduce((count, phrase) => {
-    const escaped = phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const regex = new RegExp(`\\b${escaped}\\b`, "gi");
-    const matches = text.match(regex);
-    return count + (matches ? matches.length : 0);
-  }, 0);
+function getWords(text: string) {
+  return text
+    .toLowerCase()
+    .replace(/[^\w\s']/g, " ")
+    .split(/\s+/)
+    .filter(Boolean);
 }
 
-function getDetected(text: string, phrases: string[]) {
-  return phrases.filter((phrase) => {
-    const escaped = phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    return new RegExp(`\\b${escaped}\\b`, "i").test(text);
-  });
-}
-
-function countRepeatedPhrases(words: string[]) {
-  let repetitions = 0;
-  const seen = new Map<string, number>();
-
-  for (let i = 0; i < words.length - 2; i++) {
-    const phrase = `${words[i]} ${words[i + 1]} ${words[i + 2]}`;
-    seen.set(phrase, (seen.get(phrase) || 0) + 1);
-  }
-
-  seen.forEach((value) => {
-    if (value > 1) repetitions += value - 1;
-  });
-
-  return repetitions;
-}
-
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
-    const body = (await req.json()) as {
-      transcript?: string;
-      durationSeconds?: number | null;
-      audioMetrics?: AudioMetrics;
-    };
+    const { transcript, durationSeconds, audioMetrics } = await req.json();
 
-    const transcript = (body.transcript || "").trim();
-    const durationSeconds = body.durationSeconds || null;
-    const audio = body.audioMetrics || {};
-
-    if (!transcript) {
+    if (!transcript || typeof transcript !== "string") {
       return NextResponse.json(
-        { error: "Missing transcript for voice analysis." },
+        { error: "Missing transcript." },
         { status: 400 }
       );
     }
 
-    const lower = transcript.toLowerCase();
-    const words = lower.match(/\b[\w']+\b/g) || [];
+    const words = getWords(transcript);
     const wordCount = words.length;
+    const safeDuration =
+      typeof durationSeconds === "number" && durationSeconds > 0
+        ? durationSeconds
+        : Math.max(30, Math.round(wordCount / 2));
 
-    const sentences = transcript
-      .split(/[.!?]+/)
-      .map((s) => s.trim())
-      .filter(Boolean);
+    const estimatedWPM =
+      wordCount > 0 ? Math.round((wordCount / safeDuration) * 60) : 0;
 
-    const sentenceCount = Math.max(1, sentences.length);
-    const averageSentenceLength = wordCount / sentenceCount;
+    const sentenceCount = Math.max(
+      1,
+      transcript.split(/[.!?]+/).filter((part) => part.trim()).length
+    );
 
-    const fillerCount = countMatches(lower, fillerWords);
-    const hedgeCount = countMatches(lower, hedgeWords);
-    const repetitionCount = countRepeatedPhrases(words);
+    const averageSentenceLength =
+      sentenceCount > 0 ? Math.round(wordCount / sentenceCount) : 0;
 
-    const structureMarkerCount = countMatches(lower, [
+    const fillersDetected = fillerWords.filter(
+      (word) => countPhrase(transcript, word) > 0
+    );
+
+    const fillerCount = fillerWords.reduce(
+      (sum, word) => sum + countPhrase(transcript, word),
+      0
+    );
+
+    const hedgesDetected = hedgeWords.filter(
+      (word) => countPhrase(transcript, word) > 0
+    );
+
+    const hedgeCount = hedgeWords.reduce(
+      (sum, word) => sum + countPhrase(transcript, word),
+      0
+    );
+
+    const fillerRate = wordCount > 0 ? fillerCount / wordCount : 0;
+    const hedgeRate = wordCount > 0 ? hedgeCount / wordCount : 0;
+
+    const structureMarkers = [
       "first",
       "second",
       "third",
       "finally",
       "for example",
-      "because",
-      "therefore",
       "as a result",
+      "therefore",
+      "because",
       "the outcome",
-      "what i learned",
-    ]);
+      "the result",
+    ];
 
-    const exampleMarkerCount = countMatches(lower, [
+    const exampleMarkers = [
       "for example",
       "for instance",
       "in my previous role",
-      "at university",
-      "during",
       "when i",
       "i worked on",
-      "i was responsible",
-    ]);
+      "i led",
+      "i managed",
+      "i delivered",
+    ];
 
-    const estimatedWPM =
-      durationSeconds && durationSeconds > 0
-        ? Math.round((wordCount / durationSeconds) * 60)
-        : 0;
+    const structureMarkerCount = structureMarkers.reduce(
+      (sum, word) => sum + countPhrase(transcript, word),
+      0
+    );
 
-    const fillerRate = wordCount > 0 ? fillerCount / wordCount : 0;
-    const hedgeRate = wordCount > 0 ? hedgeCount / wordCount : 0;
+    const exampleMarkerCount = exampleMarkers.reduce(
+      (sum, word) => sum + countPhrase(transcript, word),
+      0
+    );
 
-    const averageVolume = audio.averageVolume ?? 0;
-    const peakVolume = audio.peakVolume ?? 0;
-    const volumeVariation = audio.volumeVariation ?? 0;
-    const silenceRatio = audio.silenceRatio ?? 1;
-    const lowVolumeRatio = audio.lowVolumeRatio ?? 1;
-    const longPauseCount = audio.longPauseCount ?? 0;
-    const estimatedPauseCount = audio.estimatedPauseCount ?? 0;
-    const voicedFrameRatio = audio.voicedFrameRatio ?? 0;
+    const repetitionCount = words.reduce((sum, word, index) => {
+      if (index === 0) return sum;
+      return word === words[index - 1] ? sum + 1 : sum;
+    }, 0);
 
-    let paceScore = 10;
-    if (estimatedWPM === 0) paceScore = 5;
-    else if (estimatedWPM < 85) paceScore = 4;
-    else if (estimatedWPM < 105) paceScore = 6;
-    else if (estimatedWPM <= 165) paceScore = 9;
-    else if (estimatedWPM <= 185) paceScore = 7;
-    else paceScore = 4;
+    let paceScore = 5;
+    if (estimatedWPM >= 120 && estimatedWPM <= 170) paceScore = 9;
+    else if (estimatedWPM >= 100 && estimatedWPM < 120) paceScore = 7;
+    else if (estimatedWPM > 170 && estimatedWPM <= 190) paceScore = 7;
+    else if (estimatedWPM >= 80 && estimatedWPM < 100) paceScore = 5;
+    else if (estimatedWPM > 190 && estimatedWPM <= 220) paceScore = 5;
+    else if (estimatedWPM > 0) paceScore = 3;
 
-    if (longPauseCount >= 2) paceScore -= 1.5;
-    if (silenceRatio > 0.35) paceScore -= 2;
-    if (wordCount < 35) paceScore -= 1.5;
+    const fillerScore = clampScore(10 - fillerRate * 120 - fillerCount * 0.4);
+    const confidenceScore = clampScore(
+      8 - hedgeRate * 80 - hedgeCount * 0.35 + Math.min(2, exampleMarkerCount)
+    );
+    const structureScore = clampScore(
+      4 + Math.min(4, structureMarkerCount) + Math.min(2, exampleMarkerCount)
+    );
 
-    let fillerScore = 10;
-    fillerScore -= fillerCount * 1.4;
-    fillerScore -= hedgeCount * 0.9;
-    fillerScore -= repetitionCount * 0.8;
-    if (fillerRate > 0.08) fillerScore -= 2;
-    if (fillerRate > 0.12) fillerScore -= 2;
+    const averageVolume = audioMetrics?.averageVolume ?? 0;
+    const peakVolume = audioMetrics?.peakVolume ?? 0;
+    const volumeVariation = audioMetrics?.volumeVariation ?? 0;
+    const silenceRatio = audioMetrics?.silenceRatio ?? 0;
+    const lowVolumeRatio = audioMetrics?.lowVolumeRatio ?? 0;
+    const estimatedPauseCount = audioMetrics?.estimatedPauseCount ?? 0;
+    const longPauseCount = audioMetrics?.longPauseCount ?? 0;
+    const voicedFrameRatio = audioMetrics?.voicedFrameRatio ?? 0;
 
-    let confidenceScore = 10;
-    if (averageVolume < 5) confidenceScore -= 4;
-    else if (averageVolume < 9) confidenceScore -= 2.5;
-    else if (averageVolume < 13) confidenceScore -= 1;
+    const energyScore = clampScore(
+      5 +
+        Math.min(2, averageVolume / 8) +
+        Math.min(2, volumeVariation / 6) -
+        lowVolumeRatio * 3 -
+        silenceRatio * 2
+    );
 
-    if (peakVolume < 12) confidenceScore -= 2;
-    if (lowVolumeRatio > 0.45) confidenceScore -= 2.5;
-    if (voicedFrameRatio < 0.45) confidenceScore -= 2;
-    if (hedgeRate > 0.04) confidenceScore -= 1.5;
-    if (wordCount < 30) confidenceScore -= 2;
+    const clarityScore = clampScore(
+      8 -
+        fillerCount * 0.35 -
+        repetitionCount * 0.4 -
+        longPauseCount * 0.5 -
+        Math.max(0, averageSentenceLength - 28) * 0.1
+    );
 
-    let energyScore = 10;
-    if (averageVolume < 7) energyScore -= 3;
-    if (volumeVariation < 1.5) energyScore -= 2.5;
-    if (silenceRatio > 0.3) energyScore -= 2;
-    if (voicedFrameRatio < 0.5) energyScore -= 2;
-    if (wordCount < 35) energyScore -= 1.5;
-
-    let clarityScore = 10;
-    if (averageSentenceLength > 28) clarityScore -= 2;
-    if (averageSentenceLength > 38) clarityScore -= 2;
-    if (fillerCount >= 4) clarityScore -= 1.5;
-    if (repetitionCount >= 2) clarityScore -= 1.5;
-    if (structureMarkerCount === 0 && wordCount > 45) clarityScore -= 1.5;
-
-    let structureScore = 10;
-    if (structureMarkerCount === 0) structureScore -= 2.5;
-    if (exampleMarkerCount === 0) structureScore -= 2;
-    if (wordCount < 45) structureScore -= 2;
-    if (sentenceCount < 2) structureScore -= 1.5;
-
-    paceScore = round1(clamp(paceScore));
-    fillerScore = round1(clamp(fillerScore));
-    confidenceScore = round1(clamp(confidenceScore));
-    energyScore = round1(clamp(energyScore));
-    clarityScore = round1(clamp(clarityScore));
-    structureScore = round1(clamp(structureScore));
-
-    let overallVoiceScore =
-      paceScore * 0.18 +
-      fillerScore * 0.18 +
-      confidenceScore * 0.24 +
-      energyScore * 0.16 +
-      clarityScore * 0.14 +
-      structureScore * 0.1;
-
-    if (confidenceScore <= 4) overallVoiceScore -= 1.2;
-    if (energyScore <= 4) overallVoiceScore -= 1;
-    if (fillerScore <= 4) overallVoiceScore -= 0.8;
-    if (wordCount < 25) overallVoiceScore = Math.min(overallVoiceScore, 5);
-    if (averageVolume < 5 && lowVolumeRatio > 0.5) {
-      overallVoiceScore = Math.min(overallVoiceScore, 4.5);
-    }
-
-    overallVoiceScore = round1(clamp(overallVoiceScore));
+    const overallVoiceScore = clampScore(
+      (paceScore +
+        fillerScore +
+        confidenceScore +
+        energyScore +
+        clarityScore +
+        structureScore) /
+        6
+    );
 
     const strengths: string[] = [];
     const improvements: string[] = [];
 
-    if (paceScore >= 8) strengths.push("Your speaking pace was suitable for an interview.");
-    if (fillerScore >= 8) strengths.push("You used relatively few filler words.");
-    if (confidenceScore >= 8) strengths.push("Your voice carried confidence and presence.");
-    if (structureScore >= 8) strengths.push("Your answer had signs of structure and examples.");
+    if (paceScore >= 8) strengths.push("Your speaking pace was controlled and interview-appropriate.");
+    else improvements.push("Adjust your pace. Aim for roughly 120–170 words per minute.");
 
-    if (paceScore < 6) {
-      improvements.push(
-        estimatedWPM && estimatedWPM < 100
-          ? "Your pace was too slow. Aim for a more natural interview pace with fewer long pauses."
-          : "Your pace was uneven. Slow down slightly and pause deliberately between points."
-      );
-    }
+    if (fillerScore >= 8) strengths.push("You used few filler words.");
+    else improvements.push("Reduce filler words such as um, er, like, and you know.");
 
-    if (fillerScore < 7) {
-      improvements.push(
-        "Reduce filler language such as 'um', 'like', 'you know', or hedging phrases. Replace them with short pauses."
-      );
-    }
+    if (confidenceScore >= 8) strengths.push("Your language sounded confident and credible.");
+    else improvements.push("Use more decisive wording and avoid hedging phrases such as maybe, I think, or probably.");
 
-    if (confidenceScore < 7) {
-      improvements.push(
-        "Your confidence score was reduced because your delivery appears quiet, hesitant, or low-presence. Speak slightly louder and finish sentences firmly."
-      );
-    }
+    if (structureScore >= 8) strengths.push("Your answer showed signs of clear structure.");
+    else improvements.push("Use a clearer structure such as Situation, Task, Action, Result.");
 
-    if (energyScore < 7) {
-      improvements.push(
-        "Your delivery needs more vocal energy. Vary your tone and emphasise key words rather than speaking flatly."
-      );
-    }
-
-    if (structureScore < 7) {
-      improvements.push(
-        "Use a clearer structure: situation, action, result, and learning. This makes your answer easier to follow."
-      );
-    }
-
-    if (wordCount < 35) {
-      improvements.push(
-        "Your answer was too short to fully demonstrate capability. Add a specific example and measurable outcome."
-      );
-    }
+    if (energyScore < 6) improvements.push("Increase vocal energy and avoid speaking too softly or with long silences.");
 
     return NextResponse.json({
       paceScore,
@@ -286,14 +215,14 @@ export async function POST(req: Request) {
         wordCount,
         sentenceCount,
         fillerCount,
-        fillerRate: round1(fillerRate * 100),
+        fillerRate: Number(fillerRate.toFixed(3)),
         hedgeCount,
-        hedgeRate: round1(hedgeRate * 100),
+        hedgeRate: Number(hedgeRate.toFixed(3)),
         repetitionCount,
         structureMarkerCount,
         exampleMarkerCount,
         estimatedWPM,
-        averageSentenceLength: round1(averageSentenceLength),
+        averageSentenceLength,
         averageVolume,
         peakVolume,
         volumeVariation,
@@ -304,28 +233,17 @@ export async function POST(req: Request) {
         voicedFrameRatio,
       },
       feedback: {
-        strengths:
-          strengths.length > 0
-            ? strengths
-            : ["There is enough speech data to start analysing your delivery."],
-        improvements:
-          improvements.length > 0
-            ? improvements
-            : ["Keep practising with specific examples and confident delivery."],
+        strengths,
+        improvements,
       },
       evidence: {
-        fillersDetected: getDetected(lower, fillerWords),
-        hedgesDetected: getDetected(lower, hedgeWords),
+        fillersDetected,
+        hedgesDetected,
       },
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
-      {
-        error:
-          error instanceof Error
-            ? error.message
-            : "Voice analysis failed unexpectedly.",
-      },
+      { error: "Something went wrong while analysing voice delivery." },
       { status: 500 }
     );
   }
