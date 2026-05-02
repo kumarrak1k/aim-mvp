@@ -218,6 +218,49 @@ const hedgeWords = [
   "sort of",
 ];
 
+const experienceLevels = [
+  "Student / early career",
+  "Graduate / entry level",
+  "1–3 years experience",
+  "3–7 years experience",
+  "Senior / experienced professional",
+  "Career changer",
+  "Returning to work",
+];
+
+const interviewTypes = [
+  "Competency / behavioural",
+  "Graduate scheme",
+  "Placement / internship",
+  "Career change interview",
+  "Leadership interview",
+  "Technical interview",
+  "Customer service interview",
+  "Sales interview",
+  "Healthcare / care interview",
+  "Administration interview",
+  "General professional interview",
+];
+
+const difficultyLevels = [
+  "Supportive",
+  "Standard",
+  "Challenging",
+  "Strict hiring-bar",
+];
+
+const focusAreas = [
+  "Balanced",
+  "Answer structure",
+  "Confidence",
+  "Concise communication",
+  "STAR examples",
+  "Measurable impact",
+  "Voice delivery",
+  "Camera presence",
+  "Filler words",
+];
+
 const clampScore = (value: number) => {
   return Math.max(0, Math.min(10, Math.round(value)));
 };
@@ -409,6 +452,25 @@ const buildLocalVoiceAnalysis = (
   };
 };
 
+const buildFallbackVideoAnalysis = (
+  metrics: VideoMetrics,
+  reason = "Advanced live face tracking was unavailable on this browser/device, so this is a neutral fallback video score."
+): VideoAnalysis => {
+  return {
+    overallVideoScore: 5,
+    eyeContactScore: 5,
+    positionScore: 5,
+    bodyLanguageScore: 5,
+    expressionScore: 5,
+    engagementScore: 5,
+    metrics,
+    feedback: {
+      strengths: ["Camera preview was active during the answer."],
+      improvements: [reason],
+    },
+  };
+};
+
 const wait = (milliseconds: number) =>
   new Promise<void>((resolve) => {
     window.setTimeout(resolve, milliseconds);
@@ -416,6 +478,15 @@ const wait = (milliseconds: number) =>
 
 export default function Home() {
   const [role, setRole] = useState("");
+  const [experienceLevel, setExperienceLevel] = useState(
+    "Graduate / entry level"
+  );
+  const [interviewType, setInterviewType] = useState(
+    "Competency / behavioural"
+  );
+  const [difficulty, setDifficulty] = useState("Standard");
+  const [focusArea, setFocusArea] = useState("Balanced");
+
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
   const [feedback, setFeedback] = useState<Feedback | null>(null);
@@ -473,7 +544,9 @@ export default function Home() {
   const cameraLoopRef = useRef<number | null>(null);
   const cameraStartInFlightRef = useRef(false);
   const cameraAnalysisDisabledRef = useRef(false);
+  const cameraFrameErrorCountRef = useRef(0);
   const lastVideoTimeRef = useRef(-1);
+  const mediaPipeTimestampRef = useRef(0);
 
   const videoFramesRef = useRef({
     totalFrames: 0,
@@ -490,6 +563,28 @@ export default function Home() {
 
   const totalQuestions = 5;
   const currentQuestionNumber = results.length + 1;
+
+  const candidateProfile = useMemo(() => {
+    return `
+Target role/profile:
+${role.trim()}
+
+Experience level:
+${experienceLevel}
+
+Interview type:
+${interviewType}
+
+Difficulty:
+${difficulty}
+
+Main practice focus:
+${focusArea}
+
+Instruction:
+Generate questions and feedback that match this candidate context. Use the selected difficulty and focus area when deciding how strict, detailed and challenging to be.
+`.trim();
+  }, [role, experienceLevel, interviewType, difficulty, focusArea]);
 
   useEffect(() => {
     const stored = localStorage.getItem("aim_sessions");
@@ -623,7 +718,7 @@ export default function Home() {
     const newSession: SavedSession = {
       id: crypto.randomUUID(),
       date: new Date().toLocaleString(),
-      role,
+      role: `${role} · ${interviewType} · ${difficulty}`,
       totalQuestions,
       overallScore: sessionSummary.overall_score,
       hireSignal: sessionSummary.hire_signal,
@@ -678,7 +773,10 @@ export default function Home() {
       noFaceRun: 0,
       positions: [],
     };
+
     lastVideoTimeRef.current = -1;
+    mediaPipeTimestampRef.current = 0;
+    cameraFrameErrorCountRef.current = 0;
   };
 
   const stopCameraLoop = () => {
@@ -699,6 +797,8 @@ export default function Home() {
     faceLandmarkerRef.current = null;
     cameraStartInFlightRef.current = false;
     cameraAnalysisDisabledRef.current = false;
+    cameraFrameErrorCountRef.current = 0;
+    mediaPipeTimestampRef.current = 0;
     lastVideoTimeRef.current = -1;
 
     if (videoRef.current) {
@@ -777,6 +877,7 @@ export default function Home() {
     if (frames.noFaceRun >= 8) {
       frames.faceLossEvents += 1;
     }
+
     frames.noFaceRun = 0;
 
     const centerX = nose.x;
@@ -904,18 +1005,29 @@ export default function Home() {
       }
 
       try {
-        const currentTime = videoElement.currentTime;
+        const currentVideoTime = videoElement.currentTime;
 
-        if (currentTime !== lastVideoTimeRef.current) {
-          lastVideoTimeRef.current = currentTime;
+        if (currentVideoTime !== lastVideoTimeRef.current) {
+          lastVideoTimeRef.current = currentVideoTime;
 
-          const result =
-            landmarker.detectForVideo.length >= 2
-              ? landmarker.detectForVideo(
-                  videoElement,
-                  Math.round(currentTime * 1000)
-                )
-              : landmarker.detectForVideo(videoElement);
+          const rawTimestamp =
+            typeof performance !== "undefined"
+              ? Math.round(performance.now())
+              : Date.now();
+
+          const safeTimestamp = Math.max(
+            rawTimestamp,
+            mediaPipeTimestampRef.current + 1
+          );
+
+          mediaPipeTimestampRef.current = safeTimestamp;
+
+          const result = landmarker.detectForVideo(
+            videoElement,
+            safeTimestamp
+          );
+
+          cameraFrameErrorCountRef.current = 0;
 
           const frames = videoFramesRef.current;
 
@@ -930,11 +1042,18 @@ export default function Home() {
           }
         }
       } catch {
-        cameraAnalysisDisabledRef.current = true;
-        stopCameraLoop();
-        setCameraError(
-          "Camera preview is running, but live video analysis was disabled on this browser/device."
-        );
+        cameraFrameErrorCountRef.current += 1;
+
+        if (cameraFrameErrorCountRef.current >= 8) {
+          cameraAnalysisDisabledRef.current = true;
+          stopCameraLoop();
+          setCameraError(
+            "Camera preview is running. Advanced live video tracking is unavailable on this browser/device, so video delivery will use a neutral fallback score."
+          );
+          return;
+        }
+
+        cameraLoopRef.current = window.requestAnimationFrame(loop);
         return;
       }
 
@@ -975,7 +1094,7 @@ export default function Home() {
       } catch {
         cameraAnalysisDisabledRef.current = true;
         setCameraError(
-          "Camera preview is available, but live video analysis could not start."
+          "Camera preview is running. Advanced live video tracking could not start on this browser/device, so video delivery will use a neutral fallback score."
         );
       }
 
@@ -997,6 +1116,13 @@ export default function Home() {
     try {
       setVideoAnalysisLoading(true);
 
+      if (cameraAnalysisDisabledRef.current || metrics.totalFrames === 0) {
+        const fallback = buildFallbackVideoAnalysis(metrics);
+        latestVideoAnalysisRef.current = fallback;
+        setVideoAnalysis(fallback);
+        return fallback;
+      }
+
       const res = await fetch("/api/video-analysis", {
         method: "POST",
         headers: {
@@ -1008,20 +1134,11 @@ export default function Home() {
       const data = await res.json();
 
       if (!res.ok || data.error) {
-        const fallback: VideoAnalysis = {
-          overallVideoScore: 0,
-          eyeContactScore: 0,
-          positionScore: 0,
-          bodyLanguageScore: 0,
-          expressionScore: 0,
-          engagementScore: 0,
+        const fallback = buildFallbackVideoAnalysis(
           metrics,
-          feedback: {
-            strengths: [],
-            improvements: [],
-          },
-          error: data.error || "Video analysis failed.",
-        };
+          data.error ||
+            "Video scoring could not be completed, so this is a neutral fallback video score."
+        );
 
         latestVideoAnalysisRef.current = fallback;
         setVideoAnalysis(fallback);
@@ -1032,20 +1149,10 @@ export default function Home() {
       setVideoAnalysis(data);
       return data as VideoAnalysis;
     } catch {
-      const fallback: VideoAnalysis = {
-        overallVideoScore: 0,
-        eyeContactScore: 0,
-        positionScore: 0,
-        bodyLanguageScore: 0,
-        expressionScore: 0,
-        engagementScore: 0,
+      const fallback = buildFallbackVideoAnalysis(
         metrics,
-        feedback: {
-          strengths: [],
-          improvements: [],
-        },
-        error: "Something went wrong while analysing video delivery.",
-      };
+        "Video scoring could not be completed, so this is a neutral fallback video score."
+      );
 
       latestVideoAnalysisRef.current = fallback;
       setVideoAnalysis(fallback);
@@ -1550,7 +1657,7 @@ export default function Home() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          role,
+          role: candidateProfile,
           questionNumber,
           totalQuestions,
           history: history.map((item) => ({
@@ -1725,7 +1832,7 @@ export default function Home() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            role,
+            role: candidateProfile,
             results: updatedResults,
           }),
         });
@@ -1798,6 +1905,8 @@ export default function Home() {
     lastSpokenQuestionRef.current = "";
     await fetchQuestion(updatedResults.length + 1, updatedResults);
   };
+
+  const hasRealVideoFrames = (videoAnalysis?.metrics.totalFrames || 0) > 0;
 
   return (
     <main className="min-h-screen overflow-hidden bg-[#07030d] text-white">
@@ -1895,12 +2004,12 @@ export default function Home() {
                       Start interview
                     </p>
                     <h2 className="text-2xl font-black tracking-[-0.03em] md:text-3xl">
-                      Tell the coach what you’re preparing for.
+                      Build a tailored mock interview.
                     </h2>
                     <p className="mt-2 max-w-2xl text-sm leading-6 text-gray-400">
-                      Add your target role, situation or pathway so the platform
-                      can generate realistic interview questions tailored to your
-                      goal.
+                      Set your role, experience level and interview focus so the
+                      AI coach can generate sharper questions and judge your
+                      answers against the right bar.
                     </p>
                   </div>
 
@@ -1914,6 +2023,36 @@ export default function Home() {
                     value={role}
                     onChange={(e) => setRole(e.target.value)}
                   />
+
+                  <div className="mb-5 grid gap-4 md:grid-cols-2">
+                    <SelectField
+                      label="Experience level"
+                      value={experienceLevel}
+                      onChange={setExperienceLevel}
+                      options={experienceLevels}
+                    />
+
+                    <SelectField
+                      label="Interview type"
+                      value={interviewType}
+                      onChange={setInterviewType}
+                      options={interviewTypes}
+                    />
+
+                    <SelectField
+                      label="Difficulty"
+                      value={difficulty}
+                      onChange={setDifficulty}
+                      options={difficultyLevels}
+                    />
+
+                    <SelectField
+                      label="Main focus"
+                      value={focusArea}
+                      onChange={setFocusArea}
+                      options={focusAreas}
+                    />
+                  </div>
 
                   <div className="mb-5 rounded-[1.5rem] border border-white/10 bg-black/25 p-4">
                     <p className="mb-3 text-sm font-bold text-gray-300">
@@ -1954,14 +2093,38 @@ export default function Home() {
                     </div>
                   </div>
 
+                  <div className="mb-5 rounded-[1.5rem] border border-purple-300/15 bg-purple-300/10 p-4">
+                    <p className="mb-2 text-sm font-black text-purple-200">
+                      Interview setup
+                    </p>
+                    <div className="grid gap-2 text-sm text-gray-300 sm:grid-cols-2">
+                      <p>
+                        <span className="text-gray-500">Level:</span>{" "}
+                        {experienceLevel}
+                      </p>
+                      <p>
+                        <span className="text-gray-500">Type:</span>{" "}
+                        {interviewType}
+                      </p>
+                      <p>
+                        <span className="text-gray-500">Difficulty:</span>{" "}
+                        {difficulty}
+                      </p>
+                      <p>
+                        <span className="text-gray-500">Focus:</span>{" "}
+                        {focusArea}
+                      </p>
+                    </div>
+                  </div>
+
                   <button
                     onClick={startInterview}
-                    disabled={!role || questionLoading}
+                    disabled={!role.trim() || questionLoading}
                     className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-6 py-4 text-base font-black shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {questionLoading
                       ? "Starting..."
-                      : "Start 5-Question Interview"}
+                      : "Start Tailored 5-Question Interview"}
                   </button>
                 </GlassCard>
               )}
@@ -2036,6 +2199,27 @@ export default function Home() {
                       </div>
                     </div>
 
+                    <div className="mb-5 rounded-[1.5rem] border border-purple-300/15 bg-purple-300/10 p-4">
+                      <div className="grid gap-2 text-xs font-bold text-gray-300 sm:grid-cols-2 lg:grid-cols-4">
+                        <p>
+                          <span className="text-gray-500">Role:</span>{" "}
+                          {role || "Not set"}
+                        </p>
+                        <p>
+                          <span className="text-gray-500">Type:</span>{" "}
+                          {interviewType}
+                        </p>
+                        <p>
+                          <span className="text-gray-500">Difficulty:</span>{" "}
+                          {difficulty}
+                        </p>
+                        <p>
+                          <span className="text-gray-500">Focus:</span>{" "}
+                          {focusArea}
+                        </p>
+                      </div>
+                    </div>
+
                     <div className="mb-5 grid gap-5 lg:grid-cols-[1fr_0.9fr]">
                       <div className="rounded-[1.6rem] border border-white/10 bg-black/30 p-5">
                         <div className="flex items-center gap-4">
@@ -2078,7 +2262,9 @@ export default function Home() {
                           </p>
                           <span className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-xs font-bold text-gray-300">
                             {cameraEnabled
-                              ? cameraReady
+                              ? cameraError
+                                ? "Preview only"
+                                : cameraReady
                                 ? "Ready"
                                 : "Starting..."
                               : "Off"}
@@ -2097,12 +2283,14 @@ export default function Home() {
 
                         <p className="mt-3 text-xs leading-5 text-gray-400">
                           {cameraEnabled
-                            ? "Scores eye contact, position, posture, expression and engagement while you answer."
+                            ? cameraError
+                              ? "Camera preview is active. Advanced tracking is unavailable, so a neutral fallback video score will be used."
+                              : "Scores eye contact, position, posture, expression and engagement while you answer."
                             : "Turn camera on to analyse visual delivery."}
                         </p>
 
                         {cameraError && (
-                          <p className="mt-2 text-xs text-red-300">
+                          <p className="mt-2 text-xs text-amber-300">
                             {cameraError}
                           </p>
                         )}
@@ -2276,25 +2464,44 @@ export default function Home() {
                           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                             <MetricCard
                               label="Face detected"
-                              value={`${Math.round(
-                                videoAnalysis.metrics.faceDetectedRatio * 100
-                              )}%`}
+                              value={
+                                hasRealVideoFrames
+                                  ? `${Math.round(
+                                      videoAnalysis.metrics.faceDetectedRatio *
+                                        100
+                                    )}%`
+                                  : "N/A"
+                              }
                             />
                             <MetricCard
                               label="Centered"
-                              value={`${Math.round(
-                                videoAnalysis.metrics.centeredFaceRatio * 100
-                              )}%`}
+                              value={
+                                hasRealVideoFrames
+                                  ? `${Math.round(
+                                      videoAnalysis.metrics.centeredFaceRatio *
+                                        100
+                                    )}%`
+                                  : "N/A"
+                              }
                             />
                             <MetricCard
                               label="Looking forward"
-                              value={`${Math.round(
-                                videoAnalysis.metrics.lookingForwardRatio * 100
-                              )}%`}
+                              value={
+                                hasRealVideoFrames
+                                  ? `${Math.round(
+                                      videoAnalysis.metrics.lookingForwardRatio *
+                                        100
+                                    )}%`
+                                  : "N/A"
+                              }
                             />
                             <MetricCard
                               label="Face loss"
-                              value={String(videoAnalysis.metrics.faceLossEvents)}
+                              value={
+                                hasRealVideoFrames
+                                  ? String(videoAnalysis.metrics.faceLossEvents)
+                                  : "N/A"
+                              }
                             />
                           </div>
 
@@ -2550,6 +2757,19 @@ export default function Home() {
 
               <GlassCard>
                 <h2 className="mb-4 text-xl font-black text-white">
+                  Session setup
+                </h2>
+
+                <div className="space-y-3 text-sm leading-6 text-gray-400">
+                  <CheckItem>{experienceLevel}</CheckItem>
+                  <CheckItem>{interviewType}</CheckItem>
+                  <CheckItem>{difficulty} difficulty</CheckItem>
+                  <CheckItem>Focus: {focusArea}</CheckItem>
+                </div>
+              </GlassCard>
+
+              <GlassCard>
+                <h2 className="mb-4 text-xl font-black text-white">
                   Included in this session
                 </h2>
                 <div className="space-y-3 text-sm leading-6 text-gray-400">
@@ -2610,6 +2830,37 @@ function GlassCard({
     >
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent" />
       <div className="relative">{children}</div>
+    </div>
+  );
+}
+
+function SelectField({
+  label,
+  value,
+  onChange,
+  options,
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  options: string[];
+}) {
+  return (
+    <div>
+      <label className="mb-2 block text-sm font-bold text-gray-200">
+        {label}
+      </label>
+      <select
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        className="w-full rounded-2xl border border-white/10 bg-black/35 p-4 text-white outline-none transition focus:border-purple-300/50 focus:ring-4 focus:ring-purple-500/10"
+      >
+        {options.map((option) => (
+          <option key={option} value={option} className="bg-[#0b0712]">
+            {option}
+          </option>
+        ))}
+      </select>
     </div>
   );
 }

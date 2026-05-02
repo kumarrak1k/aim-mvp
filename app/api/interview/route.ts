@@ -1,18 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 
-type InterviewHistoryItem = {
-  question: string;
-  answer: string;
-};
-
 export async function POST(req: NextRequest) {
   try {
     const { role, questionNumber, totalQuestions, history } = await req.json();
 
     if (!role || typeof role !== "string") {
       return NextResponse.json(
-        { error: "Missing target role or profile." },
+        { error: "Missing role or candidate profile." },
         { status: 400 }
+      );
+    }
+
+    const apiKey = process.env.OPENAI_API_KEY;
+
+    if (!apiKey) {
+      return NextResponse.json(
+        { error: "OPENAI_API_KEY is missing from environment variables." },
+        { status: 500 }
       );
     }
 
@@ -26,60 +30,51 @@ export async function POST(req: NextRequest) {
         ? totalQuestions
         : 5;
 
-    const safeHistory: InterviewHistoryItem[] = Array.isArray(history)
+    const previousQuestions = Array.isArray(history)
       ? history
-      : [];
+          .map((item, index) => {
+            return `Question ${index + 1}: ${item?.question || ""}
+Answer ${index + 1}: ${item?.answer || ""}`;
+          })
+          .join("\n\n")
+      : "";
 
     const systemPrompt = `
-You are an expert interview coach.
+You are an expert interview question generator for AI Career Mentor.
 
-Your job is to generate realistic interview questions for candidates.
+Your job is to create realistic, high-quality interview questions for candidates preparing for professional interviews.
 
 Rules:
-- Ask one question only.
-- Do not include explanations.
-- Do not include numbering.
-- Do not include markdown.
-- Make the question relevant to the candidate's target role/profile.
-- Make the question realistic for a real interview.
-- Vary the question style across the interview.
+- Generate ONE interview question only.
+- The question must match the candidate profile, interview type, difficulty and focus area.
 - Avoid repeating previous questions.
-- Use clear, professional language.
+- Make the question clear, realistic and useful for interview practice.
+- Do not include scoring, explanation, tips or model answers.
+- Return ONLY valid JSON in this exact shape:
 
-Question mix:
-- Early questions can test motivation, background, and role fit.
-- Middle questions should test experience, examples, problem-solving, teamwork, communication, and resilience.
-- Later questions can test judgement, self-awareness, growth, and impact.
-`;
-
-    const historyText =
-      safeHistory.length > 0
-        ? safeHistory
-            .map(
-              (item, index) =>
-                `Previous question ${index + 1}: ${item.question}\nCandidate answer ${index + 1}: ${item.answer}`
-            )
-            .join("\n\n")
-        : "No previous questions yet.";
+{
+  "question": "string"
+}
+`.trim();
 
     const userPrompt = `
-Candidate target role/profile:
+Candidate profile and setup:
 ${role}
 
-Question number:
+Current question:
 ${safeQuestionNumber} of ${safeTotalQuestions}
 
 Previous interview history:
-${historyText}
+${previousQuestions || "No previous questions yet."}
 
 Generate the next best interview question.
-`;
+`.trim();
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
         model: "gpt-4o-mini",
@@ -95,25 +90,52 @@ Generate the next best interview question.
 
     if (!response.ok) {
       return NextResponse.json(
-        { error: data.error?.message || "Failed to generate interview question." },
+        {
+          error:
+            data?.error?.message ||
+            "OpenAI request failed while generating the question.",
+        },
         { status: 500 }
       );
     }
 
-    const question = data.choices?.[0]?.message?.content?.trim();
+    const text = data.choices?.[0]?.message?.content;
 
-    if (!question) {
+    if (!text) {
       return NextResponse.json(
-        { error: "No question returned from AI." },
+        { error: "No question was returned by the AI." },
+        { status: 500 }
+      );
+    }
+
+    let parsed: { question?: string };
+
+    try {
+      const cleanedText = text
+        .replace(/^```json/i, "")
+        .replace(/^```/i, "")
+        .replace(/```$/i, "")
+        .trim();
+
+      parsed = JSON.parse(cleanedText);
+    } catch {
+      parsed = {
+        question: text.trim(),
+      };
+    }
+
+    if (!parsed.question || typeof parsed.question !== "string") {
+      return NextResponse.json(
+        { error: "AI response did not include a valid question." },
         { status: 500 }
       );
     }
 
     return NextResponse.json({
-      question,
+      question: parsed.question.trim(),
     });
   } catch (error) {
-    console.error("INTERVIEW API ERROR:", error);
+    console.error("INTERVIEW QUESTION API ERROR:", error);
 
     return NextResponse.json(
       { error: "Something went wrong while generating the question." },
