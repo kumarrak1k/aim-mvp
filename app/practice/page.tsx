@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Show, SignInButton, UserButton } from "@clerk/nextjs";
 
 type CategoryScores = {
@@ -125,11 +125,53 @@ type ResultItem = {
 
 type InterviewSummary = {
   overall_score: number;
+  readiness_score?: number;
   hire_signal: "Weak" | "Moderate" | "Strong";
+  hire_signal_reason?: string;
+  category_breakdown?: {
+    content: number;
+    clarity: number;
+    relevance: number;
+    structure: number;
+    confidence: number;
+    pace: number;
+    voice_delivery: number;
+    camera_presence: number;
+  };
+  strongest_answer?: {
+    question_number: number;
+    question: string;
+    score: number;
+    reason: string;
+  };
+  weakest_answer?: {
+    question_number: number;
+    question: string;
+    score: number;
+    reason: string;
+  };
+  voice_delivery_summary?: {
+    score: number;
+    summary: string;
+    strengths: string[];
+    improvements: string[];
+  };
+  camera_delivery_summary?: {
+    score: number;
+    summary: string;
+    strengths: string[];
+    improvements: string[];
+  };
   top_strengths: string[];
   top_improvements: string[];
+  priority_improvements?: string[];
   final_recommendation: string;
   next_steps: string[];
+  seven_day_action_plan?: {
+    day: string;
+    focus: string;
+    task: string;
+  }[];
   error?: string;
 };
 
@@ -277,6 +319,95 @@ const getWords = (text: string) => {
     .replace(/[^\w\s']/g, " ")
     .split(/\s+/)
     .filter(Boolean);
+};
+
+const normalizeSpeechGuardText = (text: string) => {
+  return text
+    .toLowerCase()
+    .replace(/[^\w\s']/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+};
+
+const speechGuardWords = (text: string) => {
+  return normalizeSpeechGuardText(text).split(/\s+/).filter(Boolean);
+};
+
+const stripQuestionLeakageFromTranscript = (
+  transcript: string,
+  activeQuestion: string
+) => {
+  const rawTranscript = transcript.trim();
+  const rawQuestion = activeQuestion.trim();
+
+  if (!rawTranscript || !rawQuestion) return rawTranscript;
+
+  const transcriptWordsRaw = rawTranscript.split(/\s+/);
+  const transcriptWordsNormalized = transcriptWordsRaw.map((word) =>
+    normalizeSpeechGuardText(word)
+  );
+
+  const questionWords = speechGuardWords(rawQuestion);
+
+  if (questionWords.length === 0 || transcriptWordsNormalized.length === 0) {
+    return rawTranscript;
+  }
+
+  const normalizedTranscript = normalizeSpeechGuardText(rawTranscript);
+  const normalizedQuestion = normalizeSpeechGuardText(rawQuestion);
+
+  if (
+    normalizedTranscript === normalizedQuestion ||
+    normalizedQuestion.includes(normalizedTranscript)
+  ) {
+    return "";
+  }
+
+  let matchingPrefixWords = 0;
+
+  for (
+    let index = 0;
+    index < Math.min(transcriptWordsNormalized.length, questionWords.length);
+    index++
+  ) {
+    if (transcriptWordsNormalized[index] !== questionWords[index]) {
+      break;
+    }
+
+    matchingPrefixWords += 1;
+  }
+
+  const strongPrefixMatch =
+    matchingPrefixWords >= 5 ||
+    matchingPrefixWords >= Math.floor(questionWords.length * 0.45);
+
+  if (strongPrefixMatch) {
+    return transcriptWordsRaw.slice(matchingPrefixWords).join(" ").trim();
+  }
+
+  const transcriptSet = new Set(transcriptWordsNormalized.filter(Boolean));
+  const questionSet = new Set(questionWords);
+
+  let overlapCount = 0;
+
+  transcriptSet.forEach((word) => {
+    if (questionSet.has(word)) {
+      overlapCount += 1;
+    }
+  });
+
+  const overlapRatio =
+    overlapCount / Math.max(1, Math.min(transcriptSet.size, questionSet.size));
+
+  const looksLikeOnlyQuestion =
+    transcriptWordsNormalized.length <= questionWords.length + 4 &&
+    overlapRatio >= 0.72;
+
+  if (looksLikeOnlyQuestion) {
+    return "";
+  }
+
+  return rawTranscript;
 };
 
 const buildLocalVoiceAnalysis = (
@@ -521,6 +652,8 @@ export default function Home() {
   const finalTranscriptRef = useRef("");
   const interimTranscriptRef = useRef("");
   const lastSpokenQuestionRef = useRef("");
+  const activeQuestionRef = useRef("");
+  const isSpeakingQuestionRef = useRef(false);
   const voicesRef = useRef<SpeechSynthesisVoice[]>([]);
   const autoStartListeningAfterSpeechRef = useRef(false);
 
@@ -610,11 +743,23 @@ Generate questions and feedback that match this candidate context. Use the selec
         recognition.lang = "en-GB";
 
         recognition.onresult = (event: any) => {
+          if (isSpeakingQuestionRef.current) {
+            finalTranscriptRef.current = "";
+            interimTranscriptRef.current = "";
+            setAnswer("");
+            return;
+          }
+
           let newFinalText = "";
           let newInterimText = "";
 
           for (let i = event.resultIndex; i < event.results.length; i++) {
-            const transcriptPart = event.results[i][0].transcript;
+            const transcriptPart = stripQuestionLeakageFromTranscript(
+              event.results[i][0].transcript,
+              activeQuestionRef.current
+            );
+
+            if (!transcriptPart) continue;
 
             if (event.results[i].isFinal) {
               newFinalText += transcriptPart + " ";
@@ -624,19 +769,24 @@ Generate questions and feedback that match this candidate context. Use the selec
           }
 
           if (newFinalText) {
-            finalTranscriptRef.current =
-              (finalTranscriptRef.current + " " + newFinalText).trim();
+            finalTranscriptRef.current = stripQuestionLeakageFromTranscript(
+              (finalTranscriptRef.current + " " + newFinalText).trim(),
+              activeQuestionRef.current
+            );
           }
 
-          interimTranscriptRef.current = newInterimText.trim();
+          interimTranscriptRef.current = stripQuestionLeakageFromTranscript(
+            newInterimText.trim(),
+            activeQuestionRef.current
+          );
 
-          const combined = [
-            finalTranscriptRef.current,
-            interimTranscriptRef.current,
-          ]
-            .filter(Boolean)
-            .join(" ")
-            .trim();
+          const combined = stripQuestionLeakageFromTranscript(
+            [finalTranscriptRef.current, interimTranscriptRef.current]
+              .filter(Boolean)
+              .join(" ")
+              .trim(),
+            activeQuestionRef.current
+          );
 
           setAnswer(combined);
         };
@@ -644,13 +794,16 @@ Generate questions and feedback that match this candidate context. Use the selec
         recognition.onend = () => {
           setIsListening(false);
 
-          const combined = [
-            finalTranscriptRef.current,
-            interimTranscriptRef.current,
-          ]
-            .filter(Boolean)
-            .join(" ")
-            .trim();
+          const combined = stripQuestionLeakageFromTranscript(
+            [finalTranscriptRef.current, interimTranscriptRef.current]
+              .filter(Boolean)
+              .join(" ")
+              .trim(),
+            activeQuestionRef.current
+          );
+
+          finalTranscriptRef.current = combined;
+          interimTranscriptRef.current = "";
 
           if (combined) {
             setAnswer(combined);
@@ -682,6 +835,10 @@ Generate questions and feedback that match this candidate context. Use the selec
       }
     };
   }, []);
+
+  useEffect(() => {
+    activeQuestionRef.current = question;
+  }, [question]);
 
   useEffect(() => {
     if (
@@ -1022,10 +1179,7 @@ Generate questions and feedback that match this candidate context. Use the selec
 
           mediaPipeTimestampRef.current = safeTimestamp;
 
-          const result = landmarker.detectForVideo(
-            videoElement,
-            safeTimestamp
-          );
+          const result = landmarker.detectForVideo(videoElement, safeTimestamp);
 
           cameraFrameErrorCountRef.current = 0;
 
@@ -1382,6 +1536,7 @@ Generate questions and feedback that match this candidate context. Use the selec
 
   const stopQuestionSpeech = () => {
     autoStartListeningAfterSpeechRef.current = false;
+    isSpeakingQuestionRef.current = false;
 
     if (typeof window !== "undefined" && window.speechSynthesis) {
       window.speechSynthesis.cancel();
@@ -1458,18 +1613,16 @@ Generate questions and feedback that match this candidate context. Use the selec
 
     const beginListeningAfterQuestion = () => {
       clearTranscriptBeforeAnswer();
-
-      window.setTimeout(() => {
-        clearTranscriptBeforeAnswer();
-        void startVoiceInput();
-      }, 250);
+      void startVoiceInput();
     };
 
     utterance.onstart = () => {
+      isSpeakingQuestionRef.current = true;
       setIsSpeakingQuestion(true);
     };
 
     utterance.onend = () => {
+      isSpeakingQuestionRef.current = false;
       setIsSpeakingQuestion(false);
 
       if (autoStartListeningAfterSpeechRef.current) {
@@ -1479,6 +1632,7 @@ Generate questions and feedback that match this candidate context. Use the selec
     };
 
     utterance.onerror = () => {
+      isSpeakingQuestionRef.current = false;
       setIsSpeakingQuestion(false);
 
       if (autoStartListeningAfterSpeechRef.current) {
@@ -1487,6 +1641,7 @@ Generate questions and feedback that match this candidate context. Use the selec
       }
     };
 
+    isSpeakingQuestionRef.current = true;
     setIsSpeakingQuestion(true);
     window.speechSynthesis.speak(utterance);
   };
@@ -1515,13 +1670,13 @@ Generate questions and feedback that match this candidate context. Use the selec
       await runVideoAnalysis(videoMetrics);
     }
 
-    const rawTranscript = [
-      finalTranscriptRef.current,
-      interimTranscriptRef.current,
-    ]
-      .filter(Boolean)
-      .join(" ")
-      .trim();
+    const rawTranscript = stripQuestionLeakageFromTranscript(
+      [finalTranscriptRef.current, interimTranscriptRef.current]
+        .filter(Boolean)
+        .join(" ")
+        .trim(),
+      activeQuestionRef.current
+    );
 
     rawAnswerTranscriptRef.current = rawTranscript;
 
@@ -1625,6 +1780,7 @@ Generate questions and feedback that match this candidate context. Use the selec
     finalTranscriptRef.current = "";
     interimTranscriptRef.current = "";
     lastSpokenQuestionRef.current = "";
+    activeQuestionRef.current = "";
     recordingStartRef.current = null;
     answerDurationSecondsRef.current = null;
     rawAnswerTranscriptRef.current = "";
@@ -1674,7 +1830,9 @@ Generate questions and feedback that match this candidate context. Use the selec
         return;
       }
 
-      setQuestion(data.question || "Tell me about yourself.");
+      const nextQuestion = data.question || "Tell me about yourself.";
+      activeQuestionRef.current = nextQuestion;
+      setQuestion(nextQuestion);
     } catch {
       setQuestion("Something went wrong while generating the question.");
     } finally {
@@ -1694,6 +1852,7 @@ Generate questions and feedback that match this candidate context. Use the selec
     latestVideoAnalysisRef.current = null;
     rawAnswerTranscriptRef.current = "";
     lastSpokenQuestionRef.current = "";
+    activeQuestionRef.current = "";
     resetVideoFrames();
     await fetchQuestion(1, []);
 
@@ -1711,8 +1870,10 @@ Generate questions and feedback that match this candidate context. Use the selec
       let latestVoiceAnalysis = latestVoiceAnalysisRef.current || voiceAnalysis;
       let latestVideoAnalysis = latestVideoAnalysisRef.current || videoAnalysis;
 
-      const transcriptForVoiceAnalysis =
-        rawAnswerTranscriptRef.current.trim() || answer.trim();
+      const transcriptForVoiceAnalysis = stripQuestionLeakageFromTranscript(
+        rawAnswerTranscriptRef.current.trim() || answer.trim(),
+        activeQuestionRef.current
+      );
 
       if (
         !latestVoiceAnalysis &&
@@ -1747,6 +1908,15 @@ Generate questions and feedback that match this candidate context. Use the selec
         latestVideoAnalysis = await runVideoAnalysis(calculateVideoMetrics());
       }
 
+      const safeAnswer = stripQuestionLeakageFromTranscript(
+        answer,
+        activeQuestionRef.current
+      );
+
+      if (safeAnswer !== answer) {
+        setAnswer(safeAnswer);
+      }
+
       const res = await fetch("/api/feedback", {
         method: "POST",
         headers: {
@@ -1754,7 +1924,7 @@ Generate questions and feedback that match this candidate context. Use the selec
         },
         body: JSON.stringify({
           question,
-          answer,
+          answer: safeAnswer,
           voiceAnalysis: latestVoiceAnalysis,
           videoAnalysis: latestVideoAnalysis,
         }),
@@ -1808,11 +1978,16 @@ Generate questions and feedback that match this candidate context. Use the selec
 
     setHasUserInteracted(true);
 
+    const safeAnswer = stripQuestionLeakageFromTranscript(
+      answer,
+      activeQuestionRef.current
+    );
+
     const updatedResults = [
       ...results,
       {
         question,
-        answer,
+        answer: safeAnswer,
         feedback,
         voiceAnalysis: latestVoiceAnalysisRef.current || voiceAnalysis,
         videoAnalysis: latestVideoAnalysisRef.current || videoAnalysis,
@@ -1897,6 +2072,7 @@ Generate questions and feedback that match this candidate context. Use the selec
         rawAnswerTranscriptRef.current = "";
         finalTranscriptRef.current = "";
         interimTranscriptRef.current = "";
+        activeQuestionRef.current = "";
       }
 
       return;
@@ -2323,10 +2499,15 @@ Generate questions and feedback that match this candidate context. Use the selec
                         value={answer}
                         onChange={(e) => {
                           const value = e.target.value;
-                          setAnswer(value);
-                          finalTranscriptRef.current = value;
+                          const safeValue = stripQuestionLeakageFromTranscript(
+                            value,
+                            activeQuestionRef.current
+                          );
+
+                          setAnswer(safeValue);
+                          finalTranscriptRef.current = safeValue;
                           interimTranscriptRef.current = "";
-                          rawAnswerTranscriptRef.current = value;
+                          rawAnswerTranscriptRef.current = safeValue;
                           latestVoiceAnalysisRef.current = null;
                           latestVideoAnalysisRef.current = null;
                           setVoiceAnalysis(null);
@@ -2692,6 +2873,144 @@ Generate questions and feedback that match this candidate context. Use the selec
                         </div>
                       </div>
 
+                      {typeof summary.readiness_score === "number" && (
+                        <div className="rounded-2xl border border-purple-300/20 bg-purple-300/10 p-5">
+                          <p className="text-sm text-gray-400">
+                            Interview readiness
+                          </p>
+                          <p className="mt-1 text-4xl font-black tracking-[-0.05em]">
+                            {summary.readiness_score}
+                            <span className="text-lg text-gray-500">/10</span>
+                          </p>
+                          {summary.hire_signal_reason && (
+                            <p className="mt-3 leading-7 text-gray-300">
+                              {summary.hire_signal_reason}
+                            </p>
+                          )}
+                        </div>
+                      )}
+
+                      {summary.category_breakdown && (
+                        <div>
+                          <h3 className="mb-3 text-lg font-black text-cyan-300">
+                            Category Breakdown
+                          </h3>
+                          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                            <ScoreCard
+                              label="Content"
+                              value={summary.category_breakdown.content}
+                            />
+                            <ScoreCard
+                              label="Clarity"
+                              value={summary.category_breakdown.clarity}
+                            />
+                            <ScoreCard
+                              label="Relevance"
+                              value={summary.category_breakdown.relevance}
+                            />
+                            <ScoreCard
+                              label="Structure"
+                              value={summary.category_breakdown.structure}
+                            />
+                            <ScoreCard
+                              label="Confidence"
+                              value={summary.category_breakdown.confidence}
+                            />
+                            <ScoreCard
+                              label="Pace"
+                              value={summary.category_breakdown.pace}
+                            />
+                            <ScoreCard
+                              label="Voice"
+                              value={summary.category_breakdown.voice_delivery}
+                            />
+                            <ScoreCard
+                              label="Camera"
+                              value={summary.category_breakdown.camera_presence}
+                            />
+                          </div>
+                        </div>
+                      )}
+
+                      {(summary.strongest_answer || summary.weakest_answer) && (
+                        <div className="grid gap-4 md:grid-cols-2">
+                          {summary.strongest_answer && (
+                            <div className="rounded-2xl border border-green-300/20 bg-green-300/10 p-5">
+                              <p className="mb-2 text-sm font-black text-green-300">
+                                Strongest Answer
+                              </p>
+                              <p className="font-black text-white">
+                                Question {summary.strongest_answer.question_number}
+                                : {summary.strongest_answer.score}/10
+                              </p>
+                              <p className="mt-2 text-sm leading-6 text-gray-300">
+                                {summary.strongest_answer.question}
+                              </p>
+                              <p className="mt-3 text-sm leading-6 text-gray-400">
+                                {summary.strongest_answer.reason}
+                              </p>
+                            </div>
+                          )}
+
+                          {summary.weakest_answer && (
+                            <div className="rounded-2xl border border-orange-300/20 bg-orange-300/10 p-5">
+                              <p className="mb-2 text-sm font-black text-orange-300">
+                                Weakest Answer
+                              </p>
+                              <p className="font-black text-white">
+                                Question {summary.weakest_answer.question_number}
+                                : {summary.weakest_answer.score}/10
+                              </p>
+                              <p className="mt-2 text-sm leading-6 text-gray-300">
+                                {summary.weakest_answer.question}
+                              </p>
+                              <p className="mt-3 text-sm leading-6 text-gray-400">
+                                {summary.weakest_answer.reason}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {(summary.voice_delivery_summary ||
+                        summary.camera_delivery_summary) && (
+                        <div className="grid gap-4 md:grid-cols-2">
+                          {summary.voice_delivery_summary && (
+                            <div className="rounded-2xl border border-cyan-300/20 bg-cyan-300/10 p-5">
+                              <p className="mb-2 text-sm font-black text-cyan-300">
+                                Voice Delivery
+                              </p>
+                              <p className="text-3xl font-black">
+                                {summary.voice_delivery_summary.score}
+                                <span className="text-base text-gray-500">
+                                  /10
+                                </span>
+                              </p>
+                              <p className="mt-3 leading-7 text-gray-300">
+                                {summary.voice_delivery_summary.summary}
+                              </p>
+                            </div>
+                          )}
+
+                          {summary.camera_delivery_summary && (
+                            <div className="rounded-2xl border border-purple-300/20 bg-purple-300/10 p-5">
+                              <p className="mb-2 text-sm font-black text-purple-300">
+                                Camera Delivery
+                              </p>
+                              <p className="text-3xl font-black">
+                                {summary.camera_delivery_summary.score}
+                                <span className="text-base text-gray-500">
+                                  /10
+                                </span>
+                              </p>
+                              <p className="mt-3 leading-7 text-gray-300">
+                                {summary.camera_delivery_summary.summary}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
                       <FeedbackList
                         title="Top Strengths"
                         color="text-blue-300"
@@ -2703,6 +3022,14 @@ Generate questions and feedback that match this candidate context. Use the selec
                         color="text-orange-300"
                         items={summary.top_improvements}
                       />
+
+                      {summary.priority_improvements && (
+                        <FeedbackList
+                          title="Top 3 Priority Improvements"
+                          color="text-purple-300"
+                          items={summary.priority_improvements}
+                        />
+                      )}
 
                       <div>
                         <h3 className="mb-2 text-lg font-black text-purple-300">
@@ -2718,6 +3045,29 @@ Generate questions and feedback that match this candidate context. Use the selec
                         color="text-cyan-300"
                         items={summary.next_steps}
                       />
+
+                      {summary.seven_day_action_plan && (
+                        <div>
+                          <h3 className="mb-3 text-lg font-black text-purple-300">
+                            7-Day Action Plan
+                          </h3>
+                          <div className="grid gap-3 md:grid-cols-2">
+                            {summary.seven_day_action_plan.map((day) => (
+                              <div
+                                key={day.day}
+                                className="rounded-2xl border border-white/10 bg-black/35 p-4"
+                              >
+                                <p className="font-black text-white">
+                                  {day.day}: {day.focus}
+                                </p>
+                                <p className="mt-2 text-sm leading-6 text-gray-400">
+                                  {day.task}
+                                </p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
 
                       <button
                         onClick={resetInterview}
@@ -2821,7 +3171,7 @@ function GlassCard({
   children,
   className = "",
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
 }) {
   return (
@@ -2871,7 +3221,7 @@ function ToggleButton({
   onClick,
 }: {
   active: boolean;
-  children: React.ReactNode;
+  children: ReactNode;
   onClick: () => void;
 }) {
   return (
@@ -2905,7 +3255,7 @@ function AnalysisPanel({
 }: {
   title: string;
   accent: "cyan" | "purple";
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
     <div
@@ -2948,7 +3298,7 @@ function FeedbackList({
   );
 }
 
-function CheckItem({ children }: { children: React.ReactNode }) {
+function CheckItem({ children }: { children: ReactNode }) {
   return (
     <p className="flex gap-2">
       <span className="text-purple-300">✓</span>
