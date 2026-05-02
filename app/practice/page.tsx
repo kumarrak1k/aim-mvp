@@ -1800,35 +1800,39 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-[#08040f] text-white">
-      <header className="border-b border-white/10 bg-[#08040f]/90 backdrop-blur-xl">
+    <main className="min-h-screen overflow-hidden bg-[#07030d] text-white">
+      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#07030d]/85 backdrop-blur-2xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
           <Link href="/" className="flex items-center gap-3">
-            <img
-              src="/brand/logo.jpg"
-              alt="AI Career Mentor"
-              className="h-11 w-11 rounded-xl object-contain"
-            />
+            <div className="relative">
+              <div className="absolute -inset-2 rounded-2xl bg-purple-500/25 blur-xl" />
+              <img
+                src="/brand/logo.jpg"
+                alt="AI Career Mentor"
+                className="relative h-11 w-11 rounded-2xl border border-white/10 object-contain shadow-lg shadow-purple-950/40"
+              />
+            </div>
+
             <div>
-              <p className="text-lg font-black tracking-tight">
+              <p className="text-lg font-black tracking-[-0.03em]">
                 AI Career Mentor
               </p>
-              <p className="text-xs text-purple-200/60">
-                Interview coaching platform
+              <p className="text-xs font-medium text-purple-100/55">
+                Interview intelligence platform
               </p>
             </div>
           </Link>
 
           <div className="flex items-center gap-3">
             <Link href="/">
-              <button className="hidden rounded-full border border-white/10 bg-white/[0.05] px-4 py-2 text-sm font-bold text-gray-200 hover:bg-white/[0.09] sm:block">
+              <button className="hidden rounded-full border border-white/10 bg-white/[0.055] px-4 py-2 text-sm font-black text-white transition hover:bg-white/[0.1] sm:block">
                 Home
               </button>
             </Link>
 
             <Show when="signed-out">
               <SignInButton mode="modal">
-                <button className="rounded-full bg-white px-5 py-2.5 text-sm font-black text-black hover:bg-purple-100">
+                <button className="rounded-full bg-white px-5 py-2.5 text-sm font-black text-black shadow-xl shadow-purple-950/20 transition hover:bg-purple-100">
                   Sign In
                 </button>
               </SignInButton>
@@ -1841,30 +1845,36 @@ export default function Home() {
         </div>
       </header>
 
-      <div className="relative overflow-hidden">
-        <div className="pointer-events-none absolute left-1/2 top-[-220px] h-[520px] w-[760px] -translate-x-1/2 rounded-full bg-purple-700/30 blur-[120px]" />
-        <div className="pointer-events-none absolute right-[-180px] top-28 h-[360px] w-[360px] rounded-full bg-blue-600/20 blur-[100px]" />
+      <div className="relative">
+        <div className="pointer-events-none absolute left-1/2 top-[-260px] h-[620px] w-[920px] -translate-x-1/2 rounded-full bg-purple-700/30 blur-[140px]" />
+        <div className="pointer-events-none absolute right-[-220px] top-24 h-[460px] w-[460px] rounded-full bg-cyan-500/15 blur-[120px]" />
+        <div className="pointer-events-none absolute left-[-220px] top-80 h-[420px] w-[420px] rounded-full bg-fuchsia-500/15 blur-[120px]" />
 
-        <div className="relative mx-auto max-w-7xl px-6 py-10">
-          <div className="mb-8 rounded-[2rem] border border-white/10 bg-white/[0.055] p-6 shadow-2xl shadow-purple-950/20 backdrop-blur-xl md:p-8">
+        <div className="relative mx-auto max-w-7xl px-6 py-10 lg:py-12">
+          <div className="mb-8 overflow-hidden rounded-[2.25rem] border border-white/10 bg-white/[0.07] p-6 shadow-2xl shadow-purple-950/20 backdrop-blur-2xl md:p-8">
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/50 to-transparent" />
+
             <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
               <div>
-                <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-purple-300/25 bg-purple-400/10 px-4 py-2 text-sm font-bold text-purple-100">
-                  <span className="h-2 w-2 rounded-full bg-green-400" />
-                  Voice + video + AI feedback
+                <div className="mb-5 inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/[0.06] px-4 py-2 text-sm font-black text-purple-50 shadow-xl shadow-purple-950/20">
+                  <span className="relative flex h-2.5 w-2.5">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-300 opacity-60" />
+                    <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-300" />
+                  </span>
+                  Voice + video + AI interview feedback
                 </div>
 
-                <h1 className="max-w-3xl text-3xl font-black leading-tight tracking-[-0.035em] md:text-5xl">
+                <h1 className="max-w-4xl text-3xl font-black leading-[1.02] tracking-[-0.045em] md:text-5xl">
                   Practise your next interview with{" "}
-                  <span className="bg-gradient-to-r from-purple-200 via-fuchsia-300 to-cyan-200 bg-clip-text text-transparent">
+                  <span className="bg-gradient-to-r from-purple-200 via-fuchsia-200 to-cyan-200 bg-clip-text text-transparent">
                     precision coaching.
                   </span>
                 </h1>
 
                 <p className="mt-4 max-w-2xl leading-7 text-gray-300">
-                  Complete a focused 5-question interview and receive feedback
-                  on your answers, voice delivery, camera presence, confidence,
-                  pace and structure.
+                  Complete a focused 5-question mock interview and receive
+                  strict hiring-bar feedback across your answers, voice delivery,
+                  camera presence, confidence, pace and structure.
                 </p>
               </div>
 
@@ -1884,12 +1894,13 @@ export default function Home() {
                     <p className="mb-2 text-sm font-black uppercase tracking-[0.22em] text-purple-300">
                       Start interview
                     </p>
-                    <h2 className="text-2xl font-black tracking-tight">
+                    <h2 className="text-2xl font-black tracking-[-0.03em] md:text-3xl">
                       Tell the coach what you’re preparing for.
                     </h2>
-                    <p className="mt-2 text-sm leading-6 text-gray-400">
-                      Add your target role, situation or pathway so questions can
-                      be tailored to your practice goal.
+                    <p className="mt-2 max-w-2xl text-sm leading-6 text-gray-400">
+                      Add your target role, situation or pathway so the platform
+                      can generate realistic interview questions tailored to your
+                      goal.
                     </p>
                   </div>
 
@@ -1898,13 +1909,13 @@ export default function Home() {
                   </label>
 
                   <input
-                    className="mb-5 w-full rounded-2xl border border-white/10 bg-black/35 p-4 text-white placeholder-gray-500 outline-none transition focus:border-purple-300/50"
+                    className="mb-5 w-full rounded-2xl border border-white/10 bg-black/35 p-4 text-white placeholder-gray-500 outline-none transition focus:border-purple-300/50 focus:ring-4 focus:ring-purple-500/10"
                     placeholder="Example: Graduate looking for a software engineering placement"
                     value={role}
                     onChange={(e) => setRole(e.target.value)}
                   />
 
-                  <div className="mb-5 rounded-2xl border border-white/10 bg-black/25 p-4">
+                  <div className="mb-5 rounded-[1.5rem] border border-white/10 bg-black/25 p-4">
                     <p className="mb-3 text-sm font-bold text-gray-300">
                       Practice settings
                     </p>
@@ -1946,7 +1957,7 @@ export default function Home() {
                   <button
                     onClick={startInterview}
                     disabled={!role || questionLoading}
-                    className="w-full rounded-2xl bg-gradient-to-r from-purple-500 to-blue-500 px-6 py-4 text-base font-black shadow-xl shadow-purple-900/30 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
+                    className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-6 py-4 text-base font-black shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {questionLoading
                       ? "Starting..."
@@ -1963,7 +1974,7 @@ export default function Home() {
                         <p className="mb-2 text-sm font-black uppercase tracking-[0.22em] text-purple-300">
                           Question {currentQuestionNumber} of {totalQuestions}
                         </p>
-                        <h2 className="text-2xl font-black tracking-tight">
+                        <h2 className="text-2xl font-black tracking-[-0.03em]">
                           Interview practice session
                         </h2>
                         <p className="mt-1 text-sm text-gray-400">
@@ -2017,7 +2028,7 @@ export default function Home() {
                                 speakQuestion(question, true);
                               }
                             }}
-                            className="rounded-full border border-blue-300/30 bg-blue-400/15 px-4 py-2 text-sm font-black text-blue-100 hover:bg-blue-400/20"
+                            className="rounded-full border border-cyan-300/25 bg-cyan-300/10 px-4 py-2 text-sm font-black text-cyan-100 transition hover:bg-cyan-300/15"
                           >
                             {isSpeakingQuestion ? "Stop Voice" : "Play Question"}
                           </button>
@@ -2026,7 +2037,7 @@ export default function Home() {
                     </div>
 
                     <div className="mb-5 grid gap-5 lg:grid-cols-[1fr_0.9fr]">
-                      <div className="rounded-[1.5rem] border border-white/10 bg-black/30 p-5">
+                      <div className="rounded-[1.6rem] border border-white/10 bg-black/30 p-5">
                         <div className="flex items-center gap-4">
                           <div className="relative flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-purple-500 via-fuchsia-500 to-cyan-400 shadow-xl shadow-purple-950/40">
                             <div
@@ -2036,9 +2047,11 @@ export default function Home() {
                                   : ""
                               }`}
                             />
-                            <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-black/50 text-xl font-black text-white">
-                              AI
-                            </div>
+                            <img
+                              src="/brand/logo.jpg"
+                              alt="AI"
+                              className="relative h-14 w-14 rounded-2xl border border-white/10 object-contain"
+                            />
                           </div>
 
                           <div className="flex-1">
@@ -2058,12 +2071,12 @@ export default function Home() {
                         </div>
                       </div>
 
-                      <div className="rounded-[1.5rem] border border-white/10 bg-black/30 p-5">
+                      <div className="rounded-[1.6rem] border border-white/10 bg-black/30 p-5">
                         <div className="mb-3 flex items-center justify-between">
                           <p className="text-sm font-black text-cyan-300">
                             Camera Analysis
                           </p>
-                          <span className="rounded-full bg-white/[0.06] px-3 py-1 text-xs font-bold text-gray-300">
+                          <span className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-xs font-bold text-gray-300">
                             {cameraEnabled
                               ? cameraReady
                                 ? "Ready"
@@ -2096,7 +2109,7 @@ export default function Home() {
                       </div>
                     </div>
 
-                    <div className="rounded-[1.5rem] border border-white/10 bg-black/35 p-6">
+                    <div className="rounded-[1.6rem] border border-white/10 bg-black/35 p-6">
                       <p className="mb-3 text-sm font-black uppercase tracking-[0.2em] text-gray-400">
                         Interview Question
                       </p>
@@ -2113,7 +2126,7 @@ export default function Home() {
                       </label>
 
                       <textarea
-                        className="mb-5 min-h-[190px] w-full rounded-2xl border border-white/10 bg-black/35 p-4 leading-7 text-white placeholder-gray-500 outline-none transition focus:border-purple-300/50"
+                        className="mb-5 min-h-[190px] w-full rounded-2xl border border-white/10 bg-black/35 p-4 leading-7 text-white placeholder-gray-500 outline-none transition focus:border-purple-300/50 focus:ring-4 focus:ring-purple-500/10"
                         placeholder={
                           speakerEnabled
                             ? "Once the question finishes, start speaking. Click Stop Voice Answer when you’re done."
@@ -2138,7 +2151,7 @@ export default function Home() {
                           {isListening ? (
                             <button
                               onClick={stopVoiceInput}
-                              className="rounded-full bg-red-500 px-5 py-2.5 text-sm font-black text-white hover:bg-red-600"
+                              className="rounded-full bg-red-500 px-5 py-2.5 text-sm font-black text-white shadow-xl shadow-red-950/20 transition hover:bg-red-600"
                             >
                               Stop Voice Answer
                             </button>
@@ -2148,7 +2161,7 @@ export default function Home() {
                                 setHasUserInteracted(true);
                                 void startVoiceInput();
                               }}
-                              className="rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-5 py-2.5 text-sm font-black text-white hover:opacity-95"
+                              className="rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-2.5 text-sm font-black text-white shadow-xl shadow-purple-950/30 transition hover:opacity-95"
                             >
                               Start Voice Answer
                             </button>
@@ -2156,7 +2169,7 @@ export default function Home() {
 
                           <button
                             onClick={clearVoiceAnswer}
-                            className="rounded-full border border-white/10 bg-white/[0.06] px-5 py-2.5 text-sm font-black text-gray-200 hover:bg-white/[0.1]"
+                            className="rounded-full border border-white/10 bg-white/[0.06] px-5 py-2.5 text-sm font-black text-gray-200 transition hover:bg-white/[0.1]"
                           >
                             Clear Answer
                           </button>
@@ -2313,7 +2326,7 @@ export default function Home() {
                             voiceAnalysisLoading ||
                             videoAnalysisLoading
                           }
-                          className="w-full rounded-2xl bg-gradient-to-r from-purple-500 to-blue-500 px-6 py-4 font-black shadow-xl shadow-purple-900/30 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
+                          className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-6 py-4 font-black shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
                         >
                           {feedbackLoading ? "Evaluating..." : "Get AI Feedback"}
                         </button>
@@ -2323,7 +2336,7 @@ export default function Home() {
 
                   {feedback && (
                     <GlassCard className="mt-6">
-                      <h2 className="mb-5 text-2xl font-black tracking-tight text-white">
+                      <h2 className="mb-5 text-2xl font-black tracking-[-0.03em] text-white">
                         AI Feedback
                       </h2>
 
@@ -2331,7 +2344,7 @@ export default function Home() {
                         <p className="text-red-300">{feedback.error}</p>
                       ) : (
                         <div className="space-y-6">
-                          <div className="rounded-[1.5rem] border border-white/10 bg-black/35 p-5">
+                          <div className="rounded-[1.6rem] border border-white/10 bg-black/35 p-5">
                             <p className="text-sm text-gray-400">
                               Overall score
                             </p>
@@ -2430,7 +2443,7 @@ export default function Home() {
 
                           <button
                             onClick={nextStep}
-                            className="w-full rounded-2xl bg-gradient-to-r from-purple-500 to-blue-500 px-6 py-4 font-black shadow-xl shadow-purple-900/30 transition hover:scale-[1.01]"
+                            className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-6 py-4 font-black shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01]"
                           >
                             {currentQuestionNumber === totalQuestions
                               ? "Finish Interview"
@@ -2445,7 +2458,7 @@ export default function Home() {
 
               {interviewFinished && (
                 <GlassCard>
-                  <h2 className="mb-5 text-3xl font-black tracking-tight">
+                  <h2 className="mb-5 text-3xl font-black tracking-[-0.04em]">
                     Final Interview Summary
                   </h2>
 
@@ -2501,7 +2514,7 @@ export default function Home() {
 
                       <button
                         onClick={resetInterview}
-                        className="w-full rounded-2xl bg-gradient-to-r from-purple-500 to-blue-500 px-6 py-4 font-black shadow-xl shadow-purple-900/30 transition hover:scale-[1.01]"
+                        className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-6 py-4 font-black shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01]"
                       >
                         Start New Interview
                       </button>
@@ -2521,7 +2534,7 @@ export default function Home() {
                     future premium reports.
                   </p>
                   <SignInButton mode="modal">
-                    <button className="w-full rounded-2xl bg-white px-4 py-3 font-black text-black hover:bg-purple-100">
+                    <button className="w-full rounded-2xl bg-white px-4 py-3 font-black text-black shadow-xl shadow-purple-950/20 transition hover:bg-purple-100">
                       Sign In
                     </button>
                   </SignInButton>
@@ -2593,9 +2606,10 @@ function GlassCard({
 }) {
   return (
     <div
-      className={`rounded-[2rem] border border-white/10 bg-white/[0.055] p-6 shadow-2xl shadow-purple-950/10 backdrop-blur-xl md:p-7 ${className}`}
+      className={`relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.065] p-6 shadow-2xl shadow-purple-950/10 backdrop-blur-2xl md:p-7 ${className}`}
     >
-      {children}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+      <div className="relative">{children}</div>
     </div>
   );
 }
@@ -2615,7 +2629,7 @@ function ToggleButton({
       onClick={onClick}
       className={`rounded-full px-5 py-2.5 text-sm font-black transition ${
         active
-          ? "bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-lg shadow-purple-950/30"
+          ? "bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 text-white shadow-lg shadow-purple-950/30"
           : "border border-white/10 bg-white/[0.06] text-gray-300 hover:bg-white/[0.1]"
       }`}
     >
@@ -2626,8 +2640,8 @@ function ToggleButton({
 
 function MiniStat({ value, label }: { value: string; label: string }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-black/30 p-4 text-center">
-      <p className="text-2xl font-black tracking-tight">{value}</p>
+    <div className="rounded-2xl border border-white/10 bg-black/30 p-4 text-center shadow-xl shadow-black/10">
+      <p className="text-2xl font-black tracking-[-0.03em]">{value}</p>
       <p className="mt-1 text-xs leading-5 text-gray-400">{label}</p>
     </div>
   );
@@ -2644,10 +2658,10 @@ function AnalysisPanel({
 }) {
   return (
     <div
-      className={`mb-5 rounded-[1.5rem] border p-5 ${
+      className={`mb-5 rounded-[1.6rem] border p-5 ${
         accent === "cyan"
-          ? "border-cyan-400/20 bg-cyan-400/10"
-          : "border-purple-400/20 bg-purple-400/10"
+          ? "border-cyan-300/20 bg-cyan-300/10"
+          : "border-purple-300/20 bg-purple-300/10"
       }`}
     >
       <h3
@@ -2694,7 +2708,7 @@ function CheckItem({ children }: { children: React.ReactNode }) {
 
 function ScoreCard({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-black/35 p-4 text-center">
+    <div className="rounded-2xl border border-white/10 bg-black/35 p-4 text-center shadow-xl shadow-black/10">
       <p className="text-xs font-bold uppercase tracking-wide text-gray-500">
         {label}
       </p>
@@ -2708,7 +2722,7 @@ function ScoreCard({ label, value }: { label: string; value: number }) {
 
 function MetricCard({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-black/35 p-4 text-center">
+    <div className="rounded-2xl border border-white/10 bg-black/35 p-4 text-center shadow-xl shadow-black/10">
       <p className="text-xs font-bold uppercase tracking-wide text-gray-500">
         {label}
       </p>
@@ -2725,10 +2739,10 @@ function SectionFeedbackCard({
   item: SectionFeedbackItem;
 }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-black/35 p-5">
+    <div className="rounded-2xl border border-white/10 bg-black/35 p-5 shadow-xl shadow-black/10">
       <div className="mb-3 flex items-center justify-between gap-3">
         <h4 className="font-black text-white">{title}</h4>
-        <span className="rounded-full bg-purple-400/15 px-3 py-1 text-sm font-black text-purple-200">
+        <span className="rounded-full bg-purple-300/15 px-3 py-1 text-sm font-black text-purple-200">
           {item.score}/10
         </span>
       </div>
