@@ -2111,7 +2111,7 @@ Generate questions and feedback that match this candidate context. Use the selec
               </button>
             </Link>
 
-            {isLoaded && !isSignedIn && (
+            {!isSignedIn && (
               <SignInButton mode="modal">
                 <button className="rounded-full bg-white px-5 py-2.5 text-sm font-black text-black shadow-xl shadow-purple-950/20 transition hover:bg-purple-100">
                   Sign In
@@ -2279,7 +2279,7 @@ Generate questions and feedback that match this candidate context. Use the selec
                     Account
                   </h2>
 
-                  {isLoaded && !isSignedIn && (
+                  {!isSignedIn && (
                     <>
                       <p className="mb-4 text-sm leading-6 text-gray-400">
                         Sign in to prepare for saved accounts, progress tracking
