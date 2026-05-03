@@ -1,3 +1,4 @@
+import { auth, clerkClient } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 
 type VoiceAnalysisLike = {
@@ -9,6 +10,101 @@ type VoiceAnalysisLike = {
     wordCount?: number;
   };
 };
+
+type CandidateProfile = {
+  cvText: string;
+  roleSpec: string;
+  interviewGoals: string;
+  cvFileName: string;
+  roleSpecFileName: string;
+  updatedAt: string;
+};
+
+const EMPTY_PROFILE: CandidateProfile = {
+  cvText: "",
+  roleSpec: "",
+  interviewGoals: "",
+  cvFileName: "",
+  roleSpecFileName: "",
+  updatedAt: "",
+};
+
+function cleanText(value: unknown) {
+  if (typeof value !== "string") return "";
+  return value.replace(/\r\n/g, "\n").trim();
+}
+
+function extractCandidateProfile(metadata: unknown): CandidateProfile {
+  const data = metadata as {
+    candidateProfile?: Partial<CandidateProfile>;
+  };
+
+  const candidateProfile = data?.candidateProfile;
+
+  if (!candidateProfile || typeof candidateProfile !== "object") {
+    return EMPTY_PROFILE;
+  }
+
+  return {
+    cvText: cleanText(candidateProfile.cvText),
+    roleSpec: cleanText(candidateProfile.roleSpec),
+    interviewGoals: cleanText(candidateProfile.interviewGoals),
+    cvFileName: cleanText(candidateProfile.cvFileName),
+    roleSpecFileName: cleanText(candidateProfile.roleSpecFileName),
+    updatedAt: cleanText(candidateProfile.updatedAt),
+  };
+}
+
+function buildSavedProfileContext(profile: CandidateProfile) {
+  const hasProfile =
+    profile.cvText.trim() ||
+    profile.roleSpec.trim() ||
+    profile.interviewGoals.trim();
+
+  if (!hasProfile) {
+    return "No saved candidate profile has been added yet.";
+  }
+
+  return `
+Saved candidate profile context:
+
+CV / career background:
+${profile.cvText || "Not provided."}
+
+Target role specification:
+${profile.roleSpec || "Not provided."}
+
+Candidate interview goals:
+${profile.interviewGoals || "Not provided."}
+
+Uploaded CV file:
+${profile.cvFileName || "Not provided."}
+
+Uploaded role spec file:
+${profile.roleSpecFileName || "Not provided."}
+
+Profile last updated:
+${profile.updatedAt || "Unknown."}
+`.trim();
+}
+
+async function getSignedInCandidateProfile() {
+  try {
+    const { userId } = await auth();
+
+    if (!userId) {
+      return EMPTY_PROFILE;
+    }
+
+    const client = await clerkClient();
+    const user = await client.users.getUser(userId);
+
+    return extractCandidateProfile(user.privateMetadata);
+  } catch (error) {
+    console.error("FEEDBACK PROFILE LOAD WARNING:", error);
+    return EMPTY_PROFILE;
+  }
+}
 
 function getWords(text: string) {
   return text
@@ -28,8 +124,6 @@ function estimatePaceFromAnswer(answer: string) {
   const words = getWords(answer);
   const wordCount = words.length;
 
-  // Without actual recording duration, estimate from a normal interview answer pace.
-  // This prevents the product from showing "no pace data" when an answer exists.
   const estimatedDurationSeconds = Math.max(20, Math.round(wordCount / 2.2));
   const estimatedWPM =
     wordCount > 0 ? Math.round((wordCount / estimatedDurationSeconds) * 60) : 0;
@@ -74,15 +168,31 @@ function detectFillers(answer: string) {
 
 export async function POST(req: NextRequest) {
   try {
-    const { question, answer, voiceAnalysis, videoAnalysis } =
-      await req.json();
+    const { question, answer, voiceAnalysis, videoAnalysis } = await req.json();
 
-    if (!question || !answer) {
+    if (
+      !question ||
+      typeof question !== "string" ||
+      !answer ||
+      typeof answer !== "string"
+    ) {
       return NextResponse.json(
         { error: "Missing question or answer." },
         { status: 400 }
       );
     }
+
+    const apiKey = process.env.OPENAI_API_KEY;
+
+    if (!apiKey) {
+      return NextResponse.json(
+        { error: "OPENAI_API_KEY is missing from environment variables." },
+        { status: 500 }
+      );
+    }
+
+    const savedProfile = await getSignedInCandidateProfile();
+    const savedProfileContext = buildSavedProfileContext(savedProfile);
 
     const suppliedVoiceAnalysis = voiceAnalysis as VoiceAnalysisLike | null;
 
@@ -135,6 +245,14 @@ Score each category from 0 to 10:
 A score of 8+ means the answer is strong enough for a competitive interview.
 A score of 5 or below means it would likely struggle to pass hiring bar.
 
+Personalisation rules:
+- If saved CV, role specification or interview goals are provided, use them to make feedback and the improved answer more relevant.
+- Prioritise the target role specification over generic role assumptions.
+- Use the CV context to suggest stronger examples the candidate could use.
+- Do not invent specific achievements, employers, qualifications, metrics or projects that are not present in the candidate answer or saved profile.
+- If the candidate answer is weak but the saved profile contains useful experience, the improved answer may draw on that saved profile context.
+- Do not mention private metadata, saved profile data, uploaded files, or internal storage.
+
 Feedback style:
 - Use clear, professional language.
 - Be firm but useful.
@@ -147,9 +265,9 @@ It should:
 - Directly answer the question
 - Use strong structure
 - Include specific detail
-- Include measurable impact where possible
+- Include measurable impact where possible, but only if supported by the answer or saved profile
 - Sound natural, not robotic
-- Be suitable for the candidate's role/context
+- Be suitable for the candidate's target role/context
 
 Return ONLY valid JSON in this exact shape:
 
@@ -199,7 +317,7 @@ Return ONLY valid JSON in this exact shape:
   "improvements": string[],
   "improved_answer": string
 }
-`;
+`.trim();
 
     const userPrompt = `
 Interview question:
@@ -207,6 +325,9 @@ ${question}
 
 Candidate answer:
 ${answer}
+
+Saved candidate profile context:
+${savedProfileContext}
 
 Voice analysis received from frontend:
 ${JSON.stringify(suppliedVoiceAnalysis || null, null, 2)}
@@ -235,13 +356,14 @@ Important:
 - Do not write "Use voice answer mode".
 - Do not write "N/A".
 - If fillerCount is above 0, mention filler words as an improvement.
-`;
+- If saved profile context exists, make the improved answer relevant to the target role and candidate background.
+`.trim();
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
         model: "gpt-4o-mini",
@@ -274,7 +396,13 @@ Important:
     let parsed;
 
     try {
-      parsed = JSON.parse(text);
+      const cleanedText = text
+        .replace(/^```json/i, "")
+        .replace(/^```/i, "")
+        .replace(/```$/i, "")
+        .trim();
+
+      parsed = JSON.parse(cleanedText);
     } catch {
       return NextResponse.json(
         { error: "Failed to parse AI response." },
@@ -325,7 +453,9 @@ Important:
     }
 
     return NextResponse.json(parsed);
-  } catch {
+  } catch (error) {
+    console.error("FEEDBACK API ERROR:", error);
+
     return NextResponse.json(
       { error: "Something went wrong while generating feedback." },
       { status: 500 }

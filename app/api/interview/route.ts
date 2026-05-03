@@ -1,4 +1,100 @@
+import { auth, clerkClient } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
+
+type CandidateProfile = {
+  cvText: string;
+  roleSpec: string;
+  interviewGoals: string;
+  cvFileName: string;
+  roleSpecFileName: string;
+  updatedAt: string;
+};
+
+const EMPTY_PROFILE: CandidateProfile = {
+  cvText: "",
+  roleSpec: "",
+  interviewGoals: "",
+  cvFileName: "",
+  roleSpecFileName: "",
+  updatedAt: "",
+};
+
+function cleanText(value: unknown) {
+  if (typeof value !== "string") return "";
+  return value.replace(/\r\n/g, "\n").trim();
+}
+
+function extractCandidateProfile(metadata: unknown): CandidateProfile {
+  const data = metadata as {
+    candidateProfile?: Partial<CandidateProfile>;
+  };
+
+  const candidateProfile = data?.candidateProfile;
+
+  if (!candidateProfile || typeof candidateProfile !== "object") {
+    return EMPTY_PROFILE;
+  }
+
+  return {
+    cvText: cleanText(candidateProfile.cvText),
+    roleSpec: cleanText(candidateProfile.roleSpec),
+    interviewGoals: cleanText(candidateProfile.interviewGoals),
+    cvFileName: cleanText(candidateProfile.cvFileName),
+    roleSpecFileName: cleanText(candidateProfile.roleSpecFileName),
+    updatedAt: cleanText(candidateProfile.updatedAt),
+  };
+}
+
+function buildSavedProfileContext(profile: CandidateProfile) {
+  const hasProfile =
+    profile.cvText.trim() ||
+    profile.roleSpec.trim() ||
+    profile.interviewGoals.trim();
+
+  if (!hasProfile) {
+    return "No saved candidate profile has been added yet.";
+  }
+
+  return `
+Saved candidate profile context:
+
+CV / career background:
+${profile.cvText || "Not provided."}
+
+Target role specification:
+${profile.roleSpec || "Not provided."}
+
+Candidate interview goals:
+${profile.interviewGoals || "Not provided."}
+
+Uploaded CV file:
+${profile.cvFileName || "Not provided."}
+
+Uploaded role spec file:
+${profile.roleSpecFileName || "Not provided."}
+
+Profile last updated:
+${profile.updatedAt || "Unknown."}
+`.trim();
+}
+
+async function getSignedInCandidateProfile() {
+  try {
+    const { userId } = await auth();
+
+    if (!userId) {
+      return EMPTY_PROFILE;
+    }
+
+    const client = await clerkClient();
+    const user = await client.users.getUser(userId);
+
+    return extractCandidateProfile(user.privateMetadata);
+  } catch (error) {
+    console.error("INTERVIEW PROFILE LOAD WARNING:", error);
+    return EMPTY_PROFILE;
+  }
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -19,6 +115,9 @@ export async function POST(req: NextRequest) {
         { status: 500 }
       );
     }
+
+    const savedProfile = await getSignedInCandidateProfile();
+    const savedProfileContext = buildSavedProfileContext(savedProfile);
 
     const safeQuestionNumber =
       typeof questionNumber === "number" && questionNumber > 0
@@ -47,9 +146,15 @@ Your job is to create realistic, high-quality interview questions for candidates
 Rules:
 - Generate ONE interview question only.
 - The question must match the candidate profile, interview type, difficulty and focus area.
+- If saved CV, role specification or interview goals are provided, use them to make the question more personalised and relevant.
+- Prioritise the target role specification over generic role assumptions.
+- Use the CV context to ask questions that let the candidate draw on their own likely experience, achievements and examples.
+- Use the candidate's interview goals to adjust the focus of the question.
 - Avoid repeating previous questions.
-- Make the question clear, realistic and useful for interview practice.
+- Do not ask for confidential personal data.
+- Do not mention that you can see private metadata, saved profile data, or uploaded files.
 - Do not include scoring, explanation, tips or model answers.
+- Make the question clear, realistic and useful for interview practice.
 - Return ONLY valid JSON in this exact shape:
 
 {
@@ -58,8 +163,11 @@ Rules:
 `.trim();
 
     const userPrompt = `
-Candidate profile and setup:
+Candidate setup from practice page:
 ${role}
+
+Saved profile context for signed-in user:
+${savedProfileContext}
 
 Current question:
 ${safeQuestionNumber} of ${safeTotalQuestions}

@@ -8,21 +8,23 @@ export default function Home() {
     <main className="min-h-screen overflow-hidden bg-[#07030d] text-white">
       <header className="sticky top-0 z-50 border-b border-white/10 bg-[#07030d]/85 backdrop-blur-2xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <Link href="/" className="flex items-center gap-3">
+          <Link href="/" className="flex items-center gap-4">
             <div className="relative">
-              <div className="absolute -inset-2 rounded-2xl bg-purple-500/25 blur-xl" />
-              <img
-                src="/brand/logo.jpg"
-                alt="AI Career Mentor"
-                className="relative h-11 w-11 rounded-2xl border border-white/10 object-contain shadow-lg shadow-purple-950/40"
-              />
+              <div className="absolute -inset-3 rounded-[1.6rem] bg-purple-500/30 blur-2xl" />
+              <div className="relative rounded-[1.4rem] border border-white/20 bg-white p-2 shadow-2xl shadow-purple-950/45">
+                <img
+                  src="/brand/logo.jpg"
+                  alt="AI Career Mentor"
+                  className="h-14 w-14 rounded-2xl object-contain"
+                />
+              </div>
             </div>
 
             <div>
-              <p className="text-lg font-black tracking-[-0.03em]">
+              <p className="text-xl font-black tracking-[-0.035em]">
                 AI Career Mentor
               </p>
-              <p className="text-xs font-medium text-purple-100/55">
+              <p className="text-xs font-medium text-purple-100/60">
                 Interview intelligence platform
               </p>
             </div>
@@ -50,6 +52,12 @@ export default function Home() {
             </Show>
 
             <Show when="signed-in">
+              <Link href="/profile">
+                <button className="hidden rounded-full border border-purple-300/20 bg-purple-300/10 px-5 py-2.5 text-sm font-black text-purple-100 transition hover:bg-purple-300/15 sm:block">
+                  Profile
+                </button>
+              </Link>
+
               <UserButton />
             </Show>
 
@@ -102,6 +110,14 @@ export default function Home() {
                 </button>
               </Link>
 
+              <Show when="signed-in">
+                <Link href="/profile">
+                  <button className="rounded-2xl border border-purple-300/20 bg-purple-300/10 px-7 py-4 text-base font-black text-purple-100 backdrop-blur-xl transition hover:bg-purple-300/15">
+                    Manage Profile
+                  </button>
+                </Link>
+              </Show>
+
               <a href="#features">
                 <button className="rounded-2xl border border-white/12 bg-white/[0.06] px-7 py-4 text-base font-black text-white backdrop-blur-xl transition hover:bg-white/[0.1]">
                   See Platform
@@ -129,12 +145,15 @@ export default function Home() {
               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/50 to-transparent" />
 
               <div className="mb-5 flex items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
-                  <img
-                    src="/brand/logo.jpg"
-                    alt="AI Career Mentor"
-                    className="h-12 w-12 rounded-2xl border border-white/10 object-contain"
-                  />
+                <div className="flex items-center gap-4">
+                  <div className="rounded-[1.4rem] border border-white/15 bg-white p-2 shadow-xl shadow-purple-950/30">
+                    <img
+                      src="/brand/logo.jpg"
+                      alt="AI Career Mentor"
+                      className="h-14 w-14 rounded-2xl object-contain"
+                    />
+                  </div>
+
                   <div>
                     <p className="text-xs font-black uppercase tracking-[0.22em] text-purple-100/60">
                       Live readiness report
@@ -357,22 +376,35 @@ export default function Home() {
             interview.
           </p>
 
-          <Link href="/practice">
-            <button className="mt-7 rounded-2xl bg-white px-8 py-4 font-black text-black shadow-xl shadow-black/20 transition hover:bg-purple-100">
-              Launch Interview Coach
-            </button>
-          </Link>
+          <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <Link href="/practice">
+              <button className="rounded-2xl bg-white px-8 py-4 font-black text-black shadow-xl shadow-black/20 transition hover:bg-purple-100">
+                Launch Interview Coach
+              </button>
+            </Link>
+
+            <Show when="signed-in">
+              <Link href="/profile">
+                <button className="rounded-2xl border border-purple-300/20 bg-purple-300/10 px-8 py-4 font-black text-purple-100 shadow-xl shadow-black/10 transition hover:bg-purple-300/15">
+                  Update Profile
+                </button>
+              </Link>
+            </Show>
+          </div>
         </div>
       </section>
 
       <footer className="border-t border-white/10 px-6 py-8">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-5 md:flex-row">
           <div className="flex items-center gap-3">
-            <img
-              src="/brand/logo.jpg"
-              alt="AI Career Mentor"
-              className="h-10 w-10 rounded-xl border border-white/10 object-contain"
-            />
+            <div className="rounded-2xl border border-white/15 bg-white p-1.5 shadow-lg shadow-purple-950/30">
+              <img
+                src="/brand/logo.jpg"
+                alt="AI Career Mentor"
+                className="h-11 w-11 rounded-xl object-contain"
+              />
+            </div>
+
             <div>
               <p className="font-black">AI Career Mentor</p>
               <p className="text-xs text-gray-500">
@@ -391,6 +423,11 @@ export default function Home() {
             <a href="#pricing" className="hover:text-white">
               Pricing
             </a>
+            <Show when="signed-in">
+              <Link href="/profile" className="hover:text-white">
+                Profile
+              </Link>
+            </Show>
             <Link href="/practice" className="hover:text-white">
               Practice
             </Link>

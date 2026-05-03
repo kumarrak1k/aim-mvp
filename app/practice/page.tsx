@@ -184,6 +184,15 @@ type SavedSession = {
   hireSignal: string;
 };
 
+type CandidateProfile = {
+  cvText: string;
+  roleSpec: string;
+  interviewGoals: string;
+  cvFileName: string;
+  roleSpecFileName: string;
+  updatedAt: string;
+};
+
 type FaceLandmarkerInstance = {
   detectForVideo: (
     video: HTMLVideoElement,
@@ -602,6 +611,39 @@ const buildFallbackVideoAnalysis = (
   };
 };
 
+const hasCandidateProfileContext = (profile: CandidateProfile | null) => {
+  return Boolean(
+    profile?.cvText?.trim() ||
+      profile?.roleSpec?.trim() ||
+      profile?.interviewGoals?.trim()
+  );
+};
+
+const getFirstUsefulProfileLine = (text: string) => {
+  return text
+    .split(/\n+/)
+    .map((line) => line.trim())
+    .find(Boolean)
+    ?.slice(0, 160);
+};
+
+const buildAutofilledRoleFromProfile = (
+  profile: CandidateProfile | null
+) => {
+  if (!profile || !hasCandidateProfileContext(profile)) return "";
+
+  const roleLine =
+    getFirstUsefulProfileLine(profile.roleSpec) ||
+    getFirstUsefulProfileLine(profile.interviewGoals) ||
+    getFirstUsefulProfileLine(profile.cvText);
+
+  if (roleLine) {
+    return `Saved profile: ${roleLine}`;
+  }
+
+  return "Saved candidate profile";
+};
+
 const wait = (milliseconds: number) =>
   new Promise<void>((resolve) => {
     window.setTimeout(resolve, milliseconds);
@@ -611,6 +653,12 @@ export default function Home() {
   const { isLoaded, isSignedIn } = useUser();
 
   const [role, setRole] = useState("");
+  const [savedCandidateProfile, setSavedCandidateProfile] =
+    useState<CandidateProfile | null>(null);
+  const [profileContextLoaded, setProfileContextLoaded] = useState(false);
+  const [roleAutofilledFromProfile, setRoleAutofilledFromProfile] =
+    useState(false);
+
   const [experienceLevel, setExperienceLevel] = useState(
     "Graduate / entry level"
   );
@@ -650,6 +698,8 @@ export default function Home() {
   const [cameraReady, setCameraReady] = useState(false);
   const [cameraError, setCameraError] = useState("");
 
+  const roleRef = useRef("");
+  const roleManuallyEditedRef = useRef(false);
   const recognitionRef = useRef<any>(null);
   const finalTranscriptRef = useRef("");
   const interimTranscriptRef = useRef("");
@@ -826,6 +876,76 @@ Generate questions and feedback that match this candidate context. Use the selec
       }
     };
   }, []);
+
+  useEffect(() => {
+    roleRef.current = role;
+  }, [role]);
+
+  useEffect(() => {
+    if (!isLoaded) return;
+
+    if (!isSignedIn) {
+      setSavedCandidateProfile(null);
+      setProfileContextLoaded(true);
+      return;
+    }
+
+    let cancelled = false;
+
+    const loadCandidateProfile = async () => {
+      try {
+        setProfileContextLoaded(false);
+
+        const res = await fetch("/api/candidate-profile", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        const data = await res.json();
+
+        if (!res.ok || data.error) {
+          if (!cancelled) {
+            setSavedCandidateProfile(null);
+            setProfileContextLoaded(true);
+          }
+          return;
+        }
+
+        const profile = (data.profile || null) as CandidateProfile | null;
+
+        if (cancelled) return;
+
+        setSavedCandidateProfile(profile);
+
+        const autofilledRole = buildAutofilledRoleFromProfile(profile);
+
+        if (
+          autofilledRole &&
+          !roleRef.current.trim() &&
+          !roleManuallyEditedRef.current &&
+          !interviewStarted
+        ) {
+          setRole(autofilledRole);
+          setRoleAutofilledFromProfile(true);
+        }
+
+        setProfileContextLoaded(true);
+      } catch {
+        if (!cancelled) {
+          setSavedCandidateProfile(null);
+          setProfileContextLoaded(true);
+        }
+      }
+    };
+
+    void loadCandidateProfile();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isLoaded, isSignedIn, interviewStarted]);
 
   useEffect(() => {
     activeQuestionRef.current = question;
@@ -1834,6 +1954,16 @@ Generate questions and feedback that match this candidate context. Use the selec
     }
   };
 
+  const useSavedProfileForRole = () => {
+    const autofilledRole = buildAutofilledRoleFromProfile(savedCandidateProfile);
+
+    if (!autofilledRole) return;
+
+    roleManuallyEditedRef.current = false;
+    setRole(autofilledRole);
+    setRoleAutofilledFromProfile(true);
+  };
+
   const startInterview = async () => {
     setHasUserInteracted(true);
     setInterviewStarted(true);
@@ -2111,6 +2241,14 @@ Generate questions and feedback that match this candidate context. Use the selec
               </button>
             </Link>
 
+            {isLoaded && isSignedIn && (
+              <Link href="/profile">
+                <button className="hidden rounded-full border border-purple-300/20 bg-purple-300/10 px-4 py-2 text-sm font-black text-purple-100 transition hover:bg-purple-300/15 sm:block">
+                  Profile
+                </button>
+              </Link>
+            )}
+
             {!isSignedIn && (
               <SignInButton mode="modal">
                 <button className="rounded-full bg-white px-5 py-2.5 text-sm font-black text-black shadow-xl shadow-purple-950/20 transition hover:bg-purple-100">
@@ -2187,11 +2325,89 @@ Generate questions and feedback that match this candidate context. Use the selec
                 </label>
 
                 <input
-                  className="mb-5 w-full rounded-2xl border border-white/10 bg-black/35 p-4 text-white placeholder-gray-500 outline-none transition focus:border-purple-300/50 focus:ring-4 focus:ring-purple-500/10"
-                  placeholder="Example: Graduate looking for a software engineering placement"
+                  className="mb-3 w-full rounded-2xl border border-white/10 bg-black/35 p-4 text-white placeholder-gray-500 outline-none transition focus:border-purple-300/50 focus:ring-4 focus:ring-purple-500/10"
+                  placeholder={
+                    isSignedIn && hasCandidateProfileContext(savedCandidateProfile)
+                      ? "Using your saved profile context"
+                      : "Example: Graduate looking for a software engineering placement"
+                  }
                   value={role}
-                  onChange={(e) => setRole(e.target.value)}
+                  onChange={(e) => {
+                    roleManuallyEditedRef.current = true;
+                    setRoleAutofilledFromProfile(false);
+                    setRole(e.target.value);
+                  }}
                 />
+
+                <div className="mb-5 rounded-2xl border border-white/10 bg-black/25 p-4">
+                  {!isSignedIn && (
+                    <p className="text-sm leading-6 text-gray-400">
+                      Sign in and save your profile to auto-fill this field next time.
+                    </p>
+                  )}
+
+                  {isSignedIn && !profileContextLoaded && (
+                    <p className="text-sm leading-6 text-gray-400">
+                      Checking for saved profile...
+                    </p>
+                  )}
+
+                  {isSignedIn &&
+                    profileContextLoaded &&
+                    hasCandidateProfileContext(savedCandidateProfile) && (
+                      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                        <div>
+                          <p className="text-sm font-black text-emerald-200">
+                            Saved profile detected
+                          </p>
+                          <p className="mt-1 text-sm leading-6 text-gray-400">
+                            {roleAutofilledFromProfile
+                              ? "This interview will use your saved CV, role spec and goals."
+                              : "You can use your saved CV, role spec and goals, or type a different role manually."}
+                          </p>
+                        </div>
+
+                        <div className="flex flex-wrap gap-2">
+                          <button
+                            type="button"
+                            onClick={useSavedProfileForRole}
+                            className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-4 py-2 text-xs font-black text-emerald-100 transition hover:bg-emerald-300/15"
+                          >
+                            Use saved profile
+                          </button>
+
+                          <Link href="/profile">
+                            <button
+                              type="button"
+                              className="rounded-full border border-white/10 bg-white/[0.06] px-4 py-2 text-xs font-black text-gray-200 transition hover:bg-white/[0.1]"
+                            >
+                              Edit profile
+                            </button>
+                          </Link>
+                        </div>
+                      </div>
+                    )}
+
+                  {isSignedIn &&
+                    profileContextLoaded &&
+                    !hasCandidateProfileContext(savedCandidateProfile) && (
+                      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                        <p className="text-sm leading-6 text-gray-400">
+                          No saved profile yet. Type a target role here, or create a profile to
+                          personalise future interviews.
+                        </p>
+
+                        <Link href="/profile">
+                          <button
+                            type="button"
+                            className="rounded-full border border-purple-300/20 bg-purple-300/10 px-4 py-2 text-xs font-black text-purple-100 transition hover:bg-purple-300/15"
+                          >
+                            Create profile
+                          </button>
+                        </Link>
+                      </div>
+                    )}
+                </div>
 
                 <div className="mb-5 grid gap-4 md:grid-cols-2">
                   <SelectField
@@ -2294,11 +2510,19 @@ Generate questions and feedback that match this candidate context. Use the selec
                   )}
 
                   {isLoaded && isSignedIn && (
-                    <div className="flex items-center justify-between">
-                      <p className="text-sm text-gray-300">
-                        You are signed in.
-                      </p>
-                      <UserButton />
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm text-gray-300">
+                          You are signed in.
+                        </p>
+                        <UserButton />
+                      </div>
+
+                      <Link href="/profile">
+                        <button className="w-full rounded-2xl border border-purple-300/20 bg-purple-300/10 px-4 py-3 text-sm font-black text-purple-100 transition hover:bg-purple-300/15">
+                          Manage Profile
+                        </button>
+                      </Link>
                     </div>
                   )}
                 </GlassCard>
