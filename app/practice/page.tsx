@@ -751,7 +751,6 @@ Generate questions and feedback that match this candidate context. Use the selec
           }
 
           let newFinalText = "";
-          let newInterimText = "";
 
           for (let i = event.resultIndex; i < event.results.length; i++) {
             const transcriptPart = stripQuestionLeakageFromTranscript(
@@ -764,31 +763,20 @@ Generate questions and feedback that match this candidate context. Use the selec
             if (event.results[i].isFinal) {
               newFinalText += transcriptPart + " ";
             } else {
-              newInterimText += transcriptPart;
+              interimTranscriptRef.current = transcriptPart;
             }
           }
 
           if (newFinalText) {
             finalTranscriptRef.current = stripQuestionLeakageFromTranscript(
-              (finalTranscriptRef.current + " " + newFinalText).trim(),
+              (finalTranscriptRef.current + " " + newFinalText)
+                .replace(/\s+/g, " ")
+                .trim(),
               activeQuestionRef.current
             );
+
+            setAnswer(finalTranscriptRef.current);
           }
-
-          interimTranscriptRef.current = stripQuestionLeakageFromTranscript(
-            newInterimText.trim(),
-            activeQuestionRef.current
-          );
-
-          const combined = stripQuestionLeakageFromTranscript(
-            [finalTranscriptRef.current, interimTranscriptRef.current]
-              .filter(Boolean)
-              .join(" ")
-              .trim(),
-            activeQuestionRef.current
-          );
-
-          setAnswer(combined);
         };
 
         recognition.onend = () => {
@@ -798,6 +786,7 @@ Generate questions and feedback that match this candidate context. Use the selec
             [finalTranscriptRef.current, interimTranscriptRef.current]
               .filter(Boolean)
               .join(" ")
+              .replace(/\s+/g, " ")
               .trim(),
             activeQuestionRef.current
           );
@@ -1674,10 +1663,13 @@ Generate questions and feedback that match this candidate context. Use the selec
       [finalTranscriptRef.current, interimTranscriptRef.current]
         .filter(Boolean)
         .join(" ")
+        .replace(/\s+/g, " ")
         .trim(),
       activeQuestionRef.current
     );
 
+    finalTranscriptRef.current = rawTranscript;
+    interimTranscriptRef.current = "";
     rawAnswerTranscriptRef.current = rawTranscript;
 
     if (rawTranscript) {
@@ -2091,11 +2083,13 @@ Generate questions and feedback that match this candidate context. Use the selec
           <Link href="/" className="flex items-center gap-3">
             <div className="relative">
               <div className="absolute -inset-2 rounded-2xl bg-purple-500/25 blur-xl" />
-              <img
-                src="/brand/logo.jpg"
-                alt="AI Career Mentor"
-                className="relative h-11 w-11 rounded-2xl border border-white/10 object-contain shadow-lg shadow-purple-950/40"
-              />
+              <div className="relative rounded-2xl border border-white/15 bg-white/95 p-1 shadow-lg shadow-purple-950/40">
+                <img
+                  src="/brand/logo.jpg"
+                  alt="AI Career Mentor"
+                  className="h-11 w-11 rounded-xl object-contain"
+                />
+              </div>
             </div>
 
             <div>
@@ -2171,212 +2165,231 @@ Generate questions and feedback that match this candidate context. Use the selec
             </div>
           </div>
 
-          <div className="grid gap-6 lg:grid-cols-[2fr_0.9fr]">
-            <div>
-              {!interviewStarted && (
-                <GlassCard>
-                  <div className="mb-6">
-                    <p className="mb-2 text-sm font-black uppercase tracking-[0.22em] text-purple-300">
-                      Start interview
-                    </p>
-                    <h2 className="text-2xl font-black tracking-[-0.03em] md:text-3xl">
-                      Build a tailored mock interview.
-                    </h2>
-                    <p className="mt-2 max-w-2xl text-sm leading-6 text-gray-400">
-                      Set your role, experience level and interview focus so the
-                      AI coach can generate sharper questions and judge your
-                      answers against the right bar.
-                    </p>
-                  </div>
+          {!interviewStarted && (
+            <div className="grid gap-6 lg:grid-cols-[2fr_0.9fr]">
+              <GlassCard>
+                <div className="mb-6">
+                  <p className="mb-2 text-sm font-black uppercase tracking-[0.22em] text-purple-300">
+                    Start interview
+                  </p>
+                  <h2 className="text-2xl font-black tracking-[-0.03em] md:text-3xl">
+                    Build a tailored mock interview.
+                  </h2>
+                  <p className="mt-2 max-w-2xl text-sm leading-6 text-gray-400">
+                    Set your role, experience level and interview focus so the
+                    AI coach can generate sharper questions and judge your
+                    answers against the right bar.
+                  </p>
+                </div>
 
-                  <label className="mb-2 block text-sm font-bold text-gray-200">
-                    Target role or profile
-                  </label>
+                <label className="mb-2 block text-sm font-bold text-gray-200">
+                  Target role or profile
+                </label>
 
-                  <input
-                    className="mb-5 w-full rounded-2xl border border-white/10 bg-black/35 p-4 text-white placeholder-gray-500 outline-none transition focus:border-purple-300/50 focus:ring-4 focus:ring-purple-500/10"
-                    placeholder="Example: Graduate looking for a software engineering placement"
-                    value={role}
-                    onChange={(e) => setRole(e.target.value)}
+                <input
+                  className="mb-5 w-full rounded-2xl border border-white/10 bg-black/35 p-4 text-white placeholder-gray-500 outline-none transition focus:border-purple-300/50 focus:ring-4 focus:ring-purple-500/10"
+                  placeholder="Example: Graduate looking for a software engineering placement"
+                  value={role}
+                  onChange={(e) => setRole(e.target.value)}
+                />
+
+                <div className="mb-5 grid gap-4 md:grid-cols-2">
+                  <SelectField
+                    label="Experience level"
+                    value={experienceLevel}
+                    onChange={setExperienceLevel}
+                    options={experienceLevels}
                   />
 
-                  <div className="mb-5 grid gap-4 md:grid-cols-2">
-                    <SelectField
-                      label="Experience level"
-                      value={experienceLevel}
-                      onChange={setExperienceLevel}
-                      options={experienceLevels}
-                    />
+                  <SelectField
+                    label="Interview type"
+                    value={interviewType}
+                    onChange={setInterviewType}
+                    options={interviewTypes}
+                  />
 
-                    <SelectField
-                      label="Interview type"
-                      value={interviewType}
-                      onChange={setInterviewType}
-                      options={interviewTypes}
-                    />
+                  <SelectField
+                    label="Difficulty"
+                    value={difficulty}
+                    onChange={setDifficulty}
+                    options={difficultyLevels}
+                  />
 
-                    <SelectField
-                      label="Difficulty"
-                      value={difficulty}
-                      onChange={setDifficulty}
-                      options={difficultyLevels}
-                    />
+                  <SelectField
+                    label="Main focus"
+                    value={focusArea}
+                    onChange={setFocusArea}
+                    options={focusAreas}
+                  />
+                </div>
 
-                    <SelectField
-                      label="Main focus"
-                      value={focusArea}
-                      onChange={setFocusArea}
-                      options={focusAreas}
-                    />
+                <div className="mb-5 rounded-[1.5rem] border border-white/10 bg-black/25 p-4">
+                  <p className="mb-3 text-sm font-bold text-gray-300">
+                    Practice settings
+                  </p>
+
+                  <div className="flex flex-wrap gap-3">
+                    <ToggleButton
+                      active={!speakerEnabled}
+                      onClick={() => {
+                        setHasUserInteracted(true);
+                        setSpeakerEnabled(false);
+                        stopQuestionSpeech();
+                      }}
+                    >
+                      Text Only
+                    </ToggleButton>
+
+                    <ToggleButton
+                      active={speakerEnabled}
+                      onClick={() => {
+                        setHasUserInteracted(true);
+                        setSpeakerEnabled(true);
+                      }}
+                    >
+                      Speaker + Text
+                    </ToggleButton>
+
+                    <ToggleButton
+                      active={cameraEnabled}
+                      onClick={() => {
+                        setCameraEnabled((previous) => !previous);
+                        setHasUserInteracted(true);
+                      }}
+                    >
+                      {cameraEnabled ? "Camera On" : "Camera Off"}
+                    </ToggleButton>
                   </div>
+                </div>
 
-                  <div className="mb-5 rounded-[1.5rem] border border-white/10 bg-black/25 p-4">
-                    <p className="mb-3 text-sm font-bold text-gray-300">
-                      Practice settings
+                <button
+                  onClick={startInterview}
+                  disabled={!role.trim() || questionLoading}
+                  className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-6 py-4 text-base font-black shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {questionLoading
+                    ? "Starting..."
+                    : "Start Tailored 5-Question Interview"}
+                </button>
+              </GlassCard>
+
+              <aside className="space-y-6">
+                <GlassCard>
+                  <h2 className="mb-4 text-xl font-black text-white">
+                    Account
+                  </h2>
+
+                  <Show when="signed-out">
+                    <p className="mb-4 text-sm leading-6 text-gray-400">
+                      Sign in to prepare for saved accounts, progress tracking
+                      and future premium reports.
                     </p>
+                    <SignInButton mode="modal">
+                      <button className="w-full rounded-2xl bg-white px-4 py-3 font-black text-black shadow-xl shadow-purple-950/20 transition hover:bg-purple-100">
+                        Sign In
+                      </button>
+                    </SignInButton>
+                  </Show>
 
-                    <div className="flex flex-wrap gap-3">
-                      <ToggleButton
-                        active={!speakerEnabled}
-                        onClick={() => {
-                          setHasUserInteracted(true);
-                          setSpeakerEnabled(false);
-                          stopQuestionSpeech();
-                        }}
-                      >
-                        Text Only
-                      </ToggleButton>
-
-                      <ToggleButton
-                        active={speakerEnabled}
-                        onClick={() => {
-                          setHasUserInteracted(true);
-                          setSpeakerEnabled(true);
-                        }}
-                      >
-                        Speaker + Text
-                      </ToggleButton>
-
-                      <ToggleButton
-                        active={cameraEnabled}
-                        onClick={() => {
-                          setCameraEnabled((previous) => !previous);
-                          setHasUserInteracted(true);
-                        }}
-                      >
-                        {cameraEnabled ? "Camera On" : "Camera Off"}
-                      </ToggleButton>
+                  <Show when="signed-in">
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm text-gray-300">
+                        You are signed in.
+                      </p>
+                      <UserButton />
                     </div>
-                  </div>
-
-                  <div className="mb-5 rounded-[1.5rem] border border-purple-300/15 bg-purple-300/10 p-4">
-                    <p className="mb-2 text-sm font-black text-purple-200">
-                      Interview setup
-                    </p>
-                    <div className="grid gap-2 text-sm text-gray-300 sm:grid-cols-2">
-                      <p>
-                        <span className="text-gray-500">Level:</span>{" "}
-                        {experienceLevel}
-                      </p>
-                      <p>
-                        <span className="text-gray-500">Type:</span>{" "}
-                        {interviewType}
-                      </p>
-                      <p>
-                        <span className="text-gray-500">Difficulty:</span>{" "}
-                        {difficulty}
-                      </p>
-                      <p>
-                        <span className="text-gray-500">Focus:</span>{" "}
-                        {focusArea}
-                      </p>
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={startInterview}
-                    disabled={!role.trim() || questionLoading}
-                    className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-6 py-4 text-base font-black shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    {questionLoading
-                      ? "Starting..."
-                      : "Start Tailored 5-Question Interview"}
-                  </button>
+                  </Show>
                 </GlassCard>
-              )}
 
-              {interviewStarted && !interviewFinished && (
-                <>
+                <GlassCard>
+                  <h2 className="mb-4 text-xl font-black text-white">
+                    Premium setup
+                  </h2>
+                  <div className="space-y-3 text-sm leading-6 text-gray-400">
+                    <CheckItem>{experienceLevel}</CheckItem>
+                    <CheckItem>{interviewType}</CheckItem>
+                    <CheckItem>{difficulty} difficulty</CheckItem>
+                    <CheckItem>Focus: {focusArea}</CheckItem>
+                  </div>
+                </GlassCard>
+              </aside>
+            </div>
+          )}
+
+          {interviewStarted && !interviewFinished && (
+            <>
+              <div className="mb-6 flex flex-col gap-4 rounded-[2rem] border border-white/10 bg-white/[0.055] p-5 shadow-2xl shadow-purple-950/10 backdrop-blur-2xl lg:flex-row lg:items-center lg:justify-between">
+                <div>
+                  <p className="mb-1 text-sm font-black uppercase tracking-[0.22em] text-purple-300">
+                    Question {currentQuestionNumber} of {totalQuestions}
+                  </p>
+                  <h2 className="text-2xl font-black tracking-[-0.03em]">
+                    Interview practice session
+                  </h2>
+                  <p className="mt-1 text-sm text-gray-400">
+                    Average score so far: {averageQuestionScore}/10
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap gap-3">
+                  <ToggleButton
+                    active={!speakerEnabled}
+                    onClick={() => {
+                      setHasUserInteracted(true);
+                      setSpeakerEnabled(false);
+                      stopQuestionSpeech();
+                    }}
+                  >
+                    Text Only
+                  </ToggleButton>
+
+                  <ToggleButton
+                    active={speakerEnabled}
+                    onClick={() => {
+                      setHasUserInteracted(true);
+                      setSpeakerEnabled(true);
+                      if (question) {
+                        speakQuestion(question, true);
+                      }
+                    }}
+                  >
+                    Speaker + Text
+                  </ToggleButton>
+
+                  <ToggleButton
+                    active={cameraEnabled}
+                    onClick={() => {
+                      setCameraEnabled((previous) => !previous);
+                      setHasUserInteracted(true);
+                    }}
+                  >
+                    {cameraEnabled ? "Camera On" : "Camera Off"}
+                  </ToggleButton>
+
+                  {speakerEnabled && question && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setHasUserInteracted(true);
+                        if (isSpeakingQuestion) {
+                          stopQuestionSpeech();
+                        } else {
+                          speakQuestion(question, true);
+                        }
+                      }}
+                      className="rounded-full border border-cyan-300/25 bg-cyan-300/10 px-4 py-2 text-sm font-black text-cyan-100 transition hover:bg-cyan-300/15"
+                    >
+                      {isSpeakingQuestion ? "Stop Voice" : "Play Question"}
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              <div className="grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
+                <div className="space-y-6">
                   <GlassCard>
-                    <div className="mb-6 flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
-                      <div>
-                        <p className="mb-2 text-sm font-black uppercase tracking-[0.22em] text-purple-300">
-                          Question {currentQuestionNumber} of {totalQuestions}
-                        </p>
-                        <h2 className="text-2xl font-black tracking-[-0.03em]">
-                          Interview practice session
-                        </h2>
-                        <p className="mt-1 text-sm text-gray-400">
-                          Average score so far: {averageQuestionScore}/10
-                        </p>
-                      </div>
-
-                      <div className="flex flex-wrap gap-3">
-                        <ToggleButton
-                          active={!speakerEnabled}
-                          onClick={() => {
-                            setHasUserInteracted(true);
-                            setSpeakerEnabled(false);
-                            stopQuestionSpeech();
-                          }}
-                        >
-                          Text Only
-                        </ToggleButton>
-
-                        <ToggleButton
-                          active={speakerEnabled}
-                          onClick={() => {
-                            setHasUserInteracted(true);
-                            setSpeakerEnabled(true);
-                            if (question) {
-                              speakQuestion(question, true);
-                            }
-                          }}
-                        >
-                          Speaker + Text
-                        </ToggleButton>
-
-                        <ToggleButton
-                          active={cameraEnabled}
-                          onClick={() => {
-                            setCameraEnabled((previous) => !previous);
-                            setHasUserInteracted(true);
-                          }}
-                        >
-                          {cameraEnabled ? "Camera On" : "Camera Off"}
-                        </ToggleButton>
-
-                        {speakerEnabled && question && (
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setHasUserInteracted(true);
-                              if (isSpeakingQuestion) {
-                                stopQuestionSpeech();
-                              } else {
-                                speakQuestion(question, true);
-                              }
-                            }}
-                            className="rounded-full border border-cyan-300/25 bg-cyan-300/10 px-4 py-2 text-sm font-black text-cyan-100 transition hover:bg-cyan-300/15"
-                          >
-                            {isSpeakingQuestion ? "Stop Voice" : "Play Question"}
-                          </button>
-                        )}
-                      </div>
-                    </div>
-
                     <div className="mb-5 rounded-[1.5rem] border border-purple-300/15 bg-purple-300/10 p-4">
-                      <div className="grid gap-2 text-xs font-bold text-gray-300 sm:grid-cols-2 lg:grid-cols-4">
+                      <div className="grid gap-2 text-xs font-bold text-gray-300 sm:grid-cols-2">
                         <p>
                           <span className="text-gray-500">Role:</span>{" "}
                           {role || "Not set"}
@@ -2396,312 +2409,117 @@ Generate questions and feedback that match this candidate context. Use the selec
                       </div>
                     </div>
 
-                    <div className="mb-5 grid gap-5 lg:grid-cols-[1fr_0.9fr]">
-                      <div className="rounded-[1.6rem] border border-white/10 bg-black/30 p-5">
-                        <div className="flex items-center gap-4">
-                          <div className="relative flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-purple-500 via-fuchsia-500 to-cyan-400 shadow-xl shadow-purple-950/40">
-                            <div
-                              className={`absolute inset-0 rounded-3xl ${
-                                isSpeakingQuestion
-                                  ? "animate-ping bg-purple-400/30"
-                                  : ""
-                              }`}
-                            />
+                    <div className="mb-5 rounded-[1.7rem] border border-white/10 bg-black/30 p-5">
+                      <div className="grid gap-5 lg:grid-cols-[auto_1fr_260px] lg:items-center">
+                        <div className="relative mx-auto flex h-34 w-34 items-center justify-center rounded-[2rem] bg-gradient-to-br from-purple-500 via-fuchsia-500 to-cyan-400 p-2 shadow-2xl shadow-purple-950/40 lg:mx-0">
+                          <div
+                            className={`absolute inset-0 rounded-[2rem] ${
+                              isSpeakingQuestion
+                                ? "animate-ping bg-purple-400/30"
+                                : ""
+                            }`}
+                          />
+                          <div className="relative rounded-[1.5rem] bg-white p-2 shadow-xl shadow-black/20">
                             <img
                               src="/brand/logo.jpg"
-                              alt="AI"
-                              className="relative h-14 w-14 rounded-2xl border border-white/10 object-contain"
+                              alt="AI Career Coach"
+                              className="h-24 w-24 rounded-[1.1rem] object-contain"
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <p className="text-3xl font-black leading-tight tracking-[-0.04em] text-white">
+                            AI Career Coach
+                          </p>
+                          <p className="mt-3 max-w-md text-sm leading-6 text-gray-400">
+                            {speakerEnabled
+                              ? isSpeakingQuestion
+                                ? "Reading the question aloud. Your answer will start after the coach finishes."
+                                : isListening
+                                ? "Listening now. Keep speaking naturally and finish your answer before requesting feedback."
+                                : "Ready to guide your mock interview."
+                              : "Read the question, answer naturally, then request strict hiring-bar feedback."}
+                          </p>
+
+                          <div className="mt-4 flex flex-wrap gap-2">
+                            <span className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1.5 text-xs font-black text-gray-300">
+                              {speakerEnabled ? "Speaker enabled" : "Text mode"}
+                            </span>
+                            <span className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1.5 text-xs font-black text-gray-300">
+                              {cameraEnabled ? "Camera enabled" : "Camera off"}
+                            </span>
+                            <span className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1.5 text-xs font-black text-gray-300">
+                              {focusArea}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="rounded-[1.35rem] border border-white/10 bg-black/45 p-3">
+                          <div className="mb-2 flex items-center justify-between gap-3">
+                            <p className="text-xs font-black uppercase tracking-[0.16em] text-cyan-300">
+                              Camera
+                            </p>
+                            <span className="rounded-full border border-white/10 bg-white/[0.06] px-2.5 py-1 text-[11px] font-bold text-gray-300">
+                              {cameraEnabled
+                                ? cameraError
+                                  ? "Preview"
+                                  : cameraReady
+                                  ? "Ready"
+                                  : "Starting"
+                                : "Off"}
+                            </span>
+                          </div>
+
+                          <div className="overflow-hidden rounded-2xl border border-white/10 bg-black">
+                            <video
+                              ref={videoRef}
+                              autoPlay
+                              muted
+                              playsInline
+                              className="h-36 w-full object-cover"
                             />
                           </div>
 
-                          <div className="flex-1">
-                            <p className="text-lg font-black text-white">
-                              AI Career Coach
-                            </p>
-                            <p className="mt-1 text-sm leading-6 text-gray-400">
-                              {speakerEnabled
-                                ? isSpeakingQuestion
-                                  ? "Speaking the interview question..."
-                                  : isListening
-                                  ? "Listening for your answer..."
-                                  : "Speaker mode is enabled."
-                                : "Text-only mode is enabled."}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="rounded-[1.6rem] border border-white/10 bg-black/30 p-5">
-                        <div className="mb-3 flex items-center justify-between">
-                          <p className="text-sm font-black text-cyan-300">
-                            Camera Analysis
-                          </p>
-                          <span className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-xs font-bold text-gray-300">
+                          <p className="mt-2 text-[11px] leading-4 text-gray-500">
                             {cameraEnabled
                               ? cameraError
-                                ? "Preview only"
-                                : cameraReady
-                                ? "Ready"
-                                : "Starting..."
-                              : "Off"}
-                          </span>
-                        </div>
-
-                        <div className="overflow-hidden rounded-2xl border border-white/10 bg-black">
-                          <video
-                            ref={videoRef}
-                            autoPlay
-                            muted
-                            playsInline
-                            className="h-56 w-full object-cover"
-                          />
-                        </div>
-
-                        <p className="mt-3 text-xs leading-5 text-gray-400">
-                          {cameraEnabled
-                            ? cameraError
-                              ? "Camera preview is active. Advanced tracking is unavailable, so a neutral fallback video score will be used."
-                              : "Scores eye contact, position, posture, expression and engagement while you answer."
-                            : "Turn camera on to analyse visual delivery."}
-                        </p>
-
-                        {cameraError && (
-                          <p className="mt-2 text-xs text-amber-300">
-                            {cameraError}
+                                ? "Preview active. Scoring uses fallback if tracking is unavailable."
+                                : "Tracking eye contact, posture and presence."
+                              : "Camera analysis off."}
                           </p>
-                        )}
+                        </div>
                       </div>
+
+                      {cameraError && (
+                        <p className="mt-4 rounded-2xl border border-amber-300/15 bg-amber-300/10 p-3 text-xs leading-5 text-amber-200">
+                          {cameraError}
+                        </p>
+                      )}
                     </div>
 
-                    <div className="rounded-[1.6rem] border border-white/10 bg-black/35 p-6">
-                      <p className="mb-3 text-sm font-black uppercase tracking-[0.2em] text-gray-400">
-                        Interview Question
-                      </p>
-                      <p className="text-lg leading-8 text-gray-100">
+                    <div className="rounded-[1.6rem] border border-purple-300/20 bg-purple-300/10 p-6">
+                      <div className="mb-3 flex items-center justify-between gap-3">
+                        <p className="text-sm font-black uppercase tracking-[0.2em] text-purple-200">
+                          Current Question
+                        </p>
+                        <span className="rounded-full bg-black/30 px-3 py-1 text-xs font-black text-gray-300">
+                          {currentQuestionNumber}/{totalQuestions}
+                        </span>
+                      </div>
+                      <p className="text-lg font-bold leading-8 text-white">
                         {questionLoading ? "Generating question..." : question}
                       </p>
                     </div>
                   </GlassCard>
+                </div>
 
-                  {question && (
-                    <GlassCard className="mt-6">
-                      <label className="mb-3 block text-sm font-black uppercase tracking-[0.2em] text-purple-300">
+                <div className="xl:sticky xl:top-28 xl:self-start">
+                  <GlassCard>
+                    <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                      <label className="block text-sm font-black uppercase tracking-[0.2em] text-purple-300">
                         Your answer
                       </label>
-
-                      <textarea
-                        className="mb-5 min-h-[190px] w-full rounded-2xl border border-white/10 bg-black/35 p-4 leading-7 text-white placeholder-gray-500 outline-none transition focus:border-purple-300/50 focus:ring-4 focus:ring-purple-500/10"
-                        placeholder={
-                          speakerEnabled
-                            ? "Once the question finishes, start speaking. Click Stop Voice Answer when you’re done."
-                            : "Write your answer here..."
-                        }
-                        value={answer}
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          const safeValue = stripQuestionLeakageFromTranscript(
-                            value,
-                            activeQuestionRef.current
-                          );
-
-                          setAnswer(safeValue);
-                          finalTranscriptRef.current = safeValue;
-                          interimTranscriptRef.current = "";
-                          rawAnswerTranscriptRef.current = safeValue;
-                          latestVoiceAnalysisRef.current = null;
-                          latestVideoAnalysisRef.current = null;
-                          setVoiceAnalysis(null);
-                          setVideoAnalysis(null);
-                        }}
-                      />
-
-                      {voiceSupported && (
-                        <div className="mb-5 flex flex-wrap gap-3">
-                          {isListening ? (
-                            <button
-                              onClick={stopVoiceInput}
-                              className="rounded-full bg-red-500 px-5 py-2.5 text-sm font-black text-white shadow-xl shadow-red-950/20 transition hover:bg-red-600"
-                            >
-                              Stop Voice Answer
-                            </button>
-                          ) : (
-                            <button
-                              onClick={() => {
-                                setHasUserInteracted(true);
-                                void startVoiceInput();
-                              }}
-                              className="rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-2.5 text-sm font-black text-white shadow-xl shadow-purple-950/30 transition hover:opacity-95"
-                            >
-                              Start Voice Answer
-                            </button>
-                          )}
-
-                          <button
-                            onClick={clearVoiceAnswer}
-                            className="rounded-full border border-white/10 bg-white/[0.06] px-5 py-2.5 text-sm font-black text-gray-200 transition hover:bg-white/[0.1]"
-                          >
-                            Clear Answer
-                          </button>
-
-                          <span className="self-center text-sm text-gray-400">
-                            {isSpeakingQuestion
-                              ? "Question is being read aloud..."
-                              : isListening
-                              ? cameraEnabled
-                                ? "Listening and measuring voice + video delivery..."
-                                : "Listening and measuring voice delivery..."
-                              : cleaningTranscript
-                              ? "Tidying punctuation..."
-                              : voiceAnalysisLoading || videoAnalysisLoading
-                              ? "Analysing delivery..."
-                              : speakerEnabled
-                              ? "Question voice will auto-start transcription when it finishes."
-                              : "Voice input ready"}
-                          </span>
-                        </div>
-                      )}
-
-                      {voiceAnalysis && !voiceAnalysis.error && (
-                        <AnalysisPanel title="Voice Analysis" accent="cyan">
-                          <div className="mb-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
-                            <ScoreCard
-                              label="Voice"
-                              value={voiceAnalysis.overallVoiceScore}
-                            />
-                            <ScoreCard
-                              label="Pace"
-                              value={voiceAnalysis.paceScore}
-                            />
-                            <ScoreCard
-                              label="Fillers"
-                              value={voiceAnalysis.fillerScore}
-                            />
-                            <ScoreCard
-                              label="Confidence"
-                              value={voiceAnalysis.confidenceScore}
-                            />
-                            <ScoreCard
-                              label="Energy"
-                              value={voiceAnalysis.energyScore}
-                            />
-                            <ScoreCard
-                              label="Structure"
-                              value={voiceAnalysis.structureScore ?? 0}
-                            />
-                          </div>
-
-                          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                            <MetricCard
-                              label="Words"
-                              value={String(voiceAnalysis.metrics.wordCount)}
-                            />
-                            <MetricCard
-                              label="WPM"
-                              value={String(voiceAnalysis.metrics.estimatedWPM)}
-                            />
-                            <MetricCard
-                              label="Fillers"
-                              value={String(voiceAnalysis.metrics.fillerCount)}
-                            />
-                            <MetricCard
-                              label="Long pauses"
-                              value={String(
-                                voiceAnalysis.metrics.longPauseCount
-                              )}
-                            />
-                          </div>
-                        </AnalysisPanel>
-                      )}
-
-                      {videoAnalysis && !videoAnalysis.error && (
-                        <AnalysisPanel title="Video Analysis" accent="purple">
-                          <div className="mb-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
-                            <ScoreCard
-                              label="Video"
-                              value={videoAnalysis.overallVideoScore}
-                            />
-                            <ScoreCard
-                              label="Eye Contact"
-                              value={videoAnalysis.eyeContactScore}
-                            />
-                            <ScoreCard
-                              label="Position"
-                              value={videoAnalysis.positionScore}
-                            />
-                            <ScoreCard
-                              label="Body Lang."
-                              value={videoAnalysis.bodyLanguageScore}
-                            />
-                            <ScoreCard
-                              label="Expression"
-                              value={videoAnalysis.expressionScore}
-                            />
-                            <ScoreCard
-                              label="Engagement"
-                              value={videoAnalysis.engagementScore}
-                            />
-                          </div>
-
-                          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                            <MetricCard
-                              label="Face detected"
-                              value={
-                                hasRealVideoFrames
-                                  ? `${Math.round(
-                                      videoAnalysis.metrics.faceDetectedRatio *
-                                        100
-                                    )}%`
-                                  : "N/A"
-                              }
-                            />
-                            <MetricCard
-                              label="Centered"
-                              value={
-                                hasRealVideoFrames
-                                  ? `${Math.round(
-                                      videoAnalysis.metrics.centeredFaceRatio *
-                                        100
-                                    )}%`
-                                  : "N/A"
-                              }
-                            />
-                            <MetricCard
-                              label="Looking forward"
-                              value={
-                                hasRealVideoFrames
-                                  ? `${Math.round(
-                                      videoAnalysis.metrics.lookingForwardRatio *
-                                        100
-                                    )}%`
-                                  : "N/A"
-                              }
-                            />
-                            <MetricCard
-                              label="Face loss"
-                              value={
-                                hasRealVideoFrames
-                                  ? String(videoAnalysis.metrics.faceLossEvents)
-                                  : "N/A"
-                              }
-                            />
-                          </div>
-
-                          {videoAnalysis.feedback.improvements.length > 0 && (
-                            <div className="mt-4">
-                              <p className="mb-2 font-black text-orange-300">
-                                Video improvements
-                              </p>
-                              <ul className="list-disc space-y-1 pl-5 text-sm leading-6 text-gray-200">
-                                {videoAnalysis.feedback.improvements.map(
-                                  (item, index) => (
-                                    <li key={index}>{item}</li>
-                                  )
-                                )}
-                              </ul>
-                            </div>
-                          )}
-                        </AnalysisPanel>
-                      )}
 
                       {!feedback && (
                         <button
@@ -2714,453 +2532,514 @@ Generate questions and feedback that match this candidate context. Use the selec
                             voiceAnalysisLoading ||
                             videoAnalysisLoading
                           }
-                          className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-6 py-4 font-black shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
+                          className="rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-3 text-sm font-black shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
                         >
                           {feedbackLoading ? "Evaluating..." : "Get AI Feedback"}
                         </button>
                       )}
-                    </GlassCard>
-                  )}
+                    </div>
 
-                  {feedback && (
-                    <GlassCard className="mt-6">
-                      <h2 className="mb-5 text-2xl font-black tracking-[-0.03em] text-white">
-                        AI Feedback
-                      </h2>
+                    <div className="mb-4 rounded-2xl border border-cyan-300/15 bg-cyan-300/10 p-4">
+                      <p className="mb-2 text-xs font-black uppercase tracking-[0.18em] text-cyan-300">
+                        Question reminder
+                      </p>
+                      <p className="text-sm font-semibold leading-6 text-gray-100">
+                        {questionLoading ? "Generating question..." : question}
+                      </p>
+                    </div>
 
-                      {feedback.error ? (
-                        <p className="text-red-300">{feedback.error}</p>
-                      ) : (
-                        <div className="space-y-6">
-                          <div className="rounded-[1.6rem] border border-white/10 bg-black/35 p-5">
-                            <p className="text-sm text-gray-400">
-                              Overall score
-                            </p>
-                            <p className="mt-1 text-5xl font-black tracking-[-0.05em] text-white">
-                              {feedback.overall_score}
-                              <span className="text-xl text-gray-500">/10</span>
-                            </p>
-                          </div>
+                    <textarea
+                      className="mb-5 min-h-[330px] w-full rounded-2xl border border-white/10 bg-black/35 p-4 leading-7 text-white placeholder-gray-500 outline-none transition focus:border-purple-300/50 focus:ring-4 focus:ring-purple-500/10"
+                      placeholder={
+                        speakerEnabled
+                          ? "Once the question finishes, speak naturally. Click Stop Voice Answer when you’re done."
+                          : "Write your answer here..."
+                      }
+                      value={answer}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        const safeValue = stripQuestionLeakageFromTranscript(
+                          value,
+                          activeQuestionRef.current
+                        );
 
-                          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
-                            <ScoreCard
-                              label="Content"
-                              value={feedback.category_scores.content}
-                            />
-                            <ScoreCard
-                              label="Clarity"
-                              value={feedback.category_scores.clarity}
-                            />
-                            <ScoreCard
-                              label="Relevance"
-                              value={feedback.category_scores.relevance}
-                            />
-                            <ScoreCard
-                              label="Structure"
-                              value={feedback.category_scores.structure}
-                            />
-                            <ScoreCard
-                              label="Confidence"
-                              value={feedback.category_scores.confidence}
-                            />
-                            <ScoreCard
-                              label="Pace"
-                              value={
-                                feedback.pace_score ??
-                                latestVoiceAnalysisRef.current?.paceScore ??
-                                voiceAnalysis?.paceScore ??
-                                0
-                              }
-                            />
-                          </div>
+                        setAnswer(safeValue);
+                        finalTranscriptRef.current = safeValue;
+                        interimTranscriptRef.current = "";
+                        rawAnswerTranscriptRef.current = safeValue;
+                        latestVoiceAnalysisRef.current = null;
+                        latestVideoAnalysisRef.current = null;
+                        setVoiceAnalysis(null);
+                        setVideoAnalysis(null);
+                      }}
+                    />
 
-                          {feedback.section_feedback && (
-                            <div>
-                              <h3 className="mb-3 text-lg font-black text-cyan-300">
-                                Section-by-section feedback
-                              </h3>
-                              <div className="grid gap-4 md:grid-cols-2">
-                                <SectionFeedbackCard
-                                  title="Content"
-                                  item={feedback.section_feedback.content}
-                                />
-                                <SectionFeedbackCard
-                                  title="Clarity"
-                                  item={feedback.section_feedback.clarity}
-                                />
-                                <SectionFeedbackCard
-                                  title="Relevance"
-                                  item={feedback.section_feedback.relevance}
-                                />
-                                <SectionFeedbackCard
-                                  title="Structure"
-                                  item={feedback.section_feedback.structure}
-                                />
-                                <SectionFeedbackCard
-                                  title="Confidence"
-                                  item={feedback.section_feedback.confidence}
-                                />
-                                <SectionFeedbackCard
-                                  title="Pace"
-                                  item={feedback.section_feedback.pace}
-                                />
-                              </div>
-                            </div>
-                          )}
-
-                          <FeedbackList
-                            title="Strengths"
-                            color="text-blue-300"
-                            items={feedback.strengths}
-                          />
-
-                          <FeedbackList
-                            title="Improvements"
-                            color="text-orange-300"
-                            items={feedback.improvements}
-                          />
-
-                          <div>
-                            <h3 className="mb-3 text-lg font-black text-purple-300">
-                              Model Answer — 8+/10 Standard
-                            </h3>
-                            <div className="rounded-2xl border border-white/10 bg-black/35 p-5 leading-8 text-gray-100">
-                              {feedback.improved_answer}
-                            </div>
-                          </div>
-
+                    {voiceSupported && (
+                      <div className="mb-5 flex flex-wrap gap-3">
+                        {isListening ? (
                           <button
-                            onClick={nextStep}
-                            className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-6 py-4 font-black shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01]"
+                            onClick={stopVoiceInput}
+                            className="rounded-full bg-red-500 px-5 py-2.5 text-sm font-black text-white shadow-xl shadow-red-950/20 transition hover:bg-red-600"
                           >
-                            {currentQuestionNumber === totalQuestions
-                              ? "Finish Interview"
-                              : "Next Question"}
+                            Stop Voice Answer
                           </button>
-                        </div>
-                      )}
-                    </GlassCard>
-                  )}
-                </>
-              )}
+                        ) : (
+                          <button
+                            onClick={() => {
+                              setHasUserInteracted(true);
+                              void startVoiceInput();
+                            }}
+                            className="rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-2.5 text-sm font-black text-white shadow-xl shadow-purple-950/30 transition hover:opacity-95"
+                          >
+                            Start Voice Answer
+                          </button>
+                        )}
 
-              {interviewFinished && (
-                <GlassCard>
-                  <h2 className="mb-5 text-3xl font-black tracking-[-0.04em]">
-                    Final Interview Summary
-                  </h2>
+                        <button
+                          onClick={clearVoiceAnswer}
+                          className="rounded-full border border-white/10 bg-white/[0.06] px-5 py-2.5 text-sm font-black text-gray-200 transition hover:bg-white/[0.1]"
+                        >
+                          Clear Answer
+                        </button>
+                      </div>
+                    )}
 
-                  {summaryLoading && (
-                    <p className="text-gray-400">Generating summary...</p>
-                  )}
+                    <div className="rounded-2xl border border-white/10 bg-black/25 p-4">
+                      <p className="text-sm leading-6 text-gray-400">
+                        {isSpeakingQuestion
+                          ? "Question is being read aloud..."
+                          : isListening
+                          ? cameraEnabled
+                            ? "Listening… keep speaking naturally. Voice and video are being measured."
+                            : "Listening… keep speaking naturally."
+                          : cleaningTranscript
+                          ? "Tidying transcript and punctuation..."
+                          : voiceAnalysisLoading || videoAnalysisLoading
+                          ? "Analysing delivery..."
+                          : speakerEnabled
+                          ? "Question voice will auto-start recording when it finishes."
+                          : "Voice input ready."}
+                      </p>
+                    </div>
+                  </GlassCard>
+                </div>
+              </div>
 
-                  {summary && (
-                    <div className="space-y-6">
-                      <div className="grid gap-4 md:grid-cols-2">
-                        <div className="rounded-2xl border border-white/10 bg-black/35 p-5">
-                          <p className="text-sm text-gray-400">Final score</p>
-                          <p className="mt-1 text-5xl font-black tracking-[-0.05em]">
-                            {summary.overall_score}
-                            <span className="text-xl text-gray-500">/10</span>
-                          </p>
-                        </div>
-
-                        <div className="rounded-2xl border border-white/10 bg-black/35 p-5">
-                          <p className="text-sm text-gray-400">Hire signal</p>
-                          <p className="mt-3 text-3xl font-black text-green-300">
-                            {summary.hire_signal}
-                          </p>
-                        </div>
+              {(voiceAnalysis || videoAnalysis) && (
+                <div className="mt-6 grid gap-6 lg:grid-cols-2">
+                  {voiceAnalysis && !voiceAnalysis.error && (
+                    <AnalysisPanel title="Voice Analysis" accent="cyan">
+                      <div className="mb-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                        <ScoreCard
+                          label="Voice"
+                          value={voiceAnalysis.overallVoiceScore}
+                        />
+                        <ScoreCard label="Pace" value={voiceAnalysis.paceScore} />
+                        <ScoreCard
+                          label="Fillers"
+                          value={voiceAnalysis.fillerScore}
+                        />
+                        <ScoreCard
+                          label="Confidence"
+                          value={voiceAnalysis.confidenceScore}
+                        />
+                        <ScoreCard
+                          label="Energy"
+                          value={voiceAnalysis.energyScore}
+                        />
+                        <ScoreCard
+                          label="Structure"
+                          value={voiceAnalysis.structureScore ?? 0}
+                        />
                       </div>
 
-                      {typeof summary.readiness_score === "number" && (
-                        <div className="rounded-2xl border border-purple-300/20 bg-purple-300/10 p-5">
-                          <p className="text-sm text-gray-400">
-                            Interview readiness
-                          </p>
-                          <p className="mt-1 text-4xl font-black tracking-[-0.05em]">
-                            {summary.readiness_score}
-                            <span className="text-lg text-gray-500">/10</span>
-                          </p>
-                          {summary.hire_signal_reason && (
-                            <p className="mt-3 leading-7 text-gray-300">
-                              {summary.hire_signal_reason}
-                            </p>
-                          )}
-                        </div>
-                      )}
-
-                      {summary.category_breakdown && (
-                        <div>
-                          <h3 className="mb-3 text-lg font-black text-cyan-300">
-                            Category Breakdown
-                          </h3>
-                          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                            <ScoreCard
-                              label="Content"
-                              value={summary.category_breakdown.content}
-                            />
-                            <ScoreCard
-                              label="Clarity"
-                              value={summary.category_breakdown.clarity}
-                            />
-                            <ScoreCard
-                              label="Relevance"
-                              value={summary.category_breakdown.relevance}
-                            />
-                            <ScoreCard
-                              label="Structure"
-                              value={summary.category_breakdown.structure}
-                            />
-                            <ScoreCard
-                              label="Confidence"
-                              value={summary.category_breakdown.confidence}
-                            />
-                            <ScoreCard
-                              label="Pace"
-                              value={summary.category_breakdown.pace}
-                            />
-                            <ScoreCard
-                              label="Voice"
-                              value={summary.category_breakdown.voice_delivery}
-                            />
-                            <ScoreCard
-                              label="Camera"
-                              value={summary.category_breakdown.camera_presence}
-                            />
-                          </div>
-                        </div>
-                      )}
-
-                      {(summary.strongest_answer || summary.weakest_answer) && (
-                        <div className="grid gap-4 md:grid-cols-2">
-                          {summary.strongest_answer && (
-                            <div className="rounded-2xl border border-green-300/20 bg-green-300/10 p-5">
-                              <p className="mb-2 text-sm font-black text-green-300">
-                                Strongest Answer
-                              </p>
-                              <p className="font-black text-white">
-                                Question {summary.strongest_answer.question_number}
-                                : {summary.strongest_answer.score}/10
-                              </p>
-                              <p className="mt-2 text-sm leading-6 text-gray-300">
-                                {summary.strongest_answer.question}
-                              </p>
-                              <p className="mt-3 text-sm leading-6 text-gray-400">
-                                {summary.strongest_answer.reason}
-                              </p>
-                            </div>
-                          )}
-
-                          {summary.weakest_answer && (
-                            <div className="rounded-2xl border border-orange-300/20 bg-orange-300/10 p-5">
-                              <p className="mb-2 text-sm font-black text-orange-300">
-                                Weakest Answer
-                              </p>
-                              <p className="font-black text-white">
-                                Question {summary.weakest_answer.question_number}
-                                : {summary.weakest_answer.score}/10
-                              </p>
-                              <p className="mt-2 text-sm leading-6 text-gray-300">
-                                {summary.weakest_answer.question}
-                              </p>
-                              <p className="mt-3 text-sm leading-6 text-gray-400">
-                                {summary.weakest_answer.reason}
-                              </p>
-                            </div>
-                          )}
-                        </div>
-                      )}
-
-                      {(summary.voice_delivery_summary ||
-                        summary.camera_delivery_summary) && (
-                        <div className="grid gap-4 md:grid-cols-2">
-                          {summary.voice_delivery_summary && (
-                            <div className="rounded-2xl border border-cyan-300/20 bg-cyan-300/10 p-5">
-                              <p className="mb-2 text-sm font-black text-cyan-300">
-                                Voice Delivery
-                              </p>
-                              <p className="text-3xl font-black">
-                                {summary.voice_delivery_summary.score}
-                                <span className="text-base text-gray-500">
-                                  /10
-                                </span>
-                              </p>
-                              <p className="mt-3 leading-7 text-gray-300">
-                                {summary.voice_delivery_summary.summary}
-                              </p>
-                            </div>
-                          )}
-
-                          {summary.camera_delivery_summary && (
-                            <div className="rounded-2xl border border-purple-300/20 bg-purple-300/10 p-5">
-                              <p className="mb-2 text-sm font-black text-purple-300">
-                                Camera Delivery
-                              </p>
-                              <p className="text-3xl font-black">
-                                {summary.camera_delivery_summary.score}
-                                <span className="text-base text-gray-500">
-                                  /10
-                                </span>
-                              </p>
-                              <p className="mt-3 leading-7 text-gray-300">
-                                {summary.camera_delivery_summary.summary}
-                              </p>
-                            </div>
-                          )}
-                        </div>
-                      )}
-
-                      <FeedbackList
-                        title="Top Strengths"
-                        color="text-blue-300"
-                        items={summary.top_strengths}
-                      />
-
-                      <FeedbackList
-                        title="Top Improvements"
-                        color="text-orange-300"
-                        items={summary.top_improvements}
-                      />
-
-                      {summary.priority_improvements && (
-                        <FeedbackList
-                          title="Top 3 Priority Improvements"
-                          color="text-purple-300"
-                          items={summary.priority_improvements}
+                      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                        <MetricCard
+                          label="Words"
+                          value={String(voiceAnalysis.metrics.wordCount)}
                         />
-                      )}
+                        <MetricCard
+                          label="WPM"
+                          value={String(voiceAnalysis.metrics.estimatedWPM)}
+                        />
+                        <MetricCard
+                          label="Fillers"
+                          value={String(voiceAnalysis.metrics.fillerCount)}
+                        />
+                        <MetricCard
+                          label="Long pauses"
+                          value={String(voiceAnalysis.metrics.longPauseCount)}
+                        />
+                      </div>
+                    </AnalysisPanel>
+                  )}
 
-                      <div>
-                        <h3 className="mb-2 text-lg font-black text-purple-300">
-                          Final Recommendation
-                        </h3>
-                        <p className="leading-8 text-gray-100">
-                          {summary.final_recommendation}
+                  {videoAnalysis && !videoAnalysis.error && (
+                    <AnalysisPanel title="Video Analysis" accent="purple">
+                      <div className="mb-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                        <ScoreCard
+                          label="Video"
+                          value={videoAnalysis.overallVideoScore}
+                        />
+                        <ScoreCard
+                          label="Eye Contact"
+                          value={videoAnalysis.eyeContactScore}
+                        />
+                        <ScoreCard
+                          label="Position"
+                          value={videoAnalysis.positionScore}
+                        />
+                        <ScoreCard
+                          label="Body Lang."
+                          value={videoAnalysis.bodyLanguageScore}
+                        />
+                        <ScoreCard
+                          label="Expression"
+                          value={videoAnalysis.expressionScore}
+                        />
+                        <ScoreCard
+                          label="Engagement"
+                          value={videoAnalysis.engagementScore}
+                        />
+                      </div>
+
+                      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                        <MetricCard
+                          label="Face detected"
+                          value={
+                            hasRealVideoFrames
+                              ? `${Math.round(
+                                  videoAnalysis.metrics.faceDetectedRatio * 100
+                                )}%`
+                              : "N/A"
+                          }
+                        />
+                        <MetricCard
+                          label="Centered"
+                          value={
+                            hasRealVideoFrames
+                              ? `${Math.round(
+                                  videoAnalysis.metrics.centeredFaceRatio * 100
+                                )}%`
+                              : "N/A"
+                          }
+                        />
+                        <MetricCard
+                          label="Looking forward"
+                          value={
+                            hasRealVideoFrames
+                              ? `${Math.round(
+                                  videoAnalysis.metrics.lookingForwardRatio *
+                                    100
+                                )}%`
+                              : "N/A"
+                          }
+                        />
+                        <MetricCard
+                          label="Face loss"
+                          value={
+                            hasRealVideoFrames
+                              ? String(videoAnalysis.metrics.faceLossEvents)
+                              : "N/A"
+                          }
+                        />
+                      </div>
+
+                      {videoAnalysis.feedback.improvements.length > 0 && (
+                        <div className="mt-4">
+                          <p className="mb-2 font-black text-orange-300">
+                            Video improvements
+                          </p>
+                          <ul className="list-disc space-y-1 pl-5 text-sm leading-6 text-gray-200">
+                            {videoAnalysis.feedback.improvements.map(
+                              (item, index) => (
+                                <li key={index}>{item}</li>
+                              )
+                            )}
+                          </ul>
+                        </div>
+                      )}
+                    </AnalysisPanel>
+                  )}
+                </div>
+              )}
+
+              {feedback && (
+                <GlassCard className="mt-6">
+                  <h2 className="mb-5 text-2xl font-black tracking-[-0.03em] text-white">
+                    AI Feedback
+                  </h2>
+
+                  {feedback.error ? (
+                    <p className="text-red-300">{feedback.error}</p>
+                  ) : (
+                    <div className="space-y-6">
+                      <div className="rounded-[1.6rem] border border-white/10 bg-black/35 p-5">
+                        <p className="text-sm text-gray-400">Overall score</p>
+                        <p className="mt-1 text-5xl font-black tracking-[-0.05em] text-white">
+                          {feedback.overall_score}
+                          <span className="text-xl text-gray-500">/10</span>
                         </p>
                       </div>
 
-                      <FeedbackList
-                        title="Next Steps"
-                        color="text-cyan-300"
-                        items={summary.next_steps}
-                      />
+                      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
+                        <ScoreCard
+                          label="Content"
+                          value={feedback.category_scores.content}
+                        />
+                        <ScoreCard
+                          label="Clarity"
+                          value={feedback.category_scores.clarity}
+                        />
+                        <ScoreCard
+                          label="Relevance"
+                          value={feedback.category_scores.relevance}
+                        />
+                        <ScoreCard
+                          label="Structure"
+                          value={feedback.category_scores.structure}
+                        />
+                        <ScoreCard
+                          label="Confidence"
+                          value={feedback.category_scores.confidence}
+                        />
+                        <ScoreCard
+                          label="Pace"
+                          value={
+                            feedback.pace_score ??
+                            latestVoiceAnalysisRef.current?.paceScore ??
+                            voiceAnalysis?.paceScore ??
+                            0
+                          }
+                        />
+                      </div>
 
-                      {summary.seven_day_action_plan && (
+                      {feedback.section_feedback && (
                         <div>
-                          <h3 className="mb-3 text-lg font-black text-purple-300">
-                            7-Day Action Plan
+                          <h3 className="mb-3 text-lg font-black text-cyan-300">
+                            Section-by-section feedback
                           </h3>
-                          <div className="grid gap-3 md:grid-cols-2">
-                            {summary.seven_day_action_plan.map((day) => (
-                              <div
-                                key={day.day}
-                                className="rounded-2xl border border-white/10 bg-black/35 p-4"
-                              >
-                                <p className="font-black text-white">
-                                  {day.day}: {day.focus}
-                                </p>
-                                <p className="mt-2 text-sm leading-6 text-gray-400">
-                                  {day.task}
-                                </p>
-                              </div>
-                            ))}
+                          <div className="grid gap-4 md:grid-cols-2">
+                            <SectionFeedbackCard
+                              title="Content"
+                              item={feedback.section_feedback.content}
+                            />
+                            <SectionFeedbackCard
+                              title="Clarity"
+                              item={feedback.section_feedback.clarity}
+                            />
+                            <SectionFeedbackCard
+                              title="Relevance"
+                              item={feedback.section_feedback.relevance}
+                            />
+                            <SectionFeedbackCard
+                              title="Structure"
+                              item={feedback.section_feedback.structure}
+                            />
+                            <SectionFeedbackCard
+                              title="Confidence"
+                              item={feedback.section_feedback.confidence}
+                            />
+                            <SectionFeedbackCard
+                              title="Pace"
+                              item={feedback.section_feedback.pace}
+                            />
                           </div>
                         </div>
                       )}
 
+                      <FeedbackList
+                        title="Strengths"
+                        color="text-blue-300"
+                        items={feedback.strengths}
+                      />
+
+                      <FeedbackList
+                        title="Improvements"
+                        color="text-orange-300"
+                        items={feedback.improvements}
+                      />
+
+                      <div>
+                        <h3 className="mb-3 text-lg font-black text-purple-300">
+                          Model Answer — 8+/10 Standard
+                        </h3>
+                        <div className="rounded-2xl border border-white/10 bg-black/35 p-5 leading-8 text-gray-100">
+                          {feedback.improved_answer}
+                        </div>
+                      </div>
+
                       <button
-                        onClick={resetInterview}
+                        onClick={nextStep}
                         className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-6 py-4 font-black shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01]"
                       >
-                        Start New Interview
+                        {currentQuestionNumber === totalQuestions
+                          ? "Finish Interview"
+                          : "Next Question"}
                       </button>
                     </div>
                   )}
                 </GlassCard>
               )}
-            </div>
+            </>
+          )}
 
-            <aside className="space-y-6">
-              <GlassCard>
-                <h2 className="mb-4 text-xl font-black text-white">Account</h2>
+          {interviewFinished && (
+            <GlassCard>
+              <h2 className="mb-5 text-3xl font-black tracking-[-0.04em]">
+                Final Interview Summary
+              </h2>
 
-                <Show when="signed-out">
-                  <p className="mb-4 text-sm leading-6 text-gray-400">
-                    Sign in to prepare for saved accounts, progress tracking and
-                    future premium reports.
-                  </p>
-                  <SignInButton mode="modal">
-                    <button className="w-full rounded-2xl bg-white px-4 py-3 font-black text-black shadow-xl shadow-purple-950/20 transition hover:bg-purple-100">
-                      Sign In
-                    </button>
-                  </SignInButton>
-                </Show>
+              {summaryLoading && (
+                <p className="text-gray-400">Generating summary...</p>
+              )}
 
-                <Show when="signed-in">
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm text-gray-300">You are signed in.</p>
-                    <UserButton />
+              {summary && (
+                <div className="space-y-6">
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <div className="rounded-2xl border border-white/10 bg-black/35 p-5">
+                      <p className="text-sm text-gray-400">Final score</p>
+                      <p className="mt-1 text-5xl font-black tracking-[-0.05em]">
+                        {summary.overall_score}
+                        <span className="text-xl text-gray-500">/10</span>
+                      </p>
+                    </div>
+
+                    <div className="rounded-2xl border border-white/10 bg-black/35 p-5">
+                      <p className="text-sm text-gray-400">Hire signal</p>
+                      <p className="mt-3 text-3xl font-black text-green-300">
+                        {summary.hire_signal}
+                      </p>
+                    </div>
                   </div>
-                </Show>
-              </GlassCard>
 
-              <GlassCard>
-                <h2 className="mb-4 text-xl font-black text-white">
-                  Session setup
-                </h2>
-
-                <div className="space-y-3 text-sm leading-6 text-gray-400">
-                  <CheckItem>{experienceLevel}</CheckItem>
-                  <CheckItem>{interviewType}</CheckItem>
-                  <CheckItem>{difficulty} difficulty</CheckItem>
-                  <CheckItem>Focus: {focusArea}</CheckItem>
-                </div>
-              </GlassCard>
-
-              <GlassCard>
-                <h2 className="mb-4 text-xl font-black text-white">
-                  Included in this session
-                </h2>
-                <div className="space-y-3 text-sm leading-6 text-gray-400">
-                  <CheckItem>5-question interview flow</CheckItem>
-                  <CheckItem>Section-by-section content feedback</CheckItem>
-                  <CheckItem>Voice pace, fillers and confidence</CheckItem>
-                  <CheckItem>Camera eye contact and body language</CheckItem>
-                  <CheckItem>8+/10 model answer rewrite</CheckItem>
-                  <CheckItem>Final hiring signal and next steps</CheckItem>
-                </div>
-              </GlassCard>
-
-              <GlassCard>
-                <h2 className="mb-4 text-xl font-black text-white">
-                  Session History
-                </h2>
-
-                {savedSessions.length === 0 ? (
-                  <p className="text-sm text-gray-400">No saved sessions yet.</p>
-                ) : (
-                  <div className="space-y-3">
-                    {savedSessions.map((session) => (
-                      <div
-                        key={session.id}
-                        className="rounded-2xl border border-white/10 bg-black/35 p-4"
-                      >
-                        <p className="font-black text-white">{session.role}</p>
-                        <p className="text-sm text-gray-500">{session.date}</p>
-                        <p className="mt-2 text-sm font-bold text-purple-200">
-                          Score: {session.overallScore}/10
+                  {typeof summary.readiness_score === "number" && (
+                    <div className="rounded-2xl border border-purple-300/20 bg-purple-300/10 p-5">
+                      <p className="text-sm text-gray-400">
+                        Interview readiness
+                      </p>
+                      <p className="mt-1 text-4xl font-black tracking-[-0.05em]">
+                        {summary.readiness_score}
+                        <span className="text-lg text-gray-500">/10</span>
+                      </p>
+                      {summary.hire_signal_reason && (
+                        <p className="mt-3 leading-7 text-gray-300">
+                          {summary.hire_signal_reason}
                         </p>
-                        <p className="text-sm font-bold text-green-300">
-                          Hire Signal: {session.hireSignal}
-                        </p>
+                      )}
+                    </div>
+                  )}
+
+                  {summary.category_breakdown && (
+                    <div>
+                      <h3 className="mb-3 text-lg font-black text-cyan-300">
+                        Category Breakdown
+                      </h3>
+                      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                        <ScoreCard
+                          label="Content"
+                          value={summary.category_breakdown.content}
+                        />
+                        <ScoreCard
+                          label="Clarity"
+                          value={summary.category_breakdown.clarity}
+                        />
+                        <ScoreCard
+                          label="Relevance"
+                          value={summary.category_breakdown.relevance}
+                        />
+                        <ScoreCard
+                          label="Structure"
+                          value={summary.category_breakdown.structure}
+                        />
+                        <ScoreCard
+                          label="Confidence"
+                          value={summary.category_breakdown.confidence}
+                        />
+                        <ScoreCard
+                          label="Pace"
+                          value={summary.category_breakdown.pace}
+                        />
+                        <ScoreCard
+                          label="Voice"
+                          value={summary.category_breakdown.voice_delivery}
+                        />
+                        <ScoreCard
+                          label="Camera"
+                          value={summary.category_breakdown.camera_presence}
+                        />
                       </div>
-                    ))}
+                    </div>
+                  )}
+
+                  <FeedbackList
+                    title="Top Strengths"
+                    color="text-blue-300"
+                    items={summary.top_strengths}
+                  />
+
+                  <FeedbackList
+                    title="Top Improvements"
+                    color="text-orange-300"
+                    items={summary.top_improvements}
+                  />
+
+                  {summary.priority_improvements && (
+                    <FeedbackList
+                      title="Top 3 Priority Improvements"
+                      color="text-purple-300"
+                      items={summary.priority_improvements}
+                    />
+                  )}
+
+                  <div>
+                    <h3 className="mb-2 text-lg font-black text-purple-300">
+                      Final Recommendation
+                    </h3>
+                    <p className="leading-8 text-gray-100">
+                      {summary.final_recommendation}
+                    </p>
                   </div>
-                )}
-              </GlassCard>
-            </aside>
-          </div>
+
+                  <FeedbackList
+                    title="Next Steps"
+                    color="text-cyan-300"
+                    items={summary.next_steps}
+                  />
+
+                  {summary.seven_day_action_plan && (
+                    <div>
+                      <h3 className="mb-3 text-lg font-black text-purple-300">
+                        7-Day Action Plan
+                      </h3>
+                      <div className="grid gap-3 md:grid-cols-2">
+                        {summary.seven_day_action_plan.map((day) => (
+                          <div
+                            key={day.day}
+                            className="rounded-2xl border border-white/10 bg-black/35 p-4"
+                          >
+                            <p className="font-black text-white">
+                              {day.day}: {day.focus}
+                            </p>
+                            <p className="mt-2 text-sm leading-6 text-gray-400">
+                              {day.task}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  <button
+                    onClick={resetInterview}
+                    className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-6 py-4 font-black shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01]"
+                  >
+                    Start New Interview
+                  </button>
+                </div>
+              )}
+            </GlassCard>
+          )}
         </div>
       </div>
     </main>
@@ -3259,7 +3138,7 @@ function AnalysisPanel({
 }) {
   return (
     <div
-      className={`mb-5 rounded-[1.6rem] border p-5 ${
+      className={`rounded-[1.6rem] border p-5 ${
         accent === "cyan"
           ? "border-cyan-300/20 bg-cyan-300/10"
           : "border-purple-300/20 bg-purple-300/10"
