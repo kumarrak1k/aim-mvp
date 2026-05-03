@@ -35,17 +35,17 @@ export async function POST(request: NextRequest) {
       },
       body: JSON.stringify({
         model: "gpt-4o-mini-tts",
-        voice: "coral",
+        voice: "nova",
         input: safeText,
         response_format: "mp3",
-        speed: 0.96,
+        speed: 0.9,
         instructions:
-          "Speak in a warm, clear British interview-coach style. Sound natural, calm, encouraging, and professional. Avoid a robotic tone.",
+          "You are a world-class British interview coach speaking one interview question to a candidate. Sound human, calm, warm, premium and conversational. Use natural pacing and short pauses between clauses. Do not sound robotic, synthetic, rushed, theatrical or salesy. Read the question clearly, with gentle emphasis on key words. End cleanly without adding extra commentary.",
       }),
     });
 
     if (!response.ok) {
-      let errorMessage = "Unable to generate question audio.";
+      let errorMessage = "Unable to generate natural question audio.";
 
       try {
         const errorData = await response.json();
@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
     console.error("Question audio route failed:", error);
 
     return NextResponse.json(
-      { error: "Something went wrong while generating question audio." },
+      { error: "Something went wrong while generating natural question audio." },
       { status: 500 }
     );
   }

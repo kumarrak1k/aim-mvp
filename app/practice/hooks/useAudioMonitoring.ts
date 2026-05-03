@@ -7,6 +7,14 @@ import {
   calculateScaledVolumeSample,
 } from "../lib/audioMetrics";
 
+const audioConstraints: MediaStreamConstraints = {
+  audio: {
+    echoCancellation: true,
+    noiseSuppression: true,
+    autoGainControl: true,
+  },
+};
+
 export function useAudioMonitoring() {
   const audioContextRef = useRef<AudioContext | null>(null);
   const audioStreamRef = useRef<MediaStream | null>(null);
@@ -15,7 +23,15 @@ export function useAudioMonitoring() {
   const audioIntervalRef = useRef<number | null>(null);
   const audioSamplesRef = useRef<number[]>([]);
 
-  const cleanupAudioMonitoring = useCallback(() => {
+  const hasLiveAudioStream = useCallback(() => {
+    return Boolean(
+      audioStreamRef.current?.getAudioTracks().some(
+        (track) => track.readyState === "live"
+      )
+    );
+  }, []);
+
+  const cleanupAudioGraph = useCallback((stopStream: boolean) => {
     if (audioIntervalRef.current) {
       window.clearInterval(audioIntervalRef.current);
       audioIntervalRef.current = null;
@@ -39,27 +55,49 @@ export function useAudioMonitoring() {
       analyserRef.current = null;
     }
 
-    if (audioStreamRef.current) {
-      audioStreamRef.current.getTracks().forEach((track) => track.stop());
-      audioStreamRef.current = null;
-    }
-
     if (audioContextRef.current) {
       void audioContextRef.current.close().catch(() => undefined);
       audioContextRef.current = null;
     }
+
+    if (stopStream && audioStreamRef.current) {
+      audioStreamRef.current.getTracks().forEach((track) => track.stop());
+      audioStreamRef.current = null;
+    }
   }, []);
+
+  const cleanupAudioMonitoring = useCallback(() => {
+    cleanupAudioGraph(true);
+  }, [cleanupAudioGraph]);
+
+  const getOrCreateAudioStream = useCallback(async () => {
+    if (hasLiveAudioStream() && audioStreamRef.current) {
+      return audioStreamRef.current;
+    }
+
+    if (!navigator.mediaDevices?.getUserMedia) {
+      throw new Error("Microphone access is not supported in this browser.");
+    }
+
+    const stream = await navigator.mediaDevices.getUserMedia(audioConstraints);
+    audioStreamRef.current = stream;
+    return stream;
+  }, [hasLiveAudioStream]);
+
+  const primeAudioInput = useCallback(async () => {
+    await getOrCreateAudioStream();
+    return true;
+  }, [getOrCreateAudioStream]);
 
   const clearAudioSamples = useCallback(() => {
     audioSamplesRef.current = [];
   }, []);
 
   const startAudioMonitoring = useCallback(async () => {
-    cleanupAudioMonitoring();
+    cleanupAudioGraph(false);
     audioSamplesRef.current = [];
 
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    audioStreamRef.current = stream;
+    const stream = await getOrCreateAudioStream();
 
     const AudioContextClass =
       window.AudioContext ||
@@ -90,7 +128,7 @@ export function useAudioMonitoring() {
       analyser.getByteTimeDomainData(dataArray);
       audioSamplesRef.current.push(calculateScaledVolumeSample(dataArray));
     }, 100);
-  }, [cleanupAudioMonitoring]);
+  }, [cleanupAudioGraph, getOrCreateAudioStream]);
 
   const calculateCurrentAudioMetrics = useCallback((): AudioMetrics => {
     return calculateAudioMetrics(audioSamplesRef.current);
@@ -104,6 +142,7 @@ export function useAudioMonitoring() {
 
   return {
     audioSamplesRef,
+    primeAudioInput,
     startAudioMonitoring,
     cleanupAudioMonitoring,
     clearAudioSamples,

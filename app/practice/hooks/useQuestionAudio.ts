@@ -33,6 +33,7 @@ export function useQuestionAudio({
   const questionAudioReadyRef = useRef(false);
   const preparedQuestionTextRef = useRef("");
   const startRecordingAfterPlaybackRef = useRef(false);
+  const microphoneStartTimerRef = useRef<number | null>(null);
 
   const onPlaybackStartRef = useRef(onPlaybackStart);
   const onPlaybackEndRef = useRef(onPlaybackEnd);
@@ -46,12 +47,21 @@ export function useQuestionAudio({
     onPlaybackErrorRef.current = onPlaybackError;
   }, [onPlaybackStart, onPlaybackEnd, onGuidedPlaybackComplete, onPlaybackError]);
 
+  const clearMicrophoneStartTimer = useCallback(() => {
+    if (microphoneStartTimerRef.current !== null) {
+      window.clearTimeout(microphoneStartTimerRef.current);
+      microphoneStartTimerRef.current = null;
+    }
+  }, []);
+
   const setAudioReady = useCallback((value: boolean) => {
     questionAudioReadyRef.current = value;
     setQuestionAudioReady(value);
   }, []);
 
   const cleanupPreparedQuestionAudio = useCallback(() => {
+    clearMicrophoneStartTimer();
+
     if (questionAudioRef.current) {
       try {
         questionAudioRef.current.pause();
@@ -78,9 +88,11 @@ export function useQuestionAudio({
     setAudioReady(false);
     setQuestionAudioError("");
     setIsPreparedQuestionPlaying(false);
-  }, [setAudioReady]);
+  }, [clearMicrophoneStartTimer, setAudioReady]);
 
   const stopPreparedQuestionPlayback = useCallback(() => {
+    clearMicrophoneStartTimer();
+
     if (questionAudioRef.current) {
       try {
         questionAudioRef.current.pause();
@@ -93,7 +105,18 @@ export function useQuestionAudio({
     startRecordingAfterPlaybackRef.current = false;
     setIsPreparedQuestionPlaying(false);
     setQuestionAudioLoading(false);
-  }, []);
+  }, [clearMicrophoneStartTimer]);
+
+  const startMicrophoneAfterAudio = useCallback(() => {
+    clearMicrophoneStartTimer();
+
+    setQuestionAudioMessage("Question finished. Starting microphone...");
+
+    microphoneStartTimerRef.current = window.setTimeout(() => {
+      microphoneStartTimerRef.current = null;
+      onGuidedPlaybackCompleteRef.current?.();
+    }, 650);
+  }, [clearMicrophoneStartTimer]);
 
   const prepareQuestionAudio = useCallback(
     async (text: string) => {
@@ -126,7 +149,7 @@ export function useQuestionAudio({
 
         audio.onplay = () => {
           setIsPreparedQuestionPlaying(true);
-          setQuestionAudioMessage("Playing the question with AI-generated audio...");
+          setQuestionAudioMessage("Playing natural AI question audio...");
           onPlaybackStartRef.current?.();
         };
 
@@ -137,25 +160,25 @@ export function useQuestionAudio({
 
           if (startRecordingAfterPlaybackRef.current) {
             startRecordingAfterPlaybackRef.current = false;
-            setQuestionAudioMessage("Question finished. Starting microphone...");
-            onGuidedPlaybackCompleteRef.current?.();
+            startMicrophoneAfterAudio();
           } else {
             setQuestionAudioMessage(
-              "Question played. Tap Guided Answer to record, Start Voice Answer, or type your response."
+              "Question played. Use Guided Answer to record, Start Voice Answer, or type your response."
             );
           }
         };
 
         audio.onerror = () => {
+          clearMicrophoneStartTimer();
           startRecordingAfterPlaybackRef.current = false;
           setIsPreparedQuestionPlaying(false);
           setQuestionAudioLoading(false);
           setAudioReady(false);
 
-          const message = "Question audio could not play on this device.";
+          const message = "Natural question audio could not play on this device.";
           setQuestionAudioError(message);
           setQuestionAudioMessage(
-            "Question audio could not play on this device. The written question is shown below."
+            "Natural question audio could not play. The written question is shown below; browser robotic voice is disabled."
           );
           onPlaybackErrorRef.current?.(message);
         };
@@ -167,7 +190,7 @@ export function useQuestionAudio({
         setAudioReady(true);
         setQuestionAudioLoading(false);
         setQuestionAudioMessage(
-          "Natural question audio ready. Tap Guided Answer to hear it and start recording."
+          "Natural question audio ready. Use Guided Answer to hear it and start recording."
         );
 
         return true;
@@ -175,26 +198,31 @@ export function useQuestionAudio({
         const message =
           error instanceof Error
             ? error.message
-            : "Question audio could not be prepared.";
+            : "Natural question audio could not be prepared.";
 
+        clearMicrophoneStartTimer();
         questionAudioPreparingRef.current = false;
         setQuestionAudioLoading(false);
         setAudioReady(false);
         setQuestionAudioError(message);
         setQuestionAudioMessage(
-          "Natural question audio is unavailable. You can still use Play Question or read the question."
+          "Natural question audio is unavailable. Browser robotic voice is disabled; read the question or check OPENAI_API_KEY."
         );
         return false;
       }
     },
-    [cleanupPreparedQuestionAudio, setAudioReady]
+    [
+      cleanupPreparedQuestionAudio,
+      clearMicrophoneStartTimer,
+      setAudioReady,
+      startMicrophoneAfterAudio,
+    ]
   );
 
   const playPreparedQuestionAudio = useCallback(
     async ({
       text,
       startRecordingAfterPlayback = false,
-      fallbackToBrowserSpeech,
     }: PlayPreparedQuestionAudioOptions) => {
       const safeText = text.trim();
       if (!safeText) return false;
@@ -205,7 +233,6 @@ export function useQuestionAudio({
         const prepared = await prepareQuestionAudio(safeText);
 
         if (!prepared) {
-          fallbackToBrowserSpeech?.(safeText, startRecordingAfterPlayback);
           return false;
         }
 
@@ -223,22 +250,27 @@ export function useQuestionAudio({
 
       try {
         setQuestionAudioLoading(false);
-        setQuestionAudioMessage("Playing the question with AI-generated audio...");
+        setQuestionAudioMessage("Playing natural AI question audio...");
         audio.currentTime = 0;
         await audio.play();
         return true;
       } catch {
+        clearMicrophoneStartTimer();
         startRecordingAfterPlaybackRef.current = false;
         setIsPreparedQuestionPlaying(false);
 
         const message =
-          "This device blocked audio playback. Tap Play Question again, or read the written question below.";
+          "This device blocked natural audio playback. Tap Play Question again, or read the written question below.";
         setQuestionAudioMessage(message);
         onPlaybackErrorRef.current?.(message);
         return false;
       }
     },
-    [prepareQuestionAudio, stopPreparedQuestionPlayback]
+    [
+      clearMicrophoneStartTimer,
+      prepareQuestionAudio,
+      stopPreparedQuestionPlayback,
+    ]
   );
 
   useEffect(() => {

@@ -157,6 +157,7 @@ export default function Home() {
 
   const {
     audioSamplesRef,
+    primeAudioInput,
     startAudioMonitoring,
     cleanupAudioMonitoring,
     clearAudioSamples,
@@ -182,8 +183,6 @@ export default function Home() {
 
   const {
     recognitionRef,
-    finalTranscriptRef,
-    interimTranscriptRef,
     activeQuestionRef,
     isSpeakingQuestionRef,
     lastSpokenQuestionRef,
@@ -206,6 +205,9 @@ export default function Home() {
     onListeningError: () => {
       setIsListening(false);
       setGuidedAnswerActive(false);
+      setQuestionAudioMessage(
+        "Voice dictation stopped. If this happens after auto-play, click Start Voice Answer once or check microphone permission."
+      );
     },
     onQuestionSpeechEnd: () => {
       void startVoiceInputRef.current?.();
@@ -317,12 +319,36 @@ export default function Home() {
     };
   }, [interviewStarted, isLoaded, isSignedIn]);
 
-  const playBrowserQuestion = useCallback(
+  const playBrowserQuestionFallback = useCallback(
     (text: string, autoStartListening: boolean) => {
-      setQuestionAudioMessage("Starting question audio...");
-      speakQuestion(text, autoStartListening);
+      setQuestionAudioMessage(
+        "Natural question audio is unavailable. Browser robotic voice is disabled; read the question or check OPENAI_API_KEY."
+      );
+
+      if (autoStartListening) {
+        setGuidedAnswerActive(false);
+      }
+
+      if (!text.trim()) return;
+      // Deliberately do not call speakQuestion here. Browser speech sounds robotic.
     },
-    [setQuestionAudioMessage, speakQuestion]
+    [setGuidedAnswerActive, setQuestionAudioMessage]
+  );
+
+  const playQuestionWithNaturalAudio = useCallback(
+    async (text: string, autoStartListening: boolean) => {
+      const safeText = text.trim();
+      if (!safeText) return false;
+
+      setQuestionAudioMessage("Preparing natural question audio...");
+
+      return playPreparedQuestionAudio({
+        text: safeText,
+        startRecordingAfterPlayback: autoStartListening,
+        fallbackToBrowserSpeech: playBrowserQuestionFallback,
+      });
+    },
+    [playBrowserQuestionFallback, playPreparedQuestionAudio, setQuestionAudioMessage]
   );
 
   const stopQuestionSpeech = useCallback(() => {
@@ -342,29 +368,51 @@ export default function Home() {
   ]);
 
   useEffect(() => {
-    if (
-      !question ||
-      !shouldAutoSpeakQuestions ||
-      !hasUserInteracted ||
-      question === lastSpokenQuestionRef.current
-    ) {
-      if (question && speakerEnabled && manualDeviceMode) {
+    if (!question || !speakerEnabled) return;
+
+    if (!shouldAutoSpeakQuestions || !hasUserInteracted) {
+      if (manualDeviceMode) {
         setQuestionAudioMessage(
           questionAudioReady
             ? "Phone/tablet mode: tap Guided Answer to hear the question and start recording."
-            : "Preparing natural question audio for phone/tablet mode..."
+            : "Preparing natural question audio..."
         );
       }
       return;
     }
 
-    playBrowserQuestion(question, true);
-    lastSpokenQuestionRef.current = question;
+    if (question === lastSpokenQuestionRef.current) return;
+
+    let cancelled = false;
+
+    const autoPlayQuestion = async () => {
+      setQuestionAudioMessage(
+        "Voice mode selected. Natural question audio will play automatically..."
+      );
+
+      const played = await playQuestionWithNaturalAudio(question, true);
+
+      if (cancelled) return;
+
+      if (played) {
+        lastSpokenQuestionRef.current = question;
+      } else {
+        setQuestionAudioMessage(
+          "Natural question audio could not auto-play. Use Play Question, or read the question below."
+        );
+      }
+    };
+
+    void autoPlayQuestion();
+
+    return () => {
+      cancelled = true;
+    };
   }, [
     hasUserInteracted,
     lastSpokenQuestionRef,
     manualDeviceMode,
-    playBrowserQuestion,
+    playQuestionWithNaturalAudio,
     question,
     questionAudioReady,
     setQuestionAudioMessage,
@@ -373,8 +421,11 @@ export default function Home() {
   ]);
 
   useEffect(() => {
-    if (!question || !manualDeviceMode || !interviewStarted) return;
-    void prepareQuestionAudio(question);
+    if (!question || !interviewStarted) return;
+
+    if (manualDeviceMode) {
+      void prepareQuestionAudio(question);
+    }
   }, [interviewStarted, manualDeviceMode, prepareQuestionAudio, question]);
 
   const saveSession = useCallback(
@@ -533,7 +584,7 @@ export default function Home() {
         cleanupAudioMonitoring();
         recordingStartRef.current = null;
         setQuestionAudioMessage(
-          "Microphone access was not available. You can type your answer instead."
+          "Microphone access was not available. Click Start Voice Answer once, then allow microphone access."
         );
       }
     } catch {
@@ -542,7 +593,7 @@ export default function Home() {
       recordingStartRef.current = null;
       cleanupAudioMonitoring();
       setQuestionAudioMessage(
-        "Microphone access was not available. You can type your answer instead."
+        "Microphone access was not available. Click Start Voice Answer once, then allow microphone access."
       );
     }
   }, [
@@ -676,6 +727,10 @@ export default function Home() {
         if (manualDeviceMode) {
           setQuestionAudioMessage("Preparing natural question audio...");
           void prepareQuestionAudio(nextQuestion);
+        } else if (speakerEnabled) {
+          setQuestionAudioMessage(
+            "Voice mode selected. Natural question audio will play automatically..."
+          );
         }
       } catch (error) {
         setQuestion(
@@ -698,6 +753,7 @@ export default function Home() {
       setActiveQuestion,
       setGuidedAnswerActive,
       setQuestionAudioMessage,
+      speakerEnabled,
     ]
   );
 
@@ -740,18 +796,23 @@ export default function Home() {
     setHasUserInteracted(true);
     setSpeakerEnabled(true);
 
-    if (question && !manualDeviceMode) {
-      playBrowserQuestion(question, true);
-    } else if (question && manualDeviceMode) {
-      setQuestionAudioMessage(
-        questionAudioReady
-          ? "Tap Guided Answer to hear the question and start recording."
-          : "Preparing natural question audio..."
-      );
+    if (question) {
+      if (manualDeviceMode) {
+        if (questionAudioReady) {
+          setQuestionAudioMessage("Natural question audio is ready.");
+        } else {
+          setQuestionAudioMessage("Preparing natural question audio...");
+          void prepareQuestionAudio(question);
+        }
+      } else {
+        setQuestionAudioMessage(
+          "Voice mode selected. The next question will play automatically."
+        );
+      }
     }
   }, [
     manualDeviceMode,
-    playBrowserQuestion,
+    prepareQuestionAudio,
     question,
     questionAudioReady,
     setQuestionAudioMessage,
@@ -773,6 +834,27 @@ export default function Home() {
     lastSpokenQuestionRef.current = "";
     setActiveQuestion("");
     resetVideoFrames();
+
+    if (speakerEnabled && !manualDeviceMode) {
+      if (!voiceSupported) {
+        setQuestionAudioMessage(
+          "This browser does not support live voice transcription. You can still type your answer."
+        );
+      } else {
+        try {
+          setQuestionAudioMessage("Requesting microphone permission for automatic recording...");
+          await primeAudioInput();
+          setQuestionAudioMessage(
+            "Microphone ready. Generating your first question..."
+          );
+        } catch {
+          setQuestionAudioMessage(
+            "Microphone permission was not available. You may need to click Start Voice Answer once after the question."
+          );
+        }
+      }
+    }
+
     await fetchQuestion(1, []);
 
     if (cameraEnabled && !requiresManualCameraStart) {
@@ -782,11 +864,16 @@ export default function Home() {
     cameraEnabled,
     fetchQuestion,
     lastSpokenQuestionRef,
+    manualDeviceMode,
+    primeAudioInput,
     requiresManualCameraStart,
     resetVideoFrames,
     setActiveQuestion,
     setGuidedAnswerActive,
+    setQuestionAudioMessage,
+    speakerEnabled,
     startCamera,
+    voiceSupported,
   ]);
 
   const playQuestionManually = useCallback(() => {
@@ -795,26 +882,9 @@ export default function Home() {
     setHasUserInteracted(true);
     setSpeakerEnabled(true);
 
-    if (manualDeviceMode) {
-      setGuidedAnswerActive(false);
-      void playPreparedQuestionAudio({
-        text: question,
-        startRecordingAfterPlayback: false,
-        fallbackToBrowserSpeech: playBrowserQuestion,
-      });
-    } else {
-      playBrowserQuestion(question, true);
-    }
-
+    void playQuestionWithNaturalAudio(question, false);
     lastSpokenQuestionRef.current = question;
-  }, [
-    lastSpokenQuestionRef,
-    manualDeviceMode,
-    playBrowserQuestion,
-    playPreparedQuestionAudio,
-    question,
-    setGuidedAnswerActive,
-  ]);
+  }, [lastSpokenQuestionRef, playQuestionWithNaturalAudio, question]);
 
   const startGuidedAnswer = useCallback(async () => {
     if (!question.trim() || questionLoading) return;
@@ -830,25 +900,16 @@ export default function Home() {
 
     setQuestionAudioMessage(
       manualDeviceMode
-        ? "Guided answer starting. Camera will start if enabled, then question audio will play."
-        : "Guided answer starting. The question will play, then recording will start."
+        ? "Guided answer starting. Camera will start if enabled, then natural question audio will play."
+        : "Guided answer starting. Natural question audio will play, then recording will start."
     );
 
-    if (manualDeviceMode) {
-      await playPreparedQuestionAudio({
-        text: question,
-        startRecordingAfterPlayback: true,
-        fallbackToBrowserSpeech: playBrowserQuestion,
-      });
-    } else {
-      playBrowserQuestion(question, true);
-    }
+    await playQuestionWithNaturalAudio(question, true);
   }, [
     cameraEnabled,
     clearCurrentAnswerCapture,
     manualDeviceMode,
-    playBrowserQuestion,
-    playPreparedQuestionAudio,
+    playQuestionWithNaturalAudio,
     question,
     questionLoading,
     setGuidedAnswerActive,
@@ -1173,7 +1234,7 @@ export default function Home() {
                 setQuestionAudioMessage={setQuestionAudioMessage}
               />
 
-              <div className="grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
+              <div className="grid gap-6 xl:grid-cols-[minmax(0,1.02fr)_minmax(420px,0.98fr)]">
                 <div className="space-y-6">
                   <PracticeCoachPanel
                     role={role}

@@ -22,20 +22,35 @@ type SpeechRecognitionEventLike = {
   };
 };
 
+type SpeechRecognitionErrorEventLike = {
+  error?: string;
+  message?: string;
+};
+
 type SpeechRecognitionLike = {
   continuous: boolean;
   interimResults: boolean;
   lang: string;
   start: () => void;
   stop: () => void;
+  abort?: () => void;
+  onstart: (() => void) | null;
   onresult: ((event: SpeechRecognitionEventLike) => void) | null;
   onend: (() => void) | null;
-  onerror: (() => void) | null;
+  onerror: ((event: SpeechRecognitionErrorEventLike) => void) | null;
 };
 
 type WindowWithSpeechRecognition = Window & {
   SpeechRecognition?: SpeechRecognitionConstructor;
   webkitSpeechRecognition?: SpeechRecognitionConstructor;
+};
+
+const buildVisibleTranscript = (finalText: string, interimText: string) => {
+  return [finalText, interimText]
+    .filter(Boolean)
+    .join(" ")
+    .replace(/\s+/g, " ")
+    .trim();
 };
 
 export function useBrowserSpeech({
@@ -62,6 +77,8 @@ export function useBrowserSpeech({
   const voicesRef = useRef<SpeechSynthesisVoice[]>([]);
   const autoStartListeningAfterSpeechRef = useRef(false);
   const lastSpokenQuestionRef = useRef("");
+  const recognitionRunningRef = useRef(false);
+  const userStoppedRecognitionRef = useRef(false);
 
   const onAnswerChangeRef = useRef(onAnswerChange);
   const onListeningEndRef = useRef(onListeningEnd);
@@ -87,13 +104,18 @@ export function useBrowserSpeech({
 
   const getCombinedTranscript = useCallback(() => {
     return stripQuestionLeakageFromTranscript(
-      [finalTranscriptRef.current, interimTranscriptRef.current]
-        .filter(Boolean)
-        .join(" ")
-        .replace(/\s+/g, " ")
-        .trim(),
+      buildVisibleTranscript(finalTranscriptRef.current, interimTranscriptRef.current),
       activeQuestionRef.current
     );
+  }, []);
+
+  const pushVisibleTranscript = useCallback(() => {
+    const visibleTranscript = stripQuestionLeakageFromTranscript(
+      buildVisibleTranscript(finalTranscriptRef.current, interimTranscriptRef.current),
+      activeQuestionRef.current
+    );
+
+    onAnswerChangeRef.current(visibleTranscript);
   }, []);
 
   const setActiveQuestion = useCallback((value: string) => {
@@ -222,13 +244,22 @@ export function useBrowserSpeech({
   );
 
   const startRecognitionOnly = useCallback(() => {
-    if (!recognitionRef.current) return false;
+    const recognition = recognitionRef.current;
+    if (!recognition) return false;
 
     try {
+      userStoppedRecognitionRef.current = false;
+
+      if (recognitionRunningRef.current) {
+        setIsListening(true);
+        return true;
+      }
+
       setIsListening(true);
-      recognitionRef.current.start();
+      recognition.start();
       return true;
     } catch {
+      recognitionRunningRef.current = false;
       setIsListening(false);
       onListeningErrorRef.current?.();
       return false;
@@ -236,15 +267,17 @@ export function useBrowserSpeech({
   }, []);
 
   const stopRecognitionOnly = useCallback(() => {
-    if (!recognitionRef.current) return;
+    const recognition = recognitionRef.current;
+    if (!recognition) return;
+
+    userStoppedRecognitionRef.current = true;
 
     try {
-      recognitionRef.current.stop();
+      recognition.stop();
     } catch {
-      // Ignore duplicate stop calls.
+      recognitionRunningRef.current = false;
+      setIsListening(false);
     }
-
-    setIsListening(false);
   }, []);
 
   useEffect(() => {
@@ -264,6 +297,11 @@ export function useBrowserSpeech({
       recognition.interimResults = true;
       recognition.lang = "en-GB";
 
+      recognition.onstart = () => {
+        recognitionRunningRef.current = true;
+        setIsListening(true);
+      };
+
       recognition.onresult = (event) => {
         if (isSpeakingQuestionRef.current) {
           resetTranscript();
@@ -272,6 +310,7 @@ export function useBrowserSpeech({
         }
 
         let newFinalText = "";
+        let newInterimText = "";
 
         for (let index = event.resultIndex; index < event.results.length; index += 1) {
           const transcriptPart = stripQuestionLeakageFromTranscript(
@@ -284,7 +323,7 @@ export function useBrowserSpeech({
           if (event.results[index].isFinal) {
             newFinalText += `${transcriptPart} `;
           } else {
-            interimTranscriptRef.current = transcriptPart;
+            newInterimText += `${transcriptPart} `;
           }
         }
 
@@ -295,12 +334,14 @@ export function useBrowserSpeech({
               .trim(),
             activeQuestionRef.current
           );
-
-          onAnswerChangeRef.current(finalTranscriptRef.current);
         }
+
+        interimTranscriptRef.current = newInterimText.replace(/\s+/g, " ").trim();
+        pushVisibleTranscript();
       };
 
       recognition.onend = () => {
+        recognitionRunningRef.current = false;
         setIsListening(false);
 
         const combined = getCombinedTranscript();
@@ -314,9 +355,20 @@ export function useBrowserSpeech({
         onListeningEndRef.current?.(combined);
       };
 
-      recognition.onerror = () => {
+      recognition.onerror = (event) => {
+        recognitionRunningRef.current = false;
         setIsListening(false);
-        onListeningErrorRef.current?.();
+
+        const errorCode = event?.error || "unknown";
+
+        if (errorCode === "no-speech") {
+          onListeningErrorRef.current?.();
+          return;
+        }
+
+        if (!userStoppedRecognitionRef.current) {
+          onListeningErrorRef.current?.();
+        }
       };
 
       recognitionRef.current = recognition;
@@ -333,12 +385,20 @@ export function useBrowserSpeech({
     }
 
     return () => {
+      if (recognitionRef.current) {
+        try {
+          recognitionRef.current.abort?.();
+        } catch {
+          // Ignore cleanup failures.
+        }
+      }
+
       if (window.speechSynthesis) {
         window.speechSynthesis.cancel();
         window.speechSynthesis.onvoiceschanged = null;
       }
     };
-  }, [getCombinedTranscript, resetTranscript]);
+  }, [getCombinedTranscript, pushVisibleTranscript, resetTranscript]);
 
   return {
     recognitionRef,
