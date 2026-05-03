@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { Show, SignInButton, UserButton } from "@clerk/nextjs";
+import { SignInButton, UserButton, useUser } from "@clerk/nextjs";
 
 type CategoryScores = {
   content: number;
@@ -608,6 +608,8 @@ const wait = (milliseconds: number) =>
   });
 
 export default function Home() {
+  const { isLoaded, isSignedIn } = useUser();
+
   const [role, setRole] = useState("");
   const [experienceLevel, setExperienceLevel] = useState(
     "Graduate / entry level"
@@ -2109,17 +2111,15 @@ Generate questions and feedback that match this candidate context. Use the selec
               </button>
             </Link>
 
-            <Show when="signed-out">
+            {isLoaded && !isSignedIn && (
               <SignInButton mode="modal">
                 <button className="rounded-full bg-white px-5 py-2.5 text-sm font-black text-black shadow-xl shadow-purple-950/20 transition hover:bg-purple-100">
                   Sign In
                 </button>
               </SignInButton>
-            </Show>
+            )}
 
-            <Show when="signed-in">
-              <UserButton />
-            </Show>
+            {isLoaded && isSignedIn && <UserButton />}
           </div>
         </div>
       </header>
@@ -2279,26 +2279,28 @@ Generate questions and feedback that match this candidate context. Use the selec
                     Account
                   </h2>
 
-                  <Show when="signed-out">
-                    <p className="mb-4 text-sm leading-6 text-gray-400">
-                      Sign in to prepare for saved accounts, progress tracking
-                      and future premium reports.
-                    </p>
-                    <SignInButton mode="modal">
-                      <button className="w-full rounded-2xl bg-white px-4 py-3 font-black text-black shadow-xl shadow-purple-950/20 transition hover:bg-purple-100">
-                        Sign In
-                      </button>
-                    </SignInButton>
-                  </Show>
+                  {isLoaded && !isSignedIn && (
+                    <>
+                      <p className="mb-4 text-sm leading-6 text-gray-400">
+                        Sign in to prepare for saved accounts, progress tracking
+                        and future premium reports.
+                      </p>
+                      <SignInButton mode="modal">
+                        <button className="w-full rounded-2xl bg-white px-4 py-3 font-black text-black shadow-xl shadow-purple-950/20 transition hover:bg-purple-100">
+                          Sign In
+                        </button>
+                      </SignInButton>
+                    </>
+                  )}
 
-                  <Show when="signed-in">
+                  {isLoaded && isSignedIn && (
                     <div className="flex items-center justify-between">
                       <p className="text-sm text-gray-300">
                         You are signed in.
                       </p>
                       <UserButton />
                     </div>
-                  </Show>
+                  )}
                 </GlassCard>
 
                 <GlassCard>
