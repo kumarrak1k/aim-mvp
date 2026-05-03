@@ -693,6 +693,7 @@ export default function Home() {
   const [isSpeakingQuestion, setIsSpeakingQuestion] = useState(false);
   const [hasUserInteracted, setHasUserInteracted] = useState(false);
   const [questionAudioMessage, setQuestionAudioMessage] = useState("");
+  const [guidedFlowRunning, setGuidedFlowRunning] = useState(false);
 
   const [isTouchDevice, setIsTouchDevice] = useState(false);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
@@ -763,6 +764,9 @@ export default function Home() {
     interviewStarted &&
     requiresManualCameraStart &&
     !cameraUserStarted;
+  const guidedButtonLabel = cameraEnabled
+    ? "Start guided voice + camera answer"
+    : "Start guided voice answer";
 
   const candidateProfile = useMemo(() => {
     return `
@@ -870,6 +874,7 @@ Generate questions and feedback that match this candidate context. Use the selec
 
         recognition.onerror = () => {
           setIsListening(false);
+          setGuidedFlowRunning(false);
           setQuestionAudioMessage(
             "Voice dictation stopped. You can try again or type your answer."
           );
@@ -1010,7 +1015,7 @@ Generate questions and feedback that match this candidate context. Use the selec
     ) {
       if (question && speakerEnabled && manualDeviceMode) {
         setQuestionAudioMessage(
-          "Phone/tablet mode: tap Play Question when you want to hear it."
+          "Phone/tablet mode: use the guided answer button when you want to hear the question and start recording."
         );
       }
       return;
@@ -1498,6 +1503,24 @@ Generate questions and feedback that match this candidate context. Use the selec
     }
   };
 
+  const primeMicrophonePermission = async () => {
+    if (
+      typeof navigator === "undefined" ||
+      !navigator.mediaDevices?.getUserMedia
+    ) {
+      return;
+    }
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      stream.getTracks().forEach((track) => track.stop());
+    } catch {
+      setQuestionAudioMessage(
+        "Microphone permission was not available yet. You can still type your answer."
+      );
+    }
+  };
+
   const startAudioMonitoring = async () => {
     cleanupAudioMonitoring();
     audioSamplesRef.current = [];
@@ -1729,11 +1752,13 @@ Generate questions and feedback that match this candidate context. Use the selec
     }
 
     setIsSpeakingQuestion(false);
+    setGuidedFlowRunning(false);
     setQuestionAudioMessage("Question audio stopped.");
   };
 
   const startVoiceInput = async () => {
     if (!recognitionRef.current) {
+      setGuidedFlowRunning(false);
       setQuestionAudioMessage(
         "Voice dictation is not supported on this browser. Type your answer instead."
       );
@@ -1761,10 +1786,12 @@ Generate questions and feedback that match this candidate context. Use the selec
       await startAudioMonitoring();
 
       setIsListening(true);
+      setGuidedFlowRunning(false);
       setQuestionAudioMessage("Listening now. Speak naturally.");
       recognitionRef.current.start();
     } catch {
       setIsListening(false);
+      setGuidedFlowRunning(false);
       recordingStartRef.current = null;
       cleanupAudioMonitoring();
       setQuestionAudioMessage(
@@ -1790,8 +1817,8 @@ Generate questions and feedback that match this candidate context. Use the selec
       autoStartListening && !manualDeviceMode;
 
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.rate = 0.96;
-    utterance.pitch = 1;
+    utterance.rate = manualDeviceMode ? 0.88 : 0.96;
+    utterance.pitch = manualDeviceMode ? 1.03 : 1;
     utterance.volume = 1;
     utterance.lang = "en-GB";
 
@@ -1829,7 +1856,7 @@ Generate questions and feedback that match this candidate context. Use the selec
       } else {
         setQuestionAudioMessage(
           manualDeviceMode
-            ? "Question played. Tap Start Voice Answer when ready, or type your answer."
+            ? "Question played. Use the guided answer button, Start Voice Answer, or type your answer."
             : "Question played."
         );
       }
@@ -1859,11 +1886,112 @@ Generate questions and feedback that match this candidate context. Use the selec
     lastSpokenQuestionRef.current = question;
   };
 
+  const startGuidedMobileAnswer = async () => {
+    if (!question.trim()) return;
+
+    setHasUserInteracted(true);
+    setSpeakerEnabled(true);
+    setGuidedFlowRunning(true);
+    setQuestionAudioMessage("Starting guided answer...");
+
+    finalTranscriptRef.current = "";
+    interimTranscriptRef.current = "";
+    rawAnswerTranscriptRef.current = "";
+    setAnswer("");
+    setVoiceAnalysis(null);
+    setVideoAnalysis(null);
+    latestVoiceAnalysisRef.current = null;
+    latestVideoAnalysisRef.current = null;
+
+    const beginVoiceAnswer = () => {
+      finalTranscriptRef.current = "";
+      interimTranscriptRef.current = "";
+      rawAnswerTranscriptRef.current = "";
+      setAnswer("");
+      setGuidedFlowRunning(false);
+      setQuestionAudioMessage("Question played. Starting voice answer...");
+      void startVoiceInput();
+    };
+
+    try {
+      if (cameraEnabled) {
+        setCameraUserStarted(true);
+        setCameraError("");
+        resetVideoFrames();
+        await startCamera();
+      }
+
+      if (voiceSupported) {
+        await primeMicrophonePermission();
+      }
+
+      if (
+        typeof window === "undefined" ||
+        !window.speechSynthesis ||
+        !question.trim()
+      ) {
+        beginVoiceAnswer();
+        return;
+      }
+
+      autoStartListeningAfterSpeechRef.current = false;
+      isSpeakingQuestionRef.current = false;
+      window.speechSynthesis.cancel();
+
+      const utterance = new SpeechSynthesisUtterance(question);
+      utterance.rate = manualDeviceMode ? 0.88 : 0.96;
+      utterance.pitch = manualDeviceMode ? 1.03 : 1;
+      utterance.volume = 1;
+      utterance.lang = "en-GB";
+
+      const preferredVoice = getPreferredFemaleVoice();
+      if (preferredVoice) {
+        utterance.voice = preferredVoice;
+        utterance.lang = preferredVoice.lang;
+      }
+
+      utterance.onstart = () => {
+        isSpeakingQuestionRef.current = true;
+        setIsSpeakingQuestion(true);
+        setQuestionAudioMessage(
+          "Playing the question. Your voice answer will start automatically after this."
+        );
+      };
+
+      utterance.onend = () => {
+        isSpeakingQuestionRef.current = false;
+        setIsSpeakingQuestion(false);
+        beginVoiceAnswer();
+      };
+
+      utterance.onerror = () => {
+        isSpeakingQuestionRef.current = false;
+        setIsSpeakingQuestion(false);
+        setGuidedFlowRunning(false);
+        setQuestionAudioMessage(
+          "Question audio could not play on this browser. Use Play Question, Start Voice Answer, or type your answer."
+        );
+      };
+
+      isSpeakingQuestionRef.current = true;
+      setIsSpeakingQuestion(true);
+      setQuestionAudioMessage("Starting question audio...");
+      window.speechSynthesis.speak(utterance);
+      lastSpokenQuestionRef.current = question;
+    } catch {
+      setGuidedFlowRunning(false);
+      setQuestionAudioMessage(
+        "Guided start could not complete. Use Play Question and Start Voice Answer separately, or type your answer."
+      );
+    }
+  };
+
   const stopVoiceInput = async () => {
     if (!recognitionRef.current) return;
 
     recognitionRef.current.stop();
     setIsListening(false);
+    setGuidedFlowRunning(false);
 
     await wait(450);
 
@@ -1927,6 +2055,7 @@ Generate questions and feedback that match this candidate context. Use the selec
     latestVoiceAnalysisRef.current = null;
     latestVideoAnalysisRef.current = null;
     setIsListening(false);
+    setGuidedFlowRunning(false);
     setAnswer("");
     setVoiceAnalysis(null);
     setVideoAnalysis(null);
@@ -1986,6 +2115,7 @@ Generate questions and feedback that match this candidate context. Use the selec
     setVoiceAnalysisLoading(false);
     setVideoAnalysisLoading(false);
     setCameraUserStarted(false);
+    setGuidedFlowRunning(false);
     setQuestionAudioMessage("");
 
     if (recognitionRef.current && isListening) {
@@ -2056,7 +2186,7 @@ Generate questions and feedback that match this candidate context. Use the selec
 
       if (speakerEnabled && manualDeviceMode) {
         setQuestionAudioMessage(
-          "Phone/tablet mode: tap Play Question when you want to hear it."
+          "Phone/tablet mode: use the guided answer button when you want to hear the question and start recording."
         );
       }
     } catch {
@@ -2104,6 +2234,7 @@ Generate questions and feedback that match this candidate context. Use the selec
     setVoiceAnalysis(null);
     setVideoAnalysis(null);
     setCameraUserStarted(false);
+    setGuidedFlowRunning(false);
     latestVoiceAnalysisRef.current = null;
     latestVideoAnalysisRef.current = null;
     rawAnswerTranscriptRef.current = "";
@@ -2324,6 +2455,7 @@ Generate questions and feedback that match this candidate context. Use the selec
         setVoiceAnalysis(null);
         setVideoAnalysis(null);
         setQuestionAudioMessage("");
+        setGuidedFlowRunning(false);
         latestVoiceAnalysisRef.current = null;
         latestVideoAnalysisRef.current = null;
         rawAnswerTranscriptRef.current = "";
@@ -2548,9 +2680,8 @@ Generate questions and feedback that match this candidate context. Use the selec
                       Phone/tablet mode enabled
                     </p>
                     <p className="mt-1 text-sm leading-6 text-gray-300">
-                      For better reliability on mobile and iPad, question audio
-                      and camera preview use tap-to-start controls instead of
-                      automatic playback.
+                      For better reliability on mobile and iPad, use the guided answer button during the interview.
+                      It can start the camera, play the question and begin recording from one tap.
                     </p>
                   </div>
                 )}
@@ -2609,7 +2740,7 @@ Generate questions and feedback that match this candidate context. Use the selec
                         setSpeakerEnabled(true);
                         if (manualDeviceMode) {
                           setQuestionAudioMessage(
-                            "Phone/tablet mode: tap Play Question after the question appears."
+                            "Phone/tablet mode: use the guided answer button after the question appears."
                           );
                         }
                       }}
@@ -2723,7 +2854,7 @@ Generate questions and feedback that match this candidate context. Use the selec
                         speakQuestion(question, true);
                       } else if (question && manualDeviceMode) {
                         setQuestionAudioMessage(
-                          "Phone/tablet mode: tap Play Question to hear it."
+                          "Phone/tablet mode: use the guided answer button to hear the question and start recording."
                         );
                       }
                     }}
@@ -2805,7 +2936,7 @@ Generate questions and feedback that match this candidate context. Use the selec
                               ? isSpeakingQuestion
                                 ? "Reading the question aloud."
                                 : manualDeviceMode
-                                ? "Phone/tablet mode is active. Tap Play Question, then start your voice answer when ready."
+                                ? "Phone/tablet mode is active. Use the guided answer button for one-tap camera, question audio and voice recording."
                                 : isListening
                                 ? "Listening now. Keep speaking naturally and finish your answer before requesting feedback."
                                 : "Ready to guide your mock interview."
@@ -2877,7 +3008,7 @@ Generate questions and feedback that match this candidate context. Use the selec
                           <p className="mt-2 text-[11px] leading-4 text-gray-500">
                             {cameraEnabled
                               ? cameraRequiresTap
-                                ? "Tap Start Camera to begin preview and scoring."
+                                ? "Use the guided answer button, or tap Start Camera here."
                                 : cameraError
                                 ? "Preview active. Scoring uses fallback if tracking is unavailable."
                                 : "Tracking eye contact, posture and presence."
@@ -2940,6 +3071,7 @@ Generate questions and feedback that match this candidate context. Use the selec
                             feedbackLoading ||
                             cleaningTranscript ||
                             isSpeakingQuestion ||
+                            guidedFlowRunning ||
                             voiceAnalysisLoading ||
                             videoAnalysisLoading
                           }
@@ -2958,6 +3090,34 @@ Generate questions and feedback that match this candidate context. Use the selec
                         {questionLoading ? "Generating question..." : question}
                       </p>
                     </div>
+
+                    {manualDeviceMode && speakerEnabled && question && !feedback && (
+                      <div className="mb-4 rounded-2xl border border-purple-300/20 bg-purple-300/10 p-4">
+                        <p className="mb-2 text-sm font-black text-purple-100">
+                          Guided phone/tablet flow
+                        </p>
+                        <p className="mb-3 text-sm leading-6 text-gray-300">
+                          One tap starts the camera if selected, plays the question, then starts recording your answer.
+                        </p>
+                        <button
+                          type="button"
+                          onClick={startGuidedMobileAnswer}
+                          disabled={
+                            guidedFlowRunning ||
+                            isSpeakingQuestion ||
+                            isListening ||
+                            questionLoading ||
+                            voiceAnalysisLoading ||
+                            videoAnalysisLoading
+                          }
+                          className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-3 text-sm font-black text-white shadow-xl shadow-purple-950/30 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                          {guidedFlowRunning
+                            ? "Starting guided flow..."
+                            : guidedButtonLabel}
+                        </button>
+                      </div>
+                    )}
 
                     <textarea
                       className="mb-5 min-h-[260px] w-full rounded-2xl border border-white/10 bg-black/35 p-4 leading-7 text-white placeholder-gray-500 outline-none transition focus:border-purple-300/50 focus:ring-4 focus:ring-purple-500/10 sm:min-h-[330px]"
@@ -3002,7 +3162,7 @@ Generate questions and feedback that match this candidate context. Use the selec
                             }}
                             className="rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-2.5 text-sm font-black text-white shadow-xl shadow-purple-950/30 transition hover:opacity-95"
                           >
-                            Start Voice Answer
+                            Start Voice Answer Only
                           </button>
                         )}
 
@@ -3024,7 +3184,9 @@ Generate questions and feedback that match this candidate context. Use the selec
 
                     <div className="rounded-2xl border border-white/10 bg-black/25 p-4">
                       <p className="text-sm leading-6 text-gray-400">
-                        {isSpeakingQuestion
+                        {guidedFlowRunning
+                          ? "Starting guided flow..."
+                          : isSpeakingQuestion
                           ? "Question is being read aloud..."
                           : isListening
                           ? cameraEnabled
@@ -3035,7 +3197,7 @@ Generate questions and feedback that match this candidate context. Use the selec
                           : voiceAnalysisLoading || videoAnalysisLoading
                           ? "Analysing delivery..."
                           : manualDeviceMode
-                          ? "Phone/tablet mode: use Play Question, Start Voice Answer, or type your answer."
+                          ? "Phone/tablet mode: use the guided button, or type your answer."
                           : speakerEnabled
                           ? "Question voice can auto-start recording on desktop, or you can use the buttons."
                           : "Voice input ready."}
