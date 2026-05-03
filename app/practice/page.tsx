@@ -3072,7 +3072,7 @@ Generate questions and feedback that match this candidate context. Use the selec
                               ? isSpeakingQuestion
                                 ? "Reading the question aloud."
                                 : manualDeviceMode
-                                ? "Phone/tablet mode is active. Use the large Guided Answer button to hear the question and start recording."
+                                ? "Phone/tablet mode is active. Use the large Guided Answer button below to hear the question and start recording."
                                 : isListening
                                 ? "Listening now. Keep speaking naturally and finish your answer before requesting feedback."
                                 : "Ready to guide your mock interview."
@@ -3165,6 +3165,52 @@ Generate questions and feedback that match this candidate context. Use the selec
                       )}
                     </div>
 
+                    {manualDeviceMode && question && (
+                      <div className="mb-5 rounded-[1.7rem] border border-emerald-300/20 bg-gradient-to-br from-emerald-300/15 via-cyan-300/10 to-blue-500/10 p-5 shadow-2xl shadow-cyan-950/20">
+                        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                          <div>
+                            <p className="text-sm font-black uppercase tracking-[0.18em] text-emerald-200">
+                              Recommended phone/tablet flow
+                            </p>
+                            <h3 className="mt-2 text-xl font-black tracking-[-0.03em] text-white">
+                              Hear the question, then record your answer.
+                            </h3>
+                            <p className="mt-2 max-w-2xl text-sm leading-6 text-gray-300">
+                              Tap once. This starts the camera if enabled, plays
+                              the question with AI-generated audio, then opens
+                              the microphone for your answer.
+                            </p>
+
+                            {questionAudioError && (
+                              <p className="mt-3 rounded-2xl border border-amber-300/15 bg-amber-300/10 p-3 text-xs leading-5 text-amber-100">
+                                Audio note: {questionAudioError}
+                              </p>
+                            )}
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() => void startGuidedAnswer()}
+                            disabled={
+                              questionLoading ||
+                              isSpeakingQuestion ||
+                              isListening ||
+                              (questionAudioLoading && !questionAudioReady)
+                            }
+                            className="w-full rounded-2xl bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-500 px-5 py-4 text-base font-black text-black shadow-2xl shadow-cyan-950/30 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50 lg:w-auto lg:min-w-[310px]"
+                          >
+                            {isSpeakingQuestion
+                              ? "Question Playing..."
+                              : isListening
+                              ? "Recording..."
+                              : questionAudioLoading && !questionAudioReady
+                              ? "Preparing Question Audio..."
+                              : "Guided Answer: Hear Question + Start Recording"}
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
                     <div className="rounded-[1.6rem] border border-purple-300/20 bg-purple-300/10 p-6">
                       <div className="mb-3 flex items-center justify-between gap-3">
                         <p className="text-sm font-black uppercase tracking-[0.2em] text-purple-200">
@@ -3178,30 +3224,6 @@ Generate questions and feedback that match this candidate context. Use the selec
                         {questionLoading ? "Generating question..." : question}
                       </p>
 
-                      {manualDeviceMode && question && (
-                        <button
-                          type="button"
-                          onClick={() => void startGuidedAnswer()}
-                          disabled={
-                            questionLoading ||
-                            isSpeakingQuestion ||
-                            isListening ||
-                            (questionAudioLoading && !questionAudioReady)
-                          }
-                          className="mt-4 w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-3 text-sm font-black text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
-                        >
-                          {isSpeakingQuestion
-                            ? "Question Playing..."
-                            : isListening
-                            ? "Recording..."
-                            : questionAudioLoading && !questionAudioReady
-                            ? "Preparing Audio..."
-                            : guidedAnswerRunning
-                            ? "Starting Guided Answer..."
-                            : "Guided Answer: Play Question + Record"}
-                        </button>
-                      )}
-
                       {question && (speakerSupported || manualDeviceMode) && (
                         <button
                           type="button"
@@ -3213,7 +3235,7 @@ Generate questions and feedback that match this candidate context. Use the selec
                             }
                           }}
                           disabled={questionAudioLoading && !questionAudioReady}
-                          className="mt-3 w-full rounded-2xl border border-cyan-300/20 bg-cyan-300/10 px-5 py-3 text-sm font-black text-cyan-100 transition hover:bg-cyan-300/15 disabled:cursor-not-allowed disabled:opacity-50 sm:ml-3 sm:w-auto"
+                          className="mt-4 w-full rounded-2xl border border-cyan-300/20 bg-cyan-300/10 px-5 py-3 text-sm font-black text-cyan-100 transition hover:bg-cyan-300/15 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
                         >
                           {isSpeakingQuestion
                             ? "Stop Question Audio"
@@ -3251,43 +3273,6 @@ Generate questions and feedback that match this candidate context. Use the selec
                         </button>
                       )}
                     </div>
-
-                    {manualDeviceMode && question && (
-                      <div className="mb-4 rounded-[1.5rem] border border-emerald-300/15 bg-emerald-300/10 p-4">
-                        <p className="text-sm font-black text-emerald-100">
-                          Recommended phone/tablet flow
-                        </p>
-                        <p className="mt-1 text-sm leading-6 text-gray-300">
-                          Tap the button below. It starts camera if enabled,
-                          plays the question with AI-generated audio, then opens
-                          the microphone for your answer.
-                        </p>
-                        <button
-                          type="button"
-                          onClick={() => void startGuidedAnswer()}
-                          disabled={
-                            questionLoading ||
-                            isSpeakingQuestion ||
-                            isListening ||
-                            (questionAudioLoading && !questionAudioReady)
-                          }
-                          className="mt-4 w-full rounded-2xl bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-500 px-5 py-4 text-sm font-black text-black shadow-2xl shadow-cyan-950/30 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
-                        >
-                          {isSpeakingQuestion
-                            ? "Question Playing..."
-                            : isListening
-                            ? "Recording..."
-                            : questionAudioLoading && !questionAudioReady
-                            ? "Preparing Question Audio..."
-                            : "Guided Answer: Hear Question + Start Recording"}
-                        </button>
-                        {questionAudioError && (
-                          <p className="mt-3 text-xs leading-5 text-amber-100">
-                            Audio note: {questionAudioError}
-                          </p>
-                        )}
-                      </div>
-                    )}
 
                     <div className="mb-4 rounded-2xl border border-cyan-300/15 bg-cyan-300/10 p-4">
                       <p className="mb-2 text-xs font-black uppercase tracking-[0.18em] text-cyan-300">
