@@ -627,9 +627,7 @@ const getFirstUsefulProfileLine = (text: string) => {
     ?.slice(0, 160);
 };
 
-const buildAutofilledRoleFromProfile = (
-  profile: CandidateProfile | null
-) => {
+const buildAutofilledRoleFromProfile = (profile: CandidateProfile | null) => {
   if (!profile || !hasCandidateProfileContext(profile)) return "";
 
   const roleLine =
@@ -687,16 +685,23 @@ export default function Home() {
   const [interviewFinished, setInterviewFinished] = useState(false);
 
   const [voiceSupported, setVoiceSupported] = useState(false);
+  const [speakerSupported, setSpeakerSupported] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [cleaningTranscript, setCleaningTranscript] = useState(false);
 
   const [speakerEnabled, setSpeakerEnabled] = useState(false);
   const [isSpeakingQuestion, setIsSpeakingQuestion] = useState(false);
   const [hasUserInteracted, setHasUserInteracted] = useState(false);
+  const [questionAudioMessage, setQuestionAudioMessage] = useState("");
+
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const [isAppleMobileDevice, setIsAppleMobileDevice] = useState(false);
 
   const [cameraEnabled, setCameraEnabled] = useState(false);
   const [cameraReady, setCameraReady] = useState(false);
   const [cameraError, setCameraError] = useState("");
+  const [cameraUserStarted, setCameraUserStarted] = useState(false);
 
   const roleRef = useRef("");
   const roleManuallyEditedRef = useRef(false);
@@ -749,6 +754,16 @@ export default function Home() {
   const totalQuestions = 5;
   const currentQuestionNumber = results.length + 1;
 
+  const manualDeviceMode =
+    isTouchDevice || isSmallScreen || isAppleMobileDevice;
+  const requiresManualCameraStart = manualDeviceMode;
+  const shouldAutoSpeakQuestions = speakerEnabled && !manualDeviceMode;
+  const cameraRequiresTap =
+    cameraEnabled &&
+    interviewStarted &&
+    requiresManualCameraStart &&
+    !cameraUserStarted;
+
   const candidateProfile = useMemo(() => {
     return `
 Target role/profile:
@@ -782,6 +797,8 @@ Generate questions and feedback that match this candidate context. Use the selec
     }
 
     if (typeof window !== "undefined") {
+      setSpeakerSupported("speechSynthesis" in window);
+
       const SpeechRecognitionClass =
         (window as any).SpeechRecognition ||
         (window as any).webkitSpeechRecognition;
@@ -853,17 +870,23 @@ Generate questions and feedback that match this candidate context. Use the selec
 
         recognition.onerror = () => {
           setIsListening(false);
+          setQuestionAudioMessage(
+            "Voice dictation stopped. You can try again or type your answer."
+          );
         };
 
         recognitionRef.current = recognition;
       }
 
       const loadVoices = () => {
-        voicesRef.current = window.speechSynthesis.getVoices();
+        voicesRef.current = window.speechSynthesis?.getVoices?.() || [];
       };
 
       loadVoices();
-      window.speechSynthesis.onvoiceschanged = loadVoices;
+
+      if (window.speechSynthesis) {
+        window.speechSynthesis.onvoiceschanged = loadVoices;
+      }
     }
 
     return () => {
@@ -874,6 +897,33 @@ Generate questions and feedback that match this candidate context. Use the selec
         window.speechSynthesis.cancel();
         window.speechSynthesis.onvoiceschanged = null;
       }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const updateDeviceProfile = () => {
+      const userAgent = window.navigator.userAgent || "";
+      const touchPoints = window.navigator.maxTouchPoints || 0;
+      const isAppleTouch =
+        /iPad|iPhone|iPod/i.test(userAgent) ||
+        (window.navigator.platform === "MacIntel" && touchPoints > 1);
+
+      setIsTouchDevice(
+        touchPoints > 0 ||
+          window.matchMedia("(pointer: coarse)").matches ||
+          "ontouchstart" in window
+      );
+      setIsSmallScreen(window.matchMedia("(max-width: 767px)").matches);
+      setIsAppleMobileDevice(isAppleTouch);
+    };
+
+    updateDeviceProfile();
+    window.addEventListener("resize", updateDeviceProfile);
+
+    return () => {
+      window.removeEventListener("resize", updateDeviceProfile);
     };
   }, []);
 
@@ -954,24 +1004,45 @@ Generate questions and feedback that match this candidate context. Use the selec
   useEffect(() => {
     if (
       !question ||
-      !speakerEnabled ||
+      !shouldAutoSpeakQuestions ||
       !hasUserInteracted ||
       question === lastSpokenQuestionRef.current
     ) {
+      if (question && speakerEnabled && manualDeviceMode) {
+        setQuestionAudioMessage(
+          "Phone/tablet mode: tap Play Question when you want to hear it."
+        );
+      }
       return;
     }
 
     speakQuestion(question, true);
     lastSpokenQuestionRef.current = question;
-  }, [question, speakerEnabled, hasUserInteracted]);
+  }, [
+    question,
+    speakerEnabled,
+    shouldAutoSpeakQuestions,
+    manualDeviceMode,
+    hasUserInteracted,
+  ]);
 
   useEffect(() => {
-    if (cameraEnabled && interviewStarted) {
+    const cameraShouldRun =
+      cameraEnabled &&
+      interviewStarted &&
+      (!requiresManualCameraStart || cameraUserStarted);
+
+    if (cameraShouldRun) {
       void startCamera();
     } else {
       stopCamera();
     }
-  }, [cameraEnabled, interviewStarted]);
+  }, [
+    cameraEnabled,
+    interviewStarted,
+    requiresManualCameraStart,
+    cameraUserStarted,
+  ]);
 
   const averageQuestionScore = useMemo(() => {
     if (results.length === 0) return 0;
@@ -1596,6 +1667,10 @@ Generate questions and feedback that match this candidate context. Use the selec
   };
 
   const getPreferredFemaleVoice = () => {
+    if (typeof window !== "undefined" && window.speechSynthesis) {
+      voicesRef.current = window.speechSynthesis.getVoices();
+    }
+
     const voices = voicesRef.current;
 
     const preferredNames = [
@@ -1654,10 +1729,16 @@ Generate questions and feedback that match this candidate context. Use the selec
     }
 
     setIsSpeakingQuestion(false);
+    setQuestionAudioMessage("Question audio stopped.");
   };
 
   const startVoiceInput = async () => {
-    if (!recognitionRef.current) return;
+    if (!recognitionRef.current) {
+      setQuestionAudioMessage(
+        "Voice dictation is not supported on this browser. Type your answer instead."
+      );
+      return;
+    }
 
     try {
       interimTranscriptRef.current = "";
@@ -1672,7 +1753,7 @@ Generate questions and feedback that match this candidate context. Use the selec
       if (cameraEnabled) {
         resetVideoFrames();
 
-        if (!cameraReady) {
+        if (!cameraReady && (!requiresManualCameraStart || cameraUserStarted)) {
           await startCamera();
         }
       }
@@ -1680,11 +1761,15 @@ Generate questions and feedback that match this candidate context. Use the selec
       await startAudioMonitoring();
 
       setIsListening(true);
+      setQuestionAudioMessage("Listening now. Speak naturally.");
       recognitionRef.current.start();
     } catch {
       setIsListening(false);
       recordingStartRef.current = null;
       cleanupAudioMonitoring();
+      setQuestionAudioMessage(
+        "Microphone access was not available. You can type your answer instead."
+      );
     }
   };
 
@@ -1694,17 +1779,18 @@ Generate questions and feedback that match this candidate context. Use the selec
       !window.speechSynthesis ||
       !text.trim()
     ) {
-      if (autoStartListening) {
+      if (autoStartListening && !manualDeviceMode) {
         void startVoiceInput();
       }
       return;
     }
 
     stopQuestionSpeech();
-    autoStartListeningAfterSpeechRef.current = autoStartListening;
+    autoStartListeningAfterSpeechRef.current =
+      autoStartListening && !manualDeviceMode;
 
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.rate = 1;
+    utterance.rate = 0.96;
     utterance.pitch = 1;
     utterance.volume = 1;
     utterance.lang = "en-GB";
@@ -1730,6 +1816,7 @@ Generate questions and feedback that match this candidate context. Use the selec
     utterance.onstart = () => {
       isSpeakingQuestionRef.current = true;
       setIsSpeakingQuestion(true);
+      setQuestionAudioMessage("Playing the question...");
     };
 
     utterance.onend = () => {
@@ -1739,22 +1826,37 @@ Generate questions and feedback that match this candidate context. Use the selec
       if (autoStartListeningAfterSpeechRef.current) {
         autoStartListeningAfterSpeechRef.current = false;
         beginListeningAfterQuestion();
+      } else {
+        setQuestionAudioMessage(
+          manualDeviceMode
+            ? "Question played. Tap Start Voice Answer when ready, or type your answer."
+            : "Question played."
+        );
       }
     };
 
     utterance.onerror = () => {
       isSpeakingQuestionRef.current = false;
       setIsSpeakingQuestion(false);
-
-      if (autoStartListeningAfterSpeechRef.current) {
-        autoStartListeningAfterSpeechRef.current = false;
-        beginListeningAfterQuestion();
-      }
+      autoStartListeningAfterSpeechRef.current = false;
+      setQuestionAudioMessage(
+        "Question audio could not play on this browser. The written question is shown below."
+      );
     };
 
     isSpeakingQuestionRef.current = true;
     setIsSpeakingQuestion(true);
+    setQuestionAudioMessage("Starting question audio...");
     window.speechSynthesis.speak(utterance);
+  };
+
+  const playQuestionManually = () => {
+    if (!question.trim()) return;
+
+    setHasUserInteracted(true);
+    setSpeakerEnabled(true);
+    speakQuestion(question, !manualDeviceMode);
+    lastSpokenQuestionRef.current = question;
   };
 
   const stopVoiceInput = async () => {
@@ -1829,6 +1931,7 @@ Generate questions and feedback that match this candidate context. Use the selec
     setVoiceAnalysis(null);
     setVideoAnalysis(null);
     resetVideoFrames();
+    setQuestionAudioMessage("Answer cleared.");
   };
 
   const cleanTranscript = async (rawTranscript: string) => {
@@ -1882,6 +1985,8 @@ Generate questions and feedback that match this candidate context. Use the selec
     setCleaningTranscript(false);
     setVoiceAnalysisLoading(false);
     setVideoAnalysisLoading(false);
+    setCameraUserStarted(false);
+    setQuestionAudioMessage("");
 
     if (recognitionRef.current && isListening) {
       recognitionRef.current.stop();
@@ -1911,6 +2016,7 @@ Generate questions and feedback that match this candidate context. Use the selec
       setFeedback(null);
       setVoiceAnalysis(null);
       setVideoAnalysis(null);
+      setQuestionAudioMessage("");
       latestVoiceAnalysisRef.current = null;
       latestVideoAnalysisRef.current = null;
       rawAnswerTranscriptRef.current = "";
@@ -1947,6 +2053,12 @@ Generate questions and feedback that match this candidate context. Use the selec
       const nextQuestion = data.question || "Tell me about yourself.";
       activeQuestionRef.current = nextQuestion;
       setQuestion(nextQuestion);
+
+      if (speakerEnabled && manualDeviceMode) {
+        setQuestionAudioMessage(
+          "Phone/tablet mode: tap Play Question when you want to hear it."
+        );
+      }
     } catch {
       setQuestion("Something went wrong while generating the question.");
     } finally {
@@ -1964,6 +2076,25 @@ Generate questions and feedback that match this candidate context. Use the selec
     setRoleAutofilledFromProfile(true);
   };
 
+  const toggleCamera = () => {
+    setCameraEnabled((previous) => {
+      const next = !previous;
+
+      if (!next) {
+        setCameraUserStarted(false);
+      }
+
+      return next;
+    });
+    setHasUserInteracted(true);
+  };
+
+  const startCameraFromTap = () => {
+    setHasUserInteracted(true);
+    setCameraUserStarted(true);
+    setCameraError("");
+  };
+
   const startInterview = async () => {
     setHasUserInteracted(true);
     setInterviewStarted(true);
@@ -1972,6 +2103,7 @@ Generate questions and feedback that match this candidate context. Use the selec
     setSummary(null);
     setVoiceAnalysis(null);
     setVideoAnalysis(null);
+    setCameraUserStarted(false);
     latestVoiceAnalysisRef.current = null;
     latestVideoAnalysisRef.current = null;
     rawAnswerTranscriptRef.current = "";
@@ -1980,7 +2112,7 @@ Generate questions and feedback that match this candidate context. Use the selec
     resetVideoFrames();
     await fetchQuestion(1, []);
 
-    if (cameraEnabled) {
+    if (cameraEnabled && !requiresManualCameraStart) {
       void startCamera();
     }
   };
@@ -2191,6 +2323,7 @@ Generate questions and feedback that match this candidate context. Use the selec
         setFeedback(null);
         setVoiceAnalysis(null);
         setVideoAnalysis(null);
+        setQuestionAudioMessage("");
         latestVoiceAnalysisRef.current = null;
         latestVideoAnalysisRef.current = null;
         rawAnswerTranscriptRef.current = "";
@@ -2211,30 +2344,30 @@ Generate questions and feedback that match this candidate context. Use the selec
   return (
     <main className="min-h-screen overflow-hidden bg-[#07030d] text-white">
       <header className="sticky top-0 z-50 border-b border-white/10 bg-[#07030d]/85 backdrop-blur-2xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <Link href="/" className="flex items-center gap-3">
-            <div className="relative">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6 sm:py-4">
+          <Link href="/" className="flex min-w-0 items-center gap-3">
+            <div className="relative shrink-0">
               <div className="absolute -inset-2 rounded-2xl bg-purple-500/25 blur-xl" />
               <div className="relative rounded-2xl border border-white/15 bg-white/95 p-1 shadow-lg shadow-purple-950/40">
                 <img
                   src="/brand/logo.jpg"
                   alt="AI Career Mentor"
-                  className="h-11 w-11 rounded-xl object-contain"
+                  className="h-10 w-10 rounded-xl object-contain sm:h-11 sm:w-11"
                 />
               </div>
             </div>
 
-            <div>
-              <p className="text-lg font-black tracking-[-0.03em]">
+            <div className="min-w-0">
+              <p className="truncate text-base font-black tracking-[-0.03em] sm:text-lg">
                 AI Career Mentor
               </p>
-              <p className="text-xs font-medium text-purple-100/55">
+              <p className="hidden text-xs font-medium text-purple-100/55 sm:block">
                 Interview intelligence platform
               </p>
             </div>
           </Link>
 
-          <div className="flex items-center gap-3">
+          <div className="flex shrink-0 items-center gap-2 sm:gap-3">
             <Link href="/">
               <button className="hidden rounded-full border border-white/10 bg-white/[0.055] px-4 py-2 text-sm font-black text-white transition hover:bg-white/[0.1] sm:block">
                 Home
@@ -2251,7 +2384,7 @@ Generate questions and feedback that match this candidate context. Use the selec
 
             {!isSignedIn && (
               <SignInButton mode="modal">
-                <button className="rounded-full bg-white px-5 py-2.5 text-sm font-black text-black shadow-xl shadow-purple-950/20 transition hover:bg-purple-100">
+                <button className="rounded-full bg-white px-4 py-2.5 text-sm font-black text-black shadow-xl shadow-purple-950/20 transition hover:bg-purple-100 sm:px-5">
                   Sign In
                 </button>
               </SignInButton>
@@ -2267,8 +2400,8 @@ Generate questions and feedback that match this candidate context. Use the selec
         <div className="pointer-events-none absolute right-[-220px] top-24 h-[460px] w-[460px] rounded-full bg-cyan-500/15 blur-[120px]" />
         <div className="pointer-events-none absolute left-[-220px] top-80 h-[420px] w-[420px] rounded-full bg-fuchsia-500/15 blur-[120px]" />
 
-        <div className="relative mx-auto max-w-7xl px-6 py-10 lg:py-12">
-          <div className="mb-8 overflow-hidden rounded-[2.25rem] border border-white/10 bg-white/[0.07] p-6 shadow-2xl shadow-purple-950/20 backdrop-blur-2xl md:p-8">
+        <div className="relative mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-10 lg:py-12">
+          <div className="mb-6 overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.07] p-5 shadow-2xl shadow-purple-950/20 backdrop-blur-2xl sm:mb-8 sm:rounded-[2.25rem] sm:p-6 md:p-8">
             <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/50 to-transparent" />
 
             <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
@@ -2295,7 +2428,7 @@ Generate questions and feedback that match this candidate context. Use the selec
                 </p>
               </div>
 
-              <div className="grid min-w-[260px] grid-cols-3 gap-3">
+              <div className="grid min-w-0 grid-cols-3 gap-3 sm:min-w-[260px]">
                 <MiniStat value={String(totalQuestions)} label="Questions" />
                 <MiniStat value="360°" label="Feedback" />
                 <MiniStat value="8+" label="Target" />
@@ -2409,6 +2542,19 @@ Generate questions and feedback that match this candidate context. Use the selec
                     )}
                 </div>
 
+                {manualDeviceMode && (
+                  <div className="mb-5 rounded-2xl border border-cyan-300/15 bg-cyan-300/10 p-4">
+                    <p className="text-sm font-black text-cyan-200">
+                      Phone/tablet mode enabled
+                    </p>
+                    <p className="mt-1 text-sm leading-6 text-gray-300">
+                      For better reliability on mobile and iPad, question audio
+                      and camera preview use tap-to-start controls instead of
+                      automatic playback.
+                    </p>
+                  </div>
+                )}
+
                 <div className="mb-5 grid gap-4 md:grid-cols-2">
                   <SelectField
                     label="Experience level"
@@ -2461,18 +2607,17 @@ Generate questions and feedback that match this candidate context. Use the selec
                       onClick={() => {
                         setHasUserInteracted(true);
                         setSpeakerEnabled(true);
+                        if (manualDeviceMode) {
+                          setQuestionAudioMessage(
+                            "Phone/tablet mode: tap Play Question after the question appears."
+                          );
+                        }
                       }}
                     >
                       Speaker + Text
                     </ToggleButton>
 
-                    <ToggleButton
-                      active={cameraEnabled}
-                      onClick={() => {
-                        setCameraEnabled((previous) => !previous);
-                        setHasUserInteracted(true);
-                      }}
-                    >
+                    <ToggleButton active={cameraEnabled} onClick={toggleCamera}>
                       {cameraEnabled ? "Camera On" : "Camera Off"}
                     </ToggleButton>
                   </div>
@@ -2574,33 +2719,30 @@ Generate questions and feedback that match this candidate context. Use the selec
                     onClick={() => {
                       setHasUserInteracted(true);
                       setSpeakerEnabled(true);
-                      if (question) {
+                      if (question && !manualDeviceMode) {
                         speakQuestion(question, true);
+                      } else if (question && manualDeviceMode) {
+                        setQuestionAudioMessage(
+                          "Phone/tablet mode: tap Play Question to hear it."
+                        );
                       }
                     }}
                   >
                     Speaker + Text
                   </ToggleButton>
 
-                  <ToggleButton
-                    active={cameraEnabled}
-                    onClick={() => {
-                      setCameraEnabled((previous) => !previous);
-                      setHasUserInteracted(true);
-                    }}
-                  >
+                  <ToggleButton active={cameraEnabled} onClick={toggleCamera}>
                     {cameraEnabled ? "Camera On" : "Camera Off"}
                   </ToggleButton>
 
-                  {speakerEnabled && question && (
+                  {question && speakerSupported && (
                     <button
                       type="button"
                       onClick={() => {
-                        setHasUserInteracted(true);
                         if (isSpeakingQuestion) {
                           stopQuestionSpeech();
                         } else {
-                          speakQuestion(question, true);
+                          playQuestionManually();
                         }
                       }}
                       className="rounded-full border border-cyan-300/25 bg-cyan-300/10 px-4 py-2 text-sm font-black text-cyan-100 transition hover:bg-cyan-300/15"
@@ -2661,12 +2803,20 @@ Generate questions and feedback that match this candidate context. Use the selec
                           <p className="mt-3 max-w-md text-sm leading-6 text-gray-400">
                             {speakerEnabled
                               ? isSpeakingQuestion
-                                ? "Reading the question aloud. Your answer will start after the coach finishes."
+                                ? "Reading the question aloud."
+                                : manualDeviceMode
+                                ? "Phone/tablet mode is active. Tap Play Question, then start your voice answer when ready."
                                 : isListening
                                 ? "Listening now. Keep speaking naturally and finish your answer before requesting feedback."
                                 : "Ready to guide your mock interview."
                               : "Read the question, answer naturally, then request strict hiring-bar feedback."}
                           </p>
+
+                          {questionAudioMessage && (
+                            <p className="mt-3 rounded-2xl border border-cyan-300/15 bg-cyan-300/10 p-3 text-xs leading-5 text-cyan-100">
+                              {questionAudioMessage}
+                            </p>
+                          )}
 
                           <div className="mt-4 flex flex-wrap gap-2">
                             <span className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1.5 text-xs font-black text-gray-300">
@@ -2676,7 +2826,7 @@ Generate questions and feedback that match this candidate context. Use the selec
                               {cameraEnabled ? "Camera enabled" : "Camera off"}
                             </span>
                             <span className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1.5 text-xs font-black text-gray-300">
-                              {focusArea}
+                              {manualDeviceMode ? "Phone/tablet safe mode" : "Desktop mode"}
                             </span>
                           </div>
                         </div>
@@ -2688,7 +2838,9 @@ Generate questions and feedback that match this candidate context. Use the selec
                             </p>
                             <span className="rounded-full border border-white/10 bg-white/[0.06] px-2.5 py-1 text-[11px] font-bold text-gray-300">
                               {cameraEnabled
-                                ? cameraError
+                                ? cameraRequiresTap
+                                  ? "Tap to start"
+                                  : cameraError
                                   ? "Preview"
                                   : cameraReady
                                   ? "Ready"
@@ -2697,7 +2849,7 @@ Generate questions and feedback that match this candidate context. Use the selec
                             </span>
                           </div>
 
-                          <div className="overflow-hidden rounded-2xl border border-white/10 bg-black">
+                          <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-black">
                             <video
                               ref={videoRef}
                               autoPlay
@@ -2705,11 +2857,28 @@ Generate questions and feedback that match this candidate context. Use the selec
                               playsInline
                               className="h-36 w-full object-cover"
                             />
+
+                            {cameraRequiresTap && (
+                              <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/85 p-4 text-center">
+                                <p className="text-xs leading-5 text-gray-300">
+                                  Camera is ready but needs a tap on this device.
+                                </p>
+                                <button
+                                  type="button"
+                                  onClick={startCameraFromTap}
+                                  className="rounded-full bg-white px-4 py-2 text-xs font-black text-black transition hover:bg-purple-100"
+                                >
+                                  Start Camera
+                                </button>
+                              </div>
+                            )}
                           </div>
 
                           <p className="mt-2 text-[11px] leading-4 text-gray-500">
                             {cameraEnabled
-                              ? cameraError
+                              ? cameraRequiresTap
+                                ? "Tap Start Camera to begin preview and scoring."
+                                : cameraError
                                 ? "Preview active. Scoring uses fallback if tracking is unavailable."
                                 : "Tracking eye contact, posture and presence."
                               : "Camera analysis off."}
@@ -2736,6 +2905,22 @@ Generate questions and feedback that match this candidate context. Use the selec
                       <p className="text-lg font-bold leading-8 text-white">
                         {questionLoading ? "Generating question..." : question}
                       </p>
+
+                      {question && speakerSupported && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (isSpeakingQuestion) {
+                              stopQuestionSpeech();
+                            } else {
+                              playQuestionManually();
+                            }
+                          }}
+                          className="mt-4 w-full rounded-2xl border border-cyan-300/20 bg-cyan-300/10 px-5 py-3 text-sm font-black text-cyan-100 transition hover:bg-cyan-300/15 sm:w-auto"
+                        >
+                          {isSpeakingQuestion ? "Stop Question Audio" : "Play Question"}
+                        </button>
+                      )}
                     </div>
                   </GlassCard>
                 </div>
@@ -2758,7 +2943,7 @@ Generate questions and feedback that match this candidate context. Use the selec
                             voiceAnalysisLoading ||
                             videoAnalysisLoading
                           }
-                          className="rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-3 text-sm font-black shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
+                          className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-3 text-sm font-black shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
                         >
                           {feedbackLoading ? "Evaluating..." : "Get AI Feedback"}
                         </button>
@@ -2775,11 +2960,11 @@ Generate questions and feedback that match this candidate context. Use the selec
                     </div>
 
                     <textarea
-                      className="mb-5 min-h-[330px] w-full rounded-2xl border border-white/10 bg-black/35 p-4 leading-7 text-white placeholder-gray-500 outline-none transition focus:border-purple-300/50 focus:ring-4 focus:ring-purple-500/10"
+                      className="mb-5 min-h-[260px] w-full rounded-2xl border border-white/10 bg-black/35 p-4 leading-7 text-white placeholder-gray-500 outline-none transition focus:border-purple-300/50 focus:ring-4 focus:ring-purple-500/10 sm:min-h-[330px]"
                       placeholder={
-                        speakerEnabled
-                          ? "Once the question finishes, speak naturally. Click Stop Voice Answer when you’re done."
-                          : "Write your answer here..."
+                        voiceSupported
+                          ? "Speak or type your answer here..."
+                          : "Voice dictation may not be supported on this browser. Type your answer here..."
                       }
                       value={answer}
                       onChange={(e) => {
@@ -2800,7 +2985,7 @@ Generate questions and feedback that match this candidate context. Use the selec
                       }}
                     />
 
-                    {voiceSupported && (
+                    {voiceSupported ? (
                       <div className="mb-5 flex flex-wrap gap-3">
                         {isListening ? (
                           <button
@@ -2828,6 +3013,13 @@ Generate questions and feedback that match this candidate context. Use the selec
                           Clear Answer
                         </button>
                       </div>
+                    ) : (
+                      <div className="mb-5 rounded-2xl border border-amber-300/15 bg-amber-300/10 p-4">
+                        <p className="text-sm leading-6 text-amber-100">
+                          Voice dictation is not available on this browser. You
+                          can still type your answer and receive AI feedback.
+                        </p>
+                      </div>
                     )}
 
                     <div className="rounded-2xl border border-white/10 bg-black/25 p-4">
@@ -2842,8 +3034,10 @@ Generate questions and feedback that match this candidate context. Use the selec
                           ? "Tidying transcript and punctuation..."
                           : voiceAnalysisLoading || videoAnalysisLoading
                           ? "Analysing delivery..."
+                          : manualDeviceMode
+                          ? "Phone/tablet mode: use Play Question, Start Voice Answer, or type your answer."
                           : speakerEnabled
-                          ? "Question voice will auto-start recording when it finishes."
+                          ? "Question voice can auto-start recording on desktop, or you can use the buttons."
                           : "Voice input ready."}
                       </p>
                     </div>
@@ -3281,7 +3475,7 @@ function GlassCard({
 }) {
   return (
     <div
-      className={`relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.065] p-6 shadow-2xl shadow-purple-950/10 backdrop-blur-2xl md:p-7 ${className}`}
+      className={`relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.065] p-5 shadow-2xl shadow-purple-950/10 backdrop-blur-2xl sm:p-6 md:p-7 ${className}`}
     >
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent" />
       <div className="relative">{children}</div>
