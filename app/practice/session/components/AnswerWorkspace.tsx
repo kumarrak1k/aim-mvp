@@ -44,33 +44,54 @@ export function AnswerWorkspace({
   const analysing = feedbackLoading || voiceAnalysisLoading || videoAnalysisLoading;
 
   return (
-    <section className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.055] shadow-2xl shadow-purple-950/10 backdrop-blur-2xl">
-      <div className="p-4 sm:p-5 lg:p-6">
-        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="text-sm font-black uppercase tracking-[0.22em] text-purple-300">
+    <section className="overflow-hidden rounded-[1.5rem] border border-white/10 bg-white/[0.055] shadow-2xl shadow-purple-950/10 backdrop-blur-2xl">
+      <div className="p-3 sm:p-4">
+        <div className="mb-3 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <div className="min-w-0">
+            <p className="text-xs font-black uppercase tracking-[0.22em] text-purple-300">
               Your answer
             </p>
-            <h2 className="mt-2 text-2xl font-black tracking-[-0.035em]">
-              Transcript and answer editor
-            </h2>
+            <div className="mt-1 flex flex-wrap items-center gap-3">
+              <h2 className="text-xl font-black tracking-[-0.035em] text-white sm:text-2xl">
+                Transcript and answer editor
+              </h2>
+
+              {cleaningTranscript && (
+                <span className="rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1.5 text-xs font-black text-cyan-100">
+                  Cleaning transcript
+                </span>
+              )}
+            </div>
           </div>
 
-          {cleaningTranscript && (
-            <span className="w-fit rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1.5 text-xs font-black text-cyan-100">
-              Cleaning transcript
-            </span>
-          )}
+          <button
+            type="button"
+            onClick={onFeedback}
+            disabled={
+              !question.trim() ||
+              !answer.trim() ||
+              Boolean(feedback) ||
+              analysing ||
+              questionAudioLoading
+            }
+            className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-3 text-sm font-black text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+          >
+            {feedbackLoading
+              ? "Preparing feedback..."
+              : voiceAnalysisLoading || videoAnalysisLoading
+                ? "Analysing delivery..."
+                : "Get AI feedback"}
+          </button>
         </div>
 
         <textarea
           value={answer}
           onChange={(event) => onAnswerChange(event.target.value)}
           placeholder="Your answer transcript will appear here. You can also type or edit your answer before requesting feedback."
-          className="min-h-[240px] w-full resize-none rounded-[1.6rem] border border-white/10 bg-black/30 p-5 text-base leading-7 text-white placeholder-gray-500 outline-none transition focus:border-purple-300/50 focus:ring-4 focus:ring-purple-500/10 sm:min-h-[260px] lg:min-h-[280px]"
+          className="h-[clamp(300px,52vh,560px)] w-full resize-none rounded-[1.35rem] border border-white/10 bg-black/30 p-4 text-base leading-7 text-white placeholder-gray-500 outline-none transition focus:border-purple-300/50 focus:ring-4 focus:ring-purple-500/10"
         />
 
-        <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+        <div className="mt-3 flex flex-col gap-3 sm:flex-row">
           {!isListening ? (
             <button
               type="button"
@@ -97,25 +118,6 @@ export function AnswerWorkspace({
             className="rounded-2xl border border-white/10 bg-white/[0.06] px-5 py-3 text-sm font-black text-white transition hover:bg-white/[0.1] disabled:cursor-not-allowed disabled:opacity-50"
           >
             Clear answer
-          </button>
-
-          <button
-            type="button"
-            onClick={onFeedback}
-            disabled={
-              !question.trim() ||
-              !answer.trim() ||
-              Boolean(feedback) ||
-              analysing ||
-              questionAudioLoading
-            }
-            className="rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-3 text-sm font-black text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50 md:col-span-2 xl:col-span-2"
-          >
-            {feedbackLoading
-              ? "Preparing feedback..."
-              : voiceAnalysisLoading || videoAnalysisLoading
-                ? "Analysing delivery..."
-                : "Get AI feedback"}
           </button>
         </div>
       </div>
