@@ -198,6 +198,10 @@ export type CandidateProfile = {
   roleSpecFileName: string;
   preferredPracticeMode: PracticeMode;
   speakerPreference: SpeakerPreference;
+  defaultExperienceLevel: string;
+  defaultInterviewType: string;
+  defaultDifficulty: string;
+  defaultFocusArea: string;
   updatedAt: string;
 };
 

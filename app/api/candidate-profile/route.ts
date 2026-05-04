@@ -19,6 +19,10 @@ type CandidateProfile = {
   roleSpecFileName: string;
   preferredPracticeMode: PracticeMode;
   speakerPreference: SpeakerPreference;
+  defaultExperienceLevel: string;
+  defaultInterviewType: string;
+  defaultDifficulty: string;
+  defaultFocusArea: string;
   updatedAt: string;
 };
 
@@ -28,6 +32,11 @@ const DEFAULT_SPEAKER_PREFERENCE: SpeakerPreference = {
   pace: "natural",
 };
 
+const DEFAULT_EXPERIENCE_LEVEL = "Graduate / entry level";
+const DEFAULT_INTERVIEW_TYPE = "Competency / behavioural";
+const DEFAULT_DIFFICULTY = "Standard";
+const DEFAULT_FOCUS_AREA = "Balanced";
+
 const EMPTY_PROFILE: CandidateProfile = {
   cvText: "",
   roleSpec: "",
@@ -36,6 +45,10 @@ const EMPTY_PROFILE: CandidateProfile = {
   roleSpecFileName: "",
   preferredPracticeMode: "typed",
   speakerPreference: DEFAULT_SPEAKER_PREFERENCE,
+  defaultExperienceLevel: DEFAULT_EXPERIENCE_LEVEL,
+  defaultInterviewType: DEFAULT_INTERVIEW_TYPE,
+  defaultDifficulty: DEFAULT_DIFFICULTY,
+  defaultFocusArea: DEFAULT_FOCUS_AREA,
   updatedAt: "",
 };
 
@@ -49,6 +62,7 @@ const MAX_ROLE_SPEC_CHARS = 2500;
 const MAX_GOALS_CHARS = 900;
 const MAX_TOTAL_CHARS = 7000;
 const MAX_FILENAME_CHARS = 180;
+const MAX_SETUP_FIELD_CHARS = 90;
 
 function cleanText(value: unknown) {
   if (typeof value !== "string") return "";
@@ -61,6 +75,14 @@ function cleanFileName(value: unknown) {
     .replace(/[<>:"/\\|?*\u0000-\u001F]/g, "")
     .trim()
     .slice(0, MAX_FILENAME_CHARS);
+}
+
+function cleanSetupField(value: unknown, fallback: string) {
+  if (typeof value !== "string") return fallback;
+
+  const cleaned = value.replace(/\s+/g, " ").trim().slice(0, MAX_SETUP_FIELD_CHARS);
+
+  return cleaned || fallback;
 }
 
 function cleanPracticeMode(
@@ -141,6 +163,22 @@ function extractCandidateProfile(metadata: unknown): CandidateProfile {
       candidateProfile.speakerPreference,
       DEFAULT_SPEAKER_PREFERENCE
     ),
+    defaultExperienceLevel: cleanSetupField(
+      candidateProfile.defaultExperienceLevel,
+      DEFAULT_EXPERIENCE_LEVEL
+    ),
+    defaultInterviewType: cleanSetupField(
+      candidateProfile.defaultInterviewType,
+      DEFAULT_INTERVIEW_TYPE
+    ),
+    defaultDifficulty: cleanSetupField(
+      candidateProfile.defaultDifficulty,
+      DEFAULT_DIFFICULTY
+    ),
+    defaultFocusArea: cleanSetupField(
+      candidateProfile.defaultFocusArea,
+      DEFAULT_FOCUS_AREA
+    ),
     updatedAt:
       typeof candidateProfile.updatedAt === "string"
         ? candidateProfile.updatedAt
@@ -187,6 +225,22 @@ function normaliseProfile(body: unknown, currentProfile: CandidateProfile) {
     speakerPreference: cleanSpeakerPreference(
       input.speakerPreference,
       currentProfile.speakerPreference || DEFAULT_SPEAKER_PREFERENCE
+    ),
+    defaultExperienceLevel: cleanSetupField(
+      input.defaultExperienceLevel,
+      currentProfile.defaultExperienceLevel || DEFAULT_EXPERIENCE_LEVEL
+    ),
+    defaultInterviewType: cleanSetupField(
+      input.defaultInterviewType,
+      currentProfile.defaultInterviewType || DEFAULT_INTERVIEW_TYPE
+    ),
+    defaultDifficulty: cleanSetupField(
+      input.defaultDifficulty,
+      currentProfile.defaultDifficulty || DEFAULT_DIFFICULTY
+    ),
+    defaultFocusArea: cleanSetupField(
+      input.defaultFocusArea,
+      currentProfile.defaultFocusArea || DEFAULT_FOCUS_AREA
     ),
     updatedAt: new Date().toISOString(),
   };

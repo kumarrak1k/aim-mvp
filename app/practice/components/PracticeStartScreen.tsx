@@ -92,6 +92,10 @@ const speakerPaceOptions: Array<{
   { value: "energetic", label: "More energetic" },
 ];
 
+const formatPreferenceWord = (value: string) => {
+  return value.charAt(0).toUpperCase() + value.slice(1);
+};
+
 export function PracticeStartScreen({
   isLoaded,
   isSignedIn,
@@ -199,7 +203,7 @@ export function PracticeStartScreen({
   const savePracticePreference = useCallback(async () => {
     if (!isSignedIn) {
       setPreferenceMessage(
-        "Sign in to save this as your default practice mode and speaker preference."
+        "Sign in to save this as your default interview setup."
       );
       return;
     }
@@ -221,6 +225,10 @@ export function PracticeStartScreen({
           roleSpecFileName: savedCandidateProfile?.roleSpecFileName || "",
           preferredPracticeMode: selectedPracticeMode,
           speakerPreference,
+          defaultExperienceLevel: experienceLevel,
+          defaultInterviewType: interviewType,
+          defaultDifficulty: difficulty,
+          defaultFocusArea: focusArea,
         }),
       });
 
@@ -228,20 +236,29 @@ export function PracticeStartScreen({
 
       if (!response.ok || data.error) {
         setPreferenceMessage(
-          data.error || "Could not save your practice preferences."
+          data.error || "Could not save your default interview setup."
         );
         return;
       }
 
       setPreferenceMessage(
-        `${practiceModeLabels[selectedPracticeMode]} and speaker preference saved as your default.`
+        "Your full interview setup has been saved as default."
       );
     } catch {
-      setPreferenceMessage("Something went wrong while saving your preference.");
+      setPreferenceMessage("Something went wrong while saving your setup.");
     } finally {
       setSavingPreference(false);
     }
-  }, [isSignedIn, savedCandidateProfile, selectedPracticeMode, speakerPreference]);
+  }, [
+    difficulty,
+    experienceLevel,
+    focusArea,
+    interviewType,
+    isSignedIn,
+    savedCandidateProfile,
+    selectedPracticeMode,
+    speakerPreference,
+  ]);
 
   return (
     <div className="grid gap-6 lg:grid-cols-[2fr_0.9fr]">
@@ -491,10 +508,14 @@ export function PracticeStartScreen({
               <p className="text-sm leading-6 text-gray-300">
                 Current setup:{" "}
                 <span className="font-black text-white">
+                  {experienceLevel}
+                </span>{" "}
+                · {interviewType} · {difficulty} difficulty · Focus: {focusArea} ·{" "}
+                <span className="font-black text-white">
                   {practiceModeLabels[selectedPracticeMode]}
                 </span>{" "}
-                with a {speakerPreference.accent} {speakerPreference.voice}{" "}
-                voice at {speakerPreference.pace} pace.
+                with a {formatPreferenceWord(speakerPreference.accent)}{" "}
+                {speakerPreference.voice} voice at {speakerPreference.pace} pace.
               </p>
 
               <button
@@ -503,7 +524,7 @@ export function PracticeStartScreen({
                 disabled={savingPreference || !isSignedIn}
                 className="rounded-full border border-purple-300/20 bg-purple-300/10 px-4 py-2 text-xs font-black text-purple-100 transition hover:bg-purple-300/15 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                {savingPreference ? "Saving..." : "Save as default"}
+                {savingPreference ? "Saving..." : "Save full setup as default"}
               </button>
             </div>
 
@@ -515,7 +536,8 @@ export function PracticeStartScreen({
 
             {!isSignedIn && (
               <p className="mt-3 text-xs font-semibold leading-5 text-gray-500">
-                Sign in to save your preferred practice mode and speaker.
+                Sign in to save your preferred role setup, practice mode and
+                speaker.
               </p>
             )}
           </div>
@@ -573,8 +595,8 @@ export function PracticeStartScreen({
             <CheckItem>Focus: {focusArea}</CheckItem>
             <CheckItem>{practiceModeLabels[selectedPracticeMode]}</CheckItem>
             <CheckItem>
-              {speakerPreference.accent} {speakerPreference.voice} voice,{" "}
-              {speakerPreference.pace} pace
+              {formatPreferenceWord(speakerPreference.accent)}{" "}
+              {speakerPreference.voice} voice, {speakerPreference.pace} pace
             </CheckItem>
           </div>
         </GlassCard>

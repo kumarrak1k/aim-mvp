@@ -3,7 +3,21 @@
 import Link from "next/link";
 import { MiniStat } from "./PracticeUi";
 
-export function PracticeHero({ totalQuestions }: { totalQuestions: number }) {
+type PracticeHeroProps = {
+  totalQuestions: number;
+  canStartInterview: boolean;
+  questionLoading: boolean;
+  setupSummary: string;
+  onStartInterview: () => void;
+};
+
+export function PracticeHero({
+  totalQuestions,
+  canStartInterview,
+  questionLoading,
+  setupSummary,
+  onStartInterview,
+}: PracticeHeroProps) {
   return (
     <div className="relative mb-6 overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.07] p-5 shadow-2xl shadow-purple-950/20 backdrop-blur-2xl sm:mb-8 sm:rounded-[2.25rem] sm:p-6 md:p-8 lg:p-9">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/50 to-transparent" />
@@ -23,7 +37,7 @@ export function PracticeHero({ totalQuestions }: { totalQuestions: number }) {
           </div>
 
           <h1 className="max-w-5xl text-3xl font-black leading-[1.01] tracking-[-0.05em] md:text-5xl lg:text-6xl">
-            Practise the full interview signal: {" "}
+            Practise the full interview signal:{" "}
             <span className="bg-gradient-to-r from-purple-200 via-fuchsia-200 to-cyan-200 bg-clip-text text-transparent">
               answers, voice and presence.
             </span>
@@ -36,10 +50,30 @@ export function PracticeHero({ totalQuestions }: { totalQuestions: number }) {
             answers.
           </p>
 
+          <div className="mt-6 rounded-[1.35rem] border border-cyan-300/15 bg-cyan-300/10 p-4">
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-cyan-200">
+              Current default setup
+            </p>
+            <p className="mt-2 text-sm font-semibold leading-6 text-gray-200">
+              {setupSummary}
+            </p>
+          </div>
+
           <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+            <button
+              type="button"
+              onClick={onStartInterview}
+              disabled={!canStartInterview || questionLoading}
+              className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-6 py-4 text-sm font-black text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+            >
+              {questionLoading
+                ? "Starting..."
+                : `Start tailored ${totalQuestions}-question interview`}
+            </button>
+
             <a href="#interview-setup">
-              <button className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-6 py-4 text-sm font-black text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] sm:w-auto">
-                Configure practice session
+              <button className="w-full rounded-2xl border border-cyan-300/20 bg-cyan-300/10 px-6 py-4 text-sm font-black text-cyan-100 transition hover:bg-cyan-300/15 sm:w-auto">
+                Adjust setup
               </button>
             </a>
 
@@ -49,6 +83,13 @@ export function PracticeHero({ totalQuestions }: { totalQuestions: number }) {
               </button>
             </Link>
           </div>
+
+          {!canStartInterview && (
+            <p className="mt-3 text-sm leading-6 text-gray-500">
+              Add or load a target role first, then this top button will start
+              the interview instantly.
+            </p>
+          )}
 
           <div className="mt-7 flex flex-wrap gap-3 text-xs font-bold text-gray-400">
             <HeroPill text="Phone/iPad guided answer flow" />
