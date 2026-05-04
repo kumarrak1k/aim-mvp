@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useUser } from "@clerk/nextjs";
 import { MarketingShell } from "@/app/components/marketing/MarketingShell";
 import { ProfileDetailsForm } from "./ProfileDetailsForm";
 import { ProfileHero } from "./ProfileHero";
@@ -8,7 +9,6 @@ import { ProfileLoadingState, ProfileSignedOutState } from "./ProfileStates";
 import type { CandidateProfile, ProfileUploadTarget } from "../types";
 
 export function CandidateProfileClient() {
-  const { useUser } = require("@clerk/nextjs") as typeof import("@clerk/nextjs");
   const { isLoaded, isSignedIn } = useUser();
 
   const [cvText, setCvText] = useState("");
