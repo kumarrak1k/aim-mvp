@@ -155,6 +155,13 @@ export default function PracticeSessionPage() {
     setGuidedAnswerRunning(value);
   }, []);
 
+  const scrollToFeedback = useCallback(() => {
+    document.getElementById("session-feedback")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }, []);
+
   const {
     audioSamplesRef,
     primeAudioInput,
@@ -403,7 +410,7 @@ export default function PracticeSessionPage() {
         lastSpokenQuestionRef.current = question;
       } else {
         setQuestionAudioMessage(
-          "Auto-play was blocked. Use Play Question + Record when ready."
+          "Press Play question + record when you are ready."
         );
       }
     };
@@ -746,7 +753,7 @@ export default function PracticeSessionPage() {
           void prepareQuestionAudio(nextQuestion, speakerPreference);
         } else if (speakerEnabled) {
           setQuestionAudioMessage(
-            "Voice mode selected. Natural question audio will play automatically..."
+            "Press Play question + record when you are ready."
           );
         }
       } catch (error) {
@@ -796,10 +803,10 @@ export default function PracticeSessionPage() {
 
     if (speakerEnabled && !manualDeviceMode && voiceSupported) {
       try {
-        setQuestionAudioMessage("Preparing voice mode and microphone access...");
+        setQuestionAudioMessage("Preparing microphone access...");
         await primeAudioInput();
         setQuestionAudioMessage(
-          "Microphone ready. The question will play, then recording will start automatically."
+          "Press Play question + record when you are ready."
         );
       } catch {
         setQuestionAudioMessage(
@@ -1195,35 +1202,35 @@ export default function PracticeSessionPage() {
 
   return (
     <PracticeSessionShell isLoaded={isLoaded} isSignedIn={isSignedIn}>
-      <section className="mx-auto max-w-7xl px-4 py-5 sm:px-6 sm:py-6 lg:py-7">
-        <QuestionHero
-          question={question}
-          questionLoading={questionLoading}
-          currentQuestionNumber={currentQuestionNumber}
-          totalQuestions={totalQuestions}
-          role={role}
-          interviewType={interviewType}
-          difficulty={difficulty}
-          focusArea={focusArea}
-          practiceMode={practiceMode}
-          averageQuestionScore={averageQuestionScore}
-          speakerEnabled={speakerEnabled}
-          speakerSupported={speakerSupported}
-          questionAudioLoading={questionAudioLoading}
-          questionAudioReady={questionAudioReady}
-          questionAudioError={questionAudioError}
-          questionAudioMessage={questionAudioMessage}
-          isSpeakingQuestion={activeIsSpeakingQuestion}
-          isListening={isListening}
-          guidedAnswerRunning={guidedAnswerRunning}
-          onPlayQuestion={playQuestionManually}
-          onStopQuestion={stopQuestionSpeech}
-          onStartGuidedAnswer={() => void startGuidedAnswer()}
-          onBackToSetup={resetInterview}
-        />
+      <section className="mx-auto max-w-[1720px] px-4 py-2 sm:px-6 sm:py-3">
+        <div className="grid items-start gap-3 xl:grid-cols-[minmax(360px,0.82fr)_minmax(620px,1.18fr)]">
+          <QuestionHero
+            question={question}
+            questionLoading={questionLoading}
+            currentQuestionNumber={currentQuestionNumber}
+            totalQuestions={totalQuestions}
+            role={role}
+            interviewType={interviewType}
+            difficulty={difficulty}
+            focusArea={focusArea}
+            practiceMode={practiceMode}
+            averageQuestionScore={averageQuestionScore}
+            speakerEnabled={speakerEnabled}
+            speakerSupported={speakerSupported}
+            questionAudioLoading={questionAudioLoading}
+            questionAudioReady={questionAudioReady}
+            questionAudioError={questionAudioError}
+            questionAudioMessage={questionAudioMessage}
+            isSpeakingQuestion={activeIsSpeakingQuestion}
+            isListening={isListening}
+            guidedAnswerRunning={guidedAnswerRunning}
+            onPlayQuestion={playQuestionManually}
+            onStopQuestion={stopQuestionSpeech}
+            onStartGuidedAnswer={() => void startGuidedAnswer()}
+            onBackToSetup={resetInterview}
+          />
 
-        <div className="mt-4 grid gap-4 xl:grid-cols-[minmax(0,1fr)_230px]">
-          <div className="space-y-4">
+          <div className="grid items-start gap-3 xl:grid-cols-[minmax(0,1fr)_150px]">
             <AnswerWorkspace
               answer={answer}
               question={question}
@@ -1244,29 +1251,33 @@ export default function PracticeSessionPage() {
               onFeedback={() => void getFeedback()}
             />
 
-            {feedback && (
-              <FeedbackWorkspace
-                feedback={feedback}
-                voiceAnalysis={voiceAnalysis}
-                videoAnalysis={videoAnalysis}
-                currentQuestionNumber={currentQuestionNumber}
-                totalQuestions={totalQuestions}
-                onNext={() => void nextStep()}
+            <aside className="xl:sticky xl:top-20 xl:self-start">
+              <CameraWorkspace
+                cameraEnabled={cameraEnabled}
+                cameraReady={cameraReady}
+                cameraError={cameraError}
+                cameraRequiresTap={cameraRequiresTap}
+                feedbackReady={Boolean(feedback)}
+                videoRef={videoRef}
+                onStartCameraFromTap={startCameraFromTap}
+                onViewFeedback={scrollToFeedback}
               />
-            )}
+            </aside>
           </div>
-
-          <aside className="xl:sticky xl:top-24 xl:self-start">
-            <CameraWorkspace
-              cameraEnabled={cameraEnabled}
-              cameraReady={cameraReady}
-              cameraError={cameraError}
-              cameraRequiresTap={cameraRequiresTap}
-              videoRef={videoRef}
-              onStartCameraFromTap={startCameraFromTap}
-            />
-          </aside>
         </div>
+
+        {feedback && (
+          <div id="session-feedback" className="mt-3 scroll-mt-24">
+            <FeedbackWorkspace
+              feedback={feedback}
+              voiceAnalysis={voiceAnalysis}
+              videoAnalysis={videoAnalysis}
+              currentQuestionNumber={currentQuestionNumber}
+              totalQuestions={totalQuestions}
+              onNext={() => void nextStep()}
+            />
+          </div>
+        )}
       </section>
     </PracticeSessionShell>
   );
@@ -1282,7 +1293,7 @@ function PracticeSessionShell({
   isSignedIn: boolean | undefined;
 }) {
   return (
-    <main className="min-h-screen overflow-hidden bg-[#120d1e] text-white">
+    <main className="min-h-screen overflow-x-hidden bg-[#120d1e] text-white">
       <div className="pointer-events-none fixed inset-0 z-0 bg-[radial-gradient(circle_at_top,rgba(140,92,255,0.18),transparent_35%),radial-gradient(circle_at_right,rgba(34,211,238,0.08),transparent_28%),linear-gradient(180deg,#120d1e_0%,#171224_45%,#1b1629_100%)]" />
       <div className="pointer-events-none fixed left-1/2 top-[-220px] z-0 h-[520px] w-[820px] -translate-x-1/2 rounded-full bg-purple-600/20 blur-[140px]" />
       <div className="pointer-events-none fixed right-[-140px] top-24 z-0 h-[320px] w-[320px] rounded-full bg-cyan-400/10 blur-[120px]" />

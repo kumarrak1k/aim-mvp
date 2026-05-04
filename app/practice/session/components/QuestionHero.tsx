@@ -29,38 +29,41 @@ type QuestionHeroProps = {
   onBackToSetup: () => void;
 };
 
-export function QuestionHero({
-  question,
-  questionLoading,
-  currentQuestionNumber,
-  totalQuestions,
-  role,
-  interviewType,
-  difficulty,
-  focusArea,
-  practiceMode,
-  averageQuestionScore,
-  speakerEnabled,
-  speakerSupported,
-  questionAudioLoading,
-  questionAudioReady,
-  questionAudioError,
-  questionAudioMessage,
-  isSpeakingQuestion,
-  isListening,
-  guidedAnswerRunning,
-  onPlayQuestion,
-  onStopQuestion,
-  onStartGuidedAnswer,
-  onBackToSetup,
-}: QuestionHeroProps) {
+export function QuestionHero(props: QuestionHeroProps) {
+  const {
+    question,
+    questionLoading,
+    currentQuestionNumber,
+    totalQuestions,
+    practiceMode,
+    speakerEnabled,
+    speakerSupported,
+    questionAudioLoading,
+    questionAudioReady,
+    questionAudioError,
+    questionAudioMessage,
+    isSpeakingQuestion,
+    isListening,
+    guidedAnswerRunning,
+    onPlayQuestion,
+    onStopQuestion,
+    onStartGuidedAnswer,
+    onBackToSetup,
+  } = props;
+
   const progressPercent = Math.min(
     100,
     Math.round(((currentQuestionNumber - 1) / totalQuestions) * 100)
   );
 
+  const displayAudioMessage =
+    questionAudioError ||
+    (questionAudioMessage.includes("Auto-play was blocked")
+      ? "Press Play question + record when you are ready."
+      : questionAudioMessage);
+
   return (
-    <section className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.055] shadow-2xl shadow-purple-950/10 backdrop-blur-2xl">
+    <section className="flex h-full min-h-[360px] flex-col overflow-hidden rounded-[1.55rem] border border-white/10 bg-white/[0.055] shadow-2xl shadow-purple-950/10 backdrop-blur-2xl">
       <div className="h-1 bg-white/10">
         <div
           className="h-full bg-gradient-to-r from-purple-400 via-fuchsia-300 to-cyan-300"
@@ -68,51 +71,34 @@ export function QuestionHero({
         />
       </div>
 
-      <div className="p-4 sm:p-5 lg:p-6">
-        <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
-          <div className="min-w-0">
-            <div className="mb-3 flex flex-wrap items-center gap-2">
-              <span className="rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1 text-xs font-black text-cyan-100">
-                Question {currentQuestionNumber}/{totalQuestions}
-              </span>
-              <span className="rounded-full border border-purple-300/20 bg-purple-300/10 px-3 py-1 text-xs font-black text-purple-100">
-                {practiceModeLabels[practiceMode]}
-              </span>
-              <span className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-xs font-black text-gray-300">
-                Avg {averageQuestionScore}/10
-              </span>
-              {speakerEnabled && (
-                <span className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1 text-xs font-black text-emerald-100">
-                  Natural audio
-                </span>
-              )}
-            </div>
+      <div className="flex flex-1 flex-col p-3 sm:p-4">
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1 text-xs font-black text-cyan-100">
+              Question {currentQuestionNumber}/{totalQuestions}
+            </span>
 
-            <p className="text-xs font-black uppercase tracking-[0.22em] text-cyan-300">
-              Current question
-            </p>
-            <p className="mt-1 max-w-5xl text-xs leading-5 text-gray-500 sm:text-sm">
-              {role} · {interviewType} · {difficulty} difficulty · Focus:{" "}
-              {focusArea}
-            </p>
+            <span className="rounded-full border border-purple-300/20 bg-purple-300/10 px-3 py-1 text-xs font-black text-purple-100">
+              {practiceModeLabels[practiceMode]}
+            </span>
+
+            {speakerEnabled && (
+              <span className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1 text-xs font-black text-emerald-100">
+                Audio
+              </span>
+            )}
           </div>
 
           <button
             type="button"
             onClick={onBackToSetup}
-            className="w-fit rounded-2xl border border-white/10 bg-white/[0.06] px-4 py-2.5 text-xs font-black text-white transition hover:bg-white/[0.1]"
+            className="rounded-xl border border-white/10 bg-white/[0.06] px-3 py-2 text-xs font-black text-white transition hover:bg-white/[0.1]"
           >
-            Back to setup
+            Back
           </button>
         </div>
 
-        <div className="rounded-[1.6rem] border border-cyan-300/15 bg-cyan-300/10 p-4 sm:p-5">
-          <p className="text-base font-bold leading-7 text-white sm:text-lg sm:leading-8 lg:text-[1.25rem] lg:leading-9">
-            {questionLoading ? "Generating your question..." : question}
-          </p>
-        </div>
-
-        <div className="mt-4 flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-center">
+        <div className="mb-3 grid gap-2 sm:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2">
           <button
             type="button"
             onClick={onStartGuidedAnswer}
@@ -159,13 +145,19 @@ export function QuestionHero({
               Stop audio
             </button>
           )}
-
-          {(questionAudioMessage || questionAudioError) && (
-            <p className="text-sm leading-6 text-gray-400 lg:ml-auto lg:max-w-xl">
-              {questionAudioError || questionAudioMessage}
-            </p>
-          )}
         </div>
+
+        <div className="flex flex-1 rounded-[1.25rem] border border-cyan-300/15 bg-cyan-300/10 px-4 py-4 sm:px-5">
+          <p className="self-start text-[1.02rem] font-bold leading-7 text-white sm:text-[1.12rem] sm:leading-8 xl:text-[1.08rem] 2xl:text-[1.16rem]">
+            {questionLoading ? "Generating your question..." : question}
+          </p>
+        </div>
+
+        {displayAudioMessage && (
+          <p className="mt-3 text-sm leading-6 text-gray-400">
+            {displayAudioMessage}
+          </p>
+        )}
       </div>
     </section>
   );
