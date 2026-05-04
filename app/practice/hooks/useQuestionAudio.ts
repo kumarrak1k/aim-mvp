@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { fetchQuestionAudioBlob } from "../lib/interviewApi";
 import type { SpeakerPreference } from "../types";
 
 type PlayPreparedQuestionAudioOptions = {
@@ -18,17 +17,34 @@ type PreparedAudioEntry = {
   preferenceKey: string;
 };
 
+const defaultSpeakerPreference: SpeakerPreference = {
+  voice: "female",
+  accent: "british",
+  pace: "natural",
+};
+
+const cleanQuestionText = (text: string) => text.replace(/\s+/g, " ").trim();
+
 const speakerPreferenceKey = (speakerPreference?: SpeakerPreference) =>
-  JSON.stringify(
-    speakerPreference || {
-      voice: "female",
-      accent: "british",
-      pace: "natural",
-    }
-  );
+  JSON.stringify(speakerPreference || defaultSpeakerPreference);
 
 const audioCacheKey = (text: string, preferenceKey: string) =>
   `${preferenceKey}::${text}`;
+
+const buildStreamingQuestionAudioUrl = (
+  text: string,
+  speakerPreference?: SpeakerPreference
+) => {
+  const preference = speakerPreference || defaultSpeakerPreference;
+  const params = new URLSearchParams({
+    text: cleanQuestionText(text),
+    voice: preference.voice,
+    accent: preference.accent,
+    pace: preference.pace,
+  });
+
+  return `/api/question-audio?${params.toString()}`;
+};
 
 export function useQuestionAudio({
   onPlaybackStart,
@@ -89,16 +105,11 @@ export function useQuestionAudio({
     setQuestionAudioReady(value);
   }, []);
 
-  const revokePreparedAudioEntry = useCallback((entry: PreparedAudioEntry) => {
+  const cleanupPreparedAudioEntry = useCallback((entry: PreparedAudioEntry) => {
     try {
       entry.audio.pause();
-      entry.audio.src = "";
-    } catch {
-      // Ignore cleanup failures.
-    }
-
-    try {
-      URL.revokeObjectURL(entry.url);
+      entry.audio.removeAttribute("src");
+      entry.audio.load();
     } catch {
       // Ignore cleanup failures.
     }
@@ -120,7 +131,7 @@ export function useQuestionAudio({
     clearMicrophoneStartTimer();
 
     preparedAudioCacheRef.current.forEach((entry) => {
-      revokePreparedAudioEntry(entry);
+      cleanupPreparedAudioEntry(entry);
     });
 
     preparedAudioCacheRef.current.clear();
@@ -139,7 +150,7 @@ export function useQuestionAudio({
     setQuestionAudioError("");
     setQuestionAudioMessage("");
     setIsPreparedQuestionPlaying(false);
-  }, [clearMicrophoneStartTimer, revokePreparedAudioEntry, setAudioReady]);
+  }, [clearMicrophoneStartTimer, cleanupPreparedAudioEntry, setAudioReady]);
 
   const stopPreparedQuestionPlayback = useCallback(() => {
     clearMicrophoneStartTimer();
@@ -169,9 +180,72 @@ export function useQuestionAudio({
     }, 650);
   }, [clearMicrophoneStartTimer]);
 
+  const attachAudioHandlers = useCallback(
+    (audio: HTMLAudioElement) => {
+      audio.oncanplay = () => {
+        if (questionAudioRef.current !== audio) return;
+
+        setAudioReady(true);
+        setQuestionAudioLoading(false);
+
+        if (!isPreparedQuestionPlaying) {
+          setQuestionAudioMessage("Interviewer voice ready.");
+        }
+      };
+
+      audio.onplaying = () => {
+        if (questionAudioRef.current !== audio) return;
+
+        setIsPreparedQuestionPlaying(true);
+        setQuestionAudioLoading(false);
+        setQuestionAudioMessage("Playing interviewer voice...");
+        onPlaybackStartRef.current?.();
+      };
+
+      audio.onended = () => {
+        if (questionAudioRef.current !== audio) return;
+
+        setIsPreparedQuestionPlaying(false);
+        setQuestionAudioLoading(false);
+        onPlaybackEndRef.current?.();
+
+        if (startRecordingAfterPlaybackRef.current) {
+          startRecordingAfterPlaybackRef.current = false;
+          startMicrophoneAfterAudio();
+        } else {
+          setQuestionAudioMessage("Question played.");
+        }
+      };
+
+      audio.onerror = () => {
+        if (questionAudioRef.current !== audio) return;
+
+        clearMicrophoneStartTimer();
+        startRecordingAfterPlaybackRef.current = false;
+        setIsPreparedQuestionPlaying(false);
+        setQuestionAudioLoading(false);
+        setAudioReady(false);
+
+        const message =
+          "Natural question audio could not play on this device.";
+        setQuestionAudioError(message);
+        setQuestionAudioMessage(
+          "Natural question audio could not play. The written question is shown below."
+        );
+        onPlaybackErrorRef.current?.(message);
+      };
+    },
+    [
+      clearMicrophoneStartTimer,
+      isPreparedQuestionPlaying,
+      setAudioReady,
+      startMicrophoneAfterAudio,
+    ]
+  );
+
   const prepareQuestionAudio = useCallback(
     async (text: string, speakerPreference?: SpeakerPreference) => {
-      const safeText = text.trim();
+      const safeText = cleanQuestionText(text);
       if (!safeText) return false;
 
       const preferenceKey = speakerPreferenceKey(speakerPreference);
@@ -192,7 +266,7 @@ export function useQuestionAudio({
         setActivePreparedAudioEntry(cacheKey, cachedEntry);
         setQuestionAudioLoading(false);
         setQuestionAudioError("");
-        setQuestionAudioMessage("Natural question audio ready.");
+        setQuestionAudioMessage("Interviewer voice ready.");
         return true;
       }
 
@@ -211,7 +285,7 @@ export function useQuestionAudio({
         if (prepared && preparedEntry) {
           setActivePreparedAudioEntry(cacheKey, preparedEntry);
           setQuestionAudioLoading(false);
-          setQuestionAudioMessage("Natural question audio ready.");
+          setQuestionAudioMessage("Interviewer voice ready.");
         }
 
         questionAudioPreparingRef.current = false;
@@ -225,54 +299,12 @@ export function useQuestionAudio({
 
       const preparationPromise = (async () => {
         try {
-          const blob = await fetchQuestionAudioBlob(
-            safeText,
-            speakerPreference
-          );
-          const url = URL.createObjectURL(blob);
-          const audio = new Audio(url);
+          const url = buildStreamingQuestionAudioUrl(safeText, speakerPreference);
+          const audio = new Audio();
           audio.preload = "auto";
+          audio.src = url;
 
-          audio.onplay = () => {
-            if (questionAudioRef.current !== audio) return;
-
-            setIsPreparedQuestionPlaying(true);
-            setQuestionAudioMessage("Playing interviewer voice...");
-            onPlaybackStartRef.current?.();
-          };
-
-          audio.onended = () => {
-            if (questionAudioRef.current !== audio) return;
-
-            setIsPreparedQuestionPlaying(false);
-            setQuestionAudioLoading(false);
-            onPlaybackEndRef.current?.();
-
-            if (startRecordingAfterPlaybackRef.current) {
-              startRecordingAfterPlaybackRef.current = false;
-              startMicrophoneAfterAudio();
-            } else {
-              setQuestionAudioMessage("Question played.");
-            }
-          };
-
-          audio.onerror = () => {
-            if (questionAudioRef.current !== audio) return;
-
-            clearMicrophoneStartTimer();
-            startRecordingAfterPlaybackRef.current = false;
-            setIsPreparedQuestionPlaying(false);
-            setQuestionAudioLoading(false);
-            setAudioReady(false);
-
-            const message =
-              "Natural question audio could not play on this device.";
-            setQuestionAudioError(message);
-            setQuestionAudioMessage(
-              "Natural question audio could not play. The written question is shown below."
-            );
-            onPlaybackErrorRef.current?.(message);
-          };
+          attachAudioHandlers(audio);
 
           const entry: PreparedAudioEntry = {
             audio,
@@ -284,9 +316,14 @@ export function useQuestionAudio({
           preparedAudioCacheRef.current.set(cacheKey, entry);
           setActivePreparedAudioEntry(cacheKey, entry);
 
-          setAudioReady(true);
+          try {
+            audio.load();
+          } catch {
+            // The audio element can still attempt playback later.
+          }
+
           setQuestionAudioLoading(false);
-          setQuestionAudioMessage("Natural question audio ready.");
+          setQuestionAudioMessage("Interviewer voice ready.");
 
           return true;
         } catch (error) {
@@ -315,10 +352,10 @@ export function useQuestionAudio({
       return preparationPromise;
     },
     [
+      attachAudioHandlers,
       clearMicrophoneStartTimer,
       setActivePreparedAudioEntry,
       setAudioReady,
-      startMicrophoneAfterAudio,
     ]
   );
 
@@ -329,7 +366,7 @@ export function useQuestionAudio({
       startRecordingAfterPlayback = false,
       fallbackToBrowserSpeech,
     }: PlayPreparedQuestionAudioOptions) => {
-      const safeText = text.trim();
+      const safeText = cleanQuestionText(text);
       if (!safeText) return false;
 
       const preferenceKey = speakerPreferenceKey(speakerPreference);
@@ -371,15 +408,17 @@ export function useQuestionAudio({
       startRecordingAfterPlaybackRef.current = startRecordingAfterPlayback;
 
       try {
-        setQuestionAudioLoading(false);
-        setQuestionAudioMessage("Playing interviewer voice...");
+        setQuestionAudioLoading(true);
+        setQuestionAudioMessage("Starting interviewer voice...");
         audio.currentTime = 0;
         await audio.play();
+        setQuestionAudioLoading(false);
         return true;
       } catch {
         clearMicrophoneStartTimer();
         startRecordingAfterPlaybackRef.current = false;
         setIsPreparedQuestionPlaying(false);
+        setQuestionAudioLoading(false);
 
         const message =
           "This device blocked natural audio playback. Tap Play Question again, or read the written question below.";

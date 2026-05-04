@@ -31,34 +31,27 @@ const voiceMap: Record<SpeakerVoice, string> = {
 };
 
 const speedMap: Record<SpeakerPace, number> = {
-  slow: 0.82,
-  natural: 0.92,
-  energetic: 1.05,
+  slow: 0.84,
+  natural: 0.94,
+  energetic: 1.04,
 };
 
 const accentInstructionMap: Record<SpeakerAccent, string> = {
-  british:
-    "Use a clear, natural British accent suitable for a professional UK interview coach.",
-  american:
-    "Use a clear, natural American accent suitable for a professional interview coach.",
-  neutral:
-    "Use a clear, neutral international English accent suitable for a professional interview coach.",
+  british: "Use a clear, natural British English accent.",
+  american: "Use a clear, natural American English accent.",
+  neutral: "Use a clear, neutral international English accent.",
 };
 
 const voiceInstructionMap: Record<SpeakerVoice, string> = {
-  female:
-    "Use a warm, composed female-presenting voice. Sound premium, calm and human.",
-  male:
-    "Use a warm, composed male-presenting voice. Sound premium, calm and human.",
-  neutral:
-    "Use a balanced, neutral-presenting voice. Sound premium, calm and human.",
+  female: "Use a warm, composed female-presenting interviewer voice.",
+  male: "Use a warm, composed male-presenting interviewer voice.",
+  neutral: "Use a balanced, neutral-presenting interviewer voice.",
 };
 
 const paceInstructionMap: Record<SpeakerPace, string> = {
-  slow: "Speak slightly slower than normal, with thoughtful pauses for clarity.",
-  natural: "Speak at a natural conversational pace, not rushed and not too slow.",
-  energetic:
-    "Speak with a little more energy and momentum while staying clear and professional.",
+  slow: "Speak slightly slower than normal with clear pauses.",
+  natural: "Speak at a natural conversational pace.",
+  energetic: "Speak with slightly more energy while staying professional.",
 };
 
 function cleanSpeakerPreference(value: unknown): SpeakerPreference {
@@ -83,65 +76,163 @@ function cleanSpeakerPreference(value: unknown): SpeakerPreference {
   };
 }
 
+function cleanQuestionText(text: string) {
+  return text.replace(/\s+/g, " ").trim().slice(0, 1100);
+}
+
+function buildInstructions(speakerPreference: SpeakerPreference) {
+  return [
+    "Read only the interview question. Do not add commentary.",
+    "Sound calm, premium, human and professional.",
+    voiceInstructionMap[speakerPreference.voice],
+    accentInstructionMap[speakerPreference.accent],
+    paceInstructionMap[speakerPreference.pace],
+    "Use natural emphasis and end cleanly.",
+  ].join(" ");
+}
+
+async function createOpenAiSpeechResponse({
+  apiKey,
+  text,
+  speakerPreference,
+}: {
+  apiKey: string;
+  text: string;
+  speakerPreference: SpeakerPreference;
+}) {
+  return fetch(OPENAI_TTS_ENDPOINT, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model: "gpt-4o-mini-tts",
+      voice: voiceMap[speakerPreference.voice],
+      input: text,
+      response_format: "mp3",
+      speed: speedMap[speakerPreference.pace],
+      instructions: buildInstructions(speakerPreference),
+    }),
+  });
+}
+
+async function getOpenAiErrorMessage(response: Response) {
+  let errorMessage = "Unable to generate natural question audio.";
+
+  try {
+    const errorData = await response.json();
+    errorMessage = errorData?.error?.message || errorMessage;
+  } catch {
+    // Keep fallback message.
+  }
+
+  return errorMessage;
+}
+
+function getApiKeyErrorResponse() {
+  return NextResponse.json(
+    { error: "OPENAI_API_KEY is not configured." },
+    { status: 500 }
+  );
+}
+
+function getMissingTextErrorResponse() {
+  return NextResponse.json(
+    { error: "Question text is required." },
+    { status: 400 }
+  );
+}
+
+export async function GET(request: NextRequest) {
+  try {
+    const apiKey = process.env.OPENAI_API_KEY;
+
+    if (!apiKey) {
+      return getApiKeyErrorResponse();
+    }
+
+    const searchParams = request.nextUrl.searchParams;
+
+    const text = cleanQuestionText(searchParams.get("text") || "");
+    const speakerPreference = cleanSpeakerPreference({
+      voice: searchParams.get("voice") || undefined,
+      accent: searchParams.get("accent") || undefined,
+      pace: searchParams.get("pace") || undefined,
+    });
+
+    if (!text) {
+      return getMissingTextErrorResponse();
+    }
+
+    const response = await createOpenAiSpeechResponse({
+      apiKey,
+      text,
+      speakerPreference,
+    });
+
+    if (!response.ok) {
+      const errorMessage = await getOpenAiErrorMessage(response);
+      return NextResponse.json({ error: errorMessage }, { status: 500 });
+    }
+
+    if (!response.body) {
+      const audioBuffer = await response.arrayBuffer();
+
+      return new NextResponse(audioBuffer, {
+        status: 200,
+        headers: {
+          "Content-Type": "audio/mpeg",
+          "Cache-Control": "no-store",
+          "X-AIM-Audio-Mode": "buffer",
+        },
+      });
+    }
+
+    return new NextResponse(response.body, {
+      status: 200,
+      headers: {
+        "Content-Type": "audio/mpeg",
+        "Cache-Control": "no-store",
+        "X-AIM-Audio-Mode": "stream",
+      },
+    });
+  } catch (error) {
+    console.error("Question audio stream route failed:", error);
+
+    return NextResponse.json(
+      { error: "Something went wrong while streaming natural question audio." },
+      { status: 500 }
+    );
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     const apiKey = process.env.OPENAI_API_KEY;
 
     if (!apiKey) {
-      return NextResponse.json(
-        { error: "OPENAI_API_KEY is not configured." },
-        { status: 500 }
-      );
+      return getApiKeyErrorResponse();
     }
 
     const body = await request.json().catch(() => null);
-    const text = typeof body?.text === "string" ? body.text.trim() : "";
+    const text = cleanQuestionText(
+      typeof body?.text === "string" ? body.text : ""
+    );
     const speakerPreference = cleanSpeakerPreference(body?.speakerPreference);
 
     if (!text) {
-      return NextResponse.json(
-        { error: "Question text is required." },
-        { status: 400 }
-      );
+      return getMissingTextErrorResponse();
     }
 
-    const safeText = text.slice(0, 1800);
-
-    const response = await fetch(OPENAI_TTS_ENDPOINT, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini-tts",
-        voice: voiceMap[speakerPreference.voice],
-        input: safeText,
-        response_format: "mp3",
-        speed: speedMap[speakerPreference.pace],
-        instructions: [
-          "You are a world-class interview coach speaking one interview question to a candidate.",
-          voiceInstructionMap[speakerPreference.voice],
-          accentInstructionMap[speakerPreference.accent],
-          paceInstructionMap[speakerPreference.pace],
-          "Read only the interview question. Do not add extra commentary.",
-          "Use natural pacing and short pauses between clauses.",
-          "Do not sound robotic, synthetic, rushed, theatrical or salesy.",
-          "Read the question clearly, with gentle emphasis on key words. End cleanly.",
-        ].join(" "),
-      }),
+    const response = await createOpenAiSpeechResponse({
+      apiKey,
+      text,
+      speakerPreference,
     });
 
     if (!response.ok) {
-      let errorMessage = "Unable to generate natural question audio.";
-
-      try {
-        const errorData = await response.json();
-        errorMessage = errorData?.error?.message || errorMessage;
-      } catch {
-        // Keep fallback message.
-      }
-
+      const errorMessage = await getOpenAiErrorMessage(response);
       return NextResponse.json({ error: errorMessage }, { status: 500 });
     }
 
@@ -152,6 +243,7 @@ export async function POST(request: NextRequest) {
       headers: {
         "Content-Type": "audio/mpeg",
         "Cache-Control": "no-store",
+        "X-AIM-Audio-Mode": "post-buffer",
       },
     });
   } catch (error) {
