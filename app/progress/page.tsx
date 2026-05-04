@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { SignInButton, useUser } from "@clerk/nextjs";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { MarketingShell } from "../components/marketing/MarketingShell";
 
 type CategoryBreakdown = {
@@ -393,6 +393,12 @@ function ProgressDashboard({ stats }: { stats: ProgressStats }) {
                 {formatSessionDate(latest.createdAt)}
               </p>
             </div>
+
+            <Link href={`/progress/${latest.id}`}>
+              <button className="mt-5 w-full rounded-2xl border border-cyan-300/20 bg-cyan-300/10 px-5 py-3 text-sm font-black text-cyan-100 transition hover:bg-cyan-300/15">
+                Review full session
+              </button>
+            </Link>
           </div>
 
           <div className="mt-4 rounded-[1.35rem] border border-white/10 bg-white/[0.04] p-4">
@@ -429,7 +435,7 @@ function ProgressDashboard({ stats }: { stats: ProgressStats }) {
           <PanelHeader
             eyebrow="History"
             title="Recent saved sessions"
-            description="Your latest database-backed practice sessions."
+            description="Click any saved session to review the full question archive."
           />
 
           <div className="mt-6 space-y-3">
@@ -475,7 +481,7 @@ function MetricCard({
   );
 }
 
-function GlassPanel({ children }: { children: React.ReactNode }) {
+function GlassPanel({ children }: { children: ReactNode }) {
   return (
     <section className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.055] p-5 shadow-2xl shadow-purple-950/10 backdrop-blur-2xl sm:p-6">
       {children}
@@ -527,32 +533,37 @@ function CategoryLine({ label, value }: { label: string; value: number }) {
 
 function SessionRow({ session }: { session: DashboardSession }) {
   return (
-    <div className="grid gap-3 rounded-[1.35rem] border border-white/10 bg-black/25 p-4 sm:grid-cols-[minmax(0,1fr)_120px] sm:items-center">
-      <div className="min-w-0">
-        <div className="mb-2 flex flex-wrap items-center gap-2">
-          <span className="rounded-full border border-cyan-300/15 bg-cyan-300/10 px-2.5 py-1 text-[11px] font-black text-cyan-100">
-            {session.practiceMode}
-          </span>
-          <span className="rounded-full border border-white/10 bg-white/[0.06] px-2.5 py-1 text-[11px] font-black text-gray-300">
-            {session.hireSignal}
-          </span>
-        </div>
-        <p className="truncate text-sm font-black text-white">{session.role}</p>
-        <p className="mt-1 text-xs leading-5 text-gray-500">
-          {session.interviewType} · {session.difficulty} ·{" "}
-          {formatSessionDate(session.createdAt)}
-        </p>
-      </div>
+    <Link href={`/progress/${session.id}`} className="block">
+      <div className="grid gap-3 rounded-[1.35rem] border border-white/10 bg-black/25 p-4 transition hover:-translate-y-0.5 hover:border-cyan-300/25 hover:bg-white/[0.055] sm:grid-cols-[minmax(0,1fr)_120px] sm:items-center">
+        <div className="min-w-0">
+          <div className="mb-2 flex flex-wrap items-center gap-2">
+            <span className="rounded-full border border-cyan-300/15 bg-cyan-300/10 px-2.5 py-1 text-[11px] font-black text-cyan-100">
+              {session.practiceMode}
+            </span>
+            <span className="rounded-full border border-white/10 bg-white/[0.06] px-2.5 py-1 text-[11px] font-black text-gray-300">
+              {session.hireSignal}
+            </span>
+          </div>
 
-      <div className="rounded-2xl border border-white/10 bg-white/[0.05] p-3 text-center">
-        <p className="text-2xl font-black tracking-[-0.04em] text-white">
-          {session.overallScore}
-        </p>
-        <p className="text-[11px] font-black uppercase tracking-[0.16em] text-gray-500">
-          /10
-        </p>
+          <p className="truncate text-sm font-black text-white">
+            {session.role}
+          </p>
+          <p className="mt-1 text-xs leading-5 text-gray-500">
+            {session.interviewType} · {session.difficulty} ·{" "}
+            {formatSessionDate(session.createdAt)}
+          </p>
+        </div>
+
+        <div className="rounded-2xl border border-white/10 bg-white/[0.05] p-3 text-center">
+          <p className="text-2xl font-black tracking-[-0.04em] text-white">
+            {session.overallScore}
+          </p>
+          <p className="text-[11px] font-black uppercase tracking-[0.16em] text-gray-500">
+            /10
+          </p>
+        </div>
       </div>
-    </div>
+    </Link>
   );
 }
 
