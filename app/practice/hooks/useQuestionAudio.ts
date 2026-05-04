@@ -23,8 +23,8 @@ const defaultSpeakerPreference: SpeakerPreference = {
   pace: "natural",
 };
 
-const AUDIO_READY_TIMEOUT_MS = 9000;
-const PLAYBACK_START_TIMEOUT_MS = 9000;
+const AUDIO_FETCH_TIMEOUT_MS = 12000;
+const PLAYBACK_START_TIMEOUT_MS = 5000;
 
 const cleanQuestionText = (text: string) => text.replace(/\s+/g, " ").trim();
 
@@ -34,23 +34,53 @@ const speakerPreferenceKey = (speakerPreference?: SpeakerPreference) =>
 const audioCacheKey = (text: string, preferenceKey: string) =>
   `${preferenceKey}::${text}`;
 
-const audioIsPlayable = (audio: HTMLAudioElement) => {
-  return audio.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA;
-};
+const audioIsPlayable = (audio: HTMLAudioElement) => audio.readyState >= 2;
 
-const buildStreamingQuestionAudioUrl = (
+const fetchQuestionAudioBlobWithTimeout = async (
   text: string,
   speakerPreference?: SpeakerPreference
 ) => {
-  const preference = speakerPreference || defaultSpeakerPreference;
-  const params = new URLSearchParams({
-    text: cleanQuestionText(text),
-    voice: preference.voice,
-    accent: preference.accent,
-    pace: preference.pace,
-  });
+  const controller = new AbortController();
 
-  return `/api/question-audio?${params.toString()}`;
+  const timeout = window.setTimeout(() => {
+    controller.abort();
+  }, AUDIO_FETCH_TIMEOUT_MS);
+
+  try {
+    const response = await fetch("/api/question-audio", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ text, speakerPreference }),
+      signal: controller.signal,
+    });
+
+    if (!response.ok) {
+      let message = "Interviewer voice could not be prepared.";
+
+      try {
+        const data = await response.json();
+        message = data.error || message;
+      } catch {
+        // Keep fallback message.
+      }
+
+      throw new Error(message);
+    }
+
+    return await response.blob();
+  } catch (error) {
+    if (error instanceof DOMException && error.name === "AbortError") {
+      throw new Error(
+        "Interviewer voice took too long to prepare. Try Play question again."
+      );
+    }
+
+    throw error;
+  } finally {
+    window.clearTimeout(timeout);
+  }
 };
 
 export function useQuestionAudio({
@@ -81,10 +111,12 @@ export function useQuestionAudio({
   const startRecordingAfterPlaybackRef = useRef(false);
   const microphoneStartTimerRef = useRef<number | null>(null);
   const playbackStartNotifiedRef = useRef(false);
+  const audioGenerationRef = useRef(0);
 
   const preparedAudioCacheRef = useRef<Map<string, PreparedAudioEntry>>(
     new Map()
   );
+
   const preparationPromiseCacheRef = useRef<Map<string, Promise<boolean>>>(
     new Map()
   );
@@ -121,36 +153,13 @@ export function useQuestionAudio({
     } catch {
       // Ignore cleanup failures.
     }
+
+    try {
+      URL.revokeObjectURL(entry.url);
+    } catch {
+      // Ignore cleanup failures.
+    }
   }, []);
-
-  const markAudioReady = useCallback(
-    (audio: HTMLAudioElement) => {
-      if (questionAudioRef.current !== audio) return;
-
-      setAudioReady(true);
-      setQuestionAudioLoading(false);
-      setQuestionAudioError("");
-
-      if (audio.paused) {
-        setQuestionAudioMessage("Interviewer voice ready.");
-      }
-    },
-    [setAudioReady]
-  );
-
-  const notifyPlaybackStarted = useCallback(
-    (audio: HTMLAudioElement) => {
-      if (questionAudioRef.current !== audio) return;
-      if (playbackStartNotifiedRef.current) return;
-
-      playbackStartNotifiedRef.current = true;
-      setIsPreparedQuestionPlaying(true);
-      setQuestionAudioLoading(false);
-      setQuestionAudioMessage("Playing interviewer voice...");
-      onPlaybackStartRef.current?.();
-    },
-    []
-  );
 
   const setActivePreparedAudioEntry = useCallback(
     (cacheKey: string, entry: PreparedAudioEntry) => {
@@ -164,13 +173,115 @@ export function useQuestionAudio({
       setAudioReady(playable);
 
       if (playable) {
+        setQuestionAudioError("");
         setQuestionAudioMessage("Interviewer voice ready.");
       }
     },
     [setAudioReady]
   );
 
+  const notifyPlaybackStarted = useCallback((audio: HTMLAudioElement) => {
+    if (questionAudioRef.current !== audio) return;
+    if (playbackStartNotifiedRef.current) return;
+
+    playbackStartNotifiedRef.current = true;
+    setIsPreparedQuestionPlaying(true);
+    setQuestionAudioLoading(false);
+    setQuestionAudioError("");
+    setQuestionAudioMessage("Playing interviewer voice...");
+    onPlaybackStartRef.current?.();
+  }, []);
+
+  const startMicrophoneAfterAudio = useCallback(() => {
+    clearMicrophoneStartTimer();
+
+    setQuestionAudioMessage("Question finished. Starting microphone...");
+
+    microphoneStartTimerRef.current = window.setTimeout(() => {
+      microphoneStartTimerRef.current = null;
+      onGuidedPlaybackCompleteRef.current?.();
+    }, 650);
+  }, [clearMicrophoneStartTimer]);
+
+  const attachAudioHandlers = useCallback(
+    (audio: HTMLAudioElement) => {
+      audio.onloadeddata = () => {
+        if (questionAudioRef.current !== audio) return;
+
+        setAudioReady(true);
+        setQuestionAudioLoading(false);
+        setQuestionAudioError("");
+
+        if (audio.paused) {
+          setQuestionAudioMessage("Interviewer voice ready.");
+        }
+      };
+
+      audio.oncanplay = () => {
+        if (questionAudioRef.current !== audio) return;
+
+        setAudioReady(true);
+        setQuestionAudioLoading(false);
+        setQuestionAudioError("");
+
+        if (audio.paused) {
+          setQuestionAudioMessage("Interviewer voice ready.");
+        }
+      };
+
+      audio.onplaying = () => {
+        notifyPlaybackStarted(audio);
+      };
+
+      audio.onwaiting = () => {
+        if (questionAudioRef.current !== audio) return;
+        setQuestionAudioMessage("Buffering interviewer voice...");
+      };
+
+      audio.onended = () => {
+        if (questionAudioRef.current !== audio) return;
+
+        playbackStartNotifiedRef.current = false;
+        setIsPreparedQuestionPlaying(false);
+        setQuestionAudioLoading(false);
+        onPlaybackEndRef.current?.();
+
+        if (startRecordingAfterPlaybackRef.current) {
+          startRecordingAfterPlaybackRef.current = false;
+          startMicrophoneAfterAudio();
+        } else {
+          setQuestionAudioMessage("Question played.");
+        }
+      };
+
+      audio.onerror = () => {
+        if (questionAudioRef.current !== audio) return;
+
+        clearMicrophoneStartTimer();
+        playbackStartNotifiedRef.current = false;
+        startRecordingAfterPlaybackRef.current = false;
+        setIsPreparedQuestionPlaying(false);
+        setQuestionAudioLoading(false);
+        setAudioReady(false);
+
+        const message = "Interviewer voice could not play.";
+        setQuestionAudioError(message);
+        setQuestionAudioMessage(
+          "Interviewer voice could not play. Try Play question again, or start recording manually."
+        );
+        onPlaybackErrorRef.current?.(message);
+      };
+    },
+    [
+      clearMicrophoneStartTimer,
+      notifyPlaybackStarted,
+      setAudioReady,
+      startMicrophoneAfterAudio,
+    ]
+  );
+
   const cleanupPreparedQuestionAudio = useCallback(() => {
+    audioGenerationRef.current += 1;
     clearMicrophoneStartTimer();
 
     preparedAudioCacheRef.current.forEach((entry) => {
@@ -214,85 +325,8 @@ export function useQuestionAudio({
     setQuestionAudioLoading(false);
   }, [clearMicrophoneStartTimer]);
 
-  const startMicrophoneAfterAudio = useCallback(() => {
-    clearMicrophoneStartTimer();
-
-    setQuestionAudioMessage("Question finished. Starting microphone...");
-
-    microphoneStartTimerRef.current = window.setTimeout(() => {
-      microphoneStartTimerRef.current = null;
-      onGuidedPlaybackCompleteRef.current?.();
-    }, 650);
-  }, [clearMicrophoneStartTimer]);
-
-  const waitForAudioReady = useCallback(
-    (audio: HTMLAudioElement, timeoutMs = AUDIO_READY_TIMEOUT_MS) => {
-      if (audioIsPlayable(audio)) {
-        markAudioReady(audio);
-        return Promise.resolve(true);
-      }
-
-      return new Promise<boolean>((resolve) => {
-        let settled = false;
-
-        const finish = (value: boolean) => {
-          if (settled) return;
-          settled = true;
-
-          window.clearTimeout(timeout);
-
-          audio.removeEventListener("loadeddata", handleReady);
-          audio.removeEventListener("canplay", handleReady);
-          audio.removeEventListener("canplaythrough", handleReady);
-          audio.removeEventListener("playing", handleReady);
-          audio.removeEventListener("error", handleError);
-          audio.removeEventListener("stalled", handleStalled);
-
-          resolve(value);
-        };
-
-        const handleReady = () => {
-          markAudioReady(audio);
-          finish(true);
-        };
-
-        const handleError = () => {
-          finish(false);
-        };
-
-        const handleStalled = () => {
-          setQuestionAudioMessage(
-            "Interviewer voice is taking a little longer than expected..."
-          );
-        };
-
-        const timeout = window.setTimeout(() => {
-          finish(false);
-        }, timeoutMs);
-
-        audio.addEventListener("loadeddata", handleReady);
-        audio.addEventListener("canplay", handleReady);
-        audio.addEventListener("canplaythrough", handleReady);
-        audio.addEventListener("playing", handleReady);
-        audio.addEventListener("error", handleError);
-        audio.addEventListener("stalled", handleStalled);
-
-        try {
-          audio.load();
-        } catch {
-          // The audio element may still become playable after play().
-        }
-      });
-    },
-    [markAudioReady]
-  );
-
   const waitForPlaybackStart = useCallback(
-    (
-      audio: HTMLAudioElement,
-      playPromise: Promise<void>,
-      timeoutMs = PLAYBACK_START_TIMEOUT_MS
-    ) => {
+    (audio: HTMLAudioElement, playPromise: Promise<void>) => {
       if (!audio.paused && !audio.ended) {
         notifyPlaybackStarted(audio);
         return Promise.resolve(true);
@@ -310,7 +344,7 @@ export function useQuestionAudio({
           audio.removeEventListener("playing", handlePlaying);
           audio.removeEventListener("error", handleError);
           audio.removeEventListener("stalled", handleStalled);
-          audio.removeEventListener("waiting", handleWaiting);
+          audio.removeEventListener("emptied", handleError);
 
           resolve(value);
         };
@@ -325,23 +359,17 @@ export function useQuestionAudio({
         };
 
         const handleStalled = () => {
-          setQuestionAudioMessage(
-            "Interviewer voice is taking a little longer than expected..."
-          );
-        };
-
-        const handleWaiting = () => {
-          setQuestionAudioMessage("Buffering interviewer voice...");
+          finish(false);
         };
 
         const timeout = window.setTimeout(() => {
           finish(false);
-        }, timeoutMs);
+        }, PLAYBACK_START_TIMEOUT_MS);
 
         audio.addEventListener("playing", handlePlaying);
         audio.addEventListener("error", handleError);
         audio.addEventListener("stalled", handleStalled);
-        audio.addEventListener("waiting", handleWaiting);
+        audio.addEventListener("emptied", handleError);
 
         playPromise
           .then(() => {
@@ -358,72 +386,64 @@ export function useQuestionAudio({
     [notifyPlaybackStarted]
   );
 
-  const attachAudioHandlers = useCallback(
-    (audio: HTMLAudioElement) => {
-      audio.onloadeddata = () => {
-        markAudioReady(audio);
+  const createPreparedAudioEntry = useCallback(
+    async ({
+      cacheKey,
+      preferenceKey,
+      safeText,
+      speakerPreference,
+      generation,
+    }: {
+      cacheKey: string;
+      preferenceKey: string;
+      safeText: string;
+      speakerPreference?: SpeakerPreference;
+      generation: number;
+    }) => {
+      const previousEntry = preparedAudioCacheRef.current.get(cacheKey);
+
+      if (previousEntry) {
+        cleanupPreparedAudioEntry(previousEntry);
+        preparedAudioCacheRef.current.delete(cacheKey);
+      }
+
+      const blob = await fetchQuestionAudioBlobWithTimeout(
+        safeText,
+        speakerPreference
+      );
+
+      if (generation !== audioGenerationRef.current) {
+        return null;
+      }
+
+      const url = URL.createObjectURL(blob);
+      const audio = new Audio(url);
+      audio.preload = "auto";
+
+      attachAudioHandlers(audio);
+
+      const entry: PreparedAudioEntry = {
+        audio,
+        url,
+        text: safeText,
+        preferenceKey,
       };
 
-      audio.oncanplay = () => {
-        markAudioReady(audio);
-      };
+      preparedAudioCacheRef.current.set(cacheKey, entry);
+      setActivePreparedAudioEntry(cacheKey, entry);
 
-      audio.onplaying = () => {
-        notifyPlaybackStarted(audio);
-      };
+      try {
+        audio.load();
+      } catch {
+        // Audio can still attempt playback later.
+      }
 
-      audio.onwaiting = () => {
-        if (questionAudioRef.current !== audio) return;
-        setQuestionAudioMessage("Buffering interviewer voice...");
-      };
-
-      audio.onstalled = () => {
-        if (questionAudioRef.current !== audio) return;
-        setQuestionAudioMessage(
-          "Interviewer voice is taking a little longer than expected..."
-        );
-      };
-
-      audio.onended = () => {
-        if (questionAudioRef.current !== audio) return;
-
-        playbackStartNotifiedRef.current = false;
-        setIsPreparedQuestionPlaying(false);
-        setQuestionAudioLoading(false);
-        onPlaybackEndRef.current?.();
-
-        if (startRecordingAfterPlaybackRef.current) {
-          startRecordingAfterPlaybackRef.current = false;
-          startMicrophoneAfterAudio();
-        } else {
-          setQuestionAudioMessage("Question played.");
-        }
-      };
-
-      audio.onerror = () => {
-        if (questionAudioRef.current !== audio) return;
-
-        clearMicrophoneStartTimer();
-        startRecordingAfterPlaybackRef.current = false;
-        playbackStartNotifiedRef.current = false;
-        setIsPreparedQuestionPlaying(false);
-        setQuestionAudioLoading(false);
-        setAudioReady(false);
-
-        const message = "Natural question audio could not play on this device.";
-        setQuestionAudioError(message);
-        setQuestionAudioMessage(
-          "Natural question audio could not play. The written question is shown below."
-        );
-        onPlaybackErrorRef.current?.(message);
-      };
+      return entry;
     },
     [
-      clearMicrophoneStartTimer,
-      markAudioReady,
-      notifyPlaybackStarted,
-      setAudioReady,
-      startMicrophoneAfterAudio,
+      attachAudioHandlers,
+      cleanupPreparedAudioEntry,
+      setActivePreparedAudioEntry,
     ]
   );
 
@@ -438,7 +458,8 @@ export function useQuestionAudio({
       if (
         preparedQuestionTextRef.current === safeText &&
         preparedSpeakerPreferenceKeyRef.current === preferenceKey &&
-        questionAudioRef.current
+        questionAudioRef.current &&
+        questionAudioReadyRef.current
       ) {
         return true;
       }
@@ -449,11 +470,7 @@ export function useQuestionAudio({
         setActivePreparedAudioEntry(cacheKey, cachedEntry);
         setQuestionAudioLoading(false);
         setQuestionAudioError("");
-
-        if (!audioIsPlayable(cachedEntry.audio)) {
-          void waitForAudioReady(cachedEntry.audio, 3500);
-        }
-
+        setQuestionAudioMessage("Interviewer voice ready.");
         return true;
       }
 
@@ -472,11 +489,14 @@ export function useQuestionAudio({
         if (prepared && preparedEntry) {
           setActivePreparedAudioEntry(cacheKey, preparedEntry);
           setQuestionAudioLoading(false);
+          setQuestionAudioMessage("Interviewer voice ready.");
         }
 
         questionAudioPreparingRef.current = false;
         return prepared;
       }
+
+      const generation = audioGenerationRef.current;
 
       questionAudioPreparingRef.current = true;
       setQuestionAudioLoading(true);
@@ -485,47 +505,35 @@ export function useQuestionAudio({
 
       const preparationPromise = (async () => {
         try {
-          const url = buildStreamingQuestionAudioUrl(safeText, speakerPreference);
-          const audio = new Audio();
-          audio.preload = "auto";
-          audio.src = url;
-
-          attachAudioHandlers(audio);
-
-          const entry: PreparedAudioEntry = {
-            audio,
-            url,
-            text: safeText,
+          const entry = await createPreparedAudioEntry({
+            cacheKey,
             preferenceKey,
-          };
+            safeText,
+            speakerPreference,
+            generation,
+          });
 
-          preparedAudioCacheRef.current.set(cacheKey, entry);
-          setActivePreparedAudioEntry(cacheKey, entry);
-
-          try {
-            audio.load();
-          } catch {
-            // The audio element can still attempt playback later.
+          if (!entry) {
+            return false;
           }
 
-          void waitForAudioReady(audio, 3500);
-
+          setAudioReady(audioIsPlayable(entry.audio));
           setQuestionAudioLoading(false);
-          setQuestionAudioMessage("Interviewer voice preparing...");
+          setQuestionAudioMessage("Interviewer voice ready.");
 
           return true;
         } catch (error) {
           const message =
             error instanceof Error
               ? error.message
-              : "Natural question audio could not be prepared.";
+              : "Interviewer voice could not be prepared.";
 
           clearMicrophoneStartTimer();
           setQuestionAudioLoading(false);
           setAudioReady(false);
           setQuestionAudioError(message);
           setQuestionAudioMessage(
-            "Natural question audio is unavailable. Read the question or check OPENAI_API_KEY."
+            "Interviewer voice could not be prepared. Try Play question again, or start recording manually."
           );
 
           return false;
@@ -540,11 +548,10 @@ export function useQuestionAudio({
       return preparationPromise;
     },
     [
-      attachAudioHandlers,
       clearMicrophoneStartTimer,
+      createPreparedAudioEntry,
       setActivePreparedAudioEntry,
       setAudioReady,
-      waitForAudioReady,
     ]
   );
 
@@ -600,39 +607,29 @@ export function useQuestionAudio({
       try {
         setQuestionAudioLoading(true);
         setQuestionAudioError("");
+        setQuestionAudioMessage("Starting interviewer voice...");
 
-        if (!audioIsPlayable(audio)) {
-          setQuestionAudioMessage("Preparing interviewer voice...");
-          const ready = await waitForAudioReady(audio, AUDIO_READY_TIMEOUT_MS);
-
-          if (!ready) {
-            throw new Error("Interviewer voice took too long to prepare.");
-          }
+        try {
+          audio.currentTime = 0;
+        } catch {
+          // Some browsers do not allow seeking before metadata loads.
         }
 
-        setQuestionAudioMessage("Starting interviewer voice...");
-        audio.currentTime = 0;
-
         const playPromise = audio.play();
-        const started = await waitForPlaybackStart(
-          audio,
-          playPromise,
-          PLAYBACK_START_TIMEOUT_MS
-        );
+        const started = await waitForPlaybackStart(audio, playPromise);
 
         if (!started) {
-          throw new Error("Interviewer voice took too long to start.");
+          throw new Error("Interviewer voice did not start.");
         }
 
         setQuestionAudioLoading(false);
         return true;
       } catch (error) {
         clearMicrophoneStartTimer();
-        startRecordingAfterPlaybackRef.current = false;
         playbackStartNotifiedRef.current = false;
+        startRecordingAfterPlaybackRef.current = false;
         setIsPreparedQuestionPlaying(false);
         setQuestionAudioLoading(false);
-        setAudioReady(false);
 
         try {
           audio.pause();
@@ -643,7 +640,7 @@ export function useQuestionAudio({
         const message =
           error instanceof Error
             ? `${error.message} Try Play question again, or start recording manually.`
-            : "This device blocked natural audio playback. Try Play question again, or start recording manually.";
+            : "Interviewer voice could not start. Try Play question again, or start recording manually.";
 
         setQuestionAudioMessage(message);
         onPlaybackErrorRef.current?.(message);
@@ -655,9 +652,7 @@ export function useQuestionAudio({
       clearMicrophoneStartTimer,
       prepareQuestionAudio,
       setActivePreparedAudioEntry,
-      setAudioReady,
       stopPreparedQuestionPlayback,
-      waitForAudioReady,
       waitForPlaybackStart,
     ]
   );
