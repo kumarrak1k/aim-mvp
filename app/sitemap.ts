@@ -1,34 +1,15 @@
 import type { MetadataRoute } from "next";
 
-const siteUrl = "https://www.aicareermentor.co.uk";
+import { absoluteUrl, siteConfig } from "@/app/config/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
 
-  return [
-    {
-      url: siteUrl,
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 1,
-    },
-    {
-      url: `${siteUrl}/practice`,
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.95,
-    },
-    {
-      url: `${siteUrl}/privacy`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.5,
-    },
-    {
-      url: `${siteUrl}/terms`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.5,
-    },
-  ];
+  return siteConfig.routes.map((route) => ({
+    url: absoluteUrl(route.path),
+    lastModified: now,
+    changeFrequency:
+      route.path === "/" || route.path === "/practice" ? "weekly" : "monthly",
+    priority: route.priority,
+  }));
 }
