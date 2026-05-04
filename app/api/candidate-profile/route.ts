@@ -1,11 +1,14 @@
 import { auth, clerkClient } from "@clerk/nextjs/server";
 
+type PracticeMode = "typed" | "voice" | "voice-camera";
+
 type CandidateProfile = {
   cvText: string;
   roleSpec: string;
   interviewGoals: string;
   cvFileName: string;
   roleSpecFileName: string;
+  preferredPracticeMode: PracticeMode;
   updatedAt: string;
 };
 
@@ -15,8 +18,11 @@ const EMPTY_PROFILE: CandidateProfile = {
   interviewGoals: "",
   cvFileName: "",
   roleSpecFileName: "",
+  preferredPracticeMode: "typed",
   updatedAt: "",
 };
+
+const PRACTICE_MODES: PracticeMode[] = ["typed", "voice", "voice-camera"];
 
 const MAX_CV_CHARS = 3500;
 const MAX_ROLE_SPEC_CHARS = 2500;
@@ -37,6 +43,16 @@ function cleanFileName(value: unknown) {
     .slice(0, MAX_FILENAME_CHARS);
 }
 
+function cleanPracticeMode(
+  value: unknown,
+  fallback: PracticeMode = "typed"
+): PracticeMode {
+  if (typeof value !== "string") return fallback;
+  return PRACTICE_MODES.includes(value as PracticeMode)
+    ? (value as PracticeMode)
+    : fallback;
+}
+
 function trimToLimit(value: string, limit: number) {
   if (value.length <= limit) {
     return {
@@ -51,12 +67,54 @@ function trimToLimit(value: string, limit: number) {
   };
 }
 
-function normaliseProfile(body: unknown) {
+function extractCandidateProfile(metadata: unknown): CandidateProfile {
+  const data = metadata as {
+    candidateProfile?: Partial<CandidateProfile>;
+  };
+
+  const candidateProfile = data?.candidateProfile;
+
+  if (!candidateProfile || typeof candidateProfile !== "object") {
+    return EMPTY_PROFILE;
+  }
+
+  return {
+    cvText: cleanText(candidateProfile.cvText).slice(0, MAX_CV_CHARS).trim(),
+    roleSpec: cleanText(candidateProfile.roleSpec)
+      .slice(0, MAX_ROLE_SPEC_CHARS)
+      .trim(),
+    interviewGoals: cleanText(candidateProfile.interviewGoals)
+      .slice(0, MAX_GOALS_CHARS)
+      .trim(),
+    cvFileName: cleanFileName(candidateProfile.cvFileName),
+    roleSpecFileName: cleanFileName(candidateProfile.roleSpecFileName),
+    preferredPracticeMode: cleanPracticeMode(
+      candidateProfile.preferredPracticeMode,
+      "typed"
+    ),
+    updatedAt:
+      typeof candidateProfile.updatedAt === "string"
+        ? candidateProfile.updatedAt
+        : "",
+  };
+}
+
+function normaliseProfile(
+  body: unknown,
+  currentProfile: CandidateProfile
+) {
   const input = body as Partial<CandidateProfile>;
 
-  const rawCvText = cleanText(input.cvText);
-  const rawRoleSpec = cleanText(input.roleSpec);
-  const rawInterviewGoals = cleanText(input.interviewGoals);
+  const rawCvText =
+    typeof input.cvText === "string" ? cleanText(input.cvText) : currentProfile.cvText;
+  const rawRoleSpec =
+    typeof input.roleSpec === "string"
+      ? cleanText(input.roleSpec)
+      : currentProfile.roleSpec;
+  const rawInterviewGoals =
+    typeof input.interviewGoals === "string"
+      ? cleanText(input.interviewGoals)
+      : currentProfile.interviewGoals;
 
   const cvText = trimToLimit(rawCvText, MAX_CV_CHARS);
   const roleSpec = trimToLimit(rawRoleSpec, MAX_ROLE_SPEC_CHARS);
@@ -66,8 +124,18 @@ function normaliseProfile(body: unknown) {
     cvText: cvText.value,
     roleSpec: roleSpec.value,
     interviewGoals: interviewGoals.value,
-    cvFileName: cleanFileName(input.cvFileName),
-    roleSpecFileName: cleanFileName(input.roleSpecFileName),
+    cvFileName:
+      typeof input.cvFileName === "string"
+        ? cleanFileName(input.cvFileName)
+        : currentProfile.cvFileName,
+    roleSpecFileName:
+      typeof input.roleSpecFileName === "string"
+        ? cleanFileName(input.roleSpecFileName)
+        : currentProfile.roleSpecFileName,
+    preferredPracticeMode: cleanPracticeMode(
+      input.preferredPracticeMode,
+      currentProfile.preferredPracticeMode || "typed"
+    ),
     updatedAt: new Date().toISOString(),
   };
 
@@ -108,34 +176,6 @@ function validateProfile(profile: CandidateProfile) {
   }
 
   return "";
-}
-
-function extractCandidateProfile(metadata: unknown): CandidateProfile {
-  const data = metadata as {
-    candidateProfile?: Partial<CandidateProfile>;
-  };
-
-  const candidateProfile = data?.candidateProfile;
-
-  if (!candidateProfile || typeof candidateProfile !== "object") {
-    return EMPTY_PROFILE;
-  }
-
-  return {
-    cvText: cleanText(candidateProfile.cvText).slice(0, MAX_CV_CHARS).trim(),
-    roleSpec: cleanText(candidateProfile.roleSpec)
-      .slice(0, MAX_ROLE_SPEC_CHARS)
-      .trim(),
-    interviewGoals: cleanText(candidateProfile.interviewGoals)
-      .slice(0, MAX_GOALS_CHARS)
-      .trim(),
-    cvFileName: cleanFileName(candidateProfile.cvFileName),
-    roleSpecFileName: cleanFileName(candidateProfile.roleSpecFileName),
-    updatedAt:
-      typeof candidateProfile.updatedAt === "string"
-        ? candidateProfile.updatedAt
-        : "",
-  };
 }
 
 export async function GET() {
@@ -182,15 +222,17 @@ export async function POST(req: Request) {
       );
     }
 
+    const client = await clerkClient();
+    const user = await client.users.getUser(userId);
+    const currentProfile = extractCandidateProfile(user.privateMetadata);
+
     const body = await req.json();
-    const { profile, trimWarnings } = normaliseProfile(body);
+    const { profile, trimWarnings } = normaliseProfile(body, currentProfile);
     const validationError = validateProfile(profile);
 
     if (validationError) {
       return Response.json({ error: validationError }, { status: 400 });
     }
-
-    const client = await clerkClient();
 
     await client.users.updateUserMetadata(userId, {
       privateMetadata: {
