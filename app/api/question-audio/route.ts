@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 const OPENAI_TTS_ENDPOINT = "https://api.openai.com/v1/audio/speech";
 
@@ -31,27 +32,9 @@ const voiceMap: Record<SpeakerVoice, string> = {
 };
 
 const speedMap: Record<SpeakerPace, number> = {
-  slow: 0.84,
-  natural: 0.94,
-  energetic: 1.04,
-};
-
-const accentInstructionMap: Record<SpeakerAccent, string> = {
-  british: "Use a clear, natural British English accent.",
-  american: "Use a clear, natural American English accent.",
-  neutral: "Use a clear, neutral international English accent.",
-};
-
-const voiceInstructionMap: Record<SpeakerVoice, string> = {
-  female: "Use a warm, composed female-presenting interviewer voice.",
-  male: "Use a warm, composed male-presenting interviewer voice.",
-  neutral: "Use a balanced, neutral-presenting interviewer voice.",
-};
-
-const paceInstructionMap: Record<SpeakerPace, string> = {
-  slow: "Speak slightly slower than normal with clear pauses.",
-  natural: "Speak at a natural conversational pace.",
-  energetic: "Speak with slightly more energy while staying professional.",
+  slow: 0.94,
+  natural: 1,
+  energetic: 1.2,
 };
 
 function cleanSpeakerPreference(value: unknown): SpeakerPreference {
@@ -77,48 +60,11 @@ function cleanSpeakerPreference(value: unknown): SpeakerPreference {
 }
 
 function cleanQuestionText(text: string) {
-  return text.replace(/\s+/g, " ").trim().slice(0, 1100);
-}
-
-function buildInstructions(speakerPreference: SpeakerPreference) {
-  return [
-    "Read only the interview question. Do not add commentary.",
-    "Sound calm, premium, human and professional.",
-    voiceInstructionMap[speakerPreference.voice],
-    accentInstructionMap[speakerPreference.accent],
-    paceInstructionMap[speakerPreference.pace],
-    "Use natural emphasis and end cleanly.",
-  ].join(" ");
-}
-
-async function createOpenAiSpeechResponse({
-  apiKey,
-  text,
-  speakerPreference,
-}: {
-  apiKey: string;
-  text: string;
-  speakerPreference: SpeakerPreference;
-}) {
-  return fetch(OPENAI_TTS_ENDPOINT, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: "gpt-4o-mini-tts",
-      voice: voiceMap[speakerPreference.voice],
-      input: text,
-      response_format: "mp3",
-      speed: speedMap[speakerPreference.pace],
-      instructions: buildInstructions(speakerPreference),
-    }),
-  });
+  return text.replace(/\s+/g, " ").trim().slice(0, 650);
 }
 
 async function getOpenAiErrorMessage(response: Response) {
-  let errorMessage = "Unable to generate natural question audio.";
+  let errorMessage = "Unable to generate interviewer voice.";
 
   try {
     const errorData = await response.json();
@@ -144,6 +90,49 @@ function getMissingTextErrorResponse() {
   );
 }
 
+async function generateSpeechBuffer({
+  apiKey,
+  text,
+  speakerPreference,
+}: {
+  apiKey: string;
+  text: string;
+  speakerPreference: SpeakerPreference;
+}) {
+  const response = await fetch(OPENAI_TTS_ENDPOINT, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model: "tts-1",
+      voice: voiceMap[speakerPreference.voice],
+      input: text,
+      response_format: "mp3",
+      speed: speedMap[speakerPreference.pace],
+    }),
+  });
+
+  if (!response.ok) {
+    const errorMessage = await getOpenAiErrorMessage(response);
+    throw new Error(errorMessage);
+  }
+
+  return response.arrayBuffer();
+}
+
+function audioResponse(audioBuffer: ArrayBuffer) {
+  return new NextResponse(audioBuffer, {
+    status: 200,
+    headers: {
+      "Content-Type": "audio/mpeg",
+      "Cache-Control": "no-store, no-cache, must-revalidate",
+      "X-AIM-Audio-Mode": "tts-1-buffered",
+    },
+  });
+}
+
 export async function GET(request: NextRequest) {
   try {
     const apiKey = process.env.OPENAI_API_KEY;
@@ -165,43 +154,23 @@ export async function GET(request: NextRequest) {
       return getMissingTextErrorResponse();
     }
 
-    const response = await createOpenAiSpeechResponse({
+    const audioBuffer = await generateSpeechBuffer({
       apiKey,
       text,
       speakerPreference,
     });
 
-    if (!response.ok) {
-      const errorMessage = await getOpenAiErrorMessage(response);
-      return NextResponse.json({ error: errorMessage }, { status: 500 });
-    }
-
-    if (!response.body) {
-      const audioBuffer = await response.arrayBuffer();
-
-      return new NextResponse(audioBuffer, {
-        status: 200,
-        headers: {
-          "Content-Type": "audio/mpeg",
-          "Cache-Control": "no-store",
-          "X-AIM-Audio-Mode": "buffer",
-        },
-      });
-    }
-
-    return new NextResponse(response.body, {
-      status: 200,
-      headers: {
-        "Content-Type": "audio/mpeg",
-        "Cache-Control": "no-store",
-        "X-AIM-Audio-Mode": "stream",
-      },
-    });
+    return audioResponse(audioBuffer);
   } catch (error) {
-    console.error("Question audio stream route failed:", error);
+    console.error("QUESTION AUDIO GET ERROR:", error);
 
     return NextResponse.json(
-      { error: "Something went wrong while streaming natural question audio." },
+      {
+        error:
+          error instanceof Error
+            ? error.message
+            : "Something went wrong while generating interviewer voice.",
+      },
       { status: 500 }
     );
   }
@@ -225,32 +194,23 @@ export async function POST(request: NextRequest) {
       return getMissingTextErrorResponse();
     }
 
-    const response = await createOpenAiSpeechResponse({
+    const audioBuffer = await generateSpeechBuffer({
       apiKey,
       text,
       speakerPreference,
     });
 
-    if (!response.ok) {
-      const errorMessage = await getOpenAiErrorMessage(response);
-      return NextResponse.json({ error: errorMessage }, { status: 500 });
-    }
-
-    const audioBuffer = await response.arrayBuffer();
-
-    return new NextResponse(audioBuffer, {
-      status: 200,
-      headers: {
-        "Content-Type": "audio/mpeg",
-        "Cache-Control": "no-store",
-        "X-AIM-Audio-Mode": "post-buffer",
-      },
-    });
+    return audioResponse(audioBuffer);
   } catch (error) {
-    console.error("Question audio route failed:", error);
+    console.error("QUESTION AUDIO POST ERROR:", error);
 
     return NextResponse.json(
-      { error: "Something went wrong while generating natural question audio." },
+      {
+        error:
+          error instanceof Error
+            ? error.message
+            : "Something went wrong while generating interviewer voice.",
+      },
       { status: 500 }
     );
   }
