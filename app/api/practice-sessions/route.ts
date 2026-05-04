@@ -53,7 +53,7 @@ export async function GET() {
       orderBy: {
         createdAt: "desc",
       },
-      take: 20,
+      take: 50,
       select: {
         id: true,
         role: true,
@@ -65,6 +65,9 @@ export async function GET() {
         totalQuestions: true,
         overallScore: true,
         hireSignal: true,
+        summary: true,
+        results: true,
+        speakerPreference: true,
         createdAt: true,
       },
     });
@@ -163,6 +166,9 @@ export async function POST(request: NextRequest) {
         totalQuestions: true,
         overallScore: true,
         hireSignal: true,
+        summary: true,
+        results: true,
+        speakerPreference: true,
         createdAt: true,
       },
     });

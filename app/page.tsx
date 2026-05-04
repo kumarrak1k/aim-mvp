@@ -120,6 +120,12 @@ export default function Home() {
                 </button>
               </Link>
 
+              <Link href="/progress">
+                <button className="w-full rounded-2xl border border-cyan-300/20 bg-cyan-300/10 px-7 py-4 text-base font-black text-cyan-100 transition hover:bg-cyan-300/15 sm:w-auto">
+                  Track progress
+                </button>
+              </Link>
+
               <Link href="/platform">
                 <button className="w-full rounded-2xl border border-white/10 bg-white/[0.06] px-7 py-4 text-base font-black text-white transition hover:bg-white/[0.1] sm:w-auto">
                   Explore the platform
@@ -141,36 +147,36 @@ export default function Home() {
 
                 <div>
                   <p className="text-xs font-black uppercase tracking-[0.2em] text-purple-200/70">
-                    Readiness report
+                    Interview cockpit
                   </p>
                   <h2 className="text-lg font-black sm:text-xl">
-                    Interview performance snapshot
+                    Built for focused practice
                   </h2>
                 </div>
               </div>
 
               <span className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1 text-xs font-black text-emerald-200">
-                Candidate improving
+                Ready
               </span>
             </div>
 
             <div className="grid gap-4 lg:grid-cols-[0.95fr_1.05fr]">
               <div className="rounded-[1.6rem] border border-white/10 bg-black/20 p-5">
-                <p className="text-sm text-gray-400">Overall readiness</p>
+                <p className="text-sm text-gray-400">Practice loop</p>
                 <div className="mt-2 flex items-end gap-2">
                   <span className="text-6xl font-black tracking-[-0.08em]">
-                    8.2
+                    5
                   </span>
                   <span className="mb-2 text-lg font-black text-gray-500">
-                    /10
+                    questions
                   </span>
                 </div>
 
                 <div className="mt-5 space-y-4">
-                  <ProgressLine label="Answer quality" value={86} />
-                  <ProgressLine label="Voice delivery" value={79} />
-                  <ProgressLine label="Camera presence" value={82} />
-                  <ProgressLine label="Structure" value={84} />
+                  <ProgressLine label="Tailored questions" value={92} />
+                  <ProgressLine label="Natural audio" value={86} />
+                  <ProgressLine label="Transcript feedback" value={88} />
+                  <ProgressLine label="Progress tracking" value={82} />
                 </div>
               </div>
 
@@ -185,12 +191,12 @@ export default function Home() {
 
             <div className="mt-4 grid gap-4 md:grid-cols-2">
               <InsightCard
-                label="Coach insight"
-                text="Strong answer foundation. Improve impact by ending with a more measurable result."
+                label="Session experience"
+                text="Current question, transcript and camera preview stay visible in a focused interview workspace."
               />
               <InsightCard
-                label="Next improvement"
-                text="Repeat the answer with fewer filler words and a stronger final summary line."
+                label="Progress product"
+                text="After each completed session, your results are saved so you can track improvement over time."
               />
             </div>
           </GlassCard>
