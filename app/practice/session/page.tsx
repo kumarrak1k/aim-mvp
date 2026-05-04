@@ -441,7 +441,7 @@ export default function PracticeSessionPage() {
     speakerPreference,
   ]);
 
-  const saveSession = useCallback(
+  const addLocalSavedSession = useCallback(
     (sessionSummary: InterviewSummary) => {
       const newSession = createSavedSession({
         role,
@@ -453,11 +453,68 @@ export default function PracticeSessionPage() {
 
       setSavedSessions((currentSessions) => {
         const nextSessions = prependSavedSession(currentSessions, newSession);
-        localStorage.setItem("aim_sessions", JSON.stringify(nextSessions));
+
+        try {
+          localStorage.setItem("aim_sessions", JSON.stringify(nextSessions));
+        } catch {
+          // Keep UI state even if localStorage is unavailable.
+        }
+
         return nextSessions;
       });
     },
     [difficulty, interviewType, role]
+  );
+
+  const saveSession = useCallback(
+    async (sessionSummary: InterviewSummary, sessionResults: ResultItem[]) => {
+      addLocalSavedSession(sessionSummary);
+
+      if (!isSignedIn) return;
+
+      try {
+        const response = await fetch("/api/practice-sessions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            role,
+            experienceLevel,
+            interviewType,
+            difficulty,
+            focusArea,
+            practiceMode,
+            totalQuestions,
+            summary: sessionSummary,
+            results: sessionResults,
+            speakerPreference,
+          }),
+        });
+
+        const data = await response.json().catch(() => null);
+
+        if (!response.ok || data?.error) {
+          console.warn(
+            "Practice session was not saved to database:",
+            data?.error || response.statusText
+          );
+        }
+      } catch (error) {
+        console.warn("Practice session database save failed:", error);
+      }
+    },
+    [
+      addLocalSavedSession,
+      difficulty,
+      experienceLevel,
+      focusArea,
+      interviewType,
+      isSignedIn,
+      practiceMode,
+      role,
+      speakerPreference,
+    ]
   );
 
   const runVideoAnalysis = useCallback(
@@ -1098,11 +1155,11 @@ export default function PracticeSessionPage() {
         });
 
         setSummary(data);
-        saveSession(data);
+        await saveSession(data, updatedResults);
       } catch {
         const fallbackSummary = buildFallbackInterviewSummary(updatedResults);
         setSummary(fallbackSummary);
-        saveSession(fallbackSummary);
+        await saveSession(fallbackSummary, updatedResults);
       } finally {
         setSummaryLoading(false);
         setQuestion("");
