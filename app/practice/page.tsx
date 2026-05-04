@@ -130,6 +130,7 @@ export default function Home() {
   const answerDurationSecondsRef = useRef<number | null>(null);
   const guidedAnswerRunningRef = useRef(false);
   const startVoiceInputRef = useRef<(() => Promise<void>) | null>(null);
+  const stopVoiceInputRef = useRef<(() => Promise<void>) | null>(null);
 
   const requiresManualCameraStart = manualDeviceMode;
   const shouldAutoSpeakQuestions = speakerEnabled && !manualDeviceMode;
@@ -196,17 +197,23 @@ export default function Home() {
     resetTranscript,
     setTranscript,
     getCombinedTranscript,
-    speakQuestion,
     stopQuestionSpeech: stopBrowserQuestionSpeech,
     startRecognitionOnly,
     stopRecognitionOnly,
   } = useBrowserSpeech({
-    onAnswerChange: setAnswer,
+    onAnswerChange: (value) => {
+      const safeValue = stripQuestionLeakageFromTranscript(
+        value,
+        activeQuestionRef.current
+      );
+      setAnswer(safeValue);
+      rawAnswerTranscriptRef.current = safeValue;
+    },
     onListeningError: () => {
       setIsListening(false);
       setGuidedAnswerActive(false);
       setQuestionAudioMessage(
-        "Voice dictation stopped. If this happens after auto-play, click Start Voice Answer once or check microphone permission."
+        "Voice dictation paused. Click Start Voice Answer if you want to continue recording."
       );
     },
     onQuestionSpeechEnd: () => {
@@ -330,7 +337,6 @@ export default function Home() {
       }
 
       if (!text.trim()) return;
-      // Deliberately do not call speakQuestion here. Browser speech sounds robotic.
     },
     [setGuidedAnswerActive, setQuestionAudioMessage]
   );
@@ -624,7 +630,7 @@ export default function Home() {
     stopRecognitionOnly();
     setGuidedAnswerActive(false);
 
-    await wait(450);
+    await wait(650);
 
     const durationSeconds = recordingStartRef.current
       ? Math.max(1, Math.round((Date.now() - recordingStartRef.current) / 1000))
@@ -666,6 +672,7 @@ export default function Home() {
         const cleaned = await cleanTranscriptApi(rawTranscript);
         setTranscript(cleaned || rawTranscript);
         setAnswer(cleaned || rawTranscript);
+        rawAnswerTranscriptRef.current = cleaned || rawTranscript;
       } catch {
         setAnswer(rawTranscript);
       } finally {
@@ -686,6 +693,10 @@ export default function Home() {
     setTranscript,
     stopRecognitionOnly,
   ]);
+
+  useEffect(() => {
+    stopVoiceInputRef.current = stopVoiceInput;
+  }, [stopVoiceInput]);
 
   const clearVoiceAnswer = useCallback(() => {
     clearCurrentAnswerCapture();
@@ -842,14 +853,19 @@ export default function Home() {
         );
       } else {
         try {
-          setQuestionAudioMessage("Requesting microphone permission for automatic recording...");
-          await primeAudioInput();
           setQuestionAudioMessage(
-            "Microphone ready. Generating your first question..."
+            "Starting microphone now so transcription is ready after the question..."
+          );
+
+          await primeAudioInput();
+          await startVoiceInput();
+
+          setQuestionAudioMessage(
+            "Microphone ready. The question will play, then you can answer naturally."
           );
         } catch {
           setQuestionAudioMessage(
-            "Microphone permission was not available. You may need to click Start Voice Answer once after the question."
+            "Microphone permission was not available. Click Start Voice Answer once after the question, then allow microphone access."
           );
         }
       }
@@ -873,6 +889,7 @@ export default function Home() {
     setQuestionAudioMessage,
     speakerEnabled,
     startCamera,
+    startVoiceInput,
     voiceSupported,
   ]);
 
@@ -922,11 +939,31 @@ export default function Home() {
       setFeedbackLoading(true);
       setFeedback(null);
 
+      const preStopTranscript = stripQuestionLeakageFromTranscript(
+        getCombinedTranscript() || rawAnswerTranscriptRef.current.trim() || answer.trim(),
+        activeQuestionRef.current
+      );
+
+      if (preStopTranscript) {
+        setAnswer(preStopTranscript);
+        rawAnswerTranscriptRef.current = preStopTranscript;
+      }
+
+      if (isListening) {
+        setQuestionAudioMessage("Stopping recording and preparing feedback...");
+        await stopVoiceInputRef.current?.();
+        await wait(400);
+      } else {
+        stopRecognitionOnly();
+      }
+
+      setIsListening(false);
+
       let latestVoiceAnalysis = latestVoiceAnalysisRef.current || voiceAnalysis;
       let latestVideoAnalysis = latestVideoAnalysisRef.current || videoAnalysis;
 
       const transcriptForVoiceAnalysis = stripQuestionLeakageFromTranscript(
-        rawAnswerTranscriptRef.current.trim() || answer.trim(),
+        rawAnswerTranscriptRef.current.trim() || preStopTranscript || answer.trim(),
         activeQuestionRef.current
       );
 
@@ -964,7 +1001,7 @@ export default function Home() {
       }
 
       const safeAnswer = stripQuestionLeakageFromTranscript(
-        answer,
+        transcriptForVoiceAnalysis || answer,
         activeQuestionRef.current
       );
 
@@ -998,9 +1035,14 @@ export default function Home() {
     calculateCurrentAudioMetrics,
     calculateCurrentVideoMetrics,
     cameraEnabled,
+    getCombinedTranscript,
+    isListening,
     question,
     runVideoAnalysis,
     runVoiceAnalysis,
+    setIsListening,
+    setQuestionAudioMessage,
+    stopRecognitionOnly,
     videoAnalysis,
     voiceAnalysis,
   ]);

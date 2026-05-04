@@ -77,8 +77,11 @@ export function useBrowserSpeech({
   const voicesRef = useRef<SpeechSynthesisVoice[]>([]);
   const autoStartListeningAfterSpeechRef = useRef(false);
   const lastSpokenQuestionRef = useRef("");
+
   const recognitionRunningRef = useRef(false);
+  const keepRecognitionAliveRef = useRef(false);
   const userStoppedRecognitionRef = useRef(false);
+  const restartTimerRef = useRef<number | null>(null);
 
   const onAnswerChangeRef = useRef(onAnswerChange);
   const onListeningEndRef = useRef(onListeningEnd);
@@ -91,6 +94,13 @@ export function useBrowserSpeech({
     onListeningErrorRef.current = onListeningError;
     onQuestionSpeechEndRef.current = onQuestionSpeechEnd;
   }, [onAnswerChange, onListeningEnd, onListeningError, onQuestionSpeechEnd]);
+
+  const clearRestartTimer = useCallback(() => {
+    if (restartTimerRef.current !== null) {
+      window.clearTimeout(restartTimerRef.current);
+      restartTimerRef.current = null;
+    }
+  }, []);
 
   const resetTranscript = useCallback(() => {
     finalTranscriptRef.current = "";
@@ -121,6 +131,39 @@ export function useBrowserSpeech({
   const setActiveQuestion = useCallback((value: string) => {
     activeQuestionRef.current = value;
   }, []);
+
+  const scheduleRecognitionRestart = useCallback(() => {
+    clearRestartTimer();
+
+    if (
+      !keepRecognitionAliveRef.current ||
+      userStoppedRecognitionRef.current ||
+      !recognitionRef.current
+    ) {
+      return;
+    }
+
+    setIsListening(true);
+
+    restartTimerRef.current = window.setTimeout(() => {
+      restartTimerRef.current = null;
+
+      if (
+        !keepRecognitionAliveRef.current ||
+        userStoppedRecognitionRef.current ||
+        recognitionRunningRef.current ||
+        !recognitionRef.current
+      ) {
+        return;
+      }
+
+      try {
+        recognitionRef.current.start();
+      } catch {
+        scheduleRecognitionRestart();
+      }
+    }, 350);
+  }, [clearRestartTimer]);
 
   const getPreferredFemaleVoice = useCallback(() => {
     if (typeof window !== "undefined" && window.speechSynthesis) {
@@ -248,7 +291,9 @@ export function useBrowserSpeech({
     if (!recognition) return false;
 
     try {
+      keepRecognitionAliveRef.current = true;
       userStoppedRecognitionRef.current = false;
+      clearRestartTimer();
 
       if (recognitionRunningRef.current) {
         setIsListening(true);
@@ -259,18 +304,25 @@ export function useBrowserSpeech({
       recognition.start();
       return true;
     } catch {
+      if (keepRecognitionAliveRef.current && !userStoppedRecognitionRef.current) {
+        scheduleRecognitionRestart();
+        return true;
+      }
+
       recognitionRunningRef.current = false;
       setIsListening(false);
       onListeningErrorRef.current?.();
       return false;
     }
-  }, []);
+  }, [clearRestartTimer, scheduleRecognitionRestart]);
 
   const stopRecognitionOnly = useCallback(() => {
     const recognition = recognitionRef.current;
     if (!recognition) return;
 
+    keepRecognitionAliveRef.current = false;
     userStoppedRecognitionRef.current = true;
+    clearRestartTimer();
 
     try {
       recognition.stop();
@@ -278,7 +330,7 @@ export function useBrowserSpeech({
       recognitionRunningRef.current = false;
       setIsListening(false);
     }
-  }, []);
+  }, [clearRestartTimer]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -342,7 +394,6 @@ export function useBrowserSpeech({
 
       recognition.onend = () => {
         recognitionRunningRef.current = false;
-        setIsListening(false);
 
         const combined = getCombinedTranscript();
         finalTranscriptRef.current = combined;
@@ -352,19 +403,34 @@ export function useBrowserSpeech({
           onAnswerChangeRef.current(combined);
         }
 
+        if (keepRecognitionAliveRef.current && !userStoppedRecognitionRef.current) {
+          scheduleRecognitionRestart();
+          return;
+        }
+
+        setIsListening(false);
         onListeningEndRef.current?.(combined);
       };
 
       recognition.onerror = (event) => {
         recognitionRunningRef.current = false;
-        setIsListening(false);
 
         const errorCode = event?.error || "unknown";
+        const hardPermissionError =
+          errorCode === "not-allowed" ||
+          errorCode === "service-not-allowed" ||
+          errorCode === "audio-capture";
 
-        if (errorCode === "no-speech") {
-          onListeningErrorRef.current?.();
+        if (
+          keepRecognitionAliveRef.current &&
+          !userStoppedRecognitionRef.current &&
+          !hardPermissionError
+        ) {
+          scheduleRecognitionRestart();
           return;
         }
+
+        setIsListening(false);
 
         if (!userStoppedRecognitionRef.current) {
           onListeningErrorRef.current?.();
@@ -385,6 +451,8 @@ export function useBrowserSpeech({
     }
 
     return () => {
+      clearRestartTimer();
+
       if (recognitionRef.current) {
         try {
           recognitionRef.current.abort?.();
@@ -398,7 +466,13 @@ export function useBrowserSpeech({
         window.speechSynthesis.onvoiceschanged = null;
       }
     };
-  }, [getCombinedTranscript, pushVisibleTranscript, resetTranscript]);
+  }, [
+    clearRestartTimer,
+    getCombinedTranscript,
+    pushVisibleTranscript,
+    resetTranscript,
+    scheduleRecognitionRestart,
+  ]);
 
   return {
     recognitionRef,
