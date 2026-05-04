@@ -29,26 +29,28 @@ type QuestionHeroProps = {
   onBackToSetup: () => void;
 };
 
-export function QuestionHero({
-  question,
-  questionLoading,
-  currentQuestionNumber,
-  totalQuestions,
-  practiceMode,
-  speakerEnabled,
-  speakerSupported,
-  questionAudioLoading,
-  questionAudioReady,
-  questionAudioError,
-  questionAudioMessage,
-  isSpeakingQuestion,
-  isListening,
-  guidedAnswerRunning,
-  onPlayQuestion,
-  onStopQuestion,
-  onStartGuidedAnswer,
-  onBackToSetup,
-}: QuestionHeroProps) {
+export function QuestionHero(props: QuestionHeroProps) {
+  const {
+    question,
+    questionLoading,
+    currentQuestionNumber,
+    totalQuestions,
+    practiceMode,
+    speakerEnabled,
+    speakerSupported,
+    questionAudioLoading,
+    questionAudioReady,
+    questionAudioError,
+    questionAudioMessage,
+    isSpeakingQuestion,
+    isListening,
+    guidedAnswerRunning,
+    onPlayQuestion,
+    onStopQuestion,
+    onStartGuidedAnswer,
+    onBackToSetup,
+  } = props;
+
   const progressPercent = Math.min(
     100,
     Math.round(((currentQuestionNumber - 1) / totalQuestions) * 100)
@@ -61,7 +63,7 @@ export function QuestionHero({
       : questionAudioMessage);
 
   return (
-    <section className="overflow-hidden rounded-[1.5rem] border border-white/10 bg-white/[0.055] shadow-2xl shadow-purple-950/10 backdrop-blur-2xl">
+    <section className="flex h-full min-h-[360px] flex-col overflow-hidden rounded-[1.55rem] border border-white/10 bg-white/[0.055] shadow-2xl shadow-purple-950/10 backdrop-blur-2xl">
       <div className="h-1 bg-white/10">
         <div
           className="h-full bg-gradient-to-r from-purple-400 via-fuchsia-300 to-cyan-300"
@@ -69,7 +71,7 @@ export function QuestionHero({
         />
       </div>
 
-      <div className="p-3 sm:p-4">
+      <div className="flex flex-1 flex-col p-3 sm:p-4">
         <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-2">
             <span className="rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1 text-xs font-black text-cyan-100">
@@ -96,7 +98,7 @@ export function QuestionHero({
           </button>
         </div>
 
-        <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+        <div className="mb-3 grid gap-2 sm:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2">
           <button
             type="button"
             onClick={onStartGuidedAnswer}
@@ -145,8 +147,8 @@ export function QuestionHero({
           )}
         </div>
 
-        <div className="rounded-[1.25rem] border border-cyan-300/15 bg-cyan-300/10 px-4 py-3 sm:px-5 sm:py-4">
-          <p className="text-[1rem] font-bold leading-7 text-white sm:text-[1.1rem] sm:leading-8 lg:text-[1.15rem]">
+        <div className="flex flex-1 rounded-[1.25rem] border border-cyan-300/15 bg-cyan-300/10 px-4 py-4 sm:px-5">
+          <p className="self-start text-[1.02rem] font-bold leading-7 text-white sm:text-[1.12rem] sm:leading-8 xl:text-[1.08rem] 2xl:text-[1.16rem]">
             {questionLoading ? "Generating your question..." : question}
           </p>
         </div>

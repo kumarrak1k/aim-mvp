@@ -44,15 +44,15 @@ export function AnswerWorkspace({
   const analysing = feedbackLoading || voiceAnalysisLoading || videoAnalysisLoading;
 
   return (
-    <section className="overflow-hidden rounded-[1.5rem] border border-white/10 bg-white/[0.055] shadow-2xl shadow-purple-950/10 backdrop-blur-2xl">
-      <div className="p-3 sm:p-4">
+    <section className="flex h-full min-h-[420px] flex-col overflow-hidden rounded-[1.55rem] border border-white/10 bg-white/[0.055] shadow-2xl shadow-purple-950/10 backdrop-blur-2xl">
+      <div className="flex flex-1 flex-col p-3 sm:p-4">
         <div className="mb-3 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <div className="min-w-0">
             <p className="text-xs font-black uppercase tracking-[0.22em] text-purple-300">
               Your answer
             </p>
             <div className="mt-1 flex flex-wrap items-center gap-3">
-              <h2 className="text-xl font-black tracking-[-0.035em] text-white sm:text-2xl">
+              <h2 className="text-xl font-black tracking-[-0.035em] text-white sm:text-2xl xl:text-xl 2xl:text-2xl">
                 Transcript and answer editor
               </h2>
 
@@ -88,7 +88,7 @@ export function AnswerWorkspace({
           value={answer}
           onChange={(event) => onAnswerChange(event.target.value)}
           placeholder="Your answer transcript will appear here. You can also type or edit your answer before requesting feedback."
-          className="h-[clamp(300px,52vh,560px)] w-full resize-none rounded-[1.35rem] border border-white/10 bg-black/30 p-4 text-base leading-7 text-white placeholder-gray-500 outline-none transition focus:border-purple-300/50 focus:ring-4 focus:ring-purple-500/10"
+          className="min-h-[310px] flex-1 resize-none rounded-[1.35rem] border border-white/10 bg-black/30 p-4 text-base leading-7 text-white placeholder-gray-500 outline-none transition focus:border-purple-300/50 focus:ring-4 focus:ring-purple-500/10"
         />
 
         <div className="mt-3 flex flex-col gap-3 sm:flex-row">
