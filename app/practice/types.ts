@@ -1,3 +1,5 @@
+export type PracticeMode = "typed" | "voice" | "voice-camera";
+
 export type CategoryScores = {
   content: number;
   clarity: number;
@@ -184,6 +186,7 @@ export type CandidateProfile = {
   interviewGoals: string;
   cvFileName: string;
   roleSpecFileName: string;
+  preferredPracticeMode: PracticeMode;
   updatedAt: string;
 };
 
