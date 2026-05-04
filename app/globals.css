@@ -10,6 +10,7 @@
   --brand-fuchsia: #d946ef;
   --brand-cyan: #67e8f9;
   --brand-muted: #a1a1aa;
+  --focus-ring: rgba(103, 232, 249, 0.45);
 }
 
 @theme inline {
@@ -26,10 +27,14 @@
 html {
   scroll-behavior: smooth;
   background: var(--background);
+  color-scheme: dark;
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   min-height: 100vh;
+  overflow-x: hidden;
   background:
     radial-gradient(circle at 50% -10%, rgba(168, 85, 247, 0.18), transparent 36rem),
     radial-gradient(circle at 100% 10%, rgba(103, 232, 249, 0.08), transparent 28rem),
@@ -50,6 +55,7 @@ body {
 button,
 a,
 input,
+select,
 textarea {
   -webkit-tap-highlight-color: transparent;
 }
@@ -63,9 +69,16 @@ button:disabled {
 }
 
 input,
+select,
 textarea,
 button {
   font: inherit;
+}
+
+input,
+select,
+textarea {
+  color-scheme: dark;
 }
 
 textarea {
@@ -73,13 +86,62 @@ textarea {
 }
 
 img,
-video {
+video,
+canvas,
+svg {
   max-width: 100%;
+}
+
+img,
+svg,
+video,
+canvas {
+  display: block;
 }
 
 a {
   color: inherit;
   text-decoration: none;
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  button,
+  a {
+    transition-duration: 180ms;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (max-width: 640px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
 }
 
 ::-webkit-scrollbar {
@@ -102,4 +164,9 @@ a {
 
 .clerk-modal-backdrop {
   backdrop-filter: blur(16px);
+}
+
+.clerk-card,
+.cl-card {
+  border-radius: 1.5rem !important;
 }

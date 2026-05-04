@@ -1,42 +1,112 @@
 "use client";
 
+import Link from "next/link";
 import { MiniStat } from "./PracticeUi";
 
 export function PracticeHero({ totalQuestions }: { totalQuestions: number }) {
   return (
-    <div className="mb-6 overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.07] p-5 shadow-2xl shadow-purple-950/20 backdrop-blur-2xl sm:mb-8 sm:rounded-[2.25rem] sm:p-6 md:p-8">
+    <div className="relative mb-6 overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.07] p-5 shadow-2xl shadow-purple-950/20 backdrop-blur-2xl sm:mb-8 sm:rounded-[2.25rem] sm:p-6 md:p-8 lg:p-9">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/50 to-transparent" />
+      <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-cyan-400/10 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-28 left-10 h-72 w-72 rounded-full bg-purple-500/15 blur-3xl" />
 
-      <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+      <div className="relative grid gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.75fr)] lg:items-center">
         <div>
-          <div className="mb-5 inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/[0.06] px-4 py-2 text-sm font-black text-purple-50 shadow-xl shadow-purple-950/20">
-            <span className="relative flex h-2.5 w-2.5">
+          <div className="mb-5 inline-flex max-w-full items-center gap-3 rounded-full border border-white/10 bg-white/[0.06] px-4 py-2 text-sm font-black text-purple-50 shadow-xl shadow-purple-950/20">
+            <span className="relative flex h-2.5 w-2.5 shrink-0">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-300 opacity-60" />
               <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-300" />
             </span>
-            Voice + video + AI interview feedback
+            <span className="truncate">
+              Personalised AI mock interview and delivery coach
+            </span>
           </div>
 
-          <h1 className="max-w-4xl text-3xl font-black leading-[1.02] tracking-[-0.045em] md:text-5xl">
-            Practise your next interview with{" "}
+          <h1 className="max-w-5xl text-3xl font-black leading-[1.01] tracking-[-0.05em] md:text-5xl lg:text-6xl">
+            Practise the full interview signal: {" "}
             <span className="bg-gradient-to-r from-purple-200 via-fuchsia-200 to-cyan-200 bg-clip-text text-transparent">
-              precision coaching.
+              answers, voice and presence.
             </span>
           </h1>
 
-          <p className="mt-4 max-w-2xl leading-7 text-gray-300">
-            Complete a focused 5-question mock interview and receive strict
-            hiring-bar feedback across your answers, voice delivery, camera
-            presence, confidence, pace and structure.
+          <p className="mt-5 max-w-3xl text-base leading-8 text-gray-300 md:text-lg">
+            Run a focused five-question mock interview tailored to your target
+            role. Get strict hiring-bar feedback, natural question audio,
+            voice-delivery analysis, camera-presence scoring and stronger model
+            answers.
           </p>
+
+          <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+            <a href="#interview-setup">
+              <button className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-6 py-4 text-sm font-black text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] sm:w-auto">
+                Configure practice session
+              </button>
+            </a>
+
+            <Link href="/profile">
+              <button className="w-full rounded-2xl border border-purple-300/20 bg-purple-300/10 px-6 py-4 text-sm font-black text-purple-100 transition hover:bg-purple-300/15 sm:w-auto">
+                Add CV / role profile
+              </button>
+            </Link>
+          </div>
+
+          <div className="mt-7 flex flex-wrap gap-3 text-xs font-bold text-gray-400">
+            <HeroPill text="Phone/iPad guided answer flow" />
+            <HeroPill text="STAR and impact coaching" />
+            <HeroPill text="Model answer after every response" />
+          </div>
         </div>
 
-        <div className="grid min-w-0 grid-cols-3 gap-3 sm:min-w-[260px]">
-          <MiniStat value={String(totalQuestions)} label="Questions" />
-          <MiniStat value="360°" label="Feedback" />
-          <MiniStat value="8+" label="Target" />
+        <div className="rounded-[1.8rem] border border-white/10 bg-black/30 p-4 shadow-2xl shadow-black/20">
+          <div className="mb-4 grid min-w-0 grid-cols-3 gap-3">
+            <MiniStat value={String(totalQuestions)} label="Questions" />
+            <MiniStat value="360°" label="Feedback" />
+            <MiniStat value="8+" label="Target" />
+          </div>
+
+          <div className="rounded-[1.35rem] border border-white/10 bg-white/[0.045] p-4">
+            <div className="mb-4 flex items-center justify-between gap-3">
+              <div>
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-cyan-300">
+                  Session preview
+                </p>
+                <p className="mt-1 text-sm text-gray-400">
+                  What the coach will assess
+                </p>
+              </div>
+              <span className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1 text-xs font-black text-emerald-100">
+                Ready
+              </span>
+            </div>
+
+            <div className="space-y-3">
+              <PreviewMetric label="Answer substance" value="Content + relevance" />
+              <PreviewMetric label="Delivery" value="Pace + fillers + confidence" />
+              <PreviewMetric label="Presence" value="Camera + posture + eye contact" />
+              <PreviewMetric label="Improvement" value="Model answer + next steps" />
+            </div>
+          </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function HeroPill({ text }: { text: string }) {
+  return (
+    <span className="rounded-full border border-white/10 bg-white/[0.045] px-3 py-2">
+      ✓ {text}
+    </span>
+  );
+}
+
+function PreviewMetric({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-black/25 p-3">
+      <p className="text-sm font-black text-white">{label}</p>
+      <p className="text-right text-xs font-bold leading-5 text-gray-400">
+        {value}
+      </p>
     </div>
   );
 }
