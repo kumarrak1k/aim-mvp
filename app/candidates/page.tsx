@@ -1,12 +1,27 @@
-"use client";
-
+import type { Metadata } from "next";
 import Link from "next/link";
+import { createPageMetadata } from "@/app/config/seo";
 import {
   BulletList,
   GlassCard,
   MarketingShell,
   SectionHeading,
 } from "../components/marketing/MarketingShell";
+
+export const metadata: Metadata = createPageMetadata({
+  path: "/candidates",
+  title: "Interview Practice for Graduates, Career Changers and Professionals",
+  description:
+    "AI Career Mentor helps graduates, career changers and experienced professionals practise stronger interview answers, voice delivery and camera presence.",
+  keywords: [
+    "interview practice for graduates",
+    "career changer interview practice",
+    "professional interview coaching",
+    "graduate mock interview",
+    "career change interview preparation",
+    "executive presence interview practice",
+  ],
+});
 
 const audienceCards = [
   {
@@ -84,10 +99,11 @@ export default function CandidatesPage() {
             </div>
 
             <div className="mt-7">
-              <Link href="/practice">
-                <button className="rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-7 py-4 text-base font-black text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.02]">
-                  Start Practising
-                </button>
+              <Link
+                href="/practice"
+                className="inline-flex rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-7 py-4 text-base font-black text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.02]"
+              >
+                Start Practising
               </Link>
             </div>
           </GlassCard>
