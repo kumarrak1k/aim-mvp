@@ -45,12 +45,59 @@ type WindowWithSpeechRecognition = Window & {
   webkitSpeechRecognition?: SpeechRecognitionConstructor;
 };
 
-const buildVisibleTranscript = (finalText: string, interimText: string) => {
-  return [finalText, interimText]
-    .filter(Boolean)
-    .join(" ")
+const normaliseTranscriptToUkEnglish = (value: string) => {
+  return value
+    .replace(/\bresume\b/gi, "CV")
+    .replace(/\brésumé\b/gi, "CV")
+    .replace(/\bbehavioral\b/gi, "behavioural")
+    .replace(/\bbehavior\b/gi, "behaviour")
+    .replace(/\bbehaviors\b/gi, "behaviours")
+    .replace(/\bprioritize\b/gi, "prioritise")
+    .replace(/\bprioritized\b/gi, "prioritised")
+    .replace(/\bprioritizing\b/gi, "prioritising")
+    .replace(/\bprioritization\b/gi, "prioritisation")
+    .replace(/\banalyze\b/gi, "analyse")
+    .replace(/\banalyzed\b/gi, "analysed")
+    .replace(/\banalyzing\b/gi, "analysing")
+    .replace(/\banalysis\b/gi, "analysis")
+    .replace(/\borganization\b/gi, "organisation")
+    .replace(/\borganizations\b/gi, "organisations")
+    .replace(/\borganizational\b/gi, "organisational")
+    .replace(/\borganize\b/gi, "organise")
+    .replace(/\borganized\b/gi, "organised")
+    .replace(/\borganizing\b/gi, "organising")
+    .replace(/\boptimize\b/gi, "optimise")
+    .replace(/\boptimized\b/gi, "optimised")
+    .replace(/\boptimizing\b/gi, "optimising")
+    .replace(/\boptimization\b/gi, "optimisation")
+    .replace(/\bspecialize\b/gi, "specialise")
+    .replace(/\bspecialized\b/gi, "specialised")
+    .replace(/\bspecializing\b/gi, "specialising")
+    .replace(/\bspecialization\b/gi, "specialisation")
+    .replace(/\butilize\b/gi, "use")
+    .replace(/\butilized\b/gi, "used")
+    .replace(/\butilizing\b/gi, "using")
+    .replace(/\butilization\b/gi, "use")
+    .replace(/\bcolor\b/gi, "colour")
+    .replace(/\bcolors\b/gi, "colours")
+    .replace(/\bcenter\b/gi, "centre")
+    .replace(/\bcenters\b/gi, "centres")
+    .replace(/\bcredential\b/gi, "qualification")
+    .replace(/\bcredentials\b/gi, "qualifications")
+    .replace(/\bjob description\b/gi, "role specification")
+    .replace(/\bcover letter\b/gi, "covering letter")
     .replace(/\s+/g, " ")
     .trim();
+};
+
+const buildVisibleTranscript = (finalText: string, interimText: string) => {
+  return normaliseTranscriptToUkEnglish(
+    [finalText, interimText]
+      .filter(Boolean)
+      .join(" ")
+      .replace(/\s+/g, " ")
+      .trim()
+  );
 };
 
 export function useBrowserSpeech({
@@ -108,21 +155,31 @@ export function useBrowserSpeech({
   }, []);
 
   const setTranscript = useCallback((value: string) => {
-    finalTranscriptRef.current = value;
+    finalTranscriptRef.current = normaliseTranscriptToUkEnglish(value);
     interimTranscriptRef.current = "";
   }, []);
 
   const getCombinedTranscript = useCallback(() => {
-    return stripQuestionLeakageFromTranscript(
-      buildVisibleTranscript(finalTranscriptRef.current, interimTranscriptRef.current),
-      activeQuestionRef.current
+    return normaliseTranscriptToUkEnglish(
+      stripQuestionLeakageFromTranscript(
+        buildVisibleTranscript(
+          finalTranscriptRef.current,
+          interimTranscriptRef.current
+        ),
+        activeQuestionRef.current
+      )
     );
   }, []);
 
   const pushVisibleTranscript = useCallback(() => {
-    const visibleTranscript = stripQuestionLeakageFromTranscript(
-      buildVisibleTranscript(finalTranscriptRef.current, interimTranscriptRef.current),
-      activeQuestionRef.current
+    const visibleTranscript = normaliseTranscriptToUkEnglish(
+      stripQuestionLeakageFromTranscript(
+        buildVisibleTranscript(
+          finalTranscriptRef.current,
+          interimTranscriptRef.current
+        ),
+        activeQuestionRef.current
+      )
     );
 
     onAnswerChangeRef.current(visibleTranscript);
@@ -295,6 +352,8 @@ export function useBrowserSpeech({
       userStoppedRecognitionRef.current = false;
       clearRestartTimer();
 
+      recognition.lang = "en-GB";
+
       if (recognitionRunningRef.current) {
         setIsListening(true);
         return true;
@@ -351,6 +410,7 @@ export function useBrowserSpeech({
 
       recognition.onstart = () => {
         recognitionRunningRef.current = true;
+        recognition.lang = "en-GB";
         setIsListening(true);
       };
 
@@ -364,10 +424,16 @@ export function useBrowserSpeech({
         let newFinalText = "";
         let newInterimText = "";
 
-        for (let index = event.resultIndex; index < event.results.length; index += 1) {
-          const transcriptPart = stripQuestionLeakageFromTranscript(
-            event.results[index][0].transcript,
-            activeQuestionRef.current
+        for (
+          let index = event.resultIndex;
+          index < event.results.length;
+          index += 1
+        ) {
+          const transcriptPart = normaliseTranscriptToUkEnglish(
+            stripQuestionLeakageFromTranscript(
+              event.results[index][0].transcript,
+              activeQuestionRef.current
+            )
           );
 
           if (!transcriptPart) continue;
@@ -380,15 +446,20 @@ export function useBrowserSpeech({
         }
 
         if (newFinalText) {
-          finalTranscriptRef.current = stripQuestionLeakageFromTranscript(
-            `${finalTranscriptRef.current} ${newFinalText}`
-              .replace(/\s+/g, " ")
-              .trim(),
-            activeQuestionRef.current
+          finalTranscriptRef.current = normaliseTranscriptToUkEnglish(
+            stripQuestionLeakageFromTranscript(
+              `${finalTranscriptRef.current} ${newFinalText}`
+                .replace(/\s+/g, " ")
+                .trim(),
+              activeQuestionRef.current
+            )
           );
         }
 
-        interimTranscriptRef.current = newInterimText.replace(/\s+/g, " ").trim();
+        interimTranscriptRef.current = normaliseTranscriptToUkEnglish(
+          newInterimText.replace(/\s+/g, " ").trim()
+        );
+
         pushVisibleTranscript();
       };
 

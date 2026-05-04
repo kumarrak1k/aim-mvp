@@ -70,12 +70,43 @@ ${profile.interviewGoals || "Not provided."}
 Uploaded CV file:
 ${profile.cvFileName || "Not provided."}
 
-Uploaded role spec file:
+Uploaded role specification file:
 ${profile.roleSpecFileName || "Not provided."}
 
 Profile last updated:
 ${profile.updatedAt || "Unknown."}
 `.trim();
+}
+
+function normaliseQuestionToUkEnglish(question: string) {
+  return question
+    .replace(/\bresume\b/gi, "CV")
+    .replace(/\brésumé\b/gi, "CV")
+    .replace(/\bbehavioral\b/gi, "behavioural")
+    .replace(/\bbehavior\b/gi, "behaviour")
+    .replace(/\bprioritize\b/gi, "prioritise")
+    .replace(/\bprioritized\b/gi, "prioritised")
+    .replace(/\bprioritizing\b/gi, "prioritising")
+    .replace(/\banalyze\b/gi, "analyse")
+    .replace(/\banalyzed\b/gi, "analysed")
+    .replace(/\banalyzing\b/gi, "analysing")
+    .replace(/\borganization\b/gi, "organisation")
+    .replace(/\borganizations\b/gi, "organisations")
+    .replace(/\borganize\b/gi, "organise")
+    .replace(/\borganized\b/gi, "organised")
+    .replace(/\borganizing\b/gi, "organising")
+    .replace(/\boptimize\b/gi, "optimise")
+    .replace(/\boptimized\b/gi, "optimised")
+    .replace(/\boptimizing\b/gi, "optimising")
+    .replace(/\butilize\b/gi, "use")
+    .replace(/\butilized\b/gi, "used")
+    .replace(/\butilizing\b/gi, "using")
+    .replace(/\bprogram\b/gi, "programme")
+    .replace(/\bprograms\b/gi, "programmes")
+    .replace(/\bjob description\b/gi, "role specification")
+    .replace(/\bcover letter\b/gi, "covering letter")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 async function getSignedInCandidateProfile() {
@@ -139,11 +170,19 @@ Answer ${index + 1}: ${item?.answer || ""}`;
       : "";
 
     const systemPrompt = `
-You are an expert interview question generator for AI Career Mentor.
+You are an expert UK interview question generator for AI Career Mentor.
 
-Your job is to create realistic, high-quality interview questions for candidates preparing for professional interviews.
+Your job is to create realistic, high-quality interview questions for candidates preparing for professional interviews in a UK English style.
 
-Rules:
+Language and style rules:
+- Use UK English spelling, vocabulary and phrasing.
+- Use "CV", not "resume" or "résumé".
+- Use "role specification" or "target role", not "job description" where possible.
+- Use UK spellings such as "behavioural", "organisation", "prioritise", "analyse", "programme", "optimise" and "specialise".
+- Do not use American-style phrasing unless it appears inside the candidate's own provided role context.
+- Keep the question professional, concise and natural for a UK interview setting.
+
+Interview question rules:
 - Generate ONE interview question only.
 - The question must match the candidate profile, interview type, difficulty and focus area.
 - If saved CV, role specification or interview goals are provided, use them to make the question more personalised and relevant.
@@ -152,7 +191,7 @@ Rules:
 - Use the candidate's interview goals to adjust the focus of the question.
 - Avoid repeating previous questions.
 - Do not ask for confidential personal data.
-- Do not mention that you can see private metadata, saved profile data, or uploaded files.
+- Do not mention that you can see private metadata, saved profile data or uploaded files.
 - Do not include scoring, explanation, tips or model answers.
 - Make the question clear, realistic and useful for interview practice.
 - Return ONLY valid JSON in this exact shape:
@@ -175,7 +214,7 @@ ${safeQuestionNumber} of ${safeTotalQuestions}
 Previous interview history:
 ${previousQuestions || "No previous questions yet."}
 
-Generate the next best interview question.
+Generate the next best UK English interview question.
 `.trim();
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -186,7 +225,7 @@ Generate the next best interview question.
       },
       body: JSON.stringify({
         model: "gpt-4o-mini",
-        temperature: 0.7,
+        temperature: 0.65,
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },
@@ -240,7 +279,7 @@ Generate the next best interview question.
     }
 
     return NextResponse.json({
-      question: parsed.question.trim(),
+      question: normaliseQuestionToUkEnglish(parsed.question),
     });
   } catch (error) {
     console.error("INTERVIEW QUESTION API ERROR:", error);

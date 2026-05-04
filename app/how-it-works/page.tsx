@@ -1,11 +1,25 @@
-"use client";
-
+import type { Metadata } from "next";
 import Link from "next/link";
+import { createPageMetadata } from "@/app/config/seo";
 import {
   GlassCard,
   MarketingShell,
   SectionHeading,
 } from "../components/marketing/MarketingShell";
+
+export const metadata: Metadata = createPageMetadata({
+  path: "/how-it-works",
+  title: "How AI Interview Practice Works",
+  description:
+    "See how AI Career Mentor helps candidates configure a realistic mock interview, answer questions, review feedback and improve with purpose.",
+  keywords: [
+    "how AI interview practice works",
+    "mock interview workflow",
+    "AI interview feedback process",
+    "interview improvement loop",
+    "job interview preparation steps",
+  ],
+});
 
 const steps = [
   {
@@ -60,7 +74,9 @@ export default function HowItWorksPage() {
               key={item.step}
               className="rounded-[1.8rem] border border-white/10 bg-white/[0.05] p-6 shadow-2xl shadow-black/10"
             >
-              <p className="mb-5 text-sm font-black text-cyan-300">{item.step}</p>
+              <p className="mb-5 text-sm font-black text-cyan-300">
+                {item.step}
+              </p>
               <h3 className="text-xl font-black tracking-[-0.03em]">
                 {item.title}
               </h3>
@@ -88,15 +104,17 @@ export default function HowItWorksPage() {
             />
 
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-              <Link href="/practice">
-                <button className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-7 py-4 text-base font-black text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.02] sm:w-auto">
-                  Try the workflow
-                </button>
+              <Link
+                href="/practice"
+                className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-7 py-4 text-center text-base font-black text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.02] sm:w-auto"
+              >
+                Try the workflow
               </Link>
-              <Link href="/platform">
-                <button className="w-full rounded-2xl border border-white/10 bg-white/[0.06] px-7 py-4 text-base font-black text-white transition hover:bg-white/[0.1] sm:w-auto">
-                  Explore platform
-                </button>
+              <Link
+                href="/platform"
+                className="w-full rounded-2xl border border-white/10 bg-white/[0.06] px-7 py-4 text-center text-base font-black text-white transition hover:bg-white/[0.1] sm:w-auto"
+              >
+                Explore platform
               </Link>
             </div>
           </GlassCard>

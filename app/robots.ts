@@ -1,19 +1,20 @@
 import type { MetadataRoute } from "next";
 
-const siteUrl = "https://www.aicareermentor.co.uk";
+import { absoluteUrl, siteConfig } from "@/app/config/site";
 
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: {
-      userAgent: "*",
-      allow: "/",
-      disallow: [
-        "/api/",
-        "/sign-in",
-        "/sign-up",
-      ],
-    },
-    sitemap: `${siteUrl}/sitemap.xml`,
-    host: siteUrl,
+    rules: [
+      {
+        userAgent: "*",
+        allow: "/",
+        disallow: [
+          "/api/",
+          "/practice/session",
+        ],
+      },
+    ],
+    sitemap: absoluteUrl("/sitemap.xml"),
+    host: siteConfig.url,
   };
 }

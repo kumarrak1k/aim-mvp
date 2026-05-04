@@ -1,11 +1,25 @@
-"use client";
-
+import type { Metadata } from "next";
 import Link from "next/link";
+import { createPageMetadata } from "@/app/config/seo";
 import {
   GlassCard,
   MarketingShell,
   SectionHeading,
 } from "../components/marketing/MarketingShell";
+
+export const metadata: Metadata = createPageMetadata({
+  path: "/pricing",
+  title: "AI Interview Coach Pricing",
+  description:
+    "Simple pricing for AI interview coaching across mock interview practice, answer feedback, voice delivery and camera presence.",
+  keywords: [
+    "AI interview coach pricing",
+    "mock interview pricing",
+    "AI career coach pricing",
+    "interview preparation subscription",
+    "AI interview practice plans",
+  ],
+});
 
 const plans = [
   {
@@ -101,16 +115,15 @@ export default function PricingPage() {
                 ))}
               </div>
 
-              <Link href="/practice">
-                <button
-                  className={`mt-7 w-full rounded-2xl px-5 py-3.5 text-sm font-black transition ${
-                    plan.highlight
-                      ? "bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 text-white shadow-xl shadow-purple-950/35 hover:scale-[1.02]"
-                      : "border border-white/10 bg-white/[0.06] text-white hover:bg-white/[0.1]"
-                  }`}
-                >
-                  Start Practising
-                </button>
+              <Link
+                href="/practice"
+                className={`mt-7 flex w-full justify-center rounded-2xl px-5 py-3.5 text-sm font-black transition ${
+                  plan.highlight
+                    ? "bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 text-white shadow-xl shadow-purple-950/35 hover:scale-[1.02]"
+                    : "border border-white/10 bg-white/[0.06] text-white hover:bg-white/[0.1]"
+                }`}
+              >
+                Start Practising
               </Link>
             </div>
           ))}
@@ -135,16 +148,18 @@ export default function PricingPage() {
             />
 
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-              <Link href="/practice">
-                <button className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-7 py-4 text-base font-black text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.02] sm:w-auto">
-                  Go to practice
-                </button>
+              <Link
+                href="/practice"
+                className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-7 py-4 text-center text-base font-black text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.02] sm:w-auto"
+              >
+                Go to practice
               </Link>
 
-              <Link href="/platform">
-                <button className="w-full rounded-2xl border border-white/10 bg-white/[0.06] px-7 py-4 text-base font-black text-white transition hover:bg-white/[0.1] sm:w-auto">
-                  View platform
-                </button>
+              <Link
+                href="/platform"
+                className="w-full rounded-2xl border border-white/10 bg-white/[0.06] px-7 py-4 text-center text-base font-black text-white transition hover:bg-white/[0.1] sm:w-auto"
+              >
+                View platform
               </Link>
             </div>
           </GlassCard>

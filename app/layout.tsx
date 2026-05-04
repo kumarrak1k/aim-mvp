@@ -1,9 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
+import { absoluteUrl, siteConfig } from "@/app/config/site";
 import "./globals.css";
 
-const siteUrl = "https://www.aicareermentor.co.uk";
-const siteName = "AI Career Mentor";
+const siteUrl = siteConfig.url;
+const siteName = siteConfig.name;
 const siteDescription =
   "Practise job interviews with AI coaching that scores your answers, voice delivery and camera presence, then gives model answers and practical improvement plans.";
 
@@ -11,23 +12,18 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   applicationName: siteName,
   title: {
-    default: "AI Career Mentor | AI Interview Coach for Answers, Voice and Camera Presence",
+    default: siteConfig.title,
     template: `%s | ${siteName}`,
   },
   description: siteDescription,
   keywords: [
-    "AI interview coach",
-    "AI mock interview",
-    "interview practice",
-    "job interview preparation",
-    "graduate interview practice",
+    ...siteConfig.keywords,
     "career mentor",
     "voice feedback",
     "video interview feedback",
     "camera presence coaching",
     "STAR interview answers",
     "interview confidence",
-    "AI career coaching",
   ],
   authors: [{ name: siteName }],
   creator: siteName,
@@ -95,7 +91,7 @@ const structuredData = {
       "@id": `${siteUrl}/#organization`,
       name: siteName,
       url: siteUrl,
-      logo: `${siteUrl}/brand/logo.jpg`,
+      logo: absoluteUrl("/brand/logo.jpg"),
       sameAs: [],
     },
     {
