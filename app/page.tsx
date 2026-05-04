@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { SiteLogo } from "@/app/components/brand/SiteLogo";
 import {
   BulletList,
   GlassCard,
@@ -64,6 +65,7 @@ export default function Home() {
             <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-r from-purple-500/25 via-fuchsia-500/20 to-cyan-500/25 blur-2xl" />
             <div className="relative overflow-hidden rounded-[1.75rem] border border-white/15 bg-white/[0.08] px-5 py-4 shadow-2xl shadow-purple-950/30 backdrop-blur-2xl sm:px-7 sm:py-5">
               <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/60 to-transparent" />
+
               <div className="flex flex-col items-center gap-3 text-center">
                 <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/20 px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.24em] text-cyan-200 sm:text-xs">
                   <span className="relative flex h-2.5 w-2.5">
@@ -135,13 +137,8 @@ export default function Home() {
           <GlassCard className="overflow-hidden p-5 sm:p-6">
             <div className="mb-5 flex items-center justify-between gap-4">
               <div className="flex items-center gap-3">
-                <div className="rounded-[1.2rem] border border-white/20 bg-white p-2 shadow-xl shadow-purple-950/25">
-                  <img
-                    src="/brand/logo.jpg"
-                    alt="AI Career Mentor"
-                    className="h-12 w-12 rounded-xl object-contain"
-                  />
-                </div>
+                <SiteLogo href="" size="md" showText={false} />
+
                 <div>
                   <p className="text-xs font-black uppercase tracking-[0.2em] text-purple-200/70">
                     Readiness report

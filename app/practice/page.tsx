@@ -6,28 +6,17 @@ import { useUser } from "@clerk/nextjs";
 import { PracticeHeader } from "./components/PracticeHeader";
 import { PracticeHero } from "./components/PracticeHero";
 import { PracticeStartScreen } from "./components/PracticeStartScreen";
-import { useDeviceProfile } from "./hooks/useDeviceProfile";
 import { fetchCandidateProfile } from "./lib/interviewApi";
+import { buildAutofilledRoleFromProfile } from "./lib/profileHelpers";
+import { useDeviceProfile } from "./hooks/useDeviceProfile";
+import type { CandidateProfile, SpeakerPreference } from "./types";
 import {
-  buildAutofilledRoleFromProfile,
-  hasCandidateProfileContext,
-} from "./lib/profileHelpers";
-import type { CandidateProfile } from "./types";
+  defaultSpeakerPreference,
+  PRACTICE_SESSION_CONFIG_KEY,
+  totalQuestions,
+} from "./session/utils";
 
-type PracticeSessionConfig = {
-  role: string;
-  experienceLevel: string;
-  interviewType: string;
-  difficulty: string;
-  focusArea: string;
-  speakerEnabled: boolean;
-  cameraEnabled: boolean;
-  createdAt: string;
-};
-
-const PRACTICE_SESSION_CONFIG_KEY = "aim_practice_session_config";
-
-export default function PracticeSetupPage() {
+export default function PracticePage() {
   const router = useRouter();
   const { isLoaded, isSignedIn } = useUser();
   const { manualDeviceMode } = useDeviceProfile();
@@ -47,8 +36,11 @@ export default function PracticeSetupPage() {
   );
   const [difficulty, setDifficulty] = useState("Standard");
   const [focusArea, setFocusArea] = useState("Balanced");
+
   const [speakerEnabled, setSpeakerEnabled] = useState(false);
   const [cameraEnabled, setCameraEnabled] = useState(false);
+  const [speakerPreference, setSpeakerPreference] =
+    useState<SpeakerPreference>(defaultSpeakerPreference);
   const [questionLoading, setQuestionLoading] = useState(false);
 
   const roleRef = useRef("");
@@ -78,6 +70,10 @@ export default function PracticeSetupPage() {
 
         setSavedCandidateProfile(profile);
 
+        if (profile?.speakerPreference) {
+          setSpeakerPreference(profile.speakerPreference);
+        }
+
         const autofilledRole = buildAutofilledRoleFromProfile(profile);
 
         if (
@@ -105,7 +101,7 @@ export default function PracticeSetupPage() {
     };
   }, [isLoaded, isSignedIn]);
 
-  const handleRoleChange = useCallback((value: string) => {
+  const onRoleChange = useCallback((value: string) => {
     roleManuallyEditedRef.current = true;
     setRoleAutofilledFromProfile(false);
     setRole(value);
@@ -121,47 +117,44 @@ export default function PracticeSetupPage() {
     setRoleAutofilledFromProfile(true);
   }, [savedCandidateProfile]);
 
+  const toggleCamera = useCallback(() => {
+    setCameraEnabled((previous) => !previous);
+  }, []);
+
   const setTextOnlyMode = useCallback(() => {
     setSpeakerEnabled(false);
+    setCameraEnabled(false);
   }, []);
 
   const setSpeakerMode = useCallback(() => {
     setSpeakerEnabled(true);
   }, []);
 
-  const toggleCamera = useCallback(() => {
-    setCameraEnabled((previous) => !previous);
-  }, []);
-
   const startInterview = useCallback(() => {
-    const trimmedRole = role.trim();
-
-    if (!trimmedRole) return;
-
-    const sessionConfig: PracticeSessionConfig = {
-      role: trimmedRole,
-      experienceLevel,
-      interviewType,
-      difficulty,
-      focusArea,
-      speakerEnabled,
-      cameraEnabled,
-      createdAt: new Date().toISOString(),
-    };
-
-    setQuestionLoading(true);
+    if (!role.trim()) return;
 
     try {
+      setQuestionLoading(true);
+
       window.sessionStorage.setItem(
         PRACTICE_SESSION_CONFIG_KEY,
-        JSON.stringify(sessionConfig)
+        JSON.stringify({
+          role,
+          experienceLevel,
+          interviewType,
+          difficulty,
+          focusArea,
+          speakerEnabled,
+          cameraEnabled,
+          speakerPreference,
+          createdAt: new Date().toISOString(),
+        })
       );
-    } catch {
-      // Continue even if sessionStorage is unavailable. The session page will
-      // show a clear setup recovery state.
-    }
 
-    router.push("/practice/session");
+      router.push("/practice/session");
+    } finally {
+      window.setTimeout(() => setQuestionLoading(false), 600);
+    }
   }, [
     cameraEnabled,
     difficulty,
@@ -171,6 +164,7 @@ export default function PracticeSetupPage() {
     role,
     router,
     speakerEnabled,
+    speakerPreference,
   ]);
 
   return (
@@ -183,45 +177,40 @@ export default function PracticeSetupPage() {
       <div className="relative z-10">
         <PracticeHeader isLoaded={isLoaded} isSignedIn={isSignedIn} />
 
-        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-10 lg:py-12">
-          <PracticeHero totalQuestions={5} />
+        <section className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:py-10">
+          <PracticeHero totalQuestions={totalQuestions} />
 
-          <PracticeStartScreen
-            isLoaded={isLoaded}
-            isSignedIn={isSignedIn}
-            role={role}
-            onRoleChange={handleRoleChange}
-            savedCandidateProfile={savedCandidateProfile}
-            profileContextLoaded={profileContextLoaded}
-            roleAutofilledFromProfile={roleAutofilledFromProfile}
-            useSavedProfileForRole={useSavedProfileForRole}
-            manualDeviceMode={manualDeviceMode}
-            experienceLevel={experienceLevel}
-            setExperienceLevel={setExperienceLevel}
-            interviewType={interviewType}
-            setInterviewType={setInterviewType}
-            difficulty={difficulty}
-            setDifficulty={setDifficulty}
-            focusArea={focusArea}
-            setFocusArea={setFocusArea}
-            speakerEnabled={speakerEnabled}
-            cameraEnabled={cameraEnabled}
-            setTextOnlyMode={setTextOnlyMode}
-            setSpeakerMode={setSpeakerMode}
-            toggleCamera={toggleCamera}
-            startInterview={startInterview}
-            questionLoading={questionLoading}
-          />
-
-          {isSignedIn &&
-            profileContextLoaded &&
-            hasCandidateProfileContext(savedCandidateProfile) && (
-              <p className="mt-5 text-center text-xs font-semibold text-gray-500">
-                Your saved profile context will be available to the interview
-                session.
-              </p>
-            )}
-        </div>
+          <div id="interview-setup">
+            <PracticeStartScreen
+              isLoaded={isLoaded}
+              isSignedIn={isSignedIn}
+              role={role}
+              onRoleChange={onRoleChange}
+              savedCandidateProfile={savedCandidateProfile}
+              profileContextLoaded={profileContextLoaded}
+              roleAutofilledFromProfile={roleAutofilledFromProfile}
+              useSavedProfileForRole={useSavedProfileForRole}
+              manualDeviceMode={manualDeviceMode}
+              experienceLevel={experienceLevel}
+              setExperienceLevel={setExperienceLevel}
+              interviewType={interviewType}
+              setInterviewType={setInterviewType}
+              difficulty={difficulty}
+              setDifficulty={setDifficulty}
+              focusArea={focusArea}
+              setFocusArea={setFocusArea}
+              speakerEnabled={speakerEnabled}
+              cameraEnabled={cameraEnabled}
+              speakerPreference={speakerPreference}
+              setSpeakerPreference={setSpeakerPreference}
+              setTextOnlyMode={setTextOnlyMode}
+              setSpeakerMode={setSpeakerMode}
+              toggleCamera={toggleCamera}
+              startInterview={startInterview}
+              questionLoading={questionLoading}
+            />
+          </div>
+        </section>
       </div>
     </main>
   );

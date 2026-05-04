@@ -4,6 +4,7 @@ import type {
   Feedback,
   InterviewSummary,
   ResultItem,
+  SpeakerPreference,
   VideoAnalysis,
   VideoMetrics,
   VoiceAnalysis,
@@ -170,13 +171,16 @@ export const cleanTranscript = async (transcript: string) => {
   return data.cleanedTranscript?.trim() || transcript;
 };
 
-export const fetchQuestionAudioBlob = async (text: string) => {
+export const fetchQuestionAudioBlob = async (
+  text: string,
+  speakerPreference?: SpeakerPreference
+) => {
   const response = await fetch("/api/question-audio", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ text }),
+    body: JSON.stringify({ text, speakerPreference }),
   });
 
   if (!response.ok) {

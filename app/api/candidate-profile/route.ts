@@ -1,6 +1,15 @@
 import { auth, clerkClient } from "@clerk/nextjs/server";
 
 type PracticeMode = "typed" | "voice" | "voice-camera";
+type SpeakerVoice = "female" | "male" | "neutral";
+type SpeakerAccent = "british" | "american" | "neutral";
+type SpeakerPace = "slow" | "natural" | "energetic";
+
+type SpeakerPreference = {
+  voice: SpeakerVoice;
+  accent: SpeakerAccent;
+  pace: SpeakerPace;
+};
 
 type CandidateProfile = {
   cvText: string;
@@ -9,7 +18,14 @@ type CandidateProfile = {
   cvFileName: string;
   roleSpecFileName: string;
   preferredPracticeMode: PracticeMode;
+  speakerPreference: SpeakerPreference;
   updatedAt: string;
+};
+
+const DEFAULT_SPEAKER_PREFERENCE: SpeakerPreference = {
+  voice: "female",
+  accent: "british",
+  pace: "natural",
 };
 
 const EMPTY_PROFILE: CandidateProfile = {
@@ -19,10 +35,14 @@ const EMPTY_PROFILE: CandidateProfile = {
   cvFileName: "",
   roleSpecFileName: "",
   preferredPracticeMode: "typed",
+  speakerPreference: DEFAULT_SPEAKER_PREFERENCE,
   updatedAt: "",
 };
 
 const PRACTICE_MODES: PracticeMode[] = ["typed", "voice", "voice-camera"];
+const SPEAKER_VOICES: SpeakerVoice[] = ["female", "male", "neutral"];
+const SPEAKER_ACCENTS: SpeakerAccent[] = ["british", "american", "neutral"];
+const SPEAKER_PACES: SpeakerPace[] = ["slow", "natural", "energetic"];
 
 const MAX_CV_CHARS = 3500;
 const MAX_ROLE_SPEC_CHARS = 2500;
@@ -51,6 +71,31 @@ function cleanPracticeMode(
   return PRACTICE_MODES.includes(value as PracticeMode)
     ? (value as PracticeMode)
     : fallback;
+}
+
+function cleanSpeakerPreference(
+  value: unknown,
+  fallback: SpeakerPreference = DEFAULT_SPEAKER_PREFERENCE
+): SpeakerPreference {
+  const input = value as Partial<SpeakerPreference> | undefined;
+
+  return {
+    voice:
+      typeof input?.voice === "string" &&
+      SPEAKER_VOICES.includes(input.voice as SpeakerVoice)
+        ? (input.voice as SpeakerVoice)
+        : fallback.voice,
+    accent:
+      typeof input?.accent === "string" &&
+      SPEAKER_ACCENTS.includes(input.accent as SpeakerAccent)
+        ? (input.accent as SpeakerAccent)
+        : fallback.accent,
+    pace:
+      typeof input?.pace === "string" &&
+      SPEAKER_PACES.includes(input.pace as SpeakerPace)
+        ? (input.pace as SpeakerPace)
+        : fallback.pace,
+  };
 }
 
 function trimToLimit(value: string, limit: number) {
@@ -92,6 +137,10 @@ function extractCandidateProfile(metadata: unknown): CandidateProfile {
       candidateProfile.preferredPracticeMode,
       "typed"
     ),
+    speakerPreference: cleanSpeakerPreference(
+      candidateProfile.speakerPreference,
+      DEFAULT_SPEAKER_PREFERENCE
+    ),
     updatedAt:
       typeof candidateProfile.updatedAt === "string"
         ? candidateProfile.updatedAt
@@ -99,14 +148,13 @@ function extractCandidateProfile(metadata: unknown): CandidateProfile {
   };
 }
 
-function normaliseProfile(
-  body: unknown,
-  currentProfile: CandidateProfile
-) {
+function normaliseProfile(body: unknown, currentProfile: CandidateProfile) {
   const input = body as Partial<CandidateProfile>;
 
   const rawCvText =
-    typeof input.cvText === "string" ? cleanText(input.cvText) : currentProfile.cvText;
+    typeof input.cvText === "string"
+      ? cleanText(input.cvText)
+      : currentProfile.cvText;
   const rawRoleSpec =
     typeof input.roleSpec === "string"
       ? cleanText(input.roleSpec)
@@ -135,6 +183,10 @@ function normaliseProfile(
     preferredPracticeMode: cleanPracticeMode(
       input.preferredPracticeMode,
       currentProfile.preferredPracticeMode || "typed"
+    ),
+    speakerPreference: cleanSpeakerPreference(
+      input.speakerPreference,
+      currentProfile.speakerPreference || DEFAULT_SPEAKER_PREFERENCE
     ),
     updatedAt: new Date().toISOString(),
   };

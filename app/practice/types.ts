@@ -1,5 +1,15 @@
 export type PracticeMode = "typed" | "voice" | "voice-camera";
 
+export type SpeakerVoice = "female" | "male" | "neutral";
+export type SpeakerAccent = "british" | "american" | "neutral";
+export type SpeakerPace = "slow" | "natural" | "energetic";
+
+export type SpeakerPreference = {
+  voice: SpeakerVoice;
+  accent: SpeakerAccent;
+  pace: SpeakerPace;
+};
+
 export type CategoryScores = {
   content: number;
   clarity: number;
@@ -187,6 +197,7 @@ export type CandidateProfile = {
   cvFileName: string;
   roleSpecFileName: string;
   preferredPracticeMode: PracticeMode;
+  speakerPreference: SpeakerPreference;
   updatedAt: string;
 };
 

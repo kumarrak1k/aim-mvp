@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { SignInButton, UserButton } from "@clerk/nextjs";
+import { SiteLogo } from "@/app/components/brand/SiteLogo";
 
 const navItems = [
   { href: "/", label: "Home" },
@@ -21,27 +22,7 @@ export function PracticeHeader({
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 bg-[#120d1e]/75 backdrop-blur-2xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
-        <Link href="/" className="flex min-w-0 items-center gap-3">
-          <div className="relative shrink-0">
-            <div className="absolute -inset-2 rounded-[1.35rem] bg-purple-500/25 blur-xl" />
-            <div className="relative rounded-[1.2rem] border border-white/20 bg-white p-2 shadow-xl shadow-purple-950/40">
-              <img
-                src="/brand/logo.jpg"
-                alt="AI Career Mentor"
-                className="h-11 w-11 rounded-xl object-contain sm:h-12 sm:w-12"
-              />
-            </div>
-          </div>
-
-          <div className="min-w-0">
-            <p className="truncate text-base font-black tracking-[-0.04em] sm:text-lg">
-              AI Career Mentor
-            </p>
-            <p className="hidden text-xs text-purple-100/60 sm:block">
-              Interview coaching platform
-            </p>
-          </div>
-        </Link>
+        <SiteLogo href="/" size="md" showText />
 
         <nav className="hidden items-center gap-2 lg:flex">
           {navItems.map((item) => (

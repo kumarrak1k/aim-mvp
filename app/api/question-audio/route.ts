@@ -4,6 +4,85 @@ export const runtime = "nodejs";
 
 const OPENAI_TTS_ENDPOINT = "https://api.openai.com/v1/audio/speech";
 
+type SpeakerVoice = "female" | "male" | "neutral";
+type SpeakerAccent = "british" | "american" | "neutral";
+type SpeakerPace = "slow" | "natural" | "energetic";
+
+type SpeakerPreference = {
+  voice: SpeakerVoice;
+  accent: SpeakerAccent;
+  pace: SpeakerPace;
+};
+
+const DEFAULT_SPEAKER_PREFERENCE: SpeakerPreference = {
+  voice: "female",
+  accent: "british",
+  pace: "natural",
+};
+
+const SPEAKER_VOICES: SpeakerVoice[] = ["female", "male", "neutral"];
+const SPEAKER_ACCENTS: SpeakerAccent[] = ["british", "american", "neutral"];
+const SPEAKER_PACES: SpeakerPace[] = ["slow", "natural", "energetic"];
+
+const voiceMap: Record<SpeakerVoice, string> = {
+  female: "nova",
+  male: "onyx",
+  neutral: "alloy",
+};
+
+const speedMap: Record<SpeakerPace, number> = {
+  slow: 0.82,
+  natural: 0.92,
+  energetic: 1.05,
+};
+
+const accentInstructionMap: Record<SpeakerAccent, string> = {
+  british:
+    "Use a clear, natural British accent suitable for a professional UK interview coach.",
+  american:
+    "Use a clear, natural American accent suitable for a professional interview coach.",
+  neutral:
+    "Use a clear, neutral international English accent suitable for a professional interview coach.",
+};
+
+const voiceInstructionMap: Record<SpeakerVoice, string> = {
+  female:
+    "Use a warm, composed female-presenting voice. Sound premium, calm and human.",
+  male:
+    "Use a warm, composed male-presenting voice. Sound premium, calm and human.",
+  neutral:
+    "Use a balanced, neutral-presenting voice. Sound premium, calm and human.",
+};
+
+const paceInstructionMap: Record<SpeakerPace, string> = {
+  slow: "Speak slightly slower than normal, with thoughtful pauses for clarity.",
+  natural: "Speak at a natural conversational pace, not rushed and not too slow.",
+  energetic:
+    "Speak with a little more energy and momentum while staying clear and professional.",
+};
+
+function cleanSpeakerPreference(value: unknown): SpeakerPreference {
+  const input = value as Partial<SpeakerPreference> | undefined;
+
+  return {
+    voice:
+      typeof input?.voice === "string" &&
+      SPEAKER_VOICES.includes(input.voice as SpeakerVoice)
+        ? (input.voice as SpeakerVoice)
+        : DEFAULT_SPEAKER_PREFERENCE.voice,
+    accent:
+      typeof input?.accent === "string" &&
+      SPEAKER_ACCENTS.includes(input.accent as SpeakerAccent)
+        ? (input.accent as SpeakerAccent)
+        : DEFAULT_SPEAKER_PREFERENCE.accent,
+    pace:
+      typeof input?.pace === "string" &&
+      SPEAKER_PACES.includes(input.pace as SpeakerPace)
+        ? (input.pace as SpeakerPace)
+        : DEFAULT_SPEAKER_PREFERENCE.pace,
+  };
+}
+
 export async function POST(request: NextRequest) {
   try {
     const apiKey = process.env.OPENAI_API_KEY;
@@ -17,6 +96,7 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json().catch(() => null);
     const text = typeof body?.text === "string" ? body.text.trim() : "";
+    const speakerPreference = cleanSpeakerPreference(body?.speakerPreference);
 
     if (!text) {
       return NextResponse.json(
@@ -35,12 +115,20 @@ export async function POST(request: NextRequest) {
       },
       body: JSON.stringify({
         model: "gpt-4o-mini-tts",
-        voice: "nova",
+        voice: voiceMap[speakerPreference.voice],
         input: safeText,
         response_format: "mp3",
-        speed: 0.9,
-        instructions:
-          "You are a world-class British interview coach speaking one interview question to a candidate. Sound human, calm, warm, premium and conversational. Use natural pacing and short pauses between clauses. Do not sound robotic, synthetic, rushed, theatrical or salesy. Read the question clearly, with gentle emphasis on key words. End cleanly without adding extra commentary.",
+        speed: speedMap[speakerPreference.pace],
+        instructions: [
+          "You are a world-class interview coach speaking one interview question to a candidate.",
+          voiceInstructionMap[speakerPreference.voice],
+          accentInstructionMap[speakerPreference.accent],
+          paceInstructionMap[speakerPreference.pace],
+          "Read only the interview question. Do not add extra commentary.",
+          "Use natural pacing and short pauses between clauses.",
+          "Do not sound robotic, synthetic, rushed, theatrical or salesy.",
+          "Read the question clearly, with gentle emphasis on key words. End cleanly.",
+        ].join(" "),
       }),
     });
 

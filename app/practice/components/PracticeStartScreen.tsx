@@ -3,7 +3,11 @@
 import Link from "next/link";
 import { SignInButton, UserButton } from "@clerk/nextjs";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { CandidateProfile, PracticeMode } from "../types";
+import type {
+  CandidateProfile,
+  PracticeMode,
+  SpeakerPreference,
+} from "../types";
 import {
   difficultyLevels,
   experienceLevels,
@@ -33,6 +37,8 @@ type PracticeStartScreenProps = {
   setFocusArea: (value: string) => void;
   speakerEnabled: boolean;
   cameraEnabled: boolean;
+  speakerPreference: SpeakerPreference;
+  setSpeakerPreference: (value: SpeakerPreference) => void;
   setTextOnlyMode: () => void;
   setSpeakerMode: () => void;
   toggleCamera: () => void;
@@ -45,6 +51,46 @@ const practiceModeLabels: Record<PracticeMode, string> = {
   voice: "Voice interview",
   "voice-camera": "Voice + camera interview",
 };
+
+const speakerVoiceOptions: Array<{
+  value: SpeakerPreference["voice"];
+  label: string;
+  description: string;
+}> = [
+  {
+    value: "female",
+    label: "Female",
+    description: "Warm, calm and premium.",
+  },
+  {
+    value: "male",
+    label: "Male",
+    description: "Clear, steady and professional.",
+  },
+  {
+    value: "neutral",
+    label: "Neutral",
+    description: "Balanced and versatile.",
+  },
+];
+
+const speakerAccentOptions: Array<{
+  value: SpeakerPreference["accent"];
+  label: string;
+}> = [
+  { value: "british", label: "British" },
+  { value: "american", label: "American" },
+  { value: "neutral", label: "Neutral" },
+];
+
+const speakerPaceOptions: Array<{
+  value: SpeakerPreference["pace"];
+  label: string;
+}> = [
+  { value: "slow", label: "Slower" },
+  { value: "natural", label: "Natural" },
+  { value: "energetic", label: "More energetic" },
+];
 
 export function PracticeStartScreen({
   isLoaded,
@@ -66,6 +112,8 @@ export function PracticeStartScreen({
   setFocusArea,
   speakerEnabled,
   cameraEnabled,
+  speakerPreference,
+  setSpeakerPreference,
   setTextOnlyMode,
   setSpeakerMode,
   toggleCamera,
@@ -74,7 +122,7 @@ export function PracticeStartScreen({
 }: PracticeStartScreenProps) {
   const [savingPreference, setSavingPreference] = useState(false);
   const [preferenceMessage, setPreferenceMessage] = useState("");
-  const appliedSavedModeRef = useRef(false);
+  const appliedSavedPreferencesRef = useRef(false);
 
   const selectedPracticeMode = useMemo<PracticeMode>(() => {
     if (speakerEnabled && cameraEnabled) return "voice-camera";
@@ -112,26 +160,47 @@ export function PracticeStartScreen({
 
   useEffect(() => {
     if (
-      appliedSavedModeRef.current ||
+      appliedSavedPreferencesRef.current ||
       !isSignedIn ||
       !profileContextLoaded ||
-      !savedCandidateProfile?.preferredPracticeMode
+      !savedCandidateProfile
     ) {
       return;
     }
 
-    appliedSavedModeRef.current = true;
-    selectPracticeMode(savedCandidateProfile.preferredPracticeMode);
+    appliedSavedPreferencesRef.current = true;
+
+    if (savedCandidateProfile.preferredPracticeMode) {
+      selectPracticeMode(savedCandidateProfile.preferredPracticeMode);
+    }
+
+    if (savedCandidateProfile.speakerPreference) {
+      setSpeakerPreference(savedCandidateProfile.speakerPreference);
+    }
   }, [
     isSignedIn,
     profileContextLoaded,
-    savedCandidateProfile?.preferredPracticeMode,
+    savedCandidateProfile,
     selectPracticeMode,
+    setSpeakerPreference,
   ]);
+
+  const updateSpeakerPreference = useCallback(
+    (partial: Partial<SpeakerPreference>) => {
+      setPreferenceMessage("");
+      setSpeakerPreference({
+        ...speakerPreference,
+        ...partial,
+      });
+    },
+    [setSpeakerPreference, speakerPreference]
+  );
 
   const savePracticePreference = useCallback(async () => {
     if (!isSignedIn) {
-      setPreferenceMessage("Sign in to save this as your default practice mode.");
+      setPreferenceMessage(
+        "Sign in to save this as your default practice mode and speaker preference."
+      );
       return;
     }
 
@@ -151,6 +220,7 @@ export function PracticeStartScreen({
           cvFileName: savedCandidateProfile?.cvFileName || "",
           roleSpecFileName: savedCandidateProfile?.roleSpecFileName || "",
           preferredPracticeMode: selectedPracticeMode,
+          speakerPreference,
         }),
       });
 
@@ -158,20 +228,20 @@ export function PracticeStartScreen({
 
       if (!response.ok || data.error) {
         setPreferenceMessage(
-          data.error || "Could not save your practice preference."
+          data.error || "Could not save your practice preferences."
         );
         return;
       }
 
       setPreferenceMessage(
-        `${practiceModeLabels[selectedPracticeMode]} saved as your default.`
+        `${practiceModeLabels[selectedPracticeMode]} and speaker preference saved as your default.`
       );
     } catch {
       setPreferenceMessage("Something went wrong while saving your preference.");
     } finally {
       setSavingPreference(false);
     }
-  }, [isSignedIn, savedCandidateProfile, selectedPracticeMode]);
+  }, [isSignedIn, savedCandidateProfile, selectedPracticeMode, speakerPreference]);
 
   return (
     <div className="grid gap-6 lg:grid-cols-[2fr_0.9fr]">
@@ -357,15 +427,74 @@ export function PracticeStartScreen({
               onClick={() => selectPracticeMode("voice-camera")}
             />
           </div>
+        </div>
 
-          <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+        <div className="mb-5 rounded-[1.7rem] border border-white/10 bg-black/25 p-5">
+          <div className="mb-5">
+            <p className="text-sm font-black uppercase tracking-[0.2em] text-purple-300">
+              Speaker preference
+            </p>
+            <h3 className="mt-2 text-xl font-black tracking-[-0.03em] text-white">
+              Choose how the interviewer sounds.
+            </h3>
+            <p className="mt-2 text-sm leading-6 text-gray-400">
+              This controls the AI question playback voice for voice and
+              voice-camera interviews.
+            </p>
+          </div>
+
+          <div className="space-y-5">
+            <div>
+              <p className="mb-3 text-sm font-black text-white">Voice style</p>
+              <div className="grid gap-3 md:grid-cols-3">
+                {speakerVoiceOptions.map((option) => (
+                  <PreferenceCard
+                    key={option.value}
+                    active={speakerPreference.voice === option.value}
+                    title={option.label}
+                    description={option.description}
+                    onClick={() =>
+                      updateSpeakerPreference({ voice: option.value })
+                    }
+                  />
+                ))}
+              </div>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <PreferenceSelect
+                label="Accent"
+                value={speakerPreference.accent}
+                options={speakerAccentOptions}
+                onChange={(value) =>
+                  updateSpeakerPreference({
+                    accent: value as SpeakerPreference["accent"],
+                  })
+                }
+              />
+
+              <PreferenceSelect
+                label="Pace"
+                value={speakerPreference.pace}
+                options={speakerPaceOptions}
+                onChange={(value) =>
+                  updateSpeakerPreference({
+                    pace: value as SpeakerPreference["pace"],
+                  })
+                }
+              />
+            </div>
+          </div>
+
+          <div className="mt-5 rounded-2xl border border-white/10 bg-white/[0.04] p-4">
             <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
               <p className="text-sm leading-6 text-gray-300">
                 Current setup:{" "}
                 <span className="font-black text-white">
                   {practiceModeLabels[selectedPracticeMode]}
-                </span>
-                .
+                </span>{" "}
+                with a {speakerPreference.accent} {speakerPreference.voice}{" "}
+                voice at {speakerPreference.pace} pace.
               </p>
 
               <button
@@ -386,7 +515,7 @@ export function PracticeStartScreen({
 
             {!isSignedIn && (
               <p className="mt-3 text-xs font-semibold leading-5 text-gray-500">
-                Sign in to save your preferred practice mode.
+                Sign in to save your preferred practice mode and speaker.
               </p>
             )}
           </div>
@@ -443,6 +572,10 @@ export function PracticeStartScreen({
             <CheckItem>{difficulty} difficulty</CheckItem>
             <CheckItem>Focus: {focusArea}</CheckItem>
             <CheckItem>{practiceModeLabels[selectedPracticeMode]}</CheckItem>
+            <CheckItem>
+              {speakerPreference.accent} {speakerPreference.voice} voice,{" "}
+              {speakerPreference.pace} pace
+            </CheckItem>
           </div>
         </GlassCard>
       </aside>
@@ -502,5 +635,65 @@ function ModeCard({
 
       <p className="text-sm leading-6 text-gray-300">{description}</p>
     </button>
+  );
+}
+
+function PreferenceCard({
+  active,
+  title,
+  description,
+  onClick,
+}: {
+  active: boolean;
+  title: string;
+  description: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`rounded-[1.2rem] border p-4 text-left transition hover:-translate-y-0.5 ${
+        active
+          ? "border-purple-300/35 bg-purple-300/12 shadow-xl shadow-purple-950/20"
+          : "border-white/10 bg-white/[0.045] hover:bg-white/[0.07]"
+      }`}
+    >
+      <p className="text-sm font-black text-white">{title}</p>
+      <p className="mt-2 text-xs leading-5 text-gray-400">{description}</p>
+    </button>
+  );
+}
+
+function PreferenceSelect({
+  label,
+  value,
+  options,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  options: Array<{ value: string; label: string }>;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <label className="block">
+      <span className="mb-2 block text-sm font-bold text-gray-200">{label}</span>
+      <select
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        className="w-full rounded-2xl border border-white/10 bg-black/35 p-4 text-white outline-none transition focus:border-purple-300/50 focus:ring-4 focus:ring-purple-500/10"
+      >
+        {options.map((option) => (
+          <option
+            key={option.value}
+            value={option.value}
+            className="bg-[#120d1e]"
+          >
+            {option.label}
+          </option>
+        ))}
+      </select>
+    </label>
   );
 }

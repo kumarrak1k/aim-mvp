@@ -24,6 +24,7 @@ import type {
   PracticeMode,
   ResultItem,
   SavedSession,
+  SpeakerPreference,
   VideoAnalysis,
   VideoMetrics,
   VoiceAnalysis,
@@ -57,6 +58,7 @@ import { SessionSummary } from "./components/SessionSummary";
 import {
   createFeedbackError,
   defaultSessionConfig,
+  defaultSpeakerPreference,
   parseSessionConfig,
   totalQuestions,
   wait,
@@ -82,6 +84,8 @@ export default function PracticeSessionPage() {
   );
   const [difficulty, setDifficulty] = useState(defaultSessionConfig.difficulty);
   const [focusArea, setFocusArea] = useState(defaultSessionConfig.focusArea);
+  const [speakerPreference, setSpeakerPreference] =
+    useState<SpeakerPreference>(defaultSpeakerPreference);
 
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
@@ -310,6 +314,7 @@ export default function PracticeSessionPage() {
     setFocusArea(config.focusArea);
     setSpeakerEnabled(config.speakerEnabled);
     setCameraEnabled(config.cameraEnabled);
+    setSpeakerPreference(config.speakerPreference || defaultSpeakerPreference);
     setSessionConfig(config);
     setSessionConfigLoaded(true);
   }, []);
@@ -354,6 +359,7 @@ export default function PracticeSessionPage() {
       try {
         const played = await playPreparedQuestionAudio({
           text: safeText,
+          speakerPreference,
           startRecordingAfterPlayback: false,
           fallbackToBrowserSpeech: () => {
             awaitingAutoRecordQuestionRef.current = null;
@@ -374,7 +380,7 @@ export default function PracticeSessionPage() {
         return false;
       }
     },
-    [playPreparedQuestionAudio, setQuestionAudioMessage]
+    [playPreparedQuestionAudio, setQuestionAudioMessage, speakerPreference]
   );
 
   useEffect(() => {
@@ -419,8 +425,14 @@ export default function PracticeSessionPage() {
 
   useEffect(() => {
     if (!question || !interviewStarted || !manualDeviceMode) return;
-    void prepareQuestionAudio(question);
-  }, [interviewStarted, manualDeviceMode, prepareQuestionAudio, question]);
+    void prepareQuestionAudio(question, speakerPreference);
+  }, [
+    interviewStarted,
+    manualDeviceMode,
+    prepareQuestionAudio,
+    question,
+    speakerPreference,
+  ]);
 
   const saveSession = useCallback(
     (sessionSummary: InterviewSummary) => {
@@ -731,7 +743,7 @@ export default function PracticeSessionPage() {
 
         if (manualDeviceMode) {
           setQuestionAudioMessage("Preparing natural question audio...");
-          void prepareQuestionAudio(nextQuestion);
+          void prepareQuestionAudio(nextQuestion, speakerPreference);
         } else if (speakerEnabled) {
           setQuestionAudioMessage(
             "Voice mode selected. Natural question audio will play automatically..."
@@ -759,6 +771,7 @@ export default function PracticeSessionPage() {
       setGuidedAnswerActive,
       setQuestionAudioMessage,
       speakerEnabled,
+      speakerPreference,
     ]
   );
 
@@ -871,7 +884,9 @@ export default function PracticeSessionPage() {
       setFeedback(null);
 
       const preStopTranscript = stripQuestionLeakageFromTranscript(
-        getCombinedTranscript() || rawAnswerTranscriptRef.current.trim() || answer.trim(),
+        getCombinedTranscript() ||
+          rawAnswerTranscriptRef.current.trim() ||
+          answer.trim(),
         activeQuestionRef.current
       );
 
