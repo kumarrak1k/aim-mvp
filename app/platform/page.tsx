@@ -1,11 +1,25 @@
-"use client";
-
+import type { Metadata } from "next";
 import Link from "next/link";
+import { createPageMetadata } from "@/app/config/seo";
 import {
   GlassCard,
   MarketingShell,
   SectionHeading,
 } from "../components/marketing/MarketingShell";
+
+export const metadata: Metadata = createPageMetadata({
+  path: "/platform",
+  title: "AI Interview Coaching Platform",
+  description:
+    "Explore the AI Career Mentor platform for tailored mock interviews, answer review, voice coaching, camera presence feedback and practical interview improvement.",
+  keywords: [
+    "AI interview coaching platform",
+    "mock interview platform",
+    "AI interview practice platform",
+    "voice interview feedback",
+    "camera presence feedback",
+  ],
+});
 
 const platformFeatures = [
   {
