@@ -11,6 +11,7 @@ type MarketingPath =
   | "/how-it-works"
   | "/candidates"
   | "/pricing"
+  | "/progress"
   | "/profile";
 
 type MarketingShellProps = {
@@ -26,7 +27,7 @@ type PageLinkCardProps = {
   image: string;
 };
 
-const navItems = [
+const navItems: Array<{ href: MarketingPath; label: string }> = [
   { href: "/", label: "Home" },
   { href: "/platform", label: "Platform" },
   { href: "/how-it-works", label: "How it works" },
@@ -45,21 +46,97 @@ export function MarketingShell({
       <div className="pointer-events-none fixed right-[-140px] top-24 z-0 h-[320px] w-[320px] rounded-full bg-cyan-400/10 blur-[120px]" />
       <div className="pointer-events-none fixed left-[-140px] bottom-12 z-0 h-[320px] w-[320px] rounded-full bg-fuchsia-400/10 blur-[120px]" />
 
-      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#120d1e]/75 backdrop-blur-2xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
-          <SiteLogo href="/" size="md" showText />
+      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#120d1e]/82 backdrop-blur-2xl">
+        <div className="mx-auto flex max-w-[1760px] items-center gap-5 px-4 py-3 sm:px-6 lg:px-8">
+          <div className="min-w-0 shrink-0">
+            <div className="w-fit max-w-[255px] sm:max-w-[320px]">
+              <SiteLogo href="/" size="md" showText />
+            </div>
+          </div>
 
-          <nav className="hidden items-center gap-2 lg:flex">
+          <nav className="hidden shrink-0 lg:flex">
+            <div className="flex items-center gap-1 rounded-full border border-white/10 bg-white/[0.045] p-1.5 shadow-2xl shadow-black/10">
+              {navItems.map((item) => {
+                const active = currentPath === item.href;
+
+                return (
+                  <Link key={item.href} href={item.href}>
+                    <span
+                      className={`block whitespace-nowrap rounded-full px-2.5 py-2 text-[12px] font-black transition xl:px-3.5 xl:text-[13px] 2xl:px-4 2xl:text-sm ${
+                        active
+                          ? "bg-white/[0.11] text-white shadow-lg shadow-black/10"
+                          : "text-gray-300 hover:bg-white/[0.07] hover:text-white"
+                      }`}
+                    >
+                      {item.label}
+                    </span>
+                  </Link>
+                );
+              })}
+            </div>
+          </nav>
+
+          <div className="ml-auto flex min-w-0 items-center justify-end gap-2 sm:gap-3">
+            <Show when="signed-in">
+              <Link href="/progress">
+                <button
+                  className={`hidden whitespace-nowrap rounded-full px-3.5 py-2.5 text-sm font-black transition xl:block ${
+                    currentPath === "/progress"
+                      ? "border border-cyan-300/35 bg-cyan-300/15 text-cyan-50 shadow-xl shadow-cyan-950/10"
+                      : "border border-cyan-300/15 bg-cyan-300/10 text-cyan-100 hover:bg-cyan-300/15"
+                  }`}
+                >
+                  Progress
+                </button>
+              </Link>
+
+              <Link href="/profile">
+                <button
+                  className={`hidden whitespace-nowrap rounded-full px-3.5 py-2.5 text-sm font-black transition xl:block ${
+                    currentPath === "/profile"
+                      ? "border border-purple-300/35 bg-purple-300/15 text-purple-50 shadow-xl shadow-purple-950/10"
+                      : "border border-white/12 bg-white/[0.05] text-white hover:bg-white/[0.09]"
+                  }`}
+                >
+                  Profile
+                </button>
+              </Link>
+            </Show>
+
+            <Link href="/practice">
+              <button className="whitespace-nowrap rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-4 py-2.5 text-sm font-black text-white shadow-xl shadow-purple-950/35 transition hover:scale-[1.02] sm:px-5 xl:px-6">
+                Start Practising
+              </button>
+            </Link>
+
+            <Show when="signed-out">
+              <SignInButton mode="modal">
+                <button className="hidden whitespace-nowrap rounded-full border border-white/10 bg-white/[0.05] px-4 py-2.5 text-sm font-black text-white transition hover:bg-white/[0.09] sm:block">
+                  Sign in
+                </button>
+              </SignInButton>
+            </Show>
+
+            <Show when="signed-in">
+              <div className="shrink-0">
+                <UserButton />
+              </div>
+            </Show>
+          </div>
+        </div>
+
+        <div className="border-t border-white/[0.06] px-4 py-2 sm:px-6 lg:hidden">
+          <nav className="mx-auto flex max-w-7xl gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {navItems.map((item) => {
               const active = currentPath === item.href;
 
               return (
                 <Link key={item.href} href={item.href}>
                   <span
-                    className={`rounded-full px-4 py-2 text-sm font-bold transition ${
+                    className={`block whitespace-nowrap rounded-full px-3.5 py-2 text-xs font-black transition ${
                       active
-                        ? "bg-white/[0.09] text-white"
-                        : "text-gray-300 hover:bg-white/[0.05] hover:text-white"
+                        ? "bg-white/[0.12] text-white"
+                        : "border border-white/10 bg-white/[0.04] text-gray-300 hover:bg-white/[0.08] hover:text-white"
                     }`}
                   >
                     {item.label}
@@ -67,38 +144,31 @@ export function MarketingShell({
                 </Link>
               );
             })}
-          </nav>
 
-          <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-            <Show when="signed-out">
-              <SignInButton mode="modal">
-                <button className="hidden rounded-full border border-white/10 bg-white/[0.05] px-4 py-2 text-sm font-black text-white transition hover:bg-white/[0.09] sm:block">
-                  Sign in
-                </button>
-              </SignInButton>
-            </Show>
-
-            <Show when="signed-in">
-              <Link href="/profile">
-                <button
-                  className={`hidden rounded-full px-4 py-2 text-sm font-black transition sm:block ${
-                    currentPath === "/profile"
-                      ? "border border-purple-300/35 bg-purple-300/15 text-purple-50"
-                      : "border border-white/12 bg-white/[0.05] text-white hover:bg-white/[0.09]"
-                  }`}
-                >
-                  Candidate Profile
-                </button>
-              </Link>
-              <UserButton />
-            </Show>
-
-            <Link href="/practice">
-              <button className="rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-4 py-2.5 text-sm font-black text-white shadow-xl shadow-purple-950/35 transition hover:scale-[1.02] sm:px-5">
-                Start Practising
-              </button>
+            <Link href="/progress">
+              <span
+                className={`block whitespace-nowrap rounded-full px-3.5 py-2 text-xs font-black transition ${
+                  currentPath === "/progress"
+                    ? "border border-cyan-300/30 bg-cyan-300/15 text-cyan-50"
+                    : "border border-cyan-300/15 bg-cyan-300/10 text-cyan-100 hover:bg-cyan-300/15"
+                }`}
+              >
+                Progress
+              </span>
             </Link>
-          </div>
+
+            <Link href="/profile">
+              <span
+                className={`block whitespace-nowrap rounded-full px-3.5 py-2 text-xs font-black transition ${
+                  currentPath === "/profile"
+                    ? "border border-purple-300/30 bg-purple-300/15 text-purple-50"
+                    : "border border-white/10 bg-white/[0.04] text-gray-300 hover:bg-white/[0.08] hover:text-white"
+                }`}
+              >
+                Profile
+              </span>
+            </Link>
+          </nav>
         </div>
       </header>
 
@@ -120,6 +190,9 @@ export function MarketingShell({
             </Link>
             <Link href="/candidates" className="hover:text-white">
               Candidates
+            </Link>
+            <Link href="/progress" className="hover:text-white">
+              Track Progress
             </Link>
             <Link href="/pricing" className="hover:text-white">
               Pricing

@@ -1,0 +1,31 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model PracticeSession {
+  id                String   @id @default(cuid())
+  clerkUserId        String
+  role              String
+  experienceLevel   String
+  interviewType     String
+  difficulty        String
+  focusArea         String
+  practiceMode      String
+  totalQuestions    Int
+  overallScore      Int
+  hireSignal        String
+  summary           Json
+  results           Json
+  speakerPreference Json?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([clerkUserId])
+  @@index([createdAt])
+}
