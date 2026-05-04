@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import { PracticeHeader } from "./PracticeHeader";
@@ -9,12 +9,31 @@ import { PracticeStartScreen } from "./PracticeStartScreen";
 import { fetchCandidateProfile } from "../lib/interviewApi";
 import { buildAutofilledRoleFromProfile } from "../lib/profileHelpers";
 import { useDeviceProfile } from "../hooks/useDeviceProfile";
-import type { CandidateProfile, SpeakerPreference } from "../types";
+import type {
+  CandidateProfile,
+  PracticeMode,
+  SpeakerPreference,
+} from "../types";
 import {
   defaultSpeakerPreference,
   PRACTICE_SESSION_CONFIG_KEY,
   totalQuestions,
 } from "../session/utils";
+
+const practiceModeLabels: Record<PracticeMode, string> = {
+  typed: "Typed answers only",
+  voice: "Voice interview",
+  "voice-camera": "Voice + camera interview",
+};
+
+const formatSpeakerSetup = (
+  speakerEnabled: boolean,
+  speakerPreference: SpeakerPreference
+) => {
+  if (!speakerEnabled) return "typed answers";
+
+  return `${speakerPreference.accent} ${speakerPreference.voice} voice at ${speakerPreference.pace} pace`;
+};
 
 export function PracticePageClient() {
   const router = useRouter();
@@ -45,10 +64,53 @@ export function PracticePageClient() {
 
   const roleRef = useRef("");
   const roleManuallyEditedRef = useRef(false);
+  const setupManuallyEditedRef = useRef(false);
+
+  const selectedPracticeMode = useMemo<PracticeMode>(() => {
+    if (speakerEnabled && cameraEnabled) return "voice-camera";
+    if (speakerEnabled) return "voice";
+    return "typed";
+  }, [cameraEnabled, speakerEnabled]);
+
+  const setupSummary = useMemo(() => {
+    const roleLabel = role.trim() || "No target role set";
+    const speakerLabel = formatSpeakerSetup(speakerEnabled, speakerPreference);
+
+    return `${roleLabel} · ${experienceLevel} · ${interviewType} · ${difficulty} difficulty · Focus: ${focusArea} · ${practiceModeLabels[selectedPracticeMode]} · ${speakerLabel}`;
+  }, [
+    difficulty,
+    experienceLevel,
+    focusArea,
+    interviewType,
+    role,
+    selectedPracticeMode,
+    speakerEnabled,
+    speakerPreference,
+  ]);
 
   useEffect(() => {
     roleRef.current = role;
   }, [role]);
+
+  const applySavedSetupDefaults = useCallback((profile: CandidateProfile | null) => {
+    if (!profile || setupManuallyEditedRef.current) return;
+
+    if (profile.defaultExperienceLevel) {
+      setExperienceLevel(profile.defaultExperienceLevel);
+    }
+
+    if (profile.defaultInterviewType) {
+      setInterviewType(profile.defaultInterviewType);
+    }
+
+    if (profile.defaultDifficulty) {
+      setDifficulty(profile.defaultDifficulty);
+    }
+
+    if (profile.defaultFocusArea) {
+      setFocusArea(profile.defaultFocusArea);
+    }
+  }, []);
 
   useEffect(() => {
     if (!isLoaded) return;
@@ -69,6 +131,7 @@ export function PracticePageClient() {
         if (cancelled) return;
 
         setSavedCandidateProfile(profile);
+        applySavedSetupDefaults(profile);
 
         if (profile?.speakerPreference) {
           setSpeakerPreference(profile.speakerPreference);
@@ -99,12 +162,32 @@ export function PracticePageClient() {
     return () => {
       cancelled = true;
     };
-  }, [isLoaded, isSignedIn]);
+  }, [applySavedSetupDefaults, isLoaded, isSignedIn]);
 
   const onRoleChange = useCallback((value: string) => {
     roleManuallyEditedRef.current = true;
     setRoleAutofilledFromProfile(false);
     setRole(value);
+  }, []);
+
+  const onExperienceLevelChange = useCallback((value: string) => {
+    setupManuallyEditedRef.current = true;
+    setExperienceLevel(value);
+  }, []);
+
+  const onInterviewTypeChange = useCallback((value: string) => {
+    setupManuallyEditedRef.current = true;
+    setInterviewType(value);
+  }, []);
+
+  const onDifficultyChange = useCallback((value: string) => {
+    setupManuallyEditedRef.current = true;
+    setDifficulty(value);
+  }, []);
+
+  const onFocusAreaChange = useCallback((value: string) => {
+    setupManuallyEditedRef.current = true;
+    setFocusArea(value);
   }, []);
 
   const useSavedProfileForRole = useCallback(() => {
@@ -178,7 +261,13 @@ export function PracticePageClient() {
         <PracticeHeader isLoaded={isLoaded} isSignedIn={isSignedIn} />
 
         <section className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:py-10">
-          <PracticeHero totalQuestions={totalQuestions} />
+          <PracticeHero
+            totalQuestions={totalQuestions}
+            canStartInterview={Boolean(role.trim())}
+            questionLoading={questionLoading}
+            setupSummary={setupSummary}
+            onStartInterview={startInterview}
+          />
 
           <div id="interview-setup">
             <PracticeStartScreen
@@ -192,13 +281,13 @@ export function PracticePageClient() {
               useSavedProfileForRole={useSavedProfileForRole}
               manualDeviceMode={manualDeviceMode}
               experienceLevel={experienceLevel}
-              setExperienceLevel={setExperienceLevel}
+              setExperienceLevel={onExperienceLevelChange}
               interviewType={interviewType}
-              setInterviewType={setInterviewType}
+              setInterviewType={onInterviewTypeChange}
               difficulty={difficulty}
-              setDifficulty={setDifficulty}
+              setDifficulty={onDifficultyChange}
               focusArea={focusArea}
-              setFocusArea={setFocusArea}
+              setFocusArea={onFocusAreaChange}
               speakerEnabled={speakerEnabled}
               cameraEnabled={cameraEnabled}
               speakerPreference={speakerPreference}
