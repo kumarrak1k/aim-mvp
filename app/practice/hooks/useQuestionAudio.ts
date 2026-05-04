@@ -11,6 +11,13 @@ type PlayPreparedQuestionAudioOptions = {
   fallbackToBrowserSpeech?: (text: string, autoStartListening: boolean) => void;
 };
 
+type PreparedAudioEntry = {
+  audio: HTMLAudioElement;
+  url: string;
+  text: string;
+  preferenceKey: string;
+};
+
 const speakerPreferenceKey = (speakerPreference?: SpeakerPreference) =>
   JSON.stringify(
     speakerPreference || {
@@ -19,6 +26,9 @@ const speakerPreferenceKey = (speakerPreference?: SpeakerPreference) =>
       pace: "natural",
     }
   );
+
+const audioCacheKey = (text: string, preferenceKey: string) =>
+  `${preferenceKey}::${text}`;
 
 export function useQuestionAudio({
   onPlaybackStart,
@@ -44,8 +54,16 @@ export function useQuestionAudio({
   const questionAudioReadyRef = useRef(false);
   const preparedQuestionTextRef = useRef("");
   const preparedSpeakerPreferenceKeyRef = useRef("");
+  const activeAudioCacheKeyRef = useRef("");
   const startRecordingAfterPlaybackRef = useRef(false);
   const microphoneStartTimerRef = useRef<number | null>(null);
+
+  const preparedAudioCacheRef = useRef<Map<string, PreparedAudioEntry>>(
+    new Map()
+  );
+  const preparationPromiseCacheRef = useRef<Map<string, Promise<boolean>>>(
+    new Map()
+  );
 
   const onPlaybackStartRef = useRef(onPlaybackStart);
   const onPlaybackEndRef = useRef(onPlaybackEnd);
@@ -71,37 +89,57 @@ export function useQuestionAudio({
     setQuestionAudioReady(value);
   }, []);
 
+  const revokePreparedAudioEntry = useCallback((entry: PreparedAudioEntry) => {
+    try {
+      entry.audio.pause();
+      entry.audio.src = "";
+    } catch {
+      // Ignore cleanup failures.
+    }
+
+    try {
+      URL.revokeObjectURL(entry.url);
+    } catch {
+      // Ignore cleanup failures.
+    }
+  }, []);
+
+  const setActivePreparedAudioEntry = useCallback(
+    (cacheKey: string, entry: PreparedAudioEntry) => {
+      questionAudioRef.current = entry.audio;
+      questionAudioUrlRef.current = entry.url;
+      preparedQuestionTextRef.current = entry.text;
+      preparedSpeakerPreferenceKeyRef.current = entry.preferenceKey;
+      activeAudioCacheKeyRef.current = cacheKey;
+      setAudioReady(true);
+    },
+    [setAudioReady]
+  );
+
   const cleanupPreparedQuestionAudio = useCallback(() => {
     clearMicrophoneStartTimer();
 
-    if (questionAudioRef.current) {
-      try {
-        questionAudioRef.current.pause();
-        questionAudioRef.current.src = "";
-      } catch {
-        // Ignore cleanup failures.
-      }
-      questionAudioRef.current = null;
-    }
+    preparedAudioCacheRef.current.forEach((entry) => {
+      revokePreparedAudioEntry(entry);
+    });
 
-    if (questionAudioUrlRef.current) {
-      try {
-        URL.revokeObjectURL(questionAudioUrlRef.current);
-      } catch {
-        // Ignore cleanup failures.
-      }
-      questionAudioUrlRef.current = null;
-    }
+    preparedAudioCacheRef.current.clear();
+    preparationPromiseCacheRef.current.clear();
 
+    questionAudioRef.current = null;
+    questionAudioUrlRef.current = null;
     questionAudioPreparingRef.current = false;
     preparedQuestionTextRef.current = "";
     preparedSpeakerPreferenceKeyRef.current = "";
+    activeAudioCacheKeyRef.current = "";
     startRecordingAfterPlaybackRef.current = false;
+
     setQuestionAudioLoading(false);
     setAudioReady(false);
     setQuestionAudioError("");
+    setQuestionAudioMessage("");
     setIsPreparedQuestionPlaying(false);
-  }, [clearMicrophoneStartTimer, setAudioReady]);
+  }, [clearMicrophoneStartTimer, revokePreparedAudioEntry, setAudioReady]);
 
   const stopPreparedQuestionPlayback = useCallback(() => {
     clearMicrophoneStartTimer();
@@ -137,6 +175,7 @@ export function useQuestionAudio({
       if (!safeText) return false;
 
       const preferenceKey = speakerPreferenceKey(speakerPreference);
+      const cacheKey = audioCacheKey(safeText, preferenceKey);
 
       if (
         preparedQuestionTextRef.current === safeText &&
@@ -147,86 +186,137 @@ export function useQuestionAudio({
         return true;
       }
 
-      if (questionAudioPreparingRef.current) {
-        return false;
+      const cachedEntry = preparedAudioCacheRef.current.get(cacheKey);
+
+      if (cachedEntry) {
+        setActivePreparedAudioEntry(cacheKey, cachedEntry);
+        setQuestionAudioLoading(false);
+        setQuestionAudioError("");
+        setQuestionAudioMessage("Natural question audio ready.");
+        return true;
       }
 
-      cleanupPreparedQuestionAudio();
+      const existingPreparation =
+        preparationPromiseCacheRef.current.get(cacheKey);
+
+      if (existingPreparation) {
+        questionAudioPreparingRef.current = true;
+        setQuestionAudioLoading(true);
+        setQuestionAudioError("");
+        setQuestionAudioMessage("Preparing interviewer voice...");
+
+        const prepared = await existingPreparation;
+        const preparedEntry = preparedAudioCacheRef.current.get(cacheKey);
+
+        if (prepared && preparedEntry) {
+          setActivePreparedAudioEntry(cacheKey, preparedEntry);
+          setQuestionAudioLoading(false);
+          setQuestionAudioMessage("Natural question audio ready.");
+        }
+
+        questionAudioPreparingRef.current = false;
+        return prepared;
+      }
+
       questionAudioPreparingRef.current = true;
       setQuestionAudioLoading(true);
       setQuestionAudioError("");
-      setQuestionAudioMessage("Preparing natural question audio...");
+      setQuestionAudioMessage("Preparing interviewer voice...");
 
-      try {
-        const blob = await fetchQuestionAudioBlob(safeText, speakerPreference);
-        const url = URL.createObjectURL(blob);
-        const audio = new Audio(url);
-        audio.preload = "auto";
+      const preparationPromise = (async () => {
+        try {
+          const blob = await fetchQuestionAudioBlob(
+            safeText,
+            speakerPreference
+          );
+          const url = URL.createObjectURL(blob);
+          const audio = new Audio(url);
+          audio.preload = "auto";
 
-        audio.onplay = () => {
-          setIsPreparedQuestionPlaying(true);
-          setQuestionAudioMessage("Playing natural AI question audio...");
-          onPlaybackStartRef.current?.();
-        };
+          audio.onplay = () => {
+            if (questionAudioRef.current !== audio) return;
 
-        audio.onended = () => {
-          setIsPreparedQuestionPlaying(false);
-          setQuestionAudioLoading(false);
-          onPlaybackEndRef.current?.();
+            setIsPreparedQuestionPlaying(true);
+            setQuestionAudioMessage("Playing interviewer voice...");
+            onPlaybackStartRef.current?.();
+          };
 
-          if (startRecordingAfterPlaybackRef.current) {
+          audio.onended = () => {
+            if (questionAudioRef.current !== audio) return;
+
+            setIsPreparedQuestionPlaying(false);
+            setQuestionAudioLoading(false);
+            onPlaybackEndRef.current?.();
+
+            if (startRecordingAfterPlaybackRef.current) {
+              startRecordingAfterPlaybackRef.current = false;
+              startMicrophoneAfterAudio();
+            } else {
+              setQuestionAudioMessage("Question played.");
+            }
+          };
+
+          audio.onerror = () => {
+            if (questionAudioRef.current !== audio) return;
+
+            clearMicrophoneStartTimer();
             startRecordingAfterPlaybackRef.current = false;
-            startMicrophoneAfterAudio();
-          } else {
-            setQuestionAudioMessage("Question played.");
-          }
-        };
+            setIsPreparedQuestionPlaying(false);
+            setQuestionAudioLoading(false);
+            setAudioReady(false);
 
-        audio.onerror = () => {
+            const message =
+              "Natural question audio could not play on this device.";
+            setQuestionAudioError(message);
+            setQuestionAudioMessage(
+              "Natural question audio could not play. The written question is shown below."
+            );
+            onPlaybackErrorRef.current?.(message);
+          };
+
+          const entry: PreparedAudioEntry = {
+            audio,
+            url,
+            text: safeText,
+            preferenceKey,
+          };
+
+          preparedAudioCacheRef.current.set(cacheKey, entry);
+          setActivePreparedAudioEntry(cacheKey, entry);
+
+          setAudioReady(true);
+          setQuestionAudioLoading(false);
+          setQuestionAudioMessage("Natural question audio ready.");
+
+          return true;
+        } catch (error) {
+          const message =
+            error instanceof Error
+              ? error.message
+              : "Natural question audio could not be prepared.";
+
           clearMicrophoneStartTimer();
-          startRecordingAfterPlaybackRef.current = false;
-          setIsPreparedQuestionPlaying(false);
           setQuestionAudioLoading(false);
           setAudioReady(false);
-
-          const message = "Natural question audio could not play on this device.";
           setQuestionAudioError(message);
           setQuestionAudioMessage(
-            "Natural question audio could not play. The written question is shown below."
+            "Natural question audio is unavailable. Read the question or check OPENAI_API_KEY."
           );
-          onPlaybackErrorRef.current?.(message);
-        };
 
-        questionAudioRef.current = audio;
-        questionAudioUrlRef.current = url;
-        preparedQuestionTextRef.current = safeText;
-        preparedSpeakerPreferenceKeyRef.current = preferenceKey;
-        questionAudioPreparingRef.current = false;
-        setAudioReady(true);
-        setQuestionAudioLoading(false);
-        setQuestionAudioMessage("Natural question audio ready.");
+          return false;
+        } finally {
+          questionAudioPreparingRef.current = false;
+          preparationPromiseCacheRef.current.delete(cacheKey);
+        }
+      })();
 
-        return true;
-      } catch (error) {
-        const message =
-          error instanceof Error
-            ? error.message
-            : "Natural question audio could not be prepared.";
+      preparationPromiseCacheRef.current.set(cacheKey, preparationPromise);
 
-        clearMicrophoneStartTimer();
-        questionAudioPreparingRef.current = false;
-        setQuestionAudioLoading(false);
-        setAudioReady(false);
-        setQuestionAudioError(message);
-        setQuestionAudioMessage(
-          "Natural question audio is unavailable. Read the question or check OPENAI_API_KEY."
-        );
-        return false;
-      }
+      return preparationPromise;
     },
     [
-      cleanupPreparedQuestionAudio,
       clearMicrophoneStartTimer,
+      setActivePreparedAudioEntry,
       setAudioReady,
       startMicrophoneAfterAudio,
     ]
@@ -243,6 +333,7 @@ export function useQuestionAudio({
       if (!safeText) return false;
 
       const preferenceKey = speakerPreferenceKey(speakerPreference);
+      const cacheKey = audioCacheKey(safeText, preferenceKey);
       let audio = questionAudioRef.current;
 
       if (
@@ -250,14 +341,24 @@ export function useQuestionAudio({
         preparedQuestionTextRef.current !== safeText ||
         preparedSpeakerPreferenceKeyRef.current !== preferenceKey
       ) {
-        const prepared = await prepareQuestionAudio(safeText, speakerPreference);
+        const cachedEntry = preparedAudioCacheRef.current.get(cacheKey);
 
-        if (!prepared) {
-          fallbackToBrowserSpeech?.(safeText, startRecordingAfterPlayback);
-          return false;
+        if (cachedEntry) {
+          setActivePreparedAudioEntry(cacheKey, cachedEntry);
+          audio = cachedEntry.audio;
+        } else {
+          const prepared = await prepareQuestionAudio(
+            safeText,
+            speakerPreference
+          );
+
+          if (!prepared) {
+            fallbackToBrowserSpeech?.(safeText, startRecordingAfterPlayback);
+            return false;
+          }
+
+          audio = questionAudioRef.current;
         }
-
-        audio = questionAudioRef.current;
       }
 
       if (!audio) return false;
@@ -271,7 +372,7 @@ export function useQuestionAudio({
 
       try {
         setQuestionAudioLoading(false);
-        setQuestionAudioMessage("Playing natural AI question audio...");
+        setQuestionAudioMessage("Playing interviewer voice...");
         audio.currentTime = 0;
         await audio.play();
         return true;
@@ -291,6 +392,7 @@ export function useQuestionAudio({
     [
       clearMicrophoneStartTimer,
       prepareQuestionAudio,
+      setActivePreparedAudioEntry,
       stopPreparedQuestionPlayback,
     ]
   );
