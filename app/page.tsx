@@ -59,28 +59,45 @@ export default function Home() {
   return (
     <MarketingShell currentPath="/">
       <section className="mx-auto max-w-7xl px-4 pb-12 pt-10 sm:px-6 sm:pb-16 sm:pt-14">
-        <div className="mb-8 flex justify-center">
-          <div className="inline-flex max-w-full items-center gap-3 rounded-full border border-white/10 bg-white/[0.06] px-5 py-2.5 text-center shadow-xl shadow-purple-950/20 backdrop-blur-xl">
-            <span className="relative flex h-2.5 w-2.5 shrink-0">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-300 opacity-60" />
-              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-300" />
-            </span>
-            <span className="text-sm font-black text-purple-50">
-              AI interview coaching for answers, voice and camera presence
-            </span>
+        <div className="mb-5 flex justify-center">
+          <div className="relative max-w-3xl">
+            <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-r from-purple-500/25 via-fuchsia-500/20 to-cyan-500/25 blur-2xl" />
+            <div className="relative overflow-hidden rounded-[1.75rem] border border-white/15 bg-white/[0.08] px-5 py-4 shadow-2xl shadow-purple-950/30 backdrop-blur-2xl sm:px-7 sm:py-5">
+              <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/60 to-transparent" />
+              <div className="flex flex-col items-center gap-3 text-center">
+                <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/20 px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.24em] text-cyan-200 sm:text-xs">
+                  <span className="relative flex h-2.5 w-2.5">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-300 opacity-60" />
+                    <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-300" />
+                  </span>
+                  Premium interview training
+                </div>
+
+                <div className="space-y-1">
+                  <p className="bg-gradient-to-r from-white via-purple-100 to-cyan-100 bg-clip-text text-xl font-black tracking-[-0.04em] text-transparent sm:text-2xl md:text-3xl">
+                    AI interview coaching for answers, voice and camera presence
+                  </p>
+                  <p className="mx-auto max-w-2xl text-sm leading-6 text-gray-300 sm:text-base">
+                    One premium practice experience that helps candidates sound
+                    sharper, look more confident, and perform better in real
+                    interviews.
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
+        </div>
+
+        <div className="mb-9 flex justify-center">
+          <Link href="/practice">
+            <button className="rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-7 py-3.5 text-sm font-black text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.02]">
+              Stop wondering and start practising
+            </button>
+          </Link>
         </div>
 
         <div className="grid items-center gap-8 lg:grid-cols-[1.02fr_0.98fr] lg:gap-10">
           <div className="text-center lg:text-left">
-            <div className="mb-6 flex justify-center lg:justify-start">
-              <Link href="/practice">
-                <button className="rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-6 py-3 text-sm font-black text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.02]">
-                  Stop wondering and start practising
-                </button>
-              </Link>
-            </div>
-
             <h1 className="mx-auto max-w-4xl text-4xl font-black leading-[1.02] tracking-[-0.055em] sm:text-5xl md:text-6xl lg:mx-0">
               Practise until your interview answers feel{" "}
               <span className="bg-gradient-to-r from-purple-200 via-fuchsia-200 to-cyan-200 bg-clip-text text-transparent">
