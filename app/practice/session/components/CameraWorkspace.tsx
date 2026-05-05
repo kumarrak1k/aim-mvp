@@ -33,51 +33,49 @@ export function CameraWorkspace({
 
   return (
     <section className="rounded-[1.25rem] border border-white/10 bg-white/[0.055] p-3 shadow-2xl shadow-purple-950/10 backdrop-blur-2xl">
-      <div className="grid gap-3 sm:grid-cols-[118px_minmax(0,1fr)] xl:block">
+      <div className="mb-2 flex items-center justify-between gap-3">
         <div>
-          <div className="mb-2 flex items-center justify-between gap-3 xl:mb-2">
-            <div>
-              <p className="text-[11px] font-black uppercase tracking-[0.18em] text-cyan-300">
-                Camera
+          <p className="text-[11px] font-black uppercase tracking-[0.18em] text-cyan-300">
+            Camera
+          </p>
+          <p className="mt-0.5 text-[10px] text-gray-500">Live preview</p>
+        </div>
+
+        <span className="rounded-full border border-white/10 bg-white/[0.06] px-2 py-1 text-[10px] font-black text-gray-300">
+          {statusLabel}
+        </span>
+      </div>
+
+      <div className="grid gap-3 sm:grid-cols-[minmax(160px,220px)_minmax(0,1fr)] xl:block">
+        <div className="relative mx-auto h-[210px] w-full overflow-hidden rounded-[1.15rem] border border-white/10 bg-black shadow-xl shadow-black/20 sm:h-[190px] xl:h-[132px]">
+          <video
+            ref={videoRef}
+            autoPlay
+            muted
+            playsInline
+            className="h-full w-full object-cover object-top"
+          />
+
+          {cameraEnabled && cameraRequiresTap && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/85 p-3 text-center">
+              <p className="text-[11px] leading-4 text-gray-300">
+                Tap to start camera
               </p>
-              <p className="mt-0.5 text-[10px] text-gray-500">Live preview</p>
+              <button
+                type="button"
+                onClick={onStartCameraFromTap}
+                className="rounded-full bg-white px-4 py-2 text-[11px] font-black text-black transition hover:bg-purple-100"
+              >
+                Start
+              </button>
             </div>
+          )}
 
-            <span className="rounded-full border border-white/10 bg-white/[0.06] px-2 py-1 text-[10px] font-black text-gray-300">
-              {statusLabel}
-            </span>
-          </div>
-
-          <div className="relative mx-auto aspect-square w-full max-w-[118px] overflow-hidden rounded-[1rem] border border-white/10 bg-black shadow-xl shadow-black/20 sm:max-w-none xl:max-h-[132px]">
-            <video
-              ref={videoRef}
-              autoPlay
-              muted
-              playsInline
-              className="h-full w-full object-cover"
-            />
-
-            {cameraEnabled && cameraRequiresTap && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/85 p-3 text-center">
-                <p className="text-[10px] leading-4 text-gray-300">
-                  Tap to start
-                </p>
-                <button
-                  type="button"
-                  onClick={onStartCameraFromTap}
-                  className="rounded-full bg-white px-3 py-2 text-[10px] font-black text-black transition hover:bg-purple-100"
-                >
-                  Start
-                </button>
-              </div>
-            )}
-
-            {!cameraEnabled && (
-              <div className="absolute inset-0 flex items-center justify-center bg-black/70">
-                <p className="text-[10px] font-bold text-gray-400">Camera off</p>
-              </div>
-            )}
-          </div>
+          {!cameraEnabled && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black/70">
+              <p className="text-[11px] font-bold text-gray-400">Camera off</p>
+            </div>
+          )}
         </div>
 
         <div className="min-w-0">
@@ -98,13 +96,13 @@ export function CameraWorkspace({
               </button>
             </div>
           ) : (
-            <div className="hidden h-full rounded-[1rem] border border-white/10 bg-black/20 p-3 sm:block xl:hidden">
+            <div className="rounded-[1rem] border border-white/10 bg-black/20 p-3 xl:hidden">
               <p className="text-[11px] font-black text-white">
                 Camera presence
               </p>
               <p className="mt-1 text-[11px] leading-4 text-gray-500">
-                Kept compact on mobile/tablet so the question and transcript stay
-                readable.
+                Keep your face centred and slightly below the top edge of the
+                frame.
               </p>
             </div>
           )}
