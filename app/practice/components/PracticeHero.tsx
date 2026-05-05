@@ -8,6 +8,9 @@ type PracticeHeroProps = {
   canStartInterview: boolean;
   questionLoading: boolean;
   setupSummary: string;
+  usageSummary: string;
+  usageLimitReached: boolean;
+  usageMessage: string;
   onStartInterview: () => void;
 };
 
@@ -16,8 +19,13 @@ export function PracticeHero({
   canStartInterview,
   questionLoading,
   setupSummary,
+  usageSummary,
+  usageLimitReached,
+  usageMessage,
   onStartInterview,
 }: PracticeHeroProps) {
+  const startDisabled = !canStartInterview || questionLoading;
+
   return (
     <div className="relative mb-6 w-full overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.055] p-4 shadow-2xl shadow-purple-950/10 backdrop-blur-2xl sm:mb-8 sm:rounded-[2.25rem] sm:p-6 md:p-8">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/45 to-transparent" />
@@ -50,20 +58,47 @@ export function PracticeHero({
             answers.
           </p>
 
-          <div className="mt-6 w-full rounded-[1.35rem] border border-cyan-300/15 bg-cyan-300/10 p-4">
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-cyan-200">
-              Current default setup
-            </p>
-            <p className="mt-2 max-w-full break-words text-sm font-semibold leading-6 text-gray-200">
-              {setupSummary}
-            </p>
+          <div className="mt-6 grid gap-3">
+            <div className="w-full rounded-[1.35rem] border border-cyan-300/15 bg-cyan-300/10 p-4">
+              <p className="text-xs font-black uppercase tracking-[0.18em] text-cyan-200">
+                Current default setup
+              </p>
+              <p className="mt-2 max-w-full break-words text-sm font-semibold leading-6 text-gray-200">
+                {setupSummary}
+              </p>
+            </div>
+
+            <div
+              className={`w-full rounded-[1.35rem] border p-4 ${
+                usageLimitReached
+                  ? "border-amber-300/20 bg-amber-300/10"
+                  : "border-emerald-300/15 bg-emerald-300/10"
+              }`}
+            >
+              <p
+                className={`text-xs font-black uppercase tracking-[0.18em] ${
+                  usageLimitReached ? "text-amber-200" : "text-emerald-200"
+                }`}
+              >
+                Beta usage
+              </p>
+              <p className="mt-2 max-w-full break-words text-sm font-semibold leading-6 text-gray-200">
+                {usageSummary}
+              </p>
+
+              {usageMessage && (
+                <p className="mt-2 text-xs font-semibold leading-5 text-gray-400">
+                  {usageMessage}
+                </p>
+              )}
+            </div>
           </div>
 
           <div className="mt-6 grid w-full gap-3 sm:flex sm:flex-wrap">
             <button
               type="button"
               onClick={onStartInterview}
-              disabled={!canStartInterview || questionLoading}
+              disabled={startDisabled}
               className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-4 text-sm font-black text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto sm:px-6"
             >
               {questionLoading
@@ -84,7 +119,7 @@ export function PracticeHero({
             </Link>
           </div>
 
-          {!canStartInterview && (
+          {!canStartInterview && !usageLimitReached && (
             <p className="mt-3 text-sm leading-6 text-gray-500">
               Add or load a target role first, then this top button will start
               the interview instantly.

@@ -20,10 +20,28 @@ import {
   totalQuestions,
 } from "../session/utils";
 
+type PracticeUsage = {
+  planName: string;
+  dailyLimit: number;
+  usedToday: number;
+  remainingToday: number;
+  limitReached: boolean;
+  resetsAt: string;
+};
+
 const practiceModeLabels: Record<PracticeMode, string> = {
   typed: "Typed answers only",
   voice: "Voice interview",
   "voice-camera": "Voice + camera interview",
+};
+
+const defaultPracticeUsage: PracticeUsage = {
+  planName: "Beta",
+  dailyLimit: 3,
+  usedToday: 0,
+  remainingToday: 3,
+  limitReached: false,
+  resetsAt: "",
 };
 
 const formatSpeakerSetup = (
@@ -34,6 +52,21 @@ const formatSpeakerSetup = (
 
   return `${speakerPreference.accent} ${speakerPreference.voice} voice at ${speakerPreference.pace} pace`;
 };
+
+function formatResetTime(value: string) {
+  if (!value) return "tomorrow";
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return "tomorrow";
+  }
+
+  return date.toLocaleTimeString("en-GB", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
 
 export function PracticePageClient() {
   const router = useRouter();
@@ -62,6 +95,11 @@ export function PracticePageClient() {
     useState<SpeakerPreference>(defaultSpeakerPreference);
   const [questionLoading, setQuestionLoading] = useState(false);
 
+  const [practiceUsage, setPracticeUsage] =
+    useState<PracticeUsage>(defaultPracticeUsage);
+  const [usageLoaded, setUsageLoaded] = useState(false);
+  const [usageMessage, setUsageMessage] = useState("");
+
   const roleRef = useRef("");
   const roleManuallyEditedRef = useRef(false);
   const setupManuallyEditedRef = useRef(false);
@@ -88,6 +126,31 @@ export function PracticePageClient() {
     speakerPreference,
   ]);
 
+  const signedInLimitReached =
+    Boolean(isSignedIn) && usageLoaded && practiceUsage.limitReached;
+
+  const canStartInterview = Boolean(role.trim()) && !signedInLimitReached;
+
+  const usageSummary = useMemo(() => {
+    if (!isLoaded) return "Checking beta usage...";
+
+    if (!isSignedIn) {
+      return "Sign in to save progress. Beta users can save 3 completed sessions per day.";
+    }
+
+    if (!usageLoaded) {
+      return "Checking your daily beta session limit...";
+    }
+
+    if (practiceUsage.limitReached) {
+      return `Daily beta limit reached. You can complete more saved sessions after ${formatResetTime(
+        practiceUsage.resetsAt
+      )}.`;
+    }
+
+    return `${practiceUsage.remainingToday}/${practiceUsage.dailyLimit} saved practice sessions remaining today.`;
+  }, [isLoaded, isSignedIn, practiceUsage, usageLoaded]);
+
   useEffect(() => {
     roleRef.current = role;
   }, [role]);
@@ -111,6 +174,66 @@ export function PracticePageClient() {
       setFocusArea(profile.defaultFocusArea);
     }
   }, []);
+
+  useEffect(() => {
+    if (!isLoaded) return;
+
+    if (!isSignedIn) {
+      setPracticeUsage(defaultPracticeUsage);
+      setUsageLoaded(true);
+      setUsageMessage("");
+      return;
+    }
+
+    let cancelled = false;
+
+    const loadPracticeUsage = async () => {
+      try {
+        setUsageLoaded(false);
+        setUsageMessage("");
+
+        const response = await fetch("/api/practice-sessions", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        const data = await response.json().catch(() => null);
+
+        if (cancelled) return;
+
+        if (!response.ok || data?.error) {
+          setPracticeUsage(defaultPracticeUsage);
+          setUsageMessage(
+            data?.error || "Could not check your daily practice limit."
+          );
+          return;
+        }
+
+        if (data?.usage) {
+          setPracticeUsage(data.usage);
+        } else {
+          setPracticeUsage(defaultPracticeUsage);
+        }
+      } catch {
+        if (!cancelled) {
+          setPracticeUsage(defaultPracticeUsage);
+          setUsageMessage("Could not check your daily practice limit.");
+        }
+      } finally {
+        if (!cancelled) {
+          setUsageLoaded(true);
+        }
+      }
+    };
+
+    void loadPracticeUsage();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isLoaded, isSignedIn]);
 
   useEffect(() => {
     if (!isLoaded) return;
@@ -216,6 +339,15 @@ export function PracticePageClient() {
   const startInterview = useCallback(() => {
     if (!role.trim()) return;
 
+    if (signedInLimitReached) {
+      setUsageMessage(
+        `Daily beta limit reached. You can complete more saved sessions after ${formatResetTime(
+          practiceUsage.resetsAt
+        )}.`
+      );
+      return;
+    }
+
     try {
       setQuestionLoading(true);
 
@@ -244,8 +376,10 @@ export function PracticePageClient() {
     experienceLevel,
     focusArea,
     interviewType,
+    practiceUsage.resetsAt,
     role,
     router,
+    signedInLimitReached,
     speakerEnabled,
     speakerPreference,
   ]);
@@ -263,9 +397,12 @@ export function PracticePageClient() {
         <section className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:py-10">
           <PracticeHero
             totalQuestions={totalQuestions}
-            canStartInterview={Boolean(role.trim())}
+            canStartInterview={canStartInterview}
             questionLoading={questionLoading}
             setupSummary={setupSummary}
+            usageSummary={usageSummary}
+            usageLimitReached={signedInLimitReached}
+            usageMessage={usageMessage}
             onStartInterview={startInterview}
           />
 
@@ -297,6 +434,8 @@ export function PracticePageClient() {
               toggleCamera={toggleCamera}
               startInterview={startInterview}
               questionLoading={questionLoading}
+              startDisabled={signedInLimitReached}
+              startDisabledMessage={usageSummary}
             />
           </div>
         </section>

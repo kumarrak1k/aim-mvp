@@ -44,6 +44,8 @@ type PracticeStartScreenProps = {
   toggleCamera: () => void;
   startInterview: () => void;
   questionLoading: boolean;
+  startDisabled?: boolean;
+  startDisabledMessage?: string;
 };
 
 const practiceModeLabels: Record<PracticeMode, string> = {
@@ -123,6 +125,8 @@ export function PracticeStartScreen({
   toggleCamera,
   startInterview,
   questionLoading,
+  startDisabled = false,
+  startDisabledMessage = "",
 }: PracticeStartScreenProps) {
   const [savingPreference, setSavingPreference] = useState(false);
   const [preferenceMessage, setPreferenceMessage] = useState("");
@@ -260,6 +264,9 @@ export function PracticeStartScreen({
     speakerPreference,
   ]);
 
+  const interviewStartDisabled =
+    !role.trim() || questionLoading || startDisabled;
+
   return (
     <div className="grid gap-6 lg:grid-cols-[2fr_0.9fr]">
       <GlassCard>
@@ -371,6 +378,17 @@ export function PracticeStartScreen({
               The interview page will show a large Guided Answer button. It
               plays AI-generated question audio and then starts your microphone
               recording.
+            </p>
+          </div>
+        )}
+
+        {startDisabled && startDisabledMessage && (
+          <div className="mb-5 rounded-2xl border border-amber-300/20 bg-amber-300/10 p-4">
+            <p className="text-sm font-black text-amber-100">
+              Daily beta limit reached
+            </p>
+            <p className="mt-1 text-sm leading-6 text-gray-300">
+              {startDisabledMessage}
             </p>
           </div>
         )}
@@ -507,9 +525,7 @@ export function PracticeStartScreen({
             <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
               <p className="text-sm leading-6 text-gray-300">
                 Current setup:{" "}
-                <span className="font-black text-white">
-                  {experienceLevel}
-                </span>{" "}
+                <span className="font-black text-white">{experienceLevel}</span>{" "}
                 · {interviewType} · {difficulty} difficulty · Focus: {focusArea} ·{" "}
                 <span className="font-black text-white">
                   {practiceModeLabels[selectedPracticeMode]}
@@ -545,11 +561,17 @@ export function PracticeStartScreen({
 
         <button
           onClick={startInterview}
-          disabled={!role.trim() || questionLoading}
+          disabled={interviewStartDisabled}
           className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-6 py-4 text-base font-black shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
         >
           {questionLoading ? "Starting..." : "Start Tailored 5-Question Interview"}
         </button>
+
+        {startDisabled && startDisabledMessage && (
+          <p className="mt-3 text-sm font-semibold leading-6 text-gray-500">
+            {startDisabledMessage}
+          </p>
+        )}
       </GlassCard>
 
       <aside className="space-y-6">

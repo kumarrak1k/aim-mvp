@@ -8,6 +8,9 @@ export const dynamic = "force-dynamic";
 
 const PRACTICE_MODES = ["typed", "voice", "voice-camera"];
 
+const DAILY_COMPLETED_SESSION_LIMIT = 3;
+const BETA_PLAN_NAME = "Beta";
+
 function cleanText(value: unknown, fallback = "") {
   if (typeof value !== "string") return fallback;
   return value.replace(/\s+/g, " ").trim() || fallback;
@@ -35,6 +38,45 @@ function getHireSignal(summary: unknown) {
   return cleanText(input?.hire_signal, "Moderate").slice(0, 40);
 }
 
+function getTodayRange() {
+  const now = new Date();
+  const start = new Date(now);
+  start.setHours(0, 0, 0, 0);
+
+  const end = new Date(start);
+  end.setDate(end.getDate() + 1);
+
+  return {
+    start,
+    end,
+  };
+}
+
+async function getDailyUsage(clerkUserId: string) {
+  const { start, end } = getTodayRange();
+
+  const usedToday = await prisma.practiceSession.count({
+    where: {
+      clerkUserId,
+      createdAt: {
+        gte: start,
+        lt: end,
+      },
+    },
+  });
+
+  const remainingToday = Math.max(0, DAILY_COMPLETED_SESSION_LIMIT - usedToday);
+
+  return {
+    planName: BETA_PLAN_NAME,
+    dailyLimit: DAILY_COMPLETED_SESSION_LIMIT,
+    usedToday,
+    remainingToday,
+    limitReached: usedToday >= DAILY_COMPLETED_SESSION_LIMIT,
+    resetsAt: end.toISOString(),
+  };
+}
+
 export async function GET() {
   try {
     const { userId } = await auth();
@@ -46,33 +88,37 @@ export async function GET() {
       );
     }
 
-    const sessions = await prisma.practiceSession.findMany({
-      where: {
-        clerkUserId: userId,
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-      take: 50,
-      select: {
-        id: true,
-        role: true,
-        experienceLevel: true,
-        interviewType: true,
-        difficulty: true,
-        focusArea: true,
-        practiceMode: true,
-        totalQuestions: true,
-        overallScore: true,
-        hireSignal: true,
-        summary: true,
-        results: true,
-        speakerPreference: true,
-        createdAt: true,
-      },
-    });
+    const [sessions, usage] = await Promise.all([
+      prisma.practiceSession.findMany({
+        where: {
+          clerkUserId: userId,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+        take: 50,
+        select: {
+          id: true,
+          role: true,
+          experienceLevel: true,
+          interviewType: true,
+          difficulty: true,
+          focusArea: true,
+          practiceMode: true,
+          totalQuestions: true,
+          overallScore: true,
+          hireSignal: true,
+          summary: true,
+          results: true,
+          speakerPreference: true,
+          createdAt: true,
+        },
+      }),
+      getDailyUsage(userId),
+    ]);
 
     return NextResponse.json({
+      usage,
       sessions: sessions.map((session) => ({
         ...session,
         createdAt: session.createdAt.toISOString(),
@@ -96,6 +142,19 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         { error: "You must be signed in to save practice sessions." },
         { status: 401 }
+      );
+    }
+
+    const usage = await getDailyUsage(userId);
+
+    if (usage.limitReached) {
+      return NextResponse.json(
+        {
+          error:
+            "You have reached your daily beta limit for completed practice sessions.",
+          usage,
+        },
+        { status: 429 }
       );
     }
 
@@ -173,7 +232,10 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    const updatedUsage = await getDailyUsage(userId);
+
     return NextResponse.json({
+      usage: updatedUsage,
       session: {
         ...session,
         createdAt: session.createdAt.toISOString(),
