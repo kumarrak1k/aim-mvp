@@ -53,53 +53,23 @@ const readinessHighlights = [
   "Answer quality scoring",
   "Voice delivery review",
   "Camera presence feedback",
-  "Clear strengths and improvements",
+  "Saved progress history",
 ];
 
 export default function Home() {
   return (
     <MarketingShell currentPath="/">
-      <section className="mx-auto max-w-7xl px-4 pb-12 pt-10 sm:px-6 sm:pb-16 sm:pt-14">
-        <div className="mb-5 flex justify-center">
-          <div className="relative max-w-3xl">
-            <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-r from-purple-500/25 via-fuchsia-500/20 to-cyan-500/25 blur-2xl" />
-            <div className="relative overflow-hidden rounded-[1.75rem] border border-white/15 bg-white/[0.08] px-5 py-4 shadow-2xl shadow-purple-950/30 backdrop-blur-2xl sm:px-7 sm:py-5">
-              <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/60 to-transparent" />
-
-              <div className="flex flex-col items-center gap-3 text-center">
-                <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/20 px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.24em] text-cyan-200 sm:text-xs">
-                  <span className="relative flex h-2.5 w-2.5">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-300 opacity-60" />
-                    <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-300" />
-                  </span>
-                  Premium interview training
-                </div>
-
-                <div className="space-y-1">
-                  <p className="bg-gradient-to-r from-white via-purple-100 to-cyan-100 bg-clip-text text-xl font-black tracking-[-0.04em] text-transparent sm:text-2xl md:text-3xl">
-                    AI interview coaching for answers, voice and camera presence
-                  </p>
-                  <p className="mx-auto max-w-2xl text-sm leading-6 text-gray-300 sm:text-base">
-                    One premium practice experience that helps candidates sound
-                    sharper, look more confident, and perform better in real
-                    interviews.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="mb-9 flex justify-center">
-          <Link href="/practice">
-            <button className="rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-7 py-3.5 text-sm font-black text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.02]">
-              Stop wondering and start practising
-            </button>
-          </Link>
-        </div>
-
+      <section className="mx-auto max-w-7xl px-4 pb-10 pt-7 sm:px-6 sm:pb-16 sm:pt-12">
         <div className="grid items-center gap-8 lg:grid-cols-[1.02fr_0.98fr] lg:gap-10">
           <div className="text-center lg:text-left">
+            <div className="mx-auto mb-5 inline-flex max-w-full items-center gap-2 rounded-full border border-white/10 bg-white/[0.06] px-3 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-cyan-200 shadow-xl shadow-purple-950/20 lg:mx-0">
+              <span className="relative flex h-2.5 w-2.5 shrink-0">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-300 opacity-60" />
+                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-300" />
+              </span>
+              Premium interview training
+            </div>
+
             <h1 className="mx-auto max-w-4xl text-4xl font-black leading-[1.02] tracking-[-0.055em] sm:text-5xl md:text-6xl lg:mx-0">
               Practise until your interview answers feel{" "}
               <span className="bg-gradient-to-r from-purple-200 via-fuchsia-200 to-cyan-200 bg-clip-text text-transparent">
@@ -107,13 +77,13 @@ export default function Home() {
               </span>
             </h1>
 
-            <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-gray-300 sm:text-lg lg:mx-0">
+            <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-gray-300 sm:text-lg sm:leading-8 lg:mx-0">
               AI Career Mentor helps you improve what interviewers actually
-              notice: the quality of your answer, the way you sound, and the
-              presence you bring on camera.
+              notice: your answer quality, voice delivery, camera presence and
+              ability to communicate under pressure.
             </p>
 
-            <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row lg:justify-start">
+            <div className="mt-7 grid gap-3 sm:flex sm:flex-wrap sm:justify-center lg:justify-start">
               <Link href="/practice">
                 <button className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-7 py-4 text-base font-black text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.02] sm:w-auto">
                   Start interview practice
@@ -125,23 +95,17 @@ export default function Home() {
                   Track progress
                 </button>
               </Link>
-
-              <Link href="/platform">
-                <button className="w-full rounded-2xl border border-white/10 bg-white/[0.06] px-7 py-4 text-base font-black text-white transition hover:bg-white/[0.1] sm:w-auto">
-                  Explore the platform
-                </button>
-              </Link>
             </div>
 
-            <div className="mt-8 grid max-w-2xl grid-cols-1 gap-3 sm:grid-cols-3 lg:mx-0">
-              <StatCard value="5" label="question interview flow" />
-              <StatCard value="360°" label="answer and delivery feedback" />
-              <StatCard value="8+" label="target benchmark answer quality" />
+            <div className="mt-6 grid max-w-2xl grid-cols-3 gap-2 sm:gap-3 lg:mx-0">
+              <StatCard value="5" label="questions" />
+              <StatCard value="360°" label="feedback" />
+              <StatCard value="8+" label="target" />
             </div>
           </div>
 
-          <GlassCard className="overflow-hidden p-5 sm:p-6">
-            <div className="mb-5 flex items-center justify-between gap-4">
+          <GlassCard className="overflow-hidden p-4 sm:p-6">
+            <div className="mb-4 flex items-center justify-between gap-4">
               <div className="flex items-center gap-3">
                 <SiteLogo href="" size="md" showText={false} />
 
@@ -160,14 +124,14 @@ export default function Home() {
               </span>
             </div>
 
-            <div className="grid gap-4 lg:grid-cols-[0.95fr_1.05fr]">
-              <div className="rounded-[1.6rem] border border-white/10 bg-black/20 p-5">
+            <div className="grid gap-4 md:grid-cols-[0.95fr_1.05fr]">
+              <div className="rounded-[1.5rem] border border-white/10 bg-black/20 p-4 sm:p-5">
                 <p className="text-sm text-gray-400">Practice loop</p>
                 <div className="mt-2 flex items-end gap-2">
-                  <span className="text-6xl font-black tracking-[-0.08em]">
+                  <span className="text-5xl font-black tracking-[-0.08em] sm:text-6xl">
                     5
                   </span>
-                  <span className="mb-2 text-lg font-black text-gray-500">
+                  <span className="mb-2 text-base font-black text-gray-500 sm:text-lg">
                     questions
                   </span>
                 </div>
@@ -180,35 +144,35 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="overflow-hidden rounded-[1.6rem] border border-white/10 bg-black/20">
+              <div className="hidden overflow-hidden rounded-[1.5rem] border border-white/10 bg-black/20 sm:block">
                 <img
                   src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80"
                   alt="Candidates preparing for interviews"
-                  className="h-full min-h-[260px] w-full object-cover"
+                  className="h-full min-h-[240px] w-full object-cover"
                 />
               </div>
             </div>
 
-            <div className="mt-4 grid gap-4 md:grid-cols-2">
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
               <InsightCard
                 label="Session experience"
-                text="Current question, transcript and camera preview stay visible in a focused interview workspace."
+                text="Question, transcript and camera preview stay focused in one guided workspace."
               />
               <InsightCard
                 label="Progress product"
-                text="After each completed session, your results are saved so you can track improvement over time."
+                text="Completed sessions are saved so improvement is visible over time."
               />
             </div>
           </GlassCard>
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14">
+      <section className="mx-auto max-w-7xl px-4 py-9 sm:px-6 sm:py-14">
         <SectionHeading
           align="center"
           eyebrow="Explore"
           title="A focused route through the platform."
-          description="Each core section has its own dedicated page, keeping the homepage cleaner and the experience more professional."
+          description="Start practising quickly, then go deeper into profile setup, progress tracking and coaching features when you need them."
         />
 
         <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
@@ -224,16 +188,16 @@ export default function Home() {
             <SectionHeading
               eyebrow="Why it works"
               title="Designed to feel premium, focused and useful."
-              description="The platform works best when the experience feels calm, high quality and easy to trust. The interface focuses on clarity, structure and evidence-led improvement."
+              description="The experience is built around a simple improvement loop: practise, get feedback, review progress, then repeat with sharper answers."
             />
 
             <div className="mt-6">
               <BulletList
                 items={[
-                  "Shorter homepage with clearer navigation.",
-                  "Dedicated pages for Platform, How it works, Candidates and Pricing.",
-                  "Consistent shared header, logo sizing and background treatment.",
-                  "Premium imagery to make the brand feel stronger and more engaging.",
+                  "Tailored interview questions based on role, level and focus.",
+                  "Natural question audio with spoken-answer transcription.",
+                  "Camera and voice delivery signals for realistic remote interviews.",
+                  "Saved session history so progress is visible over time.",
                 ]}
               />
             </div>
@@ -265,9 +229,11 @@ export default function Home() {
 
 function StatCard({ value, label }: { value: string; label: string }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/[0.05] p-4 text-center shadow-xl shadow-black/10">
+    <div className="rounded-2xl border border-white/10 bg-white/[0.05] p-3 text-center shadow-xl shadow-black/10 sm:p-4">
       <p className="text-2xl font-black tracking-[-0.03em]">{value}</p>
-      <p className="mt-1 text-xs leading-5 text-gray-400">{label}</p>
+      <p className="mt-1 text-[11px] leading-4 text-gray-400 sm:text-xs sm:leading-5">
+        {label}
+      </p>
     </div>
   );
 }

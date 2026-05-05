@@ -35,6 +35,13 @@ const navItems: Array<{ href: MarketingPath; label: string }> = [
   { href: "/pricing", label: "Pricing" },
 ];
 
+const compactNavItems: Array<{ href: MarketingPath; label: string }> = [
+  { href: "/", label: "Home" },
+  { href: "/platform", label: "Platform" },
+  { href: "/progress", label: "Progress" },
+  { href: "/profile", label: "Profile" },
+];
+
 export function MarketingShell({
   children,
   currentPath,
@@ -46,10 +53,10 @@ export function MarketingShell({
       <div className="pointer-events-none fixed right-[-140px] top-24 z-0 h-[320px] w-[320px] rounded-full bg-cyan-400/10 blur-[120px]" />
       <div className="pointer-events-none fixed left-[-140px] bottom-12 z-0 h-[320px] w-[320px] rounded-full bg-fuchsia-400/10 blur-[120px]" />
 
-      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#120d1e]/82 backdrop-blur-2xl">
-        <div className="mx-auto flex max-w-[1760px] items-center gap-5 px-4 py-3 sm:px-6 lg:px-8">
-          <div className="min-w-0 shrink-0">
-            <div className="w-fit max-w-[255px] sm:max-w-[320px]">
+      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#120d1e]/86 backdrop-blur-2xl">
+        <div className="mx-auto flex max-w-[1760px] items-center gap-3 px-3 py-2.5 sm:px-5 lg:gap-5 lg:px-8 lg:py-3">
+          <div className="min-w-0 shrink">
+            <div className="w-fit max-w-[176px] sm:max-w-[260px] lg:max-w-[320px]">
               <SiteLogo href="/" size="md" showText />
             </div>
           </div>
@@ -104,8 +111,9 @@ export function MarketingShell({
             </Show>
 
             <Link href="/practice">
-              <button className="whitespace-nowrap rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-4 py-2.5 text-sm font-black text-white shadow-xl shadow-purple-950/35 transition hover:scale-[1.02] sm:px-5 xl:px-6">
-                Start Practising
+              <button className="whitespace-nowrap rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-4 py-2.5 text-xs font-black text-white shadow-xl shadow-purple-950/35 transition hover:scale-[1.02] sm:px-5 sm:text-sm xl:px-6">
+                <span className="sm:hidden">Start</span>
+                <span className="hidden sm:inline">Start Practising</span>
               </button>
             </Link>
 
@@ -125,9 +133,9 @@ export function MarketingShell({
           </div>
         </div>
 
-        <div className="border-t border-white/[0.06] px-4 py-2 sm:px-6 lg:hidden">
+        <div className="hidden border-t border-white/[0.06] px-4 py-2 sm:block sm:px-6 lg:hidden">
           <nav className="mx-auto flex max-w-7xl gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {navItems.map((item) => {
+            {compactNavItems.map((item) => {
               const active = currentPath === item.href;
 
               return (
@@ -135,8 +143,14 @@ export function MarketingShell({
                   <span
                     className={`block whitespace-nowrap rounded-full px-3.5 py-2 text-xs font-black transition ${
                       active
-                        ? "bg-white/[0.12] text-white"
-                        : "border border-white/10 bg-white/[0.04] text-gray-300 hover:bg-white/[0.08] hover:text-white"
+                        ? item.href === "/progress"
+                          ? "border border-cyan-300/30 bg-cyan-300/15 text-cyan-50"
+                          : item.href === "/profile"
+                            ? "border border-purple-300/30 bg-purple-300/15 text-purple-50"
+                            : "bg-white/[0.12] text-white"
+                        : item.href === "/progress"
+                          ? "border border-cyan-300/15 bg-cyan-300/10 text-cyan-100 hover:bg-cyan-300/15"
+                          : "border border-white/10 bg-white/[0.04] text-gray-300 hover:bg-white/[0.08] hover:text-white"
                     }`}
                   >
                     {item.label}
@@ -144,30 +158,6 @@ export function MarketingShell({
                 </Link>
               );
             })}
-
-            <Link href="/progress">
-              <span
-                className={`block whitespace-nowrap rounded-full px-3.5 py-2 text-xs font-black transition ${
-                  currentPath === "/progress"
-                    ? "border border-cyan-300/30 bg-cyan-300/15 text-cyan-50"
-                    : "border border-cyan-300/15 bg-cyan-300/10 text-cyan-100 hover:bg-cyan-300/15"
-                }`}
-              >
-                Progress
-              </span>
-            </Link>
-
-            <Link href="/profile">
-              <span
-                className={`block whitespace-nowrap rounded-full px-3.5 py-2 text-xs font-black transition ${
-                  currentPath === "/profile"
-                    ? "border border-purple-300/30 bg-purple-300/15 text-purple-50"
-                    : "border border-white/10 bg-white/[0.04] text-gray-300 hover:bg-white/[0.08] hover:text-white"
-                }`}
-              >
-                Profile
-              </span>
-            </Link>
           </nav>
         </div>
       </header>

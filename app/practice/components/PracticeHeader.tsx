@@ -14,7 +14,9 @@ type HeaderPath =
   | "/platform"
   | "/how-it-works"
   | "/candidates"
-  | "/pricing";
+  | "/pricing"
+  | "/progress"
+  | "/profile";
 
 const navItems: Array<{ href: HeaderPath; label: string }> = [
   { href: "/", label: "Home" },
@@ -24,12 +26,19 @@ const navItems: Array<{ href: HeaderPath; label: string }> = [
   { href: "/pricing", label: "Pricing" },
 ];
 
+const compactNavItems: Array<{ href: HeaderPath; label: string }> = [
+  { href: "/", label: "Home" },
+  { href: "/platform", label: "Platform" },
+  { href: "/progress", label: "Progress" },
+  { href: "/profile", label: "Profile" },
+];
+
 export function PracticeHeader({ isLoaded, isSignedIn }: PracticeHeaderProps) {
   return (
-    <header className="sticky top-0 z-50 border-b border-white/10 bg-[#120d1e]/82 backdrop-blur-2xl">
-      <div className="mx-auto flex max-w-[1760px] items-center gap-5 px-4 py-3 sm:px-6 lg:px-8">
-        <div className="min-w-0 shrink-0">
-          <div className="w-fit max-w-[255px] sm:max-w-[320px]">
+    <header className="sticky top-0 z-50 border-b border-white/10 bg-[#120d1e]/86 backdrop-blur-2xl">
+      <div className="mx-auto flex max-w-[1760px] items-center gap-3 px-3 py-2.5 sm:px-5 lg:gap-5 lg:px-8 lg:py-3">
+        <div className="min-w-0 shrink">
+          <div className="w-fit max-w-[176px] sm:max-w-[260px] lg:max-w-[320px]">
             <SiteLogo href="/" size="md" showText />
           </div>
         </div>
@@ -64,8 +73,9 @@ export function PracticeHeader({ isLoaded, isSignedIn }: PracticeHeaderProps) {
           )}
 
           <Link href="/practice">
-            <button className="whitespace-nowrap rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-4 py-2.5 text-sm font-black text-white shadow-xl shadow-purple-950/35 transition hover:scale-[1.02] sm:px-5 xl:px-6">
-              Start Practising
+            <button className="whitespace-nowrap rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-4 py-2.5 text-xs font-black text-white shadow-xl shadow-purple-950/35 transition hover:scale-[1.02] sm:px-5 sm:text-sm xl:px-6">
+              <span className="sm:hidden">Start</span>
+              <span className="hidden sm:inline">Start Practising</span>
             </button>
           </Link>
 
@@ -85,27 +95,21 @@ export function PracticeHeader({ isLoaded, isSignedIn }: PracticeHeaderProps) {
         </div>
       </div>
 
-      <div className="border-t border-white/[0.06] px-4 py-2 sm:px-6 lg:hidden">
+      <div className="hidden border-t border-white/[0.06] px-4 py-2 sm:block sm:px-6 lg:hidden">
         <nav className="mx-auto flex max-w-7xl gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {navItems.map((item) => (
+          {compactNavItems.map((item) => (
             <Link key={item.href} href={item.href}>
-              <span className="block whitespace-nowrap rounded-full border border-white/10 bg-white/[0.04] px-3.5 py-2 text-xs font-black text-gray-300 transition hover:bg-white/[0.08] hover:text-white">
+              <span
+                className={`block whitespace-nowrap rounded-full px-3.5 py-2 text-xs font-black transition ${
+                  item.href === "/progress"
+                    ? "border border-cyan-300/15 bg-cyan-300/10 text-cyan-100 hover:bg-cyan-300/15"
+                    : "border border-white/10 bg-white/[0.04] text-gray-300 hover:bg-white/[0.08] hover:text-white"
+                }`}
+              >
                 {item.label}
               </span>
             </Link>
           ))}
-
-          <Link href="/progress">
-            <span className="block whitespace-nowrap rounded-full border border-cyan-300/15 bg-cyan-300/10 px-3.5 py-2 text-xs font-black text-cyan-100 transition hover:bg-cyan-300/15">
-              Progress
-            </span>
-          </Link>
-
-          <Link href="/profile">
-            <span className="block whitespace-nowrap rounded-full border border-white/10 bg-white/[0.04] px-3.5 py-2 text-xs font-black text-gray-300 transition hover:bg-white/[0.08] hover:text-white">
-              Profile
-            </span>
-          </Link>
         </nav>
       </div>
     </header>
