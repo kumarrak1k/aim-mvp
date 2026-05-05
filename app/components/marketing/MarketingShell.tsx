@@ -53,12 +53,10 @@ export function MarketingShell({
       <div className="pointer-events-none fixed right-[-140px] top-24 z-0 h-[320px] w-[320px] rounded-full bg-cyan-400/10 blur-[120px]" />
       <div className="pointer-events-none fixed left-[-140px] bottom-12 z-0 h-[320px] w-[320px] rounded-full bg-fuchsia-400/10 blur-[120px]" />
 
-      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#120d1e]/86 backdrop-blur-2xl">
-        <div className="mx-auto flex max-w-[1760px] items-center gap-3 px-3 py-2.5 sm:px-5 lg:gap-5 lg:px-8 lg:py-3">
-          <div className="min-w-0 shrink">
-            <div className="w-fit max-w-[176px] sm:max-w-[260px] lg:max-w-[320px]">
-              <SiteLogo href="/" size="md" showText />
-            </div>
+      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#120d1e]/88 backdrop-blur-2xl">
+        <div className="mx-auto flex max-w-[1760px] items-center gap-2 px-3 py-2.5 sm:px-5 lg:gap-5 lg:px-8 lg:py-3">
+          <div className="min-w-[188px] shrink-0 sm:min-w-0">
+            <SiteLogo href="/" size="md" showText />
           </div>
 
           <nav className="hidden shrink-0 lg:flex">
@@ -111,7 +109,7 @@ export function MarketingShell({
             </Show>
 
             <Link href="/practice">
-              <button className="whitespace-nowrap rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-4 py-2.5 text-xs font-black text-white shadow-xl shadow-purple-950/35 transition hover:scale-[1.02] sm:px-5 sm:text-sm xl:px-6">
+              <button className="whitespace-nowrap rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-3.5 py-2.5 text-xs font-black text-white shadow-xl shadow-purple-950/35 transition hover:scale-[1.02] sm:px-5 sm:text-sm xl:px-6">
                 <span className="sm:hidden">Start</span>
                 <span className="hidden sm:inline">Start Practising</span>
               </button>

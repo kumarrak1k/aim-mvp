@@ -19,14 +19,14 @@ export function PracticeHero({
   onStartInterview,
 }: PracticeHeroProps) {
   return (
-    <div className="relative mb-6 overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.07] p-5 shadow-2xl shadow-purple-950/20 backdrop-blur-2xl sm:mb-8 sm:rounded-[2.25rem] sm:p-6 md:p-8 lg:p-9">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/50 to-transparent" />
+    <div className="relative mb-6 overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.055] p-5 shadow-2xl shadow-purple-950/10 backdrop-blur-2xl sm:mb-8 sm:rounded-[2.25rem] sm:p-6 md:p-8">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/45 to-transparent" />
       <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-cyan-400/10 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-28 left-10 h-72 w-72 rounded-full bg-purple-500/15 blur-3xl" />
 
-      <div className="relative grid gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.75fr)] lg:items-center">
-        <div>
-          <div className="mb-5 inline-flex max-w-full items-center gap-3 rounded-full border border-white/10 bg-white/[0.06] px-4 py-2 text-sm font-black text-purple-50 shadow-xl shadow-purple-950/20">
+      <div className="relative grid gap-6 lg:grid-cols-[minmax(0,1.08fr)_minmax(300px,0.72fr)] lg:items-stretch">
+        <div className="flex flex-col">
+          <div className="mb-5 inline-flex max-w-full items-center gap-3 rounded-full border border-white/10 bg-white/[0.055] px-4 py-2 text-xs font-black text-purple-50 shadow-xl shadow-purple-950/20 sm:text-sm">
             <span className="relative flex h-2.5 w-2.5 shrink-0">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-300 opacity-60" />
               <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-300" />
@@ -36,14 +36,14 @@ export function PracticeHero({
             </span>
           </div>
 
-          <h1 className="max-w-5xl text-3xl font-black leading-[1.01] tracking-[-0.05em] md:text-5xl lg:text-6xl">
+          <h1 className="max-w-5xl text-3xl font-black leading-[1.02] tracking-[-0.05em] sm:text-4xl md:text-5xl lg:text-6xl">
             Practise the full interview signal:{" "}
             <span className="bg-gradient-to-r from-purple-200 via-fuchsia-200 to-cyan-200 bg-clip-text text-transparent">
               answers, voice and presence.
             </span>
           </h1>
 
-          <p className="mt-5 max-w-3xl text-base leading-8 text-gray-300 md:text-lg">
+          <p className="mt-5 max-w-3xl text-base leading-7 text-gray-300 md:text-lg md:leading-8">
             Run a focused five-question mock interview tailored to your target
             role. Get strict hiring-bar feedback, natural question audio,
             voice-delivery analysis, camera-presence scoring and stronger model
@@ -59,7 +59,7 @@ export function PracticeHero({
             </p>
           </div>
 
-          <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+          <div className="mt-6 grid gap-3 sm:flex sm:flex-wrap">
             <button
               type="button"
               onClick={onStartInterview}
@@ -90,22 +90,16 @@ export function PracticeHero({
               the interview instantly.
             </p>
           )}
-
-          <div className="mt-7 flex flex-wrap gap-3 text-xs font-bold text-gray-400">
-            <HeroPill text="Phone/iPad guided answer flow" />
-            <HeroPill text="STAR and impact coaching" />
-            <HeroPill text="Model answer after every response" />
-          </div>
         </div>
 
-        <div className="rounded-[1.8rem] border border-white/10 bg-black/30 p-4 shadow-2xl shadow-black/20">
+        <div className="flex flex-col rounded-[1.8rem] border border-white/10 bg-black/25 p-4 shadow-2xl shadow-black/20">
           <div className="mb-4 grid min-w-0 grid-cols-3 gap-3">
             <MiniStat value={String(totalQuestions)} label="Questions" />
             <MiniStat value="360°" label="Feedback" />
             <MiniStat value="8+" label="Target" />
           </div>
 
-          <div className="rounded-[1.35rem] border border-white/10 bg-white/[0.045] p-4">
+          <div className="flex flex-1 flex-col rounded-[1.35rem] border border-white/10 bg-white/[0.045] p-4">
             <div className="mb-4 flex items-center justify-between gap-3">
               <div>
                 <p className="text-xs font-black uppercase tracking-[0.2em] text-cyan-300">
@@ -125,6 +119,12 @@ export function PracticeHero({
               <PreviewMetric label="Delivery" value="Pace + fillers + confidence" />
               <PreviewMetric label="Presence" value="Camera + posture + eye contact" />
               <PreviewMetric label="Improvement" value="Model answer + next steps" />
+            </div>
+
+            <div className="mt-4 flex flex-wrap gap-2 text-[11px] font-bold text-gray-400">
+              <HeroPill text="Phone/iPad guided flow" />
+              <HeroPill text="STAR coaching" />
+              <HeroPill text="Model answers" />
             </div>
           </div>
         </div>
