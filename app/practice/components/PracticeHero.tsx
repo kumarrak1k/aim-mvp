@@ -24,8 +24,8 @@ export function PracticeHero({
       <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-cyan-400/10 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-28 left-10 h-72 w-72 rounded-full bg-purple-500/15 blur-3xl" />
 
-      <div className="relative grid gap-6 lg:grid-cols-[minmax(0,1.08fr)_minmax(300px,0.72fr)] lg:items-stretch">
-        <div className="flex flex-col">
+      <div className="relative grid gap-6 px-1 sm:px-2 lg:grid-cols-[minmax(0,1.08fr)_minmax(300px,0.72fr)] lg:items-stretch lg:px-0">
+        <div className="flex flex-col px-1 sm:px-2 lg:px-0">
           <div className="mb-5 inline-flex max-w-full items-center gap-3 rounded-full border border-white/10 bg-white/[0.055] px-4 py-2 text-xs font-black text-purple-50 shadow-xl shadow-purple-950/20 sm:text-sm">
             <span className="relative flex h-2.5 w-2.5 shrink-0">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-300 opacity-60" />
@@ -115,10 +115,22 @@ export function PracticeHero({
             </div>
 
             <div className="space-y-3">
-              <PreviewMetric label="Answer substance" value="Content + relevance" />
-              <PreviewMetric label="Delivery" value="Pace + fillers + confidence" />
-              <PreviewMetric label="Presence" value="Camera + posture + eye contact" />
-              <PreviewMetric label="Improvement" value="Model answer + next steps" />
+              <PreviewMetric
+                label="Answer substance"
+                value="Content + relevance"
+              />
+              <PreviewMetric
+                label="Delivery"
+                value="Pace + fillers + confidence"
+              />
+              <PreviewMetric
+                label="Presence"
+                value="Camera + posture + eye contact"
+              />
+              <PreviewMetric
+                label="Improvement"
+                value="Model answer + next steps"
+              />
             </div>
 
             <div className="mt-4 flex flex-wrap gap-2 text-[11px] font-bold text-gray-400">
