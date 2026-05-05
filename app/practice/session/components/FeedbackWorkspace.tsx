@@ -23,18 +23,19 @@ export function FeedbackWorkspace({
     currentQuestionNumber >= totalQuestions ? "Finish interview" : "Next question";
 
   return (
-    <section className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.055] shadow-2xl shadow-purple-950/10 backdrop-blur-2xl">
+    <section className="overflow-hidden rounded-[1.5rem] border border-white/10 bg-white/[0.055] shadow-2xl shadow-purple-950/10 backdrop-blur-2xl sm:rounded-[2rem]">
       <div className="p-4 sm:p-5 lg:p-6">
         <div className="mb-5 flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div>
-            <p className="text-sm font-black uppercase tracking-[0.22em] text-emerald-300">
+            <p className="text-xs font-black uppercase tracking-[0.22em] text-emerald-300 sm:text-sm">
               AI feedback
             </p>
             <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] text-white">
               {feedback.overall_score}/10
             </h2>
             <p className="mt-1 text-sm leading-6 text-gray-400">
-              Structured answer review, delivery insight, and a stronger model answer.
+              Structured answer review, delivery insight, and a stronger model
+              answer.
             </p>
           </div>
 
@@ -53,7 +54,7 @@ export function FeedbackWorkspace({
           </div>
         )}
 
-        <div className="mb-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+        <div className="mb-5 grid gap-3 grid-cols-2 sm:grid-cols-3 xl:grid-cols-6">
           <ScoreCard label="Overall" value={feedback.overall_score} highlight />
           <ScoreCard label="Content" value={feedback.category_scores.content} />
           <ScoreCard label="Clarity" value={feedback.category_scores.clarity} />
@@ -94,8 +95,8 @@ export function FeedbackWorkspace({
         </div>
 
         {feedback.improved_answer && (
-          <div className="mt-5 rounded-[1.5rem] border border-cyan-300/15 bg-cyan-300/10 p-5">
-            <p className="mb-3 text-sm font-black uppercase tracking-[0.18em] text-cyan-200">
+          <div className="mt-5 rounded-[1.35rem] border border-cyan-300/15 bg-cyan-300/10 p-4 sm:rounded-[1.5rem] sm:p-5">
+            <p className="mb-3 text-xs font-black uppercase tracking-[0.18em] text-cyan-200 sm:text-sm">
               Stronger answer example
             </p>
             <p className="whitespace-pre-wrap text-sm leading-7 text-gray-100">
@@ -108,7 +109,7 @@ export function FeedbackWorkspace({
           <button
             type="button"
             onClick={onNext}
-            className="rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-7 py-4 text-sm font-black text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01]"
+            className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-7 py-4 text-sm font-black text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] sm:w-auto"
           >
             {nextLabel}
           </button>
@@ -129,13 +130,13 @@ function ScoreCard({
 }) {
   return (
     <div
-      className={`rounded-[1.25rem] border p-4 ${
+      className={`rounded-[1.15rem] border p-3 sm:rounded-[1.25rem] sm:p-4 ${
         highlight
           ? "border-cyan-300/20 bg-cyan-300/10"
           : "border-white/10 bg-black/25"
       }`}
     >
-      <p className="text-[11px] font-black uppercase tracking-[0.15em] text-gray-400">
+      <p className="text-[10px] font-black uppercase tracking-[0.15em] text-gray-400 sm:text-[11px]">
         {label}
       </p>
       <p className="mt-2 text-2xl font-black text-white">
@@ -183,8 +184,8 @@ export function FeedbackList({
   items: string[];
 }) {
   return (
-    <div className="rounded-[1.5rem] border border-white/10 bg-black/25 p-5">
-      <p className="mb-4 text-sm font-black uppercase tracking-[0.18em] text-purple-200">
+    <div className="rounded-[1.35rem] border border-white/10 bg-black/25 p-4 sm:rounded-[1.5rem] sm:p-5">
+      <p className="mb-4 text-xs font-black uppercase tracking-[0.18em] text-purple-200 sm:text-sm">
         {title}
       </p>
       <div className="space-y-3">
