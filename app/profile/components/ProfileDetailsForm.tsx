@@ -24,6 +24,8 @@ type ProfileDetailsFormProps = {
   removingCv: boolean;
   removingRoleSpec: boolean;
   clearingProfileContext: boolean;
+  deletingPracticeSessions: boolean;
+  deletingAllAimData: boolean;
   statusMessage: string;
   handleSave: () => Promise<void>;
   extractDocumentText: (
@@ -33,6 +35,8 @@ type ProfileDetailsFormProps = {
   removeCv: () => Promise<void>;
   removeRoleSpec: () => Promise<void>;
   clearProfileContext: () => Promise<void>;
+  deletePracticeSessions: () => Promise<void>;
+  deleteAllAimData: () => Promise<void>;
 };
 
 export function ProfileDetailsForm({
@@ -51,12 +55,16 @@ export function ProfileDetailsForm({
   removingCv,
   removingRoleSpec,
   clearingProfileContext,
+  deletingPracticeSessions,
+  deletingAllAimData,
   statusMessage,
   handleSave,
   extractDocumentText,
   removeCv,
   removeRoleSpec,
   clearProfileContext,
+  deletePracticeSessions,
+  deleteAllAimData,
 }: ProfileDetailsFormProps) {
   const hasCvContext = Boolean(cvText.trim() || cvFileName);
   const hasRoleSpecContext = Boolean(roleSpec.trim() || roleSpecFileName);
@@ -67,6 +75,13 @@ export function ProfileDetailsForm({
       cvFileName ||
       roleSpecFileName
   );
+
+  const destructiveActionRunning =
+    removingCv ||
+    removingRoleSpec ||
+    clearingProfileContext ||
+    deletingPracticeSessions ||
+    deletingAllAimData;
 
   return (
     <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 sm:pb-20">
@@ -82,6 +97,18 @@ export function ProfileDetailsForm({
             <p className="mt-3 text-base leading-8 text-gray-300">
               Add or upload your profile context below. This will be used to
               personalise mock interviews and practice feedback.
+            </p>
+          </div>
+
+          <div className="mb-6 rounded-[1.5rem] border border-cyan-300/15 bg-cyan-300/10 p-5">
+            <p className="text-sm font-black text-cyan-100">
+              Privacy notice
+            </p>
+            <p className="mt-2 text-sm leading-6 text-gray-300">
+              Your uploaded files are converted into text for interview
+              personalisation. Raw files are not stored by this profile page.
+              You can remove CV context, role context, saved sessions, or all
+              AI Career Mentor data from the controls below.
             </p>
           </div>
 
@@ -120,7 +147,7 @@ export function ProfileDetailsForm({
                     <button
                       type="button"
                       onClick={() => void removeCv()}
-                      disabled={removingCv || saving}
+                      disabled={removingCv || saving || destructiveActionRunning}
                       className="inline-flex items-center justify-center rounded-2xl border border-rose-300/20 bg-rose-300/10 px-4 py-3 text-sm font-black text-rose-100 transition hover:bg-rose-300/15 disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       {removingCv ? "Removing..." : "Remove CV"}
@@ -169,7 +196,9 @@ export function ProfileDetailsForm({
                     <button
                       type="button"
                       onClick={() => void removeRoleSpec()}
-                      disabled={removingRoleSpec || saving}
+                      disabled={
+                        removingRoleSpec || saving || destructiveActionRunning
+                      }
                       className="inline-flex items-center justify-center rounded-2xl border border-rose-300/20 bg-rose-300/10 px-4 py-3 text-sm font-black text-rose-100 transition hover:bg-rose-300/15 disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       {removingRoleSpec ? "Removing..." : "Remove role spec"}
@@ -217,7 +246,12 @@ export function ProfileDetailsForm({
                   <button
                     type="button"
                     onClick={() => void clearProfileContext()}
-                    disabled={clearingProfileContext || saving}
+                    disabled={
+                      clearingProfileContext ||
+                      saving ||
+                      deletingPracticeSessions ||
+                      deletingAllAimData
+                    }
                     className="mt-4 rounded-2xl border border-rose-300/25 bg-rose-300/10 px-5 py-3 text-sm font-black text-rose-100 transition hover:bg-rose-300/15 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {clearingProfileContext
@@ -227,11 +261,20 @@ export function ProfileDetailsForm({
                 </div>
               )}
 
+              <PrivacyControls
+                deletingPracticeSessions={deletingPracticeSessions}
+                deletingAllAimData={deletingAllAimData}
+                saving={saving}
+                clearProfileContextRunning={clearingProfileContext}
+                onDeletePracticeSessions={deletePracticeSessions}
+                onDeleteAllAimData={deleteAllAimData}
+              />
+
               <div className="flex flex-col gap-4 sm:flex-row">
                 <button
                   type="button"
                   onClick={() => void handleSave()}
-                  disabled={saving}
+                  disabled={saving || destructiveActionRunning}
                   className="rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-7 py-4 text-sm font-black text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {saving ? "Saving..." : "Save Candidate Profile"}
@@ -251,6 +294,78 @@ export function ProfileDetailsForm({
         <ProfileSidebar />
       </div>
     </section>
+  );
+}
+
+function PrivacyControls({
+  deletingPracticeSessions,
+  deletingAllAimData,
+  saving,
+  clearProfileContextRunning,
+  onDeletePracticeSessions,
+  onDeleteAllAimData,
+}: {
+  deletingPracticeSessions: boolean;
+  deletingAllAimData: boolean;
+  saving: boolean;
+  clearProfileContextRunning: boolean;
+  onDeletePracticeSessions: () => Promise<void>;
+  onDeleteAllAimData: () => Promise<void>;
+}) {
+  return (
+    <div className="rounded-[1.7rem] border border-white/10 bg-black/25 p-5">
+      <p className="text-sm font-black uppercase tracking-[0.2em] text-amber-200">
+        Privacy & data controls
+      </p>
+      <h3 className="mt-2 text-xl font-black tracking-[-0.03em] text-white">
+        Manage saved AI Career Mentor data.
+      </h3>
+      <p className="mt-2 text-sm leading-6 text-gray-400">
+        Saved practice sessions can include answers, transcripts, feedback,
+        summaries, scores and derived voice/camera metrics. Use these controls
+        to delete saved practice history or clear all AI Career Mentor data linked to your
+        account.
+      </p>
+
+      <div className="mt-5 grid gap-3 md:grid-cols-2">
+        <button
+          type="button"
+          onClick={() => void onDeletePracticeSessions()}
+          disabled={
+            deletingPracticeSessions ||
+            deletingAllAimData ||
+            saving ||
+            clearProfileContextRunning
+          }
+          className="rounded-2xl border border-rose-300/20 bg-rose-300/10 px-5 py-4 text-left text-sm font-black text-rose-100 transition hover:bg-rose-300/15 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {deletingPracticeSessions
+            ? "Deleting sessions..."
+            : "Delete saved practice sessions"}
+          <span className="mt-2 block text-xs font-semibold leading-5 text-gray-400">
+            Removes saved answers, feedback, summaries and progress history.
+          </span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => void onDeleteAllAimData()}
+          disabled={
+            deletingAllAimData ||
+            deletingPracticeSessions ||
+            saving ||
+            clearProfileContextRunning
+          }
+          className="rounded-2xl border border-red-300/25 bg-red-300/10 px-5 py-4 text-left text-sm font-black text-red-100 transition hover:bg-red-300/15 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {deletingAllAimData ? "Deleting all AI Career Mentor data..." : "Delete all AI Career Mentor data"}
+          <span className="mt-2 block text-xs font-semibold leading-5 text-gray-400">
+            Clears candidate profile context and deletes saved practice
+            sessions. This cannot be undone.
+          </span>
+        </button>
+      </div>
+    </div>
   );
 }
 
@@ -308,6 +423,21 @@ function ProfileSidebar() {
           <li>• Note the skills or examples you want to improve</li>
           <li>• Save the profile before starting practice</li>
         </ul>
+      </GlassCard>
+
+      <GlassCard>
+        <SectionHeading
+          eyebrow="Privacy"
+          title="You stay in control."
+          description="Remove profile context or saved session history whenever you need to. Avoid uploading sensitive or third-party information that is not needed for interview practice."
+        />
+
+        <div className="mt-5 space-y-3 text-sm leading-7 text-gray-300">
+          <p>• CV and role uploads are converted into text context.</p>
+          <p>• Completed sessions may store answers, feedback and scores.</p>
+          <p>• Voice recordings and camera video should not be stored by AI Career Mentor.</p>
+          <p>• You can delete saved practice history from this page.</p>
+        </div>
       </GlassCard>
     </div>
   );

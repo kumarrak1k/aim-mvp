@@ -80,7 +80,10 @@ function cleanFileName(value: unknown) {
 function cleanSetupField(value: unknown, fallback: string) {
   if (typeof value !== "string") return fallback;
 
-  const cleaned = value.replace(/\s+/g, " ").trim().slice(0, MAX_SETUP_FIELD_CHARS);
+  const cleaned = value
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, MAX_SETUP_FIELD_CHARS);
 
   return cleaned || fallback;
 }
@@ -365,6 +368,46 @@ export async function POST(req: Request) {
 
     return Response.json(
       { error: "Failed to save candidate profile." },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE() {
+  try {
+    const { userId } = await auth();
+
+    if (!userId) {
+      return Response.json(
+        { error: "You must be signed in to clear your candidate profile." },
+        { status: 401 }
+      );
+    }
+
+    const client = await clerkClient();
+
+    const clearedProfile: CandidateProfile = {
+      ...EMPTY_PROFILE,
+      updatedAt: new Date().toISOString(),
+    };
+
+    await client.users.updateUserMetadata(userId, {
+      privateMetadata: {
+        candidateProfile: clearedProfile,
+      },
+    });
+
+    return Response.json({
+      success: true,
+      profile: clearedProfile,
+      message:
+        "Candidate profile context cleared. Saved defaults were reset to the beta defaults.",
+    });
+  } catch (error) {
+    console.error("CANDIDATE PROFILE DELETE ERROR:", error);
+
+    return Response.json(
+      { error: "Failed to clear candidate profile." },
       { status: 500 }
     );
   }

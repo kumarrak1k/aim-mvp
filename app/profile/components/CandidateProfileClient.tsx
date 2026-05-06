@@ -23,6 +23,9 @@ export function CandidateProfileClient() {
   const [removingCv, setRemovingCv] = useState(false);
   const [removingRoleSpec, setRemovingRoleSpec] = useState(false);
   const [clearingProfileContext, setClearingProfileContext] = useState(false);
+  const [deletingPracticeSessions, setDeletingPracticeSessions] =
+    useState(false);
+  const [deletingAllAimData, setDeletingAllAimData] = useState(false);
   const [statusMessage, setStatusMessage] = useState("");
 
   useEffect(() => {
@@ -132,7 +135,6 @@ export function CandidateProfileClient() {
     try {
       setSaving(true);
       setStatusMessage("");
-
       await saveProfileContext({});
     } catch (error) {
       setStatusMessage(
@@ -214,6 +216,96 @@ export function CandidateProfileClient() {
     }
   };
 
+  const deletePracticeSessions = async () => {
+    const confirmed = window.confirm(
+      "Delete all saved practice sessions? This removes saved answers, feedback, summaries and progress history. This cannot be undone."
+    );
+
+    if (!confirmed) return;
+
+    try {
+      setDeletingPracticeSessions(true);
+      setStatusMessage("");
+
+      const res = await fetch("/api/practice-sessions", {
+        method: "DELETE",
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || data.error) {
+        throw new Error(data.error || "Could not delete saved sessions.");
+      }
+
+      setStatusMessage(
+        data.message || "Saved practice sessions deleted successfully."
+      );
+    } catch (error) {
+      setStatusMessage(
+        error instanceof Error
+          ? error.message
+          : "Could not delete saved practice sessions."
+      );
+    } finally {
+      setDeletingPracticeSessions(false);
+    }
+  };
+
+  const deleteAllAimData = async () => {
+    const confirmed = window.confirm(
+      "Delete all AI Career Mentor data? This clears your candidate profile context and deletes all saved practice sessions. This cannot be undone."
+    );
+
+    if (!confirmed) return;
+
+    try {
+      setDeletingAllAimData(true);
+      setStatusMessage("");
+
+      const sessionsRes = await fetch("/api/practice-sessions", {
+        method: "DELETE",
+      });
+
+      const sessionsData = await sessionsRes.json().catch(() => null);
+
+      if (!sessionsRes.ok || sessionsData?.error) {
+        throw new Error(
+          sessionsData?.error || "Could not delete saved practice sessions."
+        );
+      }
+
+      const profileRes = await fetch("/api/candidate-profile", {
+        method: "DELETE",
+      });
+
+      const profileData = await profileRes.json().catch(() => null);
+
+      if (!profileRes.ok || profileData?.error) {
+        throw new Error(
+          profileData?.error || "Could not clear candidate profile."
+        );
+      }
+
+      setCvText("");
+      setRoleSpec("");
+      setInterviewGoals("");
+      setCvFileName("");
+      setRoleSpecFileName("");
+
+      setStatusMessage(
+        "All AI Career Mentor profile context and saved practice sessions were deleted."
+      );
+    } catch (error) {
+      setStatusMessage(
+        error instanceof Error
+          ? error.message
+          : "Could not delete all AI Career Mentor data."
+      );
+    } finally {
+      setDeletingAllAimData(false);
+    }
+  };
+
   const extractDocumentText = async (
     file: File,
     target: ProfileUploadTarget
@@ -289,12 +381,16 @@ export function CandidateProfileClient() {
           removingCv={removingCv}
           removingRoleSpec={removingRoleSpec}
           clearingProfileContext={clearingProfileContext}
+          deletingPracticeSessions={deletingPracticeSessions}
+          deletingAllAimData={deletingAllAimData}
           statusMessage={statusMessage}
           handleSave={handleSave}
           extractDocumentText={extractDocumentText}
           removeCv={removeCv}
           removeRoleSpec={removeRoleSpec}
           clearProfileContext={clearProfileContext}
+          deletePracticeSessions={deletePracticeSessions}
+          deleteAllAimData={deleteAllAimData}
         />
       )}
     </MarketingShell>

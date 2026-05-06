@@ -77,3 +77,51 @@ export async function GET(request: NextRequest) {
     );
   }
 }
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const { userId } = await auth();
+
+    if (!userId) {
+      return NextResponse.json(
+        { error: "You must be signed in to delete this practice session." },
+        { status: 401 }
+      );
+    }
+
+    const sessionId = getSessionIdFromRequest(request);
+
+    if (!sessionId) {
+      return NextResponse.json(
+        { error: "Practice session ID is required." },
+        { status: 400 }
+      );
+    }
+
+    const deleted = await prisma.practiceSession.deleteMany({
+      where: {
+        id: sessionId,
+        clerkUserId: userId,
+      },
+    });
+
+    if (deleted.count === 0) {
+      return NextResponse.json(
+        { error: "Practice session was not found." },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: "Practice session deleted.",
+    });
+  } catch (error) {
+    console.error("PRACTICE SESSION DETAIL DELETE ERROR:", error);
+
+    return NextResponse.json(
+      { error: "Failed to delete practice session." },
+      { status: 500 }
+    );
+  }
+}

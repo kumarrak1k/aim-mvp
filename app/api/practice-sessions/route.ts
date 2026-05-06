@@ -250,3 +250,38 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
+export async function DELETE() {
+  try {
+    const { userId } = await auth();
+
+    if (!userId) {
+      return NextResponse.json(
+        { error: "You must be signed in to delete practice sessions." },
+        { status: 401 }
+      );
+    }
+
+    const deleted = await prisma.practiceSession.deleteMany({
+      where: {
+        clerkUserId: userId,
+      },
+    });
+
+    return NextResponse.json({
+      success: true,
+      deletedCount: deleted.count,
+      message:
+        deleted.count === 1
+          ? "Deleted 1 saved practice session."
+          : `Deleted ${deleted.count} saved practice sessions.`,
+    });
+  } catch (error) {
+    console.error("PRACTICE SESSIONS DELETE ERROR:", error);
+
+    return NextResponse.json(
+      { error: "Failed to delete saved practice sessions." },
+      { status: 500 }
+    );
+  }
+}
