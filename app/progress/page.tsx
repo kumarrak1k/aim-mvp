@@ -232,7 +232,7 @@ export default function ProgressPage() {
             <div className="rounded-[1.65rem] border border-white/10 bg-black/25 p-4">
               <p className="text-sm font-black text-white">Product memory</p>
               <p className="mt-2 text-sm leading-6 text-gray-400">
-                AIM now remembers completed sessions server-side, so this page
+                AI Career Mentor now remembers completed sessions server-side, so this page
                 becomes more useful every time you practise.
               </p>
 
@@ -608,7 +608,7 @@ function EmptyProgressState() {
         Complete your first tracked interview.
       </h2>
       <p className="mt-3 max-w-2xl text-sm leading-7 text-gray-300">
-        Once you finish a five-question session, AIM will save your score,
+        Once you finish a five-question session, AI Career Mentor will save your score,
         summary and feedback signals here.
       </p>
 
