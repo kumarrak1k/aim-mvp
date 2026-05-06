@@ -21,12 +21,18 @@ type ProfileDetailsFormProps = {
   saving: boolean;
   extractingCv: boolean;
   extractingRole: boolean;
+  removingCv: boolean;
+  removingRoleSpec: boolean;
+  clearingProfileContext: boolean;
   statusMessage: string;
   handleSave: () => Promise<void>;
   extractDocumentText: (
     file: File,
     target: ProfileUploadTarget
   ) => Promise<void>;
+  removeCv: () => Promise<void>;
+  removeRoleSpec: () => Promise<void>;
+  clearProfileContext: () => Promise<void>;
 };
 
 export function ProfileDetailsForm({
@@ -42,10 +48,26 @@ export function ProfileDetailsForm({
   saving,
   extractingCv,
   extractingRole,
+  removingCv,
+  removingRoleSpec,
+  clearingProfileContext,
   statusMessage,
   handleSave,
   extractDocumentText,
+  removeCv,
+  removeRoleSpec,
+  clearProfileContext,
 }: ProfileDetailsFormProps) {
+  const hasCvContext = Boolean(cvText.trim() || cvFileName);
+  const hasRoleSpecContext = Boolean(roleSpec.trim() || roleSpecFileName);
+  const hasAnyProfileContext = Boolean(
+    cvText.trim() ||
+      roleSpec.trim() ||
+      interviewGoals.trim() ||
+      cvFileName ||
+      roleSpecFileName
+  );
+
   return (
     <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 sm:pb-20">
       <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
@@ -89,9 +111,21 @@ export function ProfileDetailsForm({
                         if (file) {
                           void extractDocumentText(file, "cv");
                         }
+                        event.currentTarget.value = "";
                       }}
                     />
                   </label>
+
+                  {hasCvContext && (
+                    <button
+                      type="button"
+                      onClick={() => void removeCv()}
+                      disabled={removingCv || saving}
+                      className="inline-flex items-center justify-center rounded-2xl border border-rose-300/20 bg-rose-300/10 px-4 py-3 text-sm font-black text-rose-100 transition hover:bg-rose-300/15 disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      {removingCv ? "Removing..." : "Remove CV"}
+                    </button>
+                  )}
 
                   {cvFileName && (
                     <span className="text-sm text-gray-400">
@@ -126,9 +160,21 @@ export function ProfileDetailsForm({
                         if (file) {
                           void extractDocumentText(file, "roleSpec");
                         }
+                        event.currentTarget.value = "";
                       }}
                     />
                   </label>
+
+                  {hasRoleSpecContext && (
+                    <button
+                      type="button"
+                      onClick={() => void removeRoleSpec()}
+                      disabled={removingRoleSpec || saving}
+                      className="inline-flex items-center justify-center rounded-2xl border border-rose-300/20 bg-rose-300/10 px-4 py-3 text-sm font-black text-rose-100 transition hover:bg-rose-300/15 disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      {removingRoleSpec ? "Removing..." : "Remove role spec"}
+                    </button>
+                  )}
 
                   {roleSpecFileName && (
                     <span className="text-sm text-gray-400">
@@ -156,6 +202,30 @@ export function ProfileDetailsForm({
                   className="min-h-[140px] w-full rounded-2xl border border-white/10 bg-black/30 p-4 text-white placeholder-gray-500 outline-none transition focus:border-purple-300/50 focus:ring-4 focus:ring-purple-500/10"
                 />
               </ProfileField>
+
+              {hasAnyProfileContext && (
+                <div className="rounded-[1.5rem] border border-rose-300/15 bg-rose-300/10 p-5">
+                  <p className="text-sm font-black text-rose-100">
+                    Remove saved profile context
+                  </p>
+                  <p className="mt-2 text-sm leading-6 text-gray-300">
+                    This clears your CV, target role specification, interview
+                    goals and uploaded file names. Your saved practice mode,
+                    speaker preference and default interview setup are kept.
+                  </p>
+
+                  <button
+                    type="button"
+                    onClick={() => void clearProfileContext()}
+                    disabled={clearingProfileContext || saving}
+                    className="mt-4 rounded-2xl border border-rose-300/25 bg-rose-300/10 px-5 py-3 text-sm font-black text-rose-100 transition hover:bg-rose-300/15 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {clearingProfileContext
+                      ? "Clearing..."
+                      : "Clear all profile context"}
+                  </button>
+                </div>
+              )}
 
               <div className="flex flex-col gap-4 sm:flex-row">
                 <button
