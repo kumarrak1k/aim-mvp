@@ -136,10 +136,11 @@ export default function CompanyDashboardPage() {
         </div>
 
         {/* Quick links */}
-        <div className="mb-10 grid gap-4 sm:grid-cols-3">
+        <div className="mb-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {[
             { href: "/company/templates", label: "Assessment templates", desc: `${activeTemplates} active`, icon: "📋" },
             { href: "/company/candidates", label: "Candidates", desc: `${pendingCount} awaiting`, icon: "👥" },
+            { href: "/company/results", label: "Results & scoring", desc: `${completedCount} completed`, icon: "📊" },
             { href: "/company/dashboard", label: "Team & settings", desc: `${company._count.members} members`, icon: "⚙️" },
           ].map(({ href, label, desc, icon }) => (
             <Link key={href} href={href}>

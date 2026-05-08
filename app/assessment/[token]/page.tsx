@@ -33,6 +33,8 @@ type AssessmentData = {
     difficulty: string;
     focusArea: string;
     questionCount: number;
+    customInstructions: string | null;
+    competencyFramework: string | null;
   };
 };
 
@@ -94,6 +96,15 @@ export default function AssessmentLandingPage() {
       totalQuestions: clampTotalQuestions(t.questionCount),
       assessmentMode: true,
       assignmentToken: token,
+      // Template context drives question/feedback generation in assessment
+      // mode. The candidate's personal saved profile is intentionally NOT
+      // forwarded so every candidate is assessed against the same brief.
+      templateContext: {
+        customInstructions: t.customInstructions || undefined,
+        competencyFramework: t.competencyFramework || undefined,
+        templateName: t.name,
+        companyName: data.company.name,
+      },
       createdAt: new Date().toISOString(),
     };
 

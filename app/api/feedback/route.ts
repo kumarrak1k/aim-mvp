@@ -57,6 +57,41 @@ function extractCandidateProfile(metadata: unknown): CandidateProfile {
   };
 }
 
+type FeedbackTemplateContext = {
+  customInstructions?: string;
+  competencyFramework?: string;
+  templateName?: string;
+  companyName?: string;
+};
+
+/**
+ * Replaces the personal-profile prompt block with the company's assessment
+ * brief. Used only when assessmentMode is set on the request — the same
+ * input that drove question generation, so feedback aligns with what was
+ * asked rather than the candidate's CV.
+ */
+function buildAssessmentContextBlock(
+  context: FeedbackTemplateContext | undefined
+): string {
+  if (!context) {
+    return "Company assessment context: assess this answer strictly against the role/level/type/difficulty/focus already supplied. The candidate's personal background is out of scope.";
+  }
+
+  const customInstructions = (context.customInstructions || "").trim();
+  const competencyFramework = (context.competencyFramework || "").trim();
+  const templateName = (context.templateName || "").trim();
+  const companyName = (context.companyName || "").trim();
+
+  return [
+    `Company assessment template${templateName ? `: ${templateName}` : ""}${companyName ? ` (issued by ${companyName})` : ""}.`,
+    customInstructions ? `Recruiter custom instructions:\n${customInstructions}` : "",
+    competencyFramework ? `Required competency framework:\n${competencyFramework}` : "",
+    "Score this answer against the company brief above and the role/level/type/difficulty/focus context. The candidate's personal CV or saved profile is NOT in scope and must not influence scoring.",
+  ]
+    .filter(Boolean)
+    .join("\n\n");
+}
+
 function buildSavedProfileContext(profile: CandidateProfile) {
   const hasProfile =
     profile.cvText.trim() ||
@@ -186,7 +221,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { question, answer, voiceAnalysis, videoAnalysis } = await req.json();
+    const {
+      question,
+      answer,
+      voiceAnalysis,
+      videoAnalysis,
+      assessmentMode,
+      templateContext,
+    } = await req.json();
 
     if (
       !question ||
@@ -200,8 +242,13 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const savedProfile = await getSignedInCandidateProfile();
-    const savedProfileContext = buildSavedProfileContext(savedProfile);
+    // Same isolation as /api/interview — in assessment mode the candidate's
+    // personal profile must NEVER colour the feedback. Comparable scoring
+    // depends on every candidate being evaluated against the same brief.
+    const isAssessment = Boolean(assessmentMode);
+    const savedProfileContext = isAssessment
+      ? buildAssessmentContextBlock(templateContext)
+      : buildSavedProfileContext(await getSignedInCandidateProfile());
 
     const suppliedVoiceAnalysis = voiceAnalysis as VoiceAnalysisLike | null;
 
@@ -254,13 +301,22 @@ Score each category from 0 to 10:
 A score of 8+ means the answer is strong enough for a competitive interview.
 A score of 5 or below means it would likely struggle to pass hiring bar.
 
-Personalisation rules:
+${
+  isAssessment
+    ? `Personalisation rules (COMPANY ASSESSMENT MODE):
+- This is a company-issued assessment. The candidate's personal CV / saved profile is NOT in scope and must NOT influence scoring.
+- Score against the company brief (role, level, type, difficulty, focus, custom instructions, competency framework) only.
+- Do not invent achievements, employers, qualifications, metrics or projects for the candidate.
+- The improved_answer must be a generic 8+/10 model answer suitable for any candidate at this level — do not reference unspecified prior roles or named past employers.
+- Do not address the candidate by name, do not assume their background, do not reference any "saved profile" — none was loaded.`
+    : `Personalisation rules:
 - If saved CV, role specification or interview goals are provided, use them to make feedback and the improved answer more relevant.
 - Prioritise the target role specification over generic role assumptions.
 - Use the CV context to suggest stronger examples the candidate could use.
 - Do not invent specific achievements, employers, qualifications, metrics or projects that are not present in the candidate answer or saved profile.
 - If the candidate answer is weak but the saved profile contains useful experience, the improved answer may draw on that saved profile context.
-- Do not mention private metadata, saved profile data, uploaded files, or internal storage.
+- Do not mention private metadata, saved profile data, uploaded files, or internal storage.`
+}
 
 Feedback style:
 - Use clear, professional language.
@@ -335,7 +391,7 @@ ${question}
 Candidate answer:
 ${answer}
 
-Saved candidate profile context:
+${isAssessment ? "Company assessment context:" : "Saved candidate profile context:"}
 ${savedProfileContext}
 
 Voice analysis received from frontend:

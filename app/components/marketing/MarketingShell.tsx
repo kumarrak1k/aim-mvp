@@ -17,6 +17,7 @@ export type MarketingPath =
   | "/company/dashboard"
   | "/company/templates"
   | "/company/candidates"
+  | "/company/results"
   | "/enterprise";
 
 type MarketingShellProps = {
@@ -69,7 +70,8 @@ function isCompanyPath(path: MarketingPath): boolean {
   return (
     path === "/company/dashboard" ||
     path === "/company/templates" ||
-    path === "/company/candidates"
+    path === "/company/candidates" ||
+    path === "/company/results"
   );
 }
 

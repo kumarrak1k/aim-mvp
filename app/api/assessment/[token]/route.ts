@@ -45,6 +45,8 @@ export async function GET(_req: NextRequest, { params }: Params) {
             difficulty: true,
             focusArea: true,
             questionCount: true,
+            customInstructions: true,
+            competencyFramework: true,
           },
         },
       },

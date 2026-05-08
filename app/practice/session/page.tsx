@@ -96,6 +96,15 @@ export default function PracticeSessionPage() {
   const [totalQuestions, setTotalQuestions] = useState<number>(DEFAULT_TOTAL_QUESTIONS);
   const [assessmentMode, setAssessmentMode] = useState(false);
   const [assignmentToken, setAssignmentToken] = useState<string | undefined>(undefined);
+  const [templateContext, setTemplateContext] = useState<
+    | {
+        customInstructions?: string;
+        competencyFramework?: string;
+        templateName?: string;
+        companyName?: string;
+      }
+    | undefined
+  >(undefined);
 
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
@@ -335,6 +344,7 @@ export default function PracticeSessionPage() {
     setTotalQuestions(config.totalQuestions ?? DEFAULT_TOTAL_QUESTIONS);
     setAssessmentMode(Boolean(config.assessmentMode));
     setAssignmentToken(config.assignmentToken);
+    setTemplateContext(config.templateContext);
     setSessionConfig(config);
     setSessionConfigLoaded(true);
   }, []);
@@ -818,6 +828,8 @@ export default function PracticeSessionPage() {
           questionNumber,
           totalQuestions,
           history,
+          assessmentMode,
+          templateContext,
         });
 
         setActiveQuestion(nextQuestion);
@@ -855,6 +867,8 @@ export default function PracticeSessionPage() {
       speakerEnabled,
       speakerPreference,
       totalQuestions,
+      assessmentMode,
+      templateContext,
     ]
   );
 
@@ -1059,6 +1073,8 @@ export default function PracticeSessionPage() {
         answer: safeAnswer,
         voiceAnalysis: latestVoiceAnalysis,
         videoAnalysis: latestVideoAnalysis,
+        assessmentMode,
+        templateContext,
       });
 
       setFeedback(data);
@@ -1090,6 +1106,8 @@ export default function PracticeSessionPage() {
     stopRecognitionOnly,
     videoAnalysis,
     voiceAnalysis,
+    assessmentMode,
+    templateContext,
   ]);
 
   const resetInterview = useCallback(() => {
@@ -1195,6 +1213,8 @@ export default function PracticeSessionPage() {
         const data = await fetchInterviewSummary({
           role: candidateProfile,
           results: updatedResults,
+          assessmentMode,
+          templateContext,
         });
 
         setSummary(data);
@@ -1246,6 +1266,8 @@ export default function PracticeSessionPage() {
     totalQuestions,
     videoAnalysis,
     voiceAnalysis,
+    assessmentMode,
+    templateContext,
   ]);
 
   const handleAnswerChange = useCallback(

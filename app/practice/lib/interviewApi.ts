@@ -48,16 +48,27 @@ export const fetchCandidateProfile = async () => {
   return (data.profile || null) as CandidateProfile | null;
 };
 
+export type AssessmentTemplateContext = {
+  customInstructions?: string;
+  competencyFramework?: string;
+  templateName?: string;
+  companyName?: string;
+};
+
 export const fetchInterviewQuestion = async ({
   role,
   questionNumber,
   totalQuestions,
   history,
+  assessmentMode,
+  templateContext,
 }: {
   role: string;
   questionNumber: number;
   totalQuestions: number;
   history: ResultItem[];
+  assessmentMode?: boolean;
+  templateContext?: AssessmentTemplateContext;
 }) => {
   const data = await postJson<
     { question?: string },
@@ -66,6 +77,8 @@ export const fetchInterviewQuestion = async ({
       questionNumber: number;
       totalQuestions: number;
       history: Array<{ question: string; answer: string }>;
+      assessmentMode?: boolean;
+      templateContext?: AssessmentTemplateContext;
     }
   >("/api/interview", {
     role,
@@ -75,6 +88,8 @@ export const fetchInterviewQuestion = async ({
       question: item.question,
       answer: item.answer,
     })),
+    ...(assessmentMode ? { assessmentMode: true } : {}),
+    ...(templateContext ? { templateContext } : {}),
   });
 
   return data.question || "Tell me about yourself.";
@@ -115,11 +130,15 @@ export const fetchFeedback = async ({
   answer,
   voiceAnalysis,
   videoAnalysis,
+  assessmentMode,
+  templateContext,
 }: {
   question: string;
   answer: string;
   voiceAnalysis: VoiceAnalysis | null;
   videoAnalysis: VideoAnalysis | null;
+  assessmentMode?: boolean;
+  templateContext?: AssessmentTemplateContext;
 }) => {
   return postJson<
     Feedback,
@@ -128,31 +147,43 @@ export const fetchFeedback = async ({
       answer: string;
       voiceAnalysis: VoiceAnalysis | null;
       videoAnalysis: VideoAnalysis | null;
+      assessmentMode?: boolean;
+      templateContext?: AssessmentTemplateContext;
     }
   >("/api/feedback", {
     question,
     answer,
     voiceAnalysis,
     videoAnalysis,
+    ...(assessmentMode ? { assessmentMode: true } : {}),
+    ...(templateContext ? { templateContext } : {}),
   });
 };
 
 export const fetchInterviewSummary = async ({
   role,
   results,
+  assessmentMode,
+  templateContext,
 }: {
   role: string;
   results: ResultItem[];
+  assessmentMode?: boolean;
+  templateContext?: AssessmentTemplateContext;
 }) => {
   return postJson<
     InterviewSummary,
     {
       role: string;
       results: ResultItem[];
+      assessmentMode?: boolean;
+      templateContext?: AssessmentTemplateContext;
     }
   >("/api/summary", {
     role,
     results,
+    ...(assessmentMode ? { assessmentMode: true } : {}),
+    ...(templateContext ? { templateContext } : {}),
   });
 };
 

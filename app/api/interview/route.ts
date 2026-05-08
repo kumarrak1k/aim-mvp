@@ -47,6 +47,47 @@ function extractCandidateProfile(metadata: unknown): CandidateProfile {
   };
 }
 
+type TemplateContext = {
+  customInstructions?: string;
+  competencyFramework?: string;
+  templateName?: string;
+  companyName?: string;
+};
+
+/**
+ * In assessment mode this replaces the personal-profile block. It carries
+ * only the recruiter-defined context (custom instructions and competency
+ * framework). Nothing about the specific candidate goes through here, so
+ * every candidate is assessed against the same brief.
+ */
+function buildTemplateContextBlock(context: TemplateContext | undefined): string {
+  if (!context) return "No additional template context provided.";
+
+  const customInstructions = (context.customInstructions || "").trim();
+  const competencyFramework = (context.competencyFramework || "").trim();
+  const templateName = (context.templateName || "").trim();
+  const companyName = (context.companyName || "").trim();
+
+  if (!customInstructions && !competencyFramework) {
+    return [
+      `Company assessment template${templateName ? `: ${templateName}` : ""}.`,
+      companyName
+        ? `Issued by ${companyName}.`
+        : "Issued by the hiring company.",
+      "No further custom instructions or competency framework supplied — generate questions strictly from the role, level, type, difficulty and focus area provided above.",
+    ].join("\n");
+  }
+
+  return [
+    `Company assessment template${templateName ? `: ${templateName}` : ""}${companyName ? ` (issued by ${companyName})` : ""}.`,
+    customInstructions ? `Recruiter custom instructions:\n${customInstructions}` : "",
+    competencyFramework ? `Required competency framework:\n${competencyFramework}` : "",
+    "Use only the information above plus the role/level/type/difficulty/focus already supplied. Do not invent a candidate background.",
+  ]
+    .filter(Boolean)
+    .join("\n\n");
+}
+
 function buildSavedProfileContext(profile: CandidateProfile) {
   const hasProfile =
     profile.cvText.trim() ||
@@ -147,7 +188,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { role, questionNumber, totalQuestions, history } = await req.json();
+    const {
+      role,
+      questionNumber,
+      totalQuestions,
+      history,
+      assessmentMode,
+      templateContext,
+    } = await req.json();
 
     if (!role || typeof role !== "string") {
       return NextResponse.json(
@@ -156,8 +204,20 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const savedProfile = await getSignedInCandidateProfile();
-    const savedProfileContext = buildSavedProfileContext(savedProfile);
+    // CRITICAL: in assessment mode (candidate taking a company-issued
+    // assessment) we MUST NOT pull the candidate's personal saved profile.
+    // Mixing their CV/role-spec into the prompt makes questions different
+    // for every candidate and biased toward what they've already done —
+    // which destroys the comparability the recruiter is paying for.
+    // Instead we use only the template's role/level/etc. plus any
+    // recruiter-provided custom instructions and competency framework.
+    const isAssessment = Boolean(assessmentMode);
+    const savedProfileContext = isAssessment
+      ? ""
+      : buildSavedProfileContext(await getSignedInCandidateProfile());
+    const templateContextBlock = isAssessment
+      ? buildTemplateContextBlock(templateContext)
+      : "";
 
     const safeQuestionNumber =
       typeof questionNumber === "number" && questionNumber > 0
@@ -178,7 +238,35 @@ Answer ${index + 1}: ${item?.answer || ""}`;
           .join("\n\n")
       : "";
 
-    const systemPrompt = `
+    const systemPrompt = isAssessment
+      ? `
+You are an expert UK interview question generator for a company-issued assessment.
+
+Your role: produce one fair, role-relevant interview question for this candidate, using ONLY the company's assessment brief. Every candidate receives the same brief, so questions must remain comparable across candidates.
+
+Language and style rules:
+- Use UK English spelling, vocabulary and phrasing.
+- Use "CV", not "resume" or "résumé".
+- Use "role specification" or "target role", not "job description".
+- Use UK spellings such as "behavioural", "organisation", "prioritise", "analyse", "programme", "optimise" and "specialise".
+- Keep the question professional, concise and natural for a UK interview setting.
+
+Question rules:
+- Generate ONE interview question only.
+- Build the question STRICTLY from the company template's role, experience level, interview type, difficulty, focus area and any recruiter custom instructions or competency framework.
+- DO NOT invent or assume a personal CV, work history, prior projects or goals for the candidate. Their background is not in scope.
+- DO NOT ask the candidate to "tell me about your experience at [made-up company]" or reference unspecified previous roles — only ask questions that work for any candidate at the configured level.
+- If a competency framework is provided, target the question at one of those competencies and rotate across them as the interview progresses.
+- Avoid repeating previous questions.
+- Do not ask for confidential personal data.
+- Do not include scoring, explanation, tips or model answers.
+- Return ONLY valid JSON in this exact shape:
+
+{
+  "question": "string"
+}
+`.trim()
+      : `
 You are an expert UK interview question generator for AI Career Mentor.
 
 Your job is to create realistic, high-quality interview questions for candidates preparing for professional interviews in a UK English style.
@@ -210,7 +298,22 @@ Interview question rules:
 }
 `.trim();
 
-    const userPrompt = `
+    const userPrompt = isAssessment
+      ? `
+Company assessment brief (set by the hiring team — do not deviate):
+${role}
+
+${templateContextBlock}
+
+Current question:
+${safeQuestionNumber} of ${safeTotalQuestions}
+
+Previous interview history:
+${previousQuestions || "No previous questions yet."}
+
+Generate the next best UK English interview question, drawing only from the brief above.
+`.trim()
+      : `
 Candidate setup from practice page:
 ${role}
 

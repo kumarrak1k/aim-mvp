@@ -323,7 +323,28 @@ const buildFallbackSummary = (
 
 export async function POST(req: Request) {
   try {
-    const { role, results } = await req.json();
+    const { role, results, assessmentMode, templateContext } = await req.json();
+    const isAssessment = Boolean(assessmentMode);
+    const tCtx = (templateContext || {}) as {
+      customInstructions?: string;
+      competencyFramework?: string;
+      templateName?: string;
+      companyName?: string;
+    };
+    const assessmentBriefBlock = isAssessment
+      ? [
+          `Company assessment template${tCtx.templateName ? `: ${tCtx.templateName}` : ""}${tCtx.companyName ? ` (issued by ${tCtx.companyName})` : ""}.`,
+          (tCtx.customInstructions || "").trim()
+            ? `Recruiter custom instructions:\n${tCtx.customInstructions?.trim()}`
+            : "",
+          (tCtx.competencyFramework || "").trim()
+            ? `Required competency framework:\n${tCtx.competencyFramework?.trim()}`
+            : "",
+          "Score this whole interview against the company brief above. The candidate's personal CV / saved profile is NOT in scope.",
+        ]
+          .filter(Boolean)
+          .join("\n\n")
+      : "";
 
     if (!process.env.OPENAI_API_KEY) {
       return Response.json(
@@ -493,9 +514,9 @@ Rules:
         {
           role: "user",
           content: `
-Candidate profile:
+${isAssessment ? "Company assessment brief:" : "Candidate profile:"}
 ${role || "Not provided"}
-
+${isAssessment && assessmentBriefBlock ? `\n${assessmentBriefBlock}\n` : ""}
 Interview results:
 ${formattedResults}
           `.trim(),

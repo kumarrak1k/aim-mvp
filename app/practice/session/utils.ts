@@ -34,6 +34,18 @@ export type PracticeSessionConfig = {
    */
   assessmentMode?: boolean;
   assignmentToken?: string;
+  /**
+   * Company template context — only used in assessmentMode. Replaces the
+   * candidate's personal CV/profile so questions are generated purely from
+   * what the recruiter configured, keeping the assessment fair and
+   * comparable across candidates.
+   */
+  templateContext?: {
+    customInstructions?: string;
+    competencyFramework?: string;
+    templateName?: string;
+    companyName?: string;
+  };
   createdAt?: string;
 };
 
@@ -169,6 +181,27 @@ export function parseSessionConfig(): PracticeSessionConfig | null {
       assignmentToken:
         typeof parsed.assignmentToken === "string" && parsed.assignmentToken.length > 0
           ? parsed.assignmentToken
+          : undefined,
+      templateContext:
+        parsed.templateContext && typeof parsed.templateContext === "object"
+          ? {
+              customInstructions:
+                typeof parsed.templateContext.customInstructions === "string"
+                  ? parsed.templateContext.customInstructions
+                  : undefined,
+              competencyFramework:
+                typeof parsed.templateContext.competencyFramework === "string"
+                  ? parsed.templateContext.competencyFramework
+                  : undefined,
+              templateName:
+                typeof parsed.templateContext.templateName === "string"
+                  ? parsed.templateContext.templateName
+                  : undefined,
+              companyName:
+                typeof parsed.templateContext.companyName === "string"
+                  ? parsed.templateContext.companyName
+                  : undefined,
+            }
           : undefined,
       createdAt:
         typeof parsed.createdAt === "string" ? parsed.createdAt : undefined,
