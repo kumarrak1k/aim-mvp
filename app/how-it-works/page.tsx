@@ -6,6 +6,7 @@ import {
   MarketingShell,
   SectionHeading,
 } from "../components/marketing/MarketingShell";
+// GlassCard kept for use in the outcome section below.
 
 export const metadata: Metadata = createPageMetadata({
   path: "/how-it-works",
@@ -47,23 +48,14 @@ const steps = [
 export default function HowItWorksPage() {
   return (
     <MarketingShell currentPath="/how-it-works">
-      <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16">
-        <div className="grid items-center gap-8 lg:grid-cols-[0.95fr_1.05fr]">
-          <div>
-            <SectionHeading
-              eyebrow="How it works"
-              title="A simple, high-quality loop for better interview performance."
-              description="The product is designed to reduce friction. Each step is clear, focused and directly connected to better answers and better delivery."
-            />
-          </div>
-
-          <GlassCard className="overflow-hidden p-0">
-            <img
-              src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1400&q=80"
-              alt="Professional reviewing a workflow on a laptop"
-              className="h-full min-h-[360px] w-full object-cover"
-            />
-          </GlassCard>
+      <section className="mx-auto max-w-7xl px-4 py-12 text-center sm:px-6 sm:py-16">
+        <div className="mx-auto max-w-3xl">
+          <SectionHeading
+            align="center"
+            eyebrow="How it works"
+            title="A simple, high-quality loop for better interview performance."
+            description="The product is designed to reduce friction. Each step is clear, focused and directly connected to better answers and better delivery."
+          />
         </div>
       </section>
 

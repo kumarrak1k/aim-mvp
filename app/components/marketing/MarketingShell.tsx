@@ -130,8 +130,8 @@ export function MarketingShell({ children, currentPath }: MarketingShellProps) {
             </div>
           </nav>
 
-          {/* Right actions */}
-          <div className="ml-auto flex shrink-0 items-center gap-2">
+          {/* Right actions — explicit right margin guarantees avatar never sits flush against viewport edge */}
+          <div className="ml-auto mr-2 flex shrink-0 items-center gap-2 sm:mr-3 lg:mr-4">
             <Show when="signed-in">
               <Link href="/progress">
                 <button

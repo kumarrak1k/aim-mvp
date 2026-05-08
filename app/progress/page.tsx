@@ -205,39 +205,31 @@ export default function ProgressPage() {
   return (
     <MarketingShell currentPath="/progress">
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:py-10">
-        <section className="relative overflow-hidden rounded-[2.25rem] border border-white/10 bg-white/[0.065] p-5 shadow-2xl shadow-purple-950/20 backdrop-blur-2xl sm:p-7 lg:p-8">
+        <section className="relative overflow-hidden rounded-[2.25rem] border border-white/10 bg-white/[0.065] p-6 text-center shadow-2xl shadow-purple-950/20 backdrop-blur-2xl sm:p-10 lg:p-12">
           <div className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-cyan-400/10 blur-3xl" />
           <div className="pointer-events-none absolute -bottom-28 left-10 h-80 w-80 rounded-full bg-purple-500/15 blur-3xl" />
 
-          <div className="relative grid gap-7 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-end">
-            <div>
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-cyan-300/20 bg-cyan-300/10 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-cyan-100">
-                Track progress
-              </div>
-
-              <h1 className="max-w-4xl text-4xl font-black leading-[1.02] tracking-[-0.055em] sm:text-5xl lg:text-6xl">
-                See whether your interview performance is{" "}
-                <span className="bg-gradient-to-r from-purple-200 via-fuchsia-200 to-cyan-200 bg-clip-text text-transparent">
-                  actually improving.
-                </span>
-              </h1>
-
-              <p className="mt-5 max-w-3xl text-base leading-8 text-gray-300 sm:text-lg">
-                Your completed practice sessions are saved securely and turned
-                into a clear improvement dashboard: score trends, readiness
-                signal, category strengths and your next focus area.
-              </p>
+          <div className="relative mx-auto max-w-3xl">
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-cyan-300/20 bg-cyan-300/10 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-cyan-100">
+              Track progress
             </div>
 
-            <div className="rounded-[1.65rem] border border-white/10 bg-black/25 p-4">
-              <p className="text-sm font-black text-white">Product memory</p>
-              <p className="mt-2 text-sm leading-6 text-gray-400">
-                AI Career Mentor now remembers completed sessions server-side, so this page
-                becomes more useful every time you practise.
-              </p>
+            <h1 className="text-4xl font-black leading-[1.02] tracking-[-0.055em] sm:text-5xl lg:text-6xl">
+              See whether your interview performance is{" "}
+              <span className="bg-gradient-to-r from-purple-200 via-fuchsia-200 to-cyan-200 bg-clip-text text-transparent">
+                actually improving.
+              </span>
+            </h1>
 
+            <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-gray-300 sm:text-lg">
+              Your completed practice sessions are saved securely and turned
+              into a clear improvement dashboard: score trends, readiness
+              signal, category strengths and your next focus area.
+            </p>
+
+            <div className="mt-7 flex justify-center">
               <Link href="/practice">
-                <button className="mt-4 w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-3.5 text-sm font-black text-white shadow-2xl shadow-purple-900/30 transition hover:scale-[1.01]">
+                <button className="rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-7 py-3.5 text-sm font-black text-white shadow-2xl shadow-purple-900/30 transition hover:scale-[1.02]">
                   Start new practice session
                 </button>
               </Link>

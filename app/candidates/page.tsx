@@ -41,23 +41,14 @@ const audienceCards = [
 export default function CandidatesPage() {
   return (
     <MarketingShell currentPath="/candidates">
-      <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16">
-        <div className="grid items-center gap-8 lg:grid-cols-[1fr_1fr]">
-          <div>
-            <SectionHeading
-              eyebrow="Candidates"
-              title="Your competition is preparing. Are you?"
-              description="Most candidates walk into interviews hoping for the best. The ones who get offers practised until the answers came naturally. AI Career Mentor makes that practice fast, specific and honest."
-            />
-          </div>
-
-          <GlassCard className="overflow-hidden p-0">
-            <img
-              src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1400&q=80"
-              alt="Diverse professionals in discussion"
-              className="h-full min-h-[360px] w-full object-cover"
-            />
-          </GlassCard>
+      <section className="mx-auto max-w-7xl px-4 py-12 text-center sm:px-6 sm:py-16">
+        <div className="mx-auto max-w-3xl">
+          <SectionHeading
+            align="center"
+            eyebrow="Candidates"
+            title="Your competition is preparing. Are you?"
+            description="Most candidates walk into interviews hoping for the best. The ones who receive offers practised until the answers came naturally. AI Career Mentor makes that practice fast, specific and honest."
+          />
         </div>
       </section>
 
