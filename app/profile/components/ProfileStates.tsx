@@ -55,7 +55,7 @@ export function ProfileSignedOutState() {
             </h2>
             <p className="mt-4 max-w-2xl text-base leading-8 text-gray-300">
               Your candidate profile stores CV context, target role details and
-              interview goals so AIM can generate more relevant questions and
+              interview goals so AI Career Mentor can generate more relevant questions and
               more useful feedback.
             </p>
 
