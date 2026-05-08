@@ -32,7 +32,10 @@ const plans = [
       "Basic answer feedback",
       "Simple mock interview experience",
     ],
+    cta: "Start Practising",
+    ctaHref: "/practice",
     highlight: false,
+    enterprise: false,
   },
   {
     name: "Coach",
@@ -45,7 +48,10 @@ const plans = [
       "Better structured feedback",
       "Session performance summary",
     ],
+    cta: "Start Practising",
+    ctaHref: "/practice",
     highlight: true,
+    enterprise: false,
   },
   {
     name: "Pro",
@@ -58,7 +64,30 @@ const plans = [
       "Deeper practice support",
       "Profile-led preparation journeys",
     ],
+    cta: "Start Practising",
+    ctaHref: "/practice",
     highlight: false,
+    enterprise: false,
+  },
+  {
+    name: "Enterprise",
+    price: "Custom",
+    description:
+      "For talent teams, assessment centres, and HR departments running structured evaluation at scale.",
+    features: [
+      "Unlimited candidate assessments",
+      "Custom assessment templates",
+      "Competency framework integration",
+      "Recruiter dashboard & team access",
+      "Bulk candidate invite management",
+      "White-label branding options",
+      "Priority support & onboarding",
+      "Data Processing Agreement (DPA)",
+    ],
+    cta: "Talk to sales",
+    ctaHref: "/enterprise",
+    highlight: false,
+    enterprise: true,
   },
 ];
 
@@ -75,19 +104,26 @@ export default function PricingPage() {
       </section>
 
       <section className="mx-auto max-w-7xl px-4 pb-14 sm:px-6 sm:pb-20">
-        <div className="grid gap-5 md:grid-cols-3">
+        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
           {plans.map((plan) => (
             <div
               key={plan.name}
               className={`relative rounded-[2rem] border p-6 shadow-2xl ${
                 plan.highlight
                   ? "border-purple-300/30 bg-purple-300/10 shadow-purple-950/20"
+                  : plan.enterprise
+                  ? "border-fuchsia-300/20 bg-fuchsia-300/[0.04] shadow-black/10"
                   : "border-white/10 bg-white/[0.05] shadow-black/10"
               }`}
             >
               {plan.highlight && (
                 <span className="mb-4 inline-flex rounded-full bg-white px-3 py-1 text-xs font-black text-black">
                   Most popular
+                </span>
+              )}
+              {plan.enterprise && (
+                <span className="mb-4 inline-flex rounded-full border border-fuchsia-400/40 bg-fuchsia-400/10 px-3 py-1 text-xs font-black text-fuchsia-300">
+                  For teams
                 </span>
               )}
 
@@ -98,8 +134,11 @@ export default function PricingPage() {
                 <span className="text-5xl font-black tracking-[-0.06em]">
                   {plan.price}
                 </span>
-                {plan.price !== "Free" && (
+                {plan.price !== "Free" && plan.price !== "Custom" && (
                   <span className="mb-2 text-sm text-gray-400">/month</span>
+                )}
+                {plan.price === "Custom" && (
+                  <span className="mb-2 text-sm text-gray-400">pricing</span>
                 )}
               </div>
 
@@ -116,14 +155,16 @@ export default function PricingPage() {
               </div>
 
               <Link
-                href="/practice"
+                href={plan.ctaHref}
                 className={`mt-7 flex w-full justify-center rounded-2xl px-5 py-3.5 text-sm font-black transition ${
                   plan.highlight
                     ? "bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 text-white shadow-xl shadow-purple-950/35 hover:scale-[1.02]"
+                    : plan.enterprise
+                    ? "bg-gradient-to-r from-fuchsia-500 to-purple-500 text-white shadow-xl shadow-purple-950/25 hover:scale-[1.02]"
                     : "border border-white/10 bg-white/[0.06] text-white hover:bg-white/[0.1]"
                 }`}
               >
-                Start Practising
+                {plan.cta}
               </Link>
             </div>
           ))}

@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(npx tsc --noEmit*)",
+      "PowerShell(git status*)",
+      "PowerShell(git log*)",
+      "PowerShell(git diff*)",
+      "PowerShell(git tag*)"
+    ]
+  }
+}

@@ -232,6 +232,20 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    // Link to company assessment assignment if token provided
+    const assignmentToken = cleanText(body?.assignmentToken);
+    if (assignmentToken) {
+      const assignment = await prisma.candidateAssignment.findUnique({
+        where: { inviteToken: assignmentToken },
+      });
+      if (assignment && assignment.status !== "completed" && assignment.expiresAt > new Date()) {
+        await prisma.candidateAssignment.update({
+          where: { inviteToken: assignmentToken },
+          data: { status: "completed", clerkUserId: userId, sessionId: session.id, completedAt: new Date() },
+        });
+      }
+    }
+
     const updatedUsage = await getDailyUsage(userId);
 
     return NextResponse.json({

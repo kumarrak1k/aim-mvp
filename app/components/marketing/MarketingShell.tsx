@@ -12,7 +12,11 @@ type MarketingPath =
   | "/candidates"
   | "/pricing"
   | "/progress"
-  | "/profile";
+  | "/profile"
+  | "/company/dashboard"
+  | "/company/templates"
+  | "/company/candidates"
+  | "/enterprise";
 
 type MarketingShellProps = {
   children: ReactNode;
@@ -38,6 +42,7 @@ const navItems: Array<{ href: MarketingPath; label: string }> = [
 const compactNavItems: Array<{ href: MarketingPath; label: string }> = [
   { href: "/", label: "Home" },
   { href: "/platform", label: "Platform" },
+  { href: "/company/dashboard", label: "Company" },
   { href: "/progress", label: "Progress" },
   { href: "/profile", label: "Profile" },
 ];
@@ -83,6 +88,18 @@ export function MarketingShell({
 
           <div className="ml-auto flex min-w-0 items-center justify-end gap-2 sm:gap-3">
             <Show when="signed-in">
+              <Link href="/company/dashboard">
+                <button
+                  className={`hidden whitespace-nowrap rounded-full px-3.5 py-2.5 text-sm font-black transition xl:block ${
+                    currentPath === "/company/dashboard" || currentPath === "/company/templates" || currentPath === "/company/candidates"
+                      ? "border border-fuchsia-300/35 bg-fuchsia-300/15 text-fuchsia-50 shadow-xl shadow-fuchsia-950/10"
+                      : "border border-fuchsia-300/15 bg-fuchsia-300/10 text-fuchsia-100 hover:bg-fuchsia-300/15"
+                  }`}
+                >
+                  Company
+                </button>
+              </Link>
+
               <Link href="/progress">
                 <button
                   className={`hidden whitespace-nowrap rounded-full px-3.5 py-2.5 text-sm font-black transition xl:block ${
@@ -178,6 +195,12 @@ export function MarketingShell({
             </Link>
             <Link href="/candidates" className="hover:text-white">
               Candidates
+            </Link>
+            <Link href="/company/dashboard" className="hover:text-white">
+              For Companies
+            </Link>
+            <Link href="/enterprise" className="hover:text-white">
+              Enterprise
             </Link>
             <Link href="/progress" className="hover:text-white">
               Track Progress

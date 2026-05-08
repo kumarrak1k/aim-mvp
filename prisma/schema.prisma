@@ -10,7 +10,7 @@ datasource db {
 
 model PracticeSession {
   id                String   @id @default(cuid())
-  clerkUserId        String
+  clerkUserId       String
   role              String
   experienceLevel   String
   interviewType     String
@@ -28,4 +28,98 @@ model PracticeSession {
 
   @@index([clerkUserId])
   @@index([createdAt])
+}
+
+model Company {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  industry    String?
+  logoUrl     String?
+  brandColor  String   @default("#8c5cff")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  members     CompanyMember[]
+  templates   AssessmentTemplate[]
+  assignments CandidateAssignment[]
+  invites     CompanyInvite[]
+
+  @@index([slug])
+}
+
+model CompanyMember {
+  id          String   @id @default(cuid())
+  companyId   String
+  clerkUserId String
+  role        String   @default("recruiter")
+  createdAt   DateTime @default(now())
+
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@unique([companyId, clerkUserId])
+  @@index([clerkUserId])
+  @@index([companyId])
+}
+
+model CompanyInvite {
+  id        String   @id @default(cuid())
+  companyId String
+  email     String
+  role      String   @default("recruiter")
+  token     String   @unique @default(cuid())
+  used      Boolean  @default(false)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([companyId])
+}
+
+model AssessmentTemplate {
+  id                  String   @id @default(cuid())
+  companyId           String
+  name                String
+  description         String?
+  role                String
+  experienceLevel     String   @default("Graduate / entry level")
+  interviewType       String   @default("Competency / behavioural")
+  difficulty          String   @default("Standard")
+  focusArea           String   @default("Balanced")
+  questionCount       Int      @default(5)
+  customInstructions  String?
+  competencyFramework String?
+  isActive            Boolean  @default(true)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  company     Company               @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  assignments CandidateAssignment[]
+
+  @@index([companyId])
+}
+
+model CandidateAssignment {
+  id             String    @id @default(cuid())
+  companyId      String
+  templateId     String
+  candidateEmail String
+  inviteToken    String    @unique @default(cuid())
+  status         String    @default("pending")
+  clerkUserId    String?
+  sessionId      String?
+  expiresAt      DateTime
+  startedAt      DateTime?
+  completedAt    DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  company  Company            @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  template AssessmentTemplate @relation(fields: [templateId], references: [id])
+
+  @@index([companyId])
+  @@index([inviteToken])
+  @@index([clerkUserId])
 }
