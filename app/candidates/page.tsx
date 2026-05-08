@@ -26,15 +26,15 @@ export const metadata: Metadata = createPageMetadata({
 const audienceCards = [
   {
     title: "Graduates and early-career candidates",
-    text: "Build structure, confidence and better examples for internships, placements and first professional roles.",
+    text: "You know what the job asks for — but your examples feel vague and your answers trail off. Practice gives you structure, stronger evidence and the confidence to fill silences without rambling.",
   },
   {
     title: "Career changers",
-    text: "Translate transferable skills into answers that feel relevant, specific and persuasive.",
+    text: "Your experience is real — but interviewers can't see the connection. Practice helps you translate what you've done into answers that land in a new industry or function.",
   },
   {
     title: "Experienced professionals",
-    text: "Refine strategic answers, leadership examples and executive presence for higher-stakes interviews.",
+    text: "Stakes are higher. Interviewers expect sharper answers, clearer leadership examples and a more polished presence. Practice at the right level removes the rust before the real thing.",
   },
 ];
 
@@ -46,8 +46,8 @@ export default function CandidatesPage() {
           <div>
             <SectionHeading
               eyebrow="Candidates"
-              title="Built for candidates at different career stages."
-              description="The product is designed to support a wide range of career situations, while still helping each user prepare in a structured and focused way."
+              title="Your competition is preparing. Are you?"
+              description="Most candidates walk into interviews hoping for the best. The ones who get offers practised until the answers came naturally. AI Career Mentor makes that practice fast, specific and honest."
             />
           </div>
 
@@ -81,19 +81,19 @@ export default function CandidatesPage() {
         <div className="grid gap-6 lg:grid-cols-[0.98fr_1.02fr]">
           <GlassCard>
             <SectionHeading
-              eyebrow="Use cases"
-              title="Helpful when the interview matters."
-              description="Candidates often use the platform before important applications or interviews where they want sharper answers and more confidence."
+              eyebrow="When to use it"
+              title="Use it when the interview actually matters."
+              description="The best time to practise is the week before — when there's still time to fix your answers but the pressure is real enough to focus you."
             />
 
             <div className="mt-6">
               <BulletList
                 items={[
-                  "Preparing for internship, graduate or placement interviews.",
-                  "Practising before a role change or industry move.",
-                  "Improving confidence before a remote interview.",
-                  "Refining leadership examples for more senior opportunities.",
-                  "Getting repeated practice before a final-stage interview.",
+                  "You have a first-round interview in less than a week.",
+                  "You're changing roles or industries and your examples feel stale.",
+                  "You froze or rambled in your last interview and want to fix it.",
+                  "You're applying to a role where the competition is serious.",
+                  "You want to know what you actually sound like before someone else does.",
                 ]}
               />
             </div>

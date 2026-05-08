@@ -23,30 +23,30 @@ export const metadata: Metadata = createPageMetadata({
 
 const platformFeatures = [
   {
-    title: "Tailored interview setup",
+    title: "Interview setup that actually fits you",
     description:
-      "Choose role, interview type, level, difficulty and focus area so the interview feels relevant and realistic.",
+      "Tell us your role, experience level, interview type, difficulty and focus area. Every question is generated specifically for your situation — not recycled from a generic bank.",
     image:
       "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1200&q=80",
   },
   {
-    title: "Natural question playback",
+    title: "Hear your questions spoken aloud",
     description:
-      "Questions are presented with more natural-sounding playback to make practice feel more human and engaging.",
+      "Questions play in natural audio so practice feels like the real thing. You respond by voice or text. Your answer is transcribed, scored and reviewed.",
     image:
       "https://images.unsplash.com/photo-1516321165247-4aa89a48be28?auto=format&fit=crop&w=1200&q=80",
   },
   {
-    title: "Transcript and answer review",
+    title: "Honest feedback that actually helps",
     description:
-      "Capture your response, review the transcript and refine your answers with clearer structure and stronger evidence.",
+      "Each answer gets a score, a breakdown of what worked and what didn't, specific improvements, and a model answer to compare against. No vague encouragement.",
     image:
       "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=1200&q=80",
   },
   {
-    title: "Performance insight",
+    title: "Voice, camera and presence all tracked",
     description:
-      "See scores for answers, voice and camera presence with strengths, weaknesses and next actions.",
+      "Know if you're speaking too fast, using too many filler words, or losing eye contact. The feedback covers the full picture interviewers actually evaluate.",
     image:
       "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80",
   },
@@ -60,8 +60,8 @@ export default function PlatformPage() {
           <SectionHeading
             align="center"
             eyebrow="Platform"
-            title="A premium interview practice platform built for real improvement."
-            description="AI Career Mentor combines tailored setup, natural question playback, transcript review and clear performance insight into a practice experience designed to help candidates improve faster."
+            title="Everything a serious candidate needs — in one focused session."
+            description="Tailored questions. Spoken feedback. Voice and camera analysis. Model answers. Progress saved. No other tool gives you this much in a single 20-minute practice."
           />
         </div>
       </section>
@@ -104,13 +104,10 @@ export default function PlatformPage() {
                 Why it feels premium
               </p>
               <h2 className="mt-3 text-3xl font-black tracking-[-0.045em] sm:text-4xl">
-                One product, one flow, one clear outcome.
+                Built to make you noticeably better, fast.
               </h2>
               <p className="mt-4 text-base leading-8 text-gray-300">
-                The platform is designed to feel focused and intentional:
-                tailored setup, guided practice, clear scoring and practical
-                recommendations. Every element supports one goal: helping the
-                candidate perform better in real interviews.
+                Most interview prep is guesswork. AI Career Mentor gives you structured practice with the same signals real interviewers look for: how you answer, how you sound, and how you come across on camera. One focused session. Real improvement.
               </p>
 
               <div className="mt-6 flex flex-wrap gap-3">

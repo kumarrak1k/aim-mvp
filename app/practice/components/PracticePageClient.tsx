@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
-import { PracticeHeader } from "./PracticeHeader";
+import { MarketingShell } from "@/app/components/marketing/MarketingShell";
 import { PracticeHero } from "./PracticeHero";
 import { PracticeStartScreen } from "./PracticeStartScreen";
 import { fetchCandidateProfile } from "../lib/interviewApi";
@@ -385,61 +385,52 @@ export function PracticePageClient() {
   ]);
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[#120d1e] text-white">
-      <div className="pointer-events-none fixed inset-0 z-0 bg-[radial-gradient(circle_at_top,rgba(140,92,255,0.18),transparent_35%),radial-gradient(circle_at_right,rgba(34,211,238,0.08),transparent_28%),linear-gradient(180deg,#120d1e_0%,#171224_45%,#1b1629_100%)]" />
-      <div className="pointer-events-none fixed left-1/2 top-[-220px] z-0 h-[520px] w-[820px] -translate-x-1/2 rounded-full bg-purple-600/20 blur-[140px]" />
-      <div className="pointer-events-none fixed right-[-140px] top-24 z-0 h-[320px] w-[320px] rounded-full bg-cyan-400/10 blur-[120px]" />
-      <div className="pointer-events-none fixed left-[-140px] bottom-12 z-0 h-[320px] w-[320px] rounded-full bg-fuchsia-400/10 blur-[120px]" />
+    <MarketingShell currentPath="/practice">
+      <section className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:py-10">
+        <PracticeHero
+          totalQuestions={totalQuestions}
+          canStartInterview={canStartInterview}
+          questionLoading={questionLoading}
+          setupSummary={setupSummary}
+          usageSummary={usageSummary}
+          usageLimitReached={signedInLimitReached}
+          usageMessage={usageMessage}
+          onStartInterview={startInterview}
+        />
 
-      <div className="relative z-10">
-        <PracticeHeader isLoaded={isLoaded} isSignedIn={isSignedIn} />
-
-        <section className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:py-10">
-          <PracticeHero
-            totalQuestions={totalQuestions}
-            canStartInterview={canStartInterview}
+        <div id="interview-setup">
+          <PracticeStartScreen
+            isLoaded={isLoaded}
+            isSignedIn={isSignedIn}
+            role={role}
+            onRoleChange={onRoleChange}
+            savedCandidateProfile={savedCandidateProfile}
+            profileContextLoaded={profileContextLoaded}
+            roleAutofilledFromProfile={roleAutofilledFromProfile}
+            useSavedProfileForRole={useSavedProfileForRole}
+            manualDeviceMode={manualDeviceMode}
+            experienceLevel={experienceLevel}
+            setExperienceLevel={onExperienceLevelChange}
+            interviewType={interviewType}
+            setInterviewType={onInterviewTypeChange}
+            difficulty={difficulty}
+            setDifficulty={onDifficultyChange}
+            focusArea={focusArea}
+            setFocusArea={onFocusAreaChange}
+            speakerEnabled={speakerEnabled}
+            cameraEnabled={cameraEnabled}
+            speakerPreference={speakerPreference}
+            setSpeakerPreference={setSpeakerPreference}
+            setTextOnlyMode={setTextOnlyMode}
+            setSpeakerMode={setSpeakerMode}
+            toggleCamera={toggleCamera}
+            startInterview={startInterview}
             questionLoading={questionLoading}
-            setupSummary={setupSummary}
-            usageSummary={usageSummary}
-            usageLimitReached={signedInLimitReached}
-            usageMessage={usageMessage}
-            onStartInterview={startInterview}
+            startDisabled={signedInLimitReached}
+            startDisabledMessage={usageSummary}
           />
-
-          <div id="interview-setup">
-            <PracticeStartScreen
-              isLoaded={isLoaded}
-              isSignedIn={isSignedIn}
-              role={role}
-              onRoleChange={onRoleChange}
-              savedCandidateProfile={savedCandidateProfile}
-              profileContextLoaded={profileContextLoaded}
-              roleAutofilledFromProfile={roleAutofilledFromProfile}
-              useSavedProfileForRole={useSavedProfileForRole}
-              manualDeviceMode={manualDeviceMode}
-              experienceLevel={experienceLevel}
-              setExperienceLevel={onExperienceLevelChange}
-              interviewType={interviewType}
-              setInterviewType={onInterviewTypeChange}
-              difficulty={difficulty}
-              setDifficulty={onDifficultyChange}
-              focusArea={focusArea}
-              setFocusArea={onFocusAreaChange}
-              speakerEnabled={speakerEnabled}
-              cameraEnabled={cameraEnabled}
-              speakerPreference={speakerPreference}
-              setSpeakerPreference={setSpeakerPreference}
-              setTextOnlyMode={setTextOnlyMode}
-              setSpeakerMode={setSpeakerMode}
-              toggleCamera={toggleCamera}
-              startInterview={startInterview}
-              questionLoading={questionLoading}
-              startDisabled={signedInLimitReached}
-              startDisabledMessage={usageSummary}
-            />
-          </div>
-        </section>
-      </div>
-    </main>
+        </div>
+      </section>
+    </MarketingShell>
   );
 }

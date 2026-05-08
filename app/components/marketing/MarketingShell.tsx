@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Show, SignInButton, UserButton } from "@clerk/nextjs";
+import { useState } from "react";
 import type { ReactNode } from "react";
 import { SiteLogo } from "@/app/components/brand/SiteLogo";
 
@@ -11,6 +12,7 @@ export type MarketingPath =
   | "/how-it-works"
   | "/candidates"
   | "/pricing"
+  | "/practice"
   | "/progress"
   | "/profile"
   | "/company/dashboard"
@@ -39,7 +41,30 @@ const navItems: Array<{ href: MarketingPath; label: string }> = [
   { href: "/pricing", label: "Pricing" },
 ];
 
-const mobileNavItems: Array<{ href: MarketingPath; label: string; color?: string }> = [
+const mobileNavSections = [
+  {
+    label: "Explore",
+    links: [
+      { href: "/" as MarketingPath, label: "Home" },
+      { href: "/platform" as MarketingPath, label: "Platform" },
+      { href: "/how-it-works" as MarketingPath, label: "How it works" },
+      { href: "/candidates" as MarketingPath, label: "For candidates" },
+      { href: "/pricing" as MarketingPath, label: "Pricing" },
+      { href: "/enterprise" as MarketingPath, label: "Enterprise" },
+    ],
+  },
+  {
+    label: "Your account",
+    links: [
+      { href: "/practice" as MarketingPath, label: "Start practising" },
+      { href: "/progress" as MarketingPath, label: "Progress" },
+      { href: "/profile" as MarketingPath, label: "Profile" },
+      { href: "/company/dashboard" as MarketingPath, label: "Company dashboard" },
+    ],
+  },
+];
+
+const tabletNavItems: Array<{ href: MarketingPath; label: string; color?: string }> = [
   { href: "/", label: "Home" },
   { href: "/platform", label: "Platform" },
   { href: "/pricing", label: "Pricing" },
@@ -48,17 +73,17 @@ const mobileNavItems: Array<{ href: MarketingPath; label: string; color?: string
   { href: "/profile", label: "Profile", color: "purple" },
 ];
 
-function navItemClass(active: boolean, color?: string) {
+function tabletNavClass(active: boolean, color?: string) {
   if (active) {
     if (color === "fuchsia") return "border border-fuchsia-300/35 bg-fuchsia-300/15 text-fuchsia-50";
     if (color === "cyan") return "border border-cyan-300/30 bg-cyan-300/15 text-cyan-50";
     if (color === "purple") return "border border-purple-300/30 bg-purple-300/15 text-purple-50";
     return "bg-white/[0.12] text-white";
   }
-  if (color === "fuchsia") return "border border-fuchsia-300/15 bg-fuchsia-300/10 text-fuchsia-200 hover:bg-fuchsia-300/15";
-  if (color === "cyan") return "border border-cyan-300/15 bg-cyan-300/10 text-cyan-100 hover:bg-cyan-300/15";
-  if (color === "purple") return "border border-white/10 bg-white/[0.04] text-purple-200 hover:bg-white/[0.08]";
-  return "border border-white/10 bg-white/[0.04] text-gray-300 hover:bg-white/[0.08] hover:text-white";
+  if (color === "fuchsia") return "border border-fuchsia-300/15 bg-fuchsia-300/[0.07] text-fuchsia-200 hover:bg-fuchsia-300/12";
+  if (color === "cyan") return "border border-cyan-300/15 bg-cyan-300/[0.07] text-cyan-200 hover:bg-cyan-300/12";
+  if (color === "purple") return "border border-white/[0.08] bg-white/[0.04] text-purple-200/80 hover:bg-white/[0.07]";
+  return "border border-white/[0.08] bg-white/[0.04] text-gray-400 hover:bg-white/[0.07] hover:text-white";
 }
 
 function isCompanyPath(path: MarketingPath) {
@@ -66,6 +91,8 @@ function isCompanyPath(path: MarketingPath) {
 }
 
 export function MarketingShell({ children, currentPath }: MarketingShellProps) {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   return (
     <main className="min-h-screen overflow-hidden bg-[#0f0a1a] text-white">
       {/* Background atmosphere */}
@@ -83,7 +110,7 @@ export function MarketingShell({ children, currentPath }: MarketingShellProps) {
             <SiteLogo href="/" size="md" showText />
           </div>
 
-          {/* Main nav pill — public links */}
+          {/* Desktop pill nav */}
           <nav className="hidden shrink-0 lg:flex">
             <div className="flex items-center gap-0.5 rounded-full border border-white/[0.09] bg-white/[0.04] p-1.5">
               {navItems.map((item) => {
@@ -91,16 +118,13 @@ export function MarketingShell({ children, currentPath }: MarketingShellProps) {
                 return (
                   <Link key={item.href} href={item.href}>
                     <span className={`block whitespace-nowrap rounded-full px-3 py-2 text-[12.5px] font-bold transition xl:px-4 xl:text-[13px] 2xl:text-sm ${
-                      active
-                        ? "bg-white/[0.12] text-white shadow-sm"
-                        : "text-gray-400 hover:bg-white/[0.07] hover:text-white"
+                      active ? "bg-white/[0.12] text-white shadow-sm" : "text-gray-400 hover:bg-white/[0.07] hover:text-white"
                     }`}>
                       {item.label}
                     </span>
                   </Link>
                 );
               })}
-              {/* Company — signed-in only, inside pill */}
               <Show when="signed-in">
                 <Link href="/company/dashboard">
                   <span className={`block whitespace-nowrap rounded-full px-3 py-2 text-[12.5px] font-bold transition xl:px-4 xl:text-[13px] 2xl:text-sm ${
@@ -139,7 +163,7 @@ export function MarketingShell({ children, currentPath }: MarketingShellProps) {
             </Show>
 
             <Link href="/practice">
-              <button className="whitespace-nowrap rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-4 py-2.5 text-[13px] font-black text-white shadow-lg shadow-purple-950/40 transition hover:scale-[1.03] hover:shadow-purple-900/40 sm:px-5 xl:px-6">
+              <button className="whitespace-nowrap rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-4 py-2.5 text-[13px] font-black text-white shadow-lg shadow-purple-950/40 transition hover:scale-[1.03] sm:px-5 xl:px-6">
                 <span className="sm:hidden">Start</span>
                 <span className="hidden sm:inline">Start Practising</span>
               </button>
@@ -158,17 +182,34 @@ export function MarketingShell({ children, currentPath }: MarketingShellProps) {
                 <UserButton />
               </div>
             </Show>
+
+            {/* Mobile hamburger — shows below sm (640px) */}
+            <button
+              onClick={() => setMobileMenuOpen((o) => !o)}
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-white/[0.1] bg-white/[0.05] text-gray-300 transition hover:bg-white/[0.09] hover:text-white sm:hidden"
+              aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+            >
+              {mobileMenuOpen ? (
+                <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+                  <path d="M2 2l11 11M13 2L2 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                </svg>
+              ) : (
+                <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+                  <path d="M1.5 3.5h12M1.5 7.5h12M1.5 11.5h12" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
+                </svg>
+              )}
+            </button>
           </div>
         </div>
 
-        {/* Mobile / tablet compact nav row */}
+        {/* Tablet compact nav row (640px–1024px) */}
         <div className="hidden border-t border-white/[0.05] px-4 py-2 sm:block sm:px-6 lg:hidden">
           <nav className="mx-auto flex max-w-7xl gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {mobileNavItems.map((item) => {
+            {tabletNavItems.map((item) => {
               const active = currentPath === item.href;
               return (
                 <Link key={item.href} href={item.href}>
-                  <span className={`block whitespace-nowrap rounded-full px-3.5 py-1.5 text-xs font-bold transition ${navItemClass(active, item.color)}`}>
+                  <span className={`block whitespace-nowrap rounded-full px-3.5 py-1.5 text-xs font-bold transition ${tabletNavClass(active, item.color)}`}>
                     {item.label}
                   </span>
                 </Link>
@@ -176,6 +217,50 @@ export function MarketingShell({ children, currentPath }: MarketingShellProps) {
             })}
           </nav>
         </div>
+
+        {/* Mobile full-screen menu overlay (below 640px) */}
+        {mobileMenuOpen && (
+          <div
+            className="fixed inset-0 top-[57px] z-40 overflow-y-auto bg-[#0f0a1a]/97 backdrop-blur-2xl sm:hidden"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            <div className="px-5 pt-6 pb-12" onClick={(e) => e.stopPropagation()}>
+              {mobileNavSections.map((section) => (
+                <div key={section.label} className="mb-7">
+                  <p className="mb-3 text-[10px] font-black uppercase tracking-[0.22em] text-gray-600">{section.label}</p>
+                  <div className="flex flex-col gap-1">
+                    {section.links.map(({ href, label }) => (
+                      <Link key={href} href={href} onClick={() => setMobileMenuOpen(false)}>
+                        <span className={`block rounded-2xl border px-5 py-4 text-base font-bold transition ${
+                          currentPath === href
+                            ? "border-purple-400/30 bg-purple-400/10 text-white"
+                            : "border-white/[0.07] bg-white/[0.03] text-gray-300 active:bg-white/[0.08]"
+                        }`}>
+                          {label}
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              ))}
+
+              <div className="mt-6 flex flex-col gap-3">
+                <Link href="/practice" onClick={() => setMobileMenuOpen(false)}>
+                  <button className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 py-4 text-base font-black text-white shadow-xl shadow-purple-950/40">
+                    Start Practising →
+                  </button>
+                </Link>
+                <Show when="signed-out">
+                  <SignInButton mode="modal">
+                    <button className="w-full rounded-2xl border border-white/[0.1] bg-white/[0.04] py-4 text-base font-bold text-white" onClick={() => setMobileMenuOpen(false)}>
+                      Sign in
+                    </button>
+                  </SignInButton>
+                </Show>
+              </div>
+            </div>
+          </div>
+        )}
       </header>
 
       <div className="relative z-10">{children}</div>
@@ -184,7 +269,6 @@ export function MarketingShell({ children, currentPath }: MarketingShellProps) {
       <footer className="relative z-10 border-t border-white/[0.08] bg-black/20">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:py-16">
           <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr]">
-            {/* Brand */}
             <div>
               <SiteLogo href="/" size="sm" showText />
               <p className="mt-4 max-w-xs text-sm leading-6 text-gray-500">
@@ -194,48 +278,42 @@ export function MarketingShell({ children, currentPath }: MarketingShellProps) {
                 © {new Date().getFullYear()} AI Career Mentor Ltd · England & Wales
               </p>
             </div>
-
-            {/* Platform */}
             <div>
               <p className="mb-4 text-[11px] font-black uppercase tracking-[0.18em] text-gray-600">Platform</p>
               <div className="space-y-3 text-sm text-gray-400">
-                {[
-                  { href: "/", label: "Home" },
-                  { href: "/platform", label: "Platform" },
-                  { href: "/how-it-works", label: "How it works" },
-                  { href: "/candidates", label: "Candidates" },
-                  { href: "/practice", label: "Start Practising" },
-                ].map(({ href, label }) => (
+                {([
+                  ["/", "Home"],
+                  ["/platform", "Platform"],
+                  ["/how-it-works", "How it works"],
+                  ["/candidates", "Candidates"],
+                  ["/practice", "Start Practising"],
+                ] as const).map(([href, label]) => (
                   <Link key={href} href={href} className="block transition hover:text-white">{label}</Link>
                 ))}
               </div>
             </div>
-
-            {/* Account */}
             <div>
               <p className="mb-4 text-[11px] font-black uppercase tracking-[0.18em] text-gray-600">Account</p>
               <div className="space-y-3 text-sm text-gray-400">
-                {[
-                  { href: "/pricing", label: "Pricing" },
-                  { href: "/progress", label: "Progress" },
-                  { href: "/profile", label: "Profile" },
-                  { href: "/company/dashboard", label: "Company dashboard" },
-                  { href: "/company/setup", label: "Create workspace" },
-                ].map(({ href, label }) => (
+                {([
+                  ["/pricing", "Pricing"],
+                  ["/progress", "Progress"],
+                  ["/profile", "Profile"],
+                  ["/company/dashboard", "Company dashboard"],
+                  ["/company/setup", "Create workspace"],
+                ] as const).map(([href, label]) => (
                   <Link key={href} href={href} className="block transition hover:text-white">{label}</Link>
                 ))}
               </div>
             </div>
-
-            {/* Company */}
             <div>
               <p className="mb-4 text-[11px] font-black uppercase tracking-[0.18em] text-gray-600">Company</p>
               <div className="space-y-3 text-sm text-gray-400">
-                {[
-                  { href: "/enterprise", label: "Enterprise" },
-                  { href: "/privacy", label: "Privacy policy" },
-                  { href: "/terms", label: "Terms of service" },
-                ].map(({ href, label }) => (
+                {([
+                  ["/enterprise", "Enterprise"],
+                  ["/privacy", "Privacy policy"],
+                  ["/terms", "Terms of service"],
+                ] as const).map(([href, label]) => (
                   <Link key={href} href={href} className="block transition hover:text-white">{label}</Link>
                 ))}
               </div>
@@ -248,24 +326,14 @@ export function MarketingShell({ children, currentPath }: MarketingShellProps) {
 }
 
 export function SectionHeading({
-  eyebrow,
-  title,
-  description,
-  align = "left",
+  eyebrow, title, description, align = "left",
 }: {
-  eyebrow: string;
-  title: string;
-  description?: string;
-  align?: "left" | "center";
+  eyebrow: string; title: string; description?: string; align?: "left" | "center";
 }) {
   return (
     <div className={align === "center" ? "text-center" : ""}>
-      <p className="mb-3 text-[11px] font-black uppercase tracking-[0.26em] text-purple-300/90">
-        {eyebrow}
-      </p>
-      <h2 className="text-3xl font-black tracking-[-0.05em] sm:text-4xl md:text-5xl">
-        {title}
-      </h2>
+      <p className="mb-3 text-[11px] font-black uppercase tracking-[0.26em] text-purple-300/90">{eyebrow}</p>
+      <h2 className="text-3xl font-black tracking-[-0.05em] sm:text-4xl md:text-5xl">{title}</h2>
       {description && (
         <p className={`mt-5 text-base leading-8 text-gray-400 ${align === "center" ? "mx-auto max-w-3xl" : "max-w-2xl"}`}>
           {description}
@@ -301,11 +369,7 @@ export function PageLinkCard({ href, eyebrow, title, description, image }: PageL
     <Link href={href} className="block">
       <div className="group h-full overflow-hidden rounded-[1.75rem] border border-white/[0.09] bg-white/[0.04] shadow-2xl shadow-black/10 transition hover:-translate-y-1 hover:border-white/[0.14] hover:bg-white/[0.06]">
         <div className="aspect-[16/10] overflow-hidden">
-          <img
-            src={image}
-            alt={title}
-            className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.05]"
-          />
+          <img src={image} alt={title} className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.05]" />
         </div>
         <div className="p-6">
           <p className="mb-2 text-[10px] font-black uppercase tracking-[0.24em] text-cyan-300/90">{eyebrow}</p>
