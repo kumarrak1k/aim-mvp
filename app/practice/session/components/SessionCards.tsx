@@ -2,6 +2,36 @@
 
 import Link from "next/link";
 
+/**
+ * Shown briefly to assessment candidates after their final answer while we
+ * generate the summary, save the session, and redirect to the completion
+ * page. Replaces the SessionSummary screen which would expose scores.
+ */
+export function AssessmentSubmittingCard() {
+  return (
+    <section className="mx-auto flex min-h-[70vh] max-w-2xl items-center justify-center px-4 py-10 sm:px-6">
+      <div className="w-full rounded-[2rem] border border-emerald-300/20 bg-emerald-300/[0.06] p-8 text-center shadow-2xl shadow-emerald-950/15 backdrop-blur-2xl">
+        <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-cyan-400 text-3xl font-black text-[#0b1a17] shadow-xl shadow-emerald-900/40">
+          ✓
+        </div>
+        <p className="text-[11px] font-black uppercase tracking-[0.22em] text-emerald-200">
+          Submitting your assessment
+        </p>
+        <h1 className="mt-3 text-3xl font-black tracking-[-0.045em]">
+          Sending your answers to the hiring team...
+        </h1>
+        <p className="mx-auto mt-4 max-w-lg text-sm leading-6 text-gray-300">
+          Hold on while we save your full set of answers. You&rsquo;ll be taken
+          to a confirmation screen in a moment.
+        </p>
+        <div className="mx-auto mt-7 h-1.5 w-40 overflow-hidden rounded-full bg-white/10">
+          <div className="h-full w-1/2 animate-pulse rounded-full bg-gradient-to-r from-emerald-400 to-cyan-400" />
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export function LoadingSessionCard({ message }: { message: string }) {
   return (
     <section className="mx-auto flex min-h-[70vh] max-w-4xl items-center justify-center px-4 py-10 sm:px-6">

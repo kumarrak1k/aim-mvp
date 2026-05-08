@@ -20,6 +20,10 @@ type AnswerWorkspaceProps = {
   onStopVoice: () => void;
   onClear: () => void;
   onFeedback: () => void;
+  /** When true, the candidate is taking a company-issued assessment.
+   *  Hide all references to feedback/scoring — the action is simply submitting
+   *  the answer for the company to review later. */
+  assessmentMode?: boolean;
 };
 
 export function AnswerWorkspace({
@@ -40,8 +44,33 @@ export function AnswerWorkspace({
   onStopVoice,
   onClear,
   onFeedback,
+  assessmentMode = false,
 }: AnswerWorkspaceProps) {
   const analysing = feedbackLoading || voiceAnalysisLoading || videoAnalysisLoading;
+
+  const submitDesktopLabel = feedbackLoading
+    ? assessmentMode
+      ? "Submitting..."
+      : "Preparing feedback..."
+    : voiceAnalysisLoading || videoAnalysisLoading
+      ? assessmentMode
+        ? "Recording answer..."
+        : "Analysing delivery..."
+      : assessmentMode
+        ? "Submit answer"
+        : "Get AI feedback";
+
+  const submitMobileLabel = feedbackLoading
+    ? assessmentMode
+      ? "Submitting..."
+      : "Preparing..."
+    : voiceAnalysisLoading || videoAnalysisLoading
+      ? assessmentMode
+        ? "Recording..."
+        : "Analysing..."
+      : assessmentMode
+        ? "Submit"
+        : "Get feedback";
 
   return (
     <section className="flex h-full min-h-0 flex-col overflow-hidden rounded-[1.45rem] border border-white/10 bg-white/[0.055] shadow-2xl shadow-purple-950/10 backdrop-blur-2xl xl:min-h-[420px]">
@@ -77,18 +106,18 @@ export function AnswerWorkspace({
             }
             className="hidden rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-3 text-sm font-black text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50 sm:inline-flex"
           >
-            {feedbackLoading
-              ? "Preparing feedback..."
-              : voiceAnalysisLoading || videoAnalysisLoading
-                ? "Analysing delivery..."
-                : "Get AI feedback"}
+            {submitDesktopLabel}
           </button>
         </div>
 
         <textarea
           value={answer}
           onChange={(event) => onAnswerChange(event.target.value)}
-          placeholder="Your answer transcript will appear here. You can also type or edit your answer before requesting feedback."
+          placeholder={
+            assessmentMode
+              ? "Your answer transcript will appear here. You can also type or edit your answer before submitting it."
+              : "Your answer transcript will appear here. You can also type or edit your answer before requesting feedback."
+          }
           className="min-h-[240px] flex-1 resize-none rounded-[1.25rem] border border-white/10 bg-black/30 p-4 text-base leading-7 text-white placeholder-gray-500 outline-none transition focus:border-purple-300/50 focus:ring-4 focus:ring-purple-500/10 sm:min-h-[300px] xl:min-h-[310px]"
         />
 
@@ -133,11 +162,7 @@ export function AnswerWorkspace({
             }
             className="rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-3 text-sm font-black text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50 sm:hidden"
           >
-            {feedbackLoading
-              ? "Preparing..."
-              : voiceAnalysisLoading || videoAnalysisLoading
-                ? "Analysing..."
-                : "Get feedback"}
+            {submitMobileLabel}
           </button>
         </div>
       </div>

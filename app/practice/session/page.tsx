@@ -50,10 +50,15 @@ import {
 } from "../lib/sessionHelpers";
 import { stripQuestionLeakageFromTranscript } from "../lib/speechGuards";
 import { AnswerWorkspace } from "./components/AnswerWorkspace";
+import { AssessmentNextPanel } from "./components/AssessmentNextPanel";
 import { CameraWorkspace } from "./components/CameraWorkspace";
 import { FeedbackWorkspace } from "./components/FeedbackWorkspace";
 import { QuestionHero } from "./components/QuestionHero";
-import { LoadingSessionCard, MissingSessionCard } from "./components/SessionCards";
+import {
+  AssessmentSubmittingCard,
+  LoadingSessionCard,
+  MissingSessionCard,
+} from "./components/SessionCards";
 import { SessionSummary } from "./components/SessionSummary";
 import {
   DEFAULT_TOTAL_QUESTIONS,
@@ -921,6 +926,22 @@ export default function PracticeSessionPage() {
     void startInterview();
   }, [missingSessionConfig, sessionConfig, sessionConfigLoaded, startInterview]);
 
+  // Once an assessment-mode session has finished and the summary save has
+  // settled, send the candidate straight to their branded completion screen.
+  // We wait for !summaryLoading so we don't redirect mid-save.
+  useEffect(() => {
+    if (
+      assessmentMode &&
+      assignmentToken &&
+      interviewFinished &&
+      !summaryLoading
+    ) {
+      const target = `/assessment/${encodeURIComponent(assignmentToken)}/complete`;
+      const handle = window.setTimeout(() => router.push(target), 600);
+      return () => window.clearTimeout(handle);
+    }
+  }, [assessmentMode, assignmentToken, interviewFinished, router, summaryLoading]);
+
   const playQuestionManually = useCallback(() => {
     if (!question.trim()) return;
 
@@ -1268,6 +1289,17 @@ export default function PracticeSessionPage() {
   }
 
   if (interviewFinished) {
+    // Assessment candidates never see the SessionSummary screen — that
+    // would expose scores. Show a brief submitting state while the save
+    // completes, then the post-save effect below redirects them.
+    if (assessmentMode) {
+      return (
+        <PracticeSessionShell isLoaded={isLoaded} isSignedIn={isSignedIn}>
+          <AssessmentSubmittingCard />
+        </PracticeSessionShell>
+      );
+    }
+
     return (
       <PracticeSessionShell isLoaded={isLoaded} isSignedIn={isSignedIn}>
         <SessionSummary
@@ -1330,6 +1362,7 @@ export default function PracticeSessionPage() {
               onStopVoice={() => void stopVoiceInput()}
               onClear={clearVoiceAnswer}
               onFeedback={() => void getFeedback()}
+              assessmentMode={assessmentMode}
             />
 
             <aside className="xl:sticky xl:top-20 xl:self-start">
@@ -1342,6 +1375,7 @@ export default function PracticeSessionPage() {
                 videoRef={videoRef}
                 onStartCameraFromTap={startCameraFromTap}
                 onViewFeedback={scrollToFeedback}
+                assessmentMode={assessmentMode}
               />
             </aside>
           </div>
@@ -1349,14 +1383,23 @@ export default function PracticeSessionPage() {
 
         {feedback && (
           <div id="session-feedback" className="mt-3 scroll-mt-24">
-            <FeedbackWorkspace
-              feedback={feedback}
-              voiceAnalysis={voiceAnalysis}
-              videoAnalysis={videoAnalysis}
-              currentQuestionNumber={currentQuestionNumber}
-              totalQuestions={totalQuestions}
-              onNext={() => void nextStep()}
-            />
+            {assessmentMode ? (
+              <AssessmentNextPanel
+                currentQuestionNumber={currentQuestionNumber}
+                totalQuestions={totalQuestions}
+                onNext={() => void nextStep()}
+                busy={questionLoading || summaryLoading}
+              />
+            ) : (
+              <FeedbackWorkspace
+                feedback={feedback}
+                voiceAnalysis={voiceAnalysis}
+                videoAnalysis={videoAnalysis}
+                currentQuestionNumber={currentQuestionNumber}
+                totalQuestions={totalQuestions}
+                onNext={() => void nextStep()}
+              />
+            )}
           </div>
         )}
       </section>

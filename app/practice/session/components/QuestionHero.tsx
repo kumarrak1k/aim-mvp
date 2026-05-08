@@ -117,7 +117,7 @@ export function QuestionHero(props: QuestionHeroProps) {
               <span>{difficulty}</span>
               <span>·</span>
               <span>Focus: {focusArea}</span>
-              {averageQuestionScore > 0 && (
+              {averageQuestionScore > 0 && !assessmentMode && (
                 <>
                   <span>·</span>
                   <span>Avg {averageQuestionScore}/10</span>

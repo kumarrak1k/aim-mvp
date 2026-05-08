@@ -11,6 +11,10 @@ type CameraWorkspaceProps = {
   videoRef: RefObject<HTMLVideoElement | null>;
   onStartCameraFromTap: () => void;
   onViewFeedback: () => void;
+  /** Reword the "View feedback" call-to-action when the candidate is taking
+   *  a company assessment (no feedback to view; just continue to the next
+   *  question). */
+  assessmentMode?: boolean;
 };
 
 export function CameraWorkspace({
@@ -22,6 +26,7 @@ export function CameraWorkspace({
   videoRef,
   onStartCameraFromTap,
   onViewFeedback,
+  assessmentMode = false,
 }: CameraWorkspaceProps) {
   const statusLabel = cameraEnabled
     ? cameraRequiresTap
@@ -82,17 +87,19 @@ export function CameraWorkspace({
           {feedbackReady ? (
             <div className="rounded-[1rem] border border-emerald-300/20 bg-emerald-300/10 p-3 xl:mt-3">
               <p className="text-[10px] font-black uppercase tracking-[0.16em] text-emerald-200">
-                Feedback ready
+                {assessmentMode ? "Answer recorded" : "Feedback ready"}
               </p>
               <p className="mt-1 text-[11px] leading-4 text-gray-300">
-                Your AI coaching notes are ready below.
+                {assessmentMode
+                  ? "Continue to the next question below."
+                  : "Your AI coaching notes are ready below."}
               </p>
               <button
                 type="button"
                 onClick={onViewFeedback}
                 className="mt-3 w-full rounded-xl bg-white px-3 py-2 text-[11px] font-black text-black transition hover:bg-emerald-100"
               >
-                View feedback
+                {assessmentMode ? "Continue" : "View feedback"}
               </button>
             </div>
           ) : (
