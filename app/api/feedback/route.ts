@@ -1,6 +1,7 @@
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { checkRateLimit } from "@/app/lib/rateLimit";
+import { callOpenAIChat, OpenAIError } from "@/app/lib/openai-client";
 
 type VoiceAnalysisLike = {
   paceScore?: number;
@@ -199,15 +200,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const apiKey = process.env.OPENAI_API_KEY;
-
-    if (!apiKey) {
-      return NextResponse.json(
-        { error: "OPENAI_API_KEY is missing from environment variables." },
-        { status: 500 }
-      );
-    }
-
     const savedProfile = await getSignedInCandidateProfile();
     const savedProfileContext = buildSavedProfileContext(savedProfile);
 
@@ -376,29 +368,22 @@ Important:
 - If saved profile context exists, make the improved answer relevant to the target role and candidate background.
 `.trim();
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
+    let data;
+    try {
+      data = await callOpenAIChat({
         model: "gpt-4o-mini",
         temperature: 0.2,
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },
         ],
-      }),
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      return NextResponse.json(
-        { error: data.error?.message || "OpenAI request failed." },
-        { status: 500 }
-      );
+      });
+    } catch (error) {
+      if (error instanceof OpenAIError) {
+        console.error("FEEDBACK OPENAI ERROR:", error.status, error.detail);
+        return NextResponse.json({ error: error.message }, { status: error.status >= 500 ? 503 : error.status });
+      }
+      throw error;
     }
 
     const text = data.choices?.[0]?.message?.content;

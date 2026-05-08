@@ -1,17 +1,12 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../../../lib/prisma";
-import { cleanStr } from "../../../../lib/company";
+import { parseJsonBody, templateUpdateSchema } from "../../../../lib/validation";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 type Params = { params: Promise<{ id: string }> };
-
-const EXPERIENCE_LEVELS = ["Graduate / entry level", "Junior (1-3 years)", "Mid-level (3-5 years)", "Senior (5-8 years)", "Lead / Principal (8+ years)"];
-const INTERVIEW_TYPES = ["Competency / behavioural", "Technical / skills-based", "Situational / case study", "Values / culture fit", "Mixed / general"];
-const DIFFICULTIES = ["Standard", "Challenging", "Executive"];
-const FOCUS_AREAS = ["Balanced", "Communication", "Problem solving", "Leadership", "Technical depth", "Stakeholder management"];
 
 async function getMemberAndTemplate(userId: string, templateId: string) {
   const member = await prisma.companyMember.findFirst({ where: { clerkUserId: userId } });
@@ -55,36 +50,22 @@ export async function PATCH(request: NextRequest, { params }: Params) {
       return NextResponse.json({ error: "Recruiter or admin access required." }, { status: 403 });
     }
 
-    const body = await request.json().catch(() => ({}));
+    const parsed = await parseJsonBody(request, templateUpdateSchema);
+    if ("response" in parsed) return parsed.response;
+    const data = parsed.data;
+
     const updates: Record<string, unknown> = {};
-
-    const name = cleanStr(body?.name);
-    if (name) updates.name = name;
-
-    const role = cleanStr(body?.role);
-    if (role) updates.role = role;
-
-    const description = cleanStr(body?.description);
-    if ("description" in body) updates.description = description || null;
-
-    if (EXPERIENCE_LEVELS.includes(body?.experienceLevel)) updates.experienceLevel = body.experienceLevel;
-    if (INTERVIEW_TYPES.includes(body?.interviewType)) updates.interviewType = body.interviewType;
-    if (DIFFICULTIES.includes(body?.difficulty)) updates.difficulty = body.difficulty;
-    if (FOCUS_AREAS.includes(body?.focusArea)) updates.focusArea = body.focusArea;
-
-    if (Number.isInteger(body?.questionCount) && body.questionCount >= 3 && body.questionCount <= 10) {
-      updates.questionCount = body.questionCount;
-    }
-
-    if ("customInstructions" in body) {
-      updates.customInstructions = cleanStr(body.customInstructions, "").slice(0, 2000) || null;
-    }
-    if ("competencyFramework" in body) {
-      updates.competencyFramework = cleanStr(body.competencyFramework, "").slice(0, 2000) || null;
-    }
-    if ("isActive" in body) {
-      updates.isActive = Boolean(body.isActive);
-    }
+    if (data.name !== undefined) updates.name = data.name;
+    if (data.role !== undefined) updates.role = data.role;
+    if (data.description !== undefined) updates.description = data.description ?? null;
+    if (data.experienceLevel !== undefined) updates.experienceLevel = data.experienceLevel;
+    if (data.interviewType !== undefined) updates.interviewType = data.interviewType;
+    if (data.difficulty !== undefined) updates.difficulty = data.difficulty;
+    if (data.focusArea !== undefined) updates.focusArea = data.focusArea;
+    if (data.questionCount !== undefined) updates.questionCount = data.questionCount;
+    if (data.customInstructions !== undefined) updates.customInstructions = data.customInstructions ?? null;
+    if (data.competencyFramework !== undefined) updates.competencyFramework = data.competencyFramework ?? null;
+    if (data.isActive !== undefined) updates.isActive = data.isActive;
 
     const template = await prisma.assessmentTemplate.update({
       where: { id },

@@ -10,7 +10,7 @@ type AssessmentData = {
     id: string;
     status: string;
     expiresAt: string;
-    candidateEmail: string;
+    candidateEmailMasked: string;
   };
   company: {
     name: string;
@@ -167,7 +167,7 @@ export default function AssessmentLandingPage() {
               Start assessment →
             </button>
             <p className="mt-3 text-xs text-gray-500">
-              Signed in as {assignment.candidateEmail}. Make sure this is your correct account.
+              Invite was sent to {assignment.candidateEmailMasked}. Make sure you are signed in to the correct account.
             </p>
           </div>
         ) : (

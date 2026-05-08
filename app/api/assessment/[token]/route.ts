@@ -1,16 +1,35 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../../lib/prisma";
-import { cleanStr } from "../../../lib/company";
+import { assessmentCompleteSchema, parseJsonBody } from "../../../lib/validation";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 type Params = { params: Promise<{ token: string }> };
 
+/** Mask an email so the public GET response confirms identity to the
+ *  intended recipient without leaking it to anyone who guesses a token. */
+function maskEmail(email: string): string {
+  const [local, domain] = email.split("@");
+  if (!local || !domain) return "•••@•••";
+  const visible = local.length <= 2 ? local[0] : `${local[0]}${local[1]}`;
+  return `${visible}${"•".repeat(Math.max(1, local.length - visible.length))}@${domain}`;
+}
+
+/** Validate token format before hitting the database — stops obvious
+ *  scraper traffic with a cheap response. */
+function isValidTokenFormat(token: string): boolean {
+  return /^[a-zA-Z0-9_-]{8,80}$/.test(token);
+}
+
 export async function GET(_req: NextRequest, { params }: Params) {
   try {
     const { token } = await params;
+
+    if (!isValidTokenFormat(token)) {
+      return NextResponse.json({ error: "Invalid invite link." }, { status: 404 });
+    }
 
     const assignment = await prisma.candidateAssignment.findUnique({
       where: { inviteToken: token },
@@ -46,7 +65,9 @@ export async function GET(_req: NextRequest, { params }: Params) {
         id: assignment.id,
         status: assignment.status,
         expiresAt: assignment.expiresAt,
-        candidateEmail: assignment.candidateEmail,
+        // Mask the candidate email so the public endpoint doesn't broadcast
+        // the full address to anyone who lands on the link.
+        candidateEmailMasked: maskEmail(assignment.candidateEmail),
       },
       company: assignment.company,
       template: assignment.template,
@@ -63,18 +84,42 @@ export async function POST(request: NextRequest, { params }: Params) {
     if (!userId) return NextResponse.json({ error: "Unauthorised." }, { status: 401 });
 
     const { token } = await params;
-    const assignment = await prisma.candidateAssignment.findUnique({ where: { inviteToken: token } });
+
+    if (!isValidTokenFormat(token)) {
+      return NextResponse.json({ error: "Invalid invite link." }, { status: 404 });
+    }
+
+    const assignment = await prisma.candidateAssignment.findUnique({
+      where: { inviteToken: token },
+    });
 
     if (!assignment) return NextResponse.json({ error: "Invalid invite link." }, { status: 404 });
-    if (assignment.expiresAt < new Date()) return NextResponse.json({ error: "This invite has expired." }, { status: 410 });
-    if (assignment.status === "completed") return NextResponse.json({ error: "Already completed." }, { status: 409 });
+    if (assignment.expiresAt < new Date())
+      return NextResponse.json({ error: "This invite has expired." }, { status: 410 });
+    if (assignment.status === "completed")
+      return NextResponse.json({ error: "Already completed." }, { status: 409 });
 
-    const body = await request.json().catch(() => ({}));
-    const sessionId = cleanStr(body?.sessionId);
-    if (!sessionId) return NextResponse.json({ error: "sessionId is required." }, { status: 400 });
+    const parsed = await parseJsonBody(request, assessmentCompleteSchema);
+    if ("response" in parsed) return parsed.response;
+    const { sessionId } = parsed.data;
 
-    const session = await prisma.practiceSession.findFirst({ where: { id: sessionId, clerkUserId: userId } });
+    // Confirm the session exists AND belongs to this user. The compound
+    // where ensures user A cannot complete the assessment with user B's
+    // session id — even if they somehow learn it.
+    const session = await prisma.practiceSession.findFirst({
+      where: { id: sessionId, clerkUserId: userId },
+    });
     if (!session) return NextResponse.json({ error: "Session not found." }, { status: 404 });
+
+    // Defence in depth: only accept sessions that were actually created
+    // after this assignment was issued. Stops a user replaying a much
+    // older session as the answer to a fresh assessment invite.
+    if (session.createdAt < assignment.createdAt) {
+      return NextResponse.json(
+        { error: "Session must be completed after the assessment was issued." },
+        { status: 400 }
+      );
+    }
 
     const updated = await prisma.candidateAssignment.update({
       where: { inviteToken: token },

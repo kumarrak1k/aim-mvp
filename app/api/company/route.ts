@@ -1,7 +1,13 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../lib/prisma";
-import { cleanStr, generateSlug } from "../../lib/company";
+import { generateSlug } from "../../lib/company";
+import {
+  companyCreateSchema,
+  companyDeleteSchema,
+  companyUpdateSchema,
+  parseJsonBody,
+} from "../../lib/validation";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -45,11 +51,9 @@ export async function POST(request: NextRequest) {
     const existing = await prisma.companyMember.findFirst({ where: { clerkUserId: userId } });
     if (existing) return NextResponse.json({ error: "You are already a member of a company." }, { status: 400 });
 
-    const body = await request.json().catch(() => ({}));
-    const name = cleanStr(body?.name);
-    if (!name) return NextResponse.json({ error: "Company name is required." }, { status: 400 });
-
-    const industry = cleanStr(body?.industry);
+    const parsed = await parseJsonBody(request, companyCreateSchema);
+    if ("response" in parsed) return parsed.response;
+    const { name, industry } = parsed.data;
 
     const baseSlug = generateSlug(name);
     let slug = baseSlug;
@@ -90,15 +94,9 @@ export async function DELETE(request: NextRequest) {
     if (!member) return NextResponse.json({ error: "Admin access required." }, { status: 403 });
 
     // Require the user to type the exact company name to confirm — protects against accidents.
-    const body = await request.json().catch(() => ({}));
-    const confirmName = cleanStr(body?.confirmName);
-    if (!confirmName) {
-      return NextResponse.json(
-        { error: "Type the company name to confirm deletion." },
-        { status: 400 }
-      );
-    }
-    if (confirmName !== member.company.name) {
+    const parsed = await parseJsonBody(request, companyDeleteSchema);
+    if ("response" in parsed) return parsed.response;
+    if (parsed.data.confirmName !== member.company.name) {
       return NextResponse.json(
         { error: "Confirmation name does not match the company name." },
         { status: 400 }
@@ -134,10 +132,9 @@ export async function PATCH(request: NextRequest) {
     });
     if (!member) return NextResponse.json({ error: "Admin access required." }, { status: 403 });
 
-    const body = await request.json().catch(() => ({}));
-    const name = cleanStr(body?.name);
-    const industry = cleanStr(body?.industry);
-    const brandColor = cleanStr(body?.brandColor);
+    const parsed = await parseJsonBody(request, companyUpdateSchema);
+    if ("response" in parsed) return parsed.response;
+    const { name, industry, brandColor } = parsed.data;
 
     const company = await prisma.company.update({
       where: { id: member.companyId },

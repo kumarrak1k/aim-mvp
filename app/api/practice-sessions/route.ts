@@ -2,40 +2,24 @@ import { auth } from "@clerk/nextjs/server";
 import { Prisma } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../lib/prisma";
+import { parseJsonBody, practiceSessionCreateSchema } from "../../lib/validation";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const PRACTICE_MODES = ["typed", "voice", "voice-camera"];
-
 const DAILY_COMPLETED_SESSION_LIMIT = 3;
 const BETA_PLAN_NAME = "Beta";
 
-function cleanText(value: unknown, fallback = "") {
-  if (typeof value !== "string") return fallback;
-  return value.replace(/\s+/g, " ").trim() || fallback;
-}
-
-function cleanNumber(value: unknown, fallback = 0) {
-  if (typeof value !== "number" || !Number.isFinite(value)) return fallback;
+function getSummaryScore(summary: Record<string, unknown>): number {
+  const value = summary.overall_score;
+  if (typeof value !== "number" || !Number.isFinite(value)) return 0;
   return Math.round(value);
 }
 
-function cleanPracticeMode(value: unknown) {
-  const mode = cleanText(value, "typed");
-  return PRACTICE_MODES.includes(mode) ? mode : "typed";
-}
-
-function getSummaryScore(summary: unknown) {
-  const input = summary as { overall_score?: unknown } | null;
-
-  return cleanNumber(input?.overall_score, 0);
-}
-
-function getHireSignal(summary: unknown) {
-  const input = summary as { hire_signal?: unknown } | null;
-
-  return cleanText(input?.hire_signal, "Moderate").slice(0, 40);
+function getHireSignal(summary: Record<string, unknown>): string {
+  const value = summary.hire_signal;
+  if (typeof value !== "string") return "Moderate";
+  return value.replace(/\s+/g, " ").trim().slice(0, 40) || "Moderate";
 }
 
 function getTodayRange() {
@@ -158,45 +142,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const body = await request.json().catch(() => null);
-
-    const role = cleanText(body?.role);
-    const experienceLevel = cleanText(
-      body?.experienceLevel,
-      "Graduate / entry level"
-    );
-    const interviewType = cleanText(
-      body?.interviewType,
-      "Competency / behavioural"
-    );
-    const difficulty = cleanText(body?.difficulty, "Standard");
-    const focusArea = cleanText(body?.focusArea, "Balanced");
-    const practiceMode = cleanPracticeMode(body?.practiceMode);
-    const totalQuestions = cleanNumber(body?.totalQuestions, 5);
-    const summary = body?.summary;
-    const results = body?.results;
-    const speakerPreference = body?.speakerPreference ?? null;
-
-    if (!role) {
-      return NextResponse.json(
-        { error: "Role is required to save a practice session." },
-        { status: 400 }
-      );
-    }
-
-    if (!summary || typeof summary !== "object") {
-      return NextResponse.json(
-        { error: "Session summary is required." },
-        { status: 400 }
-      );
-    }
-
-    if (!Array.isArray(results)) {
-      return NextResponse.json(
-        { error: "Session results are required." },
-        { status: 400 }
-      );
-    }
+    const parsed = await parseJsonBody(request, practiceSessionCreateSchema);
+    if ("response" in parsed) return parsed.response;
+    const {
+      role,
+      experienceLevel,
+      interviewType,
+      difficulty,
+      focusArea,
+      practiceMode,
+      totalQuestions,
+      summary,
+      results,
+      speakerPreference,
+      assignmentToken,
+    } = parsed.data;
 
     const session = await prisma.practiceSession.create({
       data: {
@@ -212,7 +172,7 @@ export async function POST(request: NextRequest) {
         hireSignal: getHireSignal(summary),
         summary: summary as Prisma.InputJsonValue,
         results: results as Prisma.InputJsonValue,
-        speakerPreference: speakerPreference as Prisma.InputJsonValue,
+        speakerPreference: (speakerPreference ?? null) as Prisma.InputJsonValue,
       },
       select: {
         id: true,
@@ -233,7 +193,6 @@ export async function POST(request: NextRequest) {
     });
 
     // Link to company assessment assignment if token provided
-    const assignmentToken = cleanText(body?.assignmentToken);
     if (assignmentToken) {
       const assignment = await prisma.candidateAssignment.findUnique({
         where: { inviteToken: assignmentToken },

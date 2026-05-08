@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../../lib/prisma";
-import { cleanStr } from "../../../lib/company";
+import { assignmentCreateSchema, parseJsonBody } from "../../../lib/validation";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -37,24 +37,15 @@ export async function POST(request: NextRequest) {
     });
     if (!member) return NextResponse.json({ error: "Recruiter or admin access required." }, { status: 403 });
 
-    const body = await request.json().catch(() => ({}));
-
-    const candidateEmail = cleanStr(body?.candidateEmail).toLowerCase();
-    if (!candidateEmail || !candidateEmail.includes("@")) {
-      return NextResponse.json({ error: "Valid candidate email is required." }, { status: 400 });
-    }
-
-    const templateId = cleanStr(body?.templateId);
-    if (!templateId) return NextResponse.json({ error: "Template ID is required." }, { status: 400 });
+    const parsed = await parseJsonBody(request, assignmentCreateSchema);
+    if ("response" in parsed) return parsed.response;
+    const { candidateEmail, templateId, expiryDays } = parsed.data;
 
     const template = await prisma.assessmentTemplate.findFirst({
       where: { id: templateId, companyId: member.companyId, isActive: true },
     });
     if (!template) return NextResponse.json({ error: "Template not found or inactive." }, { status: 404 });
 
-    const expiryDays = Number.isInteger(body?.expiryDays) && body.expiryDays >= 1 && body.expiryDays <= 30
-      ? body.expiryDays
-      : 7;
     const expiresAt = new Date(Date.now() + expiryDays * 24 * 60 * 60 * 1000);
 
     const assignment = await prisma.candidateAssignment.create({

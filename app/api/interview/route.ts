@@ -1,6 +1,7 @@
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { checkRateLimit } from "@/app/lib/rateLimit";
+import { callOpenAIChat, OpenAIError } from "@/app/lib/openai-client";
 
 type CandidateProfile = {
   cvText: string;
@@ -155,15 +156,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const apiKey = process.env.OPENAI_API_KEY;
-
-    if (!apiKey) {
-      return NextResponse.json(
-        { error: "OPENAI_API_KEY is missing from environment variables." },
-        { status: 500 }
-      );
-    }
-
     const savedProfile = await getSignedInCandidateProfile();
     const savedProfileContext = buildSavedProfileContext(savedProfile);
 
@@ -234,33 +226,22 @@ ${previousQuestions || "No previous questions yet."}
 Generate the next best UK English interview question.
 `.trim();
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
+    let data;
+    try {
+      data = await callOpenAIChat({
         model: "gpt-4o-mini",
         temperature: 0.65,
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },
         ],
-      }),
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      return NextResponse.json(
-        {
-          error:
-            data?.error?.message ||
-            "OpenAI request failed while generating the question.",
-        },
-        { status: 500 }
-      );
+      });
+    } catch (error) {
+      if (error instanceof OpenAIError) {
+        console.error("INTERVIEW OPENAI ERROR:", error.status, error.detail);
+        return NextResponse.json({ error: error.message }, { status: error.status >= 500 ? 503 : error.status });
+      }
+      throw error;
     }
 
     const text = data.choices?.[0]?.message?.content;
