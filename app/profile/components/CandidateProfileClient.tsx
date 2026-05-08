@@ -26,6 +26,7 @@ export function CandidateProfileClient() {
   const [deletingPracticeSessions, setDeletingPracticeSessions] =
     useState(false);
   const [deletingAllAimData, setDeletingAllAimData] = useState(false);
+  const [exportingData, setExportingData] = useState(false);
   const [statusMessage, setStatusMessage] = useState("");
 
   useEffect(() => {
@@ -306,6 +307,38 @@ export function CandidateProfileClient() {
     }
   };
 
+  const exportAccountData = async () => {
+    try {
+      setExportingData(true);
+      setStatusMessage("");
+
+      const res = await fetch("/api/account-data", { method: "GET" });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        throw new Error(data?.error || "Could not export account data.");
+      }
+
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `ai-career-mentor-data-${new Date().toISOString().split("T")[0]}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      setStatusMessage("Your data has been exported and downloaded.");
+    } catch (error) {
+      setStatusMessage(
+        error instanceof Error ? error.message : "Could not export account data."
+      );
+    } finally {
+      setExportingData(false);
+    }
+  };
+
   const extractDocumentText = async (
     file: File,
     target: ProfileUploadTarget
@@ -383,6 +416,7 @@ export function CandidateProfileClient() {
           clearingProfileContext={clearingProfileContext}
           deletingPracticeSessions={deletingPracticeSessions}
           deletingAllAimData={deletingAllAimData}
+          exportingData={exportingData}
           statusMessage={statusMessage}
           handleSave={handleSave}
           extractDocumentText={extractDocumentText}
@@ -391,6 +425,7 @@ export function CandidateProfileClient() {
           clearProfileContext={clearProfileContext}
           deletePracticeSessions={deletePracticeSessions}
           deleteAllAimData={deleteAllAimData}
+          exportAccountData={exportAccountData}
         />
       )}
     </MarketingShell>

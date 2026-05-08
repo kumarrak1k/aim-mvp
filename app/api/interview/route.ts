@@ -1,5 +1,6 @@
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
+import { checkRateLimit } from "@/app/lib/rateLimit";
 
 type CandidateProfile = {
   cvText: string;
@@ -129,6 +130,22 @@ async function getSignedInCandidateProfile() {
 
 export async function POST(req: NextRequest) {
   try {
+    const { userId } = await auth();
+    if (!userId) {
+      return NextResponse.json(
+        { error: "You must be signed in to generate interview questions." },
+        { status: 401 }
+      );
+    }
+
+    const rateLimitResult = checkRateLimit(userId, "interview", 30, 60);
+    if (!rateLimitResult.allowed) {
+      return NextResponse.json(
+        { error: `Too many requests. Please wait ${rateLimitResult.retryAfterSeconds} seconds.` },
+        { status: 429 }
+      );
+    }
+
     const { role, questionNumber, totalQuestions, history } = await req.json();
 
     if (!role || typeof role !== "string") {

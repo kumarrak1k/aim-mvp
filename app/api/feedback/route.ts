@@ -1,5 +1,6 @@
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
+import { checkRateLimit } from "@/app/lib/rateLimit";
 
 type VoiceAnalysisLike = {
   paceScore?: number;
@@ -168,6 +169,22 @@ function detectFillers(answer: string) {
 
 export async function POST(req: NextRequest) {
   try {
+    const { userId } = await auth();
+    if (!userId) {
+      return NextResponse.json(
+        { error: "You must be signed in to receive feedback." },
+        { status: 401 }
+      );
+    }
+
+    const rateLimitResult = checkRateLimit(userId, "feedback", 30, 60);
+    if (!rateLimitResult.allowed) {
+      return NextResponse.json(
+        { error: `Too many requests. Please wait ${rateLimitResult.retryAfterSeconds} seconds.` },
+        { status: 429 }
+      );
+    }
+
     const { question, answer, voiceAnalysis, videoAnalysis } = await req.json();
 
     if (

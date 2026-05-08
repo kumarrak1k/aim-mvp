@@ -1,4 +1,6 @@
+import { auth } from "@clerk/nextjs/server";
 import OpenAI from "openai";
+import { checkRateLimit } from "@/app/lib/rateLimit";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -48,8 +50,27 @@ function normaliseTranscriptToUkEnglish(value: string) {
     .trim();
 }
 
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
 export async function POST(req: Request) {
   try {
+    const { userId } = await auth();
+    if (!userId) {
+      return Response.json(
+        { error: "You must be signed in to use transcript cleaning." },
+        { status: 401 }
+      );
+    }
+
+    const rateLimitResult = checkRateLimit(userId, "clean-transcript", 30, 60);
+    if (!rateLimitResult.allowed) {
+      return Response.json(
+        { error: `Too many requests. Please wait ${rateLimitResult.retryAfterSeconds} seconds.` },
+        { status: 429 }
+      );
+    }
+
     const { transcript } = await req.json();
 
     if (!transcript || typeof transcript !== "string") {

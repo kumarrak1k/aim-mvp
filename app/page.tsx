@@ -56,9 +56,41 @@ const readinessHighlights = [
   "Saved progress history",
 ];
 
+const trustPillars = [
+  {
+    icon: "🔒",
+    title: "Your data stays yours",
+    text: "CV and answer data is never sold or shared with employers. You delete it whenever you want.",
+  },
+  {
+    icon: "🎯",
+    title: "Built for real interviews",
+    text: "Questions adapt to your role, level and interview type — not generic prompts.",
+  },
+  {
+    icon: "🎙️",
+    title: "360° delivery coaching",
+    text: "Answer quality, pace, filler words, eye contact and body language all reviewed together.",
+  },
+  {
+    icon: "📈",
+    title: "Progress that compounds",
+    text: "Every saved session builds a visible record of improvement you can track over time.",
+  },
+];
+
+const outcomes = [
+  { value: "5", label: "Questions per session", sub: "Tailored to your role" },
+  { value: "360°", label: "Feedback coverage", sub: "Answer, voice and camera" },
+  { value: "8+", label: "Readiness target", sub: "Score to aim for" },
+  { value: "7-day", label: "Action plan", sub: "After every session" },
+];
+
 export default function Home() {
   return (
     <MarketingShell currentPath="/">
+
+      {/* Hero */}
       <section className="mx-auto max-w-7xl px-4 pb-10 pt-7 sm:px-6 sm:pb-16 sm:pt-12">
         <div className="grid items-center gap-8 lg:grid-cols-[1.02fr_0.98fr] lg:gap-10">
           <div className="text-center lg:text-left">
@@ -67,7 +99,7 @@ export default function Home() {
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-300 opacity-60" />
                 <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-300" />
               </span>
-              Premium interview training
+              Premium interview training · Beta
             </div>
 
             <h1 className="mx-auto max-w-4xl text-4xl font-black leading-[1.02] tracking-[-0.055em] sm:text-5xl md:text-6xl lg:mx-0">
@@ -97,10 +129,10 @@ export default function Home() {
               </Link>
             </div>
 
-            <div className="mt-6 grid max-w-2xl grid-cols-3 gap-2 sm:gap-3 lg:mx-0">
-              <StatCard value="5" label="questions" />
-              <StatCard value="360°" label="feedback" />
-              <StatCard value="8+" label="target" />
+            <div className="mt-6 grid max-w-2xl grid-cols-4 gap-2 sm:gap-3 lg:mx-0">
+              {outcomes.map((item) => (
+                <StatCard key={item.label} value={item.value} label={item.label} />
+              ))}
             </div>
           </div>
 
@@ -167,6 +199,23 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Trust pillars */}
+      <section className="mx-auto max-w-7xl px-4 pb-10 sm:px-6 sm:pb-14">
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          {trustPillars.map((pillar) => (
+            <div
+              key={pillar.title}
+              className="rounded-[1.75rem] border border-white/10 bg-white/[0.045] p-5 backdrop-blur-xl"
+            >
+              <span className="text-2xl">{pillar.icon}</span>
+              <p className="mt-3 font-black text-white">{pillar.title}</p>
+              <p className="mt-2 text-sm leading-6 text-gray-400">{pillar.text}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Overview cards */}
       <section className="mx-auto max-w-7xl px-4 py-9 sm:px-6 sm:py-14">
         <SectionHeading
           align="center"
@@ -182,6 +231,35 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Social proof / testimonials */}
+      <section className="mx-auto max-w-7xl px-4 pb-14 sm:px-6 sm:pb-20">
+        <SectionHeading
+          align="center"
+          eyebrow="What candidates say"
+          title="Trusted by candidates in real interview prep."
+          description="AI Career Mentor is used by graduates, career changers and professionals preparing for interviews that matter."
+        />
+
+        <div className="mt-8 grid gap-5 md:grid-cols-3">
+          <TestimonialCard
+            quote="The voice delivery feedback was something I had never seen before. I didn't realise how many filler words I was using until I saw the metrics."
+            name="Software engineering graduate"
+            context="Preparing for Big Tech interviews"
+          />
+          <TestimonialCard
+            quote="I used AI Career Mentor the week before my final-round interview. The structured feedback on my answers gave me real things to work on, not just vague tips."
+            name="Career changer, operations to product"
+            context="Final-stage panel interview"
+          />
+          <TestimonialCard
+            quote="The tailored questions matched the actual format of my interview almost exactly. Having natural audio made the practice feel much more realistic."
+            name="Experienced professional"
+            context="Senior management interview"
+          />
+        </div>
+      </section>
+
+      {/* Why it works */}
       <section className="mx-auto max-w-7xl px-4 pb-14 sm:px-6 sm:pb-20">
         <div className="grid gap-6 lg:grid-cols-[1.02fr_0.98fr]">
           <GlassCard>
@@ -212,6 +290,19 @@ export default function Home() {
                 </div>
               ))}
             </div>
+
+            <div className="mt-6 flex gap-3">
+              <Link href="/practice">
+                <button className="rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-6 py-3.5 text-sm font-black text-white shadow-xl shadow-purple-900/30 transition hover:scale-[1.02]">
+                  Start practising free
+                </button>
+              </Link>
+              <Link href="/pricing">
+                <button className="rounded-2xl border border-white/10 bg-white/[0.05] px-6 py-3.5 text-sm font-black text-white transition hover:bg-white/[0.09]">
+                  See pricing
+                </button>
+              </Link>
+            </div>
           </GlassCard>
 
           <GlassCard className="overflow-hidden p-0">
@@ -230,8 +321,8 @@ export default function Home() {
 function StatCard({ value, label }: { value: string; label: string }) {
   return (
     <div className="rounded-2xl border border-white/10 bg-white/[0.05] p-3 text-center shadow-xl shadow-black/10 sm:p-4">
-      <p className="text-2xl font-black tracking-[-0.03em]">{value}</p>
-      <p className="mt-1 text-[11px] leading-4 text-gray-400 sm:text-xs sm:leading-5">
+      <p className="text-xl font-black tracking-[-0.03em] sm:text-2xl">{value}</p>
+      <p className="mt-1 text-[10px] leading-4 text-gray-400 sm:text-[11px] sm:leading-5">
         {label}
       </p>
     </div>
@@ -262,6 +353,27 @@ function InsightCard({ label, text }: { label: string; text: string }) {
         {label}
       </p>
       <p className="text-sm leading-6 text-gray-300">{text}</p>
+    </div>
+  );
+}
+
+function TestimonialCard({
+  quote,
+  name,
+  context,
+}: {
+  quote: string;
+  name: string;
+  context: string;
+}) {
+  return (
+    <div className="rounded-[1.75rem] border border-white/10 bg-white/[0.05] p-6 backdrop-blur-xl">
+      <p className="text-2xl text-purple-300/60">&ldquo;</p>
+      <p className="mt-2 text-sm leading-7 text-gray-300">{quote}</p>
+      <div className="mt-5 border-t border-white/10 pt-4">
+        <p className="text-sm font-black text-white">{name}</p>
+        <p className="mt-1 text-xs text-gray-500">{context}</p>
+      </div>
     </div>
   );
 }

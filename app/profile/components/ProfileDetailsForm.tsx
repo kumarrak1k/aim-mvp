@@ -26,6 +26,7 @@ type ProfileDetailsFormProps = {
   clearingProfileContext: boolean;
   deletingPracticeSessions: boolean;
   deletingAllAimData: boolean;
+  exportingData: boolean;
   statusMessage: string;
   handleSave: () => Promise<void>;
   extractDocumentText: (
@@ -37,6 +38,7 @@ type ProfileDetailsFormProps = {
   clearProfileContext: () => Promise<void>;
   deletePracticeSessions: () => Promise<void>;
   deleteAllAimData: () => Promise<void>;
+  exportAccountData: () => Promise<void>;
 };
 
 export function ProfileDetailsForm({
@@ -57,6 +59,7 @@ export function ProfileDetailsForm({
   clearingProfileContext,
   deletingPracticeSessions,
   deletingAllAimData,
+  exportingData,
   statusMessage,
   handleSave,
   extractDocumentText,
@@ -65,6 +68,7 @@ export function ProfileDetailsForm({
   clearProfileContext,
   deletePracticeSessions,
   deleteAllAimData,
+  exportAccountData,
 }: ProfileDetailsFormProps) {
   const hasCvContext = Boolean(cvText.trim() || cvFileName);
   const hasRoleSpecContext = Boolean(roleSpec.trim() || roleSpecFileName);
@@ -264,10 +268,12 @@ export function ProfileDetailsForm({
               <PrivacyControls
                 deletingPracticeSessions={deletingPracticeSessions}
                 deletingAllAimData={deletingAllAimData}
+                exportingData={exportingData}
                 saving={saving}
                 clearProfileContextRunning={clearingProfileContext}
                 onDeletePracticeSessions={deletePracticeSessions}
                 onDeleteAllAimData={deleteAllAimData}
+                onExportAccountData={exportAccountData}
               />
 
               <div className="flex flex-col gap-4 sm:flex-row">
@@ -300,18 +306,29 @@ export function ProfileDetailsForm({
 function PrivacyControls({
   deletingPracticeSessions,
   deletingAllAimData,
+  exportingData,
   saving,
   clearProfileContextRunning,
   onDeletePracticeSessions,
   onDeleteAllAimData,
+  onExportAccountData,
 }: {
   deletingPracticeSessions: boolean;
   deletingAllAimData: boolean;
+  exportingData: boolean;
   saving: boolean;
   clearProfileContextRunning: boolean;
   onDeletePracticeSessions: () => Promise<void>;
   onDeleteAllAimData: () => Promise<void>;
+  onExportAccountData: () => Promise<void>;
 }) {
+  const anyActionRunning =
+    deletingPracticeSessions ||
+    deletingAllAimData ||
+    exportingData ||
+    saving ||
+    clearProfileContextRunning;
+
   return (
     <div className="rounded-[1.7rem] border border-white/10 bg-black/25 p-5">
       <p className="text-sm font-black uppercase tracking-[0.2em] text-amber-200">
@@ -322,21 +339,27 @@ function PrivacyControls({
       </h3>
       <p className="mt-2 text-sm leading-6 text-gray-400">
         Saved practice sessions can include answers, transcripts, feedback,
-        summaries, scores and derived voice/camera metrics. Use these controls
-        to delete saved practice history or clear all AI Career Mentor data linked to your
-        account.
+        summaries, scores and derived voice/camera metrics. Export a copy of
+        your data, delete saved sessions, or clear all data linked to your account.
       </p>
 
-      <div className="mt-5 grid gap-3 md:grid-cols-2">
+      <div className="mt-5 grid gap-3 md:grid-cols-3">
+        <button
+          type="button"
+          onClick={() => void onExportAccountData()}
+          disabled={anyActionRunning}
+          className="rounded-2xl border border-cyan-300/20 bg-cyan-300/10 px-5 py-4 text-left text-sm font-black text-cyan-100 transition hover:bg-cyan-300/15 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {exportingData ? "Exporting..." : "Export my data"}
+          <span className="mt-2 block text-xs font-semibold leading-5 text-gray-400">
+            Download profile and saved sessions as a JSON file.
+          </span>
+        </button>
+
         <button
           type="button"
           onClick={() => void onDeletePracticeSessions()}
-          disabled={
-            deletingPracticeSessions ||
-            deletingAllAimData ||
-            saving ||
-            clearProfileContextRunning
-          }
+          disabled={anyActionRunning}
           className="rounded-2xl border border-rose-300/20 bg-rose-300/10 px-5 py-4 text-left text-sm font-black text-rose-100 transition hover:bg-rose-300/15 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {deletingPracticeSessions
@@ -350,12 +373,7 @@ function PrivacyControls({
         <button
           type="button"
           onClick={() => void onDeleteAllAimData()}
-          disabled={
-            deletingAllAimData ||
-            deletingPracticeSessions ||
-            saving ||
-            clearProfileContextRunning
-          }
+          disabled={anyActionRunning}
           className="rounded-2xl border border-red-300/25 bg-red-300/10 px-5 py-4 text-left text-sm font-black text-red-100 transition hover:bg-red-300/15 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {deletingAllAimData ? "Deleting all AI Career Mentor data..." : "Delete all AI Career Mentor data"}

@@ -1,4 +1,6 @@
+import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
+import { checkRateLimit } from "@/app/lib/rateLimit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -135,6 +137,22 @@ function audioResponse(audioBuffer: ArrayBuffer) {
 
 export async function GET(request: NextRequest) {
   try {
+    const { userId } = await auth();
+    if (!userId) {
+      return NextResponse.json(
+        { error: "You must be signed in to use question audio." },
+        { status: 401 }
+      );
+    }
+
+    const rateLimitResult = checkRateLimit(userId, "question-audio", 60, 60);
+    if (!rateLimitResult.allowed) {
+      return NextResponse.json(
+        { error: `Too many requests. Please wait ${rateLimitResult.retryAfterSeconds} seconds.` },
+        { status: 429 }
+      );
+    }
+
     const apiKey = process.env.OPENAI_API_KEY;
 
     if (!apiKey) {
@@ -178,6 +196,22 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    const { userId } = await auth();
+    if (!userId) {
+      return NextResponse.json(
+        { error: "You must be signed in to use question audio." },
+        { status: 401 }
+      );
+    }
+
+    const rateLimitResult = checkRateLimit(userId, "question-audio", 60, 60);
+    if (!rateLimitResult.allowed) {
+      return NextResponse.json(
+        { error: `Too many requests. Please wait ${rateLimitResult.retryAfterSeconds} seconds.` },
+        { status: 429 }
+      );
+    }
+
     const apiKey = process.env.OPENAI_API_KEY;
 
     if (!apiKey) {

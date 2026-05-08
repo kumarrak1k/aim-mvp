@@ -92,6 +92,11 @@ const structuredData = {
       name: siteName,
       url: siteUrl,
       logo: absoluteUrl("/brand/logo.jpg"),
+      contactPoint: {
+        "@type": "ContactPoint",
+        email: "support@aicareermentor.co.uk",
+        contactType: "customer support",
+      },
       sameAs: [],
     },
     {
@@ -104,6 +109,11 @@ const structuredData = {
         "@id": `${siteUrl}/#organization`,
       },
       inLanguage: "en-GB",
+      potentialAction: {
+        "@type": "SearchAction",
+        target: `${siteUrl}/practice`,
+        "query-input": "required name=search_term_string",
+      },
     },
     {
       "@type": "SoftwareApplication",
@@ -113,11 +123,65 @@ const structuredData = {
       operatingSystem: "Web",
       url: siteUrl,
       description: siteDescription,
+      featureList: [
+        "AI-tailored interview questions",
+        "Answer quality scoring",
+        "Voice delivery analysis",
+        "Camera presence feedback",
+        "Natural question audio (TTS)",
+        "7-day improvement plan",
+        "Saved session history",
+      ],
       offers: {
         "@type": "Offer",
         price: "0",
         priceCurrency: "GBP",
       },
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: [
+        {
+          "@type": "Question",
+          name: "How does AI Career Mentor work?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "You set up your practice session by entering your target role, experience level and interview type. AI Career Mentor generates tailored questions, plays them as natural audio, and scores your answers on content, clarity, structure, confidence and delivery. You receive feedback, a model answer and a 7-day improvement plan.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "Does AI Career Mentor record my voice or camera?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Voice recording and camera access are only activated when you choose to enable them in a practice session. Voice transcripts are processed to generate feedback. Camera video is analysed locally in your browser and never sent to our servers.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "Is AI Career Mentor free to use?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "AI Career Mentor offers a free tier for interview practice. Paid plans provide additional coaching features and session limits. See the pricing page for current plan details.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "Who is AI Career Mentor for?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "AI Career Mentor is built for graduates entering the job market, career changers preparing for new roles, and experienced professionals facing leadership or senior interviews. It adapts questions to your role, level and interview type.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "Can I delete my interview data?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Yes. You can delete individual sessions, all saved sessions, or your full candidate profile (including CV context and role details) from the profile page at any time.",
+          },
+        },
+      ],
     },
   ],
 };

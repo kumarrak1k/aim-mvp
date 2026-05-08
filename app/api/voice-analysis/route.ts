@@ -1,3 +1,4 @@
+import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 
 const fillerWords = [
@@ -48,6 +49,14 @@ function getWords(text: string) {
 
 export async function POST(req: NextRequest) {
   try {
+    const { userId } = await auth();
+    if (!userId) {
+      return NextResponse.json(
+        { error: "You must be signed in to use voice analysis." },
+        { status: 401 }
+      );
+    }
+
     const { transcript, durationSeconds, audioMetrics } = await req.json();
 
     if (!transcript || typeof transcript !== "string") {
