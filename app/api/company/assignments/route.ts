@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../../lib/prisma";
+import { sendCandidateInvite } from "../../../lib/email";
 import { assignmentCreateSchema, parseJsonBody } from "../../../lib/validation";
 
 export const runtime = "nodejs";
@@ -41,10 +42,17 @@ export async function POST(request: NextRequest) {
     if ("response" in parsed) return parsed.response;
     const { candidateEmail, templateId, expiryDays } = parsed.data;
 
-    const template = await prisma.assessmentTemplate.findFirst({
-      where: { id: templateId, companyId: member.companyId, isActive: true },
-    });
+    const [template, company] = await Promise.all([
+      prisma.assessmentTemplate.findFirst({
+        where: { id: templateId, companyId: member.companyId, isActive: true },
+      }),
+      prisma.company.findUnique({
+        where: { id: member.companyId },
+        select: { name: true, brandColor: true },
+      }),
+    ]);
     if (!template) return NextResponse.json({ error: "Template not found or inactive." }, { status: 404 });
+    if (!company) return NextResponse.json({ error: "Company not found." }, { status: 404 });
 
     const expiresAt = new Date(Date.now() + expiryDays * 24 * 60 * 60 * 1000);
 
@@ -58,7 +66,49 @@ export async function POST(request: NextRequest) {
       include: { template: { select: { id: true, name: true, role: true } } },
     });
 
-    return NextResponse.json({ assignment }, { status: 201 });
+    // Send the invite email. Don't fail the request if email errors —
+    // recruiters can still copy the link manually, and we record the
+    // failure on the assignment so the UI can offer a Retry button.
+    const sendResult = await sendCandidateInvite({
+      to: candidateEmail,
+      companyName: company.name,
+      companyBrandColor: company.brandColor,
+      templateName: template.name,
+      roleTitle: template.role,
+      inviteToken: assignment.inviteToken,
+      expiresAt,
+    });
+
+    const updated = await prisma.candidateAssignment.update({
+      where: { id: assignment.id },
+      data: sendResult.ok
+        ? {
+            emailSent: true,
+            emailSentAt: new Date(),
+            emailMessageId: sendResult.id,
+            emailError: null,
+            emailSendCount: { increment: 1 },
+          }
+        : {
+            emailSent: false,
+            emailError: sendResult.error.slice(0, 500),
+            emailSendCount: { increment: 1 },
+          },
+      include: { template: { select: { id: true, name: true, role: true } } },
+    });
+
+    if (!sendResult.ok) {
+      console.error("ASSIGNMENT EMAIL SEND FAILED:", sendResult.error);
+    }
+
+    return NextResponse.json(
+      {
+        assignment: updated,
+        emailSent: sendResult.ok,
+        emailWarning: sendResult.ok ? undefined : sendResult.error,
+      },
+      { status: 201 }
+    );
   } catch (error) {
     console.error("ASSIGNMENTS POST ERROR:", error);
     return NextResponse.json({ error: "Failed to create assignment." }, { status: 500 });

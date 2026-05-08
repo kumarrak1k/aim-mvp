@@ -14,6 +14,10 @@ type Assignment = {
   createdAt: string;
   inviteToken: string;
   template: { id: string; name: string; role: string };
+  emailSent?: boolean;
+  emailSentAt?: string | null;
+  emailError?: string | null;
+  emailSendCount?: number;
 };
 
 const STATUS_COLORS: Record<string, string> = {
@@ -39,6 +43,17 @@ function CandidatesContent() {
   const [sendError, setSendError] = useState("");
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
   const [newInviteLink, setNewInviteLink] = useState<string | null>(null);
+  const [newInviteEmailStatus, setNewInviteEmailStatus] = useState<
+    | { state: "sent"; recipient: string }
+    | { state: "failed"; recipient: string; reason: string }
+    | null
+  >(null);
+  const [resendingId, setResendingId] = useState<string | null>(null);
+  const [resendFeedback, setResendFeedback] = useState<{
+    id: string;
+    ok: boolean;
+    message: string;
+  } | null>(null);
 
   useEffect(() => {
     async function load() {
@@ -71,6 +86,7 @@ function CandidatesContent() {
     setSending(true);
     setSendError("");
     setNewInviteLink(null);
+    setNewInviteEmailStatus(null);
     try {
       const res = await fetch("/api/company/assignments", {
         method: "POST",
@@ -79,12 +95,56 @@ function CandidatesContent() {
       });
       const data = await res.json();
       if (!res.ok) { setSendError(data.error || "Failed to create invite."); return; }
+      const recipient: string = data.assignment.candidateEmail;
       const link = `${window.location.origin}/assessment/${data.assignment.inviteToken}`;
       setNewInviteLink(link);
+      setNewInviteEmailStatus(
+        data.emailSent
+          ? { state: "sent", recipient }
+          : { state: "failed", recipient, reason: data.emailWarning || "Email send failed." }
+      );
       setAssignments((prev) => [data.assignment, ...prev]);
       setEmail("");
     } finally {
       setSending(false);
+    }
+  }
+
+  async function resendInvite(id: string) {
+    setResendingId(id);
+    setResendFeedback(null);
+    try {
+      const res = await fetch(`/api/company/assignments/${id}/resend-invite`, {
+        method: "POST",
+      });
+      const data = await res.json();
+      if (res.ok && data.emailSent) {
+        setResendFeedback({ id, ok: true, message: "Invite email resent." });
+        if (data.assignment) {
+          setAssignments((prev) =>
+            prev.map((a) => (a.id === id ? { ...a, ...data.assignment } : a))
+          );
+        }
+      } else {
+        setResendFeedback({
+          id,
+          ok: false,
+          message: data.error || "Resend failed.",
+        });
+        if (data.assignment) {
+          setAssignments((prev) =>
+            prev.map((a) => (a.id === id ? { ...a, ...data.assignment } : a))
+          );
+        }
+      }
+    } catch {
+      setResendFeedback({ id, ok: false, message: "Network error during resend." });
+    } finally {
+      setResendingId(null);
+      // Auto-clear the feedback after a few seconds.
+      setTimeout(() => {
+        setResendFeedback((current) => (current && current.id === id ? null : current));
+      }, 4000);
     }
   }
 
@@ -167,13 +227,38 @@ function CandidatesContent() {
                 )}
 
                 {newInviteLink && (
-                  <div className="rounded-xl border border-green-400/30 bg-green-400/10 p-4">
-                    <p className="mb-2 text-sm font-black text-green-300">Invite created!</p>
-                    <p className="mb-3 break-all text-xs text-green-200">{newInviteLink}</p>
+                  <div
+                    className={`rounded-xl border p-4 ${
+                      newInviteEmailStatus?.state === "failed"
+                        ? "border-amber-400/30 bg-amber-400/10"
+                        : "border-green-400/30 bg-green-400/10"
+                    }`}
+                  >
+                    <p
+                      className={`mb-2 text-sm font-black ${
+                        newInviteEmailStatus?.state === "failed"
+                          ? "text-amber-300"
+                          : "text-green-300"
+                      }`}
+                    >
+                      {newInviteEmailStatus?.state === "sent"
+                        ? `Invite emailed to ${newInviteEmailStatus.recipient}.`
+                        : newInviteEmailStatus?.state === "failed"
+                          ? "Invite created — but email send failed."
+                          : "Invite created!"}
+                    </p>
+                    {newInviteEmailStatus?.state === "failed" && (
+                      <p className="mb-3 text-xs text-amber-200/90">
+                        {newInviteEmailStatus.reason} You can copy the link
+                        below and send it manually, or use Resend invite from
+                        the table once email is back online.
+                      </p>
+                    )}
+                    <p className="mb-3 break-all text-xs text-gray-300">{newInviteLink}</p>
                     <button
                       type="button"
                       onClick={() => navigator.clipboard.writeText(newInviteLink)}
-                      className="rounded-full bg-green-400/20 px-4 py-2 text-xs font-black text-green-200 transition hover:bg-green-400/30"
+                      className="rounded-full bg-white/10 px-4 py-2 text-xs font-black text-white transition hover:bg-white/15"
                     >
                       Copy link
                     </button>
@@ -207,6 +292,7 @@ function CandidatesContent() {
                       <th className="pb-3 text-left font-black text-gray-400">Candidate</th>
                       <th className="pb-3 text-left font-black text-gray-400">Template</th>
                       <th className="pb-3 text-left font-black text-gray-400">Status</th>
+                      <th className="pb-3 text-left font-black text-gray-400">Email</th>
                       <th className="pb-3 text-left font-black text-gray-400">Expires</th>
                       <th className="pb-3 text-left font-black text-gray-400">Actions</th>
                     </tr>
@@ -214,6 +300,9 @@ function CandidatesContent() {
                   <tbody className="divide-y divide-white/5">
                     {assignments.map((a) => {
                       const expired = new Date(a.expiresAt) < new Date();
+                      const emailMaxedOut = (a.emailSendCount ?? 0) >= 5;
+                      const isResending = resendingId === a.id;
+                      const showResendFeedback = resendFeedback?.id === a.id;
                       return (
                         <tr key={a.id}>
                           <td className="py-3 font-semibold text-white">{a.candidateEmail}</td>
@@ -223,26 +312,68 @@ function CandidatesContent() {
                               {expired && a.status === "pending" ? "expired" : a.status}
                             </span>
                           </td>
+                          <td className="py-3">
+                            {a.emailSent ? (
+                              <span
+                                className="rounded-full border border-emerald-400/25 bg-emerald-400/10 px-2.5 py-1 text-xs font-black text-emerald-200"
+                                title={a.emailSentAt ? `Sent ${new Date(a.emailSentAt).toLocaleString("en-GB")}` : "Sent"}
+                              >
+                                Sent
+                              </span>
+                            ) : a.emailError ? (
+                              <span
+                                className="rounded-full border border-amber-400/25 bg-amber-400/10 px-2.5 py-1 text-xs font-black text-amber-200"
+                                title={a.emailError}
+                              >
+                                Failed
+                              </span>
+                            ) : (
+                              <span className="rounded-full border border-white/10 bg-white/[0.05] px-2.5 py-1 text-xs font-black text-gray-400">
+                                Not sent
+                              </span>
+                            )}
+                          </td>
                           <td className={`py-3 text-xs ${expired ? "text-red-400" : "text-gray-400"}`}>
                             {new Date(a.expiresAt).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
                           </td>
                           <td className="py-3">
-                            <div className="flex gap-2">
-                              {a.status !== "completed" && (
-                                <button
-                                  onClick={() => copyLink(a.inviteToken)}
-                                  className="rounded-lg border border-white/15 bg-white/[0.05] px-2.5 py-1.5 text-xs font-black text-white transition hover:bg-white/[0.09]"
+                            <div className="flex flex-col gap-1.5">
+                              <div className="flex flex-wrap gap-2">
+                                {a.status !== "completed" && (
+                                  <button
+                                    onClick={() => copyLink(a.inviteToken)}
+                                    className="rounded-lg border border-white/15 bg-white/[0.05] px-2.5 py-1.5 text-xs font-black text-white transition hover:bg-white/[0.09]"
+                                  >
+                                    {copiedToken === a.inviteToken ? "Copied!" : "Copy link"}
+                                  </button>
+                                )}
+                                {canInvite && a.status !== "completed" && !expired && (
+                                  <button
+                                    onClick={() => resendInvite(a.id)}
+                                    disabled={isResending || emailMaxedOut}
+                                    title={emailMaxedOut ? "Resend limit reached (5)." : "Email this invite again."}
+                                    className="rounded-lg border border-fuchsia-400/30 bg-fuchsia-400/10 px-2.5 py-1.5 text-xs font-black text-fuchsia-200 transition hover:bg-fuchsia-400/20 disabled:cursor-not-allowed disabled:opacity-50"
+                                  >
+                                    {isResending ? "Sending…" : "Resend"}
+                                  </button>
+                                )}
+                                {canInvite && a.status !== "completed" && (
+                                  <button
+                                    onClick={() => deleteAssignment(a.id)}
+                                    className="rounded-lg border border-red-400/20 bg-red-400/10 px-2.5 py-1.5 text-xs font-black text-red-300 transition hover:bg-red-400/15"
+                                  >
+                                    Delete
+                                  </button>
+                                )}
+                              </div>
+                              {showResendFeedback && (
+                                <p
+                                  className={`text-[11px] font-semibold ${
+                                    resendFeedback?.ok ? "text-emerald-300" : "text-amber-300"
+                                  }`}
                                 >
-                                  {copiedToken === a.inviteToken ? "Copied!" : "Copy link"}
-                                </button>
-                              )}
-                              {canInvite && a.status !== "completed" && (
-                                <button
-                                  onClick={() => deleteAssignment(a.id)}
-                                  className="rounded-lg border border-red-400/20 bg-red-400/10 px-2.5 py-1.5 text-xs font-black text-red-300 transition hover:bg-red-400/15"
-                                >
-                                  Delete
-                                </button>
+                                  {resendFeedback?.message}
+                                </p>
                               )}
                             </div>
                           </td>
