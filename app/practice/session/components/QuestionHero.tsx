@@ -27,6 +27,10 @@ type QuestionHeroProps = {
   onStopQuestion: () => void;
   onStartGuidedAnswer: () => void;
   onBackToSetup: () => void;
+  /** Hide the "Back" link when the candidate is taking a company-issued
+   *  assessment — there's no setup to return to and abandoning loses the
+   *  invite. */
+  assessmentMode?: boolean;
 };
 
 export function QuestionHero(props: QuestionHeroProps) {
@@ -54,6 +58,7 @@ export function QuestionHero(props: QuestionHeroProps) {
     onStopQuestion,
     onStartGuidedAnswer,
     onBackToSetup,
+    assessmentMode,
   } = props;
 
   const progressPercent = Math.min(
@@ -121,13 +126,15 @@ export function QuestionHero(props: QuestionHeroProps) {
             </div>
           </div>
 
-          <button
-            type="button"
-            onClick={onBackToSetup}
-            className="shrink-0 rounded-xl border border-white/10 bg-white/[0.06] px-3 py-2 text-xs font-black text-white transition hover:bg-white/[0.1]"
-          >
-            Back
-          </button>
+          {!assessmentMode && (
+            <button
+              type="button"
+              onClick={onBackToSetup}
+              className="shrink-0 rounded-xl border border-white/10 bg-white/[0.06] px-3 py-2 text-xs font-black text-white transition hover:bg-white/[0.1]"
+            >
+              Back
+            </button>
+          )}
         </div>
 
         <div className="mb-3 grid gap-2 sm:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2">

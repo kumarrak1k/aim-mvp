@@ -1,6 +1,11 @@
 import type { Feedback, PracticeMode, SpeakerPreference } from "../types";
 
-export const totalQuestions = 5;
+/** Default question count when none is supplied by config (e.g. classic practice flow). */
+export const DEFAULT_TOTAL_QUESTIONS = 5;
+
+/** Hard cap so a malformed config can't request 1000 questions. */
+export const MAX_TOTAL_QUESTIONS = 10;
+export const MIN_TOTAL_QUESTIONS = 3;
 
 export const PRACTICE_SESSION_CONFIG_KEY = "aim_practice_session_config";
 
@@ -19,6 +24,16 @@ export type PracticeSessionConfig = {
   speakerEnabled: boolean;
   cameraEnabled: boolean;
   speakerPreference: SpeakerPreference;
+  /** Number of questions for this session. Falls back to DEFAULT_TOTAL_QUESTIONS. */
+  totalQuestions?: number;
+  /**
+   * Set when the session is launched from a company assessment invite.
+   * Triggers different UX (no "Return to setup" link, redirect to
+   * /assessment/[token]/complete on finish) and is forwarded to the
+   * practice-sessions API so the assignment row gets marked completed.
+   */
+  assessmentMode?: boolean;
+  assignmentToken?: string;
   createdAt?: string;
 };
 
@@ -31,7 +46,17 @@ export const defaultSessionConfig: PracticeSessionConfig = {
   speakerEnabled: false,
   cameraEnabled: false,
   speakerPreference: defaultSpeakerPreference,
+  totalQuestions: DEFAULT_TOTAL_QUESTIONS,
 };
+
+/** Clamp a candidate questionCount to allowed [3,10] range, defaulting to 5. */
+export function clampTotalQuestions(value: unknown): number {
+  if (typeof value !== "number" || !Number.isFinite(value)) return DEFAULT_TOTAL_QUESTIONS;
+  const rounded = Math.round(value);
+  if (rounded < MIN_TOTAL_QUESTIONS) return MIN_TOTAL_QUESTIONS;
+  if (rounded > MAX_TOTAL_QUESTIONS) return MAX_TOTAL_QUESTIONS;
+  return rounded;
+}
 
 export const practiceModeLabels: Record<PracticeMode, string> = {
   typed: "Typed answers only",
@@ -139,6 +164,12 @@ export function parseSessionConfig(): PracticeSessionConfig | null {
       speakerEnabled: Boolean(parsed.speakerEnabled),
       cameraEnabled: Boolean(parsed.cameraEnabled),
       speakerPreference: cleanSpeakerPreference(parsed.speakerPreference),
+      totalQuestions: clampTotalQuestions(parsed.totalQuestions),
+      assessmentMode: Boolean(parsed.assessmentMode),
+      assignmentToken:
+        typeof parsed.assignmentToken === "string" && parsed.assignmentToken.length > 0
+          ? parsed.assignmentToken
+          : undefined,
       createdAt:
         typeof parsed.createdAt === "string" ? parsed.createdAt : undefined,
     };

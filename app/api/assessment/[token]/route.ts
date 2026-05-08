@@ -56,8 +56,24 @@ export async function GET(_req: NextRequest, { params }: Params) {
       return NextResponse.json({ error: "This invite has expired." }, { status: 410 });
     }
 
+    // For completed assignments we still return company/template so the
+    // completion thank-you page can render branded copy. The 409 status is
+    // preserved as the signal "this invite is no longer actionable".
     if (assignment.status === "completed") {
-      return NextResponse.json({ error: "This assessment has already been completed." }, { status: 409 });
+      return NextResponse.json(
+        {
+          error: "This assessment has already been completed.",
+          assignment: {
+            id: assignment.id,
+            status: assignment.status,
+            expiresAt: assignment.expiresAt,
+            candidateEmailMasked: maskEmail(assignment.candidateEmail),
+          },
+          company: assignment.company,
+          template: assignment.template,
+        },
+        { status: 409 }
+      );
     }
 
     return NextResponse.json({

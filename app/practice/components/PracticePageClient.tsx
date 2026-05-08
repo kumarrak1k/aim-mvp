@@ -15,9 +15,9 @@ import type {
   SpeakerPreference,
 } from "../types";
 import {
+  DEFAULT_TOTAL_QUESTIONS as totalQuestions,
   defaultSpeakerPreference,
   PRACTICE_SESSION_CONFIG_KEY,
-  totalQuestions,
 } from "../session/utils";
 
 type PracticeUsage = {

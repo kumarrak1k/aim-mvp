@@ -56,11 +56,11 @@ import { QuestionHero } from "./components/QuestionHero";
 import { LoadingSessionCard, MissingSessionCard } from "./components/SessionCards";
 import { SessionSummary } from "./components/SessionSummary";
 import {
+  DEFAULT_TOTAL_QUESTIONS,
   createFeedbackError,
   defaultSessionConfig,
   defaultSpeakerPreference,
   parseSessionConfig,
-  totalQuestions,
   wait,
 } from "./utils";
 
@@ -86,6 +86,11 @@ export default function PracticeSessionPage() {
   const [focusArea, setFocusArea] = useState(defaultSessionConfig.focusArea);
   const [speakerPreference, setSpeakerPreference] =
     useState<SpeakerPreference>(defaultSpeakerPreference);
+  // totalQuestions is now driven by config (template-defined for assessment
+  // invites; defaulted to 5 for the classic personal practice flow).
+  const [totalQuestions, setTotalQuestions] = useState<number>(DEFAULT_TOTAL_QUESTIONS);
+  const [assessmentMode, setAssessmentMode] = useState(false);
+  const [assignmentToken, setAssignmentToken] = useState<string | undefined>(undefined);
 
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
@@ -322,6 +327,9 @@ export default function PracticeSessionPage() {
     setSpeakerEnabled(config.speakerEnabled);
     setCameraEnabled(config.cameraEnabled);
     setSpeakerPreference(config.speakerPreference || defaultSpeakerPreference);
+    setTotalQuestions(config.totalQuestions ?? DEFAULT_TOTAL_QUESTIONS);
+    setAssessmentMode(Boolean(config.assessmentMode));
+    setAssignmentToken(config.assignmentToken);
     setSessionConfig(config);
     setSessionConfigLoaded(true);
   }, []);
@@ -463,7 +471,7 @@ export default function PracticeSessionPage() {
         return nextSessions;
       });
     },
-    [difficulty, interviewType, role]
+    [difficulty, interviewType, role, totalQuestions]
   );
 
   const saveSession = useCallback(
@@ -489,6 +497,9 @@ export default function PracticeSessionPage() {
             summary: sessionSummary,
             results: sessionResults,
             speakerPreference,
+            // When this session was launched from a company assessment invite,
+            // forward the token so the API marks the assignment completed.
+            ...(assignmentToken ? { assignmentToken } : {}),
           }),
         });
 
@@ -506,6 +517,7 @@ export default function PracticeSessionPage() {
     },
     [
       addLocalSavedSession,
+      assignmentToken,
       difficulty,
       experienceLevel,
       focusArea,
@@ -514,6 +526,7 @@ export default function PracticeSessionPage() {
       practiceMode,
       role,
       speakerPreference,
+      totalQuestions,
     ]
   );
 
@@ -836,6 +849,7 @@ export default function PracticeSessionPage() {
       setQuestionAudioMessage,
       speakerEnabled,
       speakerPreference,
+      totalQuestions,
     ]
   );
 
@@ -1100,8 +1114,16 @@ export default function PracticeSessionPage() {
     questionPlaybackStartedRef.current = false;
     sessionBootedRef.current = false;
 
-    router.push("/practice");
+    // Assessment candidates should not see the personal-practice setup —
+    // send them straight to the completion screen for their invite token.
+    if (assessmentMode && assignmentToken) {
+      router.push(`/assessment/${encodeURIComponent(assignmentToken)}/complete`);
+    } else {
+      router.push("/practice");
+    }
   }, [
+    assessmentMode,
+    assignmentToken,
     cleanupAudioMonitoring,
     cleanupPreparedQuestionAudio,
     clearAudioSamples,
@@ -1200,6 +1222,7 @@ export default function PracticeSessionPage() {
     setGuidedAnswerActive,
     setQuestionAudioMessage,
     stopQuestionSpeech,
+    totalQuestions,
     videoAnalysis,
     voiceAnalysis,
   ]);
@@ -1285,6 +1308,7 @@ export default function PracticeSessionPage() {
             onStopQuestion={stopQuestionSpeech}
             onStartGuidedAnswer={() => void startGuidedAnswer()}
             onBackToSetup={resetInterview}
+            assessmentMode={assessmentMode}
           />
 
           <div className="grid items-start gap-3 xl:grid-cols-[minmax(0,1fr)_150px]">
