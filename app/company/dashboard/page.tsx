@@ -260,7 +260,9 @@ export default function CompanyDashboardPage() {
             </p>
 
             <label className="mt-5 block text-xs font-black uppercase tracking-[0.18em] text-gray-400">
-              Type <span className="text-red-300">{company.name}</span> to confirm
+              Type{" "}
+              <span className="normal-case text-red-300">{company.name}</span>{" "}
+              to confirm
             </label>
             <input
               type="text"
