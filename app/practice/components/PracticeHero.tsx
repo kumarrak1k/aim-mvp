@@ -45,14 +45,14 @@ export function PracticeHero({
           </div>
 
           <h1 className="max-w-full break-words text-[2.55rem] font-black leading-[1.02] tracking-[-0.055em] text-white sm:text-4xl md:text-5xl lg:text-6xl">
-            Stop winging it.{" "}
+            Interview preparation that makes{" "}
             <span className="bg-gradient-to-r from-purple-200 via-fuchsia-200 to-cyan-200 bg-clip-text text-transparent">
-              Practise like your interview is tomorrow.
+              a measurable difference.
             </span>
           </h1>
 
           <p className="mt-5 max-w-full break-words text-base leading-7 text-gray-300 md:text-lg md:leading-8">
-            Five tailored questions for your exact role. Strict hiring-bar feedback on every answer. Voice delivery scored. Camera presence analysed. Model answers included. Your results saved.
+            Five questions tailored to your exact role and level. Detailed coaching on every answer. Voice delivery scored. Camera presence reviewed. Model answers included. Progress saved.
           </p>
 
           <div className="mt-6 grid gap-3">

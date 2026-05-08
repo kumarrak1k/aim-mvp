@@ -1,81 +1,127 @@
 "use client";
 
 import Link from "next/link";
-import { SiteLogo } from "@/app/components/brand/SiteLogo";
 import {
   BulletList,
   GlassCard,
   MarketingShell,
-  PageLinkCard,
   SectionHeading,
 } from "./components/marketing/MarketingShell";
 
-const overviewCards = [
-  {
-    href: "/platform",
-    eyebrow: "Platform",
-    title: "A smarter coaching engine",
-    description: "Tailored questions, natural audio, transcript review and performance scoring in one focused practice flow.",
-    image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80",
-  },
-  {
-    href: "/how-it-works",
-    eyebrow: "How it works",
-    title: "A simple improvement loop",
-    description: "Move from setup, to answering, to feedback, to measurable next steps — no friction.",
-    image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=80",
-  },
-  {
-    href: "/candidates",
-    eyebrow: "Candidates",
-    title: "Built for real career moments",
-    description: "For graduates, career changers and professionals preparing for interviews that matter.",
-    image: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1200&q=80",
-  },
-  {
-    href: "/pricing",
-    eyebrow: "Pricing",
-    title: "Simple plans, clear value",
-    description: "Choose the coaching level that fits how seriously you are preparing.",
-    image: "https://images.unsplash.com/photo-1556740749-887f6717d7e4?auto=format&fit=crop&w=1200&q=80",
-  },
-];
+// ─── Data ─────────────────────────────────────────────────────────────────────
 
-const readinessHighlights = [
-  "Answer quality scoring",
-  "Voice delivery review",
-  "Camera presence feedback",
-  "Saved progress history",
+const heroStats = [
+  { value: "5", label: "Tailored questions" },
+  { value: "360°", label: "Feedback coverage" },
+  { value: "8+", label: "Readiness target" },
+  { value: "100%", label: "Private data" },
 ];
 
 const trustPillars = [
   {
-    icon: "🔒",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6 text-purple-300">
+        <rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" />
+      </svg>
+    ),
     title: "Your data stays yours",
-    text: "CV and answer data is never sold or shared with employers. Delete it whenever you want.",
+    text: "CV and answer data is never sold or shared with employers. Delete it at any time.",
   },
   {
-    icon: "🎯",
-    title: "Questions that fit you",
-    text: "Tailored to your role, level and interview type — not generic prompts.",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6 text-cyan-300">
+        <circle cx="12" cy="12" r="10" /><path d="M12 8v4l3 3" />
+      </svg>
+    ),
+    title: "Questions built for you",
+    text: "Tailored to your exact role, seniority and interview type — not recycled from a generic bank.",
   },
   {
-    icon: "🎙️",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6 text-fuchsia-300">
+        <path d="M12 2a3 3 0 0 0 0 6m0 0a3 3 0 0 0 0 6m0 0a3 3 0 0 0 0 6" /><path d="M19 5a3 3 0 0 0 0 6m0-6a3 3 0 0 1 0 6" /><path d="M5 5a3 3 0 0 1 0 6m0-6a3 3 0 0 0 0 6" />
+      </svg>
+    ),
     title: "360° delivery coaching",
-    text: "Answer quality, pace, filler words, eye contact and body language all reviewed together.",
+    text: "Answer quality, speaking pace, filler words, eye contact and posture reviewed together.",
   },
   {
-    icon: "📈",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6 text-emerald-300">
+        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+      </svg>
+    ),
     title: "Progress that compounds",
-    text: "Every session builds a visible record of improvement you can track over time.",
+    text: "Every session builds a visible record of improvement you can review and act on.",
   },
 ];
 
-const outcomes = [
-  { value: "5", label: "Questions per session", sub: "Tailored to your role" },
-  { value: "360°", label: "Feedback coverage", sub: "Answer, voice & camera" },
-  { value: "8+", label: "Readiness target score", sub: "What to aim for" },
-  { value: "7-day", label: "Action plan", sub: "After every session" },
+const howItWorksSteps = [
+  {
+    number: "01",
+    title: "Configure your session",
+    description:
+      "Select your target role, seniority level, interview type and specific focus areas. Every question is generated for your exact situation.",
+    color: "purple",
+  },
+  {
+    number: "02",
+    title: "Answer with natural realism",
+    description:
+      "Questions are delivered in audio so practice resembles the real experience. Respond by voice or text — your answer is transcribed immediately.",
+    color: "fuchsia",
+  },
+  {
+    number: "03",
+    title: "Receive structured coaching",
+    description:
+      "Each answer is scored, broken down into strengths and improvements, and paired with a model answer for direct comparison.",
+    color: "cyan",
+  },
+  {
+    number: "04",
+    title: "Track your readiness",
+    description:
+      "Sessions are saved so your trajectory is always visible. A readiness score and next-step actions close every practice round.",
+    color: "emerald",
+  },
+];
+
+const candidateFeatures = [
+  "Tailored questions for your role, level and industry",
+  "Voice delivery scoring — pace, clarity and filler words",
+  "Camera presence review — eye contact and posture",
+  "Structured feedback with model answers included",
+  "Progress history saved across every session",
+];
+
+const teamFeatures = [
+  "Custom assessment templates per role and competency",
+  "Candidate invite links — no account required from candidates",
+  "Structured results dashboard with completion tracking",
+  "Company branding and UK GDPR / DPA compliant",
+  "Recruiter team access with role-based permissions",
+];
+
+const testimonials = [
+  {
+    quote:
+      "The voice delivery feedback was unlike anything I had encountered before. I had no idea how many filler words I was using until I saw the analysis.",
+    name: "Software engineering graduate",
+    context: "Preparing for Big Tech interviews",
+  },
+  {
+    quote:
+      "I used AI Career Mentor the week before a final-round panel. The structured breakdown of each answer gave me specific things to improve, not vague reassurance.",
+    name: "Career changer — operations to product",
+    context: "Final-stage panel interview",
+  },
+  {
+    quote:
+      "The questions matched my actual interview format almost exactly. Hearing them spoken aloud made the practice noticeably more realistic than reading from a screen.",
+    name: "Experienced professional",
+    context: "Senior management interview",
+  },
 ];
 
 const enterpriseFeatures = [
@@ -87,143 +133,251 @@ const enterpriseFeatures = [
   { icon: "🔒", label: "UK GDPR & DPA ready" },
 ];
 
+// ─── Page ──────────────────────────────────────────────────────────────────────
+
 export default function Home() {
   return (
     <MarketingShell currentPath="/">
 
-      {/* ── Hero ── */}
-      <section className="mx-auto max-w-7xl px-4 pb-12 pt-10 sm:px-6 sm:pb-16 sm:pt-14 lg:pt-16">
-        <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
-          <div className="text-center lg:text-left">
-            {/* Live badge */}
-            <div className="mx-auto mb-6 inline-flex max-w-full items-center gap-2.5 rounded-full border border-emerald-400/20 bg-emerald-400/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-emerald-300 lg:mx-0">
-              <span className="relative flex h-2 w-2 shrink-0">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
-              </span>
-              Now live · Beta
+      {/* ── Hero — centred, full-width ── */}
+      <section className="mx-auto max-w-6xl px-4 pb-16 pt-12 text-center sm:px-6 sm:pb-20 sm:pt-16 lg:pb-24 lg:pt-20">
+
+        {/* Live badge */}
+        <div className="mx-auto mb-8 inline-flex items-center gap-2.5 rounded-full border border-emerald-400/20 bg-emerald-400/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-emerald-300">
+          <span className="relative flex h-2 w-2 shrink-0">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+          </span>
+          Now live · Beta
+        </div>
+
+        {/* Headline */}
+        <h1 className="mx-auto max-w-5xl text-[2.7rem] font-black leading-[1.02] tracking-[-0.055em] sm:text-5xl lg:text-[4rem] xl:text-[4.5rem]">
+          Interview coaching built for{" "}
+          <span className="bg-gradient-to-r from-purple-300 via-fuchsia-200 to-cyan-200 bg-clip-text text-transparent">
+            the candidates and teams who take it seriously.
+          </span>
+        </h1>
+
+        {/* Sub-headline */}
+        <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-gray-400 sm:text-lg sm:leading-9">
+          Tailored AI questions for your exact role. Structured feedback on every answer.
+          Voice delivery and camera presence scored. Progress tracked across every session.
+        </p>
+
+        {/* Dual CTAs */}
+        <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <Link href="/practice">
+            <button className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-8 py-4 text-base font-black text-white shadow-2xl shadow-purple-900/40 transition hover:scale-[1.02] sm:w-auto">
+              Start practising free →
+            </button>
+          </Link>
+          <Link href="/enterprise">
+            <button className="w-full rounded-2xl border border-fuchsia-400/20 bg-fuchsia-400/[0.07] px-8 py-4 text-base font-black text-fuchsia-200 transition hover:bg-fuchsia-400/[0.12] sm:w-auto">
+              For hiring teams
+            </button>
+          </Link>
+        </div>
+
+        {/* Stat strip */}
+        <div className="mx-auto mt-12 grid max-w-xl grid-cols-4 gap-3">
+          {heroStats.map((s) => (
+            <div
+              key={s.label}
+              className="rounded-2xl border border-white/[0.09] bg-white/[0.04] px-2 py-3 text-center"
+            >
+              <p className="text-xl font-black tracking-[-0.04em] sm:text-2xl">{s.value}</p>
+              <p className="mt-1 text-[9px] leading-4 text-gray-500 sm:text-[10px]">{s.label}</p>
             </div>
+          ))}
+        </div>
+      </section>
 
-            <h1 className="mx-auto max-w-4xl text-[2.6rem] font-black leading-[1.03] tracking-[-0.055em] sm:text-5xl md:text-6xl lg:mx-0 lg:text-[3.5rem] xl:text-[4rem]">
-              Practise until your answers feel{" "}
-              <span className="bg-gradient-to-r from-purple-300 via-fuchsia-200 to-cyan-200 bg-clip-text text-transparent">
-                sharper, calmer and more convincing.
-              </span>
-            </h1>
+      {/* ── Two-path audience section ── */}
+      <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 sm:pb-20">
+        <div className="mb-10 text-center">
+          <p className="text-[11px] font-black uppercase tracking-[0.26em] text-purple-300/90">
+            Who is it for
+          </p>
+          <h2 className="mt-3 text-3xl font-black tracking-[-0.05em] sm:text-4xl">
+            Choose your path.
+          </h2>
+        </div>
 
-            <p className="mx-auto mt-6 max-w-xl text-base leading-7 text-gray-400 sm:text-lg sm:leading-8 lg:mx-0">
-              AI Career Mentor gives you real interview questions for your role, spoken feedback on your answers, and a clear record of improvement over time.
+        <div className="grid gap-5 lg:grid-cols-2">
+
+          {/* Candidate path */}
+          <div className="group relative overflow-hidden rounded-[2rem] border border-purple-500/[0.18] bg-purple-500/[0.05] p-8 transition hover:border-purple-500/[0.28] hover:bg-purple-500/[0.08] sm:p-10">
+            <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-purple-500/[0.12] blur-3xl" />
+            <p className="text-[11px] font-black uppercase tracking-[0.26em] text-purple-300/90">
+              For candidates
             </p>
-
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:justify-center lg:justify-start">
-              <Link href="/practice">
-                <button className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-8 py-4 text-base font-black text-white shadow-2xl shadow-purple-900/40 transition hover:scale-[1.02] sm:w-auto">
-                  Start interview practice
-                </button>
-              </Link>
-              <Link href="/how-it-works">
-                <button className="w-full rounded-2xl border border-white/[0.1] bg-white/[0.04] px-8 py-4 text-base font-black text-white transition hover:bg-white/[0.08] sm:w-auto">
-                  See how it works
-                </button>
-              </Link>
-            </div>
-
-            {/* Stat row */}
-            <div className="mt-8 grid max-w-lg grid-cols-4 gap-2 sm:gap-3 lg:mx-0">
-              {outcomes.map((item) => (
-                <StatCard key={item.label} value={item.value} label={item.label} sub={item.sub} />
+            <h3 className="mt-3 text-3xl font-black tracking-[-0.045em]">
+              Practise with precision. Perform with confidence.
+            </h3>
+            <p className="mt-4 text-base leading-7 text-gray-400">
+              Graduates, career changers and professionals preparing for roles where the competition is serious. Structured AI coaching that improves every session.
+            </p>
+            <ul className="mt-6 space-y-2.5">
+              {candidateFeatures.map((f) => (
+                <li key={f} className="flex items-start gap-3 text-sm text-gray-300">
+                  <span className="mt-[5px] h-1.5 w-1.5 shrink-0 rounded-full bg-purple-400" />
+                  {f}
+                </li>
               ))}
+            </ul>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link
+                href="/practice"
+                className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-6 py-3 text-sm font-black text-white shadow-lg shadow-purple-900/30 transition hover:scale-[1.01]"
+              >
+                Start practising free →
+              </Link>
+              <Link
+                href="/candidates"
+                className="inline-flex items-center gap-2 rounded-2xl border border-white/[0.1] bg-white/[0.04] px-6 py-3 text-sm font-black text-white transition hover:bg-white/[0.08]"
+              >
+                Learn more
+              </Link>
             </div>
           </div>
 
-          {/* Hero card */}
-          <GlassCard className="overflow-hidden p-5 sm:p-7">
-            <div className="mb-5 flex items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <SiteLogo href="" size="md" showText={false} />
-                <div>
-                  <p className="text-[10px] font-black uppercase tracking-[0.22em] text-purple-300/60">Interview cockpit</p>
-                  <h2 className="text-lg font-black leading-tight sm:text-xl">Built for focused practice</h2>
-                </div>
-              </div>
-              <span className="shrink-0 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-3 py-1 text-xs font-black text-emerald-300">
-                Ready
-              </span>
+          {/* Team path */}
+          <div className="group relative overflow-hidden rounded-[2rem] border border-fuchsia-500/[0.18] bg-fuchsia-500/[0.05] p-8 transition hover:border-fuchsia-500/[0.28] hover:bg-fuchsia-500/[0.08] sm:p-10">
+            <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-fuchsia-500/[0.12] blur-3xl" />
+            <p className="text-[11px] font-black uppercase tracking-[0.26em] text-fuchsia-300/90">
+              For talent teams
+            </p>
+            <h3 className="mt-3 text-3xl font-black tracking-[-0.045em]">
+              Run structured AI assessments at scale.
+            </h3>
+            <p className="mt-4 text-base leading-7 text-gray-400">
+              For recruiters and HR teams replacing or augmenting telephone screens with consistent, fair, data-rich AI assessments across any volume of candidates.
+            </p>
+            <ul className="mt-6 space-y-2.5">
+              {teamFeatures.map((f) => (
+                <li key={f} className="flex items-start gap-3 text-sm text-gray-300">
+                  <span className="mt-[5px] h-1.5 w-1.5 shrink-0 rounded-full bg-fuchsia-400" />
+                  {f}
+                </li>
+              ))}
+            </ul>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link
+                href="/company/setup"
+                className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-fuchsia-500 to-purple-500 px-6 py-3 text-sm font-black text-white shadow-lg shadow-purple-900/30 transition hover:scale-[1.01]"
+              >
+                Create a workspace →
+              </Link>
+              <Link
+                href="/enterprise"
+                className="inline-flex items-center gap-2 rounded-2xl border border-white/[0.1] bg-white/[0.04] px-6 py-3 text-sm font-black text-white transition hover:bg-white/[0.08]"
+              >
+                Enterprise features
+              </Link>
             </div>
-
-            <div className="grid gap-4 md:grid-cols-[0.95fr_1.05fr]">
-              <div className="rounded-[1.4rem] border border-white/[0.08] bg-black/25 p-5">
-                <p className="text-xs font-semibold text-gray-500">Practice loop</p>
-                <div className="mt-2 flex items-end gap-2">
-                  <span className="text-5xl font-black tracking-[-0.08em] sm:text-6xl">5</span>
-                  <span className="mb-2 text-base font-black text-gray-600">questions</span>
-                </div>
-                <div className="mt-5 space-y-4">
-                  <ProgressLine label="Tailored questions" value={92} />
-                  <ProgressLine label="Natural audio" value={86} />
-                  <ProgressLine label="Transcript feedback" value={88} />
-                  <ProgressLine label="Progress tracking" value={82} />
-                </div>
-              </div>
-
-              <div className="hidden overflow-hidden rounded-[1.4rem] border border-white/[0.08] bg-black/20 sm:block">
-                <img
-                  src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80"
-                  alt="Candidates preparing for interviews"
-                  className="h-full min-h-[220px] w-full object-cover"
-                />
-              </div>
-            </div>
-
-            <div className="mt-4 grid gap-3 sm:grid-cols-2">
-              <InsightCard label="Session experience" text="Question, transcript and camera stay focused in one guided workspace." />
-              <InsightCard label="Progress product" text="Completed sessions are saved so improvement is visible over time." />
-            </div>
-          </GlassCard>
+          </div>
         </div>
       </section>
 
       {/* ── Trust pillars ── */}
-      <section className="mx-auto max-w-7xl px-4 pb-14 sm:px-6">
+      <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6">
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {trustPillars.map((pillar) => (
-            <div key={pillar.title} className="rounded-[1.5rem] border border-white/[0.08] bg-white/[0.03] p-6 backdrop-blur-xl transition hover:border-white/[0.12] hover:bg-white/[0.05]">
-              <span className="text-2xl">{pillar.icon}</span>
-              <p className="mt-4 font-black text-white">{pillar.title}</p>
+            <div
+              key={pillar.title}
+              className="rounded-[1.5rem] border border-white/[0.08] bg-white/[0.03] p-6 backdrop-blur-xl transition hover:border-white/[0.12] hover:bg-white/[0.05]"
+            >
+              <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-2xl border border-white/[0.1] bg-white/[0.05]">
+                {pillar.icon}
+              </div>
+              <p className="font-black text-white">{pillar.title}</p>
               <p className="mt-2 text-sm leading-6 text-gray-500">{pillar.text}</p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* ── Overview cards ── */}
-      <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6">
+      {/* ── How it works ── */}
+      <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 sm:pb-20">
+        <div className="mb-10 text-center">
+          <SectionHeading
+            align="center"
+            eyebrow="How it works"
+            title="From setup to measurable improvement in one session."
+            description="A focused loop — configure, answer, receive coaching, review progress — that compounds with every practice session."
+          />
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          {howItWorksSteps.map((step) => (
+            <div
+              key={step.number}
+              className={`relative overflow-hidden rounded-[1.75rem] border p-6 ${
+                step.color === "purple"
+                  ? "border-purple-500/[0.18] bg-purple-500/[0.05]"
+                  : step.color === "fuchsia"
+                  ? "border-fuchsia-500/[0.18] bg-fuchsia-500/[0.05]"
+                  : step.color === "cyan"
+                  ? "border-cyan-500/[0.18] bg-cyan-500/[0.05]"
+                  : "border-emerald-500/[0.18] bg-emerald-500/[0.05]"
+              }`}
+            >
+              <span
+                className={`text-4xl font-black leading-none ${
+                  step.color === "purple"
+                    ? "text-purple-500/30"
+                    : step.color === "fuchsia"
+                    ? "text-fuchsia-500/30"
+                    : step.color === "cyan"
+                    ? "text-cyan-500/30"
+                    : "text-emerald-500/30"
+                }`}
+              >
+                {step.number}
+              </span>
+              <h3 className="mt-3 text-lg font-black tracking-[-0.03em]">{step.title}</h3>
+              <p className="mt-3 text-sm leading-6 text-gray-400">{step.description}</p>
+            </div>
+          ))}
+        </div>
+        <div className="mt-8 text-center">
+          <Link href="/how-it-works">
+            <button className="rounded-2xl border border-white/[0.1] bg-white/[0.04] px-6 py-3 text-sm font-black text-white transition hover:bg-white/[0.08]">
+              See the full platform →
+            </button>
+          </Link>
+        </div>
+      </section>
+
+      {/* ── Testimonials ── */}
+      <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 sm:pb-20">
         <SectionHeading
           align="center"
-          eyebrow="Explore"
-          title="A focused route through the platform."
-          description="Start practising quickly, then go deeper into profile setup, progress tracking and coaching features when you need them."
+          eyebrow="Candidate feedback"
+          title="Used by candidates preparing for interviews that matter."
+          description="Trusted by graduates, career changers and senior professionals across a range of roles and industries."
         />
-        <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-          {overviewCards.map((card) => (
-            <PageLinkCard key={card.href} {...card} />
+        <div className="mt-10 grid gap-5 md:grid-cols-3">
+          {testimonials.map((t) => (
+            <TestimonialCard key={t.name} {...t} />
           ))}
         </div>
       </section>
 
-      {/* ── For talent teams (B2B) ── */}
-      <section className="mx-auto max-w-7xl px-4 pb-14 sm:px-6">
+      {/* ── Enterprise callout ── */}
+      <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 sm:pb-20">
         <div className="overflow-hidden rounded-[2rem] border border-fuchsia-500/[0.15] bg-gradient-to-br from-fuchsia-500/[0.07] via-purple-500/[0.05] to-transparent p-8 sm:p-10 lg:p-12">
           <div className="grid items-center gap-10 lg:grid-cols-[1fr_auto]">
             <div>
-              <p className="mb-3 text-[11px] font-black uppercase tracking-[0.26em] text-fuchsia-300/90">For talent teams</p>
+              <p className="mb-3 text-[11px] font-black uppercase tracking-[0.26em] text-fuchsia-300/90">
+                Enterprise &amp; talent teams
+              </p>
               <h2 className="text-3xl font-black tracking-[-0.05em] sm:text-4xl">
                 Send AI assessments to candidates at scale.
               </h2>
               <p className="mt-4 max-w-2xl text-base leading-7 text-gray-400">
-                Create custom interview templates, generate candidate invite links, track completion status and review structured results — all in one recruiter dashboard.
+                Create structured interview templates, generate candidate invite links, track completion and review results — all within one recruiter dashboard designed for consistent, fair evaluation.
               </p>
-
               <div className="mt-7 grid grid-cols-2 gap-3 sm:grid-cols-3">
                 {enterpriseFeatures.map(({ icon, label }) => (
                   <div key={label} className="flex items-center gap-2.5 text-sm text-gray-300">
@@ -232,7 +386,6 @@ export default function Home() {
                   </div>
                 ))}
               </div>
-
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link href="/company/setup">
                   <button className="rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 px-6 py-3 text-sm font-black text-white shadow-lg shadow-purple-950/30 transition hover:scale-[1.02]">
@@ -255,7 +408,10 @@ export default function Home() {
                   { n: "61", l: "Completed", c: "text-cyan-300" },
                   { n: "3", l: "Team members", c: "text-green-300" },
                 ].map(({ n, l, c }) => (
-                  <div key={l} className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-4 text-center">
+                  <div
+                    key={l}
+                    className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-4 text-center"
+                  >
                     <p className={`text-3xl font-black ${c}`}>{n}</p>
                     <p className="mt-1 text-xs text-gray-500">{l}</p>
                   </div>
@@ -266,56 +422,24 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Testimonials ── */}
-      <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 sm:pb-20">
-        <SectionHeading
-          align="center"
-          eyebrow="What candidates say"
-          title="Trusted by candidates in real interview prep."
-          description="Used by graduates, career changers and professionals preparing for interviews that genuinely matter."
-        />
-        <div className="mt-10 grid gap-5 md:grid-cols-3">
-          <TestimonialCard
-            quote="The voice delivery feedback was something I had never seen before. I didn't realise how many filler words I was using until I saw the metrics."
-            name="Software engineering graduate"
-            context="Preparing for Big Tech interviews"
-          />
-          <TestimonialCard
-            quote="I used AI Career Mentor the week before my final-round interview. The structured feedback on my answers gave me real things to work on, not just vague tips."
-            name="Career changer, operations to product"
-            context="Final-stage panel interview"
-          />
-          <TestimonialCard
-            quote="The tailored questions matched the actual format of my interview almost exactly. Having natural audio made the practice feel much more realistic."
-            name="Experienced professional"
-            context="Senior management interview"
-          />
-        </div>
-      </section>
-
       {/* ── Why it works ── */}
       <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 sm:pb-24">
         <div className="grid gap-6 lg:grid-cols-2">
           <GlassCard>
             <SectionHeading
               eyebrow="Why it works"
-              title="Designed to feel premium, focused and useful."
-              description="Built around a simple improvement loop: practise, get feedback, review progress, repeat with sharper answers."
+              title="Designed for the improvement loop that leads to better offers."
+              description="Built around one principle: structured, honest practice compounds. Every session builds on the last."
             />
             <div className="mt-7">
-              <BulletList items={[
-                "Tailored interview questions based on role, level and focus.",
-                "Natural question audio with spoken-answer transcription.",
-                "Camera and voice delivery signals for realistic remote interviews.",
-                "Saved session history so progress is visible over time.",
-              ]} />
-            </div>
-            <div className="mt-7 grid gap-3 sm:grid-cols-2">
-              {readinessHighlights.map((item) => (
-                <div key={item} className="rounded-[1.2rem] border border-white/[0.08] bg-black/20 p-4 text-sm font-semibold text-gray-300">
-                  {item}
-                </div>
-              ))}
+              <BulletList
+                items={[
+                  "Questions tailored to your role, level and interview format.",
+                  "Natural question audio makes practice feel close to the real thing.",
+                  "Camera and voice delivery feedback mirrors what interviewers actually evaluate.",
+                  "Saved session history makes improvement visible and trackable.",
+                ]}
+              />
             </div>
             <div className="mt-7 flex flex-wrap gap-3">
               <Link href="/practice">
@@ -325,7 +449,7 @@ export default function Home() {
               </Link>
               <Link href="/pricing">
                 <button className="rounded-2xl border border-white/[0.1] bg-white/[0.04] px-6 py-3.5 text-sm font-black text-white transition hover:bg-white/[0.08]">
-                  See pricing
+                  View pricing
                 </button>
               </Link>
             </div>
@@ -334,10 +458,37 @@ export default function Home() {
           <GlassCard className="overflow-hidden p-0">
             <img
               src="https://images.unsplash.com/photo-1516321497487-e288fb19713f?auto=format&fit=crop&w=1200&q=80"
-              alt="Professional candidate using a laptop for interview preparation"
+              alt="Professional preparing for an interview with structured coaching"
               className="h-full min-h-[360px] w-full object-cover"
             />
           </GlassCard>
+        </div>
+      </section>
+
+      {/* ── Final CTA ── */}
+      <section className="mx-auto max-w-7xl px-4 pb-20 sm:px-6 sm:pb-28">
+        <div className="rounded-[2rem] border border-white/[0.1] bg-gradient-to-br from-purple-500/[0.1] via-fuchsia-500/[0.07] to-transparent p-10 text-center sm:p-14">
+          <p className="text-[11px] font-black uppercase tracking-[0.26em] text-purple-300/90">
+            Get started
+          </p>
+          <h2 className="mx-auto mt-3 max-w-2xl text-3xl font-black tracking-[-0.05em] sm:text-4xl">
+            Prepare with the same standard your interviewers will apply.
+          </h2>
+          <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-gray-400">
+            Join candidates who chose structured preparation over hoping for the best. Free to start. No credit card required.
+          </p>
+          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <Link href="/practice">
+              <button className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-8 py-4 text-base font-black text-white shadow-2xl shadow-purple-900/40 transition hover:scale-[1.02] sm:w-auto">
+                Start practising free →
+              </button>
+            </Link>
+            <Link href="/how-it-works">
+              <button className="w-full rounded-2xl border border-white/[0.1] bg-white/[0.04] px-8 py-4 text-base font-black text-white transition hover:bg-white/[0.08] sm:w-auto">
+                See how it works
+              </button>
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -345,43 +496,17 @@ export default function Home() {
   );
 }
 
-function StatCard({ value, label, sub }: { value: string; label: string; sub?: string }) {
-  return (
-    <div className="rounded-2xl border border-white/[0.09] bg-white/[0.04] p-3 text-center shadow-lg shadow-black/10 sm:p-4">
-      <p className="text-xl font-black tracking-[-0.04em] sm:text-2xl">{value}</p>
-      <p className="mt-1 text-[9px] leading-4 text-gray-400 sm:text-[10px]">{label}</p>
-      {sub && <p className="mt-0.5 hidden text-[8px] text-gray-600 sm:block">{sub}</p>}
-    </div>
-  );
-}
+// ─── Sub-components ───────────────────────────────────────────────────────────
 
-function ProgressLine({ label, value }: { label: string; value: number }) {
-  return (
-    <div>
-      <div className="mb-1.5 flex items-center justify-between">
-        <span className="text-xs font-medium text-gray-400">{label}</span>
-        <span className="text-xs font-black text-gray-200">{value}%</span>
-      </div>
-      <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.08]">
-        <div
-          className="h-full rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-400 to-cyan-400 shadow-[0_0_12px_rgba(168,85,247,0.4)]"
-          style={{ width: `${value}%` }}
-        />
-      </div>
-    </div>
-  );
-}
-
-function InsightCard({ label, text }: { label: string; text: string }) {
-  return (
-    <div className="rounded-[1.2rem] border border-white/[0.08] bg-white/[0.03] p-4">
-      <p className="mb-2 text-[10px] font-black uppercase tracking-[0.2em] text-cyan-300/80">{label}</p>
-      <p className="text-xs leading-5 text-gray-400">{text}</p>
-    </div>
-  );
-}
-
-function TestimonialCard({ quote, name, context }: { quote: string; name: string; context: string }) {
+function TestimonialCard({
+  quote,
+  name,
+  context,
+}: {
+  quote: string;
+  name: string;
+  context: string;
+}) {
   return (
     <div className="rounded-[1.75rem] border border-white/[0.08] bg-white/[0.04] p-7 backdrop-blur-xl">
       <p className="text-3xl font-black leading-none text-purple-400/40">&ldquo;</p>
