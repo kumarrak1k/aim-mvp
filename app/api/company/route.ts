@@ -77,6 +77,53 @@ export async function POST(request: NextRequest) {
   }
 }
 
+export async function DELETE(request: NextRequest) {
+  try {
+    const { userId } = await auth();
+    if (!userId) return NextResponse.json({ error: "Unauthorised." }, { status: 401 });
+
+    // Only admins of the workspace can delete it.
+    const member = await prisma.companyMember.findFirst({
+      where: { clerkUserId: userId, role: "admin" },
+      include: { company: true },
+    });
+    if (!member) return NextResponse.json({ error: "Admin access required." }, { status: 403 });
+
+    // Require the user to type the exact company name to confirm — protects against accidents.
+    const body = await request.json().catch(() => ({}));
+    const confirmName = cleanStr(body?.confirmName);
+    if (!confirmName) {
+      return NextResponse.json(
+        { error: "Type the company name to confirm deletion." },
+        { status: 400 }
+      );
+    }
+    if (confirmName !== member.company.name) {
+      return NextResponse.json(
+        { error: "Confirmation name does not match the company name." },
+        { status: 400 }
+      );
+    }
+
+    const companyId = member.companyId;
+
+    // Delete in dependency order inside a single transaction. CandidateAssignment.templateId
+    // has no cascade so we must remove assignments before templates to avoid FK violations.
+    await prisma.$transaction([
+      prisma.candidateAssignment.deleteMany({ where: { companyId } }),
+      prisma.assessmentTemplate.deleteMany({ where: { companyId } }),
+      prisma.companyInvite.deleteMany({ where: { companyId } }),
+      prisma.companyMember.deleteMany({ where: { companyId } }),
+      prisma.company.delete({ where: { id: companyId } }),
+    ]);
+
+    return NextResponse.json({ success: true, deletedCompanyId: companyId });
+  } catch (error) {
+    console.error("COMPANY DELETE ERROR:", error);
+    return NextResponse.json({ error: "Failed to delete company." }, { status: 500 });
+  }
+}
+
 export async function PATCH(request: NextRequest) {
   try {
     const { userId } = await auth();

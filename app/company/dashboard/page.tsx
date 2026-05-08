@@ -46,6 +46,12 @@ export default function CompanyDashboardPage() {
   const [templates, setTemplates] = useState<Template[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Delete-workspace state
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteConfirmName, setDeleteConfirmName] = useState("");
+  const [deleteSubmitting, setDeleteSubmitting] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
+
   useEffect(() => {
     async function load() {
       try {
@@ -146,6 +152,38 @@ export default function CompanyDashboardPage() {
           ))}
         </div>
 
+        {/* Danger zone — admin only */}
+        {member.role === "admin" && (
+          <div className="mb-10 overflow-hidden rounded-[2rem] border border-red-500/25 bg-red-500/[0.04] p-6 shadow-xl shadow-black/10">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-[11px] font-black uppercase tracking-[0.22em] text-red-300">
+                  Danger zone
+                </p>
+                <h2 className="mt-2 text-lg font-black tracking-[-0.03em] text-white">
+                  Delete this workspace
+                </h2>
+                <p className="mt-1 text-sm leading-6 text-gray-400">
+                  Permanently removes <span className="font-black text-white">{company.name}</span>{" "}
+                  along with every template, assignment, invite and team member.
+                  Candidates&rsquo; personal practice sessions are not affected.
+                  This cannot be undone.
+                </p>
+              </div>
+              <button
+                onClick={() => {
+                  setDeleteError("");
+                  setDeleteConfirmName("");
+                  setShowDeleteModal(true);
+                }}
+                className="shrink-0 rounded-full border border-red-400/40 bg-red-500/10 px-5 py-2.5 text-sm font-black text-red-200 transition hover:bg-red-500/20"
+              >
+                Delete workspace
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Recent assignments */}
         <div className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-6 shadow-xl shadow-black/10">
           <div className="mb-6 flex items-center justify-between">
@@ -196,6 +234,95 @@ export default function CompanyDashboardPage() {
           )}
         </div>
       </div>
+
+      {/* Delete-workspace confirmation modal */}
+      {showDeleteModal && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm px-4"
+          onClick={() => {
+            if (!deleteSubmitting) setShowDeleteModal(false);
+          }}
+        >
+          <div
+            className="w-full max-w-md rounded-[1.75rem] border border-red-500/30 bg-[#160a14] p-6 shadow-2xl shadow-red-950/40"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <p className="text-[11px] font-black uppercase tracking-[0.22em] text-red-300">
+              Confirm deletion
+            </p>
+            <h3 className="mt-2 text-2xl font-black tracking-[-0.03em] text-white">
+              Delete {company.name}?
+            </h3>
+            <p className="mt-3 text-sm leading-6 text-gray-400">
+              This permanently deletes the workspace, every assessment template,
+              every candidate invite and assignment, and every team member.
+              This action cannot be undone.
+            </p>
+
+            <label className="mt-5 block text-xs font-black uppercase tracking-[0.18em] text-gray-400">
+              Type <span className="text-red-300">{company.name}</span> to confirm
+            </label>
+            <input
+              type="text"
+              value={deleteConfirmName}
+              onChange={(e) => {
+                setDeleteConfirmName(e.target.value);
+                if (deleteError) setDeleteError("");
+              }}
+              autoFocus
+              disabled={deleteSubmitting}
+              placeholder={company.name}
+              className="mt-2 w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm font-semibold text-white placeholder:text-gray-600 focus:border-red-400/40 focus:outline-none"
+            />
+
+            {deleteError && (
+              <p className="mt-3 text-sm font-semibold text-red-300">{deleteError}</p>
+            )}
+
+            <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                disabled={deleteSubmitting}
+                className="rounded-full border border-white/10 bg-white/[0.04] px-5 py-2.5 text-sm font-black text-white transition hover:bg-white/[0.08] disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={async () => {
+                  if (deleteConfirmName.trim() !== company.name) {
+                    setDeleteError("Name does not match.");
+                    return;
+                  }
+                  try {
+                    setDeleteSubmitting(true);
+                    setDeleteError("");
+                    const res = await fetch("/api/company", {
+                      method: "DELETE",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ confirmName: deleteConfirmName.trim() }),
+                    });
+                    const result = await res.json().catch(() => ({}));
+                    if (!res.ok || result.error) {
+                      setDeleteError(result.error || "Failed to delete workspace.");
+                      return;
+                    }
+                    // Workspace gone — send the user back to the setup page.
+                    router.push("/company/setup");
+                  } catch {
+                    setDeleteError("Network error. Please try again.");
+                  } finally {
+                    setDeleteSubmitting(false);
+                  }
+                }}
+                disabled={deleteSubmitting || deleteConfirmName.trim() !== company.name}
+                className="rounded-full bg-red-500/90 px-5 py-2.5 text-sm font-black text-white shadow-lg shadow-red-950/40 transition hover:bg-red-500 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {deleteSubmitting ? "Deleting…" : "Permanently delete"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </MarketingShell>
   );
 }
