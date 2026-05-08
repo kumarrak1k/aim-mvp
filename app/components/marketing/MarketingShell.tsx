@@ -88,7 +88,7 @@ export function MarketingShell({ children, currentPath }: MarketingShellProps) {
 
       {/* ── Header ── */}
       <header className="sticky top-0 z-50 border-b border-white/[0.08] bg-[#0f0a1a]/90 backdrop-blur-2xl">
-        <div className="mx-auto flex max-w-[1760px] items-center gap-3 px-4 py-3 sm:px-6 lg:gap-6 lg:px-10 lg:py-3.5">
+        <div className="mx-auto flex max-w-[1760px] items-center gap-3 px-4 py-3 pr-5 sm:px-6 sm:pr-7 lg:gap-6 lg:pl-10 lg:pr-14 lg:py-3.5">
 
           {/* Logo */}
           <div className="shrink-0">
@@ -173,8 +173,8 @@ export function MarketingShell({ children, currentPath }: MarketingShellProps) {
             </Show>
 
             <Show when="signed-in">
-              {/* pl-1 gives the UserButton popup room to breathe — no overflow-hidden above to clip it */}
-              <div className="shrink-0 pl-1">
+              {/* Explicit horizontal padding ensures the avatar circle never sits flush against the viewport edge */}
+              <div className="shrink-0 pl-1 pr-1">
                 <UserButton />
               </div>
             </Show>
