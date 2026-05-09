@@ -86,6 +86,52 @@ export const siteConfig = {
       priority: 0.8,
     },
 
+    // ── Free tools & content ─────────────────────────────────────────
+    {
+      path: "/tools/star-scorer",
+      label: "Free STAR Answer Scorer",
+      description:
+        "Free AI-powered STAR answer scorer. No sign-in required. Paste your answer and get instant feedback on Situation, Task, Action, and Result.",
+      priority: 0.8,
+    },
+    {
+      path: "/blog",
+      label: "Interview Guides",
+      description:
+        "In-depth guides on interview technique, competency frameworks, assessment centres, and career preparation.",
+      priority: 0.8,
+    },
+    {
+      path: "/questions",
+      label: "Interview Question Library",
+      description:
+        "Thousands of categorised interview questions by role, industry, and interview type — with model answers and scoring guidance.",
+      priority: 0.8,
+    },
+
+    // ── Comparison pages ─────────────────────────────────────────────
+    {
+      path: "/compare/interview-warmup",
+      label: "AI Career Mentor vs Interview Warmup",
+      description:
+        "Compare AI Career Mentor and Google Interview Warmup across tailored questions, delivery coaching, and structured feedback.",
+      priority: 0.65,
+    },
+    {
+      path: "/compare/big-interview",
+      label: "AI Career Mentor vs Big Interview",
+      description:
+        "Compare AI Career Mentor and Big Interview — real-time AI scoring, delivery analysis, and role-tailored practice.",
+      priority: 0.65,
+    },
+    {
+      path: "/compare/yoodli",
+      label: "AI Career Mentor vs Yoodli",
+      description:
+        "Compare AI Career Mentor and Yoodli — interview-specific coaching versus general speech analytics.",
+      priority: 0.65,
+    },
+
     // ── Company pages ─────────────────────────────────────────────────
     {
       path: "/about",

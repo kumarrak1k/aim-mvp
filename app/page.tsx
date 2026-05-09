@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { createPageMetadata } from "@/app/config/seo";
 import { SiteLogo } from "@/app/components/brand/SiteLogo";
+import { DemoVideo } from "@/app/components/marketing/DemoVideo";
 
 export const metadata: Metadata = createPageMetadata({
   path: "/",
@@ -18,12 +19,31 @@ export const metadata: Metadata = createPageMetadata({
   ],
 });
 
-/**
- * Split landing — the user's first decision is which side of the platform
- * they're here for. No nav, no extra distractions: one choice, then we send
- * them into the right product universe with its own branding, sign-in, and
- * workflow.
- */
+const stats = [
+  { value: "5", label: "dimensions scored per answer" },
+  { value: "360°", label: "answer, voice & camera coaching" },
+  { value: "8+", label: "interview types covered" },
+  { value: "7-day", label: "personalised improvement plan" },
+];
+
+const capabilities = [
+  {
+    title: "Tailored to you",
+    body: "Questions generated for your exact role, level, and interview type — not a generic bank.",
+    color: "purple",
+  },
+  {
+    title: "360° coaching",
+    body: "Answer quality, voice delivery, filler words, and camera presence all scored in one session.",
+    color: "fuchsia",
+  },
+  {
+    title: "Structured improvement",
+    body: "Model answers, specific feedback, and a 7-day plan after every practice session.",
+    color: "cyan",
+  },
+];
+
 export default function HomePage() {
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#0a0614] text-white">
@@ -31,11 +51,11 @@ export default function HomePage() {
       <div className="pointer-events-none absolute inset-0 z-0">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_25%_15%,rgba(120,60,255,0.18),transparent),radial-gradient(ellipse_60%_50%_at_75%_85%,rgba(232,80,180,0.12),transparent),linear-gradient(180deg,#0a0614_0%,#100a1f_50%,#0c0816_100%)]" />
         <div className="absolute left-[-160px] top-[-80px] h-[520px] w-[520px] rounded-full bg-purple-500/[0.18] blur-[160px]" />
-        <div className="absolute right-[-160px] bottom-[-80px] h-[520px] w-[520px] rounded-full bg-fuchsia-500/[0.18] blur-[160px]" />
+        <div className="absolute bottom-[-80px] right-[-160px] h-[520px] w-[520px] rounded-full bg-fuchsia-500/[0.18] blur-[160px]" />
       </div>
 
       <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col px-4 py-6 sm:px-6 sm:py-8 lg:px-10">
-        {/* Top bar — minimal: logo + sign-in shortcut */}
+        {/* Top bar */}
         <header className="mb-10 flex items-center justify-between sm:mb-14">
           <SiteLogo href="/" size="md" showText />
           <div className="hidden items-center gap-2 sm:flex">
@@ -54,7 +74,7 @@ export default function HomePage() {
           </div>
         </header>
 
-        {/* Headline */}
+        {/* Hero */}
         <section className="mb-10 text-center sm:mb-14 lg:mb-16">
           <p className="mx-auto mb-5 inline-flex items-center gap-2.5 rounded-full border border-emerald-400/20 bg-emerald-400/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-emerald-300">
             <span className="relative flex h-2 w-2">
@@ -65,17 +85,74 @@ export default function HomePage() {
           </p>
 
           <h1 className="mx-auto max-w-5xl text-[2.6rem] font-black leading-[1.02] tracking-[-0.055em] sm:text-5xl lg:text-[4rem] xl:text-[4.5rem]">
-            Two sides of the same platform.{" "}
+            The AI interview coach that{" "}
             <span className="bg-gradient-to-r from-purple-300 via-fuchsia-200 to-cyan-200 bg-clip-text text-transparent">
-              One built for candidates. One built for hiring teams.
+              scores answers, voice, and camera presence.
             </span>
           </h1>
 
           <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-gray-400 sm:text-lg sm:leading-9">
-            Pick the side that&rsquo;s right for you. Each side has its own
-            workflow, sign-in and product — so you only see what matters
-            to you.
+            Practise interviews tailored to your exact role. Get scored on
+            what you say, how you sound, and how you come across on camera.
+            Walk in with a 7-day improvement plan.
           </p>
+
+          <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <Link
+              href="/for-candidates/sign-up"
+              className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-8 py-4 text-base font-black text-white shadow-2xl shadow-purple-900/40 transition hover:scale-[1.02] sm:w-auto"
+            >
+              Start free — for candidates →
+            </Link>
+            <Link
+              href="/tools/star-scorer"
+              className="w-full rounded-2xl border border-white/[0.1] bg-white/[0.04] px-8 py-4 text-base font-black text-white transition hover:bg-white/[0.08] sm:w-auto"
+            >
+              Try free STAR scorer
+            </Link>
+          </div>
+          <p className="mt-4 text-xs text-gray-600">
+            Free to start. No credit card required.
+          </p>
+        </section>
+
+        {/* Stats */}
+        <section className="mb-10 grid grid-cols-2 gap-3 sm:mb-14 lg:grid-cols-4">
+          {stats.map((s) => (
+            <div
+              key={s.label}
+              className="rounded-2xl border border-white/[0.07] bg-white/[0.03] px-5 py-5 text-center"
+            >
+              <p className="text-3xl font-black tracking-[-0.06em] text-white">
+                {s.value}
+              </p>
+              <p className="mt-1 text-xs leading-5 text-gray-500">{s.label}</p>
+            </div>
+          ))}
+        </section>
+
+        {/* Capabilities */}
+        <section className="mb-10 grid gap-4 sm:mb-14 sm:grid-cols-3">
+          {capabilities.map((c) => (
+            <div
+              key={c.title}
+              className={`rounded-[1.75rem] border p-6 ${
+                c.color === "purple"
+                  ? "border-purple-500/[0.18] bg-purple-500/[0.05]"
+                  : c.color === "fuchsia"
+                    ? "border-fuchsia-500/[0.18] bg-fuchsia-500/[0.05]"
+                    : "border-cyan-500/[0.18] bg-cyan-500/[0.05]"
+              }`}
+            >
+              <p className="font-black">{c.title}</p>
+              <p className="mt-2 text-sm leading-6 text-gray-400">{c.body}</p>
+            </div>
+          ))}
+        </section>
+
+        {/* Demo video */}
+        <section className="mb-10 sm:mb-14">
+          <DemoVideo caption="90-second walkthrough — from session setup to AI feedback report" />
         </section>
 
         {/* Two-path cards */}
@@ -104,22 +181,17 @@ export default function HomePage() {
             </p>
 
             <ul className="mt-6 space-y-2.5 text-sm text-gray-300">
-              <li className="flex items-start gap-3">
-                <span className="mt-[5px] h-1.5 w-1.5 shrink-0 rounded-full bg-purple-400" />
-                Tailored interview practice for your exact role and level
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="mt-[5px] h-1.5 w-1.5 shrink-0 rounded-full bg-purple-400" />
-                Mock assessment centre — case study, interview, presentation
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="mt-[5px] h-1.5 w-1.5 shrink-0 rounded-full bg-purple-400" />
-                Voice delivery, camera presence and answer quality scored
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="mt-[5px] h-1.5 w-1.5 shrink-0 rounded-full bg-purple-400" />
-                Progress saved across every session
-              </li>
+              {[
+                "Tailored interview practice for your exact role and level",
+                "Mock assessment centre — case study, interview, presentation",
+                "Voice delivery, camera presence and answer quality scored",
+                "Progress saved across every session",
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-3">
+                  <span className="mt-[5px] h-1.5 w-1.5 shrink-0 rounded-full bg-purple-400" />
+                  {item}
+                </li>
+              ))}
             </ul>
 
             <div className="mt-auto pt-8">
@@ -156,22 +228,17 @@ export default function HomePage() {
             </p>
 
             <ul className="mt-6 space-y-2.5 text-sm text-gray-300">
-              <li className="flex items-start gap-3">
-                <span className="mt-[5px] h-1.5 w-1.5 shrink-0 rounded-full bg-fuchsia-400" />
-                Custom assessment templates for any role
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="mt-[5px] h-1.5 w-1.5 shrink-0 rounded-full bg-fuchsia-400" />
-                Email invites — candidates take it on their own time
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="mt-[5px] h-1.5 w-1.5 shrink-0 rounded-full bg-fuchsia-400" />
-                Recruiter dashboard with full scoring + transcripts
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="mt-[5px] h-1.5 w-1.5 shrink-0 rounded-full bg-fuchsia-400" />
-                UK GDPR &amp; DPA-ready
-              </li>
+              {[
+                "Custom assessment templates for any role",
+                "Email invites — candidates take it on their own time",
+                "Recruiter dashboard with full scoring + transcripts",
+                "UK GDPR & DPA-ready",
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-3">
+                  <span className="mt-[5px] h-1.5 w-1.5 shrink-0 rounded-full bg-fuchsia-400" />
+                  {item}
+                </li>
+              ))}
             </ul>
 
             <div className="mt-auto pt-8">
@@ -185,6 +252,29 @@ export default function HomePage() {
           </Link>
         </section>
 
+        {/* Free tools row */}
+        <section className="mb-10 rounded-[2rem] border border-white/[0.07] bg-white/[0.02] p-6 sm:p-8">
+          <div className="flex flex-col items-start justify-between gap-5 sm:flex-row sm:items-center">
+            <div>
+              <p className="text-[11px] font-black uppercase tracking-[0.2em] text-purple-300/70">
+                Free tools — no sign-in required
+              </p>
+              <p className="mt-1.5 text-base font-black">
+                Try before you commit
+              </p>
+              <p className="mt-1 text-sm text-gray-500">
+                Paste your answer and get an instant STAR score with specific feedback.
+              </p>
+            </div>
+            <Link
+              href="/tools/star-scorer"
+              className="shrink-0 rounded-2xl border border-purple-300/20 bg-purple-300/[0.07] px-6 py-3 text-sm font-black text-purple-100 transition hover:bg-purple-300/[0.12]"
+            >
+              Free STAR answer scorer →
+            </Link>
+          </div>
+        </section>
+
         {/* Footer */}
         <footer className="mt-auto border-t border-white/[0.06] pt-6 text-xs text-gray-600">
           <div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
@@ -196,14 +286,11 @@ export default function HomePage() {
               <Link href="/universities" className="hover:text-gray-400">Universities</Link>
               <Link href="/security" className="hover:text-gray-400">Security</Link>
               <Link href="/press" className="hover:text-gray-400">Press</Link>
+              <Link href="/blog" className="hover:text-gray-400">Blog</Link>
+              <Link href="/questions" className="hover:text-gray-400">Questions</Link>
+              <Link href="/tools/star-scorer" className="hover:text-gray-400">STAR Scorer</Link>
               <Link href="/privacy" className="hover:text-gray-400">Privacy</Link>
               <Link href="/terms" className="hover:text-gray-400">Terms</Link>
-              <Link href="/for-candidates" className="hover:text-gray-400">
-                Candidates
-              </Link>
-              <Link href="/for-business" className="hover:text-gray-400">
-                Corporates
-              </Link>
             </div>
           </div>
         </footer>

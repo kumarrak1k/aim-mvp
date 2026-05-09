@@ -1,0 +1,252 @@
+"use client";
+
+import { useState, useTransition } from "react";
+import Link from "next/link";
+import { SiteLogo } from "@/app/components/brand/SiteLogo";
+
+type STARScore = { score: number; feedback: string };
+type Result = {
+  situation: STARScore;
+  task: STARScore;
+  action: STARScore;
+  result: STARScore;
+  overall: number;
+  summary: string;
+  topImprovement: string;
+};
+
+const STAR_LABELS: { key: keyof Omit<Result, "overall" | "summary" | "topImprovement">; label: string; color: string }[] = [
+  { key: "situation", label: "Situation", color: "purple" },
+  { key: "task", label: "Task", color: "fuchsia" },
+  { key: "action", label: "Action", color: "cyan" },
+  { key: "result", label: "Result", color: "emerald" },
+];
+
+function ScoreBar({ score, color }: { score: number; color: string }) {
+  const colorMap: Record<string, string> = {
+    purple: "bg-purple-500",
+    fuchsia: "bg-fuchsia-500",
+    cyan: "bg-cyan-500",
+    emerald: "bg-emerald-500",
+  };
+  return (
+    <div className="flex items-center gap-3">
+      <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/[0.08]">
+        <div
+          className={`h-full rounded-full transition-all duration-700 ${colorMap[color]}`}
+          style={{ width: `${score * 10}%` }}
+        />
+      </div>
+      <span className="w-6 text-right text-sm font-black">{score}</span>
+    </div>
+  );
+}
+
+export default function STARScorerPage() {
+  const [role, setRole] = useState("");
+  const [question, setQuestion] = useState("");
+  const [answer, setAnswer] = useState("");
+  const [result, setResult] = useState<Result | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+    setResult(null);
+
+    startTransition(async () => {
+      try {
+        const res = await fetch("/api/tools/star-scorer", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ role, question, answer }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          setError(data.error ?? "Something went wrong. Please try again.");
+          return;
+        }
+        setResult(data as Result);
+      } catch {
+        setError("Network error. Please try again.");
+      }
+    });
+  }
+
+  return (
+    <div className="relative min-h-screen bg-[#0a0614] text-white">
+      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(120,60,255,0.15),transparent),linear-gradient(180deg,#0a0614_0%,#100a1f_50%,#0c0816_100%)]" />
+        <div className="absolute left-1/2 top-[-300px] h-[600px] w-[900px] -translate-x-1/2 rounded-full bg-purple-600/[0.12] blur-[160px]" />
+      </div>
+
+      <div className="relative z-10 mx-auto max-w-3xl px-4 pb-24 pt-10 sm:px-6">
+        <div className="mb-10 flex items-center justify-between">
+          <Link href="/">
+            <SiteLogo href="" size="sm" showText />
+          </Link>
+          <span className="rounded-full border border-emerald-400/20 bg-emerald-400/[0.07] px-3 py-1 text-[10px] font-black uppercase tracking-[0.15em] text-emerald-300">
+            Free tool — no sign-in required
+          </span>
+        </div>
+
+        {/* Hero */}
+        <section className="mb-10 text-center">
+          <h1 className="text-[2.2rem] font-black leading-[1.04] tracking-[-0.055em] sm:text-4xl">
+            Free STAR Answer Scorer
+          </h1>
+          <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-gray-400">
+            Paste your interview answer. Get an instant score on each STAR
+            component — Situation, Task, Action, Result — with specific feedback.
+            No account required.
+          </p>
+        </section>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label className="mb-2 block text-sm font-bold text-gray-300">
+              Your target role
+            </label>
+            <input
+              type="text"
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              placeholder="e.g. Product Manager at a tech startup"
+              required
+              maxLength={120}
+              className="w-full rounded-2xl border border-white/[0.1] bg-white/[0.05] px-4 py-3 text-sm text-white placeholder-gray-600 outline-none transition focus:border-purple-400/40 focus:bg-white/[0.07]"
+            />
+          </div>
+
+          <div>
+            <label className="mb-2 block text-sm font-bold text-gray-300">
+              Interview question
+            </label>
+            <input
+              type="text"
+              value={question}
+              onChange={(e) => setQuestion(e.target.value)}
+              placeholder="e.g. Tell me about a time you led a project under pressure."
+              required
+              maxLength={300}
+              className="w-full rounded-2xl border border-white/[0.1] bg-white/[0.05] px-4 py-3 text-sm text-white placeholder-gray-600 outline-none transition focus:border-purple-400/40 focus:bg-white/[0.07]"
+            />
+          </div>
+
+          <div>
+            <label className="mb-2 block text-sm font-bold text-gray-300">
+              Your answer
+            </label>
+            <textarea
+              value={answer}
+              onChange={(e) => setAnswer(e.target.value)}
+              placeholder="Type or paste your interview answer here. Aim for 200–500 words for best scoring accuracy."
+              required
+              maxLength={3000}
+              rows={10}
+              className="w-full resize-none rounded-2xl border border-white/[0.1] bg-white/[0.05] px-4 py-3 text-sm text-white placeholder-gray-600 outline-none transition focus:border-purple-400/40 focus:bg-white/[0.07]"
+            />
+            <p className="mt-1 text-right text-xs text-gray-600">
+              {answer.length} / 3,000
+            </p>
+          </div>
+
+          {error && (
+            <div className="rounded-2xl border border-red-400/20 bg-red-400/[0.07] px-5 py-3 text-sm text-red-300">
+              {error}
+            </div>
+          )}
+
+          <button
+            type="submit"
+            disabled={isPending}
+            className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 py-4 text-base font-black text-white shadow-2xl shadow-purple-950/40 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {isPending ? "Scoring your answer…" : "Score my STAR answer →"}
+          </button>
+
+          <p className="text-center text-xs text-gray-600">
+            5 free scores per hour · No sign-in required
+          </p>
+        </form>
+
+        {/* Results */}
+        {result && (
+          <div className="mt-10 space-y-6">
+            {/* Overall */}
+            <div className="rounded-[2rem] border border-purple-300/20 bg-purple-300/[0.06] p-7">
+              <div className="flex items-center justify-between">
+                <p className="font-black">Overall STAR score</p>
+                <span className="text-4xl font-black tracking-[-0.06em]">
+                  {result.overall}
+                  <span className="text-lg text-gray-500">/10</span>
+                </span>
+              </div>
+              <p className="mt-3 text-sm leading-6 text-gray-400">{result.summary}</p>
+            </div>
+
+            {/* Component scores */}
+            <div className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-7">
+              <p className="mb-6 font-black">STAR breakdown</p>
+              <div className="space-y-6">
+                {STAR_LABELS.map(({ key, label, color }) => (
+                  <div key={key}>
+                    <div className="mb-2 flex items-center justify-between">
+                      <p className="text-sm font-bold">{label}</p>
+                    </div>
+                    <ScoreBar score={result[key].score} color={color} />
+                    <p className="mt-2 text-xs leading-5 text-gray-500">
+                      {result[key].feedback}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Top improvement */}
+            <div className="rounded-2xl border border-amber-400/15 bg-amber-400/[0.05] p-6">
+              <p className="mb-1 text-xs font-black uppercase tracking-[0.15em] text-amber-300/80">
+                Top improvement
+              </p>
+              <p className="text-sm leading-6 text-gray-300">
+                {result.topImprovement}
+              </p>
+            </div>
+
+            {/* CTA */}
+            <div className="rounded-[2rem] border border-purple-300/20 bg-purple-300/[0.06] p-7 text-center">
+              <p className="font-black">Get full AI coaching on every answer</p>
+              <p className="mt-2 text-sm text-gray-400">
+                AI Career Mentor generates tailored questions, plays them as audio,
+                and scores your voice delivery and camera presence too — not just
+                answer content.
+              </p>
+              <Link
+                href="/for-candidates/sign-up"
+                className="mt-5 inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-7 py-3.5 text-sm font-black text-white shadow-xl transition hover:scale-[1.02]"
+              >
+                Start free — no credit card →
+              </Link>
+            </div>
+          </div>
+        )}
+
+        <div className="mt-10 border-t border-white/[0.07] pt-8 text-center text-xs text-gray-600">
+          <Link href="/blog" className="hover:text-gray-400">
+            Interview guides
+          </Link>{" "}
+          ·{" "}
+          <Link href="/questions" className="hover:text-gray-400">
+            Question library
+          </Link>{" "}
+          ·{" "}
+          <Link href="/privacy" className="hover:text-gray-400">
+            Privacy
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
