@@ -16,6 +16,12 @@ import { SiteLogo } from "@/app/components/brand/SiteLogo";
  * locked in before the user sees their first authed page.
  */
 export default function CandidateSignUpPage() {
+  // Persist referral code across Clerk's multi-step sign-up flow
+  if (typeof window !== "undefined") {
+    const ref = new URLSearchParams(window.location.search).get("ref");
+    if (ref) sessionStorage.setItem("aim_ref", ref);
+  }
+
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#0a0614] text-white">
       <div className="pointer-events-none absolute inset-0 z-0">

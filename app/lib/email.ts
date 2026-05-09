@@ -207,6 +207,183 @@ function renderPlainText({
   ].join("\n");
 }
 
+// ── Nurture emails ────────────────────────────────────────────────────────────
+
+type NurtureType = "welcome" | "day3_tip" | "day7_progress";
+
+const NURTURE_SUBJECTS: Record<NurtureType, string> = {
+  welcome:       "Welcome to AI Career Mentor — your first interview tip",
+  day3_tip:      "One interview tip that changes everything",
+  day7_progress: "One week in — ready for your next practice session?",
+};
+
+function renderNurtureHtml(type: NurtureType): string {
+  const year = new Date().getFullYear();
+  const practiceUrl = `${siteConfig.url}/practice`;
+  const starUrl     = `${siteConfig.url}/tools/star-scorer`;
+  const unsubUrl    = `${siteConfig.url}/profile`;
+
+  const bodies: Record<NurtureType, string> = {
+    welcome: `
+      <h2 style="margin:0 0 16px;font-size:22px;font-weight:800;color:#1a1426;">
+        Welcome — let's get you interview-ready.
+      </h2>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#2a2238;">
+        You're now set up on AI Career Mentor. Here's the single most
+        important thing to practise first:
+      </p>
+      <div style="background:#f7f5fb;border-left:3px solid #8c5cff;border-radius:0 12px 12px 0;padding:18px 22px;margin:0 0 24px;">
+        <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#7c6a99;">
+          Tip #1 — The STAR method
+        </p>
+        <p style="margin:0;font-size:15px;line-height:1.7;color:#2a2238;">
+          Every behavioural interview question is best answered with
+          <strong>Situation → Task → Action → Result</strong>.
+          Structure your answer this way and you'll immediately sound
+          more credible and organised than most candidates.
+        </p>
+      </div>
+      <p style="margin:0 0 28px;font-size:15px;line-height:1.7;color:#2a2238;">
+        Run your first practice session now — pick your role, choose an
+        interview type, and AI Career Mentor will generate tailored questions
+        and score your answers in real time.
+      </p>
+      <table role="presentation" cellpadding="0" cellspacing="0">
+        <tr><td style="border-radius:12px;background:#8c5cff;">
+          <a href="${practiceUrl}" style="display:inline-block;padding:14px 28px;color:#fff;font-size:15px;font-weight:800;text-decoration:none;">
+            Start your first session →
+          </a>
+        </td></tr>
+      </table>`,
+
+    day3_tip: `
+      <h2 style="margin:0 0 16px;font-size:22px;font-weight:800;color:#1a1426;">
+        The question most candidates get wrong.
+      </h2>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#2a2238;">
+        "What's your greatest weakness?" is still one of the most common
+        interview questions — and still one of the most mishandled.
+      </p>
+      <div style="background:#f7f5fb;border-left:3px solid #8c5cff;border-radius:0 12px 12px 0;padding:18px 22px;margin:0 0 24px;">
+        <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#7c6a99;">
+          What good looks like
+        </p>
+        <p style="margin:0;font-size:15px;line-height:1.7;color:#2a2238;">
+          Name a <strong>genuine weakness</strong>, show what you've
+          <strong>done about it</strong>, and be specific about
+          <strong>the progress you've made</strong>. Saying "I'm a
+          perfectionist" is the answer that gets you screened out.
+        </p>
+      </div>
+      <p style="margin:0 0 28px;font-size:15px;line-height:1.7;color:#2a2238;">
+        Run a practice session and AI Career Mentor will give you this
+        question — then score your answer and suggest exactly how to
+        improve it.
+      </p>
+      <table role="presentation" cellpadding="0" cellspacing="0">
+        <tr><td style="border-radius:12px;background:#8c5cff;">
+          <a href="${practiceUrl}" style="display:inline-block;padding:14px 28px;color:#fff;font-size:15px;font-weight:800;text-decoration:none;">
+            Practice now →
+          </a>
+        </td></tr>
+      </table>`,
+
+    day7_progress: `
+      <h2 style="margin:0 0 16px;font-size:22px;font-weight:800;color:#1a1426;">
+        One week in — how's the prep going?
+      </h2>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#2a2238;">
+        Consistent practice is what separates candidates who perform well
+        from those who freeze up. Even 20 minutes a day makes a significant
+        difference over two weeks.
+      </p>
+      <div style="background:#f7f5fb;border-left:3px solid #8c5cff;border-radius:0 12px 12px 0;padding:18px 22px;margin:0 0 24px;">
+        <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#7c6a99;">
+          Try the free STAR scorer
+        </p>
+        <p style="margin:0;font-size:15px;line-height:1.7;color:#2a2238;">
+          Have a specific answer you're working on? Paste it into the free
+          STAR scorer — no session needed — and get instant feedback on
+          your Situation, Task, Action, and Result.
+        </p>
+      </div>
+      <table role="presentation" cellpadding="0" cellspacing="0" style="margin-bottom:12px;">
+        <tr><td style="border-radius:12px;background:#8c5cff;">
+          <a href="${practiceUrl}" style="display:inline-block;padding:14px 28px;color:#fff;font-size:15px;font-weight:800;text-decoration:none;">
+            Run a practice session →
+          </a>
+        </td></tr>
+      </table>
+      <p style="margin:0 0 28px;">
+        <a href="${starUrl}" style="font-size:14px;color:#8c5cff;text-decoration:none;font-weight:700;">
+          Or try the free STAR scorer →
+        </a>
+      </p>`,
+  };
+
+  return `<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" /></head>
+<body style="margin:0;padding:0;background:#f4f3f8;font-family:Arial,Helvetica,sans-serif;color:#1a1426;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f3f8;padding:32px 12px;">
+    <tr><td align="center">
+      <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 6px 30px rgba(20,10,40,0.08);">
+        <tr><td style="background:#8c5cff;padding:28px 36px;">
+          <p style="margin:0;color:#fff;font-size:13px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;">
+            AI Career Mentor
+          </p>
+        </td></tr>
+        <tr><td style="padding:36px;">
+          ${bodies[type]}
+          <hr style="border:none;border-top:1px solid #e7e3ee;margin:32px 0 20px;" />
+          <p style="margin:0;font-size:12px;line-height:1.6;color:#7c6a99;">
+            You're receiving this because you signed up to AI Career Mentor.
+            <a href="${unsubUrl}" style="color:#7c6a99;">Manage email preferences</a>.<br/>
+            &copy; ${year} AI Career Mentor Ltd &middot; England &amp; Wales
+          </p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+}
+
+function renderNurturePlainText(type: NurtureType): string {
+  const practiceUrl = `${siteConfig.url}/practice`;
+  const texts: Record<NurtureType, string> = {
+    welcome: `Welcome to AI Career Mentor!\n\nTip #1 — The STAR method.\nEvery behavioural interview question is best answered with Situation → Task → Action → Result.\n\nRun your first practice session: ${practiceUrl}`,
+    day3_tip: `The weakness question — what good looks like.\n\nName a genuine weakness, show what you've done about it, and be specific about the progress you've made.\n\nPractice now: ${practiceUrl}`,
+    day7_progress: `One week in — keep going.\n\nConsistent practice is what separates candidates who perform well from those who freeze up.\n\nRun a session: ${practiceUrl}`,
+  };
+  return texts[type] + `\n\n— AI Career Mentor\n${siteConfig.url}`;
+}
+
+export async function sendNurtureEmail(
+  to: string,
+  type: NurtureType
+): Promise<SendResult> {
+  const client = getResendClient();
+  if (!client) return { ok: false, error: "RESEND_API_KEY missing" };
+
+  try {
+    const result = await client.emails.send({
+      from: getFromAddress(),
+      to,
+      subject: NURTURE_SUBJECTS[type],
+      html: renderNurtureHtml(type),
+      text: renderNurturePlainText(type),
+      tags: [{ name: "category", value: "nurture" }],
+    });
+
+    if (result.error) return { ok: false, error: result.error.message };
+    if (!result.data?.id) return { ok: false, error: "No message id returned" };
+    return { ok: true, id: result.data.id };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : "unknown" };
+  }
+}
+
 export async function sendCandidateInvite(
   params: SendCandidateInviteParams
 ): Promise<SendResult> {

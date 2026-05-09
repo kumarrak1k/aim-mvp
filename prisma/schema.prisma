@@ -129,3 +129,52 @@ model CandidateAssignment {
   @@index([inviteToken])
   @@index([clerkUserId])
 }
+
+model EmailJob {
+  id          String    @id @default(cuid())
+  userId      String
+  email       String
+  type        String
+  scheduledAt DateTime
+  sentAt      DateTime?
+  status      String    @default("pending")
+  attempts    Int       @default(0)
+  messageId   String?
+  error       String?
+  createdAt   DateTime  @default(now())
+
+  @@index([status, scheduledAt])
+  @@index([userId])
+}
+
+model Referral {
+  id        String        @id @default(cuid())
+  userId    String        @unique
+  code      String        @unique
+  usedCount Int           @default(0)
+  createdAt DateTime      @default(now())
+
+  uses ReferralUse[]
+}
+
+model ReferralUse {
+  id         String   @id @default(cuid())
+  referralId String
+  newUserId  String
+  createdAt  DateTime @default(now())
+
+  referral Referral @relation(fields: [referralId], references: [id])
+
+  @@unique([referralId, newUserId])
+}
+
+model Certificate {
+  id       String   @id @default(cuid())
+  userId   String
+  name     String
+  role     String
+  score    Float
+  issuedAt DateTime @default(now())
+
+  @@index([userId])
+}

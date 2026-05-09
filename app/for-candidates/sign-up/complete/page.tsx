@@ -4,17 +4,6 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 
-/**
- * Post-signup landing for the candidate flow.
- *
- * Clerk has just created the user. We immediately stamp accountType =
- * "candidate" in privateMetadata, then redirect to /practice. The user
- * sees a single "Setting up your account..." spinner.
- *
- * If the call fails (network, etc.) we still let the user through to
- * /practice — getAccountType() lazily migrates anyone without a stored
- * type, so this page is best-effort, not a hard gate.
- */
 export default function CandidateSignUpCompletePage() {
   const router = useRouter();
   const { isLoaded, isSignedIn } = useUser();
@@ -31,6 +20,7 @@ export default function CandidateSignUpCompletePage() {
     let cancelled = false;
 
     (async () => {
+      // 1. Stamp account type
       try {
         await fetch("/api/account-type", {
           method: "POST",
@@ -41,14 +31,26 @@ export default function CandidateSignUpCompletePage() {
         // Non-fatal — lazy migration in getAccountType() will catch this.
       }
 
+      // 2. Enqueue nurture email sequence (fire and forget)
+      fetch("/api/nurture/enqueue", { method: "POST" }).catch(() => {});
+
+      // 3. Credit referral if present
+      const ref = sessionStorage.getItem("aim_ref");
+      if (ref) {
+        sessionStorage.removeItem("aim_ref");
+        fetch("/api/referral/use", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ code: ref }),
+        }).catch(() => {});
+      }
+
       if (!cancelled) {
         router.replace("/practice");
       }
     })();
 
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, [isLoaded, isSignedIn, router]);
 
   return (

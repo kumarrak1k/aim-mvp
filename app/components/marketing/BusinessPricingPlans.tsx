@@ -3,85 +3,90 @@
 import { useState } from "react";
 import Link from "next/link";
 
-type Plan = {
-  name: string;
-  monthlyPrice: string;
-  annualPrice: string | null;
-  annualMonthly: string | null;
-  period: string | null;
-  description: string;
-  features: string[];
-  cta: string;
-  ctaHref: string;
-  highlight: boolean;
+export type PricingCurrency = "GBP" | "USD" | "EUR";
+
+type PriceSet = { monthly: string; annual: string; annualMonthly: string };
+
+const TEAM: Record<PricingCurrency, PriceSet> = {
+  GBP: { monthly: "£49",  annual: "£399",   annualMonthly: "£33.25"  },
+  USD: { monthly: "$59",  annual: "$499",   annualMonthly: "$41.58"  },
+  EUR: { monthly: "€55",  annual: "€449",   annualMonthly: "€37.42"  },
 };
 
-const plans: Plan[] = [
-  {
-    name: "Team",
-    monthlyPrice: "£49",
-    annualPrice: "£399",
-    annualMonthly: "£33.25",
-    period: "/month",
-    description:
-      "For small hiring teams running structured assessments — up to 5 recruiters, 100 candidate invites per month.",
-    features: [
-      "Up to 5 recruiter seats",
-      "100 candidate invites / month",
-      "Unlimited assessment templates",
-      "Full results dashboard",
-      "Email invite branding",
-      "UK GDPR-ready",
-    ],
-    cta: "Start free trial",
-    ctaHref: "/for-business/sign-up",
-    highlight: false,
-  },
-  {
-    name: "Business",
-    monthlyPrice: "£149",
-    annualPrice: "£1,199",
-    annualMonthly: "£99.92",
-    period: "/month",
-    description:
-      "For growing hiring teams. More seats, more volume, advanced reporting.",
-    features: [
-      "Up to 15 recruiter seats",
-      "500 candidate invites / month",
-      "Unlimited templates",
-      "Advanced result analytics",
-      "Custom branding (logo + colour)",
-      "Priority email support",
-    ],
-    cta: "Start free trial",
-    ctaHref: "/for-business/sign-up",
-    highlight: true,
-  },
-  {
-    name: "Enterprise",
-    monthlyPrice: "Custom",
-    annualPrice: null,
-    annualMonthly: null,
-    period: null,
-    description:
-      "For high-volume hiring, regulated industries, or assessment centres at scale.",
-    features: [
-      "Unlimited recruiter seats",
-      "Unlimited candidate invites",
-      "Custom competency frameworks",
-      "Single sign-on (SSO)",
-      "Dedicated CSM and onboarding",
-      "Data Processing Agreement (DPA)",
-      "SLA + priority support",
-    ],
-    cta: "Talk to our team",
-    ctaHref: "/for-business/sign-up",
-    highlight: false,
-  },
-];
+const BUSINESS: Record<PricingCurrency, PriceSet> = {
+  GBP: { monthly: "£149", annual: "£1,199", annualMonthly: "£99.92"  },
+  USD: { monthly: "$179", annual: "$1,499", annualMonthly: "$124.92" },
+  EUR: { monthly: "€169", annual: "€1,349", annualMonthly: "€112.42" },
+};
 
-export function BusinessPricingPlans() {
+export function BusinessPricingPlans({ currency = "GBP" }: { currency?: PricingCurrency }) {
   const [annual, setAnnual] = useState(false);
+  const team = TEAM[currency];
+  const biz = BUSINESS[currency];
+
+  const plans = [
+    {
+      name: "Team",
+      monthlyPrice: team.monthly,
+      annualPrice: team.annual,
+      annualMonthly: team.annualMonthly,
+      period: "/month",
+      description:
+        "For small hiring teams running structured assessments — up to 5 recruiters, 100 candidate invites per month.",
+      features: [
+        "Up to 5 recruiter seats",
+        "100 candidate invites / month",
+        "Unlimited assessment templates",
+        "Full results dashboard",
+        "Email invite branding",
+        "UK GDPR-ready",
+      ],
+      cta: "Start free trial",
+      ctaHref: "/for-business/sign-up",
+      highlight: false,
+    },
+    {
+      name: "Business",
+      monthlyPrice: biz.monthly,
+      annualPrice: biz.annual,
+      annualMonthly: biz.annualMonthly,
+      period: "/month",
+      description:
+        "For growing hiring teams. More seats, more volume, advanced reporting.",
+      features: [
+        "Up to 15 recruiter seats",
+        "500 candidate invites / month",
+        "Unlimited templates",
+        "Advanced result analytics",
+        "Custom branding (logo + colour)",
+        "Priority email support",
+      ],
+      cta: "Start free trial",
+      ctaHref: "/for-business/sign-up",
+      highlight: true,
+    },
+    {
+      name: "Enterprise",
+      monthlyPrice: "Custom",
+      annualPrice: null as string | null,
+      annualMonthly: null as string | null,
+      period: null as string | null,
+      description:
+        "For high-volume hiring, regulated industries, or assessment centres at scale.",
+      features: [
+        "Unlimited recruiter seats",
+        "Unlimited candidate invites",
+        "Custom competency frameworks",
+        "Single sign-on (SSO)",
+        "Dedicated CSM and onboarding",
+        "Data Processing Agreement (DPA)",
+        "SLA + priority support",
+      ],
+      cta: "Talk to our team",
+      ctaHref: "/for-business/sign-up",
+      highlight: false,
+    },
+  ];
 
   return (
     <>

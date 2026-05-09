@@ -3,79 +3,83 @@
 import { useState } from "react";
 import Link from "next/link";
 
-type Plan = {
-  name: string;
-  monthlyPrice: string;
-  annualPrice: string | null;
-  annualMonthly: string | null;
-  period: string | null;
-  description: string;
-  features: string[];
-  cta: string;
-  ctaHref: string;
-  highlight: boolean;
+export type PricingCurrency = "GBP" | "USD" | "EUR";
+
+type PriceSet = { monthly: string; annual: string; annualMonthly: string };
+
+const PROFESSIONAL: Record<PricingCurrency, PriceSet> = {
+  GBP: { monthly: "£9",  annual: "£79",  annualMonthly: "£6.58" },
+  USD: { monthly: "$12", annual: "$99",  annualMonthly: "$8.25" },
+  EUR: { monthly: "€10", annual: "€89",  annualMonthly: "€7.42" },
 };
 
-const plans: Plan[] = [
-  {
-    name: "Free",
-    monthlyPrice: "£0",
-    annualPrice: null,
-    annualMonthly: null,
-    period: null,
-    description:
-      "Try the platform and run your first practice sessions with no commitment.",
-    features: [
-      "3 interview practice sessions per month",
-      "Basic answer feedback",
-      "Session transcript review",
-    ],
-    cta: "Start free",
-    ctaHref: "/for-candidates/sign-up",
-    highlight: false,
-  },
-  {
-    name: "Professional",
-    monthlyPrice: "£9",
-    annualPrice: "£79",
-    annualMonthly: "£6.58",
-    period: "/month",
-    description:
-      "For candidates actively preparing — unlimited interview practice, full feedback suite, voice and camera analysis.",
-    features: [
-      "Unlimited interview practice sessions",
-      "Voice delivery and camera presence analysis",
-      "Full structured feedback per answer",
-      "Model answers per question",
-      "Progress history saved and tracked",
-    ],
-    cta: "Start free trial",
-    ctaHref: "/for-candidates/sign-up",
-    highlight: true,
-  },
-  {
-    name: "Advanced",
-    monthlyPrice: "£19",
-    annualPrice: "£159",
-    annualMonthly: "£13.25",
-    period: "/month",
-    description:
-      "For intensive preparation — adds the mock assessment centre, advanced analytics and priority support.",
-    features: [
-      "Everything in Professional",
-      "Mock assessment centre (case study + interview + presentation)",
-      "Advanced session analytics",
-      "Competency gap tracking across sessions",
-      "Priority coaching queue",
-    ],
-    cta: "Start free trial",
-    ctaHref: "/for-candidates/sign-up",
-    highlight: false,
-  },
-];
+const ADVANCED: Record<PricingCurrency, PriceSet> = {
+  GBP: { monthly: "£19", annual: "£159",  annualMonthly: "£13.25" },
+  USD: { monthly: "$24", annual: "$199",  annualMonthly: "$16.58" },
+  EUR: { monthly: "€21", annual: "€179",  annualMonthly: "€14.92" },
+};
 
-export function CandidatePricingPlans() {
+export function CandidatePricingPlans({ currency = "GBP" }: { currency?: PricingCurrency }) {
   const [annual, setAnnual] = useState(false);
+  const pro = PROFESSIONAL[currency];
+  const adv = ADVANCED[currency];
+
+  const plans = [
+    {
+      name: "Free",
+      monthlyPrice: "Free",
+      annualPrice: null as string | null,
+      annualMonthly: null as string | null,
+      period: null as string | null,
+      description: "Try the platform and run your first practice sessions with no commitment.",
+      features: [
+        "3 interview practice sessions per month",
+        "Basic answer feedback",
+        "Session transcript review",
+      ],
+      cta: "Start free",
+      ctaHref: "/for-candidates/sign-up",
+      highlight: false,
+    },
+    {
+      name: "Professional",
+      monthlyPrice: pro.monthly,
+      annualPrice: pro.annual,
+      annualMonthly: pro.annualMonthly,
+      period: "/month",
+      description:
+        "For candidates actively preparing — unlimited interview practice, full feedback suite, voice and camera analysis.",
+      features: [
+        "Unlimited interview practice sessions",
+        "Voice delivery and camera presence analysis",
+        "Full structured feedback per answer",
+        "Model answers per question",
+        "Progress history saved and tracked",
+      ],
+      cta: "Start free trial",
+      ctaHref: "/for-candidates/sign-up",
+      highlight: true,
+    },
+    {
+      name: "Advanced",
+      monthlyPrice: adv.monthly,
+      annualPrice: adv.annual,
+      annualMonthly: adv.annualMonthly,
+      period: "/month",
+      description:
+        "For intensive preparation — adds the mock assessment centre, advanced analytics and priority support.",
+      features: [
+        "Everything in Professional",
+        "Mock assessment centre (case study + interview + presentation)",
+        "Advanced session analytics",
+        "Competency gap tracking across sessions",
+        "Priority coaching queue",
+      ],
+      cta: "Start free trial",
+      ctaHref: "/for-candidates/sign-up",
+      highlight: false,
+    },
+  ];
 
   return (
     <>

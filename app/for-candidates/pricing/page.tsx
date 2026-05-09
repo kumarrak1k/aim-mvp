@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { headers } from "next/headers";
 import { createPageMetadata } from "@/app/config/seo";
 import { AudienceShell } from "@/app/components/marketing/AudienceShell";
-import { CandidatePricingPlans } from "@/app/components/marketing/CandidatePricingPlans";
+import { CandidatePricingPlans, type PricingCurrency } from "@/app/components/marketing/CandidatePricingPlans";
 import { FAQSection } from "@/app/components/marketing/FAQSection";
 
 export const metadata: Metadata = createPageMetadata({
@@ -17,6 +18,19 @@ export const metadata: Metadata = createPageMetadata({
     "interview practice plans",
   ],
 });
+
+const EU_EUR = new Set([
+  "AT","BE","CY","EE","FI","FR","DE","GR","IE","IT","LV","LT","LU","MT",
+  "NL","PT","SK","SI","ES","BG","HR","CZ","DK","HU","PL","RO","SE",
+]);
+
+async function detectCurrency(): Promise<PricingCurrency> {
+  const h = await headers();
+  const country = h.get("x-vercel-ip-country") ?? "GB";
+  if (country === "US" || country === "CA") return "USD";
+  if (EU_EUR.has(country)) return "EUR";
+  return "GBP";
+}
 
 const faqs = [
   {
@@ -51,7 +65,9 @@ const faqs = [
   },
 ];
 
-export default function CandidatePricingPage() {
+export default async function CandidatePricingPage() {
+  const currency = await detectCurrency();
+
   return (
     <AudienceShell audience="candidate" currentPath="/for-candidates/pricing">
       <section className="mx-auto max-w-4xl px-4 pb-12 pt-12 text-center sm:px-6 sm:pt-16">
@@ -68,7 +84,7 @@ export default function CandidatePricingPage() {
       </section>
 
       <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 sm:pb-20">
-        <CandidatePricingPlans />
+        <CandidatePricingPlans currency={currency} />
       </section>
 
       <div className="border-t border-white/[0.06]">
