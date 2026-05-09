@@ -38,18 +38,18 @@ export default function HomePage() {
         {/* Top bar — minimal: logo + sign-in shortcut */}
         <header className="mb-10 flex items-center justify-between sm:mb-14">
           <SiteLogo href="/" size="md" showText />
-          <div className="hidden items-center gap-3 sm:flex">
+          <div className="hidden items-center gap-2 sm:flex">
             <Link
-              href="/for-candidates/sign-in"
-              className="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-xs font-bold text-gray-300 transition hover:bg-white/[0.08] hover:text-white"
+              href="/for-candidates"
+              className="rounded-full border border-purple-300/20 bg-purple-300/[0.07] px-4 py-2 text-xs font-black text-purple-100 transition hover:bg-purple-300/[0.12]"
             >
-              Candidate sign in
+              Candidates
             </Link>
             <Link
-              href="/for-business/sign-in"
-              className="rounded-full border border-fuchsia-300/20 bg-fuchsia-300/[0.07] px-4 py-2 text-xs font-bold text-fuchsia-200 transition hover:bg-fuchsia-300/[0.12]"
+              href="/for-business"
+              className="rounded-full border border-fuchsia-300/20 bg-fuchsia-300/[0.07] px-4 py-2 text-xs font-black text-fuchsia-100 transition hover:bg-fuchsia-300/[0.12]"
             >
-              Business sign in
+              Corporates
             </Link>
           </div>
         </header>
@@ -194,11 +194,11 @@ export default function HomePage() {
             <div className="flex flex-wrap gap-5">
               <Link href="/privacy" className="hover:text-gray-400">Privacy</Link>
               <Link href="/terms" className="hover:text-gray-400">Terms</Link>
-              <Link href="/for-candidates/sign-in" className="hover:text-gray-400">
-                Candidate sign in
+              <Link href="/for-candidates" className="hover:text-gray-400">
+                Candidates
               </Link>
-              <Link href="/for-business/sign-in" className="hover:text-gray-400">
-                Business sign in
+              <Link href="/for-business" className="hover:text-gray-400">
+                Corporates
               </Link>
             </div>
           </div>

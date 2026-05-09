@@ -149,15 +149,10 @@ export function AudienceShell({
             </div>
           </nav>
 
-          {/* Right actions */}
+          {/* Right actions — audience-only, no cross-audience switch in the
+              header. Switching audiences is intentionally a deliberate action,
+              done via "/" or the small footer link. */}
           <div className="ml-auto flex shrink-0 items-center gap-2">
-            <Link
-              href={theme.switchAudienceHref}
-              className="hidden rounded-full border border-white/10 bg-white/[0.03] px-3 py-2 text-xs font-bold text-gray-400 transition hover:bg-white/[0.06] hover:text-white xl:block"
-            >
-              {theme.switchAudienceLabel}
-            </Link>
-
             <Link href={theme.signInPath}>
               <button className="hidden whitespace-nowrap rounded-full border border-white/[0.1] bg-white/[0.04] px-4 py-2.5 text-[13px] font-bold text-white/80 transition hover:bg-white/[0.08] hover:text-white sm:block">
                 Sign in
@@ -174,7 +169,7 @@ export function AudienceShell({
           </div>
         </div>
 
-        {/* Tablet/mobile compact nav row */}
+        {/* Tablet/mobile compact nav row — audience-only */}
         <div className="border-t border-white/[0.05] px-4 py-2 sm:px-6 lg:hidden">
           <nav className="mx-auto flex max-w-7xl gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {theme.navItems.map((item) => {
@@ -193,13 +188,6 @@ export function AudienceShell({
                 </Link>
               );
             })}
-            <Link href={theme.switchAudienceHref} className="ml-auto shrink-0">
-              <span
-                className={`block whitespace-nowrap rounded-full border px-3.5 py-1.5 text-xs font-bold ${theme.accentBorder} ${theme.accentTextSoft}`}
-              >
-                {theme.switchAudienceLabel}
-              </span>
-            </Link>
           </nav>
         </div>
       </header>

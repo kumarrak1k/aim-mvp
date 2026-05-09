@@ -52,6 +52,33 @@ const products = [
   },
 ] as const;
 
+const howItWorks = [
+  {
+    number: "01",
+    title: "Configure your session",
+    text: "Pick role, level, interview type, difficulty and focus. Or step through the full assessment-centre flow with case study, interview and presentation.",
+    color: "purple",
+  },
+  {
+    number: "02",
+    title: "Answer with realism",
+    text: "Questions play in natural audio. Answer by voice or text. Camera on if you want presence feedback. Practice that feels close to the real thing.",
+    color: "fuchsia",
+  },
+  {
+    number: "03",
+    title: "Receive structured coaching",
+    text: "Each answer scored, broken down with strengths and improvements, paired with a model answer for comparison.",
+    color: "cyan",
+  },
+  {
+    number: "04",
+    title: "Track your readiness",
+    text: "Sessions are saved. Patterns become focus areas. A readiness score and next-step actions close every session.",
+    color: "emerald",
+  },
+];
+
 const trustPillars = [
   {
     title: "Built for the moments that matter",
@@ -59,7 +86,7 @@ const trustPillars = [
   },
   {
     title: "Your data stays yours",
-    text: "CV and answer data is never sold or shared with employers. Delete everything any time.",
+    text: "CV and answer data is never sold. Delete everything any time.",
   },
   {
     title: "Compounding improvement",
@@ -69,6 +96,13 @@ const trustPillars = [
     title: "Realistic delivery scoring",
     text: "Voice delivery, camera presence, eye contact and pace are all scored — not just the words you said.",
   },
+];
+
+const readinessHighlights = [
+  "Answer quality scoring",
+  "Voice delivery review",
+  "Camera presence feedback",
+  "Saved progress history",
 ];
 
 const testimonials = [
@@ -209,6 +243,58 @@ export default function ForCandidatesPage() {
         </div>
       </section>
 
+      {/* How it works */}
+      <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 sm:pb-20">
+        <div className="mb-10 text-center">
+          <p className="text-[11px] font-black uppercase tracking-[0.26em] text-purple-300/90">
+            How it works
+          </p>
+          <h2 className="mt-3 text-3xl font-black tracking-[-0.05em] sm:text-4xl">
+            From setup to measurable improvement in one session.
+          </h2>
+          <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-gray-400">
+            A focused loop — configure, answer, receive coaching, review
+            progress — that compounds with every practice session.
+          </p>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          {howItWorks.map((step) => (
+            <div
+              key={step.number}
+              className={`relative overflow-hidden rounded-[1.75rem] border p-6 ${
+                step.color === "purple"
+                  ? "border-purple-500/[0.18] bg-purple-500/[0.05]"
+                  : step.color === "fuchsia"
+                    ? "border-fuchsia-500/[0.18] bg-fuchsia-500/[0.05]"
+                    : step.color === "cyan"
+                      ? "border-cyan-500/[0.18] bg-cyan-500/[0.05]"
+                      : "border-emerald-500/[0.18] bg-emerald-500/[0.05]"
+              }`}
+            >
+              <span
+                className={`text-4xl font-black leading-none ${
+                  step.color === "purple"
+                    ? "text-purple-500/30"
+                    : step.color === "fuchsia"
+                      ? "text-fuchsia-500/30"
+                      : step.color === "cyan"
+                        ? "text-cyan-500/30"
+                        : "text-emerald-500/30"
+                }`}
+              >
+                {step.number}
+              </span>
+              <h3 className="mt-3 text-lg font-black tracking-[-0.03em]">
+                {step.title}
+              </h3>
+              <p className="mt-3 text-sm leading-6 text-gray-400">
+                {step.text}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Trust pillars */}
       <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6">
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -223,6 +309,71 @@ export default function ForCandidatesPage() {
               </p>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* Why it works — twin-column with imagery */}
+      <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 sm:pb-20">
+        <div className="grid gap-6 lg:grid-cols-2">
+          <div className="rounded-[1.75rem] border border-white/[0.09] bg-white/[0.04] p-6 shadow-2xl shadow-black/20 backdrop-blur-2xl sm:p-8">
+            <p className="mb-3 text-[11px] font-black uppercase tracking-[0.26em] text-purple-300/90">
+              Why it works
+            </p>
+            <h2 className="text-3xl font-black tracking-[-0.05em] sm:text-4xl">
+              Designed for the improvement loop that leads to better offers.
+            </h2>
+            <p className="mt-5 max-w-2xl text-base leading-7 text-gray-400">
+              Built around one principle: structured, honest practice
+              compounds. Every session builds on the last.
+            </p>
+            <ul className="mt-7 space-y-3">
+              {[
+                "Tailored questions for your role, level and interview format.",
+                "Natural audio makes practice feel close to the real thing.",
+                "Camera and voice delivery scoring mirrors what interviewers actually evaluate.",
+                "Saved session history makes improvement visible and trackable.",
+              ].map((item) => (
+                <li
+                  key={item}
+                  className="flex gap-3 text-sm leading-7 text-gray-300 sm:text-base"
+                >
+                  <span className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-300" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+            <div className="mt-7 grid gap-3 sm:grid-cols-2">
+              {readinessHighlights.map((item) => (
+                <div
+                  key={item}
+                  className="rounded-[1.2rem] border border-white/[0.08] bg-black/20 p-4 text-sm font-semibold text-gray-300"
+                >
+                  {item}
+                </div>
+              ))}
+            </div>
+            <div className="mt-7 flex flex-wrap gap-3">
+              <Link href="/for-candidates/sign-up">
+                <button className="rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-6 py-3.5 text-sm font-black text-white shadow-xl shadow-purple-900/30 transition hover:scale-[1.02]">
+                  Start free
+                </button>
+              </Link>
+              <Link href="/for-candidates/pricing">
+                <button className="rounded-2xl border border-white/[0.1] bg-white/[0.04] px-6 py-3.5 text-sm font-black text-white transition hover:bg-white/[0.08]">
+                  See pricing
+                </button>
+              </Link>
+            </div>
+          </div>
+
+          <div className="overflow-hidden rounded-[1.75rem] border border-white/[0.09] bg-white/[0.04] shadow-2xl shadow-black/20 backdrop-blur-2xl">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="https://images.unsplash.com/photo-1516321497487-e288fb19713f?auto=format&fit=crop&w=1200&q=80"
+              alt="Professional preparing for an interview with structured coaching"
+              className="h-full min-h-[360px] w-full object-cover"
+            />
+          </div>
         </div>
       </section>
 
