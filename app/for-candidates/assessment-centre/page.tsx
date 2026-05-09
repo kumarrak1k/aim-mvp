@@ -76,8 +76,46 @@ const why = [
   },
 ];
 
+const faqs = [
+  {
+    q: "What is a mock assessment centre?",
+    a: "A structured simulation of the full assessment centre format: a timed case study, a competency interview, and a presentation exercise — all scored in one session. It mirrors the format used by major employers including Big 4 firms, investment banks, and the Civil Service Fast Stream.",
+  },
+  {
+    q: "How long does a session take?",
+    a: "Approximately 45–60 minutes for the full three-stage session: case study analysis (~12 minutes), a five-question competency interview (~20 minutes), and a three-minute spoken presentation.",
+  },
+  {
+    q: "Who uses assessment centres?",
+    a: "Major employers across consulting, finance, law, the public sector, and graduate programmes. If you are applying to any FTSE 100 company, Big 4 firm, investment bank, law firm, or Civil Service role, there is a high probability you will face an assessment centre.",
+  },
+  {
+    q: "What competencies does it score?",
+    a: "Your performance is scored across multiple competencies including leadership, analytical thinking, communication, teamwork, and commercial awareness — with specific scores and improvement steps for each.",
+  },
+  {
+    q: "Is it free?",
+    a: "Free to start. You can run one mock assessment centre session at no cost. Unlimited repeats with new scenarios are available on paid plans from £6.58 per month.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((faq) => ({
+    "@type": "Question",
+    name: faq.q,
+    acceptedAnswer: { "@type": "Answer", text: faq.a },
+  })),
+};
+
 export default function AssessmentCentrePage() {
   return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
     <AudienceShell
       audience="candidate"
       currentPath="/for-candidates/assessment-centre"
@@ -196,6 +234,26 @@ export default function AssessmentCentrePage() {
         </div>
       </section>
 
+      {/* FAQs */}
+      <section className="mx-auto max-w-3xl px-4 pb-16 sm:px-6 sm:pb-20">
+        <h2 className="mb-8 text-2xl font-black tracking-[-0.04em]">
+          Frequently asked questions
+        </h2>
+        <div className="divide-y divide-white/[0.07]">
+          {faqs.map((faq) => (
+            <details key={faq.q} className="group py-5">
+              <summary className="flex cursor-pointer list-none items-start justify-between gap-4 text-sm font-black text-white">
+                {faq.q}
+                <span className="mt-0.5 shrink-0 text-gray-500 transition-transform group-open:rotate-45">
+                  +
+                </span>
+              </summary>
+              <p className="mt-3 text-sm leading-7 text-gray-400">{faq.a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="mx-auto max-w-7xl px-4 pb-20 sm:px-6 sm:pb-28">
         <div className="rounded-[2rem] border border-white/[0.1] bg-gradient-to-br from-cyan-500/[0.10] via-purple-500/[0.06] to-transparent p-10 text-center sm:p-14">
@@ -224,5 +282,6 @@ export default function AssessmentCentrePage() {
         </div>
       </section>
     </AudienceShell>
+    </>
   );
 }

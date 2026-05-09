@@ -4,6 +4,29 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import { SiteLogo } from "@/app/components/brand/SiteLogo";
 
+const faqs = [
+  {
+    q: "What is the STAR method?",
+    a: "STAR stands for Situation, Task, Action, Result. It is the most widely used competency interview framework, giving your answer a clear structure that interviewers can follow and evaluate.",
+  },
+  {
+    q: "Is the STAR scorer free?",
+    a: "Yes. No account required, no credit card, no usage limits.",
+  },
+  {
+    q: "How does the scoring work?",
+    a: "AI evaluates each of the four components — Situation, Task, Action, Result — separately, scoring each out of 10 with specific improvement feedback, plus an overall score and a top improvement suggestion.",
+  },
+  {
+    q: "What types of answers work best?",
+    a: "The scorer is designed for competency interview answers — 'tell me about a time when...' questions. Write out your full answer as you would speak it, aiming for the equivalent of 2–4 minutes of spoken content.",
+  },
+  {
+    q: "Can I paste any interview answer?",
+    a: "Yes — the scorer works with any behavioural or competency answer. Simply paste your answer and the AI will assess how well it fits the STAR structure.",
+  },
+];
+
 type STARScore = { score: number; feedback: string };
 type Result = {
   situation: STARScore;
@@ -233,18 +256,36 @@ export default function STARScorerPage() {
           </div>
         )}
 
-        <div className="mt-10 border-t border-white/[0.07] pt-8 text-center text-xs text-gray-600">
-          <Link href="/blog" className="hover:text-gray-400">
-            Interview guides
-          </Link>{" "}
-          ·{" "}
-          <Link href="/questions" className="hover:text-gray-400">
-            Question library
-          </Link>{" "}
-          ·{" "}
-          <Link href="/privacy" className="hover:text-gray-400">
-            Privacy
-          </Link>
+        <div className="mt-10 border-t border-white/[0.07] pt-8">
+          <h2 className="mb-6 text-xl font-black tracking-[-0.04em]">
+            Frequently asked questions
+          </h2>
+          <div className="mb-8 divide-y divide-white/[0.07]">
+            {faqs.map((faq) => (
+              <details key={faq.q} className="group py-4">
+                <summary className="flex cursor-pointer list-none items-start justify-between gap-4 text-sm font-black text-white">
+                  {faq.q}
+                  <span className="mt-0.5 shrink-0 text-gray-500 transition-transform group-open:rotate-45">
+                    +
+                  </span>
+                </summary>
+                <p className="mt-3 text-sm leading-7 text-gray-400">{faq.a}</p>
+              </details>
+            ))}
+          </div>
+          <div className="text-center text-xs text-gray-600">
+            <Link href="/blog" className="hover:text-gray-400">
+              Interview guides
+            </Link>{" "}
+            ·{" "}
+            <Link href="/questions" className="hover:text-gray-400">
+              Question library
+            </Link>{" "}
+            ·{" "}
+            <Link href="/privacy" className="hover:text-gray-400">
+              Privacy
+            </Link>
+          </div>
         </div>
       </div>
     </div>

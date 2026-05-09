@@ -67,8 +67,46 @@ const steps = [
   },
 ];
 
+const faqs = [
+  {
+    q: "What interview formats does it support?",
+    a: "Competency, behavioural, technical, presentation, strength-based, and situational — selected at session setup. Questions are generated for your specific role and interview type, not taken from a generic bank.",
+  },
+  {
+    q: "How are questions tailored to my role?",
+    a: "You enter your job title, seniority level, and interview format. The AI generates questions that match the competencies, difficulty, and tone expected in interviews for that specific role.",
+  },
+  {
+    q: "Does it score voice delivery as well as answers?",
+    a: "Yes. Every session scores tone, pace, filler words (um, uh, like, you know), clarity, and energy — alongside the content of your answer.",
+  },
+  {
+    q: "What does a session look like?",
+    a: "You receive five tailored questions, each read aloud in natural audio. Answer by speaking or typing. After each answer you get structured feedback, then a full session report including model answers, scores, and a next-step action plan.",
+  },
+  {
+    q: "Can I compare my answer to a model answer?",
+    a: "Yes. A model answer is provided for every question after you submit your response, showing the structure, content, and language that would score highly.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((faq) => ({
+    "@type": "Question",
+    name: faq.q,
+    acceptedAnswer: { "@type": "Answer", text: faq.a },
+  })),
+};
+
 export default function InterviewPracticePage() {
   return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
     <AudienceShell
       audience="candidate"
       currentPath="/for-candidates/interview-practice"
@@ -148,6 +186,26 @@ export default function InterviewPracticePage() {
         </div>
       </section>
 
+      {/* FAQs */}
+      <section className="mx-auto max-w-3xl px-4 pb-16 sm:px-6 sm:pb-20">
+        <h2 className="mb-8 text-2xl font-black tracking-[-0.04em]">
+          Frequently asked questions
+        </h2>
+        <div className="divide-y divide-white/[0.07]">
+          {faqs.map((faq) => (
+            <details key={faq.q} className="group py-5">
+              <summary className="flex cursor-pointer list-none items-start justify-between gap-4 text-sm font-black text-white">
+                {faq.q}
+                <span className="mt-0.5 shrink-0 text-gray-500 transition-transform group-open:rotate-45">
+                  +
+                </span>
+              </summary>
+              <p className="mt-3 text-sm leading-7 text-gray-400">{faq.a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="mx-auto max-w-7xl px-4 pb-20 sm:px-6 sm:pb-28">
         <div className="rounded-[2rem] border border-white/[0.1] bg-gradient-to-br from-purple-500/[0.10] via-fuchsia-500/[0.06] to-transparent p-10 text-center sm:p-14">
@@ -169,5 +227,6 @@ export default function InterviewPracticePage() {
         </div>
       </section>
     </AudienceShell>
+    </>
   );
 }

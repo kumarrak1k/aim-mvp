@@ -11,11 +11,44 @@ export const metadata: Metadata = {
   alternates: { canonical: absoluteUrl("/blog") },
 };
 
+const faqs = [
+  {
+    q: "What topics does the blog cover?",
+    a: "Interview technique, STAR method, competency frameworks, assessment centre preparation, career strategy, salary negotiation, and preparation guides for specific roles and employers including Big 4 consulting, investment banking, and the Civil Service Fast Stream.",
+  },
+  {
+    q: "Are the guides free to read?",
+    a: "All blog content is free and publicly accessible without an account.",
+  },
+  {
+    q: "Who writes the AI Career Mentor guides?",
+    a: "Guides are written by the AI Career Mentor team, drawing on real interview question data, assessment centre research, and candidate coaching experience.",
+  },
+  {
+    q: "How often is new content published?",
+    a: "New guides are published regularly, covering the latest interview formats, assessment centre preparation, and career strategy. Subscribe to be notified of new articles.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((faq) => ({
+    "@type": "Question",
+    name: faq.q,
+    acceptedAnswer: { "@type": "Answer", text: faq.a },
+  })),
+};
+
 export default function BlogIndexPage() {
   const posts = getAllPosts();
 
   return (
     <div className="relative min-h-screen bg-[#0a0614] text-white">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(120,60,255,0.12),transparent),linear-gradient(180deg,#0a0614_0%,#100a1f_50%,#0c0816_100%)]" />
         <div className="absolute left-1/2 top-[-300px] h-[600px] w-[900px] -translate-x-1/2 rounded-full bg-purple-600/[0.1] blur-[160px]" />
@@ -86,6 +119,22 @@ export default function BlogIndexPage() {
         )}
 
         <div className="mt-14 border-t border-white/[0.07] pt-10">
+          <h2 className="mb-8 text-2xl font-black tracking-[-0.04em]">
+            Frequently asked questions
+          </h2>
+          <div className="mb-12 divide-y divide-white/[0.07]">
+            {faqs.map((faq) => (
+              <details key={faq.q} className="group py-5">
+                <summary className="flex cursor-pointer list-none items-start justify-between gap-4 text-sm font-black text-white">
+                  {faq.q}
+                  <span className="mt-0.5 shrink-0 text-gray-500 transition-transform group-open:rotate-45">
+                    +
+                  </span>
+                </summary>
+                <p className="mt-3 text-sm leading-7 text-gray-400">{faq.a}</p>
+              </details>
+            ))}
+          </div>
           <p className="text-sm text-gray-600">
             Want tailored interview practice?{" "}
             <Link

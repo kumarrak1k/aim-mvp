@@ -126,9 +126,47 @@ const testimonials = [
   },
 ];
 
+const faqs = [
+  {
+    q: "Is AI Career Mentor free?",
+    a: "Free to start — no credit card required. You can run a complete interview session and receive feedback at no cost. Advanced features including unlimited sessions and assessment centre access are available from £6.58 per month.",
+  },
+  {
+    q: "What interview types does it cover?",
+    a: "Competency, behavioural, technical, presentation, case study, strength-based, and situational interviews — all tailored to your specific role and level. You select the format at the start of every session.",
+  },
+  {
+    q: "Does AI Career Mentor record my video?",
+    a: "Your camera feed is processed to score eye contact, facial expression and camera presence. Video is not stored, shared, or used for any purpose outside your session. You can run sessions without your camera at any time.",
+  },
+  {
+    q: "How is this different from practising with a friend?",
+    a: "AI Career Mentor gives structured, consistent feedback across five dimensions: answer quality, STAR structure, voice delivery, filler word frequency, and camera presence. A friend can offer encouragement — the platform gives you specific, actionable feedback every time.",
+  },
+  {
+    q: "What roles and levels does it support?",
+    a: "Any role, any level — from graduate and entry-level to director and executive. You enter your exact job title and seniority, and the AI generates questions matched to the competencies and difficulty expected for that level.",
+  },
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((faq) => ({
+    "@type": "Question",
+    name: faq.q,
+    acceptedAnswer: { "@type": "Answer", text: faq.a },
+  })),
+};
+
 export default function ForCandidatesPage() {
   return (
-    <AudienceShell audience="candidate" currentPath="/for-candidates">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+      <AudienceShell audience="candidate" currentPath="/for-candidates">
       {/* Hero */}
       <section className="mx-auto max-w-6xl px-4 pb-16 pt-12 text-center sm:px-6 sm:pb-20 sm:pt-16 lg:pt-20">
         <p className="mx-auto mb-6 inline-flex items-center gap-2.5 rounded-full border border-purple-400/25 bg-purple-400/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-purple-200">
@@ -406,6 +444,26 @@ export default function ForCandidatesPage() {
         </div>
       </section>
 
+      {/* FAQs */}
+      <section className="mx-auto max-w-3xl px-4 pb-16 sm:px-6 sm:pb-20">
+        <h2 className="mb-8 text-2xl font-black tracking-[-0.04em]">
+          Frequently asked questions
+        </h2>
+        <div className="divide-y divide-white/[0.07]">
+          {faqs.map((faq) => (
+            <details key={faq.q} className="group py-5">
+              <summary className="flex cursor-pointer list-none items-start justify-between gap-4 text-sm font-black text-white">
+                {faq.q}
+                <span className="mt-0.5 shrink-0 text-gray-500 transition-transform group-open:rotate-45">
+                  +
+                </span>
+              </summary>
+              <p className="mt-3 text-sm leading-7 text-gray-400">{faq.a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
       {/* Final CTA */}
       <section className="mx-auto max-w-7xl px-4 pb-20 sm:px-6 sm:pb-28">
         <div className="rounded-[2rem] border border-white/[0.1] bg-gradient-to-br from-purple-500/[0.10] via-fuchsia-500/[0.06] to-transparent p-10 text-center sm:p-14">
@@ -432,6 +490,7 @@ export default function ForCandidatesPage() {
           </div>
         </div>
       </section>
-    </AudienceShell>
+      </AudienceShell>
+    </>
   );
 }

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { createPageMetadata } from "@/app/config/seo";
+import { absoluteUrl } from "@/app/config/site";
 import { SiteLogo } from "@/app/components/brand/SiteLogo";
 import { DemoVideo } from "@/app/components/marketing/DemoVideo";
 
@@ -18,6 +19,46 @@ export const metadata: Metadata = createPageMetadata({
     "AI Career Mentor",
   ],
 });
+
+const siteSchema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": `${absoluteUrl("/")}#organization`,
+      name: "AI Career Mentor",
+      url: absoluteUrl("/"),
+      description:
+        "UK-built AI coaching platform giving candidates and hiring teams structured, honest interview preparation at scale.",
+      foundingDate: "2024",
+      areaServed: "GB",
+      knowsAbout: [
+        "interview preparation",
+        "career coaching",
+        "assessment centres",
+        "AI coaching",
+        "competency frameworks",
+      ],
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": `${absoluteUrl("/")}#app`,
+      name: "AI Career Mentor",
+      applicationCategory: "EducationalApplication",
+      operatingSystem: "Web",
+      url: absoluteUrl("/"),
+      description:
+        "AI interview practice and assessment platform. Tailored questions, voice and camera coaching, and structured hiring assessments.",
+      offers: {
+        "@type": "Offer",
+        price: "0",
+        priceCurrency: "GBP",
+        description: "Free to start — no credit card required",
+      },
+      provider: { "@id": `${absoluteUrl("/")}#organization` },
+    },
+  ],
+};
 
 const stats = [
   { value: "5", label: "dimensions scored per answer" },
@@ -46,6 +87,11 @@ const capabilities = [
 
 export default function HomePage() {
   return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(siteSchema) }}
+      />
     <main className="relative min-h-screen overflow-hidden bg-[#0a0614] text-white">
       {/* Background atmosphere */}
       <div className="pointer-events-none absolute inset-0 z-0">
@@ -296,5 +342,6 @@ export default function HomePage() {
         </footer>
       </div>
     </main>
+    </>
   );
 }
