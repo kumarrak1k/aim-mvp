@@ -21,7 +21,8 @@ export type CorporateAppPath =
   | "/company/templates/new"
   | "/company/candidates"
   | "/company/results"
-  | "/company/setup";
+  | "/company/setup"
+  | "/company/api-keys";
 
 type CorporateAppShellProps = {
   children: ReactNode;

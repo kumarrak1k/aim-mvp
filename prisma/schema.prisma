@@ -44,8 +44,24 @@ model Company {
   templates   AssessmentTemplate[]
   assignments CandidateAssignment[]
   invites     CompanyInvite[]
+  apiKeys     ApiKey[]
 
   @@index([slug])
+}
+
+model ApiKey {
+  id         String    @id @default(cuid())
+  companyId  String
+  name       String
+  keyHash    String    @unique
+  keyPrefix  String
+  lastUsedAt DateTime?
+  createdAt  DateTime  @default(now())
+  revokedAt  DateTime?
+
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@index([companyId])
 }
 
 model CompanyMember {
