@@ -260,8 +260,17 @@ export function AudienceShell({
                 Company
               </p>
               <div className="space-y-3 text-sm text-gray-400">
-                <Link href="/" className="block transition hover:text-white">
-                  Choose audience
+                <Link href="/about" className="block transition hover:text-white">
+                  About
+                </Link>
+                <Link href="/universities" className="block transition hover:text-white">
+                  Universities
+                </Link>
+                <Link href="/security" className="block transition hover:text-white">
+                  Security
+                </Link>
+                <Link href="/press" className="block transition hover:text-white">
+                  Press
                 </Link>
                 <Link
                   href="/privacy"

@@ -2,12 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { createPageMetadata } from "@/app/config/seo";
 import { AudienceShell } from "@/app/components/marketing/AudienceShell";
+import { CandidatePricingPlans } from "@/app/components/marketing/CandidatePricingPlans";
+import { FAQSection } from "@/app/components/marketing/FAQSection";
 
 export const metadata: Metadata = createPageMetadata({
   path: "/for-candidates/pricing",
   title: "Candidate Pricing — AI Career Mentor",
   description:
-    "Transparent candidate pricing for AI interview practice and assessment centre coaching. Free to start, then unlock unlimited sessions.",
+    "Transparent candidate pricing for AI interview practice and assessment centre coaching. Free to start, then unlock unlimited sessions. Annual plans save up to 27%.",
   keywords: [
     "AI interview coach pricing",
     "assessment centre pricing",
@@ -16,55 +18,36 @@ export const metadata: Metadata = createPageMetadata({
   ],
 });
 
-const plans = [
+const faqs = [
   {
-    name: "Free",
-    price: "£0",
-    period: null,
-    description:
-      "Try the platform and run your first practice sessions with no commitment.",
-    features: [
-      "3 interview practice sessions per month",
-      "Basic answer feedback",
-      "Session transcript review",
-    ],
-    cta: "Start free",
-    ctaHref: "/for-candidates/sign-up",
-    highlight: false,
+    question: "Is there a free trial on paid plans?",
+    answer:
+      "Yes — Professional and Advanced plans start with a free trial. No credit card required to begin.",
   },
   {
-    name: "Professional",
-    price: "£9",
-    period: "/month",
-    description:
-      "For candidates actively preparing — unlimited interview practice, full feedback suite, voice and camera analysis.",
-    features: [
-      "Unlimited interview practice sessions",
-      "Voice delivery and camera presence analysis",
-      "Full structured feedback per answer",
-      "Model answers per question",
-      "Progress history saved and tracked",
-    ],
-    cta: "Start free trial",
-    ctaHref: "/for-candidates/sign-up",
-    highlight: true,
+    question: "Can I switch between monthly and annual billing?",
+    answer:
+      "Yes. You can switch at any time from your account settings. Annual billing is charged upfront and gives you up to 27% off versus monthly.",
   },
   {
-    name: "Advanced",
-    price: "£19",
-    period: "/month",
-    description:
-      "For intensive preparation — adds the mock assessment centre, advanced analytics and priority support.",
-    features: [
-      "Everything in Professional",
-      "Mock assessment centre (case study + interview + presentation)",
-      "Advanced session analytics",
-      "Competency gap tracking across sessions",
-      "Priority coaching queue",
-    ],
-    cta: "Start free trial",
-    ctaHref: "/for-candidates/sign-up",
-    highlight: false,
+    question: "What happens when I reach my session limit on the free tier?",
+    answer:
+      "You can continue using the platform but won't be able to start new practice sessions until the next month, or you can upgrade to Professional for unlimited sessions.",
+  },
+  {
+    question: "Does the Professional plan include assessment centre practice?",
+    answer:
+      "Interview practice (competency, technical, and behavioural) is included on Professional. The full mock assessment centre — case study, interview, and presentation — is an Advanced plan feature.",
+  },
+  {
+    question: "Can I cancel at any time?",
+    answer:
+      "Yes. Monthly plans can be cancelled at any time with no penalty. Annual plans are charged for the full year upfront — contact support if you need to discuss early cancellation.",
+  },
+  {
+    question: "Is my data deleted when I cancel?",
+    answer:
+      "Your data is retained for 30 days after cancellation to allow reactivation. After 30 days, your profile and sessions are permanently deleted. You can also delete everything manually from the profile page at any time.",
   },
 ];
 
@@ -85,70 +68,12 @@ export default function CandidatePricingPage() {
       </section>
 
       <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 sm:pb-20">
-        <div className="grid gap-5 md:grid-cols-3">
-          {plans.map((plan) => (
-            <div
-              key={plan.name}
-              className={`relative flex flex-col rounded-[2rem] border p-7 shadow-2xl ${
-                plan.highlight
-                  ? "border-purple-300/30 bg-purple-300/[0.08] shadow-purple-950/20"
-                  : "border-white/10 bg-white/[0.04]"
-              }`}
-            >
-              {plan.highlight && (
-                <span className="mb-5 inline-flex self-start rounded-full bg-white px-3 py-1 text-xs font-black text-black">
-                  Most popular
-                </span>
-              )}
-              {!plan.highlight && <div className="mb-5 h-7" />}
-
-              <h3 className="text-xl font-black tracking-[-0.03em]">
-                {plan.name}
-              </h3>
-              <div className="mt-3 flex items-end gap-1.5">
-                <span className="text-5xl font-black leading-none tracking-[-0.07em]">
-                  {plan.price}
-                </span>
-                {plan.period && (
-                  <span className="mb-1.5 text-sm text-gray-500">
-                    {plan.period}
-                  </span>
-                )}
-              </div>
-              <p className="mt-4 min-h-[60px] text-sm leading-6 text-gray-400">
-                {plan.description}
-              </p>
-              <div className="mt-5 flex-1 space-y-2.5">
-                {plan.features.map((f) => (
-                  <div
-                    key={f}
-                    className="flex items-start gap-2.5 text-sm text-gray-300"
-                  >
-                    <span
-                      className={`mt-[3px] h-3.5 w-3.5 shrink-0 ${
-                        plan.highlight ? "text-purple-400" : "text-gray-500"
-                      }`}
-                    >
-                      ✓
-                    </span>
-                    {f}
-                  </div>
-                ))}
-              </div>
-              <Link
-                href={plan.ctaHref}
-                className={`mt-8 flex w-full justify-center rounded-2xl px-5 py-3.5 text-sm font-black transition ${
-                  plan.highlight
-                    ? "bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 text-white shadow-xl shadow-purple-950/35 hover:scale-[1.02]"
-                    : "border border-white/10 bg-white/[0.06] text-white hover:bg-white/[0.1]"
-                }`}
-              >
-                {plan.cta}
-              </Link>
-            </div>
-          ))}
-        </div>
+        <CandidatePricingPlans />
       </section>
+
+      <div className="border-t border-white/[0.06]">
+        <FAQSection items={faqs} accentColor="purple" />
+      </div>
 
       <section className="mx-auto max-w-3xl px-4 pb-20 text-center sm:px-6 sm:pb-28">
         <p className="text-sm leading-6 text-gray-500">
@@ -158,6 +83,15 @@ export default function CandidatePricingPage() {
             className="font-black text-fuchsia-300 hover:text-fuchsia-200"
           >
             business pricing →
+          </Link>
+        </p>
+        <p className="mt-2 text-sm text-gray-500">
+          University or careers service?{" "}
+          <Link
+            href="/universities"
+            className="font-black text-cyan-300 hover:text-cyan-200"
+          >
+            See campus licensing →
           </Link>
         </p>
       </section>

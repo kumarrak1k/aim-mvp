@@ -86,6 +86,36 @@ export const siteConfig = {
       priority: 0.8,
     },
 
+    // ── Company pages ─────────────────────────────────────────────────
+    {
+      path: "/about",
+      label: "About",
+      description:
+        "The mission, team, and story behind AI Career Mentor — a UK-built AI coaching platform for candidates and hiring teams.",
+      priority: 0.7,
+    },
+    {
+      path: "/press",
+      label: "Press",
+      description:
+        "Press kit, brand assets, key stats, and media contact for AI Career Mentor.",
+      priority: 0.6,
+    },
+    {
+      path: "/security",
+      label: "Security",
+      description:
+        "How AI Career Mentor protects your data — encryption, access controls, subprocessors, and GDPR compliance.",
+      priority: 0.6,
+    },
+    {
+      path: "/universities",
+      label: "Universities",
+      description:
+        "Campus licensing for universities and careers services. Give every student access to AI interview coaching.",
+      priority: 0.75,
+    },
+
     // ── Authed / app routes (low priority for SEO) ───────────────────
     {
       path: "/practice",

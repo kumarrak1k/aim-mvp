@@ -192,6 +192,10 @@ export default function HomePage() {
               © {new Date().getFullYear()} AI Career Mentor Ltd · England &amp; Wales
             </p>
             <div className="flex flex-wrap gap-5">
+              <Link href="/about" className="hover:text-gray-400">About</Link>
+              <Link href="/universities" className="hover:text-gray-400">Universities</Link>
+              <Link href="/security" className="hover:text-gray-400">Security</Link>
+              <Link href="/press" className="hover:text-gray-400">Press</Link>
               <Link href="/privacy" className="hover:text-gray-400">Privacy</Link>
               <Link href="/terms" className="hover:text-gray-400">Terms</Link>
               <Link href="/for-candidates" className="hover:text-gray-400">

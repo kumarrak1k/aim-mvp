@@ -2,12 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { createPageMetadata } from "@/app/config/seo";
 import { AudienceShell } from "@/app/components/marketing/AudienceShell";
+import { BusinessPricingPlans } from "@/app/components/marketing/BusinessPricingPlans";
+import { FAQSection } from "@/app/components/marketing/FAQSection";
 
 export const metadata: Metadata = createPageMetadata({
   path: "/for-business/pricing",
   title: "Hiring Team Pricing — AI Career Mentor for Business",
   description:
-    "Pricing for the AI assessment platform. Per-seat plans for small teams, custom enterprise pricing for high-volume hiring.",
+    "Pricing for the AI assessment platform. Per-seat plans for small teams, custom enterprise pricing for high-volume hiring. Annual plans save up to 33%.",
   keywords: [
     "AI assessment platform pricing",
     "talent assessment pricing",
@@ -16,61 +18,36 @@ export const metadata: Metadata = createPageMetadata({
   ],
 });
 
-const plans = [
+const faqs = [
   {
-    name: "Team",
-    price: "£49",
-    period: "/month",
-    description:
-      "For small hiring teams running structured assessments — up to 5 recruiters, 100 candidate invites per month.",
-    features: [
-      "Up to 5 recruiter seats",
-      "100 candidate invites / month",
-      "Unlimited assessment templates",
-      "Full results dashboard",
-      "Email invite branding",
-      "UK GDPR-ready",
-    ],
-    cta: "Start free trial",
-    ctaHref: "/for-business/sign-up",
-    highlight: false,
+    question: "Is there a free trial?",
+    answer:
+      "Yes — Team and Business plans start with a free trial. No credit card required. Enterprise pricing includes a structured pilot programme.",
   },
   {
-    name: "Business",
-    price: "£149",
-    period: "/month",
-    description:
-      "For growing hiring teams. More seats, more volume, advanced reporting.",
-    features: [
-      "Up to 15 recruiter seats",
-      "500 candidate invites / month",
-      "Unlimited templates",
-      "Advanced result analytics",
-      "Custom branding (logo + colour)",
-      "Priority email support",
-    ],
-    cta: "Start free trial",
-    ctaHref: "/for-business/sign-up",
-    highlight: true,
+    question: "What counts as a candidate invite?",
+    answer:
+      "Each unique candidate link sent counts as one invite, regardless of whether the candidate completes the assessment. Unused invites do not roll over.",
   },
   {
-    name: "Enterprise",
-    price: "Custom",
-    period: null,
-    description:
-      "For high-volume hiring, regulated industries, or assessment centres at scale.",
-    features: [
-      "Unlimited recruiter seats",
-      "Unlimited candidate invites",
-      "Custom competency frameworks",
-      "Single sign-on (SSO)",
-      "Dedicated CSM and onboarding",
-      "Data Processing Agreement (DPA)",
-      "SLA + priority support",
-    ],
-    cta: "Talk to our team",
-    ctaHref: "/for-business/sign-up",
-    highlight: false,
+    question: "Can we add more recruiter seats mid-subscription?",
+    answer:
+      "Yes. Additional seats can be added at any time and are billed pro-rata for the remainder of the billing period.",
+  },
+  {
+    question: "What is included in custom branding?",
+    answer:
+      "On the Business plan, you can upload your company logo and set a primary brand colour. Candidate-facing assessment pages and invite emails reflect your branding.",
+  },
+  {
+    question: "Do you provide a Data Processing Agreement (DPA)?",
+    answer:
+      "Yes. A DPA is provided to Business and Enterprise customers as standard. Enterprise customers also get a dedicated security review and procurement documentation pack.",
+  },
+  {
+    question: "Can we integrate with our ATS?",
+    answer:
+      "Direct ATS integration (Greenhouse, Lever, Workday) is on our roadmap for Enterprise customers. In the interim, candidate results can be exported from the dashboard. Contact us to discuss your requirements.",
   },
 ];
 
@@ -91,70 +68,12 @@ export default function BusinessPricingPage() {
       </section>
 
       <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 sm:pb-20">
-        <div className="grid gap-5 md:grid-cols-3">
-          {plans.map((plan) => (
-            <div
-              key={plan.name}
-              className={`relative flex flex-col rounded-[2rem] border p-7 shadow-2xl ${
-                plan.highlight
-                  ? "border-fuchsia-300/30 bg-fuchsia-300/[0.08] shadow-fuchsia-950/20"
-                  : "border-white/10 bg-white/[0.04]"
-              }`}
-            >
-              {plan.highlight && (
-                <span className="mb-5 inline-flex self-start rounded-full bg-white px-3 py-1 text-xs font-black text-black">
-                  Most popular
-                </span>
-              )}
-              {!plan.highlight && <div className="mb-5 h-7" />}
-
-              <h3 className="text-xl font-black tracking-[-0.03em]">
-                {plan.name}
-              </h3>
-              <div className="mt-3 flex items-end gap-1.5">
-                <span className="text-5xl font-black leading-none tracking-[-0.07em]">
-                  {plan.price}
-                </span>
-                {plan.period && (
-                  <span className="mb-1.5 text-sm text-gray-500">
-                    {plan.period}
-                  </span>
-                )}
-              </div>
-              <p className="mt-4 min-h-[60px] text-sm leading-6 text-gray-400">
-                {plan.description}
-              </p>
-              <div className="mt-5 flex-1 space-y-2.5">
-                {plan.features.map((f) => (
-                  <div
-                    key={f}
-                    className="flex items-start gap-2.5 text-sm text-gray-300"
-                  >
-                    <span
-                      className={`mt-[3px] h-3.5 w-3.5 shrink-0 ${
-                        plan.highlight ? "text-fuchsia-400" : "text-gray-500"
-                      }`}
-                    >
-                      ✓
-                    </span>
-                    {f}
-                  </div>
-                ))}
-              </div>
-              <Link
-                href={plan.ctaHref}
-                className={`mt-8 flex w-full justify-center rounded-2xl px-5 py-3.5 text-sm font-black transition ${
-                  plan.highlight
-                    ? "bg-gradient-to-r from-fuchsia-500 to-purple-500 text-white shadow-xl shadow-fuchsia-950/35 hover:scale-[1.02]"
-                    : "border border-white/10 bg-white/[0.06] text-white hover:bg-white/[0.1]"
-                }`}
-              >
-                {plan.cta}
-              </Link>
-            </div>
-          ))}
-        </div>
+        <BusinessPricingPlans />
       </section>
+
+      <div className="border-t border-white/[0.06]">
+        <FAQSection items={faqs} accentColor="fuchsia" />
+      </div>
 
       <section className="mx-auto max-w-3xl px-4 pb-20 text-center sm:px-6 sm:pb-28">
         <p className="text-sm leading-6 text-gray-500">
@@ -164,6 +83,15 @@ export default function BusinessPricingPage() {
             className="font-black text-purple-300 hover:text-purple-200"
           >
             candidate pricing →
+          </Link>
+        </p>
+        <p className="mt-2 text-sm text-gray-500">
+          University or large institution?{" "}
+          <Link
+            href="/universities"
+            className="font-black text-cyan-300 hover:text-cyan-200"
+          >
+            See campus licensing →
           </Link>
         </p>
       </section>
