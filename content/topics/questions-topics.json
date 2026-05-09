@@ -1,0 +1,362 @@
+[
+  {
+    "slug": "data-scientist-interview-questions",
+    "title": "Data Scientist Interview Questions",
+    "description": "50 interview questions for data scientist roles covering statistics, machine learning, SQL, Python, and behavioural competencies — with model answer guidance.",
+    "keywords": ["data scientist interview questions", "data science interview", "machine learning interview questions"],
+    "category": "By role",
+    "role": "Data Scientist",
+    "questionCount": 50
+  },
+  {
+    "slug": "marketing-manager-interview-questions",
+    "title": "Marketing Manager Interview Questions",
+    "description": "40 interview questions for marketing manager roles covering campaign strategy, analytics, brand, digital channels, and leadership competencies.",
+    "keywords": ["marketing manager interview questions", "marketing interview questions", "digital marketing interview"],
+    "category": "By role",
+    "role": "Marketing Manager",
+    "questionCount": 40
+  },
+  {
+    "slug": "finance-analyst-interview-questions",
+    "title": "Finance Analyst Interview Questions",
+    "description": "40 interview questions for finance analyst roles covering financial modelling, analysis, reporting, commercial awareness, and competency questions.",
+    "keywords": ["finance analyst interview questions", "financial analyst interview", "finance interview questions"],
+    "category": "By role",
+    "role": "Finance Analyst",
+    "questionCount": 40
+  },
+  {
+    "slug": "hr-manager-interview-questions",
+    "title": "HR Manager Interview Questions",
+    "description": "40 interview questions for HR manager roles covering employee relations, recruitment, L&D, employment law, and leadership competencies.",
+    "keywords": ["HR manager interview questions", "human resources interview questions", "HR interview preparation"],
+    "category": "By role",
+    "role": "HR Manager",
+    "questionCount": 40
+  },
+  {
+    "slug": "management-consultant-interview-questions",
+    "title": "Management Consultant Interview Questions",
+    "description": "50 interview questions for management consulting roles covering case frameworks, commercial awareness, problem-solving, leadership, and fit questions.",
+    "keywords": ["management consultant interview questions", "consulting interview questions", "McKinsey interview questions"],
+    "category": "By role",
+    "role": "Management Consultant",
+    "questionCount": 50
+  },
+  {
+    "slug": "ux-designer-interview-questions",
+    "title": "UX Designer Interview Questions",
+    "description": "40 interview questions for UX and product design roles covering design process, user research, stakeholder management, and portfolio discussion.",
+    "keywords": ["UX designer interview questions", "UX interview questions", "product designer interview questions"],
+    "category": "By role",
+    "role": "UX Designer",
+    "questionCount": 40
+  },
+  {
+    "slug": "project-manager-interview-questions",
+    "title": "Project Manager Interview Questions",
+    "description": "50 interview questions for project manager roles covering project lifecycle, stakeholder management, risk, budgets, methodologies (Agile, Prince2), and leadership.",
+    "keywords": ["project manager interview questions", "PM interview questions", "project management interview"],
+    "category": "By role",
+    "role": "Project Manager",
+    "questionCount": 50
+  },
+  {
+    "slug": "business-analyst-interview-questions",
+    "title": "Business Analyst Interview Questions",
+    "description": "40 interview questions for business analyst roles covering requirements gathering, process mapping, stakeholder management, data analysis, and communication.",
+    "keywords": ["business analyst interview questions", "BA interview questions", "business analysis interview"],
+    "category": "By role",
+    "role": "Business Analyst",
+    "questionCount": 40
+  },
+  {
+    "slug": "sales-manager-interview-questions",
+    "title": "Sales Manager Interview Questions",
+    "description": "40 interview questions for sales manager roles covering pipeline management, team leadership, targets, customer relationships, and commercial strategy.",
+    "keywords": ["sales manager interview questions", "sales interview questions", "B2B sales interview"],
+    "category": "By role",
+    "role": "Sales Manager",
+    "questionCount": 40
+  },
+  {
+    "slug": "operations-manager-interview-questions",
+    "title": "Operations Manager Interview Questions",
+    "description": "40 interview questions for operations manager roles covering process improvement, efficiency, team management, KPIs, and cross-functional coordination.",
+    "keywords": ["operations manager interview questions", "ops manager interview", "operations interview questions"],
+    "category": "By role",
+    "role": "Operations Manager",
+    "questionCount": 40
+  },
+  {
+    "slug": "customer-success-manager-interview-questions",
+    "title": "Customer Success Manager Interview Questions",
+    "description": "35 interview questions for CSM roles covering onboarding, retention, NPS, escalation handling, product knowledge, and relationship management.",
+    "keywords": ["customer success manager interview questions", "CSM interview questions", "customer success interview"],
+    "category": "By role",
+    "role": "Customer Success Manager",
+    "questionCount": 35
+  },
+  {
+    "slug": "account-executive-interview-questions",
+    "title": "Account Executive Interview Questions",
+    "description": "40 interview questions for account executive (AE) roles covering prospecting, discovery, objection handling, closing, quota attainment, and account management.",
+    "keywords": ["account executive interview questions", "AE interview questions", "sales AE interview", "SaaS sales interview"],
+    "category": "By role",
+    "role": "Account Executive",
+    "questionCount": 40
+  },
+  {
+    "slug": "content-marketing-interview-questions",
+    "title": "Content Marketing Interview Questions",
+    "description": "35 interview questions for content marketing roles covering content strategy, SEO, editorial planning, audience development, performance measurement, and writing.",
+    "keywords": ["content marketing interview questions", "content writer interview questions", "SEO content interview"],
+    "category": "By role",
+    "role": "Content Marketing Manager",
+    "questionCount": 35
+  },
+  {
+    "slug": "investment-banking-analyst-interview-questions",
+    "title": "Investment Banking Analyst Interview Questions",
+    "description": "50 interview questions for investment banking analyst roles covering DCF, LBO, M&A, accounting, markets, technical finance, and fit questions.",
+    "keywords": ["investment banking interview questions", "IB analyst interview", "investment banking technical questions"],
+    "category": "By role",
+    "role": "Investment Banking Analyst",
+    "questionCount": 50
+  },
+  {
+    "slug": "software-engineer-technical-interview-questions",
+    "title": "Software Engineer Technical Interview Questions",
+    "description": "45 technical and behavioural interview questions for software engineering roles covering system design, code quality, debugging, architecture, and engineering culture.",
+    "keywords": ["software engineer interview questions", "SWE technical interview", "software developer interview questions"],
+    "category": "By role",
+    "role": "Software Engineer",
+    "questionCount": 45
+  },
+  {
+    "slug": "product-designer-interview-questions",
+    "title": "Product Designer Interview Questions",
+    "description": "40 interview questions for product designers covering design thinking, user research, prototyping, cross-functional collaboration, and metrics-driven design.",
+    "keywords": ["product designer interview questions", "product design interview", "design interview questions"],
+    "category": "By role",
+    "role": "Product Designer",
+    "questionCount": 40
+  },
+  {
+    "slug": "supply-chain-manager-interview-questions",
+    "title": "Supply Chain Manager Interview Questions",
+    "description": "40 interview questions for supply chain roles covering procurement, logistics, inventory management, supplier relationships, risk, and operational excellence.",
+    "keywords": ["supply chain manager interview questions", "supply chain interview", "logistics interview questions"],
+    "category": "By role",
+    "role": "Supply Chain Manager",
+    "questionCount": 40
+  },
+  {
+    "slug": "devops-engineer-interview-questions",
+    "title": "DevOps Engineer Interview Questions",
+    "description": "40 interview questions for DevOps roles covering CI/CD, cloud infrastructure, containerisation, monitoring, incident response, and collaboration with development teams.",
+    "keywords": ["DevOps interview questions", "DevOps engineer interview", "SRE interview questions", "cloud infrastructure interview"],
+    "category": "By role",
+    "role": "DevOps Engineer",
+    "questionCount": 40
+  },
+  {
+    "slug": "graduate-trainee-interview-questions",
+    "title": "Graduate Trainee Interview Questions",
+    "description": "40 interview questions for graduate trainee and graduate scheme roles — covering motivation, academic achievements, work experience, competencies, and career ambitions.",
+    "keywords": ["graduate interview questions", "graduate scheme interview questions", "graduate trainee interview"],
+    "category": "By candidate type",
+    "role": "Graduate Trainee",
+    "questionCount": 40
+  },
+  {
+    "slug": "leadership-competency-interview-questions",
+    "title": "Leadership Competency Interview Questions",
+    "description": "50 competency-based interview questions specifically testing leadership — from leading teams and driving change to managing conflict and developing others.",
+    "keywords": ["leadership interview questions", "leadership competency questions", "management interview questions"],
+    "category": "By competency",
+    "role": "Any (leadership competency focus)",
+    "questionCount": 50
+  },
+  {
+    "slug": "teamwork-competency-interview-questions",
+    "title": "Teamwork and Collaboration Interview Questions",
+    "description": "40 competency interview questions on teamwork, collaboration, and working with others — with guidance on showing individual contribution while demonstrating team effectiveness.",
+    "keywords": ["teamwork interview questions", "collaboration interview questions", "working in a team interview"],
+    "category": "By competency",
+    "role": "Any (teamwork competency focus)",
+    "questionCount": 40
+  },
+  {
+    "slug": "communication-competency-interview-questions",
+    "title": "Communication and Influence Interview Questions",
+    "description": "40 competency interview questions on communication, stakeholder management, influencing, and presenting — at every level from graduate to senior manager.",
+    "keywords": ["communication interview questions", "influencing interview questions", "stakeholder management interview"],
+    "category": "By competency",
+    "role": "Any (communication competency focus)",
+    "questionCount": 40
+  },
+  {
+    "slug": "problem-solving-competency-interview-questions",
+    "title": "Problem-Solving and Analytical Thinking Interview Questions",
+    "description": "40 competency interview questions testing problem-solving, analytical thinking, decision-making, and structured reasoning — with examples of what good answers look like.",
+    "keywords": ["problem solving interview questions", "analytical interview questions", "decision making interview questions"],
+    "category": "By competency",
+    "role": "Any (problem-solving competency focus)",
+    "questionCount": 40
+  },
+  {
+    "slug": "resilience-competency-interview-questions",
+    "title": "Resilience and Adaptability Interview Questions",
+    "description": "35 competency interview questions on resilience, managing pressure, adapting to change, and recovering from setbacks — with guidance on choosing examples that show growth.",
+    "keywords": ["resilience interview questions", "adaptability interview questions", "managing pressure interview questions"],
+    "category": "By competency",
+    "role": "Any (resilience competency focus)",
+    "questionCount": 35
+  },
+  {
+    "slug": "initiative-competency-interview-questions",
+    "title": "Initiative and Drive Interview Questions",
+    "description": "35 competency interview questions on taking initiative, driving change, going beyond your job description, and proactively identifying improvements.",
+    "keywords": ["initiative interview questions", "drive interview questions", "proactivity interview questions"],
+    "category": "By competency",
+    "role": "Any (initiative competency focus)",
+    "questionCount": 35
+  },
+  {
+    "slug": "commercial-awareness-interview-questions",
+    "title": "Commercial Awareness Interview Questions",
+    "description": "40 interview questions testing commercial awareness — from market trends and competitive landscape to financial literacy and customer value creation.",
+    "keywords": ["commercial awareness interview questions", "commercial awareness examples", "business acumen interview questions"],
+    "category": "By competency",
+    "role": "Any (commercial focus)",
+    "questionCount": 40
+  },
+  {
+    "slug": "customer-service-competency-interview-questions",
+    "title": "Customer Service Competency Interview Questions",
+    "description": "40 competency interview questions on customer focus, service quality, complaint handling, and building customer relationships at every level.",
+    "keywords": ["customer service interview questions", "customer focus interview questions", "customer experience interview"],
+    "category": "By competency",
+    "role": "Any (customer-facing roles)",
+    "questionCount": 40
+  },
+  {
+    "slug": "change-management-interview-questions",
+    "title": "Change Management Interview Questions",
+    "description": "35 interview questions on managing organisational change, influencing stakeholders, overcoming resistance, and delivering transformation projects.",
+    "keywords": ["change management interview questions", "change leadership interview", "organisational change interview"],
+    "category": "By competency",
+    "role": "Any (change management focus)",
+    "questionCount": 35
+  },
+  {
+    "slug": "civil-service-fast-stream-interview-questions",
+    "title": "Civil Service Fast Stream Interview Questions",
+    "description": "40 interview questions for the Civil Service Fast Stream covering Success Profile behaviours, strengths, situational judgement, and leadership potential.",
+    "keywords": ["civil service fast stream interview questions", "fast stream interview", "civil service behaviours interview"],
+    "category": "By industry",
+    "role": "Civil Service Fast Stream",
+    "questionCount": 40
+  },
+  {
+    "slug": "nhs-band-6-interview-questions",
+    "title": "NHS Band 6 Interview Questions",
+    "description": "35 NHS Band 6 interview questions covering clinical competence, the 6Cs, leadership, values-based practice, and situational scenarios.",
+    "keywords": ["NHS band 6 interview questions", "NHS interview questions", "nursing interview questions band 6"],
+    "category": "By industry",
+    "role": "NHS Band 6 Clinician",
+    "questionCount": 35
+  },
+  {
+    "slug": "teacher-interview-questions",
+    "title": "Teacher Interview Questions",
+    "description": "40 interview questions for teaching roles in UK schools covering lesson planning, pupil engagement, safeguarding, behaviour management, and professional values.",
+    "keywords": ["teacher interview questions", "teaching interview questions UK", "NQT interview questions"],
+    "category": "By industry",
+    "role": "Teacher",
+    "questionCount": 40
+  },
+  {
+    "slug": "law-training-contract-interview-questions",
+    "title": "Law Training Contract Interview Questions",
+    "description": "40 interview questions for training contract and vacation scheme applications at UK law firms — covering commercial awareness, motivation, competencies, and current affairs.",
+    "keywords": ["training contract interview questions", "law interview questions", "vacation scheme interview questions", "solicitor interview"],
+    "category": "By industry",
+    "role": "Trainee Solicitor",
+    "questionCount": 40
+  },
+  {
+    "slug": "strengths-based-interview-questions",
+    "title": "Strengths-Based Interview Questions (All Roles)",
+    "description": "50 strengths-based interview questions used by employers like Barclays, HSBC, Unilever, and the Civil Service — with guidance on what authentic, energised answers look like.",
+    "keywords": ["strengths based interview questions", "strengths interview examples", "CEB strengths based interview"],
+    "category": "By interview type",
+    "role": "Any",
+    "questionCount": 50
+  },
+  {
+    "slug": "situational-judgement-interview-questions",
+    "title": "Situational Judgement Interview Questions",
+    "description": "40 situational interview questions (hypothetical scenarios) testing judgement, prioritisation, and decision-making — with frameworks for structuring your answers.",
+    "keywords": ["situational interview questions", "situational judgement questions", "hypothetical interview questions"],
+    "category": "By interview type",
+    "role": "Any",
+    "questionCount": 40
+  },
+  {
+    "slug": "executive-leadership-interview-questions",
+    "title": "Executive and Senior Leadership Interview Questions",
+    "description": "40 interview questions for director, VP, and C-suite level roles covering vision, strategy, board engagement, culture building, and organisational transformation.",
+    "keywords": ["executive interview questions", "senior leadership interview questions", "director interview questions", "C-suite interview"],
+    "category": "By candidate type",
+    "role": "Senior Leader / Executive",
+    "questionCount": 40
+  },
+  {
+    "slug": "tech-startup-interview-questions",
+    "title": "Tech Startup Interview Questions",
+    "description": "35 interview questions for startup roles across functions — covering growth mindset, ambiguity tolerance, ownership, speed, and cross-functional collaboration.",
+    "keywords": ["tech startup interview questions", "startup interview questions", "early stage company interview"],
+    "category": "By industry",
+    "role": "Various (startup context)",
+    "questionCount": 35
+  },
+  {
+    "slug": "retail-management-interview-questions",
+    "title": "Retail Management Interview Questions",
+    "description": "40 interview questions for retail manager roles covering team leadership, sales performance, customer experience, stock management, and store operations.",
+    "keywords": ["retail manager interview questions", "retail interview questions", "store manager interview"],
+    "category": "By industry",
+    "role": "Retail Manager",
+    "questionCount": 40
+  },
+  {
+    "slug": "data-analyst-interview-questions",
+    "title": "Data Analyst Interview Questions",
+    "description": "45 interview questions for data analyst roles covering SQL, Excel, visualisation tools, statistical analysis, stakeholder communication, and insight presentation.",
+    "keywords": ["data analyst interview questions", "SQL interview questions", "data analysis interview", "business intelligence interview"],
+    "category": "By role",
+    "role": "Data Analyst",
+    "questionCount": 45
+  },
+  {
+    "slug": "nursing-interview-questions",
+    "title": "General Nursing Interview Questions",
+    "description": "40 interview questions for registered nurse roles in NHS and private settings — covering patient care, clinical decision-making, values-based practice, and teamwork.",
+    "keywords": ["nursing interview questions", "nurse interview questions", "RN interview questions UK"],
+    "category": "By role",
+    "role": "Registered Nurse",
+    "questionCount": 40
+  },
+  {
+    "slug": "human-resources-interview-questions",
+    "title": "Human Resources Interview Questions",
+    "description": "40 interview questions for HR roles from HR Advisor to HR Business Partner — covering employee relations, TUPE, employment law, performance management, and culture.",
+    "keywords": ["HR interview questions", "human resources interview questions", "HRBP interview questions"],
+    "category": "By role",
+    "role": "HR Professional",
+    "questionCount": 40
+  }
+]
