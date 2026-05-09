@@ -23,20 +23,20 @@ const structuredData = {
 
 const values = [
   {
+    title: "Equal access to preparation",
+    body: "A first-generation graduate deserves the same quality of interview coaching as someone whose parents went to Oxbridge. We built AI Career Mentor so that background, network, and budget can no longer determine who gets prepared and who doesn't.",
+  },
+  {
     title: "Honest feedback, not flattery",
     body: "Real improvement comes from knowing exactly where you fell short. Our AI gives you the truth — constructively and specifically — not the encouragement you wanted to hear.",
   },
   {
+    title: "Reducing bias, not reinforcing it",
+    body: "Unstructured interviews disadvantage candidates who aren't familiar with the unwritten rules. We teach those rules explicitly — STAR structure, competency frameworks, delivery — so that every candidate can be judged on their genuine capability.",
+  },
+  {
     title: "Privacy by design",
     body: "Your interview answers, CV context and coaching sessions belong to you. We never sell your data, we process only what's needed, and you can delete everything at any time.",
-  },
-  {
-    title: "Built for the real interview room",
-    body: "We coach answers, voice delivery and camera presence because all three matter. Interviewers judge the full picture — so our feedback covers it.",
-  },
-  {
-    title: "Fair hiring starts with fair prep",
-    body: "Access to quality interview coaching has always been expensive and unequal. AI lets us change that — making elite-level preparation available to everyone.",
   },
 ];
 
@@ -44,7 +44,7 @@ const team = [
   {
     name: "Rakesh Kumar",
     role: "Founder & CEO",
-    bio: "Background in talent assessment and career coaching. Built AI Career Mentor to make the kind of preparation that changes outcomes accessible to everyone — not just those who can afford a £200/hour coach.",
+    bio: "Background in talent assessment and career coaching. Passionate about creating fair and inclusive access to opportunity — built AI Career Mentor so that the quality of your preparation is never determined by your background, network, or budget.",
     photo: "/team/rakesh-kumar.jpeg",
     linkedin: null,
   },
@@ -102,26 +102,62 @@ export default function AboutPage() {
           </blockquote>
         </section>
 
+        {/* DE&I statement */}
+        <section className="mb-16">
+          <h2 className="mb-6 text-2xl font-black tracking-[-0.04em]">Why this matters</h2>
+          <div className="space-y-5 text-base leading-8 text-gray-400">
+            <p>
+              The interview process has a diversity problem — and it starts long before
+              the interview room. Candidates from underrepresented backgrounds,
+              first-generation graduates, career changers, and those without access to
+              professional networks face a structural disadvantage that has nothing to
+              do with their ability to do the job.
+            </p>
+            <p>
+              Access to quality interview coaching has historically been a privilege.
+              Private coaches charge £150–£300 per hour. Elite universities run
+              dedicated careers programmes unavailable to everyone else. Professional
+              networks give some candidates insider knowledge — the unwritten rules of
+              interviews — that others never learn.
+            </p>
+            <p>
+              The result is that hiring decisions are influenced not just by capability,
+              but by who had access to preparation. That&rsquo;s not a fair outcome for
+              candidates, and it&rsquo;s not good for employers who miss out on talented
+              people who simply didn&rsquo;t know how to present themselves.
+            </p>
+            <p className="font-black text-white">
+              AI Career Mentor exists to close that gap. We give every candidate —
+              regardless of background, institution, or budget — access to the same
+              quality of structured, honest, personalised coaching that used to be
+              reserved for the few.
+            </p>
+          </div>
+        </section>
+
         {/* Story */}
         <section className="mb-16">
           <h2 className="mb-6 text-2xl font-black tracking-[-0.04em]">The story</h2>
           <div className="space-y-5 text-base leading-8 text-gray-400">
             <p>
-              Interview coaching has always worked — the evidence is clear. Candidates
-              who practise with structured feedback perform meaningfully better. But
-              for most people, proper coaching was either unavailable or unaffordable.
+              I built AI Career Mentor because I&rsquo;ve seen the difference that
+              preparation makes — and how unevenly distributed that preparation is.
+              Candidates who practise with structured feedback perform meaningfully
+              better. The coaching works. The problem is access.
             </p>
             <p>
-              AI Career Mentor started with one question: what if everyone could have
-              the same calibre of preparation as candidates with access to top coaches?
-              Not generic practice questions, but coaching tailored to your exact role,
-              level and interview format — with real feedback on answers, voice delivery
-              and how you come across on camera.
+              The platform started with one question: what would it look like if every
+              candidate — first-generation graduate, career changer, returner to work,
+              candidate from a non-traditional background — could access the same
+              calibre of coaching as someone with a top-tier careers service and a
+              private coach? Not generic questions, but coaching tailored to their
+              exact role, level, and interview format — with honest feedback on answers,
+              voice delivery, and camera presence.
             </p>
             <p>
-              We built the platform in the UK, GDPR-first, and we&rsquo;re growing it
-              into the tool we wish had existed when we were preparing for interviews
-              ourselves.
+              We built it in the UK, GDPR-first, and we&rsquo;re committed to keeping
+              the core experience genuinely accessible. Because inclusive hiring has to
+              start with inclusive preparation.
             </p>
           </div>
         </section>
