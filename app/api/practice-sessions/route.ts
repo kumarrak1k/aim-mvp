@@ -1,4 +1,4 @@
-import { auth } from "@clerk/nextjs/server";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 import { Prisma } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../lib/prisma";
@@ -8,8 +8,29 @@ import { parseJsonBody, practiceSessionCreateSchema } from "../../lib/validation
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const DAILY_COMPLETED_SESSION_LIMIT = 3;
-const BETA_PLAN_NAME = "Beta";
+const FREE_DAILY_LIMIT = 3;
+
+type PlanInfo = { planName: string; isUnlimited: boolean };
+
+async function getUserPlanInfo(userId: string): Promise<PlanInfo> {
+  try {
+    const client = await clerkClient();
+    const user = await client.users.getUser(userId);
+    const meta = user.privateMetadata as {
+      subscriptionStatus?: string;
+      stripePlanId?: string;
+    };
+    const isActive = meta?.subscriptionStatus === "active";
+    const planId = (meta?.stripePlanId ?? "").toLowerCase();
+
+    if (!isActive) return { planName: "Free", isUnlimited: false };
+    if (planId.includes("advanced")) return { planName: "Advanced", isUnlimited: true };
+    if (planId.includes("professional")) return { planName: "Professional", isUnlimited: true };
+    return { planName: "Free", isUnlimited: false };
+  } catch {
+    return { planName: "Free", isUnlimited: false };
+  }
+}
 
 function getSummaryScore(summary: Record<string, unknown>): number {
   const value = summary.overall_score;
@@ -27,37 +48,31 @@ function getTodayRange() {
   const now = new Date();
   const start = new Date(now);
   start.setHours(0, 0, 0, 0);
-
   const end = new Date(start);
   end.setDate(end.getDate() + 1);
-
-  return {
-    start,
-    end,
-  };
+  return { start, end };
 }
 
-async function getDailyUsage(clerkUserId: string) {
+async function getDailyUsage(clerkUserId: string, planInfo: PlanInfo) {
   const { start, end } = getTodayRange();
 
   const usedToday = await prisma.practiceSession.count({
     where: {
       clerkUserId,
-      createdAt: {
-        gte: start,
-        lt: end,
-      },
+      createdAt: { gte: start, lt: end },
     },
   });
 
-  const remainingToday = Math.max(0, DAILY_COMPLETED_SESSION_LIMIT - usedToday);
+  const dailyLimit = planInfo.isUnlimited ? null : FREE_DAILY_LIMIT;
+  const remainingToday = dailyLimit === null ? null : Math.max(0, dailyLimit - usedToday);
+  const limitReached = dailyLimit !== null && usedToday >= dailyLimit;
 
   return {
-    planName: BETA_PLAN_NAME,
-    dailyLimit: DAILY_COMPLETED_SESSION_LIMIT,
+    planName: planInfo.planName,
+    dailyLimit,
     usedToday,
     remainingToday,
-    limitReached: usedToday >= DAILY_COMPLETED_SESSION_LIMIT,
+    limitReached,
     resetsAt: end.toISOString(),
   };
 }
@@ -73,14 +88,12 @@ export async function GET() {
       );
     }
 
+    const planInfo = await getUserPlanInfo(userId);
+
     const [sessions, usage, assessmentLinkedIds] = await Promise.all([
       prisma.practiceSession.findMany({
-        where: {
-          clerkUserId: userId,
-        },
-        orderBy: {
-          createdAt: "desc",
-        },
+        where: { clerkUserId: userId },
+        orderBy: { createdAt: "desc" },
         take: 50,
         select: {
           id: true,
@@ -99,14 +112,12 @@ export async function GET() {
           createdAt: true,
         },
       }),
-      getDailyUsage(userId),
+      getDailyUsage(userId, planInfo),
       getAssessmentLinkedSessionIds(userId),
     ]);
 
-    // Hide sessions that were completed as part of a company assessment.
-    // Those results belong to the hiring team — the candidate ran the
-    // session but doesn't get to see their own scoring. Recruiters access
-    // these via /api/company/results/* with company-membership auth.
+    // Hide sessions completed as part of a company assessment —
+    // those results belong to the hiring team.
     const personalSessions = sessions.filter(
       (session) => !assessmentLinkedIds.has(session.id)
     );
@@ -120,7 +131,6 @@ export async function GET() {
     });
   } catch (error) {
     console.error("PRACTICE SESSIONS GET ERROR:", error);
-
     return NextResponse.json(
       { error: "Failed to load practice sessions." },
       { status: 500 }
@@ -139,13 +149,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const usage = await getDailyUsage(userId);
+    const planInfo = await getUserPlanInfo(userId);
+    const usage = await getDailyUsage(userId, planInfo);
 
     if (usage.limitReached) {
       return NextResponse.json(
         {
           error:
-            "You have reached your daily beta limit for completed practice sessions.",
+            "You have reached your daily session limit. Upgrade to Professional for unlimited sessions.",
           usage,
         },
         { status: 429 }
@@ -215,7 +226,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const updatedUsage = await getDailyUsage(userId);
+    const updatedUsage = await getDailyUsage(userId, planInfo);
 
     return NextResponse.json({
       usage: updatedUsage,
@@ -226,7 +237,6 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("PRACTICE SESSIONS POST ERROR:", error);
-
     return NextResponse.json(
       { error: "Failed to save practice session." },
       { status: 500 }
@@ -245,9 +255,8 @@ export async function DELETE() {
       );
     }
 
-    // Bulk delete only the candidate's PERSONAL sessions. Sessions linked
-    // to a company assessment are evidence the hiring team relies on, so
-    // the candidate cannot wipe them via "delete all my data".
+    // Bulk delete only personal sessions — assessment sessions are evidence
+    // the hiring team relies on and cannot be wiped by the candidate.
     const assessmentLinkedIds = await getAssessmentLinkedSessionIds(userId);
     const deleted = await prisma.practiceSession.deleteMany({
       where: {
@@ -268,7 +277,6 @@ export async function DELETE() {
     });
   } catch (error) {
     console.error("PRACTICE SESSIONS DELETE ERROR:", error);
-
     return NextResponse.json(
       { error: "Failed to delete saved practice sessions." },
       { status: 500 }

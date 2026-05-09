@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export type PricingCurrency = "GBP" | "USD" | "EUR";
 
@@ -19,8 +20,30 @@ const ADVANCED: Record<PricingCurrency, PriceSet> = {
   EUR: { monthly: "€32",  annual: "€279",  annualMonthly: "€23.25" },
 };
 
+const PAYMENTS_ENABLED = process.env.NEXT_PUBLIC_PAYMENTS_ENABLED === "true";
+
+type StripePlanId =
+  | "professional_monthly"
+  | "professional_annual"
+  | "advanced_monthly"
+  | "advanced_annual";
+
+async function redirectToCheckout(planId: StripePlanId): Promise<string | null> {
+  const res = await fetch("/api/stripe/checkout", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ planId }),
+  });
+  if (!res.ok) return null;
+  const { url } = await res.json();
+  return url ?? null;
+}
+
 export function CandidatePricingPlans({ currency = "GBP" }: { currency?: PricingCurrency }) {
   const [annual, setAnnual] = useState(false);
+  const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
+  const router = useRouter();
+
   const pro = PROFESSIONAL[currency];
   const adv = ADVANCED[currency];
 
@@ -39,6 +62,8 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
       ],
       cta: "Start free",
       ctaHref: "/for-candidates/sign-up",
+      stripePlanMonthly: null as StripePlanId | null,
+      stripePlanAnnual: null as StripePlanId | null,
       highlight: false,
     },
     {
@@ -58,6 +83,8 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
       ],
       cta: "Start free trial",
       ctaHref: "/for-candidates/sign-up",
+      stripePlanMonthly: "professional_monthly" as StripePlanId,
+      stripePlanAnnual: "professional_annual" as StripePlanId,
       highlight: true,
     },
     {
@@ -77,9 +104,27 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
       ],
       cta: "Start free trial",
       ctaHref: "/for-candidates/sign-up",
+      stripePlanMonthly: "advanced_monthly" as StripePlanId,
+      stripePlanAnnual: "advanced_annual" as StripePlanId,
       highlight: false,
     },
   ];
+
+  async function handlePaidCta(plan: (typeof plans)[number]) {
+    const stripePlanId = annual ? plan.stripePlanAnnual : plan.stripePlanMonthly;
+    if (!stripePlanId) return;
+    setLoadingPlan(plan.name);
+    try {
+      const url = await redirectToCheckout(stripePlanId);
+      if (url) {
+        router.push(url);
+      } else {
+        router.push(plan.ctaHref);
+      }
+    } finally {
+      setLoadingPlan(null);
+    }
+  }
 
   return (
     <>
@@ -120,6 +165,8 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
           const displayPeriod =
             annual && plan.annualPrice ? "/month, billed annually" : plan.period;
           const annualTotal = annual && plan.annualPrice;
+          const isPaid = plan.stripePlanMonthly !== null;
+          const isLoading = loadingPlan === plan.name;
 
           return (
             <div
@@ -166,16 +213,31 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
                   </div>
                 ))}
               </div>
-              <Link
-                href={plan.ctaHref}
-                className={`mt-8 flex w-full justify-center rounded-2xl px-5 py-3.5 text-sm font-black transition ${
-                  plan.highlight
-                    ? "bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 text-white shadow-xl shadow-purple-950/35 hover:scale-[1.02]"
-                    : "border border-white/10 bg-white/[0.06] text-white hover:bg-white/[0.1]"
-                }`}
-              >
-                {plan.cta}
-              </Link>
+
+              {PAYMENTS_ENABLED && isPaid ? (
+                <button
+                  onClick={() => handlePaidCta(plan)}
+                  disabled={isLoading}
+                  className={`mt-8 flex w-full justify-center rounded-2xl px-5 py-3.5 text-sm font-black transition disabled:opacity-60 ${
+                    plan.highlight
+                      ? "bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 text-white shadow-xl shadow-purple-950/35 hover:scale-[1.02]"
+                      : "border border-white/10 bg-white/[0.06] text-white hover:bg-white/[0.1]"
+                  }`}
+                >
+                  {isLoading ? "Redirecting…" : plan.cta}
+                </button>
+              ) : (
+                <Link
+                  href={plan.ctaHref}
+                  className={`mt-8 flex w-full justify-center rounded-2xl px-5 py-3.5 text-sm font-black transition ${
+                    plan.highlight
+                      ? "bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 text-white shadow-xl shadow-purple-950/35 hover:scale-[1.02]"
+                      : "border border-white/10 bg-white/[0.06] text-white hover:bg-white/[0.1]"
+                  }`}
+                >
+                  {plan.cta}
+                </Link>
+              )}
             </div>
           );
         })}

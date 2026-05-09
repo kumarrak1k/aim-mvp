@@ -6,6 +6,7 @@ import { CandidateAppShell } from "@/app/components/marketing/CandidateAppShell"
 import { ProfileDetailsForm } from "./ProfileDetailsForm";
 import { ProfileHero } from "./ProfileHero";
 import { ProfileLoadingState, ProfileSignedOutState } from "./ProfileStates";
+import { SubscriptionCard } from "./SubscriptionCard";
 import type { CandidateProfile, ProfileUploadTarget } from "../types";
 
 export function CandidateProfileClient() {
@@ -398,6 +399,8 @@ export function CandidateProfileClient() {
       ) : !isSignedIn ? (
         <ProfileSignedOutState />
       ) : (
+        <>
+        <SubscriptionCard />
         <ProfileDetailsForm
           cvText={cvText}
           setCvText={setCvText}
@@ -427,6 +430,7 @@ export function CandidateProfileClient() {
           deleteAllAimData={deleteAllAimData}
           exportAccountData={exportAccountData}
         />
+        </>
       )}
     </CandidateAppShell>
   );

@@ -18,6 +18,84 @@ export type CompetitorData = {
 };
 
 export const competitors: Record<string, CompetitorData> = {
+  chatgpt: {
+    slug: "chatgpt",
+    name: "ChatGPT",
+    tagline: "AI Career Mentor vs ChatGPT for interview prep",
+    description:
+      "ChatGPT can answer interview questions and give general feedback, but it has no role-specific scoring, no voice or camera analysis, no progress tracking, and no structured coaching loop. AI Career Mentor is purpose-built for interview preparation.",
+    url: "https://chat.openai.com",
+    features: [
+      { feature: "Role-tailored interview questions", aim: true, competitor: "Generic only" },
+      { feature: "Scored answer feedback (0–10)", aim: true, competitor: false },
+      { feature: "STAR structure analysis", aim: true, competitor: false },
+      { feature: "Voice delivery analysis", aim: true, competitor: false },
+      { feature: "Camera presence feedback", aim: true, competitor: false },
+      { feature: "Model answers per question", aim: true, competitor: "On request" },
+      { feature: "7-day personalised improvement plan", aim: true, competitor: false },
+      { feature: "Progress history across sessions", aim: true, competitor: false },
+      { feature: "Mock assessment centre", aim: true, competitor: false },
+      { feature: "Repeatable structured practice loop", aim: true, competitor: false },
+      { feature: "UK GDPR-compliant data handling", aim: true, competitor: "US data" },
+      { feature: "Pricing", aim: "Free + from £19/mo", competitor: "Free + $20/mo ChatGPT Plus" },
+    ],
+    aimStrengths: [
+      "Structured scoring across 6 dimensions — not a chat conversation",
+      "Voice and camera presence assessed automatically, not just answer text",
+      "Questions tailored to your exact role, level, interview type and focus area",
+      "7-day improvement plan and progress tracking after every session",
+      "Repeatable practice loop with consistent, comparable scoring",
+      "Built for interview prep — not a general-purpose tool you have to prompt carefully",
+    ],
+    competitorStrengths: [
+      "Free and extremely flexible — can discuss any topic",
+      "Useful for brainstorming example answers and getting informal feedback",
+      "No account required for basic use",
+      "Broad general knowledge across industries and roles",
+    ],
+    verdict:
+      "ChatGPT is a useful supplement for exploring ideas and drafting answers, but it is not an interview coach. It has no consistent scoring rubric, no voice or camera analysis, no session history, and no structured practice loop. AI Career Mentor is built specifically to prepare you for the moment you sit across from a hiring manager.",
+    ctaLabel: "Try AI Career Mentor free →",
+  },
+  "linkedin-interview-prep": {
+    slug: "linkedin-interview-prep",
+    name: "LinkedIn Interview Prep",
+    tagline: "AI Career Mentor vs LinkedIn Interview Prep",
+    description:
+      "LinkedIn Interview Prep offers basic practice questions with AI feedback on recorded video answers. AI Career Mentor goes further — scoring answer content, voice delivery, and camera presence with a full coaching loop and improvement plan.",
+    url: "https://www.linkedin.com/interview-prep/",
+    features: [
+      { feature: "Role-tailored questions (your exact spec)", aim: true, competitor: "Category-based" },
+      { feature: "Answer quality scoring (0–10)", aim: true, competitor: "Basic tips only" },
+      { feature: "STAR structure analysis", aim: true, competitor: false },
+      { feature: "Voice delivery analysis", aim: true, competitor: "Basic" },
+      { feature: "Camera presence / eye contact feedback", aim: true, competitor: "Basic" },
+      { feature: "Model answers per question", aim: true, competitor: false },
+      { feature: "7-day personalised improvement plan", aim: true, competitor: false },
+      { feature: "Progress tracking across sessions", aim: true, competitor: false },
+      { feature: "Mock assessment centre", aim: true, competitor: false },
+      { feature: "Recruiter assessment platform", aim: true, competitor: false },
+      { feature: "UK GDPR-compliant data handling", aim: true, competitor: "US data" },
+      { feature: "Pricing", aim: "Free + from £19/mo", competitor: "Free (LinkedIn Premium required for some features)" },
+    ],
+    aimStrengths: [
+      "Scores the substance of your answers — not just delivery confidence",
+      "Questions tailored to your role, level and interview format — not generic category lists",
+      "STAR structure scoring and model answers for every question",
+      "7-day improvement plan after every session with specific targets",
+      "Separate recruiter platform for company-issued assessments",
+      "UK-hosted, GDPR-first",
+    ],
+    competitorStrengths: [
+      "Integrated with your LinkedIn profile — no separate account needed",
+      "Huge brand trust — most candidates already have a LinkedIn account",
+      "Free for core features without a separate subscription",
+      "Question bank drawn from real recruiter data",
+    ],
+    verdict:
+      "LinkedIn Interview Prep is convenient for quick warm-up practice using your existing account. AI Career Mentor is for serious preparation — it scores answer quality and structure, analyses voice and camera presence, and gives you a targeted improvement plan after every session.",
+    ctaLabel: "Try AI Career Mentor free →",
+  },
   "interview-warmup": {
     slug: "interview-warmup",
     name: "Interview Warmup (Google)",

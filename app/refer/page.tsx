@@ -59,9 +59,30 @@ export default function ReferPage() {
             Share AI Career Mentor
           </h1>
           <p className="mx-auto mt-4 max-w-md text-sm leading-6 text-gray-400">
-            Know someone preparing for interviews? Share your link and help
-            them get AI-powered coaching too.
+            Share your personal link. Every person who signs up gets instant
+            access to free AI interview coaching — voice feedback, camera
+            presence scoring, and model answers.
           </p>
+        </div>
+
+        {/* Reward strip */}
+        <div className="mb-6 grid grid-cols-3 gap-3 text-center">
+          {[
+            { icon: "🎯", label: "They get", detail: "Free AI coaching" },
+            { icon: "📈", label: "You get", detail: "Bragging rights" },
+            { icon: "🤝", label: "Together", detail: "Better interviews" },
+          ].map((item) => (
+            <div
+              key={item.label}
+              className="rounded-2xl border border-white/[0.07] bg-white/[0.03] px-3 py-4"
+            >
+              <p className="text-2xl">{item.icon}</p>
+              <p className="mt-2 text-[10px] font-black uppercase tracking-[0.15em] text-gray-500">
+                {item.label}
+              </p>
+              <p className="mt-0.5 text-xs font-bold text-gray-300">{item.detail}</p>
+            </div>
+          ))}
         </div>
 
         {loading ? (
