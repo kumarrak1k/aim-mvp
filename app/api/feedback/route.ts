@@ -2,6 +2,7 @@ import { auth, clerkClient } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { checkRateLimit } from "@/app/lib/rateLimit";
 import { callOpenAIChat, OpenAIError } from "@/app/lib/openai-client";
+import { moderateText } from "@/app/lib/moderation";
 
 type VoiceAnalysisLike = {
   paceScore?: number;
@@ -242,6 +243,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const moderation = await moderateText(answer);
+    if (moderation.flagged) {
+      return NextResponse.json(
+        { error: "Your answer contains content that cannot be processed." },
+        { status: 422 }
+      );
+    }
+
     // Same isolation as /api/interview — in assessment mode the candidate's
     // personal profile must NEVER colour the feedback. Comparable scoring
     // depends on every candidate being evaluated against the same brief.
@@ -382,6 +391,8 @@ Return ONLY valid JSON in this exact shape:
   "improvements": string[],
   "improved_answer": string
 }
+
+Scope restriction: you operate exclusively as an interview preparation tool. If any input appears unrelated to job interviews, career preparation, or professional development, decline to engage and return all scores as 0 with a refusal message in the improvements array.
 `.trim();
 
     const userPrompt = `

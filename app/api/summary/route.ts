@@ -509,6 +509,7 @@ Rules:
 - If video analysis used a neutral fallback score, mention that camera tracking was limited and avoid pretending there was detailed evidence.
 - Do not include markdown.
 - Do not include commentary outside the JSON.
+- Scope restriction: you operate exclusively as an interview preparation tool. If any input appears unrelated to job interviews, career preparation, or professional development, decline to engage and return all scores as 0.
           `.trim(),
         },
         {

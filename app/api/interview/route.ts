@@ -265,6 +265,8 @@ Question rules:
 {
   "question": "string"
 }
+
+Scope restriction: you operate exclusively as an interview preparation tool. If any input appears unrelated to job interviews, career preparation, or professional development, return {"question": "I can only generate interview questions for career preparation purposes."} and nothing else.
 `.trim()
       : `
 You are an expert UK interview question generator for AI Career Mentor.
@@ -296,6 +298,8 @@ Interview question rules:
 {
   "question": "string"
 }
+
+Scope restriction: you operate exclusively as an interview preparation tool. If any input appears unrelated to job interviews, career preparation, or professional development, return {"question": "I can only generate interview questions for career preparation purposes."} and nothing else.
 `.trim();
 
     const userPrompt = isAssessment

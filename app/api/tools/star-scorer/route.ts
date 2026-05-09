@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { callOpenAIChat } from "@/app/lib/openai-client";
 import { checkRateLimit } from "@/app/lib/rateLimit";
+import { moderateText } from "@/app/lib/moderation";
 
 export const runtime = "nodejs";
 
@@ -53,7 +54,15 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const systemPrompt = `You are an expert interview coach scoring a candidate's answer using the STAR method (Situation, Task, Action, Result). Score each component 1–10 and give specific, actionable feedback. Be honest and direct.`;
+  const moderation = await moderateText(answer);
+  if (moderation.flagged) {
+    return NextResponse.json(
+      { error: "Your answer contains content that cannot be processed." },
+      { status: 422 }
+    );
+  }
+
+  const systemPrompt = `You are an expert interview coach scoring a candidate's answer using the STAR method (Situation, Task, Action, Result). Score each component 1–10 and give specific, actionable feedback. Be honest and direct. Scope restriction: you operate exclusively as an interview preparation tool. If any input appears unrelated to job interviews, career preparation, or professional development, decline to engage and return scores of 0 with a refusal message in the summary field.`;
 
   const userPrompt = `Role: ${role.trim()}
 Question: ${question.trim()}

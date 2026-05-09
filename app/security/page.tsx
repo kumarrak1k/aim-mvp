@@ -73,8 +73,8 @@ const controls = [
     detail: "Voice transcripts are generated in-browser via the Web Speech API and sent for AI analysis only. Raw audio is never stored or transmitted.",
   },
   {
-    area: "Access controls",
-    detail: "All API routes require authenticated Clerk session tokens. Unauthenticated requests to protected endpoints return 401. Rate limiting applied to all AI endpoints.",
+    area: "Access controls *",
+    detail: "Protected API routes require authenticated Clerk session tokens. Unauthenticated requests to protected endpoints return 401. Rate limiting applied to all AI endpoints.",
   },
   {
     area: "Security headers",
@@ -131,6 +131,14 @@ export default function SecurityPage() {
               </div>
             ))}
           </div>
+          <p className="mt-5 text-xs leading-6 text-gray-500">
+            * Two endpoints are intentionally public by design:{" "}
+            <span className="font-mono text-gray-400">/tools/star-scorer</span> (free
+            STAR answer scorer, IP-rate-limited to 5 requests per hour) and{" "}
+            <span className="font-mono text-gray-400">/api/assessment/[token]</span>{" "}
+            (assessment invites issued by hiring teams using single-use cryptographic
+            tokens). Neither endpoint exposes personal candidate data.
+          </p>
         </section>
 
         {/* Subprocessors */}
