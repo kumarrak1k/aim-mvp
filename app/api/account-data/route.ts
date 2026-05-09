@@ -1,6 +1,7 @@
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { prisma } from "../../lib/prisma";
+import { getAssessmentLinkedSessionIds } from "../../lib/sessionScope";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -22,8 +23,19 @@ export async function GET() {
       (user.privateMetadata?.candidateProfile as Record<string, unknown>) ||
       null;
 
+    // Personal sessions only. Sessions completed as part of a company
+    // assessment are evidence the hiring team commissioned — they are not
+    // included in the candidate-facing data export. If the candidate
+    // wants their assessment answers under GDPR, the hiring team can
+    // provide them directly.
+    const assessmentLinkedIds = await getAssessmentLinkedSessionIds(userId);
     const sessions = await prisma.practiceSession.findMany({
-      where: { clerkUserId: userId },
+      where: {
+        clerkUserId: userId,
+        ...(assessmentLinkedIds.size > 0 && {
+          id: { notIn: Array.from(assessmentLinkedIds) },
+        }),
+      },
       orderBy: { createdAt: "desc" },
       select: {
         id: true,

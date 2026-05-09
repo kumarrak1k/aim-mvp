@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { Prisma } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../lib/prisma";
+import { getAssessmentLinkedSessionIds } from "../../lib/sessionScope";
 import { parseJsonBody, practiceSessionCreateSchema } from "../../lib/validation";
 
 export const runtime = "nodejs";
@@ -72,7 +73,7 @@ export async function GET() {
       );
     }
 
-    const [sessions, usage] = await Promise.all([
+    const [sessions, usage, assessmentLinkedIds] = await Promise.all([
       prisma.practiceSession.findMany({
         where: {
           clerkUserId: userId,
@@ -99,11 +100,20 @@ export async function GET() {
         },
       }),
       getDailyUsage(userId),
+      getAssessmentLinkedSessionIds(userId),
     ]);
+
+    // Hide sessions that were completed as part of a company assessment.
+    // Those results belong to the hiring team — the candidate ran the
+    // session but doesn't get to see their own scoring. Recruiters access
+    // these via /api/company/results/* with company-membership auth.
+    const personalSessions = sessions.filter(
+      (session) => !assessmentLinkedIds.has(session.id)
+    );
 
     return NextResponse.json({
       usage,
-      sessions: sessions.map((session) => ({
+      sessions: personalSessions.map((session) => ({
         ...session,
         createdAt: session.createdAt.toISOString(),
       })),
@@ -235,9 +245,16 @@ export async function DELETE() {
       );
     }
 
+    // Bulk delete only the candidate's PERSONAL sessions. Sessions linked
+    // to a company assessment are evidence the hiring team relies on, so
+    // the candidate cannot wipe them via "delete all my data".
+    const assessmentLinkedIds = await getAssessmentLinkedSessionIds(userId);
     const deleted = await prisma.practiceSession.deleteMany({
       where: {
         clerkUserId: userId,
+        ...(assessmentLinkedIds.size > 0 && {
+          id: { notIn: Array.from(assessmentLinkedIds) },
+        }),
       },
     });
 

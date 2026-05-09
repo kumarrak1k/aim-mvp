@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../../lib/prisma";
+import { isAssessmentLinkedSession } from "../../../lib/sessionScope";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -61,6 +62,17 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    // If this session was completed as part of a company assessment, the
+    // candidate doesn't get to see it via the personal endpoint. Return 404
+    // (not 403) so the row is genuinely invisible to candidate-side UI.
+    // The hiring team accesses it via /api/company/results/[id] instead.
+    if (await isAssessmentLinkedSession(userId, sessionId)) {
+      return NextResponse.json(
+        { error: "Practice session was not found." },
+        { status: 404 }
+      );
+    }
+
     return NextResponse.json({
       session: {
         ...session,
@@ -95,6 +107,17 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json(
         { error: "Practice session ID is required." },
         { status: 400 }
+      );
+    }
+
+    // Same gating as GET: assessment-linked sessions are owned by the
+    // hiring team. The candidate cannot delete a session that was
+    // commissioned by a company — that would let them tamper with hiring
+    // evidence.
+    if (await isAssessmentLinkedSession(userId, sessionId)) {
+      return NextResponse.json(
+        { error: "Practice session was not found." },
+        { status: 404 }
       );
     }
 

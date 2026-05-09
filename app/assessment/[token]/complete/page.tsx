@@ -100,25 +100,45 @@ export default function AssessmentCompletePage() {
           </div>
         )}
 
-        <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row">
-          <Link href="/progress">
-            <button className="rounded-full border border-white/15 bg-white/[0.06] px-6 py-3 text-sm font-black text-white transition hover:bg-white/[0.10]">
-              View your saved results
-            </button>
-          </Link>
-          <Link href="/">
-            <button className="rounded-full border border-white/10 bg-white/[0.03] px-6 py-3 text-sm font-black text-gray-300 transition hover:bg-white/[0.07]">
-              Explore AI Career Mentor
-            </button>
-          </Link>
+        {/* Pivot the candidate to AI Career Mentor as a personal product —
+            but DO NOT offer a way back to the company assessment results.
+            That data belongs to the hiring team only. */}
+        <div className="mt-10 w-full max-w-md rounded-[1.5rem] border border-purple-500/[0.18] bg-purple-500/[0.05] p-5 text-center">
+          <p className="text-[11px] font-black uppercase tracking-[0.18em] text-purple-200">
+            What happens next
+          </p>
+          <p className="mt-3 text-sm leading-6 text-gray-300">
+            {data?.company
+              ? `${data.company.name}'s hiring team will review your responses and follow up directly. Your scoring and feedback are shared only with them.`
+              : "The hiring team will review your responses and follow up directly. Your scoring and feedback are shared only with them."}
+          </p>
+        </div>
+
+        <div className="mt-8 w-full max-w-md rounded-[1.5rem] border border-white/[0.08] bg-white/[0.04] p-5">
+          <p className="text-[11px] font-black uppercase tracking-[0.18em] text-cyan-200">
+            While you wait
+          </p>
+          <p className="mt-3 text-sm leading-6 text-gray-300">
+            AI Career Mentor also helps candidates prepare for their own
+            interviews and assessment centres. Try it for the next role you
+            apply for.
+          </p>
+          <div className="mt-5 flex flex-col items-stretch gap-2 sm:flex-row sm:justify-center">
+            <Link href="/for-candidates">
+              <button className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-3 text-sm font-black text-white shadow-lg shadow-purple-900/30 transition hover:scale-[1.02] sm:w-auto">
+                Explore AI Career Mentor →
+              </button>
+            </Link>
+            <Link href="/for-candidates/sign-up">
+              <button className="w-full rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-3 text-sm font-black text-white transition hover:bg-white/[0.08] sm:w-auto">
+                Start free
+              </button>
+            </Link>
+          </div>
         </div>
 
         <p className="mt-12 text-center text-xs text-gray-600">
-          You can practise more interviews any time at{" "}
-          <Link href="/practice" className="text-gray-500 hover:text-gray-400">
-            /practice
-          </Link>
-          .
+          You can safely close this tab.
         </p>
       </div>
     </div>
