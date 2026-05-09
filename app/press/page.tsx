@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { createPageMetadata } from "@/app/config/seo";
 import { absoluteUrl, siteConfig } from "@/app/config/site";
+import { CopyBoilerplate } from "./CopyBoilerplate";
 
 export const metadata: Metadata = createPageMetadata({
   path: "/press",
@@ -73,12 +74,7 @@ export default function PressPage() {
         <section className="mb-12 rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-8">
           <h2 className="mb-4 text-lg font-black tracking-[-0.03em]">Boilerplate</h2>
           <p className="text-sm leading-7 text-gray-400">{boilerplate}</p>
-          <button
-            onClick={() => navigator.clipboard?.writeText(boilerplate)}
-            className="mt-5 rounded-full border border-white/10 bg-white/[0.05] px-4 py-2 text-xs font-bold text-gray-400 transition hover:bg-white/[0.09] hover:text-white"
-          >
-            Copy boilerplate
-          </button>
+          <CopyBoilerplate text={boilerplate} />
         </section>
 
         {/* Key stats */}
