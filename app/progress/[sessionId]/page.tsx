@@ -4,7 +4,7 @@ import Link from "next/link";
 import { SignInButton, useUser } from "@clerk/nextjs";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { MarketingShell } from "@/app/components/marketing/MarketingShell";
+import { CandidateAppShell } from "@/app/components/marketing/CandidateAppShell";
 
 type CategoryScores = {
   content?: number;
@@ -252,7 +252,7 @@ export default function PracticeSessionDetailPage() {
   }, [session]);
 
   return (
-    <MarketingShell currentPath="/progress">
+    <CandidateAppShell currentPath="/progress">
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:py-10">
         {!isLoaded && <SimpleState message="Loading session archive..." />}
 
@@ -280,7 +280,7 @@ export default function PracticeSessionDetailPage() {
           </div>
         )}
       </main>
-    </MarketingShell>
+    </CandidateAppShell>
   );
 }
 

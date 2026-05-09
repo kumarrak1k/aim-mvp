@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { MarketingShell } from "@/app/components/marketing/MarketingShell";
+import { CorporateAppShell } from "@/app/components/marketing/CorporateAppShell";
 import { TemplateForm } from "../TemplateForm";
 
 export default function NewTemplatePage() {
@@ -30,7 +30,7 @@ export default function NewTemplatePage() {
   }
 
   return (
-    <MarketingShell currentPath="/company/templates">
+    <CorporateAppShell currentPath="/company/templates">
       <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
         <div className="mb-8">
           <p className="text-sm font-black uppercase tracking-[0.22em] text-fuchsia-300">New Template</p>
@@ -42,6 +42,6 @@ export default function NewTemplatePage() {
         )}
         <TemplateForm onSave={handleSave} saving={saving} onCancel={() => router.back()} />
       </div>
-    </MarketingShell>
+    </CorporateAppShell>
   );
 }

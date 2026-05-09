@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { MarketingShell } from "@/app/components/marketing/MarketingShell";
+import { CorporateAppShell } from "@/app/components/marketing/CorporateAppShell";
 
 type Template = {
   id: string;
@@ -64,18 +64,18 @@ export default function TemplatesPage() {
 
   if (loading) {
     return (
-      <MarketingShell currentPath="/company/templates">
+      <CorporateAppShell currentPath="/company/templates">
         <div className="flex min-h-[60vh] items-center justify-center">
           <div className="h-10 w-10 animate-spin rounded-full border-2 border-fuchsia-400 border-t-transparent" />
         </div>
-      </MarketingShell>
+      </CorporateAppShell>
     );
   }
 
   const canEdit = memberRole === "admin" || memberRole === "recruiter";
 
   return (
-    <MarketingShell currentPath="/company/templates">
+    <CorporateAppShell currentPath="/company/templates">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
@@ -157,6 +157,6 @@ export default function TemplatesPage() {
           </div>
         )}
       </div>
-    </MarketingShell>
+    </CorporateAppShell>
   );
 }

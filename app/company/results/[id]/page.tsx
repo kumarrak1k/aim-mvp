@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { MarketingShell } from "@/app/components/marketing/MarketingShell";
+import { CorporateAppShell } from "@/app/components/marketing/CorporateAppShell";
 
 type Feedback = {
   overall_score?: number;
@@ -145,17 +145,17 @@ export default function CandidateResultDetailPage() {
 
   if (loading) {
     return (
-      <MarketingShell currentPath="/company/results">
+      <CorporateAppShell currentPath="/company/results">
         <div className="flex min-h-[60vh] items-center justify-center">
           <div className="h-10 w-10 animate-spin rounded-full border-2 border-fuchsia-400 border-t-transparent" />
         </div>
-      </MarketingShell>
+      </CorporateAppShell>
     );
   }
 
   if (error || !data) {
     return (
-      <MarketingShell currentPath="/company/results">
+      <CorporateAppShell currentPath="/company/results">
         <div className="mx-auto max-w-3xl px-4 py-16 text-center">
           <p className="text-sm text-red-300">{error || "Not found."}</p>
           <Link
@@ -165,7 +165,7 @@ export default function CandidateResultDetailPage() {
             ← Back to results
           </Link>
         </div>
-      </MarketingShell>
+      </CorporateAppShell>
     );
   }
 
@@ -174,7 +174,7 @@ export default function CandidateResultDetailPage() {
   const results = session?.results || [];
 
   return (
-    <MarketingShell currentPath="/company/results">
+    <CorporateAppShell currentPath="/company/results">
       <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
         {/* Back */}
         <div className="mb-6">
@@ -309,7 +309,7 @@ export default function CandidateResultDetailPage() {
           </>
         )}
       </div>
-    </MarketingShell>
+    </CorporateAppShell>
   );
 }
 

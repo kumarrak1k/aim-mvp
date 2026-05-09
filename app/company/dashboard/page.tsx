@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { MarketingShell } from "@/app/components/marketing/MarketingShell";
+import { CorporateAppShell } from "@/app/components/marketing/CorporateAppShell";
 
 type Assignment = {
   id: string;
@@ -78,11 +78,11 @@ export default function CompanyDashboardPage() {
 
   if (loading) {
     return (
-      <MarketingShell currentPath="/company/dashboard">
+      <CorporateAppShell currentPath="/company/dashboard">
         <div className="flex min-h-[60vh] items-center justify-center">
           <div className="h-10 w-10 animate-spin rounded-full border-2 border-fuchsia-400 border-t-transparent" />
         </div>
-      </MarketingShell>
+      </CorporateAppShell>
     );
   }
 
@@ -95,7 +95,7 @@ export default function CompanyDashboardPage() {
   const pendingCount = assignments.filter((a) => a.status === "pending").length;
 
   return (
-    <MarketingShell currentPath="/company/dashboard">
+    <CorporateAppShell currentPath="/company/dashboard">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -326,6 +326,6 @@ export default function CompanyDashboardPage() {
           </div>
         </div>
       )}
-    </MarketingShell>
+    </CorporateAppShell>
   );
 }

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useUser } from "@clerk/nextjs";
-import { MarketingShell } from "@/app/components/marketing/MarketingShell";
+import { CandidateAppShell } from "@/app/components/marketing/CandidateAppShell";
 import { ProfileDetailsForm } from "./ProfileDetailsForm";
 import { ProfileHero } from "./ProfileHero";
 import { ProfileLoadingState, ProfileSignedOutState } from "./ProfileStates";
@@ -386,7 +386,7 @@ export function CandidateProfileClient() {
   };
 
   return (
-    <MarketingShell currentPath="/profile">
+    <CandidateAppShell currentPath="/profile">
       <ProfileHero
         completionScore={completionScore}
         hasCvContext={Boolean(cvText.trim())}
@@ -428,6 +428,6 @@ export function CandidateProfileClient() {
           exportAccountData={exportAccountData}
         />
       )}
-    </MarketingShell>
+    </CandidateAppShell>
   );
 }

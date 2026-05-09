@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { MarketingShell } from "@/app/components/marketing/MarketingShell";
+import { CorporateAppShell } from "@/app/components/marketing/CorporateAppShell";
 import { Suspense } from "react";
 
 type Template = { id: string; name: string; role: string };
@@ -162,18 +162,18 @@ function CandidatesContent() {
 
   if (loading) {
     return (
-      <MarketingShell currentPath="/company/candidates">
+      <CorporateAppShell currentPath="/company/candidates">
         <div className="flex min-h-[60vh] items-center justify-center">
           <div className="h-10 w-10 animate-spin rounded-full border-2 border-fuchsia-400 border-t-transparent" />
         </div>
-      </MarketingShell>
+      </CorporateAppShell>
     );
   }
 
   const canInvite = memberRole === "admin" || memberRole === "recruiter";
 
   return (
-    <MarketingShell currentPath="/company/candidates">
+    <CorporateAppShell currentPath="/company/candidates">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="mb-10">
           <p className="text-sm font-black uppercase tracking-[0.22em] text-fuchsia-300">Candidates</p>
@@ -387,18 +387,18 @@ function CandidatesContent() {
           </div>
         </div>
       </div>
-    </MarketingShell>
+    </CorporateAppShell>
   );
 }
 
 export default function CandidatesPage() {
   return (
     <Suspense fallback={
-      <MarketingShell currentPath="/company/candidates">
+      <CorporateAppShell currentPath="/company/candidates">
         <div className="flex min-h-[60vh] items-center justify-center">
           <div className="h-10 w-10 animate-spin rounded-full border-2 border-fuchsia-400 border-t-transparent" />
         </div>
-      </MarketingShell>
+      </CorporateAppShell>
     }>
       <CandidatesContent />
     </Suspense>

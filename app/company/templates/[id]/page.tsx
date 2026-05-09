@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { MarketingShell } from "@/app/components/marketing/MarketingShell";
+import { CorporateAppShell } from "@/app/components/marketing/CorporateAppShell";
 import { TemplateForm } from "../TemplateForm";
 
 type Template = {
@@ -66,18 +66,18 @@ export default function EditTemplatePage() {
 
   if (loading) {
     return (
-      <MarketingShell currentPath="/company/templates">
+      <CorporateAppShell currentPath="/company/templates">
         <div className="flex min-h-[60vh] items-center justify-center">
           <div className="h-10 w-10 animate-spin rounded-full border-2 border-fuchsia-400 border-t-transparent" />
         </div>
-      </MarketingShell>
+      </CorporateAppShell>
     );
   }
 
   if (!template) return null;
 
   return (
-    <MarketingShell currentPath="/company/templates">
+    <CorporateAppShell currentPath="/company/templates">
       <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
         <div className="mb-8">
           <p className="text-sm font-black uppercase tracking-[0.22em] text-fuchsia-300">Edit Template</p>
@@ -109,6 +109,6 @@ export default function EditTemplatePage() {
           onCancel={() => router.push("/company/templates")}
         />
       </div>
-    </MarketingShell>
+    </CorporateAppShell>
   );
 }

@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
-import { MarketingShell } from "@/app/components/marketing/MarketingShell";
+import { CandidateAppShell } from "@/app/components/marketing/CandidateAppShell";
 import { PracticeHero } from "./PracticeHero";
 import { PracticeStartScreen } from "./PracticeStartScreen";
 import { fetchCandidateProfile } from "../lib/interviewApi";
@@ -385,7 +385,7 @@ export function PracticePageClient() {
   ]);
 
   return (
-    <MarketingShell currentPath="/practice">
+    <CandidateAppShell currentPath="/practice">
       <section className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:py-10">
         <PracticeHero
           totalQuestions={totalQuestions}
@@ -431,6 +431,6 @@ export function PracticePageClient() {
           />
         </div>
       </section>
-    </MarketingShell>
+    </CandidateAppShell>
   );
 }

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { SignInButton, useUser } from "@clerk/nextjs";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { MarketingShell } from "../components/marketing/MarketingShell";
+import { CandidateAppShell } from "../components/marketing/CandidateAppShell";
 
 type CategoryBreakdown = {
   content?: number;
@@ -203,7 +203,7 @@ export default function ProgressPage() {
   }, [sessions]);
 
   return (
-    <MarketingShell currentPath="/progress">
+    <CandidateAppShell currentPath="/progress">
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:py-10">
         <section className="relative overflow-hidden rounded-[2.25rem] border border-white/10 bg-white/[0.065] p-6 text-center shadow-2xl shadow-purple-950/20 backdrop-blur-2xl sm:p-10 lg:p-12">
           <div className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-cyan-400/10 blur-3xl" />
@@ -259,7 +259,7 @@ export default function ProgressPage() {
           !sessionsError &&
           stats.latestSession && <ProgressDashboard stats={stats} />}
       </main>
-    </MarketingShell>
+    </CandidateAppShell>
   );
 }
 

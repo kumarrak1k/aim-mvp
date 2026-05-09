@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { MarketingShell } from "@/app/components/marketing/MarketingShell";
+import { CorporateAppShell } from "@/app/components/marketing/CorporateAppShell";
 
 const INDUSTRIES = [
   "Technology", "Finance & Banking", "Healthcare & Life Sciences",
@@ -39,7 +39,7 @@ export default function CompanySetupPage() {
   }
 
   return (
-    <MarketingShell currentPath="/company/dashboard">
+    <CorporateAppShell currentPath="/company/setup">
       <section className="mx-auto max-w-xl px-4 py-20 sm:px-6">
         <div className="mb-10 text-center">
           <p className="mb-3 text-sm font-black uppercase tracking-[0.24em] text-fuchsia-300">Company Setup</p>
@@ -97,6 +97,6 @@ export default function CompanySetupPage() {
           You&apos;ll be the admin. You can invite recruiters and team members from the dashboard.
         </p>
       </section>
-    </MarketingShell>
+    </CorporateAppShell>
   );
 }
