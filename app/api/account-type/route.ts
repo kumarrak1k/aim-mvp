@@ -1,0 +1,77 @@
+import { auth } from "@clerk/nextjs/server";
+import { NextRequest, NextResponse } from "next/server";
+import {
+  AUDIENCE_PATHS,
+  getAccountType,
+  setAccountTypeIfUnset,
+  type AccountType,
+} from "@/app/lib/accountType";
+
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
+/**
+ * GET — return the caller's account type. Used by client UIs that need to
+ * know whether to send the user to /practice or /company/dashboard.
+ */
+export async function GET() {
+  try {
+    const { userId } = await auth();
+    if (!userId) {
+      return NextResponse.json({ error: "Unauthorised." }, { status: 401 });
+    }
+
+    const accountType = await getAccountType(userId);
+    return NextResponse.json({
+      accountType,
+      paths: AUDIENCE_PATHS[accountType],
+    });
+  } catch (error) {
+    console.error("ACCOUNT TYPE GET ERROR:", error);
+    return NextResponse.json(
+      { error: "Failed to load account type." },
+      { status: 500 }
+    );
+  }
+}
+
+/**
+ * POST — called by the dedicated sign-up pages right after Clerk creates
+ * the user. The request body has the audience baked in (set by the page
+ * the user came through). We only ever set this for users who don't
+ * already have one — never overwrite.
+ *
+ * Body: { accountType: "candidate" | "corporate" }
+ */
+export async function POST(request: NextRequest) {
+  try {
+    const { userId } = await auth();
+    if (!userId) {
+      return NextResponse.json({ error: "Unauthorised." }, { status: 401 });
+    }
+
+    const body = await request.json().catch(() => ({}));
+    const requested = body?.accountType as AccountType | undefined;
+
+    if (requested !== "candidate" && requested !== "corporate") {
+      return NextResponse.json(
+        { error: "accountType must be 'candidate' or 'corporate'." },
+        { status: 400 }
+      );
+    }
+
+    const result = await setAccountTypeIfUnset(userId, requested);
+
+    return NextResponse.json({
+      accountType: result.accountType,
+      alreadySet: result.alreadySet,
+      paths: AUDIENCE_PATHS[result.accountType],
+    });
+  } catch (error) {
+    console.error("ACCOUNT TYPE POST ERROR:", error);
+    return NextResponse.json(
+      { error: "Failed to set account type." },
+      { status: 500 }
+    );
+  }
+}

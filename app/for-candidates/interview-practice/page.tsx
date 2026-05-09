@@ -1,0 +1,173 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { createPageMetadata } from "@/app/config/seo";
+import { AudienceShell } from "@/app/components/marketing/AudienceShell";
+
+export const metadata: Metadata = createPageMetadata({
+  path: "/for-candidates/interview-practice",
+  title: "AI Interview Practice for Candidates",
+  description:
+    "Tailored AI interview practice with answer scoring, voice delivery analysis, camera presence review and model answers. Built for the moments that matter.",
+  keywords: [
+    "AI interview practice",
+    "mock interview",
+    "interview coaching",
+    "voice interview feedback",
+    "camera presence interview",
+  ],
+});
+
+const features = [
+  {
+    title: "Tailored to your role",
+    text: "Choose role, level and interview type. Every question is generated for your exact situation — not recycled from a generic bank.",
+  },
+  {
+    title: "Natural audio delivery",
+    text: "Hear questions spoken aloud. Answer by voice or by typing. Practice that feels close to the real thing.",
+  },
+  {
+    title: "Honest, structured feedback",
+    text: "Each answer is scored on content, clarity, structure, confidence and pace — paired with a model answer for direct comparison.",
+  },
+  {
+    title: "Voice and camera presence",
+    text: "Pace, filler words, eye contact, posture — all measured. The full picture an interviewer evaluates.",
+  },
+  {
+    title: "Progress tracked",
+    text: "Sessions are saved. Patterns across sessions become focus areas. A readiness score closes every practice round.",
+  },
+  {
+    title: "Your data stays yours",
+    text: "CV and answer data is never sold or shared. Delete everything any time.",
+  },
+];
+
+const steps = [
+  {
+    number: "01",
+    title: "Configure",
+    text: "Pick role, level, type, difficulty and focus. The AI builds the question set.",
+  },
+  {
+    number: "02",
+    title: "Answer",
+    text: "Type or speak — questions play in natural audio so the practice feels real.",
+  },
+  {
+    number: "03",
+    title: "Review",
+    text: "Each answer scored, broken down with strengths and improvements, paired with a model answer.",
+  },
+  {
+    number: "04",
+    title: "Track",
+    text: "Improvement is saved across every session. A readiness score and next steps after each round.",
+  },
+];
+
+export default function InterviewPracticePage() {
+  return (
+    <AudienceShell
+      audience="candidate"
+      currentPath="/for-candidates/interview-practice"
+    >
+      {/* Hero */}
+      <section className="mx-auto max-w-5xl px-4 pb-14 pt-12 text-center sm:px-6 sm:pb-16 sm:pt-16">
+        <p className="mx-auto mb-5 inline-flex items-center gap-2 rounded-full border border-purple-400/25 bg-purple-400/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-purple-200">
+          Interview practice
+        </p>
+        <h1 className="text-[2.4rem] font-black leading-[1.04] tracking-[-0.05em] sm:text-5xl lg:text-6xl">
+          Practise interviews{" "}
+          <span className="bg-gradient-to-r from-purple-300 via-fuchsia-200 to-cyan-200 bg-clip-text text-transparent">
+            until the answers come naturally.
+          </span>
+        </h1>
+        <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-gray-400 sm:text-lg sm:leading-9">
+          Five tailored questions for your exact role and level. Detailed
+          coaching on every answer. Voice delivery scored. Camera presence
+          reviewed. Progress saved.
+        </p>
+        <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <Link href="/for-candidates/sign-up">
+            <button className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-8 py-4 text-base font-black text-white shadow-2xl shadow-purple-900/40 transition hover:scale-[1.02] sm:w-auto">
+              Start free →
+            </button>
+          </Link>
+          <Link href="/for-candidates/assessment-centre">
+            <button className="w-full rounded-2xl border border-white/[0.1] bg-white/[0.04] px-8 py-4 text-base font-black text-white transition hover:bg-white/[0.08] sm:w-auto">
+              Looking for assessment centre?
+            </button>
+          </Link>
+        </div>
+      </section>
+
+      {/* Steps */}
+      <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 sm:pb-20">
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          {steps.map((step) => (
+            <div
+              key={step.number}
+              className="rounded-[1.75rem] border border-white/[0.08] bg-white/[0.03] p-6 transition hover:border-white/[0.12] hover:bg-white/[0.05]"
+            >
+              <p className="text-3xl font-black leading-none text-purple-500/40">
+                {step.number}
+              </p>
+              <h3 className="mt-3 text-lg font-black tracking-[-0.03em]">
+                {step.title}
+              </h3>
+              <p className="mt-3 text-sm leading-6 text-gray-400">
+                {step.text}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Features */}
+      <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 sm:pb-20">
+        <div className="mb-10 text-center">
+          <p className="text-[11px] font-black uppercase tracking-[0.26em] text-purple-300/90">
+            What you get
+          </p>
+          <h2 className="mt-3 text-3xl font-black tracking-[-0.05em] sm:text-4xl">
+            A complete interview-coaching toolkit.
+          </h2>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {features.map((f) => (
+            <div
+              key={f.title}
+              className="rounded-[1.5rem] border border-white/[0.08] bg-white/[0.03] p-6"
+            >
+              <p className="font-black text-white">{f.title}</p>
+              <p className="mt-2 text-sm leading-6 text-gray-400">{f.text}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="mx-auto max-w-7xl px-4 pb-20 sm:px-6 sm:pb-28">
+        <div className="rounded-[2rem] border border-white/[0.1] bg-gradient-to-br from-purple-500/[0.10] via-fuchsia-500/[0.06] to-transparent p-10 text-center sm:p-14">
+          <h2 className="mx-auto max-w-2xl text-3xl font-black tracking-[-0.05em] sm:text-4xl">
+            Stop hoping. Start preparing.
+          </h2>
+          <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <Link href="/for-candidates/sign-up">
+              <button className="rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-7 py-4 text-base font-black text-white shadow-2xl shadow-purple-900/40 transition hover:scale-[1.02]">
+                Start free →
+              </button>
+            </Link>
+            <Link href="/for-candidates/pricing">
+              <button className="rounded-2xl border border-white/[0.1] bg-white/[0.04] px-7 py-4 text-base font-black text-white transition hover:bg-white/[0.08]">
+                See pricing
+              </button>
+            </Link>
+          </div>
+        </div>
+      </section>
+    </AudienceShell>
+  );
+}

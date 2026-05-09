@@ -40,6 +40,33 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  // Permanent redirects (308) to keep old SEO and any in-the-wild links
+  // working after the site split. Old marketing URLs point to their new
+  // audience-scoped homes.
+  async redirects() {
+    return [
+      {
+        source: "/candidates",
+        destination: "/for-candidates",
+        permanent: true,
+      },
+      {
+        source: "/enterprise",
+        destination: "/for-business",
+        permanent: true,
+      },
+      {
+        source: "/platform",
+        destination: "/for-candidates/interview-practice",
+        permanent: true,
+      },
+      {
+        source: "/how-it-works",
+        destination: "/for-candidates/interview-practice",
+        permanent: true,
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       {
