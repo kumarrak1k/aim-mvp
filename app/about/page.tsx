@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { createPageMetadata } from "@/app/config/seo";
 import { absoluteUrl, siteConfig } from "@/app/config/site";
@@ -41,9 +42,10 @@ const values = [
 
 const team = [
   {
-    name: "Founder",
-    role: "CEO & Product",
+    name: "Rakesh Kumar",
+    role: "Founder & CEO",
     bio: "Background in talent assessment and career coaching. Built AI Career Mentor to make the kind of preparation that changes outcomes accessible to everyone — not just those who can afford a £200/hour coach.",
+    photo: "/team/rakesh-kumar.jpeg",
     linkedin: null,
   },
 ];
@@ -149,10 +151,14 @@ export default function AboutPage() {
                 key={member.name}
                 className="flex flex-col rounded-2xl border border-white/[0.08] bg-white/[0.03] p-6"
               >
-                <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 via-fuchsia-500 to-blue-500">
-                  <span className="text-lg font-black text-white">
-                    {member.name[0]}
-                  </span>
+                <div className="mb-4 h-20 w-20 overflow-hidden rounded-full border-2 border-purple-400/30">
+                  <Image
+                    src={member.photo}
+                    alt={member.name}
+                    width={80}
+                    height={80}
+                    className="h-full w-full object-cover object-top"
+                  />
                 </div>
                 <p className="font-black">{member.name}</p>
                 <p className="mb-3 text-xs text-purple-300/80">{member.role}</p>
