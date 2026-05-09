@@ -95,7 +95,7 @@ const faqs = [
   },
   {
     q: "Is it free?",
-    a: "Free to start. You can run one mock assessment centre session at no cost. Unlimited repeats with new scenarios are available on paid plans from £6.58 per month.",
+    a: "Free to start. You can run one mock assessment centre session at no cost. Unlimited repeats with new scenarios are available on paid plans from £19 per month.",
   },
 ];
 

@@ -8,15 +8,15 @@ export type PricingCurrency = "GBP" | "USD" | "EUR";
 type PriceSet = { monthly: string; annual: string; annualMonthly: string };
 
 const PROFESSIONAL: Record<PricingCurrency, PriceSet> = {
-  GBP: { monthly: "£9",  annual: "£79",  annualMonthly: "£6.58" },
-  USD: { monthly: "$12", annual: "$99",  annualMonthly: "$8.25" },
-  EUR: { monthly: "€10", annual: "€89",  annualMonthly: "€7.42" },
+  GBP: { monthly: "£19",  annual: "£169",  annualMonthly: "£14.08" },
+  USD: { monthly: "$25",  annual: "$209",  annualMonthly: "$17.42" },
+  EUR: { monthly: "€22",  annual: "€189",  annualMonthly: "€15.75" },
 };
 
 const ADVANCED: Record<PricingCurrency, PriceSet> = {
-  GBP: { monthly: "£19", annual: "£159",  annualMonthly: "£13.25" },
-  USD: { monthly: "$24", annual: "$199",  annualMonthly: "$16.58" },
-  EUR: { monthly: "€21", annual: "€179",  annualMonthly: "€14.92" },
+  GBP: { monthly: "£29",  annual: "£249",  annualMonthly: "£20.75" },
+  USD: { monthly: "$37",  annual: "$299",  annualMonthly: "$24.92" },
+  EUR: { monthly: "€32",  annual: "€279",  annualMonthly: "€23.25" },
 };
 
 export function CandidatePricingPlans({ currency = "GBP" }: { currency?: PricingCurrency }) {
@@ -108,7 +108,7 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
         </span>
         {annual && (
           <span className="rounded-full bg-emerald-400/10 px-2.5 py-1 text-[11px] font-black text-emerald-300">
-            Save up to 27%
+            Save up to 28%
           </span>
         )}
       </div>

@@ -10,7 +10,7 @@ export const metadata: Metadata = createPageMetadata({
   path: "/for-candidates/pricing",
   title: "Candidate Pricing — AI Career Mentor",
   description:
-    "Transparent candidate pricing for AI interview practice and assessment centre coaching. Free to start, then unlock unlimited sessions. Annual plans save up to 27%.",
+    "Transparent candidate pricing for AI interview practice and assessment centre coaching. Free to start, then unlock unlimited sessions. Annual plans save up to 28%.",
   keywords: [
     "AI interview coach pricing",
     "assessment centre pricing",
@@ -41,7 +41,7 @@ const faqs = [
   {
     question: "Can I switch between monthly and annual billing?",
     answer:
-      "Yes. You can switch at any time from your account settings. Annual billing is charged upfront and gives you up to 27% off versus monthly.",
+      "Yes. You can switch at any time from your account settings. Annual billing is charged upfront and gives you up to 28% off versus monthly.",
   },
   {
     question: "What happens when I reach my session limit on the free tier?",

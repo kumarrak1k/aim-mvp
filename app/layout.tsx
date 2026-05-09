@@ -149,12 +149,12 @@ const structuredData = {
         {
           "@type": "Offer",
           name: "Professional",
-          price: "9",
+          price: "19",
           priceCurrency: "GBP",
           availability: "https://schema.org/InStock",
           priceSpecification: {
             "@type": "UnitPriceSpecification",
-            price: "9",
+            price: "19",
             priceCurrency: "GBP",
             unitCode: "MON",
           },
@@ -162,12 +162,12 @@ const structuredData = {
         {
           "@type": "Offer",
           name: "Advanced",
-          price: "19",
+          price: "29",
           priceCurrency: "GBP",
           availability: "https://schema.org/InStock",
           priceSpecification: {
             "@type": "UnitPriceSpecification",
-            price: "19",
+            price: "29",
             priceCurrency: "GBP",
             unitCode: "MON",
           },

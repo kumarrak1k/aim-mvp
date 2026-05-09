@@ -8,15 +8,15 @@ export type PricingCurrency = "GBP" | "USD" | "EUR";
 type PriceSet = { monthly: string; annual: string; annualMonthly: string };
 
 const TEAM: Record<PricingCurrency, PriceSet> = {
-  GBP: { monthly: "£49",  annual: "£399",   annualMonthly: "£33.25"  },
-  USD: { monthly: "$59",  annual: "$499",   annualMonthly: "$41.58"  },
-  EUR: { monthly: "€55",  annual: "€449",   annualMonthly: "€37.42"  },
+  GBP: { monthly: "£99",   annual: "£799",   annualMonthly: "£66.58"  },
+  USD: { monthly: "$119",  annual: "$999",   annualMonthly: "$83.25"  },
+  EUR: { monthly: "€109",  annual: "€899",   annualMonthly: "€74.92"  },
 };
 
 const BUSINESS: Record<PricingCurrency, PriceSet> = {
-  GBP: { monthly: "£149", annual: "£1,199", annualMonthly: "£99.92"  },
-  USD: { monthly: "$179", annual: "$1,499", annualMonthly: "$124.92" },
-  EUR: { monthly: "€169", annual: "€1,349", annualMonthly: "€112.42" },
+  GBP: { monthly: "£249",  annual: "£1,999", annualMonthly: "£166.58" },
+  USD: { monthly: "$299",  annual: "$2,499", annualMonthly: "$208.25" },
+  EUR: { monthly: "€279",  annual: "€2,249", annualMonthly: "€187.42" },
 };
 
 export function BusinessPricingPlans({ currency = "GBP" }: { currency?: PricingCurrency }) {

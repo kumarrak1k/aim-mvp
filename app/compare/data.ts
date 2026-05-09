@@ -73,7 +73,7 @@ export const competitors: Record<string, CompetitorData> = {
       { feature: "Coaching video curriculum", aim: false, competitor: true },
       { feature: "Resume and CV tools", aim: false, competitor: true },
       { feature: "GDPR-compliant (UK/EU)", aim: true, competitor: "US-based" },
-      { feature: "Pricing", aim: "From £9/month", competitor: "From ~$39/month" },
+      { feature: "Pricing", aim: "From £19/month", competitor: "From ~$39/month" },
     ],
     aimStrengths: [
       "Questions generated specifically for your role, level, and interview format",
@@ -110,7 +110,7 @@ export const competitors: Record<string, CompetitorData> = {
       { feature: "Pacing and confidence metrics", aim: true, competitor: true },
       { feature: "Mock assessment centre", aim: true, competitor: false },
       { feature: "GDPR-compliant (UK/EU)", aim: true, competitor: "US-based" },
-      { feature: "Pricing", aim: "From £9/month", competitor: "Free + paid plans" },
+      { feature: "Pricing", aim: "From £19/month", competitor: "Free + paid plans" },
     ],
     aimStrengths: [
       "Scores the substance of your answers — not just how you sound",

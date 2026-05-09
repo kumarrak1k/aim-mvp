@@ -129,7 +129,7 @@ const testimonials = [
 const faqs = [
   {
     q: "Is AI Career Mentor free?",
-    a: "Free to start — no credit card required. You can run a complete interview session and receive feedback at no cost. Advanced features including unlimited sessions and assessment centre access are available from £6.58 per month.",
+    a: "Free to start — no credit card required. You can run a complete interview session and receive feedback at no cost. Advanced features including unlimited sessions and assessment centre access are available from £19 per month.",
   },
   {
     q: "What interview types does it cover?",
