@@ -85,16 +85,26 @@ export default async function QuestionSetPage({ params }: Props) {
 
   const schema = {
     "@context": "https://schema.org",
-    "@type": "Article",
-    headline: set.title,
+    "@type": "FAQPage",
+    name: set.title,
     description: set.description,
-    datePublished: set.date,
     url: absoluteUrl(`/questions/${slug}`),
     publisher: {
       "@type": "Organization",
       name: "AI Career Mentor",
       url: "https://www.aicareermentor.co.uk",
     },
+    datePublished: set.date,
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: `What are common ${set.title} interview questions?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: set.description,
+        },
+      },
+    ],
   };
 
   return (

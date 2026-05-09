@@ -5,9 +5,13 @@ import { prisma } from "@/app/lib/prisma";
 export const runtime = "nodejs";
 
 const SEQUENCE: Array<{ type: string; delayDays: number }> = [
-  { type: "welcome",       delayDays: 0 },
-  { type: "day3_tip",      delayDays: 3 },
-  { type: "day7_progress", delayDays: 7 },
+  { type: "welcome",        delayDays: 0  },
+  { type: "day2_tip",       delayDays: 2  },
+  { type: "day4_social",    delayDays: 4  },
+  { type: "day7_upgrade",   delayDays: 7  },
+  { type: "day14_reengage", delayDays: 14 },
+  { type: "day21_nudge",    delayDays: 21 },
+  { type: "day30_winback",  delayDays: 30 },
 ];
 
 export async function POST() {

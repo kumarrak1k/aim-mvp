@@ -35,7 +35,14 @@ export async function GET(req: NextRequest) {
 
     const result = await sendNurtureEmail(
       job.email,
-      job.type as "welcome" | "day3_tip" | "day7_progress"
+      job.type as
+        | "welcome"
+        | "day2_tip"
+        | "day4_social"
+        | "day7_upgrade"
+        | "day14_reengage"
+        | "day21_nudge"
+        | "day30_winback"
     );
 
     if (result.ok) {

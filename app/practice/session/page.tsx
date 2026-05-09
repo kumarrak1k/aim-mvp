@@ -71,7 +71,7 @@ import {
 
 export default function PracticeSessionPage() {
   const router = useRouter();
-  const { isLoaded, isSignedIn } = useUser();
+  const { isLoaded, isSignedIn, user } = useUser();
   const { manualDeviceMode } = useDeviceProfile();
 
   const [sessionConfig, setSessionConfig] = useState<ReturnType<
@@ -1329,6 +1329,8 @@ export default function PracticeSessionPage() {
           summary={summary}
           savedSessions={savedSessions}
           onRestart={resetInterview}
+          role={role}
+          userName={user?.fullName ?? user?.firstName ?? ""}
         />
       </PracticeSessionShell>
     );
