@@ -10,7 +10,7 @@ import {
   type ReactNode,
 } from "react";
 import { useUser } from "@clerk/nextjs";
-import { PracticeHeader } from "../components/PracticeHeader";
+import { SessionHeader } from "./components/SessionHeader";
 import { useAudioMonitoring } from "../hooks/useAudioMonitoring";
 import { useBrowserSpeech } from "../hooks/useBrowserSpeech";
 import { useCameraTracking } from "../hooks/useCameraTracking";
@@ -1296,7 +1296,7 @@ export default function PracticeSessionPage() {
 
   if (!sessionConfigLoaded) {
     return (
-      <PracticeSessionShell isLoaded={isLoaded} isSignedIn={isSignedIn}>
+      <PracticeSessionShell assessmentMode={assessmentMode} templateContext={templateContext}>
         <LoadingSessionCard message="Preparing your interview workspace..." />
       </PracticeSessionShell>
     );
@@ -1304,7 +1304,7 @@ export default function PracticeSessionPage() {
 
   if (missingSessionConfig || !sessionConfig) {
     return (
-      <PracticeSessionShell isLoaded={isLoaded} isSignedIn={isSignedIn}>
+      <PracticeSessionShell assessmentMode={assessmentMode} templateContext={templateContext}>
         <MissingSessionCard />
       </PracticeSessionShell>
     );
@@ -1316,14 +1316,14 @@ export default function PracticeSessionPage() {
     // completes, then the post-save effect below redirects them.
     if (assessmentMode) {
       return (
-        <PracticeSessionShell isLoaded={isLoaded} isSignedIn={isSignedIn}>
+        <PracticeSessionShell assessmentMode={assessmentMode} templateContext={templateContext}>
           <AssessmentSubmittingCard />
         </PracticeSessionShell>
       );
     }
 
     return (
-      <PracticeSessionShell isLoaded={isLoaded} isSignedIn={isSignedIn}>
+      <PracticeSessionShell assessmentMode={assessmentMode} templateContext={templateContext}>
         <SessionSummary
           summaryLoading={summaryLoading}
           summary={summary}
@@ -1335,7 +1335,7 @@ export default function PracticeSessionPage() {
   }
 
   return (
-    <PracticeSessionShell isLoaded={isLoaded} isSignedIn={isSignedIn}>
+    <PracticeSessionShell assessmentMode={assessmentMode} templateContext={templateContext}>
       <section className="mx-auto max-w-[1720px] px-4 py-2 sm:px-6 sm:py-3">
         <div className="grid items-start gap-3 xl:grid-cols-[minmax(360px,0.82fr)_minmax(620px,1.18fr)]">
           <QuestionHero
@@ -1431,12 +1431,17 @@ export default function PracticeSessionPage() {
 
 function PracticeSessionShell({
   children,
-  isLoaded,
-  isSignedIn,
+  assessmentMode,
+  templateContext,
 }: {
   children: ReactNode;
-  isLoaded: boolean;
-  isSignedIn: boolean | undefined;
+  assessmentMode: boolean;
+  templateContext?: {
+    companyName?: string;
+    companyBrandColor?: string;
+    companyLogoUrl?: string;
+    templateName?: string;
+  };
 }) {
   return (
     <main className="min-h-screen overflow-x-hidden bg-[#120d1e] text-white">
@@ -1446,7 +1451,13 @@ function PracticeSessionShell({
       <div className="pointer-events-none fixed left-[-140px] bottom-12 z-0 h-[320px] w-[320px] rounded-full bg-fuchsia-400/10 blur-[120px]" />
 
       <div className="relative z-10">
-        <PracticeHeader isLoaded={isLoaded} isSignedIn={isSignedIn} />
+        <SessionHeader
+          assessmentMode={assessmentMode}
+          companyName={templateContext?.companyName}
+          companyBrandColor={templateContext?.companyBrandColor}
+          companyLogoUrl={templateContext?.companyLogoUrl}
+          templateName={templateContext?.templateName}
+        />
         {children}
       </div>
     </main>

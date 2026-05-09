@@ -104,6 +104,8 @@ export default function AssessmentLandingPage() {
         competencyFramework: t.competencyFramework || undefined,
         templateName: t.name,
         companyName: data.company.name,
+        companyBrandColor: data.company.brandColor || undefined,
+        companyLogoUrl: data.company.logoUrl || undefined,
       },
       createdAt: new Date().toISOString(),
     };

@@ -45,6 +45,10 @@ export type PracticeSessionConfig = {
     competencyFramework?: string;
     templateName?: string;
     companyName?: string;
+    /** Company branding so the in-session chrome feels like the company's
+     *  own assessment process, not the generic AI Career Mentor app. */
+    companyBrandColor?: string;
+    companyLogoUrl?: string;
   };
   createdAt?: string;
 };
@@ -200,6 +204,16 @@ export function parseSessionConfig(): PracticeSessionConfig | null {
               companyName:
                 typeof parsed.templateContext.companyName === "string"
                   ? parsed.templateContext.companyName
+                  : undefined,
+              companyBrandColor:
+                typeof parsed.templateContext.companyBrandColor === "string" &&
+                /^#[0-9a-fA-F]{6}$/.test(parsed.templateContext.companyBrandColor)
+                  ? parsed.templateContext.companyBrandColor
+                  : undefined,
+              companyLogoUrl:
+                typeof parsed.templateContext.companyLogoUrl === "string" &&
+                parsed.templateContext.companyLogoUrl.length > 0
+                  ? parsed.templateContext.companyLogoUrl
                   : undefined,
             }
           : undefined,
