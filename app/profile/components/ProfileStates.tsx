@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { SignInButton } from "@clerk/nextjs";
-import { GlassCard } from "@/app/components/marketing/MarketingShell";
+import { GlassCard } from "@/app/components/marketing/primitives";
 
 export function ProfileLoadingState() {
   return (

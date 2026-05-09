@@ -1,4 +1,4 @@
-import { SectionHeading } from "@/app/components/marketing/MarketingShell";
+import { SectionHeading } from "@/app/components/marketing/primitives";
 
 type ProfileHeroProps = {
   completionScore: number;

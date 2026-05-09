@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { GlassCard, MarketingShell, SectionHeading } from "@/app/components/marketing/MarketingShell";
+import { NeutralShell } from "@/app/components/marketing/NeutralShell";
+import { GlassCard, SectionHeading } from "@/app/components/marketing/primitives";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
@@ -79,7 +80,7 @@ const commitments = [
 
 export default function PrivacyPage() {
   return (
-    <MarketingShell currentPath="/">
+    <NeutralShell>
       <section className="mx-auto max-w-7xl px-4 pb-6 pt-8 sm:px-6 sm:pb-10 sm:pt-12">
         <div className="overflow-hidden rounded-[2.25rem] border border-white/10 bg-white/[0.065] p-6 shadow-2xl shadow-purple-950/20 backdrop-blur-2xl sm:p-8 md:p-10">
           <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/50 to-transparent" />
@@ -359,6 +360,6 @@ export default function PrivacyPage() {
           </aside>
         </div>
       </section>
-    </MarketingShell>
+    </NeutralShell>
   );
 }

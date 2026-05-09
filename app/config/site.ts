@@ -102,39 +102,6 @@ export const siteConfig = {
       priority: 0.5,
     },
 
-    // ── Legacy paths (308-redirect via next.config.ts; kept here so the
-    //    old page files still compile until Session 2 cleanup) ─────────
-    {
-      path: "/platform",
-      label: "Platform",
-      description: "Legacy — redirects to /for-candidates/interview-practice",
-      priority: 0.1,
-    },
-    {
-      path: "/how-it-works",
-      label: "How it works",
-      description: "Legacy — redirects to /for-candidates/interview-practice",
-      priority: 0.1,
-    },
-    {
-      path: "/candidates",
-      label: "Candidates",
-      description: "Legacy — redirects to /for-candidates",
-      priority: 0.1,
-    },
-    {
-      path: "/pricing",
-      label: "Pricing",
-      description: "Legacy — see /for-candidates/pricing or /for-business/pricing",
-      priority: 0.1,
-    },
-    {
-      path: "/enterprise",
-      label: "Enterprise",
-      description: "Legacy — redirects to /for-business",
-      priority: 0.1,
-    },
-
     // ── Legal ────────────────────────────────────────────────────────
     {
       path: "/privacy",

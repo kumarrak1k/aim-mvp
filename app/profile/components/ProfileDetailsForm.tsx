@@ -5,7 +5,7 @@ import Link from "next/link";
 import {
   GlassCard,
   SectionHeading,
-} from "@/app/components/marketing/MarketingShell";
+} from "@/app/components/marketing/primitives";
 import type { ProfileUploadTarget } from "../types";
 
 type ProfileDetailsFormProps = {
