@@ -294,43 +294,57 @@ describe("complete mode matrix — all combinations correct", () => {
 
 describe("candidate nav — labels and order", () => {
   // Mirrors the navItems array in CandidateAppShell.tsx.
-  // Order: My Profile → My Practice → My Progress
+  // Order: My Profile → Interview Practice → Assessment Centre → My Progress
   const navItems = [
-    { href: "/profile",  label: "My Profile"  },
-    { href: "/practice", label: "My Practice" },
-    { href: "/progress", label: "My Progress" },
+    { href: "/profile",           label: "My Profile"          },
+    { href: "/practice",          label: "Interview Practice"  },
+    { href: "/assessment-centre", label: "Assessment Centre"   },
+    { href: "/progress",          label: "My Progress"         },
   ];
 
-  it("has exactly three nav items", () => {
-    expect(navItems).toHaveLength(3);
+  it("has exactly four nav items", () => {
+    expect(navItems).toHaveLength(4);
   });
 
   it("first item is My Profile at /profile", () => {
     expect(navItems[0]).toEqual({ href: "/profile", label: "My Profile" });
   });
 
-  it("second item is My Practice at /practice", () => {
-    expect(navItems[1]).toEqual({ href: "/practice", label: "My Practice" });
+  it("second item is Interview Practice at /practice", () => {
+    expect(navItems[1]).toEqual({ href: "/practice", label: "Interview Practice" });
   });
 
-  it("third item is My Progress at /progress", () => {
-    expect(navItems[2]).toEqual({ href: "/progress", label: "My Progress" });
+  it("third item is Assessment Centre at /assessment-centre", () => {
+    expect(navItems[2]).toEqual({ href: "/assessment-centre", label: "Assessment Centre" });
   });
 
-  it("no item uses the old labels without 'My' prefix", () => {
-    const oldLabels = ["Practice", "Progress", "Profile"];
+  it("fourth item is My Progress at /progress", () => {
+    expect(navItems[3]).toEqual({ href: "/progress", label: "My Progress" });
+  });
+
+  it("does not use the old label 'My Practice'", () => {
     navItems.forEach(({ label }) => {
-      expect(oldLabels).not.toContain(label);
+      expect(label).not.toBe("My Practice");
     });
   });
 
-  it("all labels start with 'My'", () => {
-    navItems.forEach(({ label }) => {
-      expect(label.startsWith("My ")).toBe(true);
-    });
+  it("profile is first (not practice)", () => {
+    expect(navItems[0].href).toBe("/profile");
   });
 
-  it("old order (Practice first) is no longer used", () => {
-    expect(navItems[0].href).not.toBe("/practice");
+  it("progress is last", () => {
+    expect(navItems[navItems.length - 1].href).toBe("/progress");
+  });
+
+  it("assessment centre comes before progress", () => {
+    const acIdx = navItems.findIndex((i) => i.href === "/assessment-centre");
+    const progressIdx = navItems.findIndex((i) => i.href === "/progress");
+    expect(acIdx).toBeLessThan(progressIdx);
+  });
+
+  it("assessment centre comes after interview practice", () => {
+    const practiceIdx = navItems.findIndex((i) => i.href === "/practice");
+    const acIdx = navItems.findIndex((i) => i.href === "/assessment-centre");
+    expect(acIdx).toBeGreaterThan(practiceIdx);
   });
 });

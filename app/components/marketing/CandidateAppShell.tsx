@@ -24,7 +24,8 @@ export type CandidateAppPath =
   | "/practice"
   | "/practice/session"
   | "/progress"
-  | "/profile";
+  | "/profile"
+  | "/assessment-centre";
 
 type CandidateAppShellProps = {
   children: ReactNode;
@@ -32,9 +33,10 @@ type CandidateAppShellProps = {
 };
 
 const navItems: Array<{ href: CandidateAppPath; label: string }> = [
-  { href: "/profile", label: "My Profile" },
-  { href: "/practice", label: "My Practice" },
-  { href: "/progress", label: "My Progress" },
+  { href: "/profile",           label: "My Profile"          },
+  { href: "/practice",          label: "Interview Practice"  },
+  { href: "/assessment-centre", label: "Assessment Centre"   },
+  { href: "/progress",          label: "My Progress"         },
 ];
 
 export function CandidateAppShell({
@@ -158,18 +160,10 @@ export function CandidateAppShell({
         <div className="flex h-[60px] items-stretch">
           <BottomNavItem
             href="/profile"
-            label="My Profile"
+            label="Profile"
             active={currentPath === "/profile"}
           >
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="h-5 w-5"
-            >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
               <circle cx="12" cy="8" r="4" />
               <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
             </svg>
@@ -177,11 +171,8 @@ export function CandidateAppShell({
 
           <BottomNavItem
             href="/practice"
-            label="My Practice"
-            primary
-            active={
-              currentPath === "/practice" || currentPath === "/practice/session"
-            }
+            label="Practice"
+            active={currentPath === "/practice" || currentPath === "/practice/session"}
           >
             <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
               <path d="M8 5.14v14l11-7-11-7z" />
@@ -189,19 +180,25 @@ export function CandidateAppShell({
           </BottomNavItem>
 
           <BottomNavItem
+            href="/assessment-centre"
+            label="Assessment"
+            primary
+            primaryColor="cyan"
+            active={currentPath === "/assessment-centre"}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
+              <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" />
+              <rect x="9" y="3" width="6" height="4" rx="1" />
+              <path d="M9 12h6M9 16h4" />
+            </svg>
+          </BottomNavItem>
+
+          <BottomNavItem
             href="/progress"
-            label="My Progress"
+            label="Progress"
             active={currentPath === "/progress"}
           >
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="h-5 w-5"
-            >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
               <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
             </svg>
           </BottomNavItem>
@@ -216,30 +213,37 @@ function BottomNavItem({
   label,
   active,
   primary = false,
+  primaryColor = "purple",
   children,
 }: {
   href: string;
   label: string;
   active: boolean;
   primary?: boolean;
+  primaryColor?: "purple" | "cyan";
   children: ReactNode;
 }) {
   if (primary) {
+    const gradient =
+      primaryColor === "cyan"
+        ? active
+          ? "bg-gradient-to-br from-cyan-400 via-purple-400 to-fuchsia-400 shadow-cyan-900/60"
+          : "bg-gradient-to-br from-cyan-500 via-purple-500 to-fuchsia-500 shadow-cyan-900/40"
+        : active
+          ? "bg-gradient-to-br from-purple-400 via-fuchsia-400 to-blue-400 shadow-purple-900/60"
+          : "bg-gradient-to-br from-purple-500 via-fuchsia-500 to-blue-500 shadow-purple-900/40";
+
+    const labelColor = primaryColor === "cyan" ? "text-cyan-300" : "text-purple-300";
+
     return (
       <Link
         href={href}
         className="flex flex-1 flex-col items-center justify-center gap-1 py-2 transition-opacity active:opacity-70"
       >
-        <div
-          className={`flex h-10 w-10 items-center justify-center rounded-full shadow-lg transition-transform active:scale-95 ${
-            active
-              ? "bg-gradient-to-br from-purple-400 via-fuchsia-400 to-blue-400 shadow-purple-900/60"
-              : "bg-gradient-to-br from-purple-500 via-fuchsia-500 to-blue-500 shadow-purple-900/40"
-          }`}
-        >
+        <div className={`flex h-10 w-10 items-center justify-center rounded-full shadow-lg transition-transform active:scale-95 ${gradient}`}>
           <span className="text-white">{children}</span>
         </div>
-        <span className="text-[9px] font-bold leading-none text-purple-300">
+        <span className={`text-[9px] font-bold leading-none ${labelColor}`}>
           {label}
         </span>
       </Link>
@@ -251,16 +255,10 @@ function BottomNavItem({
       href={href}
       className="flex flex-1 flex-col items-center justify-center gap-1 py-2 transition-opacity active:opacity-60"
     >
-      <span
-        className={`transition-colors ${active ? "text-white" : "text-gray-500"}`}
-      >
+      <span className={`transition-colors ${active ? "text-white" : "text-gray-500"}`}>
         {children}
       </span>
-      <span
-        className={`text-[9px] font-bold leading-none transition-colors ${
-          active ? "text-white" : "text-gray-500"
-        }`}
-      >
+      <span className={`text-[9px] font-bold leading-none transition-colors ${active ? "text-white" : "text-gray-500"}`}>
         {label}
       </span>
     </Link>
