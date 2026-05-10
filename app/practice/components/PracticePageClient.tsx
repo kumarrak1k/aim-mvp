@@ -432,6 +432,7 @@ export function PracticePageClient() {
           cameraEnabled: isFreePlan ? false : cameraEnabled,
           speakerPreference,
           freePlan: isFreePlan,
+          practiceMode: isFreePlan ? "typed" : selectedPracticeMode,
           createdAt: new Date().toISOString(),
         })
       );

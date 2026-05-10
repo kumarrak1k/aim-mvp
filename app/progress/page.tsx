@@ -4,6 +4,11 @@ import Link from "next/link";
 import { SignInButton, useUser } from "@clerk/nextjs";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { CandidateAppShell } from "../components/marketing/CandidateAppShell";
+import {
+  buildCategoryAverages,
+  categoryLabels,
+  emptyCategoryAverages,
+} from "./lib/buildCategoryAverages";
 
 type CategoryBreakdown = {
   content?: number;
@@ -58,17 +63,6 @@ type ProgressStats = {
   topImprovement: string;
 };
 
-const emptyCategoryAverages: Required<CategoryBreakdown> = {
-  content: 0,
-  clarity: 0,
-  relevance: 0,
-  structure: 0,
-  confidence: 0,
-  pace: 0,
-  voice_delivery: 0,
-  camera_presence: 0,
-};
-
 const emptyStats: ProgressStats = {
   latestSession: null,
   recentSessions: [],
@@ -82,22 +76,6 @@ const emptyStats: ProgressStats = {
   categoryDataCounts: emptyCategoryAverages,
   topImprovement: "Complete a session to unlock personalised focus areas.",
 };
-
-const categoryLabels: Array<{
-  key: keyof Required<CategoryBreakdown>;
-  label: string;
-  voiceOnly?: boolean;
-  cameraOnly?: boolean;
-}> = [
-  { key: "content", label: "Content" },
-  { key: "clarity", label: "Clarity" },
-  { key: "relevance", label: "Relevance" },
-  { key: "structure", label: "Structure" },
-  { key: "confidence", label: "Confidence" },
-  { key: "pace", label: "Pace", voiceOnly: true },
-  { key: "voice_delivery", label: "Voice delivery", voiceOnly: true },
-  { key: "camera_presence", label: "Camera presence", cameraOnly: true },
-];
 
 export default function ProgressPage() {
   const { isLoaded, isSignedIn } = useUser();
@@ -827,48 +805,6 @@ function TrendChart({ sessions }: { sessions: DashboardSession[] }) {
 }
 
 // ─── Category averages ───────────────────────────────────────────────────────
-
-function buildCategoryAverages(sessions: DashboardSession[]): {
-  averages: Required<CategoryBreakdown>;
-  counts: Required<CategoryBreakdown>;
-} {
-  const totals = { ...emptyCategoryAverages };
-  const counts = { ...emptyCategoryAverages };
-
-  sessions.forEach((session) => {
-    const breakdown = session.summary?.category_breakdown;
-    if (!breakdown) return;
-
-    const isTyped = session.practiceMode === "typed";
-    const hasCamera = session.practiceMode === "voice-camera";
-
-    categoryLabels.forEach((item) => {
-      // Never count voice-only categories (pace, voice_delivery) for typed
-      // sessions — even if an old session saved a stale non-zero value there.
-      if (item.voiceOnly && isTyped) return;
-      // Never count camera-only categories for non-camera sessions.
-      if (item.cameraOnly && !hasCamera) return;
-
-      const value = breakdown[item.key];
-      if (typeof value === "number" && Number.isFinite(value) && value > 0) {
-        totals[item.key] += value;
-        counts[item.key] += 1;
-      }
-    });
-  });
-
-  const averages = categoryLabels.reduce(
-    (accumulator, item) => {
-      const count = counts[item.key];
-      accumulator[item.key] =
-        count > 0 ? Math.round((totals[item.key] / count) * 10) / 10 : 0;
-      return accumulator;
-    },
-    { ...emptyCategoryAverages }
-  );
-
-  return { averages, counts };
-}
 
 function formatSessionDate(value: string) {
   const date = new Date(value);

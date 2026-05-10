@@ -8,7 +8,13 @@
     "start": "next start",
     "lint": "eslint",
     "generate:blog": "tsx scripts/generate-content.ts --type blog",
-    "generate:questions": "tsx scripts/generate-content.ts --type questions"
+    "generate:questions": "tsx scripts/generate-content.ts --type questions",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:all": "vitest run && playwright test"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.0.12",
@@ -29,15 +35,20 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@playwright/test": "^1.59.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^6.0.1",
+    "@vitest/ui": "^4.1.5",
     "eslint": "^9",
     "eslint-config-next": "16.2.3",
+    "jsdom": "^29.1.1",
     "prisma": "^6.19.0",
     "tailwindcss": "^4",
     "tsx": "^4.19.4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.1.5"
   }
 }

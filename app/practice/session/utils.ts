@@ -57,6 +57,12 @@ export type PracticeSessionConfig = {
    * camera disabled even if they were somehow set in an earlier config.
    */
   freePlan?: boolean;
+  /**
+   * The practice mode the user explicitly selected on the setup screen.
+   * Stored so the session page can gate voice/camera controls correctly
+   * even when a paid user chooses "Typed answers only".
+   */
+  practiceMode?: PracticeMode;
 };
 
 export const defaultSessionConfig: PracticeSessionConfig = {
@@ -226,6 +232,12 @@ export function parseSessionConfig(): PracticeSessionConfig | null {
       createdAt:
         typeof parsed.createdAt === "string" ? parsed.createdAt : undefined,
       freePlan: Boolean(parsed.freePlan),
+      practiceMode:
+        parsed.practiceMode === "typed" ||
+        parsed.practiceMode === "voice" ||
+        parsed.practiceMode === "voice-camera"
+          ? parsed.practiceMode
+          : undefined,
     };
   } catch {
     return null;

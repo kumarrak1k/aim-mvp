@@ -342,13 +342,16 @@ export default function PracticeSessionPage() {
     setInterviewType(config.interviewType);
     setDifficulty(config.difficulty);
     setFocusArea(config.focusArea);
-    // Free-plan sessions are always keyboard-only — override whatever the
-    // stored config says to prevent stale or tampered values from enabling
-    // voice or camera for a user who hasn't paid.
-    const sessionIsFreePlan = Boolean(config.freePlan);
-    setFreePlan(sessionIsFreePlan);
-    setSpeakerEnabled(sessionIsFreePlan ? false : config.speakerEnabled);
-    setCameraEnabled(sessionIsFreePlan ? false : config.cameraEnabled);
+    // Keyboard-only when:
+    //  a) the user is on the free plan, OR
+    //  b) they explicitly chose "Typed answers only" (even on a paid plan).
+    // This prevents voice/camera controls appearing for paid users who pick
+    // the typed mode on the setup screen.
+    const sessionIsKeyboardOnly =
+      Boolean(config.freePlan) || config.practiceMode === "typed";
+    setFreePlan(sessionIsKeyboardOnly);
+    setSpeakerEnabled(sessionIsKeyboardOnly ? false : config.speakerEnabled);
+    setCameraEnabled(sessionIsKeyboardOnly ? false : config.cameraEnabled);
     setSpeakerPreference(config.speakerPreference || defaultSpeakerPreference);
     setTotalQuestions(config.totalQuestions ?? DEFAULT_TOTAL_QUESTIONS);
     setAssessmentMode(Boolean(config.assessmentMode));
