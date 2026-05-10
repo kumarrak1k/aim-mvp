@@ -504,6 +504,47 @@ export function PracticePageClient() {
           onStartInterview={startInterview}
         />
 
+        {/* Assessment centre upsell — shown for free plan users */}
+        {isFreePlan && (
+          <div className="mb-6 overflow-hidden rounded-[2rem] border border-cyan-400/20 bg-gradient-to-br from-cyan-500/[0.07] via-purple-500/[0.05] to-transparent shadow-2xl shadow-purple-950/10 backdrop-blur-2xl sm:mb-8">
+            <div className="flex flex-col gap-6 p-6 sm:p-8 lg:flex-row lg:items-center lg:gap-10">
+              <div className="flex-1">
+                <p className="mb-2 text-[10px] font-black uppercase tracking-[0.22em] text-cyan-300">
+                  Advanced plan · Mock assessment centre
+                </p>
+                <h2 className="text-xl font-black leading-tight tracking-[-0.035em] text-white sm:text-2xl">
+                  Ready to simulate the full assessment centre?
+                </h2>
+                <p className="mt-3 text-sm leading-7 text-gray-300">
+                  Most graduate and professional roles now include an assessment centre —
+                  case study, competency interview, and presentation, all in one session.
+                  Practice the full format before the real thing.
+                </p>
+                <div className="mt-4 flex flex-wrap gap-3 text-xs text-gray-400">
+                  {["Case study analysis (~12 min)", "Competency interview (~15 min)", "Presentation simulation (~5 min)"].map((s) => (
+                    <span key={s} className="flex items-center gap-1.5">
+                      <span className="h-1 w-1 rounded-full bg-cyan-400" />
+                      {s}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <div className="flex shrink-0 flex-col gap-3 sm:flex-row lg:flex-col">
+                <a href="/for-candidates/pricing">
+                  <button className="w-full whitespace-nowrap rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-6 py-3.5 text-sm font-black text-white shadow-lg transition hover:scale-[1.02] sm:w-auto lg:w-full">
+                    Upgrade to Advanced →
+                  </button>
+                </a>
+                <a href="/for-candidates/assessment-centre">
+                  <button className="w-full whitespace-nowrap rounded-2xl border border-cyan-400/20 bg-cyan-400/[0.07] px-6 py-3.5 text-sm font-black text-cyan-100 transition hover:bg-cyan-400/[0.12] sm:w-auto lg:w-full">
+                    Learn more
+                  </button>
+                </a>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div id="interview-setup">
           <PracticeStartScreen
             isLoaded={isLoaded}

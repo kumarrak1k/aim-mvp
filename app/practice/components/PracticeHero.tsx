@@ -189,6 +189,29 @@ export function PracticeHero({
               <HeroPill text="Model answers" />
             </div>
           </div>
+
+          {/* Assessment centre upsell */}
+          <Link href="/for-candidates/assessment-centre" className="mt-3 block">
+            <div className="rounded-[1.35rem] border border-cyan-400/20 bg-gradient-to-br from-cyan-500/[0.09] to-purple-500/[0.09] p-4 transition hover:border-cyan-400/35 hover:from-cyan-500/[0.13] hover:to-purple-500/[0.13]">
+              <div className="mb-2 flex items-center justify-between gap-2">
+                <p className="text-[10px] font-black uppercase tracking-[0.18em] text-cyan-300">
+                  Advanced · Mock assessment centre
+                </p>
+                <span className="rounded-full border border-cyan-400/25 bg-cyan-400/10 px-2 py-0.5 text-[10px] font-black text-cyan-200">
+                  Upgrade
+                </span>
+              </div>
+              <p className="text-sm font-black text-white">
+                Go beyond interview practice
+              </p>
+              <p className="mt-1 text-xs leading-5 text-gray-400">
+                Case study · Competency interview · Presentation — three stages, one full report.
+              </p>
+              <p className="mt-2.5 text-xs font-black text-cyan-300">
+                See assessment centre →
+              </p>
+            </div>
+          </Link>
         </div>
       </div>
     </div>

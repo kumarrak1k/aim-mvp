@@ -398,6 +398,37 @@ function ProgressDashboard({ stats }: { stats: ProgressStats }) {
           </div>
         </GlassPanel>
       </div>
+
+      {/* Assessment centre upsell */}
+      <section className="overflow-hidden rounded-[2rem] border border-cyan-400/20 bg-gradient-to-br from-cyan-500/[0.08] via-purple-500/[0.05] to-transparent p-6 shadow-2xl shadow-purple-950/10 backdrop-blur-2xl sm:p-8">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:gap-10">
+          <div className="flex-1">
+            <p className="mb-2 text-[10px] font-black uppercase tracking-[0.22em] text-cyan-300">
+              Next level · Mock assessment centre
+            </p>
+            <h2 className="text-xl font-black tracking-[-0.035em] text-white sm:text-2xl">
+              Interview practice is just the start.
+            </h2>
+            <p className="mt-3 text-sm leading-7 text-gray-300">
+              Most employers now follow interviews with a full assessment centre —
+              case study, presentation, and more. Upgrade to Advanced and simulate
+              the complete format before the real thing.
+            </p>
+          </div>
+          <div className="flex shrink-0 flex-col gap-3 sm:flex-row lg:flex-col">
+            <Link href="/for-candidates/pricing">
+              <button className="w-full whitespace-nowrap rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-6 py-3.5 text-sm font-black text-white shadow-lg transition hover:scale-[1.02] sm:w-auto lg:w-full">
+                Upgrade to Advanced →
+              </button>
+            </Link>
+            <Link href="/for-candidates/assessment-centre">
+              <button className="w-full whitespace-nowrap rounded-2xl border border-cyan-400/20 bg-cyan-400/[0.07] px-6 py-3.5 text-sm font-black text-cyan-100 transition hover:bg-cyan-400/[0.12] sm:w-auto lg:w-full">
+                See what&apos;s included
+              </button>
+            </Link>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
@@ -577,24 +608,51 @@ function SignedOutState() {
 
 function EmptyProgressState() {
   return (
-    <section className="mt-6 rounded-[2rem] border border-white/10 bg-white/[0.055] p-6 shadow-2xl shadow-purple-950/10 backdrop-blur-2xl">
-      <p className="text-xs font-black uppercase tracking-[0.2em] text-cyan-300">
-        No sessions yet
-      </p>
-      <h2 className="mt-3 text-3xl font-black tracking-[-0.045em] text-white">
-        Complete your first tracked interview.
-      </h2>
-      <p className="mt-3 max-w-2xl text-sm leading-7 text-gray-300">
-        Once you finish a five-question session, AI Career Mentor will save your score,
-        summary and feedback signals here.
-      </p>
+    <div className="mt-6 space-y-4">
+      <section className="rounded-[2rem] border border-white/10 bg-white/[0.055] p-6 shadow-2xl shadow-purple-950/10 backdrop-blur-2xl">
+        <p className="text-xs font-black uppercase tracking-[0.2em] text-cyan-300">
+          No sessions yet
+        </p>
+        <h2 className="mt-3 text-3xl font-black tracking-[-0.045em] text-white">
+          Complete your first tracked interview.
+        </h2>
+        <p className="mt-3 max-w-2xl text-sm leading-7 text-gray-300">
+          Once you finish a five-question session, AI Career Mentor will save your score,
+          summary and feedback signals here.
+        </p>
 
-      <Link href="/practice">
-        <button className="mt-6 rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-6 py-4 text-sm font-black text-white shadow-2xl shadow-purple-900/30 transition hover:scale-[1.01]">
-          Start tracked interview
-        </button>
-      </Link>
-    </section>
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+          <Link href="/practice">
+            <button className="rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-6 py-4 text-sm font-black text-white shadow-2xl shadow-purple-900/30 transition hover:scale-[1.01]">
+              Start tracked interview
+            </button>
+          </Link>
+          <Link href="/for-candidates/assessment-centre">
+            <button className="rounded-2xl border border-cyan-400/20 bg-cyan-400/[0.07] px-6 py-4 text-sm font-black text-cyan-100 transition hover:bg-cyan-400/[0.12]">
+              Try mock assessment centre →
+            </button>
+          </Link>
+        </div>
+      </section>
+
+      <section className="overflow-hidden rounded-[2rem] border border-cyan-400/20 bg-gradient-to-br from-cyan-500/[0.07] via-purple-500/[0.04] to-transparent p-6 shadow-2xl shadow-purple-950/10 backdrop-blur-2xl">
+        <p className="text-[10px] font-black uppercase tracking-[0.22em] text-cyan-300">
+          Advanced · Mock assessment centre
+        </p>
+        <h3 className="mt-2 text-xl font-black tracking-[-0.03em] text-white">
+          Going for a role with an assessment centre?
+        </h3>
+        <p className="mt-2 text-sm leading-7 text-gray-300">
+          Simulate the full format — case study, interview, and presentation — in one
+          session. Used by Big 4, investment banks, Civil Service, and most graduate employers.
+        </p>
+        <Link href="/for-candidates/pricing">
+          <button className="mt-4 rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-5 py-3 text-sm font-black text-white shadow-lg transition hover:scale-[1.02]">
+            Upgrade to Advanced →
+          </button>
+        </Link>
+      </section>
+    </div>
   );
 }
 
