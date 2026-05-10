@@ -38,11 +38,11 @@ export function PublicShell({ children, currentPath }: PublicShellProps) {
       </div>
 
       {/* ── Header ── */}
-      <header className="sticky top-0 z-50 border-b border-white/[0.08] bg-[#0a0614]/60 backdrop-blur-2xl">
+      <header className="sticky top-0 z-50 border-b border-white/[0.08] bg-[#0d0520]/40 backdrop-blur-xl">
         <div className="mx-auto flex w-full max-w-7xl items-center gap-3 px-4 py-3 sm:px-6 lg:gap-6 lg:px-8 lg:py-3.5">
           {/* Logo */}
           <Link href="/" className="shrink-0">
-            <SiteLogo href="" size="md" showText />
+            <SiteLogo href="" size="lg" showText />
           </Link>
 
           {/* Desktop nav — centred pill */}
