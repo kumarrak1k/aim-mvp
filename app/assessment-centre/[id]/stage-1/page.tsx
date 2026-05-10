@@ -48,6 +48,14 @@ type Session = {
 
 const TOTAL_TIME = 12 * 60; // 720 seconds
 
+/** Safely convert any AI-returned value to a renderable string */
+function safeStr(v: unknown): string {
+  if (v == null) return "";
+  if (typeof v === "string") return v;
+  if (typeof v === "number" || typeof v === "boolean") return String(v);
+  return JSON.stringify(v);
+}
+
 function formatTime(seconds: number): string {
   const m = Math.floor(seconds / 60);
   const s = seconds % 60;
@@ -257,11 +265,11 @@ export default function Stage1Page() {
                     Stage 1 · Case Study Analysis
                   </p>
                   <h1 className="mt-1.5 text-2xl font-black tracking-[-0.04em] text-white">
-                    {scenario.company}
+                    {safeStr(scenario.company)}
                   </h1>
                 </div>
                 <span className="shrink-0 rounded-full border border-purple-400/30 bg-purple-400/10 px-3 py-1.5 text-xs font-black text-purple-300">
-                  {scenario.industry}
+                  {safeStr(scenario.industry)}
                 </span>
               </div>
             </div>
@@ -271,7 +279,7 @@ export default function Stage1Page() {
               <h2 className="mb-2 text-[11px] font-black uppercase tracking-[0.22em] text-gray-400">
                 Background
               </h2>
-              <p className="text-sm leading-7 text-gray-300">{scenario.overview}</p>
+              <p className="text-sm leading-7 text-gray-300">{safeStr(scenario.overview)}</p>
             </div>
 
             {/* Challenge */}
@@ -279,21 +287,21 @@ export default function Stage1Page() {
               <h2 className="mb-2 text-[11px] font-black uppercase tracking-[0.22em] text-amber-400/90">
                 Business Challenge
               </h2>
-              <p className="text-sm leading-7 text-amber-100/80">{scenario.challenge}</p>
+              <p className="text-sm leading-7 text-amber-100/80">{safeStr(scenario.challenge)}</p>
             </div>
 
-            {/* Exhibits */}
-            {scenario.exhibits?.map((exhibit, i) => (
+            {/* Exhibits — guard against non-array and non-string content */}
+            {Array.isArray(scenario.exhibits) && scenario.exhibits.map((exhibit, i) => (
               <div
                 key={i}
                 className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-6 backdrop-blur-xl"
               >
                 <h2 className="mb-3 text-[11px] font-black uppercase tracking-[0.22em] text-cyan-400/90">
-                  {exhibit.title}
+                  {safeStr((exhibit as Record<string, unknown>).title)}
                 </h2>
                 <div className="prose prose-invert prose-sm max-w-none text-gray-300 [&_table]:w-full [&_table]:text-xs [&_td]:border [&_td]:border-white/10 [&_td]:px-2 [&_td]:py-1.5 [&_th]:border [&_th]:border-white/10 [&_th]:bg-white/5 [&_th]:px-2 [&_th]:py-1.5 [&_th]:font-black">
                   <pre className="whitespace-pre-wrap text-xs leading-6 font-mono text-gray-300 bg-transparent border-0 p-0">
-                    {exhibit.content}
+                    {safeStr((exhibit as Record<string, unknown>).content)}
                   </pre>
                 </div>
               </div>
@@ -301,28 +309,28 @@ export default function Stage1Page() {
 
             {/* Task + Question */}
             <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-6 backdrop-blur-xl">
-              <p className="text-sm font-black leading-7 text-white">{scenario.task}</p>
+              <p className="text-sm font-black leading-7 text-white">{safeStr(scenario.task)}</p>
             </div>
 
             <div className="rounded-[1.75rem] border-2 border-cyan-400/40 bg-cyan-400/[0.06] p-6 backdrop-blur-xl">
               <p className="mb-2 text-[10px] font-black uppercase tracking-[0.2em] text-cyan-400">
                 Your question
               </p>
-              <p className="text-base font-black leading-7 text-white">{scenario.question}</p>
+              <p className="text-base font-black leading-7 text-white">{safeStr(scenario.question)}</p>
             </div>
 
-            {/* Guidance */}
+            {/* Guidance — guard against non-array and non-string tips */}
             <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-6 backdrop-blur-xl">
               <h2 className="mb-3 text-[11px] font-black uppercase tracking-[0.22em] text-gray-400">
                 Guidance
               </h2>
               <ul className="space-y-2">
-                {scenario.guidance?.map((tip, i) => (
+                {Array.isArray(scenario.guidance) && scenario.guidance.map((tip, i) => (
                   <li key={i} className="flex items-start gap-2.5 text-sm text-gray-300">
                     <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-cyan-400/20 text-[10px] font-black text-cyan-400">
                       {i + 1}
                     </span>
-                    {tip}
+                    {safeStr(tip)}
                   </li>
                 ))}
               </ul>
