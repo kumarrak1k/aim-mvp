@@ -53,6 +53,8 @@ type ProgressStats = {
   latestDelta: number | null;
   strongSignals: number;
   categoryAverages: Required<CategoryBreakdown>;
+  /** Number of sessions that contributed a non-zero value to each category. */
+  categoryDataCounts: Required<CategoryBreakdown>;
   topImprovement: string;
 };
 
@@ -77,21 +79,24 @@ const emptyStats: ProgressStats = {
   latestDelta: null,
   strongSignals: 0,
   categoryAverages: emptyCategoryAverages,
+  categoryDataCounts: emptyCategoryAverages,
   topImprovement: "Complete a session to unlock personalised focus areas.",
 };
 
 const categoryLabels: Array<{
   key: keyof Required<CategoryBreakdown>;
   label: string;
+  voiceOnly?: boolean;
+  cameraOnly?: boolean;
 }> = [
   { key: "content", label: "Content" },
   { key: "clarity", label: "Clarity" },
   { key: "relevance", label: "Relevance" },
   { key: "structure", label: "Structure" },
   { key: "confidence", label: "Confidence" },
-  { key: "pace", label: "Pace" },
-  { key: "voice_delivery", label: "Voice" },
-  { key: "camera_presence", label: "Camera" },
+  { key: "pace", label: "Pace", voiceOnly: true },
+  { key: "voice_delivery", label: "Voice delivery", voiceOnly: true },
+  { key: "camera_presence", label: "Camera presence", cameraOnly: true },
 ];
 
 export default function ProgressPage() {
@@ -162,7 +167,7 @@ export default function ProgressPage() {
 
     const latestSession = sessions[0] || null;
     const previousSession = sessions[1] || null;
-    const categoryAverages = buildCategoryAverages(sessions);
+    const { averages: categoryAverages, counts: categoryDataCounts } = buildCategoryAverages(sessions);
     const improvementCounts = new Map<string, number>();
 
     sessions.forEach((session) => {
@@ -198,6 +203,7 @@ export default function ProgressPage() {
         (session) => session.hireSignal.toLowerCase() === "strong"
       ).length,
       categoryAverages,
+      categoryDataCounts,
       topImprovement,
     };
   }, [sessions]);
@@ -418,6 +424,10 @@ function ProgressDashboard({ stats }: { stats: ProgressStats }) {
                 key={item.key}
                 label={item.label}
                 value={stats.categoryAverages[item.key]}
+                noData={
+                  (item.voiceOnly || item.cameraOnly) &&
+                  stats.categoryDataCounts[item.key] === 0
+                }
               />
             ))}
           </div>
@@ -503,9 +513,33 @@ function PanelHeader({
   );
 }
 
-function CategoryLine({ label, value }: { label: string; value: number }) {
+function CategoryLine({
+  label,
+  value,
+  noData = false,
+}: {
+  label: string;
+  value: number;
+  noData?: boolean;
+}) {
   const safeValue = Math.max(0, Math.min(10, Math.round(value * 10) / 10));
   const width = safeValue * 10;
+
+  if (noData) {
+    return (
+      <div>
+        <div className="mb-2 flex items-center justify-between gap-3">
+          <p className="text-sm font-black text-gray-600">{label}</p>
+          <p className="text-xs font-black text-gray-600">
+            N/A · keyboard only
+          </p>
+        </div>
+        <div className="h-3 overflow-hidden rounded-full bg-white/[0.04]">
+          <div className="h-full w-0" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -634,9 +668,10 @@ function ErrorState({ message }: { message: string }) {
   );
 }
 
-function buildCategoryAverages(
-  sessions: DashboardSession[]
-): Required<CategoryBreakdown> {
+function buildCategoryAverages(sessions: DashboardSession[]): {
+  averages: Required<CategoryBreakdown>;
+  counts: Required<CategoryBreakdown>;
+} {
   const totals = { ...emptyCategoryAverages };
   const counts = { ...emptyCategoryAverages };
 
@@ -646,20 +681,26 @@ function buildCategoryAverages(
 
     categoryLabels.forEach((item) => {
       const value = breakdown[item.key];
-
-      if (typeof value === "number" && Number.isFinite(value)) {
+      // Only count non-zero values — a 0 from a typed session is not real data
+      // for voice/camera categories.
+      if (typeof value === "number" && Number.isFinite(value) && value > 0) {
         totals[item.key] += value;
         counts[item.key] += 1;
       }
     });
   });
 
-  return categoryLabels.reduce((accumulator, item) => {
-    const count = counts[item.key];
-    accumulator[item.key] =
-      count > 0 ? Math.round((totals[item.key] / count) * 10) / 10 : 0;
-    return accumulator;
-  }, { ...emptyCategoryAverages });
+  const averages = categoryLabels.reduce(
+    (accumulator, item) => {
+      const count = counts[item.key];
+      accumulator[item.key] =
+        count > 0 ? Math.round((totals[item.key] / count) * 10) / 10 : 0;
+      return accumulator;
+    },
+    { ...emptyCategoryAverages }
+  );
+
+  return { averages, counts };
 }
 
 function formatSessionDate(value: string) {
