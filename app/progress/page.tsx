@@ -679,10 +679,17 @@ function buildCategoryAverages(sessions: DashboardSession[]): {
     const breakdown = session.summary?.category_breakdown;
     if (!breakdown) return;
 
+    const isTyped = session.practiceMode === "typed";
+    const hasCamera = session.practiceMode === "voice-camera";
+
     categoryLabels.forEach((item) => {
+      // Never count voice-only categories (pace, voice_delivery) for typed
+      // sessions — even if an old session saved a stale non-zero value there.
+      if (item.voiceOnly && isTyped) return;
+      // Never count camera-only categories for non-camera sessions.
+      if (item.cameraOnly && !hasCamera) return;
+
       const value = breakdown[item.key];
-      // Only count non-zero values — a 0 from a typed session is not real data
-      // for voice/camera categories.
       if (typeof value === "number" && Number.isFinite(value) && value > 0) {
         totals[item.key] += value;
         counts[item.key] += 1;
