@@ -178,6 +178,14 @@ export type InterviewSummary = {
     focus: string;
     task: string;
   }[];
+  /** STAR model answer generated for the weakest question in the session. */
+  star_model_answer?: {
+    question: string;
+    situation: string;
+    task: string;
+    action: string;
+    result: string;
+  };
   error?: string;
 };
 

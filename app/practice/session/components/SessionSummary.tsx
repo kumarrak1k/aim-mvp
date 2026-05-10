@@ -41,6 +41,64 @@ function firstWord(name: string) {
   return name.trim().split(/\s+/)[0] ?? "";
 }
 
+// ─── STAR section ───────────────────────────────────────────────────────────
+
+const starColors = {
+  cyan: {
+    bg: "bg-cyan-400/15",
+    border: "border-cyan-400/25",
+    letter: "text-cyan-300",
+    label: "text-cyan-200",
+  },
+  purple: {
+    bg: "bg-purple-400/15",
+    border: "border-purple-400/25",
+    letter: "text-purple-300",
+    label: "text-purple-200",
+  },
+  fuchsia: {
+    bg: "bg-fuchsia-400/15",
+    border: "border-fuchsia-400/25",
+    letter: "text-fuchsia-300",
+    label: "text-fuchsia-200",
+  },
+  emerald: {
+    bg: "bg-emerald-400/15",
+    border: "border-emerald-400/25",
+    letter: "text-emerald-300",
+    label: "text-emerald-200",
+  },
+} as const;
+
+function StarSection({
+  letter,
+  label,
+  color,
+  text,
+}: {
+  letter: string;
+  label: string;
+  color: keyof typeof starColors;
+  text: string;
+}) {
+  const c = starColors[color];
+  return (
+    <div className={`flex gap-3 rounded-[1rem] border ${c.border} ${c.bg} p-4`}>
+      <div
+        className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border ${c.border} text-xs font-black ${c.letter}`}
+      >
+        {letter}
+      </div>
+      <div>
+        <p className={`mb-1 text-xs font-black uppercase tracking-[0.15em] ${c.label}`}>
+          {label}
+        </p>
+        <p className="text-sm leading-7 text-gray-200">{text}</p>
+      </div>
+    </div>
+  );
+}
+
 // ─── Score ring ─────────────────────────────────────────────────────────────
 
 function ScoreRing({ score }: { score: number }) {
@@ -446,6 +504,53 @@ export function SessionSummary({
                   </span>
                 </div>
               )}
+            </div>
+          )}
+
+          {/* ── STAR model answer ───────────────────────────────────────── */}
+          {summary.star_model_answer && (
+            <div className="mb-4 rounded-[1.7rem] border border-cyan-400/20 bg-cyan-400/[0.05] p-5 backdrop-blur-2xl sm:p-6">
+              <p className="mb-1 text-xs font-black uppercase tracking-[0.22em] text-cyan-300">
+                STAR model answer
+              </p>
+              <p className="mb-5 text-sm text-gray-400">
+                A strong example answer for your weakest question, structured using the{" "}
+                <span className="font-semibold text-cyan-200">
+                  Situation → Task → Action → Result
+                </span>{" "}
+                framework.
+              </p>
+
+              <p className="mb-5 text-sm font-semibold leading-6 text-white">
+                Q: {summary.star_model_answer.question}
+              </p>
+
+              <div className="space-y-4">
+                <StarSection
+                  letter="S"
+                  label="Situation"
+                  color="cyan"
+                  text={summary.star_model_answer.situation}
+                />
+                <StarSection
+                  letter="T"
+                  label="Task"
+                  color="purple"
+                  text={summary.star_model_answer.task}
+                />
+                <StarSection
+                  letter="A"
+                  label="Action"
+                  color="fuchsia"
+                  text={summary.star_model_answer.action}
+                />
+                <StarSection
+                  letter="R"
+                  label="Result"
+                  color="emerald"
+                  text={summary.star_model_answer.result}
+                />
+              </div>
             </div>
           )}
 
