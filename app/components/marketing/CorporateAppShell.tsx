@@ -12,7 +12,7 @@
 
 import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
-import { useState, useEffect, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import { SiteLogo } from "@/app/components/brand/SiteLogo";
 import { SiteFooter } from "@/app/components/marketing/SiteFooter";
 
@@ -41,24 +41,18 @@ export function CorporateAppShell({
   children,
   currentPath,
 }: CorporateAppShellProps) {
-  const [scrolled, setScrolled] = useState(false);
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   return (
     <div className="relative min-h-screen bg-[#0a0614] text-white">
-      {/* Background — fuchsia/purple business identity */}
+      {/* Background — standard brand atmosphere */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_25%_15%,rgba(232,80,180,0.18),transparent),radial-gradient(ellipse_60%_50%_at_75%_85%,rgba(120,60,255,0.12),transparent),linear-gradient(180deg,#0a0614_0%,#100a1f_50%,#0c0816_100%)]" />
-        <div className="absolute left-[-160px] top-[-80px] h-[520px] w-[520px] rounded-full bg-fuchsia-500/[0.18] blur-[160px]" />
-        <div className="absolute bottom-[-80px] right-[-160px] h-[520px] w-[520px] rounded-full bg-purple-500/[0.15] blur-[160px]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_25%_15%,rgba(120,60,255,0.18),transparent),radial-gradient(ellipse_60%_50%_at_75%_85%,rgba(232,80,180,0.12),transparent),linear-gradient(180deg,#0a0614_0%,#100a1f_50%,#0c0816_100%)]" />
+        <div className="absolute left-[-160px] top-[-80px] h-[520px] w-[520px] rounded-full bg-purple-500/[0.18] blur-[160px]" />
+        <div className="absolute bottom-[-80px] right-[-160px] h-[520px] w-[520px] rounded-full bg-fuchsia-500/[0.18] blur-[160px]" />
       </div>
 
-      {/* Header */}
-      <header className={`sticky top-0 z-50 transition-all duration-300 ${scrolled ? "border-b border-white/[0.07] bg-[#0d0520]/60 backdrop-blur-xl" : "border-b border-transparent bg-transparent"}`}>
+      {/* Header — solid brand colour, no backdrop-blur flicker */}
+      <header className="sticky top-0 z-50 border-b border-white/[0.07] bg-[#0f0c1d]">
         <div className="relative mx-auto flex w-full max-w-7xl items-center px-4 py-3 sm:px-6 lg:px-8 lg:py-3.5">
           <Link
             href="/company/dashboard"

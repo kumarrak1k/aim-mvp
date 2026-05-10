@@ -15,7 +15,7 @@
 
 import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
-import { useState, useEffect, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import { SiteLogo } from "@/app/components/brand/SiteLogo";
 import { SiteFooter } from "@/app/components/marketing/SiteFooter";
 
@@ -40,12 +40,6 @@ export function CandidateAppShell({
   children,
   currentPath,
 }: CandidateAppShellProps) {
-  const [scrolled, setScrolled] = useState(false);
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   return (
     <div className="relative min-h-screen bg-[#0a0614] text-white">
@@ -57,7 +51,7 @@ export function CandidateAppShell({
       </div>
 
       {/* Header */}
-      <header className={`sticky top-0 z-50 transition-all duration-300 ${scrolled ? "border-b border-white/[0.07] bg-[#0d0520]/60 backdrop-blur-xl" : "border-b border-transparent bg-transparent"}`}>
+      <header className="sticky top-0 z-50 border-b border-white/[0.07] bg-[#0f0c1d]">
         <div className="relative mx-auto flex w-full max-w-7xl items-center px-4 py-3 sm:px-6 lg:px-8 lg:py-3.5">
           {/* Logo + badge */}
           <Link href="/practice" className="relative z-10 flex shrink-0 items-center gap-3">
