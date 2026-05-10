@@ -117,11 +117,13 @@ export const buildLocalVoiceAnalysis = (
       audioMetrics.lowVolumeRatio * 3 -
       audioMetrics.silenceRatio * 2
   );
+  // longPauseCount now only counts pauses >= 3 s, so the penalty per pause
+  // can be larger without punishing normal sentence breaks.
   const clarityScore = clampScore(
     8 -
       fillerCount * 0.35 -
       repetitionCount * 0.4 -
-      audioMetrics.longPauseCount * 0.5 -
+      audioMetrics.longPauseCount * 1.0 -
       Math.max(0, averageSentenceLength - 28) * 0.1
   );
 

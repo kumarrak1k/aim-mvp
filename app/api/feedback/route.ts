@@ -537,7 +537,10 @@ ${isTypedMode
         );
       }
 
-      if (effectiveLongPauseCount > 0) {
+      // Only surface long-pause feedback when there are 3+ pauses of 3+ seconds.
+      // The previous threshold (> 0) caused false positives — natural breathing
+      // and sentence breaks were being flagged as long pauses.
+      if (effectiveLongPauseCount >= 3) {
         parsed.improvements.unshift(
           `Reduce long pauses. The voice analysis detected ${effectiveLongPauseCount} long pause${
             effectiveLongPauseCount === 1 ? "" : "s"

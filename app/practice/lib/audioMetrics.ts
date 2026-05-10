@@ -31,8 +31,16 @@ export const calculateAudioMetrics = (samples: number[]): AudioMetrics => {
 
   const volumeVariation = Math.sqrt(variance);
 
-  const silenceThreshold = 6;
-  const lowVolumeThreshold = 12;
+  // Samples arrive every 100 ms.
+  // silence  < 8  RMS units  — below this is treated as silence/breath
+  // low      < 15 RMS units  — audible but quiet
+  // pause    >= 5  samples   = 500 ms  — short natural gap
+  // long     >= 30 samples   = 3 000 ms — only flag genuinely long pauses
+  //   (previous threshold was 800 ms which caught every breath and sentence break)
+  const silenceThreshold = 8;
+  const lowVolumeThreshold = 15;
+  const pauseRunThreshold = 5;
+  const longPauseRunThreshold = 30;
 
   let silenceFrames = 0;
   let lowVolumeFrames = 0;
@@ -48,11 +56,11 @@ export const calculateAudioMetrics = (samples: number[]): AudioMetrics => {
     } else {
       voicedFrames += 1;
 
-      if (currentSilentRun >= 3) {
+      if (currentSilentRun >= pauseRunThreshold) {
         estimatedPauseCount += 1;
       }
 
-      if (currentSilentRun >= 8) {
+      if (currentSilentRun >= longPauseRunThreshold) {
         longPauseCount += 1;
       }
 
@@ -64,8 +72,8 @@ export const calculateAudioMetrics = (samples: number[]): AudioMetrics => {
     }
   }
 
-  if (currentSilentRun >= 3) estimatedPauseCount += 1;
-  if (currentSilentRun >= 8) longPauseCount += 1;
+  if (currentSilentRun >= pauseRunThreshold) estimatedPauseCount += 1;
+  if (currentSilentRun >= longPauseRunThreshold) longPauseCount += 1;
 
   return {
     averageVolume: Number(averageVolume.toFixed(2)),
