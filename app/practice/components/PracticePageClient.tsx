@@ -373,6 +373,9 @@ export function PracticePageClient() {
     try {
       setQuestionLoading(true);
 
+      // Free-plan users are restricted to typed/keyboard mode regardless of
+      // whatever the UI state happens to be (e.g. stale from a previous
+      // session or from a saved profile loaded before usage was confirmed).
       window.sessionStorage.setItem(
         PRACTICE_SESSION_CONFIG_KEY,
         JSON.stringify({
@@ -381,9 +384,10 @@ export function PracticePageClient() {
           interviewType,
           difficulty,
           focusArea,
-          speakerEnabled,
-          cameraEnabled,
+          speakerEnabled: isFreePlan ? false : speakerEnabled,
+          cameraEnabled: isFreePlan ? false : cameraEnabled,
           speakerPreference,
+          freePlan: isFreePlan,
           createdAt: new Date().toISOString(),
         })
       );
@@ -398,6 +402,7 @@ export function PracticePageClient() {
     experienceLevel,
     focusArea,
     interviewType,
+    isFreePlan,
     practiceUsage.resetsAt,
     role,
     router,
@@ -448,6 +453,7 @@ export function PracticePageClient() {
           <PracticeStartScreen
             isLoaded={isLoaded}
             isSignedIn={isSignedIn}
+            usageLoaded={usageLoaded}
             role={role}
             onRoleChange={onRoleChange}
             savedCandidateProfile={savedCandidateProfile}

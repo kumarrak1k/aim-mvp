@@ -51,6 +51,12 @@ export type PracticeSessionConfig = {
     companyLogoUrl?: string;
   };
   createdAt?: string;
+  /**
+   * When true this session was started on the free plan and must remain
+   * in keyboard/typed mode. The session page uses this to keep voice and
+   * camera disabled even if they were somehow set in an earlier config.
+   */
+  freePlan?: boolean;
 };
 
 export const defaultSessionConfig: PracticeSessionConfig = {
@@ -219,6 +225,7 @@ export function parseSessionConfig(): PracticeSessionConfig | null {
           : undefined,
       createdAt:
         typeof parsed.createdAt === "string" ? parsed.createdAt : undefined,
+      freePlan: Boolean(parsed.freePlan),
     };
   } catch {
     return null;

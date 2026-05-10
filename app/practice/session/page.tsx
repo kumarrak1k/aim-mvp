@@ -132,6 +132,10 @@ export default function PracticeSessionPage() {
   const [cameraEnabled, setCameraEnabled] = useState(false);
   const [cameraUserStarted, setCameraUserStarted] = useState(false);
 
+  /** True when the session was started on the free plan — voice and camera
+   *  must stay disabled for the lifetime of this session. */
+  const [freePlan, setFreePlan] = useState(false);
+
   const latestVoiceAnalysisRef = useRef<VoiceAnalysis | null>(null);
   const latestVideoAnalysisRef = useRef<VideoAnalysis | null>(null);
   const rawAnswerTranscriptRef = useRef("");
@@ -338,8 +342,13 @@ export default function PracticeSessionPage() {
     setInterviewType(config.interviewType);
     setDifficulty(config.difficulty);
     setFocusArea(config.focusArea);
-    setSpeakerEnabled(config.speakerEnabled);
-    setCameraEnabled(config.cameraEnabled);
+    // Free-plan sessions are always keyboard-only — override whatever the
+    // stored config says to prevent stale or tampered values from enabling
+    // voice or camera for a user who hasn't paid.
+    const sessionIsFreePlan = Boolean(config.freePlan);
+    setFreePlan(sessionIsFreePlan);
+    setSpeakerEnabled(sessionIsFreePlan ? false : config.speakerEnabled);
+    setCameraEnabled(sessionIsFreePlan ? false : config.cameraEnabled);
     setSpeakerPreference(config.speakerPreference || defaultSpeakerPreference);
     setTotalQuestions(config.totalQuestions ?? DEFAULT_TOTAL_QUESTIONS);
     setAssessmentMode(Boolean(config.assessmentMode));
@@ -958,16 +967,20 @@ export default function PracticeSessionPage() {
 
   const playQuestionManually = useCallback(() => {
     if (!question.trim()) return;
+    // Free plan — speaker must never be enabled during the session.
+    if (freePlan) return;
 
     setHasUserInteracted(true);
     setSpeakerEnabled(true);
 
     void playQuestionWithNaturalAudio(question, false);
     lastSpokenQuestionRef.current = question;
-  }, [lastSpokenQuestionRef, playQuestionWithNaturalAudio, question]);
+  }, [freePlan, lastSpokenQuestionRef, playQuestionWithNaturalAudio, question]);
 
   const startGuidedAnswer = useCallback(async () => {
     if (!question.trim() || questionLoading) return;
+    // Free plan — guided answer (voice + auto-record) is not available.
+    if (freePlan) return;
 
     setHasUserInteracted(true);
     setSpeakerEnabled(true);
@@ -983,6 +996,7 @@ export default function PracticeSessionPage() {
   }, [
     cameraEnabled,
     clearCurrentAnswerCapture,
+    freePlan,
     playQuestionWithNaturalAudio,
     question,
     questionLoading,

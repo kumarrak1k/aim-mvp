@@ -44,6 +44,8 @@ type PracticeStartScreenProps = {
   toggleCamera: () => void;
   startInterview: () => void;
   questionLoading: boolean;
+  /** True once the /api/practice-sessions usage response has resolved. */
+  usageLoaded: boolean;
   /** When true the user is on the free plan and is restricted to typed mode. */
   isFreePlan?: boolean;
   startDisabled?: boolean;
@@ -127,6 +129,7 @@ export function PracticeStartScreen({
   toggleCamera,
   startInterview,
   questionLoading,
+  usageLoaded,
   isFreePlan = false,
   startDisabled = false,
   startDisabledMessage = "",
@@ -179,25 +182,32 @@ export function PracticeStartScreen({
   );
 
   useEffect(() => {
+    // Wait until BOTH the candidate profile AND the usage/plan info have
+    // loaded. This prevents the race where profile loads first (isFreePlan
+    // still defaults to true) and the appliedRef is set before we know the
+    // real plan — which would permanently skip voice preference for paid users
+    // or apply it too early for free users.
     if (
       appliedSavedPreferencesRef.current ||
       !isSignedIn ||
       !profileContextLoaded ||
-      !savedCandidateProfile
+      !savedCandidateProfile ||
+      !usageLoaded
     ) {
       return;
     }
 
     appliedSavedPreferencesRef.current = true;
 
-    // Only restore voice/camera preferences for paid users; free users are
-    // keyboard-only and selectPracticeMode will block the change anyway.
-    if (savedCandidateProfile.preferredPracticeMode && !isFreePlan) {
-      selectPracticeMode(savedCandidateProfile.preferredPracticeMode);
-    }
-
+    // Speaker preference (voice/accent/pace) is always safe to restore.
     if (savedCandidateProfile.speakerPreference) {
       setSpeakerPreference(savedCandidateProfile.speakerPreference);
+    }
+
+    // Practice mode (typed / voice / voice-camera) — only restore for paid
+    // users; free users are keyboard-only regardless of saved preference.
+    if (savedCandidateProfile.preferredPracticeMode && !isFreePlan) {
+      selectPracticeMode(savedCandidateProfile.preferredPracticeMode);
     }
   }, [
     isFreePlan,
@@ -206,6 +216,7 @@ export function PracticeStartScreen({
     savedCandidateProfile,
     selectPracticeMode,
     setSpeakerPreference,
+    usageLoaded,
   ]);
 
   const updateSpeakerPreference = useCallback(
