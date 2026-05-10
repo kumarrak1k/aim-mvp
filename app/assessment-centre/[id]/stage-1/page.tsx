@@ -96,20 +96,32 @@ export default function Stage1Page() {
   useEffect(() => {
     fetch(`/api/assessment-centre/${id}`)
       .then((r) => r.json())
-      .then((data: Session) => {
-        if (data.status === "stage2" || data.currentStage > 1) {
+      .then((data: unknown) => {
+        // Guard against API error responses (auth errors, 404s, etc.)
+        const d = data as Record<string, unknown>;
+        if (!d.id || typeof d.status !== "string") {
+          setLoadError("Session not found or access denied. Please start a new session.");
+          return;
+        }
+        const session = data as Session;
+        if (session.status === "stage2" || session.currentStage > 1) {
           router.replace(`/assessment-centre/${id}/stage-2`);
           return;
         }
-        if (data.status === "stage3" || data.currentStage > 2) {
+        if (session.status === "stage3" || session.currentStage > 2) {
           router.replace(`/assessment-centre/${id}/stage-3`);
           return;
         }
-        if (data.status === "complete") {
+        if (session.status === "complete") {
           router.replace(`/assessment-centre/${id}/report`);
           return;
         }
-        setSession(data);
+        // Guard: stage-1 requires a case study scenario
+        if (!session.caseStudyScenario) {
+          setLoadError("Your case study failed to generate. Please start a new session.");
+          return;
+        }
+        setSession(session);
       })
       .catch(() => setLoadError("Failed to load your session. Please refresh."));
   }, [id, router]);
@@ -214,6 +226,20 @@ export default function Stage1Page() {
   }
 
   const scenario = session.caseStudyScenario;
+
+  // Should never be null after the useEffect guard, but protect the render
+  if (!scenario) {
+    return (
+      <CandidateAppShell currentPath="/assessment-centre">
+        <div className="flex min-h-[50vh] flex-col items-center justify-center gap-4 px-4 text-center">
+          <p className="text-red-400 text-sm">Your case study failed to load.</p>
+          <a href="/assessment-centre/setup" className="text-cyan-400 text-sm underline hover:text-cyan-300">
+            Start a new assessment centre session
+          </a>
+        </div>
+      </CandidateAppShell>
+    );
+  }
 
   return (
     <CandidateAppShell currentPath="/assessment-centre">

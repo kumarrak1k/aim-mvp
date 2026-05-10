@@ -90,16 +90,22 @@ export default function Stage3Page() {
   useEffect(() => {
     fetch(`/api/assessment-centre/${id}`)
       .then((r) => r.json())
-      .then((data: Session) => {
-        if (data.status === "stage1") { router.replace(`/assessment-centre/${id}/stage-1`); return; }
-        if (data.status === "stage2") { router.replace(`/assessment-centre/${id}/stage-2`); return; }
-        if (data.status === "complete") { router.replace(`/assessment-centre/${id}/report`); return; }
+      .then((data: unknown) => {
+        const d = data as Record<string, unknown>;
+        if (!d.id || typeof d.status !== "string") {
+          setLoadError("Session not found or access denied. Please start a new session.");
+          return;
+        }
+        const session = data as Session;
+        if (session.status === "stage1") { router.replace(`/assessment-centre/${id}/stage-1`); return; }
+        if (session.status === "stage2") { router.replace(`/assessment-centre/${id}/stage-2`); return; }
+        if (session.status === "complete") { router.replace(`/assessment-centre/${id}/report`); return; }
         // If stage3 was not selected, skip straight to report
-        if (data.selectedStages && !data.selectedStages.includes("stage3")) {
+        if (session.selectedStages && !session.selectedStages.includes("stage3")) {
           router.replace(`/assessment-centre/${id}/report`);
           return;
         }
-        setSession(data);
+        setSession(session);
       })
       .catch(() => setLoadError("Failed to load session. Please refresh."));
   }, [id, router]);

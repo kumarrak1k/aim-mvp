@@ -36,20 +36,26 @@ export default function Stage2Page() {
   useEffect(() => {
     fetch(`/api/assessment-centre/${id}`)
       .then((r) => r.json())
-      .then((data: Session) => {
-        if (data.status === "stage1" || data.currentStage < 2) {
+      .then((data: unknown) => {
+        const d = data as Record<string, unknown>;
+        if (!d.id || typeof d.status !== "string") {
+          setLoadError("Session not found or access denied. Please start a new session.");
+          return;
+        }
+        const session = data as Session;
+        if (session.status === "stage1" || session.currentStage < 2) {
           router.replace(`/assessment-centre/${id}/stage-1`);
           return;
         }
-        if (data.status === "stage3" || data.currentStage > 2) {
+        if (session.status === "stage3" || session.currentStage > 2) {
           router.replace(`/assessment-centre/${id}/stage-3`);
           return;
         }
-        if (data.status === "complete") {
+        if (session.status === "complete") {
           router.replace(`/assessment-centre/${id}/report`);
           return;
         }
-        setSession(data);
+        setSession(session);
       })
       .catch(() => setLoadError("Failed to load your session. Please refresh."));
   }, [id, router]);
