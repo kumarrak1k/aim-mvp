@@ -31,6 +31,14 @@ type SessionHeaderProps = {
   companyBrandColor?: string;
   companyLogoUrl?: string;
   templateName?: string;
+  /**
+   * True while audio is actively playing or the mic is recording.
+   * When active, backdrop-blur is removed so the sticky header's
+   * compositor layer isn't disturbed by animations below, preventing
+   * the 1px border flicker. The solid fallback colour is chosen to be
+   * visually indistinguishable from the blurred version on a dark page.
+   */
+  audioActive?: boolean;
 };
 
 export function SessionHeader({
@@ -39,6 +47,7 @@ export function SessionHeader({
   companyBrandColor,
   companyLogoUrl,
   templateName,
+  audioActive = false,
 }: SessionHeaderProps) {
   if (assessmentMode) {
     return (
@@ -47,11 +56,12 @@ export function SessionHeader({
         companyBrandColor={companyBrandColor}
         companyLogoUrl={companyLogoUrl}
         templateName={templateName}
+        audioActive={audioActive}
       />
     );
   }
 
-  return <PersonalPracticeHeader />;
+  return <PersonalPracticeHeader audioActive={audioActive} />;
 }
 
 // ─── Company-branded header (assessment mode) ────────────────────────────────
@@ -61,11 +71,13 @@ function CompanyBrandedHeader({
   companyBrandColor,
   companyLogoUrl,
   templateName,
+  audioActive,
 }: {
   companyName?: string;
   companyBrandColor?: string;
   companyLogoUrl?: string;
   templateName?: string;
+  audioActive?: boolean;
 }) {
   const brandColor =
     companyBrandColor && /^#[0-9a-fA-F]{6}$/.test(companyBrandColor)
@@ -74,7 +86,14 @@ function CompanyBrandedHeader({
   const safeCompany = companyName || "Hiring company";
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/[0.07] bg-[#0d0520]/80 backdrop-blur-xl">
+    <header
+      className={[
+        "sticky top-0 z-50 border-b border-white/[0.07] transition-[background-color,backdrop-filter] duration-300",
+        audioActive
+          ? "bg-[#0d0520]"
+          : "bg-[#0d0520]/80 backdrop-blur-xl",
+      ].join(" ")}
+    >
       {/* Brand colour stripe — visually anchors this as the company's process */}
       <div className="h-1.5" style={{ background: brandColor }} />
 
@@ -134,9 +153,16 @@ function CompanyBrandedHeader({
 
 // ─── Personal practice header (no assessment) ────────────────────────────────
 
-function PersonalPracticeHeader() {
+function PersonalPracticeHeader({ audioActive }: { audioActive?: boolean }) {
   return (
-    <header className="sticky top-0 z-50 border-b border-white/[0.07] bg-white/[0.03] backdrop-blur-xl">
+    <header
+      className={[
+        "sticky top-0 z-50 border-b border-white/[0.07] transition-[background-color,backdrop-filter] duration-300",
+        audioActive
+          ? "bg-[#0e0b1a]"
+          : "bg-white/[0.03] backdrop-blur-xl",
+      ].join(" ")}
+    >
       <div className="mx-auto flex w-full max-w-7xl items-center gap-3 px-4 py-3 sm:px-6 lg:gap-6 lg:px-8 lg:py-3">
         {/* Logo */}
         <div className="shrink-0">
