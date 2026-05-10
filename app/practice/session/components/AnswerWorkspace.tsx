@@ -93,7 +93,7 @@ export function AnswerWorkspace({
             </div>
 
             <h2 className="mt-1 text-xl font-black tracking-[-0.035em] text-white sm:text-2xl xl:text-xl 2xl:text-2xl">
-              Transcript and answer editor
+              {freePlan ? "Answer editor" : "Transcript and answer editor"}
             </h2>
           </div>
 
@@ -117,9 +117,13 @@ export function AnswerWorkspace({
           value={answer}
           onChange={(event) => onAnswerChange(event.target.value)}
           placeholder={
-            assessmentMode
-              ? "Your answer transcript will appear here. You can also type or edit your answer before submitting it."
-              : "Your answer transcript will appear here. You can also type or edit your answer before requesting feedback."
+            freePlan
+              ? assessmentMode
+                ? "Type your answer here. You can edit it before submitting."
+                : "Type your answer here. You can edit it before requesting feedback."
+              : assessmentMode
+                ? "Your answer transcript will appear here. You can also type or edit your answer before submitting it."
+                : "Your answer transcript will appear here. You can also type or edit your answer before requesting feedback."
           }
           className="min-h-[240px] flex-1 resize-none rounded-[1.25rem] border border-white/10 bg-black/30 p-4 text-base leading-7 text-white placeholder-gray-500 outline-none transition focus:border-purple-300/50 focus:ring-4 focus:ring-purple-500/10 sm:min-h-[300px] xl:min-h-[310px]"
         />
