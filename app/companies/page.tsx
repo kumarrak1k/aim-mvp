@@ -13,11 +13,11 @@ export default function CompaniesIndexPage() {
   return (
     <PublicShell currentPath="/companies">
       <div className="mx-auto max-w-4xl px-4 pb-24 pt-6 sm:px-6">
-        <div className="mb-10">
+        <div className="mb-10 text-center">
           <h1 className="text-4xl font-black tracking-[-0.04em] sm:text-5xl">
             Company Interview Guides
           </h1>
-          <p className="mt-4 max-w-2xl text-lg leading-8 text-gray-400">
+          <p className="mx-auto mt-4 max-w-2xl text-lg leading-8 text-gray-400">
             Process breakdowns, sample questions, insider tips, and AI-powered mock
             interview practice — tailored to each employer.
           </p>

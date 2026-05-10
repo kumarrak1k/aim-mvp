@@ -18,14 +18,14 @@ export default function QuestionsIndexPage() {
   return (
     <PublicShell currentPath="/questions">
       <div className="mx-auto max-w-5xl px-4 pb-24 pt-6 sm:px-6">
-        <header className="mb-10 mt-10 border-b border-white/[0.08] pb-10">
+        <header className="mb-10 mt-10 border-b border-white/[0.08] pb-10 text-center">
           <p className="mb-4 text-[11px] font-black uppercase tracking-[0.2em] text-purple-300/80">
             Interview question library
           </p>
           <h1 className="text-[2.2rem] font-black leading-[1.05] tracking-[-0.05em] sm:text-4xl">
             Questions for every role and interview type.
           </h1>
-          <p className="mt-4 max-w-xl text-base leading-7 text-gray-400">
+          <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-gray-400">
             {sets.length}+ question sets covering competency, behavioural, technical, and
             case study formats — with model answers and scoring guidance.
           </p>

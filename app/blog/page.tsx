@@ -51,14 +51,14 @@ export default function BlogIndexPage() {
       />
 
       <div className="mx-auto max-w-4xl px-4 pb-24 pt-6 sm:px-6">
-        <header className="mb-14 mt-10 border-b border-white/[0.08] pb-10">
+        <header className="mb-14 mt-10 border-b border-white/[0.08] pb-10 text-center">
           <p className="mb-4 text-[11px] font-black uppercase tracking-[0.2em] text-purple-300/80">
             Interview guides
           </p>
           <h1 className="text-[2.2rem] font-black leading-[1.05] tracking-[-0.05em] sm:text-4xl">
             Prepare smarter. Get hired.
           </h1>
-          <p className="mt-4 max-w-xl text-base leading-7 text-gray-400">
+          <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-gray-400">
             In-depth guides on interview technique, competency frameworks,
             assessment centres, and career strategy.
           </p>
