@@ -52,7 +52,7 @@ export function CandidateAppShell({
       </div>
 
       {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-white/[0.07] bg-[#0a0614]/95 backdrop-blur-xl">
+      <header className="sticky top-0 z-50 border-b border-white/[0.07] backdrop-blur-2xl">
         <div className="relative mx-auto flex w-full max-w-7xl items-center px-4 py-3 sm:px-6 lg:px-8 lg:py-3.5">
           {/* Logo + badge */}
           <Link href="/practice" className="relative z-10 flex shrink-0 items-center gap-3">
