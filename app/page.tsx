@@ -218,7 +218,7 @@ export default function HomePage() {
 
         {/* Demo video */}
         <section className="mb-10 sm:mb-14">
-          <DemoVideo caption="90-second walkthrough — from session setup to AI feedback report" />
+          <DemoVideo src="/videos/product-demo.mp4" caption="90-second walkthrough — from session setup to AI feedback report" />
         </section>
 
         {/* Two-path cards */}
