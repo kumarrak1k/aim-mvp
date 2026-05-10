@@ -122,7 +122,7 @@ export function AudienceShell({
           >
             <SiteLogo href="" size="md" showText />
             <span
-              className={`hidden rounded-full border px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] sm:inline-block ${theme.accentBorder} bg-white/[0.04] ${theme.accentTextStrong}`}
+              className={`hidden rounded-full border px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] sm:inline-block lg:hidden ${theme.accentBorder} bg-white/[0.04] ${theme.accentTextStrong}`}
             >
               {theme.eyebrow}
             </span>

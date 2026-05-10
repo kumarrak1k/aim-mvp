@@ -64,7 +64,7 @@ export function CorporateAppShell({
             className="relative z-10 flex shrink-0 items-center gap-3"
           >
             <SiteLogo href="" size="md" showText />
-            <span className="hidden rounded-full border border-fuchsia-300/20 bg-white/[0.04] px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-fuchsia-100 sm:inline-block">
+            <span className="hidden rounded-full border border-fuchsia-300/20 bg-white/[0.04] px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-fuchsia-100 sm:inline-block lg:hidden">
               Hiring team
             </span>
           </Link>
