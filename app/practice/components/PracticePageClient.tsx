@@ -75,6 +75,9 @@ export function PracticePageClient() {
   const { manualDeviceMode } = useDeviceProfile();
 
   const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
+  const [paymentActivating, setPaymentActivating] = useState(false);
+  const [confirmedPlanName, setConfirmedPlanName] = useState<string | null>(null);
+  const [usageRefreshKey, setUsageRefreshKey] = useState(0);
 
   const [role, setRole] = useState("");
   const [savedCandidateProfile, setSavedCandidateProfile] =
@@ -129,16 +132,57 @@ export function PracticePageClient() {
     speakerPreference,
   ]);
 
-  // Detect ?payment=success and clean the URL
+  // Detect ?payment=success, clean the URL, then poll /api/subscription
+  // until the webhook has confirmed the plan as active in Clerk metadata.
   useEffect(() => {
-    if (searchParams.get("payment") === "success") {
-      setShowPaymentSuccess(true);
-      const url = new URL(window.location.href);
-      url.searchParams.delete("payment");
-      window.history.replaceState({}, "", url.toString());
-      const t = window.setTimeout(() => setShowPaymentSuccess(false), 6000);
-      return () => window.clearTimeout(t);
-    }
+    if (searchParams.get("payment") !== "success") return;
+
+    setShowPaymentSuccess(true);
+    setPaymentActivating(true);
+    setConfirmedPlanName(null);
+
+    const url = new URL(window.location.href);
+    url.searchParams.delete("payment");
+    window.history.replaceState({}, "", url.toString());
+
+    const dismissTimer = window.setTimeout(() => setShowPaymentSuccess(false), 14000);
+
+    let attempts = 0;
+    const maxAttempts = 10;
+    let pollTimer: ReturnType<typeof setTimeout>;
+
+    const poll = async () => {
+      try {
+        const res = await fetch("/api/subscription");
+        const data = (await res.json()) as { isActive?: boolean; planName?: string };
+        if (data.isActive && data.planName && data.planName !== "Free") {
+          setConfirmedPlanName(data.planName);
+          setPaymentActivating(false);
+          // Trigger usage re-fetch so limit-reached UI clears
+          setUsageRefreshKey((k) => k + 1);
+          return;
+        }
+      } catch {
+        // ignore transient errors, keep polling
+      }
+
+      attempts += 1;
+      if (attempts < maxAttempts) {
+        pollTimer = setTimeout(() => void poll(), 2000);
+      } else {
+        // Timed out — webhook may be delayed; let the user know
+        setPaymentActivating(false);
+        setConfirmedPlanName("your new plan");
+      }
+    };
+
+    // First poll after a short delay to give the webhook a head start
+    pollTimer = setTimeout(() => void poll(), 1500);
+
+    return () => {
+      window.clearTimeout(dismissTimer);
+      clearTimeout(pollTimer);
+    };
   }, [searchParams]);
 
   const signedInLimitReached =
@@ -255,7 +299,7 @@ export function PracticePageClient() {
     return () => {
       cancelled = true;
     };
-  }, [isLoaded, isSignedIn]);
+  }, [isLoaded, isSignedIn, usageRefreshKey]);
 
   useEffect(() => {
     if (!isLoaded) return;
@@ -417,23 +461,33 @@ export function PracticePageClient() {
         {showPaymentSuccess && (
           <div className="mb-5 flex items-center justify-between gap-4 rounded-2xl border border-emerald-300/25 bg-emerald-300/[0.08] px-5 py-4">
             <div className="flex items-center gap-3">
-              <span className="text-xl">🎉</span>
+              {paymentActivating ? (
+                <div className="h-5 w-5 shrink-0 animate-spin rounded-full border-2 border-emerald-400 border-t-transparent" />
+              ) : (
+                <span className="text-xl">🎉</span>
+              )}
               <div>
                 <p className="text-sm font-black text-emerald-200">
-                  Welcome to {practiceUsage.planName}!
+                  {paymentActivating
+                    ? "Activating your subscription…"
+                    : `Welcome to ${confirmedPlanName ?? practiceUsage.planName}!`}
                 </p>
                 <p className="text-xs text-emerald-300/70">
-                  Your plan is now active. Unlimited sessions are unlocked — start practising below.
+                  {paymentActivating
+                    ? "Confirming your plan with Stripe — this takes just a moment."
+                    : "Your plan is now active. Unlimited sessions are unlocked — start practising below."}
                 </p>
               </div>
             </div>
-            <button
-              onClick={() => setShowPaymentSuccess(false)}
-              className="shrink-0 text-emerald-400/50 hover:text-emerald-300"
-              aria-label="Dismiss"
-            >
-              ✕
-            </button>
+            {!paymentActivating && (
+              <button
+                onClick={() => setShowPaymentSuccess(false)}
+                className="shrink-0 text-emerald-400/50 hover:text-emerald-300"
+                aria-label="Dismiss"
+              >
+                ✕
+              </button>
+            )}
           </div>
         )}
 
