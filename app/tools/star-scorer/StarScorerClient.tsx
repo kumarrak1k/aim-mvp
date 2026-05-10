@@ -97,15 +97,12 @@ export function STARScorerClient() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl px-4 pb-24 pt-10 sm:px-6">
-      <div className="mb-8 flex justify-end">
-        <span className="rounded-full border border-emerald-400/20 bg-emerald-400/[0.07] px-3 py-1 text-[10px] font-black uppercase tracking-[0.15em] text-emerald-300">
-          Free — no sign-in required
-        </span>
-      </div>
-
+    <div className="mx-auto max-w-3xl px-4 pb-24 pt-6 sm:px-6 sm:pt-10">
         {/* Hero */}
         <section className="mb-10 text-center">
+          <p className="mx-auto mb-5 inline-flex items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-400/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-emerald-300">
+            Free — no sign-in required
+          </p>
           <h1 className="text-[2.2rem] font-black leading-[1.04] tracking-[-0.055em] sm:text-4xl">
             Free STAR Answer Scorer
           </h1>
