@@ -112,7 +112,9 @@ export default function AssessmentCentreSetupPage() {
         return;
       }
 
-      router.push(`/assessment-centre/${data.id}/${firstStage}`);
+      // StageId uses "stage1" format; URL segments use "stage-1" format
+      const stageUrl = firstStage.replace(/stage(\d)/, "stage-$1");
+      router.push(`/assessment-centre/${data.id}/${stageUrl}`);
     } catch {
       setError("Could not connect to the server. Please try again.");
     } finally {
