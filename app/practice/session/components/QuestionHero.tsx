@@ -31,6 +31,8 @@ type QuestionHeroProps = {
    *  assessment — there's no setup to return to and abandoning loses the
    *  invite. */
   assessmentMode?: boolean;
+  /** When true the session is keyboard-only — hide all voice controls. */
+  freePlan?: boolean;
 };
 
 export function QuestionHero(props: QuestionHeroProps) {
@@ -59,6 +61,7 @@ export function QuestionHero(props: QuestionHeroProps) {
     onStartGuidedAnswer,
     onBackToSetup,
     assessmentMode,
+    freePlan,
   } = props;
 
   const progressPercent = Math.min(
@@ -137,43 +140,46 @@ export function QuestionHero(props: QuestionHeroProps) {
           )}
         </div>
 
-        <div className="mb-3 grid gap-2 sm:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2">
-          <button
-            type="button"
-            onClick={onStartGuidedAnswer}
-            disabled={guidedDisabled}
-            className="rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-3 text-sm font-black text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {isListening
-              ? "Recording..."
-              : guidedAnswerRunning
-                ? "Starting..."
-                : questionAudioLoading && !questionAudioReady
-                  ? "Preparing audio..."
-                  : "Play question + record"}
-          </button>
-
-          {!isSpeakingQuestion && (speakerSupported || speakerEnabled) && (
+        {/* Voice controls — hidden for keyboard-only (free plan) sessions */}
+        {!freePlan && (
+          <div className="mb-3 grid gap-2 sm:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2">
             <button
               type="button"
-              onClick={onPlayQuestion}
-              disabled={playOnlyDisabled}
-              className="rounded-2xl border border-cyan-300/20 bg-cyan-300/10 px-5 py-3 text-sm font-black text-cyan-100 transition hover:bg-cyan-300/15 disabled:cursor-not-allowed disabled:opacity-50"
+              onClick={onStartGuidedAnswer}
+              disabled={guidedDisabled}
+              className="rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-3 text-sm font-black text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
             >
-              Play question only
+              {isListening
+                ? "Recording..."
+                : guidedAnswerRunning
+                  ? "Starting..."
+                  : questionAudioLoading && !questionAudioReady
+                    ? "Preparing audio..."
+                    : "Play question + record"}
             </button>
-          )}
 
-          {isSpeakingQuestion && (
-            <button
-              type="button"
-              onClick={onStopQuestion}
-              className="rounded-2xl border border-white/10 bg-white/[0.06] px-5 py-3 text-sm font-black text-white transition hover:bg-white/[0.1]"
-            >
-              Stop audio
-            </button>
-          )}
-        </div>
+            {!isSpeakingQuestion && (speakerSupported || speakerEnabled) && (
+              <button
+                type="button"
+                onClick={onPlayQuestion}
+                disabled={playOnlyDisabled}
+                className="rounded-2xl border border-cyan-300/20 bg-cyan-300/10 px-5 py-3 text-sm font-black text-cyan-100 transition hover:bg-cyan-300/15 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Play question only
+              </button>
+            )}
+
+            {isSpeakingQuestion && (
+              <button
+                type="button"
+                onClick={onStopQuestion}
+                className="rounded-2xl border border-white/10 bg-white/[0.06] px-5 py-3 text-sm font-black text-white transition hover:bg-white/[0.1]"
+              >
+                Stop audio
+              </button>
+            )}
+          </div>
+        )}
 
         <div className="flex rounded-[1.25rem] border border-cyan-300/15 bg-cyan-300/10 px-4 py-4 sm:px-5 xl:flex-1">
           <p className="self-start text-[1rem] font-bold leading-7 text-white sm:text-[1.08rem] sm:leading-8 xl:text-[1.08rem] 2xl:text-[1.16rem]">
@@ -181,7 +187,7 @@ export function QuestionHero(props: QuestionHeroProps) {
           </p>
         </div>
 
-        {displayAudioMessage && (
+        {!freePlan && displayAudioMessage && (
           <div className="mt-3 rounded-2xl border border-white/10 bg-black/20 px-3 py-2">
             <p className="text-xs font-semibold leading-5 text-gray-300 sm:text-sm sm:leading-6">
               {displayAudioMessage}

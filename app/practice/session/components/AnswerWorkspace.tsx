@@ -24,6 +24,8 @@ type AnswerWorkspaceProps = {
    *  Hide all references to feedback/scoring — the action is simply submitting
    *  the answer for the company to review later. */
   assessmentMode?: boolean;
+  /** When true the session is keyboard-only — hide all recording controls. */
+  freePlan?: boolean;
 };
 
 export function AnswerWorkspace({
@@ -45,6 +47,7 @@ export function AnswerWorkspace({
   onClear,
   onFeedback,
   assessmentMode = false,
+  freePlan = false,
 }: AnswerWorkspaceProps) {
   const analysing = feedbackLoading || voiceAnalysisLoading || videoAnalysisLoading;
 
@@ -121,24 +124,29 @@ export function AnswerWorkspace({
           className="min-h-[240px] flex-1 resize-none rounded-[1.25rem] border border-white/10 bg-black/30 p-4 text-base leading-7 text-white placeholder-gray-500 outline-none transition focus:border-purple-300/50 focus:ring-4 focus:ring-purple-500/10 sm:min-h-[300px] xl:min-h-[310px]"
         />
 
-        <div className="mt-3 grid gap-3 sm:grid-cols-3">
-          {!isListening ? (
-            <button
-              type="button"
-              onClick={onStartVoice}
-              disabled={!voiceSupported || questionLoading || isSpeakingQuestion}
-              className="rounded-2xl border border-emerald-300/20 bg-emerald-300/10 px-5 py-3 text-sm font-black text-emerald-100 transition hover:bg-emerald-300/15 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              Start recording
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={onStopVoice}
-              className="rounded-2xl border border-amber-300/20 bg-amber-300/10 px-5 py-3 text-sm font-black text-amber-100 transition hover:bg-amber-300/15"
-            >
-              Stop recording
-            </button>
+        {/* Recording controls hidden for keyboard-only (free plan) sessions */}
+        <div className={`mt-3 grid gap-3 ${freePlan ? "sm:grid-cols-2" : "sm:grid-cols-3"}`}>
+          {!freePlan && (
+            <>
+              {!isListening ? (
+                <button
+                  type="button"
+                  onClick={onStartVoice}
+                  disabled={!voiceSupported || questionLoading || isSpeakingQuestion}
+                  className="rounded-2xl border border-emerald-300/20 bg-emerald-300/10 px-5 py-3 text-sm font-black text-emerald-100 transition hover:bg-emerald-300/15 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  Start recording
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={onStopVoice}
+                  className="rounded-2xl border border-amber-300/20 bg-amber-300/10 px-5 py-3 text-sm font-black text-amber-100 transition hover:bg-amber-300/15"
+                >
+                  Stop recording
+                </button>
+              )}
+            </>
           )}
 
           <button
@@ -160,7 +168,7 @@ export function AnswerWorkspace({
               analysing ||
               questionAudioLoading
             }
-            className="rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-3 text-sm font-black text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50 sm:hidden"
+            className={`rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-3 text-sm font-black text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50 ${freePlan ? "" : "sm:hidden"}`}
           >
             {submitMobileLabel}
           </button>

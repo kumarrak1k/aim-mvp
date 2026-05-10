@@ -1382,6 +1382,7 @@ export default function PracticeSessionPage() {
             onStartGuidedAnswer={() => void startGuidedAnswer()}
             onBackToSetup={resetInterview}
             assessmentMode={assessmentMode}
+            freePlan={freePlan}
           />
 
           <div className="grid items-start gap-3 xl:grid-cols-[minmax(0,1fr)_150px]">
@@ -1404,21 +1405,25 @@ export default function PracticeSessionPage() {
               onClear={clearVoiceAnswer}
               onFeedback={() => void getFeedback()}
               assessmentMode={assessmentMode}
+              freePlan={freePlan}
             />
 
-            <aside className="xl:sticky xl:top-20 xl:self-start">
-              <CameraWorkspace
-                cameraEnabled={cameraEnabled}
-                cameraReady={cameraReady}
-                cameraError={cameraError}
-                cameraRequiresTap={cameraRequiresTap}
-                feedbackReady={Boolean(feedback)}
-                videoRef={videoRef}
-                onStartCameraFromTap={startCameraFromTap}
-                onViewFeedback={scrollToFeedback}
-                assessmentMode={assessmentMode}
-              />
-            </aside>
+            {/* Camera column hidden for keyboard-only (free plan) sessions */}
+            {!freePlan && (
+              <aside className="xl:sticky xl:top-20 xl:self-start">
+                <CameraWorkspace
+                  cameraEnabled={cameraEnabled}
+                  cameraReady={cameraReady}
+                  cameraError={cameraError}
+                  cameraRequiresTap={cameraRequiresTap}
+                  feedbackReady={Boolean(feedback)}
+                  videoRef={videoRef}
+                  onStartCameraFromTap={startCameraFromTap}
+                  onViewFeedback={scrollToFeedback}
+                  assessmentMode={assessmentMode}
+                />
+              </aside>
+            )}
           </div>
         </div>
 
