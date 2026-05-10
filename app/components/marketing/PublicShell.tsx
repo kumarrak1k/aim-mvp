@@ -18,8 +18,6 @@ const NAV_LINKS = [
   { href: "/blog", label: "Interview guides" },
   { href: "/questions", label: "Question library" },
   { href: "/tools/star-scorer", label: "Free STAR scorer" },
-  { href: "/for-candidates", label: "For candidates" },
-  { href: "/for-business", label: "For teams" },
 ];
 
 type PublicShellProps = {
@@ -38,46 +36,52 @@ export function PublicShell({ children, currentPath }: PublicShellProps) {
       </div>
 
       {/* ── Header ── */}
-      <header className="sticky top-0 z-50 border-b border-white/[0.08] bg-[#0d0520]/40 backdrop-blur-xl">
-        <div className="mx-auto flex w-full max-w-7xl items-center gap-3 px-4 py-3 sm:px-6 lg:gap-6 lg:px-8 lg:py-3.5">
+      <header className="relative z-50">
+        <div className="mx-auto flex w-full max-w-7xl items-center gap-4 px-4 py-5 sm:px-6 sm:py-6 lg:gap-6 lg:px-10">
           {/* Logo */}
-          <Link href="/" className="shrink-0">
-            <SiteLogo href="" size="lg" showText />
-          </Link>
+          <SiteLogo href="/" size="md" showText />
 
           {/* Desktop nav — centred pill */}
           <nav className="hidden flex-1 items-center justify-center lg:flex">
-            <div className="flex items-center gap-0.5 rounded-full border border-white/[0.09] bg-white/[0.04] p-1.5">
+            <div className="flex items-center gap-0.5 rounded-full border border-white/[0.09] bg-white/[0.04] p-1">
               {NAV_LINKS.map((item) => {
                 const active = currentPath === item.href;
                 return (
-                  <Link key={item.href} href={item.href}>
-                    <span
-                      className={`block whitespace-nowrap rounded-full px-3.5 py-2 text-[12.5px] font-bold transition xl:px-4 xl:text-[13px] ${
-                        active
-                          ? "bg-white/[0.12] text-white shadow-sm"
-                          : "text-gray-400 hover:bg-white/[0.07] hover:text-white"
-                      }`}
-                    >
-                      {item.label}
-                    </span>
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`whitespace-nowrap rounded-full px-3.5 py-2 text-[12px] font-bold transition ${
+                      active
+                        ? "bg-white/[0.12] text-white"
+                        : "text-gray-400 hover:bg-white/[0.07] hover:text-white"
+                    }`}
+                  >
+                    {item.label}
                   </Link>
                 );
               })}
             </div>
           </nav>
 
-          {/* Right CTAs */}
-          <div className="ml-auto flex shrink-0 items-center gap-2">
-            <Link href="/for-candidates/sign-in">
-              <button className="hidden whitespace-nowrap rounded-full border border-white/[0.1] bg-white/[0.04] px-4 py-2.5 text-[13px] font-bold text-white/80 transition hover:bg-white/[0.08] hover:text-white sm:block">
-                Sign in
-              </button>
+          {/* Audience buttons — matches homepage */}
+          <div className="ml-auto hidden shrink-0 items-center gap-2 sm:flex">
+            <Link
+              href="/for-candidates"
+              className="rounded-full border border-purple-300/20 bg-purple-300/[0.07] px-4 py-2 text-xs font-black text-purple-100 transition hover:bg-purple-300/[0.12]"
+            >
+              Candidates
             </Link>
-            <Link href="/for-candidates/sign-up">
-              <button className="whitespace-nowrap rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-4 py-2.5 text-[13px] font-black text-white shadow-lg shadow-purple-900/40 transition hover:scale-[1.03] sm:px-5">
-                Start free
-              </button>
+            <Link
+              href="/for-business"
+              className="rounded-full border border-fuchsia-300/20 bg-fuchsia-300/[0.07] px-4 py-2 text-xs font-black text-fuchsia-100 transition hover:bg-fuchsia-300/[0.12]"
+            >
+              Corporates
+            </Link>
+            <Link
+              href="/universities"
+              className="rounded-full border border-cyan-300/20 bg-cyan-300/[0.07] px-4 py-2 text-xs font-black text-cyan-100 transition hover:bg-cyan-300/[0.12]"
+            >
+              Universities
             </Link>
           </div>
         </div>
