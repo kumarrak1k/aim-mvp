@@ -732,7 +732,7 @@ function PreferenceSelect({
           <option
             key={option.value}
             value={option.value}
-            className="bg-[#120d1e]"
+            className="bg-[#0a0614]"
           >
             {option.label}
           </option>

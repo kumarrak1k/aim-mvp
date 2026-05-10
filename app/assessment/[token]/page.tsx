@@ -125,7 +125,7 @@ export default function AssessmentLandingPage() {
 
   if (loading || !isLoaded) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#120d1e]">
+      <div className="flex min-h-screen items-center justify-center bg-[#0a0614]">
         <div className="h-10 w-10 animate-spin rounded-full border-2 border-purple-400 border-t-transparent" />
       </div>
     );
@@ -133,7 +133,7 @@ export default function AssessmentLandingPage() {
 
   if (error) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-[#120d1e] px-4 text-center text-white">
+      <div className="flex min-h-screen flex-col items-center justify-center bg-[#0a0614] px-4 text-center text-white">
         <div className="mb-6 text-6xl">
           {error.code === 409 ? "✅" : error.code === 410 ? "⏰" : "🔗"}
         </div>
@@ -160,8 +160,12 @@ export default function AssessmentLandingPage() {
   const brand = company.brandColor || "#8c5cff";
 
   return (
-    <div className="min-h-screen bg-[#120d1e] text-white">
-      <div className="pointer-events-none fixed inset-0 z-0 bg-[radial-gradient(circle_at_top,rgba(140,92,255,0.15),transparent_35%),linear-gradient(180deg,#120d1e_0%,#171224_100%)]" />
+    <div className="min-h-screen bg-[#0a0614] text-white">
+      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_25%_15%,rgba(120,60,255,0.18),transparent),radial-gradient(ellipse_60%_50%_at_75%_85%,rgba(232,80,180,0.12),transparent),linear-gradient(180deg,#0a0614_0%,#100a1f_50%,#0c0816_100%)]" />
+        <div className="absolute left-[-160px] top-[-80px] h-[520px] w-[520px] rounded-full bg-purple-500/[0.18] blur-[160px]" />
+        <div className="absolute bottom-[-80px] right-[-160px] h-[520px] w-[520px] rounded-full bg-fuchsia-500/[0.18] blur-[160px]" />
+      </div>
 
       <div className="relative z-10 mx-auto max-w-2xl px-4 py-16 sm:px-6">
         {/* Brand header */}
@@ -431,7 +435,7 @@ function SetupStep({
                     }`}
                   >
                     {selected && (
-                      <span className="h-2 w-2 rounded-full bg-[#120d1e]" />
+                      <span className="h-2 w-2 rounded-full bg-[#0a0614]" />
                     )}
                   </span>
                   <div className="flex-1">
