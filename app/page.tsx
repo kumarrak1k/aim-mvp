@@ -109,10 +109,10 @@ export default function HomePage() {
           <nav className="hidden flex-1 items-center justify-center lg:flex">
             <div className="flex items-center gap-0.5 rounded-full border border-white/[0.09] bg-white/[0.04] p-1">
               {[
+                { href: "/about", label: "About us" },
                 { href: "/blog", label: "Interview guides" },
                 { href: "/questions", label: "Question library" },
                 { href: "/tools/star-scorer", label: "Free STAR scorer" },
-                { href: "/about", label: "About" },
               ].map((item) => (
                 <Link
                   key={item.href}
