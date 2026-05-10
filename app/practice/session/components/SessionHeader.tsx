@@ -74,7 +74,7 @@ function CompanyBrandedHeader({
   const safeCompany = companyName || "Hiring company";
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/[0.07] bg-[#0d0520]/80 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-white/[0.07] bg-[#0d0520]/80 backdrop-blur-xl will-change-transform">
       {/* Brand colour stripe — visually anchors this as the company's process */}
       <div className="h-1.5" style={{ background: brandColor }} />
 
@@ -136,7 +136,7 @@ function CompanyBrandedHeader({
 
 function PersonalPracticeHeader() {
   return (
-    <header className="sticky top-0 z-50 border-b border-white/[0.07] bg-white/[0.03] backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-white/[0.07] bg-white/[0.03] backdrop-blur-xl will-change-transform">
       <div className="mx-auto flex w-full max-w-7xl items-center gap-3 px-4 py-3 sm:px-6 lg:gap-6 lg:px-8 lg:py-3">
         {/* Logo */}
         <div className="shrink-0">
