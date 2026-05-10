@@ -165,18 +165,20 @@ type PracticeSessionDetail = {
   updatedAt: string;
 };
 
-const categoryRows: Array<{
+const allCategoryRows: Array<{
   key: keyof CategoryBreakdown;
   label: string;
+  voiceOnly?: boolean;
+  cameraOnly?: boolean;
 }> = [
   { key: "content", label: "Content" },
   { key: "clarity", label: "Clarity" },
   { key: "relevance", label: "Relevance" },
   { key: "structure", label: "Structure" },
   { key: "confidence", label: "Confidence" },
-  { key: "pace", label: "Pace" },
-  { key: "voice_delivery", label: "Voice delivery" },
-  { key: "camera_presence", label: "Camera presence" },
+  { key: "pace", label: "Pace", voiceOnly: true },
+  { key: "voice_delivery", label: "Voice delivery", voiceOnly: true },
+  { key: "camera_presence", label: "Camera presence", cameraOnly: true },
 ];
 
 export default function PracticeSessionDetailPage() {
@@ -270,11 +272,11 @@ export default function PracticeSessionDetailPage() {
 
             <div className="grid gap-6 xl:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
               <SummaryPanel session={session} />
-              <CategoryPanel summary={session.summary} />
+              <CategoryPanel summary={session.summary} practiceMode={session.practiceMode} />
             </div>
 
             <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
-              <QuestionArchive results={results} />
+              <QuestionArchive results={results} practiceMode={session.practiceMode} />
               <SessionInsights summary={session.summary} />
             </div>
 
@@ -381,7 +383,7 @@ function SessionHero({
             <SessionPill>
               {resultCount || session.totalQuestions} questions
             </SessionPill>
-            {speaker && (
+            {speaker && session.practiceMode !== "typed" && (
               <SessionPill>
                 {speaker.accent || "British"} {speaker.voice || "female"} voice
                 · {speaker.pace || "natural"} pace
@@ -472,8 +474,24 @@ function SummaryPanel({ session }: { session: PracticeSessionDetail }) {
   );
 }
 
-function CategoryPanel({ summary }: { summary?: SessionSummary }) {
+function CategoryPanel({
+  summary,
+  practiceMode,
+}: {
+  summary?: SessionSummary;
+  practiceMode?: string;
+}) {
   const breakdown = summary?.category_breakdown || {};
+  const isTyped = practiceMode === "typed";
+  const hasCamera = practiceMode === "voice-camera";
+
+  const visibleRows = allCategoryRows.filter((row) => {
+    if (row.cameraOnly && !hasCamera) return false;
+    if (row.voiceOnly && isTyped) return false;
+    // Also hide if the value is 0 and it’s a voice/camera metric (no data captured)
+    if ((row.voiceOnly || row.cameraOnly) && !breakdown[row.key]) return false;
+    return true;
+  });
 
   return (
     <GlassPanel>
@@ -484,7 +502,7 @@ function CategoryPanel({ summary }: { summary?: SessionSummary }) {
       />
 
       <div className="mt-6 space-y-4">
-        {categoryRows.map((item) => (
+        {visibleRows.map((item) => (
           <CategoryLine
             key={item.key}
             label={item.label}
@@ -509,7 +527,13 @@ function CategoryPanel({ summary }: { summary?: SessionSummary }) {
   );
 }
 
-function QuestionArchive({ results }: { results: ResultItem[] }) {
+function QuestionArchive({
+  results,
+  practiceMode,
+}: {
+  results: ResultItem[];
+  practiceMode?: string;
+}) {
   return (
     <GlassPanel>
       <PanelHeader
@@ -532,6 +556,7 @@ function QuestionArchive({ results }: { results: ResultItem[] }) {
             key={`${item.question || "question"}-${index}`}
             item={item}
             index={index}
+            practiceMode={practiceMode}
           />
         ))}
       </div>
@@ -539,10 +564,20 @@ function QuestionArchive({ results }: { results: ResultItem[] }) {
   );
 }
 
-function QuestionCard({ item, index }: { item: ResultItem; index: number }) {
+function QuestionCard({
+  item,
+  index,
+  practiceMode,
+}: {
+  item: ResultItem;
+  index: number;
+  practiceMode?: string;
+}) {
   const feedback = item.feedback;
   const voice = item.voiceAnalysis;
   const video = item.videoAnalysis;
+  const isTyped = practiceMode === "typed";
+  const hasCamera = practiceMode === "voice-camera";
 
   return (
     <details className="group overflow-hidden rounded-[1.6rem] border border-white/10 bg-black/25">
@@ -608,13 +643,13 @@ function QuestionCard({ item, index }: { item: ResultItem; index: number }) {
             label="Confidence"
             value={feedback?.category_scores?.confidence}
           />
-          <MiniScore label="Pace" value={feedback?.pace_score} />
+          {!isTyped && <MiniScore label="Pace" value={feedback?.pace_score} />}
         </div>
 
-        {(voice || video) && (
+        {!isTyped && (voice || video) && (
           <div className="mt-4 grid gap-4 lg:grid-cols-2">
             <DeliveryBlock voice={voice || null} />
-            <PresenceBlock video={video || null} />
+            {hasCamera && <PresenceBlock video={video || null} />}
           </div>
         )}
       </div>
