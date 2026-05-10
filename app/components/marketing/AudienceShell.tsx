@@ -39,6 +39,14 @@ type AudienceTheme = {
   switchAudienceHref: string;
 };
 
+/** Resource links shown in the candidate shell — mirrors the public nav. */
+const CANDIDATE_RESOURCE_LINKS = [
+  { href: "/about",              label: "About us" },
+  { href: "/blog",               label: "Interview guides" },
+  { href: "/questions",          label: "Question library" },
+  { href: "/tools/star-scorer",  label: "Free STAR scorer" },
+];
+
 const THEMES: Record<Audience, AudienceTheme> = {
   candidate: {
     eyebrow: "For candidates",
@@ -189,8 +197,37 @@ export function AudienceShell({
                 </Link>
               );
             })}
+            {audience === "candidate" && (
+              <>
+                <span className="flex items-center text-white/[0.15]">·</span>
+                {CANDIDATE_RESOURCE_LINKS.map((item) => (
+                  <Link key={item.href} href={item.href}>
+                    <span className="block whitespace-nowrap rounded-full border border-white/[0.08] bg-white/[0.04] px-3.5 py-1.5 text-xs font-bold text-gray-500 transition hover:bg-white/[0.07] hover:text-white">
+                      {item.label}
+                    </span>
+                  </Link>
+                ))}
+              </>
+            )}
           </nav>
         </div>
+
+        {/* Desktop resource links — candidate only, secondary strip */}
+        {audience === "candidate" && (
+          <div className="hidden border-t border-white/[0.04] px-4 py-1.5 lg:block">
+            <nav className="mx-auto flex max-w-7xl items-center justify-center gap-6">
+              {CANDIDATE_RESOURCE_LINKS.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="text-[11px] font-semibold text-gray-500 transition hover:text-gray-300"
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
+          </div>
+        )}
       </header>
 
       {/* Content */}
