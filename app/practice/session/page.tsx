@@ -1345,6 +1345,10 @@ export default function PracticeSessionPage() {
           onRestart={resetInterview}
           role={role}
           userName={user?.fullName ?? user?.firstName ?? ""}
+          results={results}
+          interviewType={interviewType}
+          difficulty={difficulty}
+          freePlan={freePlan}
         />
       </PracticeSessionShell>
     );
