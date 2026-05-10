@@ -102,9 +102,31 @@ export default function HomePage() {
 
       <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col px-4 py-6 sm:px-6 sm:py-8 lg:px-10">
         {/* Top bar */}
-        <header className="mb-10 flex items-center justify-between sm:mb-14">
+        <header className="mb-10 flex items-center gap-4 sm:mb-14 sm:gap-6">
           <SiteLogo href="/" size="md" showText />
-          <div className="hidden items-center gap-2 sm:flex">
+
+          {/* Universal nav — desktop centre, hidden below lg */}
+          <nav className="hidden flex-1 items-center justify-center lg:flex">
+            <div className="flex items-center gap-0.5 rounded-full border border-white/[0.09] bg-white/[0.04] p-1">
+              {[
+                { href: "/blog", label: "Interview guides" },
+                { href: "/questions", label: "Question library" },
+                { href: "/tools/star-scorer", label: "Free STAR scorer" },
+                { href: "/about", label: "About" },
+              ].map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="whitespace-nowrap rounded-full px-3.5 py-2 text-[12px] font-bold text-gray-400 transition hover:bg-white/[0.07] hover:text-white"
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          </nav>
+
+          {/* Audience buttons */}
+          <div className="ml-auto hidden shrink-0 items-center gap-2 sm:flex">
             <Link
               href="/for-candidates"
               className="rounded-full border border-purple-300/20 bg-purple-300/[0.07] px-4 py-2 text-xs font-black text-purple-100 transition hover:bg-purple-300/[0.12]"
@@ -116,6 +138,12 @@ export default function HomePage() {
               className="rounded-full border border-fuchsia-300/20 bg-fuchsia-300/[0.07] px-4 py-2 text-xs font-black text-fuchsia-100 transition hover:bg-fuchsia-300/[0.12]"
             >
               Corporates
+            </Link>
+            <Link
+              href="/universities"
+              className="rounded-full border border-cyan-300/20 bg-cyan-300/[0.07] px-4 py-2 text-xs font-black text-cyan-100 transition hover:bg-cyan-300/[0.12]"
+            >
+              Universities
             </Link>
           </div>
         </header>
