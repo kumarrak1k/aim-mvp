@@ -40,6 +40,7 @@ type Session = {
   role: string;
   sector: string;
   experienceLevel: string;
+  selectedStages: string[];
   presentationBrief: PresentationBrief;
 };
 
@@ -93,6 +94,11 @@ export default function Stage3Page() {
         if (data.status === "stage1") { router.replace(`/assessment-centre/${id}/stage-1`); return; }
         if (data.status === "stage2") { router.replace(`/assessment-centre/${id}/stage-2`); return; }
         if (data.status === "complete") { router.replace(`/assessment-centre/${id}/report`); return; }
+        // If stage3 was not selected, skip straight to report
+        if (data.selectedStages && !data.selectedStages.includes("stage3")) {
+          router.replace(`/assessment-centre/${id}/report`);
+          return;
+        }
         setSession(data);
       })
       .catch(() => setLoadError("Failed to load session. Please refresh."));
@@ -273,7 +279,7 @@ export default function Stage3Page() {
   return (
     <CandidateAppShell currentPath="/assessment-centre">
       <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
-        <StageProgress currentStage={3} />
+        <StageProgress currentStage={3} selectedStages={session.selectedStages} />
 
         {/* ─── Phase: Prep ─── */}
         {phase === "prep" && (

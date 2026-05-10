@@ -203,6 +203,7 @@ model AssessmentCentreSession {
   role                 String
   sector               String
   experienceLevel      String
+  selectedStages       String[]  @default(["stage1", "stage2", "stage3"])
 
   // Progress
   status               String    @default("setup")

@@ -41,6 +41,7 @@ type Session = {
   role: string;
   sector: string;
   experienceLevel: string;
+  selectedStages: string[];
   caseStudyScenario: Scenario;
   caseStudyFeedback?: Feedback;
 };
@@ -217,7 +218,7 @@ export default function Stage1Page() {
   return (
     <CandidateAppShell currentPath="/assessment-centre">
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
-        <StageProgress currentStage={1} />
+        <StageProgress currentStage={1} selectedStages={session.selectedStages} />
 
         <div className="grid gap-6 lg:grid-cols-[1fr_480px]">
           {/* Left: Scenario */}
@@ -450,13 +451,28 @@ export default function Stage1Page() {
                   </div>
                 )}
 
-                {/* CTA */}
-                <button
-                  onClick={() => router.push(`/assessment-centre/${id}/stage-2`)}
-                  className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-fuchsia-500 to-purple-500 px-6 py-4 text-sm font-black text-white shadow-lg shadow-purple-900/30 transition hover:scale-[1.01]"
-                >
-                  Continue to Stage 2 — Interview →
-                </button>
+                {/* CTA — navigate to whichever stage comes next */}
+                {(() => {
+                  const stages = session?.selectedStages ?? [];
+                  const nextHref = stages.includes("stage2")
+                    ? `/assessment-centre/${id}/stage-2`
+                    : stages.includes("stage3")
+                    ? `/assessment-centre/${id}/stage-3`
+                    : `/assessment-centre/${id}/report`;
+                  const nextLabel = stages.includes("stage2")
+                    ? "Continue to Stage 2 — Interview →"
+                    : stages.includes("stage3")
+                    ? "Continue to Stage 3 — Presentation →"
+                    : "View your report →";
+                  return (
+                    <button
+                      onClick={() => router.push(nextHref)}
+                      className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-fuchsia-500 to-purple-500 px-6 py-4 text-sm font-black text-white shadow-lg shadow-purple-900/30 transition hover:scale-[1.01]"
+                    >
+                      {nextLabel}
+                    </button>
+                  );
+                })()}
               </div>
             )}
           </div>

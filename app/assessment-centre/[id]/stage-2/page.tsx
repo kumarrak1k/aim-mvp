@@ -13,6 +13,7 @@ type Session = {
   role: string;
   sector: string;
   experienceLevel: string;
+  selectedStages: string[];
 };
 
 type PracticeMode = "typed" | "voice" | "voice-camera";
@@ -106,7 +107,7 @@ export default function Stage2Page() {
   return (
     <CandidateAppShell currentPath="/assessment-centre">
       <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6 lg:py-14">
-        <StageProgress currentStage={2} />
+        <StageProgress currentStage={2} selectedStages={session.selectedStages} />
 
         {/* Header */}
         <div className="mb-8">

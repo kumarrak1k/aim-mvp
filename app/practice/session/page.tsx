@@ -548,16 +548,21 @@ export default function PracticeSessionPage() {
 
         // If this session is part of an assessment centre, link it
         if (assessmentCentreId) {
+          let nextStage = "stage-3";
           try {
-            await fetch(`/api/assessment-centre/${assessmentCentreId}/submit-interview`, {
+            const acRes = await fetch(`/api/assessment-centre/${assessmentCentreId}/submit-interview`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ results: sessionResults, summary: sessionSummary }),
             });
+            if (acRes.ok) {
+              const acData = await acRes.json() as { nextStage?: string };
+              if (acData.nextStage === "report") nextStage = "report";
+            }
           } catch {
             // non-fatal — session is already saved
           }
-          router.push(`/assessment-centre/${assessmentCentreId}/stage-3`);
+          router.push(`/assessment-centre/${assessmentCentreId}/${nextStage}`);
           return;
         }
       } catch (error) {

@@ -2,24 +2,35 @@
 
 type Props = {
   currentStage: 1 | 2 | 3;
+  selectedStages?: string[];
 };
 
-const stages = [
-  { num: 1, label: "Case Study", icon: "📋" },
-  { num: 2, label: "Interview", icon: "🎤" },
-  { num: 3, label: "Presentation", icon: "📊" },
-] as const;
+const ALL_STAGES = [
+  { num: 1 as const, id: "stage1", label: "Case Study", icon: "📋" },
+  { num: 2 as const, id: "stage2", label: "Interview", icon: "🎤" },
+  { num: 3 as const, id: "stage3", label: "Presentation", icon: "📊" },
+];
 
-export function StageProgress({ currentStage }: Props) {
+export function StageProgress({ currentStage, selectedStages }: Props) {
+  const stages = selectedStages
+    ? ALL_STAGES.filter((s) => selectedStages.includes(s.id))
+    : ALL_STAGES;
+
+  // Re-number stages sequentially for display
+  const displayStages = stages.map((s, i) => ({ ...s, displayNum: i + 1 }));
+
+  // Find the display position of the current stage
+  const currentDisplayNum =
+    displayStages.find((s) => s.num === currentStage)?.displayNum ?? currentStage;
+
   return (
     <div className="flex items-center gap-0 mb-8">
-      {stages.map((stage, idx) => {
-        const isPast = stage.num < currentStage;
-        const isActive = stage.num === currentStage;
-        const isFuture = stage.num > currentStage;
+      {displayStages.map((stage, idx) => {
+        const isPast = stage.displayNum < currentDisplayNum;
+        const isActive = stage.displayNum === currentDisplayNum;
 
         return (
-          <div key={stage.num} className="flex items-center">
+          <div key={stage.id} className="flex items-center">
             {/* Connector line before stage (except first) */}
             {idx > 0 && (
               <div
@@ -44,7 +55,7 @@ export function StageProgress({ currentStage }: Props) {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
                 ) : (
-                  <span>{stage.num}</span>
+                  <span>{stage.displayNum}</span>
                 )}
                 {isActive && (
                   <span className="absolute -right-0.5 -top-0.5 flex h-2.5 w-2.5">

@@ -24,13 +24,67 @@ const EXPERIENCE_LEVELS = [
   "Senior (5-8 years)",
 ];
 
+const STAGES = [
+  {
+    id: "stage1",
+    icon: "📋",
+    label: "Case study",
+    desc: "12-min timed analysis",
+    detail: "Read a business scenario and write a structured response under a timer.",
+    color: "purple",
+  },
+  {
+    id: "stage2",
+    icon: "🎤",
+    label: "Competency interview",
+    desc: "5 questions · voice + camera",
+    detail: "Five tailored competency questions scored on substance, delivery and presence.",
+    color: "fuchsia",
+  },
+  {
+    id: "stage3",
+    icon: "📊",
+    label: "Presentation",
+    desc: "3-min brief + score",
+    detail: "Receive a brief, prepare for 3 minutes, then deliver a scored spoken presentation.",
+    color: "cyan",
+  },
+] as const;
+
+type StageId = "stage1" | "stage2" | "stage3";
+
 export default function AssessmentCentreSetupPage() {
   const router = useRouter();
   const [role, setRole] = useState("");
   const [sector, setSector] = useState("");
   const [experienceLevel, setExperienceLevel] = useState("");
+  const [selectedStages, setSelectedStages] = useState<Set<StageId>>(
+    new Set(["stage1", "stage2", "stage3"])
+  );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  function toggleStage(id: StageId) {
+    setSelectedStages((prev) => {
+      const next = new Set(prev);
+      if (next.has(id) && next.size === 1) return prev; // must keep at least 1
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
+  // First selected stage in order
+  const firstStage: StageId = selectedStages.has("stage1")
+    ? "stage1"
+    : selectedStages.has("stage2")
+      ? "stage2"
+      : "stage3";
+
+  const totalMinutes =
+    (selectedStages.has("stage1") ? 12 : 0) +
+    (selectedStages.has("stage2") ? 20 : 0) +
+    (selectedStages.has("stage3") ? 8 : 0);
 
   const canSubmit = role.trim().length > 0 && sector.length > 0 && experienceLevel.length > 0 && !loading;
 
@@ -43,7 +97,12 @@ export default function AssessmentCentreSetupPage() {
       const res = await fetch("/api/assessment-centre/start", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ role: role.trim(), sector, experienceLevel }),
+        body: JSON.stringify({
+          role: role.trim(),
+          sector,
+          experienceLevel,
+          selectedStages: Array.from(selectedStages),
+        }),
       });
 
       const data = await res.json();
@@ -53,7 +112,7 @@ export default function AssessmentCentreSetupPage() {
         return;
       }
 
-      router.push(`/assessment-centre/${data.id}/stage-1`);
+      router.push(`/assessment-centre/${data.id}/${firstStage}`);
     } catch {
       setError("Could not connect to the server. Please try again.");
     } finally {
@@ -148,23 +207,90 @@ export default function AssessmentCentreSetupPage() {
             </div>
           )}
 
-          {/* What to expect */}
-          <div className="grid grid-cols-3 gap-3">
-            {[
-              { icon: "📋", label: "Case study", desc: "12-min timed analysis" },
-              { icon: "🎤", label: "Interview", desc: "5 competency questions" },
-              { icon: "📊", label: "Presentation", desc: "3-min brief + score" },
-            ].map((item) => (
-              <div
-                key={item.label}
-                className="rounded-xl border border-white/[0.06] bg-white/[0.025] p-3 text-center"
-              >
-                <div className="text-2xl">{item.icon}</div>
-                <div className="mt-1 text-xs font-black text-white">{item.label}</div>
-                <div className="text-[10px] text-gray-500">{item.desc}</div>
-              </div>
-            ))}
+          {/* Stage selector */}
+          <div className="rounded-[1.75rem] border border-white/[0.08] bg-white/[0.04] p-6 backdrop-blur-xl">
+            <div className="mb-4 flex items-center justify-between">
+              <p className="text-[11px] font-black uppercase tracking-[0.22em] text-purple-300/90">
+                Stages to include
+              </p>
+              <span className="text-[11px] text-gray-500">
+                Click to deselect · at least 1 required
+              </span>
+            </div>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+              {STAGES.map((stage) => {
+                const selected = selectedStages.has(stage.id);
+                const isLast = selectedStages.size === 1 && selected;
+                const borderColour = selected
+                  ? stage.color === "purple"
+                    ? "border-purple-400/60 ring-1 ring-purple-400/30"
+                    : stage.color === "fuchsia"
+                      ? "border-fuchsia-400/60 ring-1 ring-fuchsia-400/30"
+                      : "border-cyan-400/60 ring-1 ring-cyan-400/30"
+                  : "border-white/[0.08]";
+                const bgColour = selected
+                  ? stage.color === "purple"
+                    ? "bg-purple-400/[0.07]"
+                    : stage.color === "fuchsia"
+                      ? "bg-fuchsia-400/[0.07]"
+                      : "bg-cyan-400/[0.07]"
+                  : "bg-white/[0.025] opacity-50";
+                const labelColour = selected
+                  ? stage.color === "purple"
+                    ? "text-purple-300"
+                    : stage.color === "fuchsia"
+                      ? "text-fuchsia-300"
+                      : "text-cyan-300"
+                  : "text-gray-600";
+
+                return (
+                  <button
+                    key={stage.id}
+                    onClick={() => toggleStage(stage.id)}
+                    disabled={isLast}
+                    title={isLast ? "At least one stage must be selected" : selected ? "Click to remove this stage" : "Click to add this stage"}
+                    className={`relative rounded-xl border p-4 text-left transition-all ${borderColour} ${bgColour} ${isLast ? "cursor-not-allowed" : "cursor-pointer hover:opacity-100"}`}
+                  >
+                    {/* Selected/deselected indicator */}
+                    <div className={`absolute right-3 top-3 flex h-5 w-5 items-center justify-center rounded-full border text-[10px] font-black transition-all ${
+                      selected
+                        ? "border-emerald-400/50 bg-emerald-400/10 text-emerald-300"
+                        : "border-white/20 bg-white/[0.04] text-gray-600"
+                    }`}>
+                      {selected ? "✓" : "✕"}
+                    </div>
+                    <div className="mb-2 text-2xl">{stage.icon}</div>
+                    <div className={`text-sm font-black ${selected ? "text-white" : "text-gray-500"}`}>
+                      {stage.label}
+                    </div>
+                    <div className={`mt-0.5 text-[11px] font-semibold ${labelColour}`}>
+                      {stage.desc}
+                    </div>
+                    <p className={`mt-2 text-[11px] leading-5 ${selected ? "text-gray-400" : "text-gray-600"}`}>
+                      {stage.detail}
+                    </p>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Time estimate */}
+            <div className="mt-4 flex items-center justify-between rounded-xl border border-white/[0.06] bg-white/[0.025] px-4 py-3">
+              <span className="text-xs text-gray-500">
+                {selectedStages.size} stage{selectedStages.size !== 1 ? "s" : ""} selected
+              </span>
+              <span className="text-xs font-black text-white">
+                ~{totalMinutes} minutes total
+              </span>
+            </div>
           </div>
+
+          {/* Error */}
+          {error && (
+            <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+              {error}
+            </div>
+          )}
 
           {/* CTA */}
           <button
@@ -194,7 +320,7 @@ export default function AssessmentCentreSetupPage() {
 
           {canSubmit && !loading && (
             <p className="text-center text-xs text-gray-600">
-              Approximately 45–60 minutes · Each session uses a fresh scenario
+              Each session uses a fresh AI-generated scenario
             </p>
           )}
         </div>
