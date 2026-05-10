@@ -20,6 +20,8 @@ type AnswerWorkspaceProps = {
   onStopVoice: () => void;
   onClear: () => void;
   onFeedback: () => void;
+  /** Scrolls the page to the feedback section when feedback is ready. */
+  onViewFeedback?: () => void;
   /** When true, the candidate is taking a company-issued assessment.
    *  Hide all references to feedback/scoring — the action is simply submitting
    *  the answer for the company to review later. */
@@ -46,6 +48,7 @@ export function AnswerWorkspace({
   onStopVoice,
   onClear,
   onFeedback,
+  onViewFeedback,
   assessmentMode = false,
   freePlan = false,
 }: AnswerWorkspaceProps) {
@@ -112,6 +115,29 @@ export function AnswerWorkspace({
             {submitDesktopLabel}
           </button>
         </div>
+
+        {/* Feedback-ready banner — appears once AI feedback has loaded */}
+        {feedback && !assessmentMode && (
+          <div className="mb-3 flex items-center justify-between gap-3 rounded-2xl border border-emerald-400/30 bg-emerald-400/10 px-4 py-3 animate-pulse-once">
+            <div className="flex items-center gap-2">
+              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-400/25 text-emerald-300">
+                ✓
+              </span>
+              <p className="text-sm font-black text-emerald-100">
+                AI feedback is ready
+              </p>
+            </div>
+            {onViewFeedback && (
+              <button
+                type="button"
+                onClick={onViewFeedback}
+                className="shrink-0 rounded-xl border border-emerald-400/30 bg-emerald-400/15 px-4 py-1.5 text-xs font-black text-emerald-100 transition hover:bg-emerald-400/25"
+              >
+                View feedback ↓
+              </button>
+            )}
+          </div>
+        )}
 
         <textarea
           value={answer}

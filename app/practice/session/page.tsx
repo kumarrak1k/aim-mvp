@@ -1415,6 +1415,7 @@ export default function PracticeSessionPage() {
               onStopVoice={() => void stopVoiceInput()}
               onClear={clearVoiceAnswer}
               onFeedback={() => void getFeedback()}
+              onViewFeedback={scrollToFeedback}
               assessmentMode={assessmentMode}
               freePlan={freePlan}
             />

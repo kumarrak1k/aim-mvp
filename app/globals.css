@@ -162,6 +162,19 @@ textarea:focus-visible {
   background: linear-gradient(180deg, #c084fc, #38bdf8);
 }
 
+/* Feedback-ready banner — one-shot attention flash */
+@keyframes pulse-once {
+  0%   { opacity: 1; }
+  30%  { opacity: 0.55; }
+  60%  { opacity: 1; }
+  80%  { opacity: 0.75; }
+  100% { opacity: 1; }
+}
+
+.animate-pulse-once {
+  animation: pulse-once 1s ease-out forwards;
+}
+
 .clerk-modal-backdrop {
   backdrop-filter: blur(16px);
 }
