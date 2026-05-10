@@ -20,36 +20,82 @@ export const metadata: Metadata = createPageMetadata({
 
 const features = [
   {
-    icon: "📋",
+    iconKey: "template",
     title: "Custom assessment templates",
     text: "Build a structured AI interview for any role — competency, technical, situational, behavioural. Reusable across every candidate for that role.",
   },
   {
-    icon: "🔗",
+    iconKey: "invite",
     title: "Email invite links",
     text: "One click sends a candidate a branded invite. They take the assessment on their own time — no scheduling needed, no recruiter time spent.",
   },
   {
-    icon: "📊",
+    iconKey: "dashboard",
     title: "Recruiter results dashboard",
     text: "Every completed assessment scored on a 0-10 scale across competencies, with full transcripts, voice delivery and camera presence. Sort and rank candidates side-by-side.",
   },
   {
-    icon: "🎯",
+    iconKey: "scoring",
     title: "Fair, comparable scoring",
     text: "The same brief is used for every candidate. AI feedback is generated from your template — not the candidate's CV — so scoring is consistent.",
   },
   {
-    icon: "🎨",
+    iconKey: "branding",
     title: "Your branding",
     text: "Candidates see your company name, logo and brand colour at every step. The platform stays in the background.",
   },
   {
-    icon: "🔒",
+    iconKey: "gdpr",
     title: "UK GDPR & DPA-ready",
     text: "UK data residency. Data Processing Agreement available. Candidates control their own data and can delete it any time.",
   },
 ];
+
+function FeatureIcon({ iconKey }: { iconKey: string }) {
+  const icons: Record<string, React.ReactNode> = {
+    template: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" />
+        <rect x="9" y="3" width="6" height="4" rx="1" />
+        <path d="M9 12h6M9 16h4" />
+      </svg>
+    ),
+    invite: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+      </svg>
+    ),
+    dashboard: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round">
+        <rect x="3" y="12" width="4" height="9" rx="1" />
+        <rect x="10" y="7" width="4" height="14" rx="1" />
+        <rect x="17" y="3" width="4" height="18" rx="1" />
+      </svg>
+    ),
+    scoring: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 3l1.88 5.79H20l-4.94 3.59L16.94 18 12 14.41 7.06 18l1.88-5.62L4 8.79h6.12L12 3z" />
+      </svg>
+    ),
+    branding: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="3" />
+        <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83" />
+      </svg>
+    ),
+    gdpr: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+        <path d="M9 12l2 2 4-4" />
+      </svg>
+    ),
+  };
+  return (
+    <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-2xl border border-fuchsia-400/20 bg-fuchsia-400/[0.08] text-fuchsia-300">
+      <div className="h-5 w-5">{icons[iconKey]}</div>
+    </div>
+  );
+}
 
 const useCases = [
   {
@@ -143,9 +189,9 @@ export default function ForBusinessPage() {
           {features.map((f) => (
             <div
               key={f.title}
-              className="rounded-[1.5rem] border border-white/[0.08] bg-white/[0.03] p-6 transition hover:border-white/[0.12] hover:bg-white/[0.05]"
+              className="rounded-[1.5rem] border border-white/[0.08] bg-white/[0.03] p-6 transition hover:border-fuchsia-300/20 hover:bg-fuchsia-300/[0.04]"
             >
-              <div className="mb-3 text-2xl">{f.icon}</div>
+              <FeatureIcon iconKey={f.iconKey} />
               <p className="font-black text-white">{f.title}</p>
               <p className="mt-2 text-sm leading-6 text-gray-400">{f.text}</p>
             </div>
