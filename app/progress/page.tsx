@@ -318,36 +318,9 @@ function ProgressDashboard({ stats }: { stats: ProgressStats }) {
           <PanelHeader
             eyebrow="Score trajectory"
             title="Readiness trend"
-            description="Each bar is one completed five-question interview, ordered oldest to newest."
+            description="Each point is one completed interview. The line shows your score over time."
           />
-
-          <div className="mt-6 flex h-[320px] items-end gap-3 rounded-[1.6rem] border border-white/10 bg-black/25 p-5">
-            {stats.trendSessions.map((session, index) => (
-              <div
-                key={session.id}
-                className="group flex h-full flex-1 flex-col justify-end gap-3"
-              >
-                <div className="relative flex h-full items-end">
-                  <div
-                    className="w-full min-w-[18px] rounded-t-2xl bg-gradient-to-t from-purple-600 via-fuchsia-400 to-cyan-300 shadow-[0_0_28px_rgba(168,85,247,0.3)] transition group-hover:scale-[1.02]"
-                    style={{
-                      height: `${Math.max(8, session.overallScore * 10)}%`,
-                    }}
-                    title={`${session.overallScore}/10`}
-                  />
-                </div>
-
-                <div className="text-center">
-                  <p className="text-xs font-black text-white">
-                    {session.overallScore}
-                  </p>
-                  <p className="mt-1 text-[10px] font-bold text-gray-500">
-                    S{index + 1}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
+          <TrendChart sessions={stats.trendSessions} />
         </GlassPanel>
 
         <GlassPanel>
@@ -667,6 +640,193 @@ function ErrorState({ message }: { message: string }) {
     </section>
   );
 }
+
+// ─── Trend chart ────────────────────────────────────────────────────────────
+
+function TrendChart({ sessions }: { sessions: DashboardSession[] }) {
+  if (!sessions.length) return null;
+
+  const VW = 700;
+  const VH = 260;
+  const padL = 38;
+  const padR = 24;
+  const padT = 28;
+  const padB = 44;
+  const cW = VW - padL - padR;
+  const cH = VH - padT - padB;
+
+  // Map sessions → SVG coords (score 0 = bottom, 10 = top)
+  const pts = sessions.map((s, i) => ({
+    x: padL + (sessions.length === 1 ? cW / 2 : (i / (sessions.length - 1)) * cW),
+    y: padT + cH - (Math.max(0, Math.min(10, s.overallScore)) / 10) * cH,
+    score: s.overallScore,
+    idx: i + 1,
+  }));
+
+  // Smooth cubic bezier path
+  const buildCurve = (p: typeof pts) => {
+    if (p.length === 1) return `M ${p[0].x} ${p[0].y}`;
+    let d = `M ${p[0].x} ${p[0].y}`;
+    for (let i = 1; i < p.length; i++) {
+      const dx = (p[i].x - p[i - 1].x) / 2.8;
+      d += ` C ${p[i - 1].x + dx} ${p[i - 1].y}, ${p[i].x - dx} ${p[i].y}, ${p[i].x} ${p[i].y}`;
+    }
+    return d;
+  };
+
+  const curve = buildCurve(pts);
+  const first = pts[0];
+  const last = pts[pts.length - 1];
+  const area = `${curve} L ${last.x} ${padT + cH} L ${first.x} ${padT + cH} Z`;
+
+  // Score zone y-positions
+  const yAt = (v: number) => padT + cH - (v / 10) * cH;
+  const gridLines = [2, 4, 6, 8, 10];
+  const targetY = yAt(7);
+
+  return (
+    <div className="mt-5 overflow-hidden rounded-[1.5rem] border border-white/[0.07] bg-black/30">
+      <svg
+        viewBox={`0 0 ${VW} ${VH}`}
+        className="w-full"
+        style={{ display: "block", height: "260px" }}
+        aria-label="Score trend chart"
+      >
+        <defs>
+          {/* Line gradient: purple → fuchsia → cyan */}
+          <linearGradient id="tcLine" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#a855f7" />
+            <stop offset="48%" stopColor="#d946ef" />
+            <stop offset="100%" stopColor="#22d3ee" />
+          </linearGradient>
+
+          {/* Area fill: purple → transparent */}
+          <linearGradient id="tcArea" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#a855f7" stopOpacity="0.28" />
+            <stop offset="75%" stopColor="#a855f7" stopOpacity="0.04" />
+            <stop offset="100%" stopColor="#a855f7" stopOpacity="0" />
+          </linearGradient>
+
+          {/* Glow filter for the line and dots */}
+          <filter id="tcGlow" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="4" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+
+          {/* Dot glow */}
+          <filter id="dotGlow" x="-80%" y="-80%" width="260%" height="260%">
+            <feGaussianBlur stdDeviation="5" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+
+          {/* Clip to chart area */}
+          <clipPath id="tcClip">
+            <rect x={padL} y={padT} width={cW} height={cH} />
+          </clipPath>
+        </defs>
+
+        {/* Score zone bands */}
+        <rect x={padL} y={yAt(7)} width={cW} height={yAt(4) - yAt(7)} fill="rgba(52,211,153,0.03)" />
+        <rect x={padL} y={yAt(4)} width={cW} height={yAt(0) - yAt(4)} fill="rgba(248,113,113,0.025)" />
+
+        {/* Grid lines + left axis labels */}
+        {gridLines.map((v) => {
+          const y = yAt(v);
+          return (
+            <g key={v}>
+              <line
+                x1={padL} y1={y} x2={padL + cW} y2={y}
+                stroke="rgba(255,255,255,0.055)" strokeWidth="1"
+              />
+              <text
+                x={padL - 7} y={y + 4}
+                textAnchor="end" fontSize="11"
+                fill="rgba(255,255,255,0.22)" fontWeight="700"
+              >
+                {v}
+              </text>
+            </g>
+          );
+        })}
+
+        {/* Target line at 7 */}
+        <line
+          x1={padL} y1={targetY} x2={padL + cW} y2={targetY}
+          stroke="rgba(52,211,153,0.35)" strokeWidth="1.2"
+          strokeDasharray="5 4"
+        />
+        <text
+          x={padL + cW + 4} y={targetY + 4}
+          fontSize="9.5" fill="rgba(52,211,153,0.6)" fontWeight="900"
+        >
+          TARGET
+        </text>
+
+        {/* Area fill (clipped) */}
+        <path d={area} fill="url(#tcArea)" clipPath="url(#tcClip)" />
+
+        {/* Main curve */}
+        <path
+          d={curve}
+          fill="none"
+          stroke="url(#tcLine)"
+          strokeWidth="2.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          filter="url(#tcGlow)"
+          clipPath="url(#tcClip)"
+        />
+
+        {/* Data points */}
+        {pts.map((pt) => {
+          const isLatest = pt.idx === pts.length;
+          const scoreColor =
+            pt.score >= 8 ? "#34d399" : pt.score >= 6 ? "#67e8f9" : pt.score >= 4 ? "#fbbf24" : "#f87171";
+
+          return (
+            <g key={pt.idx}>
+              {/* Outer pulse ring on latest */}
+              {isLatest && (
+                <circle cx={pt.x} cy={pt.y} r="14" fill={scoreColor} fillOpacity="0.12" />
+              )}
+              {/* Halo */}
+              <circle cx={pt.x} cy={pt.y} r="9" fill={scoreColor} fillOpacity="0.18" filter="url(#dotGlow)" />
+              {/* Core dot */}
+              <circle cx={pt.x} cy={pt.y} r="5" fill={scoreColor} filter="url(#dotGlow)" />
+              <circle cx={pt.x} cy={pt.y} r="2.5" fill="white" />
+
+              {/* Score label above dot */}
+              <text
+                x={pt.x} y={pt.y - 16}
+                textAnchor="middle" fontSize="12"
+                fontWeight="900" fill="white"
+              >
+                {pt.score}
+              </text>
+
+              {/* Session label below chart */}
+              <text
+                x={pt.x} y={padT + cH + 20}
+                textAnchor="middle" fontSize="10.5"
+                fontWeight="700" fill="rgba(255,255,255,0.28)"
+              >
+                S{pt.idx}
+              </text>
+            </g>
+          );
+        })}
+      </svg>
+    </div>
+  );
+}
+
+// ─── Category averages ───────────────────────────────────────────────────────
 
 function buildCategoryAverages(sessions: DashboardSession[]): {
   averages: Required<CategoryBreakdown>;
