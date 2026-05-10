@@ -14,12 +14,12 @@ import type { ReactNode } from "react";
 import { SiteLogo } from "@/app/components/brand/SiteLogo";
 
 const NAV_LINKS = [
+  { href: "/about", label: "About us" },
   { href: "/blog", label: "Interview guides" },
   { href: "/questions", label: "Question library" },
   { href: "/tools/star-scorer", label: "Free STAR scorer" },
   { href: "/for-candidates", label: "For candidates" },
   { href: "/for-business", label: "For teams" },
-  { href: "/about", label: "About" },
 ];
 
 type PublicShellProps = {
