@@ -39,12 +39,12 @@ type AudienceTheme = {
   switchAudienceHref: string;
 };
 
-/** Resource links shown in the candidate shell — mirrors the public nav. */
+/** Resource links shown in the candidate shell — rendered inside candidate shell. */
 const CANDIDATE_RESOURCE_LINKS = [
-  { href: "/about",              label: "About us" },
-  { href: "/blog",               label: "Interview guides" },
-  { href: "/questions",          label: "Question library" },
-  { href: "/tools/star-scorer",  label: "Free STAR scorer" },
+  { href: "/for-candidates/about",        label: "About us" },
+  { href: "/for-candidates/blog",         label: "Interview guides" },
+  { href: "/for-candidates/questions",    label: "Question library" },
+  { href: "/for-candidates/star-scorer",  label: "Free STAR scorer" },
 ];
 
 const THEMES: Record<Audience, AudienceTheme> = {
@@ -201,7 +201,7 @@ export function AudienceShell({
               <>
                 <span className="flex items-center text-white/[0.15]">·</span>
                 {CANDIDATE_RESOURCE_LINKS.map((item) => (
-                  <Link key={item.href} href={item.href} target="_blank" rel="noopener noreferrer">
+                  <Link key={item.href} href={item.href}>
                     <span className="block whitespace-nowrap rounded-full border border-white/[0.08] bg-white/[0.04] px-3.5 py-1.5 text-xs font-bold text-gray-500 transition hover:bg-white/[0.07] hover:text-white">
                       {item.label}
                     </span>
@@ -220,8 +220,6 @@ export function AudienceShell({
                 <Link
                   key={item.href}
                   href={item.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
                   className="text-[11px] font-semibold text-gray-500 transition hover:text-gray-300"
                 >
                   {item.label}

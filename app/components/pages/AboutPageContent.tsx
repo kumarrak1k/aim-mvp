@@ -1,0 +1,218 @@
+import Image from "next/image";
+import Link from "next/link";
+import { absoluteUrl, siteConfig } from "@/app/config/site";
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "AboutPage",
+  url: absoluteUrl("/about"),
+  name: "About AI Career Mentor",
+  description:
+    "The mission, team, and story behind AI Career Mentor — a UK-built AI coaching platform for candidates and hiring teams.",
+  mainEntity: {
+    "@id": `${siteConfig.url}/#organization`,
+  },
+};
+
+const values = [
+  {
+    title: "Equal access to preparation",
+    body: "A first-generation graduate deserves the same quality of interview coaching as someone whose parents went to Oxbridge. We built AI Career Mentor so that background, network, and budget can no longer determine who gets prepared and who doesn't.",
+  },
+  {
+    title: "Honest feedback, not flattery",
+    body: "Real improvement comes from knowing exactly where you fell short. Our AI gives you the truth — constructively and specifically — not the encouragement you wanted to hear.",
+  },
+  {
+    title: "Reducing bias, not reinforcing it",
+    body: "Unstructured interviews disadvantage candidates who aren't familiar with the unwritten rules. We teach those rules explicitly — STAR structure, competency frameworks, delivery — so that every candidate can be judged on their genuine capability.",
+  },
+  {
+    title: "Privacy by design",
+    body: "Your interview answers, CV context and coaching sessions belong to you. We never sell your data, we process only what's needed, and you can delete everything at any time.",
+  },
+];
+
+const team = [
+  {
+    name: "Rakesh Kumar",
+    role: "Founder & CEO",
+    bio: "Background in talent assessment and career coaching. Passionate about creating fair and inclusive access to opportunity — built AI Career Mentor so that the quality of your preparation is never determined by your background, network, or budget.",
+    photo: "/team/rakesh-kumar.jpeg",
+    linkedin: null,
+  },
+];
+
+export function AboutPageContent() {
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+
+      <div className="mx-auto max-w-4xl px-4 pb-24 pt-6 sm:px-6">
+        {/* Hero */}
+        <section className="mb-16 text-center">
+          <p className="mx-auto mb-5 inline-flex items-center gap-2 rounded-full border border-purple-400/25 bg-purple-400/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-purple-200">
+            About us
+          </p>
+          <h1 className="text-[2.4rem] font-black leading-[1.04] tracking-[-0.055em] sm:text-5xl">
+            Making elite interview prep{" "}
+            <span className="bg-gradient-to-r from-purple-300 via-fuchsia-200 to-cyan-200 bg-clip-text text-transparent">
+              accessible to everyone
+            </span>
+          </h1>
+          <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-gray-400 sm:text-lg sm:leading-9">
+            AI Career Mentor is a UK-built platform that gives candidates the kind
+            of preparation that used to cost hundreds of pounds per hour — and
+            gives hiring teams a structured, fair way to assess candidates at scale.
+          </p>
+        </section>
+
+        {/* Mission */}
+        <section className="mb-16 rounded-[2rem] border border-purple-300/15 bg-purple-300/[0.05] p-8 sm:p-10">
+          <p className="mb-3 text-[11px] font-black uppercase tracking-[0.2em] text-purple-300/80">
+            Our mission
+          </p>
+          <blockquote className="text-xl font-black leading-[1.4] tracking-[-0.03em] text-white sm:text-2xl">
+            &ldquo;To make the gap between a good candidate and a hired one about
+            preparation, not privilege.&rdquo;
+          </blockquote>
+        </section>
+
+        {/* DE&I statement */}
+        <section className="mb-16">
+          <h2 className="mb-6 text-2xl font-black tracking-[-0.04em]">Why this matters</h2>
+          <div className="space-y-5 text-base leading-8 text-gray-400">
+            <p>
+              The interview process has a diversity problem — and it starts long before
+              the interview room. Candidates from underrepresented backgrounds,
+              first-generation graduates, career changers, and those without access to
+              professional networks face a structural disadvantage that has nothing to
+              do with their ability to do the job.
+            </p>
+            <p>
+              Access to quality interview coaching has historically been a privilege.
+              Private coaches charge £150–£300 per hour. Elite universities run
+              dedicated careers programmes unavailable to everyone else. Professional
+              networks give some candidates insider knowledge — the unwritten rules of
+              interviews — that others never learn.
+            </p>
+            <p>
+              The result is that hiring decisions are influenced not just by capability,
+              but by who had access to preparation. That&rsquo;s not a fair outcome for
+              candidates, and it&rsquo;s not good for employers who miss out on talented
+              people who simply didn&rsquo;t know how to present themselves.
+            </p>
+            <p className="font-black text-white">
+              AI Career Mentor exists to close that gap. We give every candidate —
+              regardless of background, institution, or budget — access to the same
+              quality of structured, honest, personalised coaching that used to be
+              reserved for the few.
+            </p>
+          </div>
+        </section>
+
+        {/* Story */}
+        <section className="mb-16">
+          <h2 className="mb-6 text-2xl font-black tracking-[-0.04em]">The story</h2>
+          <div className="space-y-5 text-base leading-8 text-gray-400">
+            <p>
+              I built AI Career Mentor because I&rsquo;ve seen the difference that
+              preparation makes — and how unevenly distributed that preparation is.
+              Candidates who practise with structured feedback perform meaningfully
+              better. The coaching works. The problem is access.
+            </p>
+            <p>
+              The platform started with one question: what would it look like if every
+              candidate — first-generation graduate, career changer, returner to work,
+              candidate from a non-traditional background — could access the same
+              calibre of coaching as someone with a top-tier careers service and a
+              private coach? Not generic questions, but coaching tailored to their
+              exact role, level, and interview format — with honest feedback on answers,
+              voice delivery, and camera presence.
+            </p>
+            <p>
+              We built it in the UK, GDPR-first, and we&rsquo;re committed to keeping
+              the core experience genuinely accessible. Because inclusive hiring has to
+              start with inclusive preparation.
+            </p>
+          </div>
+        </section>
+
+        {/* Values */}
+        <section className="mb-16">
+          <h2 className="mb-8 text-2xl font-black tracking-[-0.04em]">What we stand for</h2>
+          <div className="grid gap-5 sm:grid-cols-2">
+            {values.map((v) => (
+              <div
+                key={v.title}
+                className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-6"
+              >
+                <h3 className="mb-2 font-black leading-tight">{v.title}</h3>
+                <p className="text-sm leading-6 text-gray-400">{v.body}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Team */}
+        <section className="mb-16">
+          <h2 className="mb-8 text-2xl font-black tracking-[-0.04em]">Team</h2>
+          <div className="grid gap-5 sm:grid-cols-2">
+            {team.map((member) => (
+              <div
+                key={member.name}
+                className="flex flex-col rounded-2xl border border-white/[0.08] bg-white/[0.03] p-6"
+              >
+                <div className="mb-4 h-20 w-20 overflow-hidden rounded-full border-2 border-purple-400/30">
+                  <Image
+                    src={member.photo}
+                    alt={member.name}
+                    width={80}
+                    height={80}
+                    className="h-full w-full object-cover object-top"
+                  />
+                </div>
+                <p className="font-black">{member.name}</p>
+                <p className="mb-3 text-xs text-purple-300/80">{member.role}</p>
+                <p className="text-sm leading-6 text-gray-400">{member.bio}</p>
+                {member.linkedin && (
+                  <a
+                    href={member.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-4 text-xs font-semibold text-purple-300 hover:text-purple-200"
+                  >
+                    LinkedIn →
+                  </a>
+                )}
+              </div>
+            ))}
+          </div>
+          <p className="mt-6 text-sm text-gray-600">
+            We&rsquo;re hiring.{" "}
+            <a
+              href="mailto:team@aicareermentor.co.uk"
+              className="text-purple-300 hover:text-purple-200"
+            >
+              Get in touch →
+            </a>
+          </p>
+        </section>
+
+        {/* CTA */}
+        <section className="text-center">
+          <Link
+            href="/for-candidates"
+            className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-8 py-4 text-base font-black text-white shadow-2xl shadow-purple-950/40 transition hover:scale-[1.02]"
+          >
+            Start practising →
+          </Link>
+          <p className="mt-3 text-xs text-gray-600">Free to start. No credit card required.</p>
+        </section>
+      </div>
+    </>
+  );
+}
