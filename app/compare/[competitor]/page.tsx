@@ -47,7 +47,7 @@ export default async function ComparisonPage({ params }: Props) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
       />
 
-      <div className="mx-auto max-w-4xl px-4 pb-24 pt-10 sm:px-6">
+      <div className="mx-auto max-w-4xl px-4 pb-24 pt-6 sm:px-6">
         {/* Hero */}
         <section className="mb-12 mt-8 text-center">
           <p className="mb-4 text-[11px] font-black uppercase tracking-[0.2em] text-purple-300/70">

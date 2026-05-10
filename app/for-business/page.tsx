@@ -127,7 +127,7 @@ export default function ForBusinessPage() {
   return (
     <AudienceShell audience="business" currentPath="/for-business">
       {/* Hero */}
-      <section className="mx-auto max-w-6xl px-4 pb-16 pt-12 text-center sm:px-6 sm:pb-20 sm:pt-16 lg:pt-20">
+      <section className="mx-auto max-w-6xl px-4 pb-16 pt-6 text-center sm:px-6 sm:pb-20 sm:pt-10">
         <p className="mx-auto mb-6 inline-flex items-center gap-2.5 rounded-full border border-fuchsia-400/25 bg-fuchsia-400/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-fuchsia-200">
           For hiring teams
         </p>

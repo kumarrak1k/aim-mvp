@@ -12,7 +12,7 @@ export function ProfileHero({
   hasRoleSpec,
 }: ProfileHeroProps) {
   return (
-    <section className="mx-auto max-w-7xl px-4 pb-8 pt-12 text-center sm:px-6 sm:pb-10 sm:pt-16">
+    <section className="mx-auto max-w-7xl px-4 pb-8 pt-6 text-center sm:px-6 sm:pb-10 sm:pt-10">
       <div className="mx-auto max-w-3xl">
         <SectionHeading
           align="center"

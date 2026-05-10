@@ -50,7 +50,7 @@ export default function BlogIndexPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
 
-      <div className="mx-auto max-w-4xl px-4 pb-24 pt-10 sm:px-6">
+      <div className="mx-auto max-w-4xl px-4 pb-24 pt-6 sm:px-6">
         <header className="mb-14 mt-10 border-b border-white/[0.08] pb-10">
           <p className="mb-4 text-[11px] font-black uppercase tracking-[0.2em] text-purple-300/80">
             Interview guides

@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default function CompaniesIndexPage() {
   return (
     <PublicShell currentPath="/companies">
-      <div className="mx-auto max-w-4xl px-4 pb-24 pt-10 sm:px-6">
+      <div className="mx-auto max-w-4xl px-4 pb-24 pt-6 sm:px-6">
         <div className="mb-10">
           <h1 className="text-4xl font-black tracking-[-0.04em] sm:text-5xl">
             Company Interview Guides

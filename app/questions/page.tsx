@@ -17,7 +17,7 @@ export default function QuestionsIndexPage() {
 
   return (
     <PublicShell currentPath="/questions">
-      <div className="mx-auto max-w-5xl px-4 pb-24 pt-10 sm:px-6">
+      <div className="mx-auto max-w-5xl px-4 pb-24 pt-6 sm:px-6">
         <header className="mb-10 mt-10 border-b border-white/[0.08] pb-10">
           <p className="mb-4 text-[11px] font-black uppercase tracking-[0.2em] text-purple-300/80">
             Interview question library
