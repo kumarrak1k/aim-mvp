@@ -38,16 +38,51 @@ export function PlanPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    Promise.all([
-      fetch("/api/subscription").then((r) => r.json()),
-      fetch("/api/practice-sessions").then((r) => r.json()),
-    ])
-      .then(([subData, sessData]: [SubscriptionInfo, { usage?: UsageInfo }]) => {
+    let cancelled = false;
+    let pollTimer: ReturnType<typeof setTimeout>;
+
+    const loadUsage = async () => {
+      try {
+        const sessRes = await fetch("/api/practice-sessions");
+        const sessData = (await sessRes.json()) as { usage?: UsageInfo };
+        if (!cancelled && sessData?.usage) setUsage(sessData.usage);
+      } catch {
+        // non-fatal
+      }
+    };
+
+    const pollSubscription = async (attempt = 0): Promise<void> => {
+      try {
+        const subRes = await fetch("/api/subscription");
+        const subData = (await subRes.json()) as SubscriptionInfo;
+
+        if (cancelled) return;
         setSub(subData);
-        if (sessData?.usage) setUsage(sessData.usage);
-      })
-      .catch(() => setError("Could not load plan information."))
-      .finally(() => setLoading(false));
+
+        // If the customer has been created in Stripe but the subscription isn't
+        // active yet (webhook in flight), keep polling for up to ~20 seconds.
+        if (!subData.isActive && subData.hasCustomer && attempt < 10) {
+          pollTimer = setTimeout(() => void pollSubscription(attempt + 1), 2000);
+          return;
+        }
+
+        // Subscription confirmed — refresh usage so plan name + limits update.
+        await loadUsage();
+      } catch {
+        if (!cancelled) setError("Could not load plan information.");
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+
+    // Load usage immediately; subscription polling determines final plan name.
+    void loadUsage();
+    void pollSubscription();
+
+    return () => {
+      cancelled = true;
+      clearTimeout(pollTimer);
+    };
   }, []);
 
   async function openPortal() {
@@ -104,6 +139,8 @@ export function PlanPage() {
 
   const isFree = !sub?.isActive || sub.planName === "Free";
   const isProfessional = sub?.planName === "Professional";
+  // True when Stripe customer exists but webhook hasn't confirmed yet
+  const isConfirming = !sub?.isActive && Boolean(sub?.hasCustomer);
 
   const totalLimit = usage?.dailyLimit ?? 3;
   const totalUsed = usage?.usedToday ?? 0;
@@ -149,20 +186,33 @@ export function PlanPage() {
               fontWeight: 900,
               letterSpacing: "0.12em",
               textTransform: "uppercase",
-              background: isFree
-                ? "rgba(255,255,255,0.08)"
-                : "linear-gradient(to right, #a855f7, #ec4899)",
-              color: isFree ? "rgba(255,255,255,0.6)" : "white",
+              background: isConfirming
+                ? "rgba(251,191,36,0.15)"
+                : isFree
+                  ? "rgba(255,255,255,0.08)"
+                  : "linear-gradient(to right, #a855f7, #ec4899)",
+              color: isConfirming
+                ? "#fbbf24"
+                : isFree
+                  ? "rgba(255,255,255,0.6)"
+                  : "white",
               flexShrink: 0,
               marginTop: "0.25rem",
             }}
           >
-            {isFree ? "Trial" : "Active"}
+            {isConfirming ? "Activating…" : isFree ? "Trial" : "Active"}
           </span>
         </div>
 
+        {/* Confirming subscription — webhook in flight */}
+        {isConfirming && (
+          <div style={{ marginTop: "1rem", color: "rgba(251,191,36,0.8)", fontSize: "0.8rem" }}>
+            Confirming your subscription with Stripe — this usually takes a few seconds. The page will update automatically.
+          </div>
+        )}
+
         {/* Free plan — usage bar */}
-        {isFree && (
+        {isFree && !isConfirming && (
           <div style={{ marginTop: "1rem" }}>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.4rem" }}>
               <span style={{ color: "rgba(255,255,255,0.5)" }}>Trial sessions used</span>
