@@ -37,7 +37,7 @@ export function PublicShell({ children, currentPath }: PublicShellProps) {
 
       {/* ── Header ── */}
       <header className="relative z-50">
-        <div className="mx-auto flex w-full max-w-7xl items-center gap-4 px-4 py-5 sm:px-6 sm:py-6 lg:gap-6 lg:px-10">
+        <div className="mx-auto flex w-full max-w-7xl items-center gap-4 px-4 py-6 sm:px-6 sm:py-8 lg:gap-6 lg:px-10">
           {/* Logo */}
           <SiteLogo href="/" size="md" showText />
 
