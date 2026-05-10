@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import { CandidateAppShell } from "@/app/components/marketing/CandidateAppShell";
 import { PracticeHero } from "./PracticeHero";
@@ -22,9 +22,9 @@ import {
 
 type PracticeUsage = {
   planName: string;
-  dailyLimit: number;
+  dailyLimit: number | null;
   usedToday: number;
-  remainingToday: number;
+  remainingToday: number | null;
   limitReached: boolean;
   resetsAt: string;
 };
@@ -36,7 +36,7 @@ const practiceModeLabels: Record<PracticeMode, string> = {
 };
 
 const defaultPracticeUsage: PracticeUsage = {
-  planName: "Beta",
+  planName: "Free",
   dailyLimit: 3,
   usedToday: 0,
   remainingToday: 3,
@@ -70,8 +70,11 @@ function formatResetTime(value: string) {
 
 export function PracticePageClient() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { isLoaded, isSignedIn } = useUser();
   const { manualDeviceMode } = useDeviceProfile();
+
+  const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
 
   const [role, setRole] = useState("");
   const [savedCandidateProfile, setSavedCandidateProfile] =
@@ -126,6 +129,18 @@ export function PracticePageClient() {
     speakerPreference,
   ]);
 
+  // Detect ?payment=success and clean the URL
+  useEffect(() => {
+    if (searchParams.get("payment") === "success") {
+      setShowPaymentSuccess(true);
+      const url = new URL(window.location.href);
+      url.searchParams.delete("payment");
+      window.history.replaceState({}, "", url.toString());
+      const t = window.setTimeout(() => setShowPaymentSuccess(false), 6000);
+      return () => window.clearTimeout(t);
+    }
+  }, [searchParams]);
+
   const signedInLimitReached =
     Boolean(isSignedIn) && usageLoaded && practiceUsage.limitReached;
 
@@ -143,12 +158,14 @@ export function PracticePageClient() {
     }
 
     if (practiceUsage.limitReached) {
-      return `Daily beta limit reached. You can complete more saved sessions after ${formatResetTime(
-        practiceUsage.resetsAt
-      )}.`;
+      return `Daily session limit reached. Upgrade to Professional for unlimited sessions, or come back after ${formatResetTime(practiceUsage.resetsAt)}.`;
     }
 
-    return `${practiceUsage.remainingToday}/${practiceUsage.dailyLimit} saved practice sessions remaining today.`;
+    if (practiceUsage.dailyLimit === null) {
+      return `${practiceUsage.planName} plan · Unlimited sessions.`;
+    }
+
+    return `${practiceUsage.remainingToday}/${practiceUsage.dailyLimit} free sessions remaining today.`;
   }, [isLoaded, isSignedIn, practiceUsage, usageLoaded]);
 
   useEffect(() => {
@@ -387,6 +404,29 @@ export function PracticePageClient() {
   return (
     <CandidateAppShell currentPath="/practice">
       <section className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:py-10">
+        {showPaymentSuccess && (
+          <div className="mb-5 flex items-center justify-between gap-4 rounded-2xl border border-emerald-300/25 bg-emerald-300/[0.08] px-5 py-4">
+            <div className="flex items-center gap-3">
+              <span className="text-xl">🎉</span>
+              <div>
+                <p className="text-sm font-black text-emerald-200">
+                  Welcome to {practiceUsage.planName}!
+                </p>
+                <p className="text-xs text-emerald-300/70">
+                  Your plan is now active. Unlimited sessions are unlocked — start practising below.
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => setShowPaymentSuccess(false)}
+              className="shrink-0 text-emerald-400/50 hover:text-emerald-300"
+              aria-label="Dismiss"
+            >
+              ✕
+            </button>
+          </div>
+        )}
+
         <PracticeHero
           totalQuestions={totalQuestions}
           canStartInterview={canStartInterview}
@@ -395,6 +435,7 @@ export function PracticePageClient() {
           usageSummary={usageSummary}
           usageLimitReached={signedInLimitReached}
           usageMessage={usageMessage}
+          planName={practiceUsage.planName}
           onStartInterview={startInterview}
         />
 

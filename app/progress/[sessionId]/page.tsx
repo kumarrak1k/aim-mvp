@@ -277,10 +277,64 @@ export default function PracticeSessionDetailPage() {
               <QuestionArchive results={results} />
               <SessionInsights summary={session.summary} />
             </div>
+
+            <UpgradeNudge />
           </div>
         )}
       </main>
     </CandidateAppShell>
+  );
+}
+
+function UpgradeNudge() {
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/practice-sessions")
+      .then((r) => r.json())
+      .then((d) => {
+        const usage = d?.usage;
+        if (usage?.limitReached && usage?.planName === "Free") {
+          setShow(true);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  if (!show) return null;
+
+  return (
+    <section className="relative overflow-hidden rounded-[2rem] border border-purple-300/20 bg-gradient-to-br from-purple-500/10 via-fuchsia-500/[0.07] to-blue-500/10 p-7 text-center shadow-2xl shadow-purple-950/20">
+      <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-purple-500/20 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-fuchsia-500/15 blur-3xl" />
+      <div className="relative">
+        <p className="mb-2 text-[11px] font-black uppercase tracking-[0.2em] text-purple-300/70">
+          Free plan · Daily limit reached
+        </p>
+        <h2 className="text-2xl font-black tracking-[-0.04em]">
+          Ready to practise more?
+        </h2>
+        <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-gray-400">
+          You&apos;ve used all 3 free sessions today. Upgrade to Professional for
+          unlimited daily sessions, plus voice coaching, camera analysis and
+          model answers — all included.
+        </p>
+        <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+          <Link
+            href="/for-candidates/pricing"
+            className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-7 py-3.5 text-sm font-black text-white shadow-xl shadow-purple-950/35 transition hover:scale-[1.02]"
+          >
+            Upgrade to Professional →
+          </Link>
+          <Link
+            href="/practice"
+            className="rounded-2xl border border-white/10 bg-white/[0.06] px-7 py-3.5 text-sm font-black text-white transition hover:bg-white/[0.1]"
+          >
+            Back to practice
+          </Link>
+        </div>
+      </div>
+    </section>
   );
 }
 

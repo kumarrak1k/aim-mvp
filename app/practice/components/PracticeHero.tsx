@@ -11,6 +11,7 @@ type PracticeHeroProps = {
   usageSummary: string;
   usageLimitReached: boolean;
   usageMessage: string;
+  planName: string;
   onStartInterview: () => void;
 };
 
@@ -22,6 +23,7 @@ export function PracticeHero({
   usageSummary,
   usageLimitReached,
   usageMessage,
+  planName,
   onStartInterview,
 }: PracticeHeroProps) {
   const startDisabled = !canStartInterview || questionLoading;
@@ -65,30 +67,46 @@ export function PracticeHero({
               </p>
             </div>
 
-            <div
-              className={`w-full rounded-[1.35rem] border p-4 ${
-                usageLimitReached
-                  ? "border-amber-300/20 bg-amber-300/10"
-                  : "border-emerald-300/15 bg-emerald-300/10"
-              }`}
-            >
-              <p
-                className={`text-xs font-black uppercase tracking-[0.18em] ${
-                  usageLimitReached ? "text-amber-200" : "text-emerald-200"
+            {usageLimitReached && planName === "Free" ? (
+              <div className="w-full rounded-[1.35rem] border border-purple-300/20 bg-purple-300/[0.08] p-4">
+                <p className="text-xs font-black uppercase tracking-[0.18em] text-purple-200">
+                  Free plan · Daily limit reached
+                </p>
+                <p className="mt-2 max-w-full break-words text-sm font-semibold leading-6 text-gray-200">
+                  {usageSummary}
+                </p>
+                <Link
+                  href="/for-candidates/pricing"
+                  className="mt-3 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-4 py-2.5 text-sm font-black text-white shadow-lg transition hover:scale-[1.02]"
+                >
+                  Upgrade to Professional →
+                </Link>
+              </div>
+            ) : (
+              <div
+                className={`w-full rounded-[1.35rem] border p-4 ${
+                  usageLimitReached
+                    ? "border-amber-300/20 bg-amber-300/10"
+                    : "border-emerald-300/15 bg-emerald-300/10"
                 }`}
               >
-                Beta usage
-              </p>
-              <p className="mt-2 max-w-full break-words text-sm font-semibold leading-6 text-gray-200">
-                {usageSummary}
-              </p>
-
-              {usageMessage && (
-                <p className="mt-2 text-xs font-semibold leading-5 text-gray-400">
-                  {usageMessage}
+                <p
+                  className={`text-xs font-black uppercase tracking-[0.18em] ${
+                    usageLimitReached ? "text-amber-200" : "text-emerald-200"
+                  }`}
+                >
+                  {planName} plan
                 </p>
-              )}
-            </div>
+                <p className="mt-2 max-w-full break-words text-sm font-semibold leading-6 text-gray-200">
+                  {usageSummary}
+                </p>
+                {usageMessage && (
+                  <p className="mt-2 text-xs font-semibold leading-5 text-gray-400">
+                    {usageMessage}
+                  </p>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="mt-6 grid w-full gap-3 sm:flex sm:flex-wrap">
