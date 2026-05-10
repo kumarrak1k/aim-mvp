@@ -132,9 +132,12 @@ export default function PracticeSessionPage() {
   const [cameraEnabled, setCameraEnabled] = useState(false);
   const [cameraUserStarted, setCameraUserStarted] = useState(false);
 
-  /** True when the session was started on the free plan — voice and camera
-   *  must stay disabled for the lifetime of this session. */
+  /** True when the user is actually on the free plan — controls upgrade CTAs. */
   const [freePlan, setFreePlan] = useState(false);
+  /** True when the session must use keyboard-only mode — hides all voice and
+   *  camera controls. This is true for free-plan users AND for paid users who
+   *  explicitly chose "Typed answers only" on the setup screen. */
+  const [isKeyboardOnly, setIsKeyboardOnly] = useState(false);
 
   const latestVoiceAnalysisRef = useRef<VoiceAnalysis | null>(null);
   const latestVideoAnalysisRef = useRef<VideoAnalysis | null>(null);
@@ -342,14 +345,16 @@ export default function PracticeSessionPage() {
     setInterviewType(config.interviewType);
     setDifficulty(config.difficulty);
     setFocusArea(config.focusArea);
-    // Keyboard-only when:
-    //  a) the user is on the free plan, OR
-    //  b) they explicitly chose "Typed answers only" (even on a paid plan).
-    // This prevents voice/camera controls appearing for paid users who pick
-    // the typed mode on the setup screen.
+    // freePlan = user is actually on the free plan → controls upgrade CTAs.
+    const sessionIsFreePlan = Boolean(config.freePlan);
+    setFreePlan(sessionIsFreePlan);
+
+    // isKeyboardOnly = free plan OR paid user who chose "Typed answers only".
+    // Controls whether voice/camera recording UI is shown — NOT the upgrade CTA.
     const sessionIsKeyboardOnly =
-      Boolean(config.freePlan) || config.practiceMode === "typed";
-    setFreePlan(sessionIsKeyboardOnly);
+      sessionIsFreePlan || config.practiceMode === "typed";
+    setIsKeyboardOnly(sessionIsKeyboardOnly);
+
     setSpeakerEnabled(sessionIsKeyboardOnly ? false : config.speakerEnabled);
     setCameraEnabled(sessionIsKeyboardOnly ? false : config.cameraEnabled);
     setSpeakerPreference(config.speakerPreference || defaultSpeakerPreference);
@@ -970,20 +975,20 @@ export default function PracticeSessionPage() {
 
   const playQuestionManually = useCallback(() => {
     if (!question.trim()) return;
-    // Free plan — speaker must never be enabled during the session.
-    if (freePlan) return;
+    // Keyboard-only mode — speaker must never be enabled during the session.
+    if (isKeyboardOnly) return;
 
     setHasUserInteracted(true);
     setSpeakerEnabled(true);
 
     void playQuestionWithNaturalAudio(question, false);
     lastSpokenQuestionRef.current = question;
-  }, [freePlan, lastSpokenQuestionRef, playQuestionWithNaturalAudio, question]);
+  }, [isKeyboardOnly, lastSpokenQuestionRef, playQuestionWithNaturalAudio, question]);
 
   const startGuidedAnswer = useCallback(async () => {
     if (!question.trim() || questionLoading) return;
-    // Free plan — guided answer (voice + auto-record) is not available.
-    if (freePlan) return;
+    // Keyboard-only mode — guided answer (voice + auto-record) is not available.
+    if (isKeyboardOnly) return;
 
     setHasUserInteracted(true);
     setSpeakerEnabled(true);
@@ -999,7 +1004,7 @@ export default function PracticeSessionPage() {
   }, [
     cameraEnabled,
     clearCurrentAnswerCapture,
-    freePlan,
+    isKeyboardOnly,
     playQuestionWithNaturalAudio,
     question,
     questionLoading,
@@ -1396,7 +1401,7 @@ export default function PracticeSessionPage() {
             onStartGuidedAnswer={() => void startGuidedAnswer()}
             onBackToSetup={resetInterview}
             assessmentMode={assessmentMode}
-            freePlan={freePlan}
+            freePlan={isKeyboardOnly}
           />
 
           {/* Camera column only appears when camera is actively enabled
@@ -1422,7 +1427,7 @@ export default function PracticeSessionPage() {
               onFeedback={() => void getFeedback()}
               onViewFeedback={scrollToFeedback}
               assessmentMode={assessmentMode}
-              freePlan={freePlan}
+              freePlan={isKeyboardOnly}
             />
 
             {/* Camera column — only shown in voice-camera mode */}

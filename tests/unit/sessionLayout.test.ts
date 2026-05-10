@@ -61,6 +61,51 @@ const answerPlaceholder = (freePlan: boolean, assessmentMode: boolean) => {
 const answerGridCols = (freePlan: boolean) =>
   freePlan ? "sm:grid-cols-2" : "sm:grid-cols-3";
 
+// ─── freePlan vs isKeyboardOnly — the critical split ─────────────────────────
+//
+// `freePlan`      = user is actually on the free plan → shows upgrade CTA
+// `isKeyboardOnly`= hides voice/camera recording controls
+//
+// These are the same for free-plan users, but DIFFER for paid users who
+// explicitly chose "Typed answers only" — they get keyboard-only controls
+// but must NOT see the "upgrade" CTA.
+//
+// The regression: before this fix, `freePlan` was set to true for typed+paid,
+// causing "You've used your 3 free sessions" to appear after every typed session.
+
+const deriveFlags = (configFreePlan: boolean, practiceMode: string) => ({
+  freePlan: configFreePlan,                                    // actual plan flag
+  isKeyboardOnly: configFreePlan || practiceMode === "typed",  // UI controls flag
+});
+
+describe("freePlan vs isKeyboardOnly flag split", () => {
+  it("free plan typed session: both flags true (show CTA + hide controls)", () => {
+    const { freePlan, isKeyboardOnly } = deriveFlags(true, "typed");
+    expect(freePlan).toBe(true);
+    expect(isKeyboardOnly).toBe(true);
+  });
+
+  it("paid user typed session: isKeyboardOnly=true but freePlan=false (hide controls, no upgrade CTA)", () => {
+    // This is the regression case: paid user choosing typed mode should NOT
+    // see the "You've used your 3 free sessions" upgrade banner.
+    const { freePlan, isKeyboardOnly } = deriveFlags(false, "typed");
+    expect(freePlan).toBe(false);       // ← no upgrade CTA
+    expect(isKeyboardOnly).toBe(true);  // ← controls still hidden
+  });
+
+  it("paid user voice session: both flags false (show controls, no upgrade CTA)", () => {
+    const { freePlan, isKeyboardOnly } = deriveFlags(false, "voice");
+    expect(freePlan).toBe(false);
+    expect(isKeyboardOnly).toBe(false);
+  });
+
+  it("paid user voice-camera session: both flags false", () => {
+    const { freePlan, isKeyboardOnly } = deriveFlags(false, "voice-camera");
+    expect(freePlan).toBe(false);
+    expect(isKeyboardOnly).toBe(false);
+  });
+});
+
 // ─── keyboard-only / freePlan detection ──────────────────────────────────────
 
 describe("keyboard-only detection — all three modes", () => {
