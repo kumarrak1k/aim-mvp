@@ -18,6 +18,7 @@ import { UserButton } from "@clerk/nextjs";
 import { type ReactNode } from "react";
 import { SiteLogo } from "@/app/components/brand/SiteLogo";
 import { SiteFooter } from "@/app/components/marketing/SiteFooter";
+import { PlanPage } from "@/app/components/account/PlanPage";
 
 export type CandidateAppPath =
   | "/practice"
@@ -99,7 +100,20 @@ export function CandidateAppShell({
               )}
 
             <div className="shrink-0 px-2">
-              <UserButton />
+              <UserButton>
+                <UserButton.UserProfilePage
+                  label="My Plan"
+                  url="plan"
+                  labelIcon={
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: "1em", height: "1em" }}>
+                      <rect x="2" y="5" width="20" height="14" rx="2" />
+                      <line x1="2" y1="10" x2="22" y2="10" />
+                    </svg>
+                  }
+                >
+                  <PlanPage />
+                </UserButton.UserProfilePage>
+              </UserButton>
             </div>
           </div>
         </div>
