@@ -1340,7 +1340,6 @@ export default function PracticeSessionPage() {
     <PracticeSessionShell
       assessmentMode={assessmentMode}
       templateContext={templateContext}
-      audioActive={isListening || activeIsSpeakingQuestion}
     >
       <section className="mx-auto max-w-[1720px] px-4 py-2 sm:px-6 sm:py-3">
         <div className="grid items-start gap-3 xl:grid-cols-[minmax(360px,0.82fr)_minmax(620px,1.18fr)]">
@@ -1439,7 +1438,6 @@ function PracticeSessionShell({
   children,
   assessmentMode,
   templateContext,
-  audioActive,
 }: {
   children: ReactNode;
   assessmentMode: boolean;
@@ -1449,7 +1447,6 @@ function PracticeSessionShell({
     companyLogoUrl?: string;
     templateName?: string;
   };
-  audioActive?: boolean;
 }) {
   return (
     <main className="min-h-screen overflow-x-hidden bg-[#0a0614] text-white">
@@ -1466,7 +1463,6 @@ function PracticeSessionShell({
           companyBrandColor={templateContext?.companyBrandColor}
           companyLogoUrl={templateContext?.companyLogoUrl}
           templateName={templateContext?.templateName}
-          audioActive={audioActive}
         />
         {children}
       </div>
