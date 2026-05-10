@@ -2,7 +2,6 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
-import { SiteLogo } from "@/app/components/brand/SiteLogo";
 
 const faqs = [
   {
@@ -98,21 +97,12 @@ export function STARScorerClient() {
   }
 
   return (
-    <div className="relative min-h-screen bg-[#0a0614] text-white">
-      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(120,60,255,0.15),transparent),linear-gradient(180deg,#0a0614_0%,#100a1f_50%,#0c0816_100%)]" />
-        <div className="absolute left-1/2 top-[-300px] h-[600px] w-[900px] -translate-x-1/2 rounded-full bg-purple-600/[0.12] blur-[160px]" />
+    <div className="mx-auto max-w-3xl px-4 pb-24 pt-10 sm:px-6">
+      <div className="mb-8 flex justify-end">
+        <span className="rounded-full border border-emerald-400/20 bg-emerald-400/[0.07] px-3 py-1 text-[10px] font-black uppercase tracking-[0.15em] text-emerald-300">
+          Free — no sign-in required
+        </span>
       </div>
-
-      <div className="relative z-10 mx-auto max-w-3xl px-4 pb-24 pt-10 sm:px-6">
-        <div className="mb-10 flex items-center justify-between">
-          <Link href="/">
-            <SiteLogo href="" size="sm" showText />
-          </Link>
-          <span className="rounded-full border border-emerald-400/20 bg-emerald-400/[0.07] px-3 py-1 text-[10px] font-black uppercase tracking-[0.15em] text-emerald-300">
-            Free tool — no sign-in required
-          </span>
-        </div>
 
         {/* Hero */}
         <section className="mb-10 text-center">
@@ -288,6 +278,5 @@ export function STARScorerClient() {
           </div>
         </div>
       </div>
-    </div>
   );
 }
