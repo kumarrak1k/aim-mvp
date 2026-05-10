@@ -194,3 +194,46 @@ model Certificate {
 
   @@index([userId])
 }
+
+model AssessmentCentreSession {
+  id                   String    @id @default(cuid())
+  clerkUserId          String
+
+  // Setup
+  role                 String
+  sector               String
+  experienceLevel      String
+
+  // Progress
+  status               String    @default("setup")
+  currentStage         Int       @default(1)
+
+  // Stage 1 — Case study
+  caseStudyScenario    Json?
+  caseStudyResponse    String?   @db.Text
+  caseStudyFeedback    Json?
+  caseStudyScore       Float?
+  caseStudyTimeMs      Int?
+
+  // Stage 2 — Competency interview
+  interviewResults     Json?
+  interviewSummary     Json?
+  interviewScore       Float?
+
+  // Stage 3 — Presentation
+  presentationBrief    Json?
+  presentationResponse String?   @db.Text
+  presentationFeedback Json?
+  presentationScore    Float?
+
+  // Final report
+  overallScore         Float?
+  report               Json?
+  completedAt          DateTime?
+
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  @@index([clerkUserId])
+  @@index([status])
+}

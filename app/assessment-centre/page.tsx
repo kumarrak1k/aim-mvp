@@ -206,7 +206,7 @@ function AssessmentCentreAccess() {
             presentation. One structured report at the end.
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Link href="/for-candidates/assessment-centre">
+            <Link href="/assessment-centre/setup">
               <button className="rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-8 py-4 text-base font-black text-white shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.02]">
                 Start assessment centre →
               </button>

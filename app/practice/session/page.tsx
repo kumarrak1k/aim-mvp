@@ -96,6 +96,7 @@ export default function PracticeSessionPage() {
   const [totalQuestions, setTotalQuestions] = useState<number>(DEFAULT_TOTAL_QUESTIONS);
   const [assessmentMode, setAssessmentMode] = useState(false);
   const [assignmentToken, setAssignmentToken] = useState<string | undefined>(undefined);
+  const [assessmentCentreId, setAssessmentCentreId] = useState<string | undefined>(undefined);
   const [templateContext, setTemplateContext] = useState<
     | {
         customInstructions?: string;
@@ -361,6 +362,7 @@ export default function PracticeSessionPage() {
     setTotalQuestions(config.totalQuestions ?? DEFAULT_TOTAL_QUESTIONS);
     setAssessmentMode(Boolean(config.assessmentMode));
     setAssignmentToken(config.assignmentToken);
+    setAssessmentCentreId(config.assessmentCentreId);
     setTemplateContext(config.templateContext);
     setSessionConfig(config);
     setSessionConfigLoaded(true);
@@ -543,12 +545,28 @@ export default function PracticeSessionPage() {
             data?.error || response.statusText
           );
         }
+
+        // If this session is part of an assessment centre, link it
+        if (assessmentCentreId) {
+          try {
+            await fetch(`/api/assessment-centre/${assessmentCentreId}/submit-interview`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ results: sessionResults, summary: sessionSummary }),
+            });
+          } catch {
+            // non-fatal — session is already saved
+          }
+          router.push(`/assessment-centre/${assessmentCentreId}/stage-3`);
+          return;
+        }
       } catch (error) {
         console.warn("Practice session database save failed:", error);
       }
     },
     [
       addLocalSavedSession,
+      assessmentCentreId,
       assignmentToken,
       difficulty,
       experienceLevel,
@@ -557,6 +575,7 @@ export default function PracticeSessionPage() {
       isSignedIn,
       practiceMode,
       role,
+      router,
       speakerPreference,
       totalQuestions,
     ]

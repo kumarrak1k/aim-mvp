@@ -63,6 +63,12 @@ export type PracticeSessionConfig = {
    * even when a paid user chooses "Typed answers only".
    */
   practiceMode?: PracticeMode;
+  /**
+   * When set, this practice session is Stage 2 of an Assessment Centre session.
+   * After completion the session page will POST results to the assessment centre
+   * API and redirect to /assessment-centre/[id]/stage-3.
+   */
+  assessmentCentreId?: string;
 };
 
 export const defaultSessionConfig: PracticeSessionConfig = {
@@ -237,6 +243,10 @@ export function parseSessionConfig(): PracticeSessionConfig | null {
         parsed.practiceMode === "voice" ||
         parsed.practiceMode === "voice-camera"
           ? parsed.practiceMode
+          : undefined,
+      assessmentCentreId:
+        typeof parsed.assessmentCentreId === "string" && parsed.assessmentCentreId.length > 0
+          ? parsed.assessmentCentreId
           : undefined,
     };
   } catch {
