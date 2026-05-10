@@ -3,8 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { getAllQuestionSets, getQuestionSet } from "@/app/lib/content";
-import { SiteLogo } from "@/app/components/brand/SiteLogo";
 import { absoluteUrl } from "@/app/config/site";
+import { PublicShell } from "@/app/components/marketing/PublicShell";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -108,21 +108,13 @@ export default async function QuestionSetPage({ params }: Props) {
   };
 
   return (
-    <div className="relative min-h-screen bg-[#0a0614] text-white">
+    <PublicShell currentPath="/questions">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
       />
-      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(120,60,255,0.1),transparent),linear-gradient(180deg,#0a0614_0%,#100a1f_50%,#0c0816_100%)]" />
-        <div className="absolute left-1/2 top-[-300px] h-[600px] w-[900px] -translate-x-1/2 rounded-full bg-purple-600/[0.08] blur-[160px]" />
-      </div>
-
-      <div className="relative z-10 mx-auto max-w-3xl px-4 pb-24 pt-10 sm:px-6">
-        <div className="mb-8 flex items-center justify-between">
-          <Link href="/">
-            <SiteLogo href="" size="sm" showText />
-          </Link>
+      <div className="mx-auto max-w-3xl px-4 pb-24 pt-10 sm:px-6">
+        <div className="mb-6">
           <Link
             href="/questions"
             className="text-sm text-gray-500 transition hover:text-gray-300"
@@ -131,7 +123,7 @@ export default async function QuestionSetPage({ params }: Props) {
           </Link>
         </div>
 
-        <header className="mb-10 mt-8 border-b border-white/[0.07] pb-8">
+        <header className="mb-10 border-b border-white/[0.07] pb-8">
           {set.category && (
             <p className="mb-3 text-[11px] font-black uppercase tracking-[0.2em] text-purple-300/70">
               {set.category}
@@ -178,6 +170,6 @@ export default async function QuestionSetPage({ params }: Props) {
           </Link>
         </div>
       </div>
-    </div>
+    </PublicShell>
   );
 }

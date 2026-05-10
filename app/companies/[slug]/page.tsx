@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { COMPANY_GUIDES, getCompanyGuide } from "../data";
 import { absoluteUrl } from "@/app/config/site";
-import { SiteLogo } from "@/app/components/brand/SiteLogo";
+import { PublicShell } from "@/app/components/marketing/PublicShell";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -45,23 +45,14 @@ export default async function CompanyGuidePage({ params }: Props) {
   };
 
   return (
-    <div className="relative min-h-screen bg-[#0a0614] text-white">
+    <PublicShell currentPath="/companies">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
       />
 
-      {/* Background */}
-      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(120,60,255,0.1),transparent)]" />
-      </div>
-
-      <div className="relative z-10 mx-auto max-w-3xl px-4 pb-24 pt-10 sm:px-6">
-        {/* Header */}
-        <div className="mb-10 flex items-center justify-between">
-          <Link href="/">
-            <SiteLogo href="" size="sm" showText />
-          </Link>
+      <div className="mx-auto max-w-3xl px-4 pb-24 pt-10 sm:px-6">
+        <div className="mb-6">
           <Link href="/companies" className="text-sm text-gray-500 hover:text-gray-300">
             ← All guides
           </Link>
@@ -192,6 +183,6 @@ export default async function CompanyGuidePage({ params }: Props) {
           </Link>
         </p>
       </div>
-    </div>
+    </PublicShell>
   );
 }

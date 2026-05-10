@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { COMPANY_GUIDES } from "./data";
-import { SiteLogo } from "@/app/components/brand/SiteLogo";
+import { PublicShell } from "@/app/components/marketing/PublicShell";
 
 export const metadata: Metadata = {
   title: "Company Interview Guides | AI Career Mentor",
@@ -11,18 +11,8 @@ export const metadata: Metadata = {
 
 export default function CompaniesIndexPage() {
   return (
-    <div className="relative min-h-screen bg-[#0a0614] text-white">
-      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(120,60,255,0.1),transparent)]" />
-      </div>
-
-      <div className="relative z-10 mx-auto max-w-4xl px-4 pb-24 pt-10 sm:px-6">
-        <div className="mb-10 flex items-center justify-between">
-          <Link href="/">
-            <SiteLogo href="" size="sm" showText />
-          </Link>
-        </div>
-
+    <PublicShell currentPath="/companies">
+      <div className="mx-auto max-w-4xl px-4 pb-24 pt-10 sm:px-6">
         <div className="mb-10">
           <h1 className="text-4xl font-black tracking-[-0.04em] sm:text-5xl">
             Company Interview Guides
@@ -61,6 +51,6 @@ export default function CompaniesIndexPage() {
           </a>
         </div>
       </div>
-    </div>
+    </PublicShell>
   );
 }
