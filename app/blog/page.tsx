@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getAllPosts } from "@/app/lib/content";
-import { SiteLogo } from "@/app/components/brand/SiteLogo";
 import { absoluteUrl } from "@/app/config/site";
+import { PublicShell } from "@/app/components/marketing/PublicShell";
 
 export const metadata: Metadata = {
   title: "Interview Guides & Career Advice | AI Career Mentor",
@@ -44,21 +44,13 @@ export default function BlogIndexPage() {
   const posts = getAllPosts();
 
   return (
-    <div className="relative min-h-screen bg-[#0a0614] text-white">
+    <PublicShell currentPath="/blog">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
-      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(120,60,255,0.12),transparent),linear-gradient(180deg,#0a0614_0%,#100a1f_50%,#0c0816_100%)]" />
-        <div className="absolute left-1/2 top-[-300px] h-[600px] w-[900px] -translate-x-1/2 rounded-full bg-purple-600/[0.1] blur-[160px]" />
-      </div>
 
-      <div className="relative z-10 mx-auto max-w-4xl px-4 pb-24 pt-10 sm:px-6">
-        <Link href="/" className="mb-8 inline-block">
-          <SiteLogo href="" size="md" showText />
-        </Link>
-
+      <div className="mx-auto max-w-4xl px-4 pb-24 pt-10 sm:px-6">
         <header className="mb-14 mt-10 border-b border-white/[0.08] pb-10">
           <p className="mb-4 text-[11px] font-black uppercase tracking-[0.2em] text-purple-300/80">
             Interview guides
@@ -146,6 +138,6 @@ export default function BlogIndexPage() {
           </p>
         </div>
       </div>
-    </div>
+    </PublicShell>
   );
 }

@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { createPageMetadata } from "@/app/config/seo";
 import { absoluteUrl, siteConfig } from "@/app/config/site";
+import { PublicShell } from "@/app/components/marketing/PublicShell";
 
 export const metadata: Metadata = createPageMetadata({
   path: "/about",
@@ -52,27 +53,13 @@ const team = [
 
 export default function AboutPage() {
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#0a0614] text-white">
+    <PublicShell currentPath="/about">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
 
-      {/* Background */}
-      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(120,60,255,0.15),transparent),linear-gradient(180deg,#0a0614_0%,#100a1f_50%,#0c0816_100%)]" />
-        <div className="absolute left-1/2 top-[-300px] h-[600px] w-[900px] -translate-x-1/2 rounded-full bg-purple-600/[0.12] blur-[160px]" />
-      </div>
-
-      <div className="relative z-10 mx-auto max-w-4xl px-4 pb-24 pt-12 sm:px-6 sm:pt-16">
-        {/* Back nav */}
-        <Link
-          href="/"
-          className="mb-10 inline-flex items-center gap-2 text-[13px] text-gray-500 transition hover:text-gray-300"
-        >
-          ← Home
-        </Link>
-
+      <div className="mx-auto max-w-4xl px-4 pb-24 pt-10 sm:px-6">
         {/* Hero */}
         <section className="mb-16 text-center">
           <p className="mx-auto mb-5 inline-flex items-center gap-2 rounded-full border border-purple-400/25 bg-purple-400/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-purple-200">
@@ -234,6 +221,6 @@ export default function AboutPage() {
           <p className="mt-3 text-xs text-gray-600">Free to start. No credit card required.</p>
         </section>
       </div>
-    </main>
+    </PublicShell>
   );
 }
