@@ -1399,7 +1399,9 @@ export default function PracticeSessionPage() {
             freePlan={freePlan}
           />
 
-          <div className="grid items-start gap-3 xl:grid-cols-[minmax(0,1fr)_150px]">
+          {/* Camera column only appears when camera is actively enabled
+               (voice-camera mode). Voice-only and typed sessions use full width. */}
+          <div className={`grid items-start gap-3 ${cameraEnabled ? "xl:grid-cols-[minmax(0,1fr)_150px]" : ""}`}>
             <AnswerWorkspace
               answer={answer}
               question={question}
@@ -1423,8 +1425,8 @@ export default function PracticeSessionPage() {
               freePlan={freePlan}
             />
 
-            {/* Camera column hidden for keyboard-only (free plan) sessions */}
-            {!freePlan && (
+            {/* Camera column — only shown in voice-camera mode */}
+            {cameraEnabled && (
               <aside className="xl:sticky xl:top-20 xl:self-start">
                 <CameraWorkspace
                   cameraEnabled={cameraEnabled}
