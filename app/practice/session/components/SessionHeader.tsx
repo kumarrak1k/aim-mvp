@@ -74,61 +74,70 @@ function CompanyBrandedHeader({
   const safeCompany = companyName || "Hiring company";
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/[0.07] bg-[#0d0520]/80 backdrop-blur-xl [transform:translateZ(0)]">
-      {/* Brand colour stripe — visually anchors this as the company's process */}
-      <div className="h-1.5" style={{ background: brandColor }} />
+    <>
+      {/*
+       * fixed (not sticky) — the browser spec guarantees fixed elements
+       * are always on their own GPU compositor layer, so backdrop-blur
+       * never flickers regardless of what animates below.
+       */}
+      <header className="fixed inset-x-0 top-0 z-50 border-b border-white/[0.07] bg-[#0d0520]/80 backdrop-blur-xl">
+        {/* Brand colour stripe — visually anchors this as the company's process */}
+        <div className="h-1.5" style={{ background: brandColor }} />
 
-      <div className="mx-auto flex w-full max-w-7xl items-center gap-3 px-4 py-3 sm:px-6 lg:gap-6 lg:px-8 lg:py-3">
-        {/* Company identity (left) */}
-        <div className="flex min-w-0 flex-1 items-center gap-3">
-          <div
-            className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl text-base font-black text-white shadow-md"
-            style={{ background: brandColor }}
-          >
-            {companyLogoUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={companyLogoUrl}
-                alt={safeCompany}
-                className="h-full w-full object-cover"
-              />
-            ) : (
-              safeCompany.charAt(0).toUpperCase()
-            )}
-          </div>
+        <div className="mx-auto flex w-full max-w-7xl items-center gap-3 px-4 py-3 sm:px-6 lg:gap-6 lg:px-8 lg:py-3">
+          {/* Company identity (left) */}
+          <div className="flex min-w-0 flex-1 items-center gap-3">
+            <div
+              className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl text-base font-black text-white shadow-md"
+              style={{ background: brandColor }}
+            >
+              {companyLogoUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={companyLogoUrl}
+                  alt={safeCompany}
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                safeCompany.charAt(0).toUpperCase()
+              )}
+            </div>
 
-          <div className="min-w-0">
-            <p className="text-[10px] font-black uppercase tracking-[0.20em] text-gray-400">
-              Assessment from
-            </p>
-            <p className="truncate text-sm font-black tracking-[-0.02em] text-white sm:text-base">
-              {safeCompany}
-            </p>
-            {templateName && (
-              <p className="hidden truncate text-xs text-gray-500 sm:block">
-                {templateName}
+            <div className="min-w-0">
+              <p className="text-[10px] font-black uppercase tracking-[0.20em] text-gray-400">
+                Assessment from
               </p>
-            )}
+              <p className="truncate text-sm font-black tracking-[-0.02em] text-white sm:text-base">
+                {safeCompany}
+              </p>
+              {templateName && (
+                <p className="hidden truncate text-xs text-gray-500 sm:block">
+                  {templateName}
+                </p>
+              )}
+            </div>
           </div>
-        </div>
 
-        {/* Right: in-progress badge + powered-by */}
-        <div className="flex shrink-0 items-center gap-3">
-          <span className="hidden rounded-full border border-emerald-300/25 bg-emerald-300/10 px-3 py-1.5 text-[11px] font-black text-emerald-100 sm:inline-flex">
-            <span className="relative mr-2 inline-flex h-2 w-2 self-center">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+          {/* Right: in-progress badge + powered-by */}
+          <div className="flex shrink-0 items-center gap-3">
+            <span className="hidden rounded-full border border-emerald-300/25 bg-emerald-300/10 px-3 py-1.5 text-[11px] font-black text-emerald-100 sm:inline-flex">
+              <span className="relative mr-2 inline-flex h-2 w-2 self-center">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+              </span>
+              In progress
             </span>
-            In progress
-          </span>
 
-          <div className="hidden text-right text-[10px] leading-tight text-gray-500 sm:block">
-            <p className="font-black uppercase tracking-[0.16em]">Powered by</p>
-            <p className="text-gray-300">AI Career Mentor</p>
+            <div className="hidden text-right text-[10px] leading-tight text-gray-500 sm:block">
+              <p className="font-black uppercase tracking-[0.16em]">Powered by</p>
+              <p className="text-gray-300">AI Career Mentor</p>
+            </div>
           </div>
         </div>
-      </div>
-    </header>
+      </header>
+      {/* Spacer — keeps content below the fixed header (stripe 6px + py-3 24px + icon 40px) */}
+      <div className="h-[70px] shrink-0" aria-hidden="true" />
+    </>
   );
 }
 
@@ -136,28 +145,37 @@ function CompanyBrandedHeader({
 
 function PersonalPracticeHeader() {
   return (
-    <header className="sticky top-0 z-50 border-b border-white/[0.07] bg-white/[0.03] backdrop-blur-xl [transform:translateZ(0)]">
-      <div className="mx-auto flex w-full max-w-7xl items-center gap-3 px-4 py-3 sm:px-6 lg:gap-6 lg:px-8 lg:py-3">
-        {/* Logo */}
-        <div className="shrink-0">
-          <SiteLogo href="/practice" size="md" showText />
-        </div>
+    <>
+      {/*
+       * fixed (not sticky) — the browser spec guarantees fixed elements
+       * are always on their own GPU compositor layer, so backdrop-blur
+       * never flickers regardless of what animates below.
+       */}
+      <header className="fixed inset-x-0 top-0 z-50 border-b border-white/[0.07] bg-white/[0.03] backdrop-blur-xl">
+        <div className="mx-auto flex w-full max-w-7xl items-center gap-3 px-4 py-3 sm:px-6 lg:gap-6 lg:px-8 lg:py-3">
+          {/* Logo */}
+          <div className="shrink-0">
+            <SiteLogo href="/practice" size="md" showText />
+          </div>
 
-        {/* Right actions */}
-        <div className="ml-auto flex shrink-0 items-center gap-2">
-          <Link href="/practice" className="hidden sm:block">
-            <button className="rounded-full border border-white/[0.1] bg-white/[0.04] px-4 py-2 text-xs font-bold text-gray-300 transition hover:bg-white/[0.08] hover:text-white">
-              Exit to practice setup
-            </button>
-          </Link>
+          {/* Right actions */}
+          <div className="ml-auto flex shrink-0 items-center gap-2">
+            <Link href="/practice" className="hidden sm:block">
+              <button className="rounded-full border border-white/[0.1] bg-white/[0.04] px-4 py-2 text-xs font-bold text-gray-300 transition hover:bg-white/[0.08] hover:text-white">
+                Exit to practice setup
+              </button>
+            </Link>
 
-          <Show when="signed-in">
-            <div className="shrink-0 px-1">
-              <UserButton />
-            </div>
-          </Show>
+            <Show when="signed-in">
+              <div className="shrink-0 px-1">
+                <UserButton />
+              </div>
+            </Show>
+          </div>
         </div>
-      </div>
-    </header>
+      </header>
+      {/* Spacer — keeps content below the fixed header (py-3 24px + logo ~40px) */}
+      <div className="h-16 shrink-0" aria-hidden="true" />
+    </>
   );
 }
