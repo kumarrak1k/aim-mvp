@@ -32,9 +32,9 @@ type CandidateAppShellProps = {
 };
 
 const navItems: Array<{ href: CandidateAppPath; label: string }> = [
-  { href: "/practice", label: "Practice" },
-  { href: "/progress", label: "Progress" },
-  { href: "/profile", label: "Profile" },
+  { href: "/profile", label: "My Profile" },
+  { href: "/practice", label: "My Practice" },
+  { href: "/progress", label: "My Progress" },
 ];
 
 export function CandidateAppShell({
@@ -157,39 +157,8 @@ export function CandidateAppShell({
       >
         <div className="flex h-[60px] items-stretch">
           <BottomNavItem
-            href="/practice"
-            label="Practice"
-            primary
-            active={
-              currentPath === "/practice" || currentPath === "/practice/session"
-            }
-          >
-            <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
-              <path d="M8 5.14v14l11-7-11-7z" />
-            </svg>
-          </BottomNavItem>
-
-          <BottomNavItem
-            href="/progress"
-            label="Progress"
-            active={currentPath === "/progress"}
-          >
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="h-5 w-5"
-            >
-              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-            </svg>
-          </BottomNavItem>
-
-          <BottomNavItem
             href="/profile"
-            label="Profile"
+            label="My Profile"
             active={currentPath === "/profile"}
           >
             <svg
@@ -203,6 +172,37 @@ export function CandidateAppShell({
             >
               <circle cx="12" cy="8" r="4" />
               <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+            </svg>
+          </BottomNavItem>
+
+          <BottomNavItem
+            href="/practice"
+            label="My Practice"
+            primary
+            active={
+              currentPath === "/practice" || currentPath === "/practice/session"
+            }
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
+              <path d="M8 5.14v14l11-7-11-7z" />
+            </svg>
+          </BottomNavItem>
+
+          <BottomNavItem
+            href="/progress"
+            label="My Progress"
+            active={currentPath === "/progress"}
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="h-5 w-5"
+            >
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
             </svg>
           </BottomNavItem>
         </div>

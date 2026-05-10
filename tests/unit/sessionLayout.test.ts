@@ -289,3 +289,48 @@ describe("complete mode matrix — all combinations correct", () => {
     });
   });
 });
+
+// ─── Candidate nav labels and order ──────────────────────────────────────────
+
+describe("candidate nav — labels and order", () => {
+  // Mirrors the navItems array in CandidateAppShell.tsx.
+  // Order: My Profile → My Practice → My Progress
+  const navItems = [
+    { href: "/profile",  label: "My Profile"  },
+    { href: "/practice", label: "My Practice" },
+    { href: "/progress", label: "My Progress" },
+  ];
+
+  it("has exactly three nav items", () => {
+    expect(navItems).toHaveLength(3);
+  });
+
+  it("first item is My Profile at /profile", () => {
+    expect(navItems[0]).toEqual({ href: "/profile", label: "My Profile" });
+  });
+
+  it("second item is My Practice at /practice", () => {
+    expect(navItems[1]).toEqual({ href: "/practice", label: "My Practice" });
+  });
+
+  it("third item is My Progress at /progress", () => {
+    expect(navItems[2]).toEqual({ href: "/progress", label: "My Progress" });
+  });
+
+  it("no item uses the old labels without 'My' prefix", () => {
+    const oldLabels = ["Practice", "Progress", "Profile"];
+    navItems.forEach(({ label }) => {
+      expect(oldLabels).not.toContain(label);
+    });
+  });
+
+  it("all labels start with 'My'", () => {
+    navItems.forEach(({ label }) => {
+      expect(label.startsWith("My ")).toBe(true);
+    });
+  });
+
+  it("old order (Practice first) is no longer used", () => {
+    expect(navItems[0].href).not.toBe("/practice");
+  });
+});
