@@ -15,6 +15,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { SiteLogo } from "@/app/components/brand/SiteLogo";
+import { SiteFooter } from "@/app/components/marketing/SiteFooter";
 
 export type Audience = "candidate" | "business";
 
@@ -195,117 +196,7 @@ export function AudienceShell({
       {/* Content */}
       <main className="relative z-10">{children}</main>
 
-      {/* Footer */}
-      <footer className="relative z-10 border-t border-white/[0.08] bg-black/20">
-        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:py-16">
-          <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[1.6fr_1fr_1fr_1fr_1fr]">
-            <div>
-              <SiteLogo href="/" size="sm" showText />
-              <p className="mt-4 max-w-xs text-sm leading-6 text-gray-500">
-                AI-powered interview practice for candidates and a structured
-                AI assessment platform for hiring teams. Built in the UK.
-              </p>
-              <p className="mt-5 text-xs text-gray-600">
-                © {new Date().getFullYear()} AI Career Mentor Ltd · England &amp; Wales
-              </p>
-            </div>
-
-            <div>
-              <p className="mb-4 text-[11px] font-black uppercase tracking-[0.18em] text-gray-600">
-                {theme.eyebrow}
-              </p>
-              <div className="space-y-3 text-sm text-gray-400">
-                {theme.navItems.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className="block transition hover:text-white"
-                  >
-                    {item.label}
-                  </Link>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <p className="mb-4 text-[11px] font-black uppercase tracking-[0.18em] text-gray-600">
-                Account
-              </p>
-              <div className="space-y-3 text-sm text-gray-400">
-                <Link
-                  href={theme.signInPath}
-                  className="block transition hover:text-white"
-                >
-                  Sign in
-                </Link>
-                <Link
-                  href={theme.signUpPath}
-                  className="block transition hover:text-white"
-                >
-                  {audience === "candidate" ? "Start free" : "Create workspace"}
-                </Link>
-                <Link
-                  href={theme.switchAudienceHref}
-                  className="block transition hover:text-white"
-                >
-                  {audience === "candidate"
-                    ? "Hiring team site"
-                    : "Candidate site"}
-                </Link>
-              </div>
-            </div>
-
-            <div>
-              <p className="mb-4 text-[11px] font-black uppercase tracking-[0.18em] text-gray-600">
-                Resources
-              </p>
-              <div className="space-y-3 text-sm text-gray-400">
-                <Link href="/blog" className="block transition hover:text-white">
-                  Interview guides
-                </Link>
-                <Link href="/questions" className="block transition hover:text-white">
-                  Question library
-                </Link>
-                <Link href="/tools/star-scorer" className="block transition hover:text-white">
-                  Free STAR scorer
-                </Link>
-              </div>
-            </div>
-
-            <div>
-              <p className="mb-4 text-[11px] font-black uppercase tracking-[0.18em] text-gray-600">
-                Company
-              </p>
-              <div className="space-y-3 text-sm text-gray-400">
-                <Link href="/about" className="block transition hover:text-white">
-                  About
-                </Link>
-                <Link href="/universities" className="block transition hover:text-white">
-                  Universities
-                </Link>
-                <Link href="/security" className="block transition hover:text-white">
-                  Security
-                </Link>
-                <Link href="/press" className="block transition hover:text-white">
-                  Press
-                </Link>
-                <Link
-                  href="/privacy"
-                  className="block transition hover:text-white"
-                >
-                  Privacy
-                </Link>
-                <Link
-                  href="/terms"
-                  className="block transition hover:text-white"
-                >
-                  Terms
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }

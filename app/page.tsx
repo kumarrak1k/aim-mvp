@@ -4,6 +4,7 @@ import { createPageMetadata } from "@/app/config/seo";
 import { absoluteUrl } from "@/app/config/site";
 import { SiteLogo } from "@/app/components/brand/SiteLogo";
 import { DemoVideo } from "@/app/components/marketing/DemoVideo";
+import { SiteFooter } from "@/app/components/marketing/SiteFooter";
 
 export const metadata: Metadata = createPageMetadata({
   path: "/",
@@ -341,27 +342,9 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Footer */}
-        <footer className="mt-auto border-t border-white/[0.06] pt-6 text-xs text-gray-600">
-          <div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
-            <p>
-              © {new Date().getFullYear()} AI Career Mentor Ltd · England &amp; Wales
-            </p>
-            <div className="flex flex-wrap gap-5">
-              <Link href="/about" className="hover:text-gray-400">About</Link>
-              <Link href="/universities" className="hover:text-gray-400">Universities</Link>
-              <Link href="/security" className="hover:text-gray-400">Security</Link>
-              <Link href="/press" className="hover:text-gray-400">Press</Link>
-              <Link href="/blog" className="hover:text-gray-400">Blog</Link>
-              <Link href="/questions" className="hover:text-gray-400">Questions</Link>
-              <Link href="/tools/star-scorer" className="hover:text-gray-400">STAR Scorer</Link>
-              <Link href="/privacy" className="hover:text-gray-400">Privacy</Link>
-              <Link href="/terms" className="hover:text-gray-400">Terms</Link>
-            </div>
-          </div>
-        </footer>
       </div>
     </main>
+    <SiteFooter />
     </>
   );
 }
