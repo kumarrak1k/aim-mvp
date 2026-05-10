@@ -38,13 +38,15 @@ export function PublicShell({ children, currentPath }: PublicShellProps) {
 
       {/* ── Header ── */}
       <header className="relative z-50">
-        <div className="mx-auto flex w-full max-w-7xl items-center gap-4 px-4 py-6 sm:px-6 sm:py-8 lg:gap-6 lg:px-10">
+        <div className="relative mx-auto flex w-full max-w-7xl items-center px-4 py-6 sm:px-6 sm:py-8 lg:px-10">
           {/* Logo */}
-          <SiteLogo href="/" size="md" showText />
+          <div className="relative z-10">
+            <SiteLogo href="/" size="md" showText />
+          </div>
 
-          {/* Desktop nav — centred pill */}
-          <nav className="hidden flex-1 items-center justify-center lg:flex">
-            <div className="flex items-center gap-0.5 rounded-full border border-white/[0.09] bg-white/[0.04] p-1">
+          {/* Desktop nav — absolutely centred pill */}
+          <nav className="pointer-events-none absolute inset-x-0 hidden justify-center lg:flex">
+            <div className="pointer-events-auto flex items-center gap-0.5 rounded-full border border-white/[0.09] bg-white/[0.04] p-1">
               {NAV_LINKS.map((item) => {
                 const active = currentPath === item.href;
                 return (
@@ -65,7 +67,7 @@ export function PublicShell({ children, currentPath }: PublicShellProps) {
           </nav>
 
           {/* Audience buttons — matches homepage */}
-          <div className="ml-auto hidden shrink-0 items-center gap-2 sm:flex">
+          <div className="relative z-10 ml-auto hidden shrink-0 items-center gap-2 sm:flex">
             <Link
               href="/for-candidates"
               className="rounded-full border border-purple-300/20 bg-purple-300/[0.07] px-4 py-2 text-xs font-black text-purple-100 transition hover:bg-purple-300/[0.12]"

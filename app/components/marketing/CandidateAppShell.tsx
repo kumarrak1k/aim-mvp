@@ -141,7 +141,7 @@ export function CandidateAppShell({
       {/* Footer */}
       <footer className="relative z-10 border-t border-white/[0.08] bg-black/20">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:py-16">
-          <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr]">
+          <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[1.6fr_1fr_1fr_1fr]">
             <div>
               <SiteLogo href="/" size="sm" showText />
               <p className="mt-4 max-w-xs text-sm leading-6 text-gray-500">

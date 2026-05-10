@@ -114,11 +114,11 @@ export function AudienceShell({
 
       {/* Header */}
       <header className="relative z-50">
-        <div className="mx-auto flex w-full max-w-7xl items-center gap-3 px-4 py-6 sm:px-6 sm:py-8 lg:gap-6 lg:px-10">
+        <div className="relative mx-auto flex w-full max-w-7xl items-center px-4 py-6 sm:px-6 sm:py-8 lg:px-10">
           {/* Logo + audience badge */}
           <Link
             href={audience === "candidate" ? "/for-candidates" : "/for-business"}
-            className="flex shrink-0 items-center gap-3"
+            className="relative z-10 flex shrink-0 items-center gap-3"
           >
             <SiteLogo href="" size="md" showText />
             <span
@@ -128,9 +128,9 @@ export function AudienceShell({
             </span>
           </Link>
 
-          {/* Desktop nav */}
-          <nav className="hidden flex-1 lg:flex lg:justify-center">
-            <div className="flex items-center gap-0.5 rounded-full border border-white/[0.09] bg-white/[0.04] p-1.5">
+          {/* Desktop nav — absolutely centred so it never drifts */}
+          <nav className="pointer-events-none absolute inset-x-0 hidden justify-center lg:flex">
+            <div className="pointer-events-auto flex items-center gap-0.5 rounded-full border border-white/[0.09] bg-white/[0.04] p-1.5">
               {theme.navItems.map((item) => {
                 const active = currentPath === item.href;
                 return (
@@ -153,7 +153,7 @@ export function AudienceShell({
           {/* Right actions — audience-only, no cross-audience switch in the
               header. Switching audiences is intentionally a deliberate action,
               done via "/" or the small footer link. */}
-          <div className="ml-auto flex shrink-0 items-center gap-2">
+          <div className="relative z-10 ml-auto flex shrink-0 items-center gap-2">
             <Link href={theme.signInPath}>
               <button className="hidden whitespace-nowrap rounded-full border border-white/[0.1] bg-white/[0.04] px-4 py-2.5 text-[13px] font-bold text-white/80 transition hover:bg-white/[0.08] hover:text-white sm:block">
                 Sign in
