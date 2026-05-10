@@ -7,7 +7,7 @@ type DemoVideoProps = {
 export function DemoVideo({
   src,
   title = "AI Career Mentor — Product demo",
-  caption = "See a live mock interview session with real-time AI feedback",
+  caption = "A quick overview of AI Career Mentor — interview coaching for candidates and hiring teams.",
 }: DemoVideoProps) {
   if (src) {
     return (
