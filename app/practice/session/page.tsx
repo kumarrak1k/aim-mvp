@@ -1286,20 +1286,20 @@ export default function PracticeSessionPage() {
 
   const handleAnswerChange = useCallback(
     (value: string) => {
-      const safeValue = stripQuestionLeakageFromTranscript(
-        value,
-        activeQuestionRef.current
-      );
-
-      setAnswer(safeValue);
-      setTranscript(safeValue);
-      rawAnswerTranscriptRef.current = safeValue;
+      // Do NOT run stripQuestionLeakageFromTranscript here — that guard is for
+      // voice recognition output only. Applying it to typed input causes the
+      // textarea to clear whenever the user types words that overlap with the
+      // question text. The voice path in useBrowserSpeech already strips
+      // question leakage on its own callback.
+      setAnswer(value);
+      setTranscript(value);
+      rawAnswerTranscriptRef.current = value;
       latestVoiceAnalysisRef.current = null;
       latestVideoAnalysisRef.current = null;
       setVoiceAnalysis(null);
       setVideoAnalysis(null);
     },
-    [activeQuestionRef, setTranscript]
+    [setTranscript]
   );
 
   const startCameraFromTap = useCallback(() => {
