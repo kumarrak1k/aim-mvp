@@ -17,6 +17,7 @@ import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
 import { useState, useEffect, type ReactNode } from "react";
 import { SiteLogo } from "@/app/components/brand/SiteLogo";
+import { SiteFooter } from "@/app/components/marketing/SiteFooter";
 
 export type CandidateAppPath =
   | "/practice"
@@ -138,83 +139,7 @@ export function CandidateAppShell({
       {/* Main content — pb-20 on mobile leaves room for the bottom nav */}
       <main className="relative z-10 pb-20 sm:pb-0">{children}</main>
 
-      {/* Footer */}
-      <footer className="relative z-10 border-t border-white/[0.08] bg-black/20">
-        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:py-16">
-          <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[1.6fr_1fr_1fr_1fr]">
-            <div>
-              <SiteLogo href="/" size="sm" showText />
-              <p className="mt-4 max-w-xs text-sm leading-6 text-gray-500">
-                AI-powered interview practice and assessment-centre coaching.
-                Built in the UK.
-              </p>
-              <p className="mt-5 text-xs text-gray-600">
-                © {new Date().getFullYear()} AI Career Mentor Ltd · England &amp; Wales
-              </p>
-            </div>
-            <div>
-              <p className="mb-4 text-[11px] font-black uppercase tracking-[0.18em] text-gray-600">
-                Candidate
-              </p>
-              <div className="space-y-3 text-sm text-gray-400">
-                <Link href="/practice" className="block transition hover:text-white">
-                  Practice
-                </Link>
-                <Link href="/progress" className="block transition hover:text-white">
-                  Progress
-                </Link>
-                <Link href="/profile" className="block transition hover:text-white">
-                  Profile
-                </Link>
-              </div>
-            </div>
-            <div>
-              <p className="mb-4 text-[11px] font-black uppercase tracking-[0.18em] text-gray-600">
-                Marketing
-              </p>
-              <div className="space-y-3 text-sm text-gray-400">
-                <Link
-                  href="/for-candidates"
-                  className="block transition hover:text-white"
-                >
-                  Candidate site
-                </Link>
-                <Link
-                  href="/for-candidates/pricing"
-                  className="block transition hover:text-white"
-                >
-                  Pricing
-                </Link>
-                <Link
-                  href="/for-candidates/assessment-centre"
-                  className="block transition hover:text-white"
-                >
-                  Assessment centre
-                </Link>
-              </div>
-            </div>
-            <div>
-              <p className="mb-4 text-[11px] font-black uppercase tracking-[0.18em] text-gray-600">
-                Legal
-              </p>
-              <div className="space-y-3 text-sm text-gray-400">
-                <Link
-                  href="/privacy"
-                  className="block transition hover:text-white"
-                >
-                  Privacy
-                </Link>
-                <Link
-                  href="/terms"
-                  className="block transition hover:text-white"
-                >
-                  Terms
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
 
       {/* Mobile bottom navigation bar */}
       <nav

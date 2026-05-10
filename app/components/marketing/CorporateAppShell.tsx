@@ -14,6 +14,7 @@ import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
 import { useState, useEffect, type ReactNode } from "react";
 import { SiteLogo } from "@/app/components/brand/SiteLogo";
+import { SiteFooter } from "@/app/components/marketing/SiteFooter";
 
 export type CorporateAppPath =
   | "/company/dashboard"
@@ -140,91 +141,7 @@ export function CorporateAppShell({
 
       <main className="relative z-10 pb-20 sm:pb-0">{children}</main>
 
-      {/* Footer */}
-      <footer className="relative z-10 border-t border-white/[0.08] bg-black/20">
-        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:py-16">
-          <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[1.6fr_1fr_1fr_1fr]">
-            <div>
-              <SiteLogo href="/" size="sm" showText />
-              <p className="mt-4 max-w-xs text-sm leading-6 text-gray-500">
-                AI assessment platform for hiring teams. Built in the UK.
-              </p>
-              <p className="mt-5 text-xs text-gray-600">
-                © {new Date().getFullYear()} AI Career Mentor Ltd · England &amp; Wales
-              </p>
-            </div>
-            <div>
-              <p className="mb-4 text-[11px] font-black uppercase tracking-[0.18em] text-gray-600">
-                Workspace
-              </p>
-              <div className="space-y-3 text-sm text-gray-400">
-                <Link
-                  href="/company/dashboard"
-                  className="block transition hover:text-white"
-                >
-                  Dashboard
-                </Link>
-                <Link
-                  href="/company/templates"
-                  className="block transition hover:text-white"
-                >
-                  Templates
-                </Link>
-                <Link
-                  href="/company/candidates"
-                  className="block transition hover:text-white"
-                >
-                  Candidates
-                </Link>
-                <Link
-                  href="/company/results"
-                  className="block transition hover:text-white"
-                >
-                  Results
-                </Link>
-              </div>
-            </div>
-            <div>
-              <p className="mb-4 text-[11px] font-black uppercase tracking-[0.18em] text-gray-600">
-                Marketing
-              </p>
-              <div className="space-y-3 text-sm text-gray-400">
-                <Link
-                  href="/for-business"
-                  className="block transition hover:text-white"
-                >
-                  Hiring team site
-                </Link>
-                <Link
-                  href="/for-business/assessment-platform"
-                  className="block transition hover:text-white"
-                >
-                  Platform
-                </Link>
-                <Link
-                  href="/for-business/pricing"
-                  className="block transition hover:text-white"
-                >
-                  Pricing
-                </Link>
-              </div>
-            </div>
-            <div>
-              <p className="mb-4 text-[11px] font-black uppercase tracking-[0.18em] text-gray-600">
-                Legal
-              </p>
-              <div className="space-y-3 text-sm text-gray-400">
-                <Link href="/privacy" className="block transition hover:text-white">
-                  Privacy
-                </Link>
-                <Link href="/terms" className="block transition hover:text-white">
-                  Terms
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
 
       {/* Mobile bottom navigation */}
       <nav

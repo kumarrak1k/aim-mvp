@@ -15,7 +15,7 @@ export function SiteFooter() {
               university careers services. Built in the UK.
             </p>
             <p className="mt-5 text-xs text-gray-600">
-              © {new Date().getFullYear()} AI Career Mentor Ltd · England &amp; Wales
+              © {new Date().getFullYear()}{" "}AI Career Mentor Ltd · England &amp; Wales
             </p>
           </div>
 
