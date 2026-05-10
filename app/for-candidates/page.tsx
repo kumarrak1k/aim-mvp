@@ -168,25 +168,25 @@ export default function ForCandidatesPage() {
       />
       <AudienceShell audience="candidate" currentPath="/for-candidates">
       {/* Hero */}
-      <section className="mx-auto max-w-6xl px-4 pb-16 pt-6 text-center sm:px-6 sm:pb-20 sm:pt-10">
-        <p className="mx-auto mb-6 inline-flex items-center gap-2.5 rounded-full border border-purple-400/25 bg-purple-400/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-purple-200">
+      <section className="mx-auto max-w-5xl px-4 pb-16 pt-6 text-center sm:px-6 sm:pb-20 sm:pt-10">
+        <p className="mx-auto mb-5 inline-flex items-center gap-2.5 rounded-full border border-purple-400/25 bg-purple-400/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-purple-200">
           For candidates
         </p>
 
-        <h1 className="mx-auto max-w-5xl text-[2.7rem] font-black leading-[1.02] tracking-[-0.055em] sm:text-5xl lg:text-[4rem] xl:text-[4.5rem]">
+        <h1 className="text-[2.4rem] font-black leading-[1.04] tracking-[-0.05em] sm:text-5xl lg:text-6xl">
           Interview practice. Assessment centre prep.{" "}
           <span className="bg-gradient-to-r from-purple-300 via-fuchsia-200 to-cyan-200 bg-clip-text text-transparent">
             One platform built to get you hired.
           </span>
         </h1>
 
-        <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-gray-400 sm:text-lg sm:leading-9">
+        <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-gray-400 sm:text-lg sm:leading-9">
           Two complete products in one. Run mock interviews tailored to your
           role, or step through a full assessment centre experience —
           case study, competency interview and presentation — all scored.
         </p>
 
-        <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link href="/for-candidates/sign-up">
             <button className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-8 py-4 text-base font-black text-white shadow-2xl shadow-purple-900/40 transition hover:scale-[1.02] sm:w-auto">
               Start free →
