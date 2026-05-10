@@ -130,6 +130,7 @@ export const fetchFeedback = async ({
   answer,
   voiceAnalysis,
   videoAnalysis,
+  practiceMode,
   assessmentMode,
   templateContext,
 }: {
@@ -137,6 +138,7 @@ export const fetchFeedback = async ({
   answer: string;
   voiceAnalysis: VoiceAnalysis | null;
   videoAnalysis: VideoAnalysis | null;
+  practiceMode?: string;
   assessmentMode?: boolean;
   templateContext?: AssessmentTemplateContext;
 }) => {
@@ -147,6 +149,7 @@ export const fetchFeedback = async ({
       answer: string;
       voiceAnalysis: VoiceAnalysis | null;
       videoAnalysis: VideoAnalysis | null;
+      practiceMode?: string;
       assessmentMode?: boolean;
       templateContext?: AssessmentTemplateContext;
     }
@@ -155,6 +158,7 @@ export const fetchFeedback = async ({
     answer,
     voiceAnalysis,
     videoAnalysis,
+    ...(practiceMode ? { practiceMode } : {}),
     ...(assessmentMode ? { assessmentMode: true } : {}),
     ...(templateContext ? { templateContext } : {}),
   });
@@ -163,11 +167,13 @@ export const fetchFeedback = async ({
 export const fetchInterviewSummary = async ({
   role,
   results,
+  practiceMode,
   assessmentMode,
   templateContext,
 }: {
   role: string;
   results: ResultItem[];
+  practiceMode?: string;
   assessmentMode?: boolean;
   templateContext?: AssessmentTemplateContext;
 }) => {
@@ -176,12 +182,14 @@ export const fetchInterviewSummary = async ({
     {
       role: string;
       results: ResultItem[];
+      practiceMode?: string;
       assessmentMode?: boolean;
       templateContext?: AssessmentTemplateContext;
     }
   >("/api/summary", {
     role,
     results,
+    ...(practiceMode ? { practiceMode } : {}),
     ...(assessmentMode ? { assessmentMode: true } : {}),
     ...(templateContext ? { templateContext } : {}),
   });

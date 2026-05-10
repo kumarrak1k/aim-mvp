@@ -9,6 +9,7 @@ type FeedbackWorkspaceProps = {
   currentQuestionNumber: number;
   totalQuestions: number;
   onNext: () => void;
+  practiceMode?: string;
 };
 
 export function FeedbackWorkspace({
@@ -18,7 +19,10 @@ export function FeedbackWorkspace({
   currentQuestionNumber,
   totalQuestions,
   onNext,
+  practiceMode,
 }: FeedbackWorkspaceProps) {
+  const showVoiceInsight = practiceMode === "voice" || practiceMode === "voice-camera";
+  const showCameraInsight = practiceMode === "voice-camera";
   const nextLabel =
     currentQuestionNumber >= totalQuestions ? "Finish interview" : "Next question";
 
@@ -66,26 +70,30 @@ export function FeedbackWorkspace({
           />
         </div>
 
-        {(voiceAnalysis || videoAnalysis) && (
-          <div className="mb-5 grid gap-3 md:grid-cols-2">
-            <InsightBox
-              title="Voice delivery insight"
-              accent="cyan"
-              body={
-                voiceAnalysis
-                  ? `Voice score ${voiceAnalysis.overallVoiceScore}/10. Pace ${voiceAnalysis.paceScore}/10, confidence ${voiceAnalysis.confidenceScore}/10 and filler control ${voiceAnalysis.fillerScore}/10.`
-                  : "Voice insight will appear here once analysis is available."
-              }
-            />
-            <InsightBox
-              title="Camera presence insight"
-              accent="purple"
-              body={
-                videoAnalysis
-                  ? `Camera score ${videoAnalysis.overallVideoScore}/10. Eye contact ${videoAnalysis.eyeContactScore}/10 and engagement ${videoAnalysis.engagementScore}/10.`
-                  : "Camera insight will appear here once analysis is available."
-              }
-            />
+        {(showVoiceInsight || showCameraInsight) && (
+          <div className={`mb-5 grid gap-3 ${showVoiceInsight && showCameraInsight ? "md:grid-cols-2" : ""}`}>
+            {showVoiceInsight && (
+              <InsightBox
+                title="Voice delivery insight"
+                accent="cyan"
+                body={
+                  voiceAnalysis
+                    ? `Voice score ${voiceAnalysis.overallVoiceScore}/10. Pace ${voiceAnalysis.paceScore}/10, confidence ${voiceAnalysis.confidenceScore}/10 and filler control ${voiceAnalysis.fillerScore}/10.`
+                    : "Voice insight will appear after your next recorded answer."
+                }
+              />
+            )}
+            {showCameraInsight && (
+              <InsightBox
+                title="Camera presence insight"
+                accent="purple"
+                body={
+                  videoAnalysis
+                    ? `Camera score ${videoAnalysis.overallVideoScore}/10. Eye contact ${videoAnalysis.eyeContactScore}/10 and engagement ${videoAnalysis.engagementScore}/10.`
+                    : "Camera insight will appear after your next recorded answer."
+                }
+              />
+            )}
           </div>
         )}
 

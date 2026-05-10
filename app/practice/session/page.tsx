@@ -1087,6 +1087,7 @@ export default function PracticeSessionPage() {
         answer: safeAnswer,
         voiceAnalysis: latestVoiceAnalysis,
         videoAnalysis: latestVideoAnalysis,
+        practiceMode,
         assessmentMode,
         templateContext,
       });
@@ -1227,6 +1228,7 @@ export default function PracticeSessionPage() {
         const data = await fetchInterviewSummary({
           role: candidateProfile,
           results: updatedResults,
+          practiceMode,
           assessmentMode,
           templateContext,
         });
@@ -1294,12 +1296,17 @@ export default function PracticeSessionPage() {
       setAnswer(value);
       setTranscript(value);
       rawAnswerTranscriptRef.current = value;
-      latestVoiceAnalysisRef.current = null;
-      latestVideoAnalysisRef.current = null;
-      setVoiceAnalysis(null);
-      setVideoAnalysis(null);
+      // Only clear delivery analysis in typed mode. In voice/voice-camera mode
+      // the analysis was captured from audio — editing the transcript wording
+      // should not discard the delivery scores (pace, filler, eye contact).
+      if (practiceMode === "typed") {
+        latestVoiceAnalysisRef.current = null;
+        latestVideoAnalysisRef.current = null;
+        setVoiceAnalysis(null);
+        setVideoAnalysis(null);
+      }
     },
-    [setTranscript]
+    [practiceMode, setTranscript]
   );
 
   const startCameraFromTap = useCallback(() => {
@@ -1448,6 +1455,7 @@ export default function PracticeSessionPage() {
                 currentQuestionNumber={currentQuestionNumber}
                 totalQuestions={totalQuestions}
                 onNext={() => void nextStep()}
+                practiceMode={practiceMode}
               />
             )}
           </div>

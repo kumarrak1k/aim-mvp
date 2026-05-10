@@ -227,9 +227,13 @@ export async function POST(req: NextRequest) {
       answer,
       voiceAnalysis,
       videoAnalysis,
+      practiceMode,
       assessmentMode,
       templateContext,
     } = await req.json();
+
+    // "typed" sessions have no audio — never fabricate pace or delivery scores.
+    const isTypedMode = practiceMode === "typed" || (!practiceMode && !voiceAnalysis && !videoAnalysis);
 
     if (
       !question ||
@@ -261,28 +265,34 @@ export async function POST(req: NextRequest) {
 
     const suppliedVoiceAnalysis = voiceAnalysis as VoiceAnalysisLike | null;
 
-    const fallbackVoice = estimatePaceFromAnswer(answer);
-    const fallbackFillerCount = detectFillers(answer);
+    // For typed sessions we have no audio — skip all fabricated delivery data.
+    // For voice sessions, use supplied values then fall back to text estimation.
+    const fallbackVoice = isTypedMode ? null : estimatePaceFromAnswer(answer);
+    const fallbackFillerCount = isTypedMode ? 0 : detectFillers(answer);
 
-    const effectivePaceScore =
-      typeof suppliedVoiceAnalysis?.paceScore === "number" &&
-      suppliedVoiceAnalysis.paceScore > 0
+    const effectivePaceScore = isTypedMode
+      ? null
+      : typeof suppliedVoiceAnalysis?.paceScore === "number" &&
+          suppliedVoiceAnalysis.paceScore > 0
         ? suppliedVoiceAnalysis.paceScore
-        : fallbackVoice.paceScore;
+        : (fallbackVoice?.paceScore ?? null);
 
-    const effectiveEstimatedWPM =
-      typeof suppliedVoiceAnalysis?.metrics?.estimatedWPM === "number" &&
-      suppliedVoiceAnalysis.metrics.estimatedWPM > 0
+    const effectiveEstimatedWPM = isTypedMode
+      ? null
+      : typeof suppliedVoiceAnalysis?.metrics?.estimatedWPM === "number" &&
+          suppliedVoiceAnalysis.metrics.estimatedWPM > 0
         ? suppliedVoiceAnalysis.metrics.estimatedWPM
-        : fallbackVoice.estimatedWPM;
+        : (fallbackVoice?.estimatedWPM ?? null);
 
-    const effectiveFillerCount =
-      typeof suppliedVoiceAnalysis?.metrics?.fillerCount === "number"
+    const effectiveFillerCount = isTypedMode
+      ? 0
+      : typeof suppliedVoiceAnalysis?.metrics?.fillerCount === "number"
         ? suppliedVoiceAnalysis.metrics.fillerCount
         : fallbackFillerCount;
 
-    const effectiveLongPauseCount =
-      typeof suppliedVoiceAnalysis?.metrics?.longPauseCount === "number"
+    const effectiveLongPauseCount = isTypedMode
+      ? 0
+      : typeof suppliedVoiceAnalysis?.metrics?.longPauseCount === "number"
         ? suppliedVoiceAnalysis.metrics.longPauseCount
         : 0;
 
@@ -305,7 +315,7 @@ Score each category from 0 to 10:
 - Relevance: directly answers the question
 - Structure: logical flow, STAR method where appropriate
 - Confidence: assertive, credible, not hesitant
-- Pace: use the supplied pace score if available
+${isTypedMode ? "- Pace: this is a typed session — do NOT score or mention pace, speaking speed, or delivery in any field." : "- Pace: use the supplied pace score if available"}
 
 A score of 8+ means the answer is strong enough for a competitive interview.
 A score of 5 or below means it would likely struggle to pass hiring bar.
@@ -405,7 +415,9 @@ ${answer}
 ${isAssessment ? "Company assessment context:" : "Saved candidate profile context:"}
 ${savedProfileContext}
 
-Voice analysis received from frontend:
+${isTypedMode
+  ? "Practice mode: TYPED (keyboard only). No audio or video was recorded. Do NOT mention pace, speaking speed, filler words, pauses, voice delivery, camera or eye contact anywhere in your response."
+  : `Voice analysis received from frontend:
 ${JSON.stringify(suppliedVoiceAnalysis || null, null, 2)}
 
 Effective delivery data to use:
@@ -422,16 +434,20 @@ ${JSON.stringify(
 )}
 
 Video analysis:
-${JSON.stringify(videoAnalysis || null, null, 2)}
+${JSON.stringify(videoAnalysis || null, null, 2)}`}
 
 Evaluate this answer strictly against a real hiring bar.
 
 Important:
-- Use this exact pace score: ${effectivePaceScore}
+${isTypedMode
+  ? `- This is a typed session. Set pace_score to 0 and leave section_feedback.pace empty or omit it.
+- Do not mention pace, speaking speed, filler words, pauses, voice delivery, eye contact or camera anywhere.
+- Focus only on content quality, clarity, relevance, structure and confidence.`
+  : `- Use this exact pace score: ${effectivePaceScore}
 - Do not write "No reliable voice-analysis data was available".
 - Do not write "Use voice answer mode".
 - Do not write "N/A".
-- If fillerCount is above 0, mention filler words as an improvement.
+- If fillerCount is above 0, mention filler words as an improvement.`}
 - If saved profile context exists, make the improved answer relevant to the target role and candidate background.
 `.trim();
 
@@ -479,46 +495,55 @@ Important:
       );
     }
 
-    parsed.pace_score = effectivePaceScore;
+    // For typed sessions: suppress all pace/delivery fields entirely.
+    if (isTypedMode) {
+      parsed.pace_score = undefined;
+      if (parsed.section_feedback) {
+        delete parsed.section_feedback.pace;
+      }
+    } else {
+      // Voice/voice-camera: inject reliable pace data.
+      parsed.pace_score = effectivePaceScore;
 
-    if (!parsed.section_feedback) {
-      parsed.section_feedback = {};
-    }
+      if (!parsed.section_feedback) {
+        parsed.section_feedback = {};
+      }
 
-    parsed.section_feedback.pace = {
-      score: effectivePaceScore,
-      feedback:
-        suppliedVoiceAnalysis && suppliedVoiceAnalysis.paceScore
-          ? `Your estimated speaking pace was ${effectiveEstimatedWPM} words per minute, based on the recorded voice answer.`
-          : `Your estimated speaking pace was ${effectiveEstimatedWPM} words per minute, estimated from the submitted answer text.`,
-      improvement:
-        effectivePaceScore >= 8
-          ? "Maintain this pace. It is controlled and appropriate for an interview."
-          : effectiveEstimatedWPM < 120
-          ? "Increase pace slightly. Aim for roughly 120–170 words per minute so the answer sounds confident without feeling rushed."
-          : effectiveEstimatedWPM > 170
-          ? "Slow down slightly. Aim for roughly 120–170 words per minute so the answer is easier to follow."
-          : "Aim for a steady interview pace of roughly 120–170 words per minute.",
-    };
+      parsed.section_feedback.pace = {
+        score: effectivePaceScore,
+        feedback:
+          suppliedVoiceAnalysis && suppliedVoiceAnalysis.paceScore
+            ? `Your estimated speaking pace was ${effectiveEstimatedWPM} words per minute, based on the recorded voice answer.`
+            : `Your estimated speaking pace was ${effectiveEstimatedWPM} words per minute, estimated from the submitted answer text.`,
+        improvement:
+          (effectivePaceScore ?? 0) >= 8
+            ? "Maintain this pace. It is controlled and appropriate for an interview."
+            : (effectiveEstimatedWPM ?? 0) < 120
+            ? "Increase pace slightly. Aim for roughly 120–170 words per minute so the answer sounds confident without feeling rushed."
+            : (effectiveEstimatedWPM ?? 0) > 170
+            ? "Slow down slightly. Aim for roughly 120–170 words per minute so the answer is easier to follow."
+            : "Aim for a steady interview pace of roughly 120–170 words per minute.",
+      };
 
-    parsed.improvements = Array.isArray(parsed.improvements)
-      ? parsed.improvements
-      : [];
+      parsed.improvements = Array.isArray(parsed.improvements)
+        ? parsed.improvements
+        : [];
 
-    if (effectiveFillerCount > 0) {
-      parsed.improvements.unshift(
-        `Reduce filler words. The answer included ${effectiveFillerCount} filler word${
-          effectiveFillerCount === 1 ? "" : "s"
-        }, which can weaken confidence and clarity.`
-      );
-    }
+      if (effectiveFillerCount > 0) {
+        parsed.improvements.unshift(
+          `Reduce filler words. The answer included ${effectiveFillerCount} filler word${
+            effectiveFillerCount === 1 ? "" : "s"
+          }, which can weaken confidence and clarity.`
+        );
+      }
 
-    if (effectiveLongPauseCount > 0) {
-      parsed.improvements.unshift(
-        `Reduce long pauses. The voice analysis detected ${effectiveLongPauseCount} long pause${
-          effectiveLongPauseCount === 1 ? "" : "s"
-        }, which can make the answer feel less fluent.`
-      );
+      if (effectiveLongPauseCount > 0) {
+        parsed.improvements.unshift(
+          `Reduce long pauses. The voice analysis detected ${effectiveLongPauseCount} long pause${
+            effectiveLongPauseCount === 1 ? "" : "s"
+          }, which can make the answer feel less fluent.`
+        );
+      }
     }
 
     return NextResponse.json(parsed);

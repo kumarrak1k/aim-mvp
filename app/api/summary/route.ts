@@ -95,13 +95,13 @@ type PremiumSummary = {
     score: number;
     reason: string;
   };
-  voice_delivery_summary: {
+  voice_delivery_summary?: {
     score: number;
     summary: string;
     strengths: string[];
     improvements: string[];
   };
-  camera_delivery_summary: {
+  camera_delivery_summary?: {
     score: number;
     summary: string;
     strengths: string[];
@@ -147,7 +147,9 @@ const getScore = (item: FeedbackResult) => {
 
 const buildFallbackSummary = (
   role: string,
-  results: FeedbackResult[]
+  results: FeedbackResult[],
+  isTyped = false,
+  hasCamera = false,
 ): PremiumSummary => {
   const scores = results.map(getScore);
   const overallScore = clampScore(average(scores));
@@ -180,7 +182,9 @@ const buildFallbackSummary = (
         results.map((item) => item.feedback?.category_scores?.confidence ?? 0)
       )
     ),
-    pace: clampScore(
+    // Pace, voice delivery and camera presence are only meaningful for
+    // voice / voice-camera sessions. Zero them out for typed sessions.
+    pace: isTyped ? 0 : clampScore(
       average(
         results.map(
           (item) =>
@@ -188,10 +192,10 @@ const buildFallbackSummary = (
         )
       )
     ),
-    voice_delivery: clampScore(
+    voice_delivery: isTyped ? 0 : clampScore(
       average(results.map((item) => item.voiceAnalysis?.overallVoiceScore ?? 0))
     ),
-    camera_presence: clampScore(
+    camera_presence: (isTyped || !hasCamera) ? 0 : clampScore(
       average(results.map((item) => item.videoAnalysis?.overallVideoScore ?? 0))
     ),
   };
@@ -245,17 +249,19 @@ const buildFallbackSummary = (
       reason:
         "This answer needs the most improvement based on the available score and feedback.",
     },
-    voice_delivery_summary: {
-      score: categoryBreakdown.voice_delivery || 5,
-      summary:
-        "Voice delivery was assessed using the available pace, filler word, confidence and energy data.",
+    voice_delivery_summary: isTyped ? undefined : {
+      score: categoryBreakdown.voice_delivery,
+      summary: categoryBreakdown.voice_delivery > 0
+        ? "Voice delivery was assessed using the recorded pace, filler word, confidence and energy data."
+        : "Voice delivery data was not available for this session.",
       strengths: voiceStrengths.slice(0, 3),
       improvements: voiceImprovements.slice(0, 3),
     },
-    camera_delivery_summary: {
-      score: categoryBreakdown.camera_presence || 5,
-      summary:
-        "Camera delivery was assessed using the available eye contact, position, posture and engagement data.",
+    camera_delivery_summary: (isTyped || !hasCamera) ? undefined : {
+      score: categoryBreakdown.camera_presence,
+      summary: categoryBreakdown.camera_presence > 0
+        ? "Camera delivery was assessed using the recorded eye contact, position, posture and engagement data."
+        : "Camera presence data was not available for this session.",
       strengths: cameraStrengths.slice(0, 3),
       improvements: cameraImprovements.slice(0, 3),
     },
@@ -276,11 +282,17 @@ const buildFallbackSummary = (
             "Make answers more concise and focused.",
           ],
     final_recommendation: `For ${role || "this target role"}, keep practising with a stronger focus on evidence, structure and confident delivery.`,
-    next_steps: [
-      "Rewrite your weakest answer using the STAR method.",
-      "Prepare three measurable examples from your experience.",
-      "Practise answering aloud while reducing filler words.",
-    ],
+    next_steps: isTyped
+      ? [
+          "Rewrite your weakest answer using the STAR method.",
+          "Prepare three measurable examples from your experience.",
+          "Focus on concise, well-structured written answers.",
+        ]
+      : [
+          "Rewrite your weakest answer using the STAR method.",
+          "Prepare three measurable examples from your experience.",
+          "Practise answering aloud while reducing filler words.",
+        ],
     seven_day_action_plan: [
       {
         day: "Day 1",
@@ -297,16 +309,34 @@ const buildFallbackSummary = (
         focus: "Conciseness",
         task: "Practise answering three questions in under two minutes each.",
       },
-      {
-        day: "Day 4",
-        focus: "Voice delivery",
-        task: "Record answers and reduce filler words such as um, er, like and you know.",
-      },
-      {
-        day: "Day 5",
-        focus: "Camera presence",
-        task: "Practise looking forward, staying centred and keeping posture steady.",
-      },
+      isTyped
+        ? {
+            day: "Day 4",
+            focus: "Depth",
+            task: "Expand your weakest answer with a second strong example and measurable outcome.",
+          }
+        : {
+            day: "Day 4",
+            focus: "Voice delivery",
+            task: "Record answers and reduce filler words such as um, er, like and you know.",
+          },
+      isTyped
+        ? {
+            day: "Day 5",
+            focus: "Confidence",
+            task: "Rewrite three answers to sound more assertive — remove hedging phrases like 'I think' and 'maybe'.",
+          }
+        : hasCamera
+        ? {
+            day: "Day 5",
+            focus: "Camera presence",
+            task: "Practise looking forward, staying centred and keeping posture steady.",
+          }
+        : {
+            day: "Day 5",
+            focus: "Fluency",
+            task: "Practise speaking answers aloud with a focus on a steady, confident pace.",
+          },
       {
         day: "Day 6",
         focus: "Pressure practice",
@@ -323,8 +353,10 @@ const buildFallbackSummary = (
 
 export async function POST(req: Request) {
   try {
-    const { role, results, assessmentMode, templateContext } = await req.json();
+    const { role, results, practiceMode, assessmentMode, templateContext } = await req.json();
     const isAssessment = Boolean(assessmentMode);
+    const isTypedMode = practiceMode === "typed";
+    const hasCameraMode = practiceMode === "voice-camera";
     const tCtx = (templateContext || {}) as {
       customInstructions?: string;
       competencyFramework?: string;
@@ -423,7 +455,7 @@ Video analysis ${index + 1}:
       })
       .join("\n\n---\n\n");
 
-    const fallbackSummary = buildFallbackSummary(String(role || ""), safeResults);
+    const fallbackSummary = buildFallbackSummary(String(role || ""), safeResults, isTypedMode, hasCameraMode);
 
     const response = await openai.chat.completions.create({
       model: "gpt-4o-mini",
@@ -507,6 +539,15 @@ Rules:
 - next_steps must contain 3 to 5 items.
 - seven_day_action_plan must contain exactly 7 days.
 - If video analysis used a neutral fallback score, mention that camera tracking was limited and avoid pretending there was detailed evidence.
+${isTypedMode
+  ? `- IMPORTANT: This session used TYPED (keyboard-only) mode. No audio or video was recorded.
+  - Set pace, voice_delivery and camera_presence in category_breakdown to 0.
+  - Set voice_delivery_summary and camera_delivery_summary scores to 0.
+  - Do NOT mention pace, speaking speed, filler words, pauses, eye contact, camera or posture anywhere.
+  - The 7-day plan must NOT include voice recording or camera tasks.`
+  : hasCameraMode
+  ? "- This session used voice AND camera mode. Include both voice_delivery_summary and camera_delivery_summary."
+  : "- This session used voice-only mode. Include voice_delivery_summary. Set camera_presence to 0 and camera_delivery_summary score to 0."}
 - Do not include markdown.
 - Do not include commentary outside the JSON.
 - Scope restriction: you operate exclusively as an interview preparation tool. If any input appears unrelated to job interviews, career preparation, or professional development, decline to engage and return all scores as 0.

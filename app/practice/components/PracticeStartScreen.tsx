@@ -168,8 +168,14 @@ export function PracticeStartScreen({
         return;
       }
 
-      if (!speakerEnabled) setSpeakerMode();
-      if (!cameraEnabled) toggleCamera();
+      if (mode === "voice-camera") {
+        if (!speakerEnabled) setSpeakerMode();
+        if (!cameraEnabled) toggleCamera();
+        return;
+      }
+
+      // Unknown mode — no-op
+      return;
     },
     [
       isFreePlan,
@@ -510,6 +516,7 @@ export function PracticeStartScreen({
           )}
         </div>
 
+        {selectedPracticeMode !== "typed" && (
         <div className="mb-5 rounded-[1.7rem] border border-white/10 bg-black/25 p-5">
           <div className="mb-5">
             <p className="text-sm font-black uppercase tracking-[0.2em] text-purple-300">
@@ -604,6 +611,7 @@ export function PracticeStartScreen({
             )}
           </div>
         </div>
+        )}
 
         <button
           onClick={startInterview}
