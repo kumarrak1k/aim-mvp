@@ -58,10 +58,10 @@ export function CorporateAppShell({
 
       {/* Header */}
       <header className={`sticky top-0 z-50 transition-all duration-300 ${scrolled ? "border-b border-white/[0.07] bg-[#0d0520]/60 backdrop-blur-xl" : "border-b border-transparent bg-transparent"}`}>
-        <div className="mx-auto flex w-full max-w-7xl items-center gap-3 px-4 py-3 sm:px-6 lg:gap-6 lg:px-8 lg:py-3.5">
+        <div className="relative mx-auto flex w-full max-w-7xl items-center px-4 py-3 sm:px-6 lg:px-8 lg:py-3.5">
           <Link
             href="/company/dashboard"
-            className="flex shrink-0 items-center gap-3"
+            className="relative z-10 flex shrink-0 items-center gap-3"
           >
             <SiteLogo href="" size="md" showText />
             <span className="hidden rounded-full border border-fuchsia-300/20 bg-white/[0.04] px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-fuchsia-100 sm:inline-block">
@@ -69,9 +69,9 @@ export function CorporateAppShell({
             </span>
           </Link>
 
-          {/* Desktop pill nav (lg+) */}
-          <nav className="hidden flex-1 lg:flex lg:justify-center">
-            <div className="flex items-center gap-0.5 rounded-full border border-white/[0.09] bg-white/[0.04] p-1.5">
+          {/* Desktop pill nav — absolutely centred so position never shifts */}
+          <nav className="pointer-events-none absolute inset-x-0 hidden justify-center lg:flex">
+            <div className="pointer-events-auto flex items-center gap-0.5 rounded-full border border-white/[0.09] bg-white/[0.04] p-1.5">
               {navItems.map((item) => {
                 const active =
                   currentPath === item.href ||
@@ -95,7 +95,7 @@ export function CorporateAppShell({
           </nav>
 
           {/* Right actions */}
-          <div className="ml-auto mr-2 flex shrink-0 items-center gap-2 sm:mr-3 lg:mr-4">
+          <div className="relative z-10 ml-auto flex shrink-0 items-center gap-2">
             {/* Send invite shortcut — hidden when already on candidates */}
             {currentPath !== "/company/candidates" &&
               currentPath !== "/company/setup" && (
