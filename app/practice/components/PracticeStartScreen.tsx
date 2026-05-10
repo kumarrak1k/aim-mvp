@@ -44,6 +44,8 @@ type PracticeStartScreenProps = {
   toggleCamera: () => void;
   startInterview: () => void;
   questionLoading: boolean;
+  /** When true the user is on the free plan and is restricted to typed mode. */
+  isFreePlan?: boolean;
   startDisabled?: boolean;
   startDisabledMessage?: string;
 };
@@ -125,6 +127,7 @@ export function PracticeStartScreen({
   toggleCamera,
   startInterview,
   questionLoading,
+  isFreePlan = false,
   startDisabled = false,
   startDisabledMessage = "",
 }: PracticeStartScreenProps) {
@@ -142,6 +145,14 @@ export function PracticeStartScreen({
     (mode: PracticeMode) => {
       setPreferenceMessage("");
 
+      // Free plan is keyboard-only — block voice and camera modes.
+      if (isFreePlan && mode !== "typed") {
+        setPreferenceMessage(
+          "Voice and camera modes are available on Professional and Advanced plans."
+        );
+        return;
+      }
+
       if (mode === "typed") {
         if (speakerEnabled) setTextOnlyMode();
         if (cameraEnabled) toggleCamera();
@@ -158,6 +169,7 @@ export function PracticeStartScreen({
       if (!cameraEnabled) toggleCamera();
     },
     [
+      isFreePlan,
       cameraEnabled,
       setSpeakerMode,
       setTextOnlyMode,
@@ -178,7 +190,9 @@ export function PracticeStartScreen({
 
     appliedSavedPreferencesRef.current = true;
 
-    if (savedCandidateProfile.preferredPracticeMode) {
+    // Only restore voice/camera preferences for paid users; free users are
+    // keyboard-only and selectPracticeMode will block the change anyway.
+    if (savedCandidateProfile.preferredPracticeMode && !isFreePlan) {
       selectPracticeMode(savedCandidateProfile.preferredPracticeMode);
     }
 
@@ -186,6 +200,7 @@ export function PracticeStartScreen({
       setSpeakerPreference(savedCandidateProfile.speakerPreference);
     }
   }, [
+    isFreePlan,
     isSignedIn,
     profileContextLoaded,
     savedCandidateProfile,
@@ -452,6 +467,7 @@ export function PracticeStartScreen({
               badge="Audio + transcript"
               description="Hear the question read aloud, then answer by speaking. Your answer is transcribed for AI feedback."
               onClick={() => selectPracticeMode("voice")}
+              locked={isFreePlan}
             />
 
             <ModeCard
@@ -460,8 +476,27 @@ export function PracticeStartScreen({
               badge="Full practice"
               description="Practise like a remote interview: question audio, spoken answer, transcript and camera presence analysis."
               onClick={() => selectPracticeMode("voice-camera")}
+              locked={isFreePlan}
             />
           </div>
+
+          {/* Upgrade nudge shown when a free user taps a locked mode */}
+          {isFreePlan && (
+            <div className="mt-4 flex flex-col gap-2 rounded-2xl border border-purple-300/20 bg-purple-300/[0.07] p-4 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-sm leading-6 text-gray-300">
+                <span className="font-black text-purple-200">Voice &amp; camera modes</span> are
+                available on Professional and Advanced plans.
+              </p>
+              <Link href="/for-candidates/pricing" className="shrink-0">
+                <button
+                  type="button"
+                  className="rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-4 py-2 text-xs font-black text-white shadow-lg shadow-purple-950/35 transition hover:scale-[1.03]"
+                >
+                  Upgrade →
+                </button>
+              </Link>
+            </div>
+          )}
         </div>
 
         <div className="mb-5 rounded-[1.7rem] border border-white/10 bg-black/25 p-5">
@@ -633,21 +668,25 @@ function ModeCard({
   badge,
   description,
   onClick,
+  locked = false,
 }: {
   active: boolean;
   title: string;
   badge: string;
   description: string;
   onClick: () => void;
+  locked?: boolean;
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className={`group h-full rounded-[1.35rem] border p-4 text-left transition hover:-translate-y-0.5 ${
-        active
-          ? "border-cyan-300/35 bg-cyan-300/12 shadow-xl shadow-cyan-950/20"
-          : "border-white/10 bg-white/[0.045] hover:bg-white/[0.07]"
+      className={`group relative h-full rounded-[1.35rem] border p-4 text-left transition ${
+        locked
+          ? "cursor-pointer border-white/[0.06] bg-white/[0.025] opacity-60 hover:opacity-80"
+          : active
+          ? "border-cyan-300/35 bg-cyan-300/12 shadow-xl shadow-cyan-950/20 hover:-translate-y-0.5"
+          : "border-white/10 bg-white/[0.045] hover:-translate-y-0.5 hover:bg-white/[0.07]"
       }`}
     >
       <div className="mb-3 flex items-start justify-between gap-3">
@@ -657,23 +696,33 @@ function ModeCard({
           </p>
           <p
             className={`mt-1 w-fit rounded-full px-2.5 py-1 text-[11px] font-black uppercase tracking-[0.12em] ${
-              active
+              locked
+                ? "border border-purple-300/25 bg-purple-300/[0.1] text-purple-200"
+                : active
                 ? "bg-cyan-200 text-black"
                 : "border border-white/10 bg-black/25 text-gray-300"
             }`}
           >
-            {badge}
+            {locked ? "Pro" : badge}
           </p>
         </div>
 
         <span
           className={`mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border ${
-            active
+            locked
+              ? "border-white/10 bg-black/30"
+              : active
               ? "border-cyan-200 bg-cyan-200 shadow-[0_0_18px_rgba(103,232,249,0.45)]"
               : "border-white/20 bg-black/30"
           }`}
         >
-          {active && <span className="h-2 w-2 rounded-full bg-black" />}
+          {locked ? (
+            <svg viewBox="0 0 24 24" fill="currentColor" className="h-3 w-3 text-gray-500">
+              <path d="M12 1C8.676 1 6 3.676 6 7v1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9a1 1 0 0 0-1-1h-2V7c0-3.324-2.676-6-6-6zm0 2c2.276 0 4 1.724 4 4v1H8V7c0-2.276 1.724-4 4-4zm0 9a2 2 0 1 1 0 4 2 2 0 0 1 0-4z"/>
+            </svg>
+          ) : active ? (
+            <span className="h-2 w-2 rounded-full bg-black" />
+          ) : null}
         </span>
       </div>
 

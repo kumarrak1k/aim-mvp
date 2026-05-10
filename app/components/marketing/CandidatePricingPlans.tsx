@@ -20,28 +20,14 @@ const ADVANCED: Record<PricingCurrency, PriceSet> = {
   EUR: { monthly: "€32",  annual: "€279",  annualMonthly: "€23.25" },
 };
 
-const PAYMENTS_ENABLED = process.env.NEXT_PUBLIC_PAYMENTS_ENABLED === "true";
-
 type StripePlanId =
   | "professional_monthly"
   | "professional_annual"
   | "advanced_monthly"
   | "advanced_annual";
 
-async function redirectToCheckout(planId: StripePlanId): Promise<string | null> {
-  const res = await fetch("/api/stripe/checkout", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ planId }),
-  });
-  if (!res.ok) return null;
-  const { url } = await res.json();
-  return url ?? null;
-}
-
 export function CandidatePricingPlans({ currency = "GBP" }: { currency?: PricingCurrency }) {
   const [annual, setAnnual] = useState(false);
-  const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
   const router = useRouter();
 
   const pro = PROFESSIONAL[currency];
@@ -54,14 +40,14 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
       annualPrice: null as string | null,
       annualMonthly: null as string | null,
       period: null as string | null,
-      description: "Try the platform and run your first practice sessions with no commitment.",
+      description: "Try the platform with 3 keyboard-only practice sessions. No card required — just create a free account.",
       features: [
-        "3 interview practice sessions per month",
-        "Basic answer feedback",
+        "3 keyboard-only practice sessions",
+        "AI-generated tailored interview questions",
+        "Written answer feedback per question",
         "Session transcript review",
       ],
       cta: "Start free",
-      ctaHref: "/for-candidates/sign-up",
       stripePlanMonthly: null as StripePlanId | null,
       stripePlanAnnual: null as StripePlanId | null,
       highlight: false,
@@ -73,16 +59,16 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
       annualMonthly: pro.annualMonthly,
       period: "/month",
       description:
-        "For candidates actively preparing — unlimited interview practice, full feedback suite, voice and camera analysis.",
+        "For candidates actively preparing — unlimited practice with full feedback, voice interview and camera analysis.",
       features: [
         "Unlimited interview practice sessions",
+        "All 3 interview modes: typed, voice and voice + camera",
         "Voice delivery and camera presence analysis",
         "Full structured feedback per answer",
         "Model answers per question",
         "Progress history saved and tracked",
       ],
-      cta: "Start free trial",
-      ctaHref: "/for-candidates/sign-up",
+      cta: "Get started",
       stripePlanMonthly: "professional_monthly" as StripePlanId,
       stripePlanAnnual: "professional_annual" as StripePlanId,
       highlight: true,
@@ -102,28 +88,31 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
         "Competency gap tracking across sessions",
         "Priority coaching queue",
       ],
-      cta: "Start free trial",
-      ctaHref: "/for-candidates/sign-up",
+      cta: "Get started",
       stripePlanMonthly: "advanced_monthly" as StripePlanId,
       stripePlanAnnual: "advanced_annual" as StripePlanId,
       highlight: false,
     },
   ];
 
-  async function handlePaidCta(plan: (typeof plans)[number]) {
+  /**
+   * Paid plan flow:
+   * 1. Save the chosen plan ID to sessionStorage so the sign-up/complete
+   *    page can pick it up and redirect straight to Stripe checkout.
+   * 2. Navigate the user to the sign-up page.
+   *
+   * This means subscription selection is always part of the sign-up journey
+   * rather than a standalone step, and we always capture the account first.
+   */
+  function handlePaidCta(plan: (typeof plans)[number]) {
     const stripePlanId = annual ? plan.stripePlanAnnual : plan.stripePlanMonthly;
     if (!stripePlanId) return;
-    setLoadingPlan(plan.name);
     try {
-      const url = await redirectToCheckout(stripePlanId);
-      if (url) {
-        router.push(url);
-      } else {
-        router.push(plan.ctaHref);
-      }
-    } finally {
-      setLoadingPlan(null);
+      sessionStorage.setItem("aim_pending_plan", stripePlanId);
+    } catch {
+      // sessionStorage unavailable — sign-up will just land on /practice
     }
+    router.push("/for-candidates/sign-up");
   }
 
   return (
@@ -166,7 +155,6 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
             annual && plan.annualPrice ? "/month, billed annually" : plan.period;
           const annualTotal = annual && plan.annualPrice;
           const isPaid = plan.stripePlanMonthly !== null;
-          const isLoading = loadingPlan === plan.name;
 
           return (
             <div
@@ -214,21 +202,20 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
                 ))}
               </div>
 
-              {PAYMENTS_ENABLED && isPaid ? (
+              {isPaid ? (
                 <button
                   onClick={() => handlePaidCta(plan)}
-                  disabled={isLoading}
-                  className={`mt-8 flex w-full justify-center rounded-2xl px-5 py-3.5 text-sm font-black transition disabled:opacity-60 ${
+                  className={`mt-8 flex w-full justify-center rounded-2xl px-5 py-3.5 text-sm font-black transition ${
                     plan.highlight
                       ? "bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 text-white shadow-xl shadow-purple-950/35 hover:scale-[1.02]"
                       : "border border-white/10 bg-white/[0.06] text-white hover:bg-white/[0.1]"
                   }`}
                 >
-                  {isLoading ? "Redirecting…" : plan.cta}
+                  {plan.cta}
                 </button>
               ) : (
                 <Link
-                  href={plan.ctaHref}
+                  href="/for-candidates/sign-up"
                   className={`mt-8 flex w-full justify-center rounded-2xl px-5 py-3.5 text-sm font-black transition ${
                     plan.highlight
                       ? "bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 text-white shadow-xl shadow-purple-950/35 hover:scale-[1.02]"

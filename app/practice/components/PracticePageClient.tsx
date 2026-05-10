@@ -144,6 +144,11 @@ export function PracticePageClient() {
   const signedInLimitReached =
     Boolean(isSignedIn) && usageLoaded && practiceUsage.limitReached;
 
+  // Free plan = the usage API returned planName "Free" (covers both signed-in
+  // free users and not-yet-signed-in visitors). While usage is still loading
+  // default to free so voice options stay hidden rather than flicker in.
+  const isFreePlan = practiceUsage.planName === "Free";
+
   const canStartInterview = Boolean(role.trim()) && !signedInLimitReached;
 
   const usageSummary = useMemo(() => {
@@ -158,14 +163,14 @@ export function PracticePageClient() {
     }
 
     if (practiceUsage.limitReached) {
-      return `Daily session limit reached. Upgrade to Professional for unlimited sessions, or come back after ${formatResetTime(practiceUsage.resetsAt)}.`;
+      return `You have used all 3 free trial sessions. Upgrade to Professional for unlimited sessions and all interview modes.`;
     }
 
     if (practiceUsage.dailyLimit === null) {
       return `${practiceUsage.planName} plan · Unlimited sessions.`;
     }
 
-    return `${practiceUsage.remainingToday}/${practiceUsage.dailyLimit} free sessions remaining today.`;
+    return `${practiceUsage.remainingToday} of ${practiceUsage.dailyLimit} free trial sessions remaining · keyboard mode only.`;
   }, [isLoaded, isSignedIn, practiceUsage, usageLoaded]);
 
   useEffect(() => {
@@ -467,6 +472,7 @@ export function PracticePageClient() {
             toggleCamera={toggleCamera}
             startInterview={startInterview}
             questionLoading={questionLoading}
+            isFreePlan={isFreePlan}
             startDisabled={signedInLimitReached}
             startDisabledMessage={usageSummary}
           />

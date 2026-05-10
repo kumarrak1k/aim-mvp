@@ -8,7 +8,8 @@ import { parseJsonBody, practiceSessionCreateSchema } from "../../lib/validation
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const FREE_DAILY_LIMIT = 3;
+/** Total number of sessions a free-tier user can save (all-time, not per day). */
+const FREE_TRIAL_LIMIT = 3;
 
 type PlanInfo = { planName: string; isUnlimited: boolean };
 
@@ -44,36 +45,33 @@ function getHireSignal(summary: Record<string, unknown>): string {
   return value.replace(/\s+/g, " ").trim().slice(0, 40) || "Moderate";
 }
 
-function getTodayRange() {
-  const now = new Date();
-  const start = new Date(now);
-  start.setHours(0, 0, 0, 0);
-  const end = new Date(start);
-  end.setDate(end.getDate() + 1);
-  return { start, end };
-}
+async function getUsageInfo(clerkUserId: string, planInfo: PlanInfo) {
+  if (planInfo.isUnlimited) {
+    return {
+      planName: planInfo.planName,
+      dailyLimit: null as null,
+      usedToday: 0,
+      remainingToday: null as null,
+      limitReached: false,
+      resetsAt: "",
+    };
+  }
 
-async function getDailyUsage(clerkUserId: string, planInfo: PlanInfo) {
-  const { start, end } = getTodayRange();
-
-  const usedToday = await prisma.practiceSession.count({
-    where: {
-      clerkUserId,
-      createdAt: { gte: start, lt: end },
-    },
+  // Free tier: count all sessions ever saved (one-time trial of 3 sessions).
+  const totalUsed = await prisma.practiceSession.count({
+    where: { clerkUserId },
   });
 
-  const dailyLimit = planInfo.isUnlimited ? null : FREE_DAILY_LIMIT;
-  const remainingToday = dailyLimit === null ? null : Math.max(0, dailyLimit - usedToday);
-  const limitReached = dailyLimit !== null && usedToday >= dailyLimit;
+  const remaining = Math.max(0, FREE_TRIAL_LIMIT - totalUsed);
+  const limitReached = totalUsed >= FREE_TRIAL_LIMIT;
 
   return {
     planName: planInfo.planName,
-    dailyLimit,
-    usedToday,
-    remainingToday,
+    dailyLimit: FREE_TRIAL_LIMIT,
+    usedToday: totalUsed,
+    remainingToday: remaining,
     limitReached,
-    resetsAt: end.toISOString(),
+    resetsAt: "",
   };
 }
 
@@ -112,7 +110,7 @@ export async function GET() {
           createdAt: true,
         },
       }),
-      getDailyUsage(userId, planInfo),
+      getUsageInfo(userId, planInfo),
       getAssessmentLinkedSessionIds(userId),
     ]);
 
@@ -150,7 +148,7 @@ export async function POST(request: NextRequest) {
     }
 
     const planInfo = await getUserPlanInfo(userId);
-    const usage = await getDailyUsage(userId, planInfo);
+    const usage = await getUsageInfo(userId, planInfo);
 
     if (usage.limitReached) {
       return NextResponse.json(
@@ -226,7 +224,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const updatedUsage = await getDailyUsage(userId, planInfo);
+    const updatedUsage = await getUsageInfo(userId, planInfo);
 
     return NextResponse.json({
       usage: updatedUsage,
