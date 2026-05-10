@@ -1498,14 +1498,15 @@ function PracticeSessionShell({
         <div className="absolute bottom-[-80px] right-[-160px] h-[520px] w-[520px] rounded-full bg-fuchsia-500/[0.18] blur-[160px]" />
       </div>
 
+      <SessionHeader
+        assessmentMode={assessmentMode}
+        companyName={templateContext?.companyName}
+        companyBrandColor={templateContext?.companyBrandColor}
+        companyLogoUrl={templateContext?.companyLogoUrl}
+        templateName={templateContext?.templateName}
+      />
+
       <div className="relative z-10">
-        <SessionHeader
-          assessmentMode={assessmentMode}
-          companyName={templateContext?.companyName}
-          companyBrandColor={templateContext?.companyBrandColor}
-          companyLogoUrl={templateContext?.companyLogoUrl}
-          templateName={templateContext?.templateName}
-        />
         {children}
       </div>
     </main>
