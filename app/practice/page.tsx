@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { createPageMetadata } from "@/app/config/seo";
 import { PracticePageClient } from "./components/PracticePageClient";
 
@@ -18,5 +19,9 @@ export const metadata: Metadata = createPageMetadata({
 });
 
 export default function PracticePage() {
-  return <PracticePageClient />;
+  return (
+    <Suspense>
+      <PracticePageClient />
+    </Suspense>
+  );
 }
