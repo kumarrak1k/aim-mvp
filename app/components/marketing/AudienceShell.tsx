@@ -112,7 +112,7 @@ export function AudienceShell({
       </div>
 
       {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-white/[0.08] bg-[#0a0614]/90 backdrop-blur-2xl">
+      <header className="sticky top-0 z-50 border-b border-white/[0.08] bg-[#0a0614]/60 backdrop-blur-2xl">
         <div className="mx-auto flex w-full max-w-7xl items-center gap-3 px-4 py-3 sm:px-6 lg:gap-6 lg:px-8 lg:py-3.5">
           {/* Logo + audience badge */}
           <Link
