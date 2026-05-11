@@ -23,7 +23,7 @@ export const metadata = { robots: "noindex, nofollow" };
 export default async function AdminPage() {
   // ── Auth gate ────────────────────────────────────────────────────────────
   const { userId } = await auth();
-  if (!userId) redirect("/");
+  if (!userId) redirect("/for-business/sign-in?redirect_url=/admin");
 
   const client = await clerkClient();
   const me = await client.users.getUser(userId);
