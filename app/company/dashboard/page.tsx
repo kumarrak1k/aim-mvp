@@ -58,12 +58,21 @@ function DashboardContent() {
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [templates, setTemplates] = useState<Template[]>([]);
   const [members, setMembers] = useState<TeamMember[]>([]);
+  const [pendingInvites, setPendingInvites] = useState<{ id: string; email: string; role: string; token: string; expiresAt: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [removingMemberId, setRemovingMemberId] = useState<string | null>(null);
 
   // Billing action state
   const [billingLoading, setBillingLoading] = useState(false);
   const [billingError, setBillingError] = useState("");
+
+  // Member invite modal state
+  const [showMemberInviteModal, setShowMemberInviteModal] = useState(false);
+  const [memberInviteEmail, setMemberInviteEmail] = useState("");
+  const [memberInviteRole, setMemberInviteRole] = useState<"recruiter" | "admin" | "viewer">("recruiter");
+  const [memberInviteLoading, setMemberInviteLoading] = useState(false);
+  const [memberInviteError, setMemberInviteError] = useState("");
+  const [memberInviteLink, setMemberInviteLink] = useState("");
 
   // Delete-workspace state
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -99,6 +108,7 @@ function DashboardContent() {
         setTemplates(tData.templates || []);
         const mData = await membersRes.json();
         setMembers(mData.members || []);
+        setPendingInvites(mData.invites || []);
       } catch {
         // noop
       } finally {
@@ -131,6 +141,31 @@ function DashboardContent() {
       }
     } finally {
       setRemovingMemberId(null);
+    }
+  }
+
+  async function sendMemberInvite() {
+    setMemberInviteLoading(true);
+    setMemberInviteError("");
+    try {
+      const res = await fetch("/api/company/members", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: memberInviteEmail.trim(), role: memberInviteRole }),
+      });
+      const json = await res.json();
+      if (!res.ok || !json.invite) {
+        setMemberInviteError(json.error || "Failed to create invite. Please try again.");
+        return;
+      }
+      const link = `${window.location.origin}/company/join/${json.invite.token}`;
+      setMemberInviteLink(link);
+      setPendingInvites((prev) => [...prev, json.invite]);
+      setMemberInviteEmail("");
+    } catch {
+      setMemberInviteError("Network error. Please try again.");
+    } finally {
+      setMemberInviteLoading(false);
     }
   }
 
@@ -343,7 +378,7 @@ function DashboardContent() {
         </div>
 
         {/* Team member management — admin only */}
-        {member.role === "admin" && members.length > 0 && (
+        {member.role === "admin" && (
           <div className="mb-10 rounded-[2rem] border border-white/10 bg-white/[0.04] p-6 shadow-xl shadow-black/10">
             <div className="mb-5 flex items-center justify-between">
               <div>
@@ -355,11 +390,12 @@ function DashboardContent() {
                 )}
               </div>
               {planActive && plan && members.length < plan.seats && (
-                <Link href="/company/candidates">
-                  <button className="rounded-full border border-white/10 bg-white/[0.05] px-4 py-2 text-xs font-black text-white transition hover:bg-white/[0.09]">
-                    + Invite member
-                  </button>
-                </Link>
+                <button
+                  onClick={() => { setMemberInviteLink(""); setMemberInviteError(""); setShowMemberInviteModal(true); }}
+                  className="rounded-full border border-white/10 bg-white/[0.05] px-4 py-2 text-xs font-black text-white transition hover:bg-white/[0.09]"
+                >
+                  + Invite member
+                </button>
               )}
             </div>
             <div className="divide-y divide-white/[0.06]">
@@ -396,6 +432,36 @@ function DashboardContent() {
                 );
               })}
             </div>
+
+            {/* Pending invites */}
+            {pendingInvites.length > 0 && (
+              <div className="mt-5 border-t border-white/[0.06] pt-5">
+                <p className="mb-3 text-xs font-black uppercase tracking-[0.18em] text-gray-500">Pending invites</p>
+                <div className="space-y-2">
+                  {pendingInvites.map((inv) => {
+                    const link = `${typeof window !== "undefined" ? window.location.origin : ""}/company/join/${inv.token}`;
+                    return (
+                      <div key={inv.id} className="flex flex-col gap-2 rounded-2xl border border-white/[0.07] bg-white/[0.03] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+                        <div>
+                          <p className="text-sm font-semibold text-white">{inv.email}</p>
+                          <p className="text-[11px] text-gray-500 capitalize">{inv.role} · expires {new Date(inv.expiresAt).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}</p>
+                        </div>
+                        <button
+                          onClick={() => void navigator.clipboard.writeText(link)}
+                          className="shrink-0 rounded-full border border-white/10 bg-white/[0.05] px-3.5 py-1.5 text-xs font-black text-gray-300 transition hover:bg-white/[0.09]"
+                        >
+                          Copy invite link
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {members.length === 0 && pendingInvites.length === 0 && (
+              <p className="py-4 text-sm text-gray-500">No team members yet.</p>
+            )}
           </div>
         )}
 
@@ -481,6 +547,103 @@ function DashboardContent() {
           )}
         </div>
       </div>
+
+      {/* Invite team member modal */}
+      {showMemberInviteModal && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm px-4"
+          onClick={() => { if (!memberInviteLoading) { setShowMemberInviteModal(false); setMemberInviteLink(""); } }}
+        >
+          <div
+            className="w-full max-w-md rounded-[1.75rem] border border-fuchsia-400/20 bg-[#120a1e] p-6 shadow-2xl shadow-fuchsia-950/40"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <p className="text-[11px] font-black uppercase tracking-[0.22em] text-fuchsia-300">Invite team member</p>
+            <h3 className="mt-2 text-2xl font-black tracking-[-0.03em] text-white">Add to your workspace</h3>
+
+            {memberInviteLink ? (
+              /* Success state — show the link to copy */
+              <div className="mt-5">
+                <p className="text-sm text-gray-300">Invite created! Share this link with your team member:</p>
+                <div className="mt-3 flex items-center gap-2 rounded-2xl border border-white/10 bg-black/40 px-4 py-3">
+                  <p className="flex-1 truncate text-xs text-fuchsia-200">{memberInviteLink}</p>
+                  <button
+                    onClick={() => void navigator.clipboard.writeText(memberInviteLink)}
+                    className="shrink-0 rounded-full border border-fuchsia-400/30 bg-fuchsia-500/10 px-3 py-1.5 text-xs font-black text-fuchsia-200 transition hover:bg-fuchsia-500/20"
+                  >
+                    Copy
+                  </button>
+                </div>
+                <p className="mt-2 text-[11px] text-gray-500">The link expires in 7 days. They must have or create a hiring team account to accept.</p>
+                <div className="mt-5 flex gap-3">
+                  <button
+                    onClick={() => { setMemberInviteLink(""); setMemberInviteEmail(""); }}
+                    className="flex-1 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm font-black text-white transition hover:bg-white/[0.08]"
+                  >
+                    Invite another
+                  </button>
+                  <button
+                    onClick={() => { setShowMemberInviteModal(false); setMemberInviteLink(""); }}
+                    className="flex-1 rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 px-4 py-2.5 text-sm font-black text-white"
+                  >
+                    Done
+                  </button>
+                </div>
+              </div>
+            ) : (
+              /* Form state */
+              <div className="mt-5 space-y-4">
+                <div>
+                  <label className="block text-xs font-black uppercase tracking-[0.18em] text-gray-400">Email address</label>
+                  <input
+                    type="email"
+                    value={memberInviteEmail}
+                    onChange={(e) => { setMemberInviteEmail(e.target.value); setMemberInviteError(""); }}
+                    placeholder="colleague@company.com"
+                    disabled={memberInviteLoading}
+                    autoFocus
+                    className="mt-2 w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm font-semibold text-white placeholder:text-gray-600 focus:border-fuchsia-400/40 focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-black uppercase tracking-[0.18em] text-gray-400">Role</label>
+                  <select
+                    value={memberInviteRole}
+                    onChange={(e) => setMemberInviteRole(e.target.value as "recruiter" | "admin" | "viewer")}
+                    disabled={memberInviteLoading}
+                    className="mt-2 w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm font-semibold text-white focus:border-fuchsia-400/40 focus:outline-none"
+                  >
+                    <option value="recruiter">Recruiter — can create templates &amp; invite candidates</option>
+                    <option value="admin">Admin — full access including billing</option>
+                    <option value="viewer">Viewer — read-only access</option>
+                  </select>
+                </div>
+
+                {memberInviteError && (
+                  <p className="text-sm font-semibold text-red-300">{memberInviteError}</p>
+                )}
+
+                <div className="flex flex-col-reverse gap-3 pt-1 sm:flex-row sm:justify-end">
+                  <button
+                    onClick={() => setShowMemberInviteModal(false)}
+                    disabled={memberInviteLoading}
+                    className="rounded-full border border-white/10 bg-white/[0.04] px-5 py-2.5 text-sm font-black text-white transition hover:bg-white/[0.08] disabled:opacity-50"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => void sendMemberInvite()}
+                    disabled={memberInviteLoading || !memberInviteEmail.includes("@")}
+                    className="rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 px-5 py-2.5 text-sm font-black text-white shadow-lg transition hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {memberInviteLoading ? "Sending…" : "Create invite link →"}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Delete-workspace confirmation modal */}
       {showDeleteModal && (
