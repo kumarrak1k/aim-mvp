@@ -365,7 +365,7 @@ function DashboardContent() {
             { href: "/company/templates", label: "Assessment templates", desc: `${activeTemplates} active`, icon: "📋" },
             { href: "/company/candidates", label: "Candidates", desc: `${pendingCount} awaiting`, icon: "👥" },
             { href: "/company/results", label: "Results & scoring", desc: `${completedCount} completed`, icon: "📊" },
-            { href: "/company/dashboard", label: "Team & settings", desc: `${company._count.members} members`, icon: "⚙️" },
+            { href: "#team", label: "Team & settings", desc: `${company._count.members} member${company._count.members === 1 ? "" : "s"}`, icon: "⚙️" },
           ].map(({ href, label, desc, icon }) => (
             <Link key={href} href={href}>
               <div className="group rounded-2xl border border-white/10 bg-white/[0.05] p-6 transition hover:bg-white/[0.08]">
@@ -379,7 +379,7 @@ function DashboardContent() {
 
         {/* Team member management — admin only */}
         {member.role === "admin" && (
-          <div className="mb-10 rounded-[2rem] border border-white/10 bg-white/[0.04] p-6 shadow-xl shadow-black/10">
+          <div id="team" className="mb-10 scroll-mt-24 rounded-[2rem] border border-white/10 bg-white/[0.04] p-6 shadow-xl shadow-black/10">
             <div className="mb-5 flex items-center justify-between">
               <div>
                 <h2 className="text-xl font-black">Team members</h2>
