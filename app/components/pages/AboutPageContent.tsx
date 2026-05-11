@@ -1,6 +1,19 @@
 import Link from "next/link";
 import { absoluteUrl, siteConfig } from "@/app/config/site";
 
+const founderSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "@id": `${siteConfig.url}/#founder`,
+  name: "Rakesh Kumar",
+  jobTitle: "Founder & CEO",
+  worksFor: { "@id": `${siteConfig.url}/#organization` },
+  url: absoluteUrl("/about"),
+  image: absoluteUrl("/team/rakesh-kumar.jpeg"),
+  // Add sameAs once LinkedIn URL is confirmed:
+  // sameAs: ["https://www.linkedin.com/in/YOUR-HANDLE"],
+};
+
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "AboutPage",
@@ -11,6 +24,7 @@ const structuredData = {
   mainEntity: {
     "@id": `${siteConfig.url}/#organization`,
   },
+  mentions: [{ "@id": `${siteConfig.url}/#founder` }],
 };
 
 const values = [
@@ -48,6 +62,10 @@ export function AboutPageContent() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(founderSchema) }}
       />
 
       <div className="mx-auto max-w-4xl px-4 pb-24 pt-6 sm:px-6 sm:pt-10">
