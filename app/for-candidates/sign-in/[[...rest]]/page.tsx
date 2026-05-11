@@ -61,6 +61,16 @@ export default function CandidateSignInPage() {
             </p>
           </div>
 
+          {/* Account-type indicator */}
+          <div className="mb-5 flex items-center justify-between rounded-2xl border border-purple-400/20 bg-purple-500/[0.08] px-4 py-3">
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-black uppercase tracking-[0.18em] text-purple-300">Candidate sign-in</span>
+            </div>
+            <Link href="/for-business/sign-in" className="text-[11px] font-bold text-fuchsia-300 hover:text-fuchsia-200">
+              Hiring team? →
+            </Link>
+          </div>
+
           <SignIn
             routing="path"
             path="/for-candidates/sign-in"

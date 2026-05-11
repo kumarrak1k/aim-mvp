@@ -54,6 +54,24 @@ export default function BusinessSignUpPage() {
             </p>
           </div>
 
+          {/* Account-type confirmation — makes it unambiguous before they fill the form */}
+          <div className="mb-5 rounded-2xl border border-fuchsia-400/20 bg-fuchsia-500/[0.08] px-4 py-3.5">
+            <p className="mb-2 text-[11px] font-black uppercase tracking-[0.18em] text-fuchsia-300">
+              Hiring team account
+            </p>
+            <ul className="space-y-1 text-xs text-gray-400">
+              <li>✓ Create structured interview &amp; assessment templates</li>
+              <li>✓ Send invite links to candidates</li>
+              <li>✓ Review AI-scored candidate responses</li>
+            </ul>
+            <p className="mt-3 border-t border-white/[0.06] pt-3 text-[11px] text-gray-500">
+              Are you a job applicant?{" "}
+              <Link href="/for-candidates/sign-up" className="font-bold text-purple-300 hover:text-purple-200">
+                Create a candidate account instead →
+              </Link>
+            </p>
+          </div>
+
           <SignUp
             routing="path"
             path="/for-business/sign-up"

@@ -60,8 +60,26 @@ export default function CandidateSignUpPage() {
               Start practising free.
             </h1>
             <p className="mt-3 text-sm leading-6 text-gray-400">
-              Build your candidate account and run your first interview or
+              Create your candidate account and run your first interview or
               assessment-centre practice in minutes.
+            </p>
+          </div>
+
+          {/* Account-type confirmation — makes it unambiguous before they fill the form */}
+          <div className="mb-5 rounded-2xl border border-purple-400/20 bg-purple-500/[0.08] px-4 py-3.5">
+            <p className="mb-2 text-[11px] font-black uppercase tracking-[0.18em] text-purple-300">
+              Candidate account
+            </p>
+            <ul className="space-y-1 text-xs text-gray-400">
+              <li>✓ Mock interviews tailored to your role &amp; level</li>
+              <li>✓ Assessment centre practice (case study, presentation, group ex)</li>
+              <li>✓ AI scoring on voice, content &amp; camera</li>
+            </ul>
+            <p className="mt-3 border-t border-white/[0.06] pt-3 text-[11px] text-gray-500">
+              Are you a hiring manager?{" "}
+              <Link href="/for-business/sign-up" className="font-bold text-fuchsia-300 hover:text-fuchsia-200">
+                Create a hiring team account instead →
+              </Link>
             </p>
           </div>
 
