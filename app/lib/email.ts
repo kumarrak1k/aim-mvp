@@ -534,6 +534,127 @@ export async function sendNurtureEmail(
   }
 }
 
+// ── Admin welcome email ───────────────────────────────────────────────────────
+
+type SendAdminWelcomeParams = {
+  to: string;
+  firstName?: string | null;
+  signInUrl: string;
+};
+
+function renderAdminWelcomeHtml({ to, firstName, signInUrl }: SendAdminWelcomeParams): string {
+  const greeting = firstName ? `Hi ${escapeHtml(firstName)},` : "Hi,";
+  const year = new Date().getFullYear();
+  return `<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" /></head>
+<body style="margin:0;padding:0;background:#f4f3f8;font-family:Arial,Helvetica,sans-serif;color:#1a1426;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f3f8;padding:32px 12px;">
+    <tr><td align="center">
+      <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:18px;overflow:hidden;box-shadow:0 6px 30px rgba(20,10,40,0.08);">
+
+        <tr><td style="background:linear-gradient(135deg,#6d28d9,#a21caf);padding:32px 36px;">
+          <p style="margin:0;color:#e9d5ff;font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;">
+            AI Career Mentor
+          </p>
+          <h1 style="margin:10px 0 0;color:#ffffff;font-size:24px;line-height:1.25;font-weight:800;">
+            Your account is ready.
+          </h1>
+        </td></tr>
+
+        <tr><td style="padding:36px;">
+          <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#2a2238;">${greeting}</p>
+          <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#2a2238;">
+            An account has been created for you on AI Career Mentor —
+            an AI-powered platform for interview practice and assessment preparation.
+          </p>
+          <p style="margin:0 0 28px;font-size:15px;line-height:1.7;color:#2a2238;">
+            Click the button below to sign in. You'll be asked to set a
+            personal password before you can access your account.
+          </p>
+
+          <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 28px;">
+            <tr><td style="border-radius:12px;background:#7c3aed;">
+              <a href="${escapeHtml(signInUrl)}"
+                 style="display:inline-block;padding:15px 32px;color:#ffffff;font-size:15px;font-weight:800;text-decoration:none;border-radius:12px;">
+                Sign in and set your password &rarr;
+              </a>
+            </td></tr>
+          </table>
+
+          <div style="background:#f7f5fb;border-radius:12px;padding:16px 20px;margin:0 0 28px;">
+            <p style="margin:0 0 6px;font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:#7c6a99;">
+              Sign in as
+            </p>
+            <p style="margin:0;font-size:14px;color:#3a2f54;font-weight:600;">${escapeHtml(to)}</p>
+          </div>
+
+          <p style="margin:0 0 12px;font-size:13px;line-height:1.6;color:#7c6a99;">
+            If the button doesn&rsquo;t work, copy and paste this link into your browser:
+          </p>
+          <p style="margin:0 0 28px;font-size:12px;word-break:break-all;">
+            <a href="${escapeHtml(signInUrl)}" style="color:#6d28d9;">${escapeHtml(signInUrl)}</a>
+          </p>
+
+          <hr style="border:none;border-top:1px solid #e7e3ee;margin:0 0 20px;" />
+
+          <p style="margin:0;font-size:12px;line-height:1.7;color:#7c6a99;">
+            This link works once and expires in 7 days. If you weren&rsquo;t
+            expecting this email, please ignore it &mdash; no action is needed.<br/>
+            &copy; ${year} AI Career Mentor Ltd
+          </p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+}
+
+function renderAdminWelcomePlainText({ to, firstName, signInUrl }: SendAdminWelcomeParams): string {
+  const greeting = firstName ? `Hi ${firstName},` : "Hi,";
+  return [
+    greeting,
+    "",
+    "An account has been created for you on AI Career Mentor.",
+    "",
+    "Sign in and set your password using the link below:",
+    signInUrl,
+    "",
+    `Account email: ${to}`,
+    "",
+    "This link works once and expires in 7 days.",
+    "If you weren't expecting this email, you can safely ignore it.",
+    "",
+    "— AI Career Mentor",
+    siteConfig.url,
+  ].join("\n");
+}
+
+export async function sendAdminWelcomeEmail(
+  params: SendAdminWelcomeParams
+): Promise<SendResult> {
+  const client = getResendClient();
+  if (!client) return { ok: false, error: "Email is not configured (RESEND_API_KEY missing)." };
+
+  try {
+    const result = await client.emails.send({
+      from: getFromAddress(),
+      to: params.to,
+      subject: "Your AI Career Mentor account is ready",
+      html: renderAdminWelcomeHtml(params),
+      text: renderAdminWelcomePlainText(params),
+      tags: [{ name: "category", value: "admin-welcome" }],
+    });
+
+    if (result.error) return { ok: false, error: result.error.message };
+    if (!result.data?.id) return { ok: false, error: "No message id returned." };
+    return { ok: true, id: result.data.id };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : "Unknown error." };
+  }
+}
+
 export async function sendCandidateInvite(
   params: SendCandidateInviteParams
 ): Promise<SendResult> {

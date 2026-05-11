@@ -218,7 +218,7 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
   const [deleteError, setDeleteError]     = useState("");
 
   // Create user modal
-  type CreatedResult = { userId: string; email: string; signInUrl: string };
+  type CreatedResult = { userId: string; email: string; firstName: string | null; accountType: string };
   const [showCreate, setShowCreate]         = useState(false);
   const [createForm, setCreateForm]         = useState({
     email: "", firstName: "", lastName: "",
@@ -228,7 +228,9 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
   const [createLoading, setCreateLoading]   = useState(false);
   const [createError, setCreateError]       = useState("");
   const [createdResult, setCreatedResult]   = useState<CreatedResult | null>(null);
-  const [copiedLink, setCopiedLink]         = useState(false);
+  const [sendingEmail, setSendingEmail]     = useState(false);
+  const [emailSent, setEmailSent]           = useState(false);
+  const [emailError, setEmailError]         = useState("");
 
   // ── Open modals ─────────────────────────────────────────────────────────────
 
@@ -332,7 +334,8 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
     setCreateForm({ email: "", firstName: "", lastName: "", accountType: "candidate", membership: "free" });
     setCreateError("");
     setCreatedResult(null);
-    setCopiedLink(false);
+    setEmailSent(false);
+    setEmailError("");
     setShowCreate(true);
   }
 
@@ -353,13 +356,14 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
           stripePlanId: billing.stripePlanId || undefined,
         }),
       });
-      const json = await res.json() as { success?: boolean; error?: string; userId?: string; email?: string; signInUrl?: string };
+      const json = await res.json() as { success?: boolean; error?: string; userId?: string; email?: string };
       if (!res.ok) { setCreateError(json.error ?? "Failed to create user."); return; }
 
       const result: CreatedResult = {
         userId: json.userId!,
         email: json.email!,
-        signInUrl: json.signInUrl!,
+        firstName: createForm.firstName.trim() || null,
+        accountType: createForm.accountType,
       };
       setCreatedResult(result);
 
@@ -387,10 +391,28 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
     }
   }
 
-  function copySignInLink(url: string) {
-    void navigator.clipboard.writeText(url);
-    setCopiedLink(true);
-    setTimeout(() => setCopiedLink(false), 2000);
+  async function sendWelcomeEmail(result: CreatedResult) {
+    setSendingEmail(true);
+    setEmailError("");
+    try {
+      const res = await fetch("/api/admin/send-welcome", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: result.userId,
+          email: result.email,
+          firstName: result.firstName,
+          accountType: result.accountType,
+        }),
+      });
+      const json = await res.json() as { success?: boolean; error?: string };
+      if (!res.ok) { setEmailError(json.error ?? "Failed to send email."); return; }
+      setEmailSent(true);
+    } catch {
+      setEmailError("Network error. Please try again.");
+    } finally {
+      setSendingEmail(false);
+    }
   }
 
   // ── Sort ─────────────────────────────────────────────────────────────────────
@@ -604,42 +626,49 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
             {createdResult ? (
               /* ── Success state ─────────────────────── */
               <div className="mt-5 space-y-4">
-                <div className="flex items-start gap-3 rounded-2xl border border-emerald-400/20 bg-emerald-500/[0.07] px-4 py-3">
-                  <svg className="mt-0.5 h-5 w-5 shrink-0 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                {/* Account created confirmation */}
+                <div className="flex items-center gap-3 rounded-2xl border border-emerald-400/20 bg-emerald-500/[0.07] px-4 py-3.5">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-500/20">
+                    <svg className="h-4 w-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                  </div>
                   <div>
                     <p className="text-sm font-black text-emerald-300">Account created</p>
-                    <p className="mt-0.5 text-[12px] text-emerald-200/70">{createdResult.email}</p>
+                    <p className="text-[12px] text-emerald-200/60">{createdResult.email}</p>
                   </div>
                 </div>
 
-                <div>
-                  <label className="block text-[11px] font-black uppercase tracking-[0.16em] text-gray-400">One-click sign-in link</label>
-                  <div className="mt-1.5 flex items-center gap-2">
-                    <input
-                      readOnly
-                      value={createdResult.signInUrl}
-                      onClick={(e) => (e.target as HTMLInputElement).select()}
-                      className="flex-1 rounded-xl border border-white/10 bg-black/40 px-3 py-2.5 font-mono text-[11px] text-fuchsia-300 focus:outline-none select-all truncate"
-                    />
+                {/* Send email action */}
+                {emailSent ? (
+                  <div className="flex items-center gap-3 rounded-2xl border border-fuchsia-400/20 bg-fuchsia-500/[0.07] px-4 py-4">
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-fuchsia-500/20">
+                      <svg className="h-4 w-4 text-fuchsia-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                    </div>
+                    <div>
+                      <p className="text-sm font-black text-fuchsia-300">Sign-in link sent</p>
+                      <p className="text-[12px] text-fuchsia-200/60">Email delivered to {createdResult.email}</p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4">
+                    <p className="text-[11px] leading-5 text-gray-400">
+                      Send a sign-in link directly to the user. They click it, set a password, and get access — no verification code needed.
+                    </p>
+                    {emailError && (
+                      <p className="mt-2 text-[11px] font-semibold text-red-300">{emailError}</p>
+                    )}
                     <button
-                      onClick={() => copySignInLink(createdResult.signInUrl)}
-                      className="shrink-0 rounded-xl border border-white/10 bg-white/[0.05] px-3 py-2.5 text-[11px] font-black text-gray-300 transition hover:bg-white/10"
+                      onClick={() => void sendWelcomeEmail(createdResult)}
+                      disabled={sendingEmail}
+                      className="mt-3 w-full rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-600 py-3 text-sm font-black text-white shadow-lg transition hover:scale-[1.02] disabled:opacity-60"
                     >
-                      {copiedLink ? "✓ Copied" : "Copy"}
+                      {sendingEmail ? "Sending…" : `Send sign-in link to ${createdResult.email}`}
                     </button>
                   </div>
-                  <div className="mt-3 space-y-1.5 rounded-2xl border border-white/[0.07] bg-white/[0.03] px-4 py-3 text-[11px] leading-5 text-gray-400">
-                    <p className="font-black text-white">How this works:</p>
-                    <p>1. Copy the link and send it to the user securely (email, Slack, etc.)</p>
-                    <p>2. They click it — no password or verification code needed</p>
-                    <p>3. They are asked to set a permanent password before accessing the site</p>
-                    <p className="text-amber-400/80 pt-1">⚠ Link works once and expires in 7 days.</p>
-                  </div>
-                </div>
+                )}
 
                 <button
-                  onClick={() => { setShowCreate(false); setCreatedResult(null); }}
-                  className="w-full rounded-full border border-white/10 bg-white/[0.05] py-2.5 text-sm font-black text-white transition hover:bg-white/[0.09]"
+                  onClick={() => { setShowCreate(false); setCreatedResult(null); setEmailSent(false); }}
+                  className="w-full rounded-full border border-white/10 bg-white/[0.04] py-2.5 text-sm font-black text-white transition hover:bg-white/[0.08]"
                 >
                   Done
                 </button>
