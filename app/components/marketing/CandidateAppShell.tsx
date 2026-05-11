@@ -27,6 +27,7 @@ export type CandidateAppPath =
   | "/profile"
   | "/assessment-centre"
   // Resource pages — visible in the secondary strip, not the main nav
+  | "/for-candidates"
   | "/for-candidates/about"
   | "/for-candidates/blog"
   | "/for-candidates/questions"
