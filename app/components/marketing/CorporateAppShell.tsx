@@ -23,7 +23,12 @@ export type CorporateAppPath =
   | "/company/candidates"
   | "/company/results"
   | "/company/setup"
-  | "/company/api-keys";
+  | "/company/api-keys"
+  // Resource pages — visible in the secondary strip, not the main nav
+  | "/for-business/about"
+  | "/for-business/blog"
+  | "/for-business/questions"
+  | "/for-business/star-scorer";
 
 type CorporateAppShellProps = {
   children: ReactNode;
@@ -35,6 +40,13 @@ const navItems: Array<{ href: CorporateAppPath; label: string }> = [
   { href: "/company/templates", label: "Templates" },
   { href: "/company/candidates", label: "Candidates" },
   { href: "/company/results", label: "Results" },
+];
+
+const resourceLinks = [
+  { href: "/for-business/about",        label: "About us"          },
+  { href: "/for-business/blog",         label: "Interview guides"  },
+  { href: "/for-business/questions",    label: "Question library"  },
+  { href: "/for-business/star-scorer",  label: "Free STAR scorer" },
 ];
 
 export function CorporateAppShell({
@@ -129,6 +141,29 @@ export function CorporateAppShell({
                 </Link>
               );
             })}
+            <span className="flex items-center text-white/[0.15]">·</span>
+            {resourceLinks.map((item) => (
+              <Link key={item.href} href={item.href}>
+                <span className="block whitespace-nowrap rounded-full border border-white/[0.08] bg-white/[0.04] px-3.5 py-1.5 text-xs font-bold text-gray-500 transition hover:bg-white/[0.07] hover:text-white">
+                  {item.label}
+                </span>
+              </Link>
+            ))}
+          </nav>
+        </div>
+
+        {/* Desktop resource links — secondary strip */}
+        <div className="hidden border-t border-white/[0.04] px-4 py-1.5 lg:block">
+          <nav className="mx-auto flex max-w-7xl items-center justify-center gap-6">
+            {resourceLinks.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="text-[11px] font-semibold text-gray-500 transition hover:text-gray-300"
+              >
+                {item.label}
+              </Link>
+            ))}
           </nav>
         </div>
       </header>

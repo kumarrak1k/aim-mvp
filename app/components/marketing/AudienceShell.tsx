@@ -39,12 +39,20 @@ type AudienceTheme = {
   switchAudienceHref: string;
 };
 
-/** Resource links shown in the candidate shell — rendered inside candidate shell. */
+/** Resource links shown in the candidate shell. */
 const CANDIDATE_RESOURCE_LINKS = [
   { href: "/for-candidates/about",        label: "About us" },
   { href: "/for-candidates/blog",         label: "Interview guides" },
   { href: "/for-candidates/questions",    label: "Question library" },
   { href: "/for-candidates/star-scorer",  label: "Free STAR scorer" },
+];
+
+/** Resource links shown in the business/hiring-team shell. */
+const BUSINESS_RESOURCE_LINKS = [
+  { href: "/for-business/about",        label: "About us" },
+  { href: "/for-business/blog",         label: "Interview guides" },
+  { href: "/for-business/questions",    label: "Question library" },
+  { href: "/for-business/star-scorer",  label: "Free STAR scorer" },
 ];
 
 const THEMES: Record<Audience, AudienceTheme> = {
@@ -197,10 +205,10 @@ export function AudienceShell({
                 </Link>
               );
             })}
-            {audience === "candidate" && (
+            {(audience === "candidate" || audience === "business") && (
               <>
                 <span className="flex items-center text-white/[0.15]">·</span>
-                {CANDIDATE_RESOURCE_LINKS.map((item) => (
+                {(audience === "candidate" ? CANDIDATE_RESOURCE_LINKS : BUSINESS_RESOURCE_LINKS).map((item) => (
                   <Link key={item.href} href={item.href}>
                     <span className="block whitespace-nowrap rounded-full border border-white/[0.08] bg-white/[0.04] px-3.5 py-1.5 text-xs font-bold text-gray-500 transition hover:bg-white/[0.07] hover:text-white">
                       {item.label}
@@ -212,11 +220,11 @@ export function AudienceShell({
           </nav>
         </div>
 
-        {/* Desktop resource links — candidate only, secondary strip */}
-        {audience === "candidate" && (
+        {/* Desktop resource links — secondary strip for both audiences */}
+        {(audience === "candidate" || audience === "business") && (
           <div className="hidden border-t border-white/[0.04] px-4 py-1.5 lg:block">
             <nav className="mx-auto flex max-w-7xl items-center justify-center gap-6">
-              {CANDIDATE_RESOURCE_LINKS.map((item) => (
+              {(audience === "candidate" ? CANDIDATE_RESOURCE_LINKS : BUSINESS_RESOURCE_LINKS).map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
