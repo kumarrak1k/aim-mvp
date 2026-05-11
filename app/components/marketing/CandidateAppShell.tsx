@@ -40,10 +40,10 @@ const navItems: Array<{ href: CandidateAppPath; label: string }> = [
 ];
 
 const resourceLinks = [
-  { href: "/about",             label: "About us"           },
-  { href: "/blog",              label: "Interview guides"   },
-  { href: "/questions",         label: "Question library"   },
-  { href: "/tools/star-scorer", label: "Free STAR scorer"  },
+  { href: "/for-candidates/about",        label: "About us"          },
+  { href: "/for-candidates/blog",         label: "Interview guides"  },
+  { href: "/for-candidates/questions",    label: "Question library"  },
+  { href: "/for-candidates/star-scorer",  label: "Free STAR scorer" },
 ];
 
 export function CandidateAppShell({
