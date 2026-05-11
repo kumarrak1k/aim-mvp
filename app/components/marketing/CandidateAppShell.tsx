@@ -39,6 +39,13 @@ const navItems: Array<{ href: CandidateAppPath; label: string }> = [
   { href: "/progress",          label: "My Progress"         },
 ];
 
+const resourceLinks = [
+  { href: "/about",             label: "About us"           },
+  { href: "/blog",              label: "Interview guides"   },
+  { href: "/questions",         label: "Question library"   },
+  { href: "/tools/star-scorer", label: "Free STAR scorer"  },
+];
+
 export function CandidateAppShell({
   children,
   currentPath,
@@ -142,6 +149,29 @@ export function CandidateAppShell({
                 </Link>
               );
             })}
+            <span className="flex items-center text-white/[0.15]">·</span>
+            {resourceLinks.map((item) => (
+              <Link key={item.href} href={item.href}>
+                <span className="block whitespace-nowrap rounded-full border border-white/[0.08] bg-white/[0.04] px-3.5 py-1.5 text-xs font-bold text-gray-500 transition hover:bg-white/[0.07] hover:text-white">
+                  {item.label}
+                </span>
+              </Link>
+            ))}
+          </nav>
+        </div>
+
+        {/* Desktop resource links — secondary strip */}
+        <div className="hidden border-t border-white/[0.04] px-4 py-1.5 lg:block">
+          <nav className="mx-auto flex max-w-7xl items-center justify-center gap-6">
+            {resourceLinks.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="text-[11px] font-semibold text-gray-500 transition hover:text-gray-300"
+              >
+                {item.label}
+              </Link>
+            ))}
           </nav>
         </div>
       </header>
