@@ -16,8 +16,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const post = getPost(slug);
   if (!post) return {};
+
+  // Use a per-post image if the MDX frontmatter defines one; otherwise fall
+  // back to the site brand image so shares always have a visual.
+  const ogImageUrl = absoluteUrl(post.image ?? "/brand/logo.jpg");
+
   return {
-    title: post.title,
+    // { absolute } bypasses the layout template so the suffix never doubles.
+    title: { absolute: `${post.title} | AI Career Mentor` },
     description: post.description,
     keywords: post.keywords,
     alternates: { canonical: absoluteUrl(`/blog/${slug}`) },
@@ -25,8 +31,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: post.title,
       description: post.description,
       url: absoluteUrl(`/blog/${slug}`),
+      siteName: "AI Career Mentor",
       type: "article",
       publishedTime: post.date,
+      images: [
+        {
+          url: ogImageUrl,
+          width: 1200,
+          height: 1200,
+          alt: post.title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.description,
+      images: [ogImageUrl],
     },
   };
 }

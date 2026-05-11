@@ -33,9 +33,6 @@ export const metadata: Metadata = {
   creator: siteName,
   publisher: siteName,
   category: "Career coaching",
-  alternates: {
-    canonical: siteUrl,
-  },
   robots: {
     index: true,
     follow: true,

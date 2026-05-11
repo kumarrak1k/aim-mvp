@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { absoluteUrl, siteConfig } from "@/app/config/site";
 
@@ -167,7 +166,8 @@ export function AboutPageContent() {
                 className="flex flex-col rounded-2xl border border-white/[0.08] bg-white/[0.03] p-6"
               >
                 <div className="mb-4 h-20 w-20 overflow-hidden rounded-full border-2 border-purple-400/30">
-                  <Image
+                  {/* Plain <img> ensures this is in server-rendered HTML for Googlebot */}
+                  <img
                     src={member.photo}
                     alt={member.name}
                     width={80}

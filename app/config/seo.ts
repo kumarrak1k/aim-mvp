@@ -43,7 +43,9 @@ export function createPageMetadata({
 
   return {
     metadataBase: new URL(siteConfig.url),
-    title: pageTitle,
+    // { absolute } bypasses the layout's "%s | AI Career Mentor" template so
+    // the suffix never doubles (buildTitle already appends it when needed).
+    title: { absolute: pageTitle },
     description: pageDescription,
     keywords: [...siteConfig.keywords, ...keywords],
     alternates: {

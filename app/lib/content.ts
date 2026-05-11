@@ -12,6 +12,8 @@ export type ContentMeta = {
   keywords: string[];
   category?: string;
   readingTime?: string;
+  /** Optional per-post OG image path relative to /public (e.g. "/blog/og/my-post.jpg") */
+  image?: string;
 };
 
 export type ContentItem = ContentMeta & {
