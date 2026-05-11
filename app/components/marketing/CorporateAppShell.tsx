@@ -31,10 +31,10 @@ type CorporateAppShellProps = {
 };
 
 const navItems: Array<{ href: CorporateAppPath; label: string }> = [
-  { href: "/company/dashboard", label: "Dashboard" },
-  { href: "/company/templates", label: "Templates" },
-  { href: "/company/candidates", label: "Candidates" },
-  { href: "/company/results", label: "Results" },
+  { href: "/company/dashboard",  label: "Dashboard"         },
+  { href: "/company/templates",  label: "Templates"         },
+  { href: "/company/candidates", label: "Invite candidates" },
+  { href: "/company/results",    label: "Results"           },
 ];
 
 const resourceLinks = [
@@ -58,8 +58,7 @@ export function CorporateAppShell({
         <div className="absolute bottom-[-80px] right-[-160px] h-[520px] w-[520px] rounded-full bg-fuchsia-500/[0.18] blur-[160px]" />
       </div>
 
-      {/* Header — solid brand colour, no backdrop-blur flicker */}
-      <header className="sticky top-0 z-50 border-b border-white/[0.07] bg-[#0f0c1d]">
+      <header className="sticky top-0 z-50 border-b border-white/[0.07] backdrop-blur-2xl">
         <div className="relative mx-auto flex w-full max-w-7xl items-center px-4 py-3 sm:px-6 lg:px-8 lg:py-3.5">
           <Link
             href="/company/dashboard"
