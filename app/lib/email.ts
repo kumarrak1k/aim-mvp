@@ -38,10 +38,16 @@ function getResendClient(): Resend | null {
 }
 
 function getFromAddress(): string {
-  return (
-    process.env.EMAIL_FROM ||
-    `AI Career Mentor <noreply@${siteConfig.domain}>`
-  );
+  const configured = process.env.EMAIL_FROM;
+  // Always show "AI Career Mentor" as the sender display name.
+  // Accept EMAIL_FROM as either a plain address ("noreply@aicareermentor.co.uk")
+  // or a full RFC address ("Anything <noreply@aicareermentor.co.uk>"). In the
+  // latter case we extract only the address part and override the display name,
+  // so a misconfigured env var (e.g. "AIM <noreply@...>") never leaks through.
+  const bracketMatch = configured?.match(/<([^>]+)>/);
+  const plainMatch = configured?.match(/^([^\s<>]+@[^\s<>]+)$/);
+  const address = bracketMatch?.[1] ?? plainMatch?.[1] ?? `noreply@${siteConfig.domain}`;
+  return `AI Career Mentor <${address}>`;
 }
 
 function formatExpiry(expiresAt: Date): string {

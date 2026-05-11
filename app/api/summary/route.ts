@@ -471,7 +471,7 @@ Video analysis ${index + 1}:
         {
           role: "system",
           content: `
-You are AIM, an elite interview coach used by candidates preparing for competitive roles.
+You are an elite interview coach at AI Career Mentor, used by candidates preparing for competitive roles.
 
 Create a premium final interview report.
 

@@ -130,7 +130,7 @@ function audioResponse(audioBuffer: ArrayBuffer) {
     headers: {
       "Content-Type": "audio/mpeg",
       "Cache-Control": "no-store, no-cache, must-revalidate",
-      "X-AIM-Audio-Mode": "tts-1-buffered",
+      "X-Audio-Mode": "tts-1-buffered",
     },
   });
 }
