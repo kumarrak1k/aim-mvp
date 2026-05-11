@@ -218,7 +218,7 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
   const [deleteError, setDeleteError]     = useState("");
 
   // Create user modal
-  type CreatedResult = { userId: string; email: string; tempPassword: string };
+  type CreatedResult = { userId: string; email: string; signInUrl: string };
   const [showCreate, setShowCreate]         = useState(false);
   const [createForm, setCreateForm]         = useState({
     email: "", firstName: "", lastName: "",
@@ -228,7 +228,7 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
   const [createLoading, setCreateLoading]   = useState(false);
   const [createError, setCreateError]       = useState("");
   const [createdResult, setCreatedResult]   = useState<CreatedResult | null>(null);
-  const [copiedPwd, setCopiedPwd]           = useState(false);
+  const [copiedLink, setCopiedLink]         = useState(false);
 
   // ── Open modals ─────────────────────────────────────────────────────────────
 
@@ -332,7 +332,7 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
     setCreateForm({ email: "", firstName: "", lastName: "", accountType: "candidate", membership: "free" });
     setCreateError("");
     setCreatedResult(null);
-    setCopiedPwd(false);
+    setCopiedLink(false);
     setShowCreate(true);
   }
 
@@ -353,13 +353,13 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
           stripePlanId: billing.stripePlanId || undefined,
         }),
       });
-      const json = await res.json() as { success?: boolean; error?: string; userId?: string; email?: string; tempPassword?: string };
+      const json = await res.json() as { success?: boolean; error?: string; userId?: string; email?: string; signInUrl?: string };
       if (!res.ok) { setCreateError(json.error ?? "Failed to create user."); return; }
 
       const result: CreatedResult = {
         userId: json.userId!,
         email: json.email!,
-        tempPassword: json.tempPassword!,
+        signInUrl: json.signInUrl!,
       };
       setCreatedResult(result);
 
@@ -387,10 +387,10 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
     }
   }
 
-  function copyPassword(pwd: string) {
-    void navigator.clipboard.writeText(pwd);
-    setCopiedPwd(true);
-    setTimeout(() => setCopiedPwd(false), 2000);
+  function copySignInLink(url: string) {
+    void navigator.clipboard.writeText(url);
+    setCopiedLink(true);
+    setTimeout(() => setCopiedLink(false), 2000);
   }
 
   // ── Sort ─────────────────────────────────────────────────────────────────────
@@ -613,21 +613,28 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-black uppercase tracking-[0.16em] text-gray-400">Temporary password — share this once</label>
+                  <label className="block text-[11px] font-black uppercase tracking-[0.16em] text-gray-400">One-click sign-in link</label>
                   <div className="mt-1.5 flex items-center gap-2">
-                    <code className="flex-1 rounded-xl border border-white/10 bg-black/40 px-4 py-3 font-mono text-sm tracking-widest text-fuchsia-300 select-all">
-                      {createdResult.tempPassword}
-                    </code>
+                    <input
+                      readOnly
+                      value={createdResult.signInUrl}
+                      onClick={(e) => (e.target as HTMLInputElement).select()}
+                      className="flex-1 rounded-xl border border-white/10 bg-black/40 px-3 py-2.5 font-mono text-[11px] text-fuchsia-300 focus:outline-none select-all truncate"
+                    />
                     <button
-                      onClick={() => copyPassword(createdResult.tempPassword)}
-                      className="rounded-xl border border-white/10 bg-white/[0.05] px-3 py-3 text-[11px] font-black text-gray-300 transition hover:bg-white/10"
+                      onClick={() => copySignInLink(createdResult.signInUrl)}
+                      className="shrink-0 rounded-xl border border-white/10 bg-white/[0.05] px-3 py-2.5 text-[11px] font-black text-gray-300 transition hover:bg-white/10"
                     >
-                      {copiedPwd ? "✓" : "Copy"}
+                      {copiedLink ? "✓ Copied" : "Copy"}
                     </button>
                   </div>
-                  <p className="mt-2 text-[11px] leading-4 text-amber-400/80">
-                    ⚠ This password will not be shown again. Share it securely with the user — they will be required to change it when they first sign in.
-                  </p>
+                  <div className="mt-3 space-y-1.5 rounded-2xl border border-white/[0.07] bg-white/[0.03] px-4 py-3 text-[11px] leading-5 text-gray-400">
+                    <p className="font-black text-white">How this works:</p>
+                    <p>1. Copy the link and send it to the user securely (email, Slack, etc.)</p>
+                    <p>2. They click it — no password or verification code needed</p>
+                    <p>3. They are asked to set a permanent password before accessing the site</p>
+                    <p className="text-amber-400/80 pt-1">⚠ Link works once and expires in 7 days.</p>
+                  </div>
                 </div>
 
                 <button
