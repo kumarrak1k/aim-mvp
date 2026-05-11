@@ -60,14 +60,16 @@ export default function ChangePasswordPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ newPassword }),
       });
-      const json = await res.json() as { success?: boolean; error?: string };
+      const json = await res.json() as { success?: boolean; error?: string; redirectTo?: string };
       if (!res.ok) {
         setError(json.error ?? "Failed to update password. Please try again.");
         return;
       }
       setDone(true);
-      // Give the user a moment to read the success state, then redirect
-      setTimeout(() => router.push("/auth/redirect"), 1800);
+      // Navigate directly to the user's portal — skip /auth/redirect to avoid
+      // a Clerk metadata propagation race that would loop back to this page.
+      const destination = json.redirectTo ?? "/practice";
+      setTimeout(() => router.push(destination), 1500);
     } catch {
       setError("Network error. Please try again.");
     } finally {

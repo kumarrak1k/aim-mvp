@@ -53,7 +53,13 @@ export async function POST(req: NextRequest) {
     const { forcePasswordReset: _removed, ...rest } = meta;
     await client.users.updateUserMetadata(userId, { privateMetadata: rest });
 
-    return NextResponse.json({ success: true });
+    // Determine where to send the user — read accountType from existing metadata
+    // so the client can navigate directly without hitting /auth/redirect (which may
+    // still see stale metadata due to Clerk propagation delay).
+    const accountType = (rest.accountType as string | undefined) ?? "candidate";
+    const redirectTo = accountType === "corporate" ? "/company/dashboard" : "/practice";
+
+    return NextResponse.json({ success: true, redirectTo });
   } catch (error: unknown) {
     console.error("CHANGE PASSWORD ERROR:", error);
     const msg =
