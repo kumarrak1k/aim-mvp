@@ -42,10 +42,11 @@ function generateInternalPassword(): string {
   return chars.join("");
 }
 
-function signInPathForType(accountType: string): string {
-  return accountType === "corporate"
-    ? "/for-business/sign-in"
-    : "/for-candidates/sign-in";
+function signInPathForType(_accountType: string): string {
+  // All admin-issued links go to the dedicated token-acceptance page
+  // (/auth/accept) which shows only a spinner while Clerk processes the
+  // __clerk_ticket — no marketing shell, no "Hiring team?" links.
+  return "/auth/accept";
 }
 
 /**

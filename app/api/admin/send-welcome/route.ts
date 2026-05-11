@@ -50,11 +50,8 @@ export async function POST(req: NextRequest) {
       expiresInSeconds: 7 * 24 * 60 * 60, // 7 days
     });
 
-    const signInPath = body.accountType === "corporate"
-      ? "/for-business/sign-in"
-      : "/for-candidates/sign-in";
-
-    const signInUrl = `${siteConfig.url}${signInPath}?__clerk_ticket=${tokenResponse.token}`;
+    // Point to the minimal token-acceptance page — no marketing shell shown
+    const signInUrl = `${siteConfig.url}/auth/accept?__clerk_ticket=${tokenResponse.token}`;
 
     const result = await sendAdminWelcomeEmail({
       to: body.email,
