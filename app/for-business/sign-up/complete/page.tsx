@@ -70,17 +70,28 @@ export default function BusinessSignUpCompletePage() {
     let cancelled = false;
 
     (async () => {
+      let resolvedType: string | null = null;
       try {
-        await fetch("/api/account-type", {
+        const res = await fetch("/api/account-type", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ accountType: "corporate" }),
         });
+        if (res.ok) {
+          const data = await res.json() as { accountType?: string };
+          resolvedType = data.accountType ?? null;
+        }
       } catch {
         // Non-fatal — lazy migration in getAccountType() will catch this.
       }
 
-      if (!cancelled) {
+      if (cancelled) return;
+
+      // If the account was already stamped as "candidate", respect that and
+      // send them to the candidate dashboard instead of the corporate setup.
+      if (resolvedType === "candidate") {
+        router.replace("/practice");
+      } else {
         router.replace("/company/setup");
       }
     })();

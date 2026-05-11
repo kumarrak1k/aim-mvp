@@ -21,17 +21,29 @@ export default function CandidateSignUpCompletePage() {
 
     (async () => {
       // 1. Stamp account type (fire before anything else so it's always set)
+      let resolvedType: string | null = null;
       try {
-        await fetch("/api/account-type", {
+        const res = await fetch("/api/account-type", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ accountType: "candidate" }),
         });
+        if (res.ok) {
+          const data = await res.json() as { accountType?: string };
+          resolvedType = data.accountType ?? null;
+        }
       } catch {
         // Non-fatal — lazy migration in getAccountType() will catch this.
       }
 
       if (cancelled) return;
+
+      // If the account was already stamped as "corporate", respect that and
+      // send them to the corporate dashboard rather than the candidate one.
+      if (resolvedType === "corporate") {
+        router.replace("/company/dashboard");
+        return;
+      }
 
       // 2. Enqueue nurture email sequence (fire and forget)
       fetch("/api/nurture/enqueue", { method: "POST" }).catch(() => {});

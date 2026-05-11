@@ -241,6 +241,23 @@ export function PracticePageClient() {
     }
   }, []);
 
+  // Account-type guard — corporate users who reach /practice get sent home.
+  useEffect(() => {
+    if (!isLoaded || !isSignedIn) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/account-type");
+        if (!res.ok || cancelled) return;
+        const { accountType } = await res.json() as { accountType?: string };
+        if (!cancelled && accountType === "corporate") {
+          router.replace("/company/dashboard");
+        }
+      } catch { /* if check fails, let the page load normally */ }
+    })();
+    return () => { cancelled = true; };
+  }, [isLoaded, isSignedIn, router]);
+
   useEffect(() => {
     if (!isLoaded) return;
 

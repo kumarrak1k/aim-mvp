@@ -55,6 +55,16 @@ export default function CompanyDashboardPage() {
   useEffect(() => {
     async function load() {
       try {
+        // Account-type guard — candidates who reach this URL get sent home.
+        const typeRes = await fetch("/api/account-type");
+        if (typeRes.ok) {
+          const { accountType } = await typeRes.json() as { accountType?: string };
+          if (accountType === "candidate") {
+            router.replace("/practice");
+            return;
+          }
+        }
+
         const [companyRes, assignmentsRes, templatesRes] = await Promise.all([
           fetch("/api/company"),
           fetch("/api/company/assignments"),
