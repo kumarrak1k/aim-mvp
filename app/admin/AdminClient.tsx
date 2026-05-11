@@ -141,7 +141,16 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
 
   // Edit modal
   const [editingUser, setEditingUser] = useState<AdminUser | null>(null);
-  const [editForm, setEditForm] = useState({ firstName: "", lastName: "", accountType: "" });
+  const [editForm, setEditForm] = useState({
+    firstName: "",
+    lastName: "",
+    accountType: "",
+    // Candidate billing (Clerk privateMetadata)
+    candidateStatus: "",   // active | trialing | past_due | canceled | ""
+    candidatePlanId: "",   // professional_monthly | advanced_monthly | etc | ""
+    // Corporate billing (Prisma Company.planStatus)
+    companyPlanStatus: "", // trial | active | expired | cancelled | ""
+  });
   const [editLoading, setEditLoading] = useState(false);
   const [editError, setEditError]     = useState("");
 
@@ -155,7 +164,14 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
 
   function openEdit(u: AdminUser) {
     setEditingUser(u);
-    setEditForm({ firstName: u.firstName ?? "", lastName: u.lastName ?? "", accountType: u.accountType });
+    setEditForm({
+      firstName: u.firstName ?? "",
+      lastName: u.lastName ?? "",
+      accountType: u.accountType,
+      candidateStatus: u.candidateStatus ?? "",
+      candidatePlanId: u.candidatePlanId ?? "",
+      companyPlanStatus: u.companyPlanStatus ?? "",
+    });
     setEditError("");
   }
   function openDelete(u: AdminUser) {
@@ -178,6 +194,9 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
           firstName: editForm.firstName.trim() || null,
           lastName: editForm.lastName.trim() || null,
           accountType: editForm.accountType,
+          subscriptionStatus: editForm.candidateStatus || null,
+          stripePlanId: editForm.candidatePlanId || null,
+          companyPlanStatus: editForm.companyPlanStatus || null,
         }),
       });
       const json = await res.json();
@@ -186,7 +205,15 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
       // Update local state immediately
       setUsers((prev) => prev.map((u) =>
         u.id === editingUser.id
-          ? { ...u, firstName: editForm.firstName.trim() || null, lastName: editForm.lastName.trim() || null, accountType: editForm.accountType }
+          ? {
+              ...u,
+              firstName: editForm.firstName.trim() || null,
+              lastName: editForm.lastName.trim() || null,
+              accountType: editForm.accountType,
+              candidateStatus: editForm.candidateStatus || null,
+              candidatePlanId: editForm.candidatePlanId || null,
+              companyPlanStatus: editForm.companyPlanStatus || null,
+            }
           : u
       ));
       setEditingUser(null);
@@ -471,6 +498,63 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
                 </select>
                 <p className="mt-1.5 text-[11px] text-amber-400/80">⚠ Changing account type affects which part of the site they can access.</p>
               </div>
+
+              {/* Candidate billing fields — shown when account type is candidate (or unknown) */}
+              {editForm.accountType !== "corporate" && (
+                <>
+                  <div>
+                    <label className="block text-[11px] font-black uppercase tracking-[0.16em] text-gray-400">Subscription status</label>
+                    <select
+                      value={editForm.candidateStatus}
+                      onChange={(e) => setEditForm((f) => ({ ...f, candidateStatus: e.target.value }))}
+                      disabled={editLoading}
+                      className="mt-1.5 w-full rounded-xl border border-white/10 bg-[#0b0918] px-3 py-2.5 text-sm text-white focus:border-fuchsia-400/40 focus:outline-none"
+                    >
+                      <option value="">Free (no active subscription)</option>
+                      <option value="active">Active</option>
+                      <option value="trialing">Trialing</option>
+                      <option value="past_due">Past due</option>
+                      <option value="canceled">Cancelled</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-black uppercase tracking-[0.16em] text-gray-400">Plan</label>
+                    <select
+                      value={editForm.candidatePlanId}
+                      onChange={(e) => setEditForm((f) => ({ ...f, candidatePlanId: e.target.value }))}
+                      disabled={editLoading}
+                      className="mt-1.5 w-full rounded-xl border border-white/10 bg-[#0b0918] px-3 py-2.5 text-sm text-white focus:border-fuchsia-400/40 focus:outline-none"
+                    >
+                      <option value="">None / Free</option>
+                      <option value="professional_monthly">Professional (Monthly)</option>
+                      <option value="professional_annual">Professional (Annual)</option>
+                      <option value="advanced_monthly">Advanced (Monthly)</option>
+                      <option value="advanced_annual">Advanced (Annual)</option>
+                    </select>
+                    <p className="mt-1.5 text-[11px] text-gray-600">Set both status and plan to grant or revoke paid access.</p>
+                  </div>
+                </>
+              )}
+
+              {/* Corporate billing fields — shown when account type is corporate */}
+              {editForm.accountType === "corporate" && (
+                <div>
+                  <label className="block text-[11px] font-black uppercase tracking-[0.16em] text-gray-400">Workspace plan status</label>
+                  <select
+                    value={editForm.companyPlanStatus}
+                    onChange={(e) => setEditForm((f) => ({ ...f, companyPlanStatus: e.target.value }))}
+                    disabled={editLoading}
+                    className="mt-1.5 w-full rounded-xl border border-white/10 bg-[#0b0918] px-3 py-2.5 text-sm text-white focus:border-fuchsia-400/40 focus:outline-none"
+                  >
+                    <option value="">No plan</option>
+                    <option value="trial">Trial</option>
+                    <option value="active">Active</option>
+                    <option value="expired">Expired</option>
+                    <option value="cancelled">Cancelled</option>
+                  </select>
+                  <p className="mt-1.5 text-[11px] text-gray-600">Updates the company workspace — affects all members of that workspace.</p>
+                </div>
+              )}
 
               {editError && <p className="text-sm font-semibold text-red-300">{editError}</p>}
 
