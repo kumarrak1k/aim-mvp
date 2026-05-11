@@ -75,8 +75,8 @@ export default function CandidateSignInPage() {
             routing="path"
             path="/for-candidates/sign-in"
             signUpUrl="/for-candidates/sign-up"
-            forceRedirectUrl="/practice"
-            fallbackRedirectUrl="/practice"
+            forceRedirectUrl="/auth/redirect"
+            fallbackRedirectUrl="/auth/redirect"
             appearance={{
               elements: {
                 rootBox: "w-full",

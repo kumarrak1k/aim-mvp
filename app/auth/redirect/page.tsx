@@ -1,0 +1,29 @@
+import { redirect } from "next/navigation";
+import { auth } from "@clerk/nextjs/server";
+import { getAccountType, AUDIENCE_PATHS } from "@/app/lib/accountType";
+
+/**
+ * Post-sign-in dispatcher.
+ *
+ * Both sign-in pages (candidate and business) point their
+ * forceRedirectUrl here instead of hardcoding a destination.
+ * This page reads the user's real accountType from Clerk
+ * privateMetadata and redirects to the correct home — so a
+ * candidate who accidentally uses the business sign-in URL
+ * still ends up at /practice, not /company/dashboard.
+ *
+ * Sign-up complete pages keep their own redirect logic because
+ * they also handle nurture emails, referral credits, and
+ * Stripe checkout. This page is sign-in only.
+ */
+export default async function AuthRedirectPage() {
+  const { userId } = await auth();
+
+  if (!userId) {
+    // Not signed in — send back to the main site
+    redirect("/");
+  }
+
+  const accountType = await getAccountType(userId);
+  redirect(AUDIENCE_PATHS[accountType].authedHome);
+}

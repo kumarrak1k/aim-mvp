@@ -67,8 +67,8 @@ export default function BusinessSignInPage() {
             routing="path"
             path="/for-business/sign-in"
             signUpUrl="/for-business/sign-up"
-            forceRedirectUrl="/company/dashboard"
-            fallbackRedirectUrl="/company/dashboard"
+            forceRedirectUrl="/auth/redirect"
+            fallbackRedirectUrl="/auth/redirect"
             appearance={{
               elements: {
                 rootBox: "w-full",
