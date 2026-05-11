@@ -23,12 +23,7 @@ export type CorporateAppPath =
   | "/company/candidates"
   | "/company/results"
   | "/company/setup"
-  | "/company/api-keys"
-  // Resource pages — visible in the secondary strip, not the main nav
-  | "/for-business/about"
-  | "/for-business/blog"
-  | "/for-business/questions"
-  | "/for-business/star-scorer";
+  | "/company/api-keys";
 
 type CorporateAppShellProps = {
   children: ReactNode;
