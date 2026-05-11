@@ -37,8 +37,9 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     // Candidate billing (stored in Clerk privateMetadata)
     subscriptionStatus?: string | null;
     stripePlanId?: string | null;
-    // Corporate billing (stored in Prisma Company.planStatus)
+    // Corporate billing (stored in Prisma Company)
     companyPlanStatus?: string | null;
+    companyPlanId?: string | null;
   };
 
   try {
@@ -64,16 +65,19 @@ export async function PATCH(req: NextRequest, { params }: Params) {
       });
     }
 
-    // 3. Update corporate workspace plan status in Prisma (affects all members)
-    if (body.companyPlanStatus !== undefined) {
+    // 3. Update corporate workspace plan in Prisma (affects all members)
+    if (body.companyPlanStatus !== undefined || body.companyPlanId !== undefined) {
       const member = await prisma.companyMember.findFirst({
         where: { clerkUserId: id },
         select: { companyId: true },
       });
       if (member) {
+        const companyData: Record<string, unknown> = {};
+        if (body.companyPlanStatus !== undefined) companyData.planStatus = body.companyPlanStatus ?? "trial";
+        if (body.companyPlanId !== undefined && body.companyPlanId !== null) companyData.planId = body.companyPlanId;
         await prisma.company.update({
           where: { id: member.companyId },
-          data: { planStatus: body.companyPlanStatus ?? "trial" },
+          data: companyData,
         });
       }
     }

@@ -24,43 +24,104 @@ export type AdminUser = {
   lastSignInAt: string | null;
 };
 
-// ── Label helpers ─────────────────────────────────────────────────────────────
+// ── Membership helpers ────────────────────────────────────────────────────────
 
-const CANDIDATE_PLAN_LABELS: Record<string, string> = {
-  professional_monthly: "Professional",
-  professional_annual: "Professional (Annual)",
-  advanced_monthly: "Advanced",
-  advanced_annual: "Advanced (Annual)",
-};
-const CORP_PLAN_LABELS: Record<string, string> = { team: "Team", business: "Business" };
+/**
+ * A single canonical "membership key" that encodes both tier and status.
+ * This is what the dropdowns use — it maps cleanly to/from the raw Clerk + Prisma fields.
+ */
+type MembershipKey =
+  // Candidate tiers
+  | "free" | "advanced" | "professional"
+  // Corporate tiers + states
+  | "none" | "team_trial" | "team" | "business_trial" | "business" | "custom"
+  | "expired" | "cancelled";
 
-function getPlanLabel(u: AdminUser) {
+/** Derive a MembershipKey from an AdminUser's current stored values. */
+function toMembershipKey(u: AdminUser): MembershipKey {
   if (u.accountType === "corporate") {
-    return u.companyPlanId ? (CORP_PLAN_LABELS[u.companyPlanId] ?? u.companyPlanId) : "—";
+    const s = u.companyPlanStatus ?? "";
+    const p = (u.companyPlanId ?? "").toLowerCase();
+    if (!s || s === "none") return "none";
+    if (s === "expired")   return "expired";
+    if (s === "cancelled") return "cancelled";
+    if (s === "trial")     return p === "business" ? "business_trial" : "team_trial";
+    // active
+    if (p === "business") return "business";
+    if (p === "custom")   return "custom";
+    return "team";
   }
-  return u.candidatePlanId ? (CANDIDATE_PLAN_LABELS[u.candidatePlanId] ?? u.candidatePlanId) : "Free";
+  // Candidate
+  const status = u.candidateStatus ?? "";
+  const plan   = (u.candidatePlanId ?? "").toLowerCase();
+  if (status !== "active" && status !== "trialing" && status !== "past_due") return "free";
+  if (plan.includes("professional")) return "professional";
+  if (plan.includes("advanced"))     return "advanced";
+  return "free";
 }
 
-function getStatusLabel(u: AdminUser) {
-  if (u.accountType === "corporate") {
-    const s = u.companyPlanStatus ?? "none";
-    return ({ active: "Active", trial: "Trial", expired: "Expired", cancelled: "Cancelled", none: "No plan" })[s] ?? s;
+/** Convert a MembershipKey back to the raw API fields for PATCH / create. */
+function fromMembershipKey(accountType: string, key: MembershipKey): {
+  subscriptionStatus: string | null;
+  stripePlanId: string | null;
+  companyPlanStatus: string | null;
+  companyPlanId: string | null;
+} {
+  if (accountType === "corporate") {
+    switch (key) {
+      case "none":          return { subscriptionStatus: null, stripePlanId: null, companyPlanStatus: null,        companyPlanId: null };
+      case "team_trial":    return { subscriptionStatus: null, stripePlanId: null, companyPlanStatus: "trial",     companyPlanId: "team" };
+      case "team":          return { subscriptionStatus: null, stripePlanId: null, companyPlanStatus: "active",    companyPlanId: "team" };
+      case "business_trial":return { subscriptionStatus: null, stripePlanId: null, companyPlanStatus: "trial",     companyPlanId: "business" };
+      case "business":      return { subscriptionStatus: null, stripePlanId: null, companyPlanStatus: "active",    companyPlanId: "business" };
+      case "custom":        return { subscriptionStatus: null, stripePlanId: null, companyPlanStatus: "active",    companyPlanId: "custom" };
+      case "expired":       return { subscriptionStatus: null, stripePlanId: null, companyPlanStatus: "expired",   companyPlanId: null };
+      case "cancelled":     return { subscriptionStatus: null, stripePlanId: null, companyPlanStatus: "cancelled", companyPlanId: null };
+      default:              return { subscriptionStatus: null, stripePlanId: null, companyPlanStatus: null,        companyPlanId: null };
+    }
   }
-  const s = u.candidateStatus;
-  if (!s) return "Free";
-  return ({ active: "Active", trialing: "Trialing", past_due: "Past due", canceled: "Cancelled", cancelled: "Cancelled" })[s] ?? s;
+  // Candidate
+  switch (key) {
+    case "advanced":      return { subscriptionStatus: "active", stripePlanId: "advanced_monthly",      companyPlanStatus: null, companyPlanId: null };
+    case "professional":  return { subscriptionStatus: "active", stripePlanId: "professional_monthly",  companyPlanStatus: null, companyPlanId: null };
+    default:              return { subscriptionStatus: null,     stripePlanId: null,                    companyPlanStatus: null, companyPlanId: null };
+  }
+}
+
+/** Human-readable membership label shown in the table. */
+function getMembershipLabel(u: AdminUser): string {
+  if (u.accountType === "corporate") {
+    const s = u.companyPlanStatus ?? "";
+    const p = (u.companyPlanId ?? "").toLowerCase();
+    if (!s || s === "none") return "No plan";
+    const tierName = p === "business" ? "Business" : p === "custom" ? "Custom" : "Team";
+    if (s === "trial")     return `${tierName} — Trial`;
+    if (s === "active")    return tierName;
+    if (s === "expired")   return `${tierName} — Expired`;
+    if (s === "cancelled") return "Cancelled";
+    return tierName;
+  }
+  // Candidate
+  const status = u.candidateStatus ?? "";
+  const plan   = (u.candidatePlanId ?? "").toLowerCase();
+  const tier   = plan.includes("professional") ? "Professional" : plan.includes("advanced") ? "Advanced" : null;
+  if (!tier || (!["active","trialing","past_due"].includes(status))) return "Free";
+  if (status === "trialing") return `${tier} — Trial`;
+  if (status === "past_due") return `${tier} — Past due`;
+  return tier;
 }
 
 function getStatusGroup(u: AdminUser): "paid" | "trial" | "free" | "expired" {
   if (u.accountType === "corporate") {
     const s = u.companyPlanStatus ?? "none";
-    if (s === "active") return "paid";
-    if (s === "trial") return "trial";
+    if (s === "active")   return "paid";
+    if (s === "trial")    return "trial";
     if (s === "expired" || s === "cancelled") return "expired";
     return "free";
   }
-  const s = u.candidateStatus;
-  if (s === "active" || s === "trialing" || s === "past_due") return "paid";
+  const s = u.candidateStatus ?? "";
+  if (s === "active" || s === "past_due") return "paid";
+  if (s === "trialing") return "trial";
   if (s === "canceled" || s === "cancelled") return "expired";
   return "free";
 }
@@ -88,18 +149,18 @@ const STATUS_BADGE: Record<string, string> = {
 function TypeBadge({ type }: { type: string }) {
   return <span className={`inline-flex rounded-full border px-2.5 py-0.5 text-[11px] font-black capitalize ${TYPE_BADGE[type] ?? TYPE_BADGE.unknown}`}>{type}</span>;
 }
-function StatusBadge({ user }: { user: AdminUser }) {
+function MembershipBadge({ user }: { user: AdminUser }) {
   const g = getStatusGroup(user);
-  return <span className={`inline-flex rounded-full border px-2.5 py-0.5 text-[11px] font-black ${STATUS_BADGE[g]}`}>{getStatusLabel(user)}</span>;
+  return <span className={`inline-flex rounded-full border px-2.5 py-0.5 text-[11px] font-black ${STATUS_BADGE[g]}`}>{getMembershipLabel(user)}</span>;
 }
 
 // ── CSV export ────────────────────────────────────────────────────────────────
 
 function exportCsv(users: AdminUser[]) {
-  const headers = ["ID","First name","Last name","Email","Account type","Plan","Status","Company","Company role","Period / trial end","Joined","Last active"];
+  const headers = ["ID","First name","Last name","Email","Account type","Membership","Company","Company role","Period / trial end","Joined","Last active"];
   const rows = users.map((u) => [
     u.id, u.firstName ?? "", u.lastName ?? "", u.email, u.accountType,
-    getPlanLabel(u), getStatusLabel(u), u.companyName ?? "", u.companyRole ?? "",
+    getMembershipLabel(u), u.companyName ?? "", u.companyRole ?? "",
     getPeriodEnd(u) ? new Date(getPeriodEnd(u)!).toLocaleDateString("en-GB") : "",
     new Date(u.createdAt).toLocaleDateString("en-GB"),
     u.lastSignInAt ? new Date(u.lastSignInAt).toLocaleDateString("en-GB") : "Never",
@@ -145,11 +206,7 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
     firstName: "",
     lastName: "",
     accountType: "",
-    // Candidate billing (Clerk privateMetadata)
-    candidateStatus: "",   // active | trialing | past_due | canceled | ""
-    candidatePlanId: "",   // professional_monthly | advanced_monthly | etc | ""
-    // Corporate billing (Prisma Company.planStatus)
-    companyPlanStatus: "", // trial | active | expired | cancelled | ""
+    membership: "free" as MembershipKey,
   });
   const [editLoading, setEditLoading] = useState(false);
   const [editError, setEditError]     = useState("");
@@ -166,7 +223,7 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
   const [createForm, setCreateForm]         = useState({
     email: "", firstName: "", lastName: "",
     accountType: "candidate",
-    candidateStatus: "", candidatePlanId: "",
+    membership: "free" as MembershipKey,
   });
   const [createLoading, setCreateLoading]   = useState(false);
   const [createError, setCreateError]       = useState("");
@@ -181,9 +238,7 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
       firstName: u.firstName ?? "",
       lastName: u.lastName ?? "",
       accountType: u.accountType,
-      candidateStatus: u.candidateStatus ?? "",
-      candidatePlanId: u.candidatePlanId ?? "",
-      companyPlanStatus: u.companyPlanStatus ?? "",
+      membership: toMembershipKey(u),
     });
     setEditError("");
   }
@@ -200,6 +255,7 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
     setEditLoading(true);
     setEditError("");
     try {
+      const billing = fromMembershipKey(editForm.accountType, editForm.membership);
       const res = await fetch(`/api/admin/users/${editingUser.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -207,9 +263,10 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
           firstName: editForm.firstName.trim() || null,
           lastName: editForm.lastName.trim() || null,
           accountType: editForm.accountType,
-          subscriptionStatus: editForm.candidateStatus || null,
-          stripePlanId: editForm.candidatePlanId || null,
-          companyPlanStatus: editForm.companyPlanStatus || null,
+          subscriptionStatus: billing.subscriptionStatus,
+          stripePlanId: billing.stripePlanId,
+          companyPlanStatus: billing.companyPlanStatus,
+          companyPlanId: billing.companyPlanId,
         }),
       });
       const json = await res.json();
@@ -223,9 +280,10 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
               firstName: editForm.firstName.trim() || null,
               lastName: editForm.lastName.trim() || null,
               accountType: editForm.accountType,
-              candidateStatus: editForm.candidateStatus || null,
-              candidatePlanId: editForm.candidatePlanId || null,
-              companyPlanStatus: editForm.companyPlanStatus || null,
+              candidateStatus: billing.subscriptionStatus,
+              candidatePlanId: billing.stripePlanId,
+              companyPlanStatus: billing.companyPlanStatus,
+              companyPlanId: billing.companyPlanId ?? u.companyPlanId,
             }
           : u
       ));
@@ -271,7 +329,7 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
   // ── Create user ──────────────────────────────────────────────────────────────
 
   function openCreate() {
-    setCreateForm({ email: "", firstName: "", lastName: "", accountType: "candidate", candidateStatus: "", candidatePlanId: "" });
+    setCreateForm({ email: "", firstName: "", lastName: "", accountType: "candidate", membership: "free" });
     setCreateError("");
     setCreatedResult(null);
     setCopiedPwd(false);
@@ -282,6 +340,7 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
     setCreateLoading(true);
     setCreateError("");
     try {
+      const billing = fromMembershipKey(createForm.accountType, createForm.membership);
       const res = await fetch("/api/admin/users", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -290,8 +349,8 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
           firstName: createForm.firstName.trim() || undefined,
           lastName: createForm.lastName.trim() || undefined,
           accountType: createForm.accountType,
-          subscriptionStatus: createForm.candidateStatus || undefined,
-          stripePlanId: createForm.candidatePlanId || undefined,
+          subscriptionStatus: billing.subscriptionStatus || undefined,
+          stripePlanId: billing.stripePlanId || undefined,
         }),
       });
       const json = await res.json() as { success?: boolean; error?: string; userId?: string; email?: string; tempPassword?: string };
@@ -311,8 +370,8 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
         lastName: createForm.lastName.trim() || null,
         email: result.email,
         accountType: createForm.accountType,
-        candidatePlanId: createForm.candidatePlanId || null,
-        candidateStatus: createForm.candidateStatus || null,
+        candidatePlanId: billing.stripePlanId,
+        candidateStatus: billing.subscriptionStatus,
         candidatePeriodEnd: null,
         companyName: null, companyRole: null, companyPlanId: null,
         companyPlanStatus: null, companyPeriodEnd: null, companyTrialEndsAt: null,
@@ -459,8 +518,7 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
             <tr>
               <th className={thS} style={{ paddingLeft: "1.5rem", paddingRight: "1rem" }} onClick={() => toggleSort("name")}>User <SortIcon k="name" /></th>
               <th className={thS} onClick={() => toggleSort("type")}>Type <SortIcon k="type" /></th>
-              <th className={thF}>Plan</th>
-              <th className={thF}>Status</th>
+              <th className={thF}>Membership</th>
               <th className={thF}>Company</th>
               <th className={thF}>Period end</th>
               <th className={thS} onClick={() => toggleSort("joined")}>Joined <SortIcon k="joined" /></th>
@@ -470,7 +528,7 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
           </thead>
           <tbody className="divide-y divide-white/[0.05]">
             {pageData.length === 0 && (
-              <tr><td colSpan={9} className="py-16 text-center text-gray-500">No users match your filters.</td></tr>
+              <tr><td colSpan={8} className="py-16 text-center text-gray-500">No users match your filters.</td></tr>
             )}
             {pageData.map((u) => (
               <tr key={u.id} className="group transition hover:bg-white/[0.03]">
@@ -485,8 +543,7 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
                   </div>
                 </td>
                 <td className="py-3.5 pr-4"><TypeBadge type={u.accountType} /></td>
-                <td className="whitespace-nowrap py-3.5 pr-4 text-gray-300">{getPlanLabel(u)}</td>
-                <td className="py-3.5 pr-4"><StatusBadge user={u} /></td>
+                <td className="py-3.5 pr-4"><MembershipBadge user={u} /></td>
                 <td className="whitespace-nowrap py-3.5 pr-4 text-gray-400">
                   {u.companyName ?? "—"}
                   {u.companyRole && <span className="ml-1 text-[10px] capitalize text-gray-600">({u.companyRole})</span>}
@@ -620,7 +677,7 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
                   <label className="block text-[11px] font-black uppercase tracking-[0.16em] text-gray-400">Account type <span className="text-red-400">*</span></label>
                   <select
                     value={createForm.accountType}
-                    onChange={(e) => setCreateForm((f) => ({ ...f, accountType: e.target.value }))}
+                    onChange={(e) => setCreateForm((f) => ({ ...f, accountType: e.target.value, membership: "free" }))}
                     disabled={createLoading}
                     className="mt-1.5 w-full rounded-xl border border-white/10 bg-[#0b0918] px-3 py-2.5 text-sm text-white focus:border-fuchsia-400/40 focus:outline-none"
                   >
@@ -630,38 +687,32 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
                   </select>
                 </div>
 
-                {createForm.accountType !== "corporate" && (
-                  <>
-                    <div>
-                      <label className="block text-[11px] font-black uppercase tracking-[0.16em] text-gray-400">Subscription status <span className="text-gray-600">(optional)</span></label>
-                      <select
-                        value={createForm.candidateStatus}
-                        onChange={(e) => setCreateForm((f) => ({ ...f, candidateStatus: e.target.value }))}
-                        disabled={createLoading}
-                        className="mt-1.5 w-full rounded-xl border border-white/10 bg-[#0b0918] px-3 py-2.5 text-sm text-white focus:border-fuchsia-400/40 focus:outline-none"
-                      >
-                        <option value="">Free</option>
-                        <option value="active">Active</option>
-                        <option value="trialing">Trialing</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-[11px] font-black uppercase tracking-[0.16em] text-gray-400">Plan <span className="text-gray-600">(optional)</span></label>
-                      <select
-                        value={createForm.candidatePlanId}
-                        onChange={(e) => setCreateForm((f) => ({ ...f, candidatePlanId: e.target.value }))}
-                        disabled={createLoading}
-                        className="mt-1.5 w-full rounded-xl border border-white/10 bg-[#0b0918] px-3 py-2.5 text-sm text-white focus:border-fuchsia-400/40 focus:outline-none"
-                      >
-                        <option value="">None / Free</option>
-                        <option value="professional_monthly">Professional (Monthly)</option>
-                        <option value="professional_annual">Professional (Annual)</option>
-                        <option value="advanced_monthly">Advanced (Monthly)</option>
-                        <option value="advanced_annual">Advanced (Annual)</option>
-                      </select>
-                    </div>
-                  </>
-                )}
+                <div>
+                  <label className="block text-[11px] font-black uppercase tracking-[0.16em] text-gray-400">Membership</label>
+                  <select
+                    value={createForm.membership}
+                    onChange={(e) => setCreateForm((f) => ({ ...f, membership: e.target.value as MembershipKey }))}
+                    disabled={createLoading}
+                    className="mt-1.5 w-full rounded-xl border border-white/10 bg-[#0b0918] px-3 py-2.5 text-sm text-white focus:border-fuchsia-400/40 focus:outline-none"
+                  >
+                    {createForm.accountType === "corporate" ? (
+                      <>
+                        <option value="none">No plan</option>
+                        <option value="team_trial">Team — Trial</option>
+                        <option value="team">Team</option>
+                        <option value="business_trial">Business — Trial</option>
+                        <option value="business">Business</option>
+                        <option value="custom">Custom</option>
+                      </>
+                    ) : (
+                      <>
+                        <option value="free">Free</option>
+                        <option value="advanced">Advanced</option>
+                        <option value="professional">Professional</option>
+                      </>
+                    )}
+                  </select>
+                </div>
 
                 {createError && <p className="text-sm font-semibold text-red-300">{createError}</p>}
 
@@ -715,7 +766,7 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
                 <label className="block text-[11px] font-black uppercase tracking-[0.16em] text-gray-400">Account type</label>
                 <select
                   value={editForm.accountType}
-                  onChange={(e) => setEditForm((f) => ({ ...f, accountType: e.target.value }))}
+                  onChange={(e) => setEditForm((f) => ({ ...f, accountType: e.target.value, membership: "free" }))}
                   disabled={editLoading}
                   className="mt-1.5 w-full rounded-xl border border-white/10 bg-[#0b0918] px-3 py-2.5 text-sm text-white focus:border-fuchsia-400/40 focus:outline-none"
                 >
@@ -727,62 +778,38 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
                 <p className="mt-1.5 text-[11px] text-amber-400/80">⚠ Changing account type affects which part of the site they can access.</p>
               </div>
 
-              {/* Candidate billing fields — shown when account type is candidate (or unknown) */}
-              {editForm.accountType !== "corporate" && (
-                <>
-                  <div>
-                    <label className="block text-[11px] font-black uppercase tracking-[0.16em] text-gray-400">Subscription status</label>
-                    <select
-                      value={editForm.candidateStatus}
-                      onChange={(e) => setEditForm((f) => ({ ...f, candidateStatus: e.target.value }))}
-                      disabled={editLoading}
-                      className="mt-1.5 w-full rounded-xl border border-white/10 bg-[#0b0918] px-3 py-2.5 text-sm text-white focus:border-fuchsia-400/40 focus:outline-none"
-                    >
-                      <option value="">Free (no active subscription)</option>
-                      <option value="active">Active</option>
-                      <option value="trialing">Trialing</option>
-                      <option value="past_due">Past due</option>
-                      <option value="canceled">Cancelled</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-[11px] font-black uppercase tracking-[0.16em] text-gray-400">Plan</label>
-                    <select
-                      value={editForm.candidatePlanId}
-                      onChange={(e) => setEditForm((f) => ({ ...f, candidatePlanId: e.target.value }))}
-                      disabled={editLoading}
-                      className="mt-1.5 w-full rounded-xl border border-white/10 bg-[#0b0918] px-3 py-2.5 text-sm text-white focus:border-fuchsia-400/40 focus:outline-none"
-                    >
-                      <option value="">None / Free</option>
-                      <option value="professional_monthly">Professional (Monthly)</option>
-                      <option value="professional_annual">Professional (Annual)</option>
-                      <option value="advanced_monthly">Advanced (Monthly)</option>
-                      <option value="advanced_annual">Advanced (Annual)</option>
-                    </select>
-                    <p className="mt-1.5 text-[11px] text-gray-600">Set both status and plan to grant or revoke paid access.</p>
-                  </div>
-                </>
-              )}
-
-              {/* Corporate billing fields — shown when account type is corporate */}
-              {editForm.accountType === "corporate" && (
-                <div>
-                  <label className="block text-[11px] font-black uppercase tracking-[0.16em] text-gray-400">Workspace plan status</label>
-                  <select
-                    value={editForm.companyPlanStatus}
-                    onChange={(e) => setEditForm((f) => ({ ...f, companyPlanStatus: e.target.value }))}
-                    disabled={editLoading}
-                    className="mt-1.5 w-full rounded-xl border border-white/10 bg-[#0b0918] px-3 py-2.5 text-sm text-white focus:border-fuchsia-400/40 focus:outline-none"
-                  >
-                    <option value="">No plan</option>
-                    <option value="trial">Trial</option>
-                    <option value="active">Active</option>
-                    <option value="expired">Expired</option>
-                    <option value="cancelled">Cancelled</option>
-                  </select>
-                  <p className="mt-1.5 text-[11px] text-gray-600">Updates the company workspace — affects all members of that workspace.</p>
-                </div>
-              )}
+              {/* Membership — options adapt to account type */}
+              <div>
+                <label className="block text-[11px] font-black uppercase tracking-[0.16em] text-gray-400">Membership</label>
+                <select
+                  value={editForm.membership}
+                  onChange={(e) => setEditForm((f) => ({ ...f, membership: e.target.value as MembershipKey }))}
+                  disabled={editLoading}
+                  className="mt-1.5 w-full rounded-xl border border-white/10 bg-[#0b0918] px-3 py-2.5 text-sm text-white focus:border-fuchsia-400/40 focus:outline-none"
+                >
+                  {editForm.accountType === "corporate" ? (
+                    <>
+                      <option value="none">No plan</option>
+                      <option value="team_trial">Team — Trial</option>
+                      <option value="team">Team</option>
+                      <option value="business_trial">Business — Trial</option>
+                      <option value="business">Business</option>
+                      <option value="custom">Custom</option>
+                      <option value="expired">Expired</option>
+                      <option value="cancelled">Cancelled</option>
+                    </>
+                  ) : (
+                    <>
+                      <option value="free">Free</option>
+                      <option value="advanced">Advanced</option>
+                      <option value="professional">Professional</option>
+                    </>
+                  )}
+                </select>
+                {editForm.accountType === "corporate" && (
+                  <p className="mt-1.5 text-[11px] text-gray-600">Affects all members of this company workspace.</p>
+                )}
+              </div>
 
               {editError && <p className="text-sm font-semibold text-red-300">{editError}</p>}
 
