@@ -25,7 +25,12 @@ export type CandidateAppPath =
   | "/practice/session"
   | "/progress"
   | "/profile"
-  | "/assessment-centre";
+  | "/assessment-centre"
+  // Resource pages — visible in the secondary strip, not the main nav
+  | "/for-candidates/about"
+  | "/for-candidates/blog"
+  | "/for-candidates/questions"
+  | "/for-candidates/star-scorer";
 
 type CandidateAppShellProps = {
   children: ReactNode;
