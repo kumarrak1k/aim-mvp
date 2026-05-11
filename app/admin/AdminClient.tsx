@@ -160,6 +160,19 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [deleteError, setDeleteError]     = useState("");
 
+  // Create user modal
+  type CreatedResult = { userId: string; email: string; tempPassword: string };
+  const [showCreate, setShowCreate]         = useState(false);
+  const [createForm, setCreateForm]         = useState({
+    email: "", firstName: "", lastName: "",
+    accountType: "candidate",
+    candidateStatus: "", candidatePlanId: "",
+  });
+  const [createLoading, setCreateLoading]   = useState(false);
+  const [createError, setCreateError]       = useState("");
+  const [createdResult, setCreatedResult]   = useState<CreatedResult | null>(null);
+  const [copiedPwd, setCopiedPwd]           = useState(false);
+
   // ── Open modals ─────────────────────────────────────────────────────────────
 
   function openEdit(u: AdminUser) {
@@ -255,6 +268,72 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
     setTimeout(() => setCopied(null), 1500);
   }
 
+  // ── Create user ──────────────────────────────────────────────────────────────
+
+  function openCreate() {
+    setCreateForm({ email: "", firstName: "", lastName: "", accountType: "candidate", candidateStatus: "", candidatePlanId: "" });
+    setCreateError("");
+    setCreatedResult(null);
+    setCopiedPwd(false);
+    setShowCreate(true);
+  }
+
+  async function submitCreate() {
+    setCreateLoading(true);
+    setCreateError("");
+    try {
+      const res = await fetch("/api/admin/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: createForm.email.trim(),
+          firstName: createForm.firstName.trim() || undefined,
+          lastName: createForm.lastName.trim() || undefined,
+          accountType: createForm.accountType,
+          subscriptionStatus: createForm.candidateStatus || undefined,
+          stripePlanId: createForm.candidatePlanId || undefined,
+        }),
+      });
+      const json = await res.json() as { success?: boolean; error?: string; userId?: string; email?: string; tempPassword?: string };
+      if (!res.ok) { setCreateError(json.error ?? "Failed to create user."); return; }
+
+      const result: CreatedResult = {
+        userId: json.userId!,
+        email: json.email!,
+        tempPassword: json.tempPassword!,
+      };
+      setCreatedResult(result);
+
+      // Add to local table immediately
+      const newUser: AdminUser = {
+        id: result.userId,
+        firstName: createForm.firstName.trim() || null,
+        lastName: createForm.lastName.trim() || null,
+        email: result.email,
+        accountType: createForm.accountType,
+        candidatePlanId: createForm.candidatePlanId || null,
+        candidateStatus: createForm.candidateStatus || null,
+        candidatePeriodEnd: null,
+        companyName: null, companyRole: null, companyPlanId: null,
+        companyPlanStatus: null, companyPeriodEnd: null, companyTrialEndsAt: null,
+        createdAt: new Date().toISOString(),
+        lastSignInAt: null,
+      };
+      setUsers((prev) => [newUser, ...prev]);
+      router.refresh();
+    } catch {
+      setCreateError("Network error. Please try again.");
+    } finally {
+      setCreateLoading(false);
+    }
+  }
+
+  function copyPassword(pwd: string) {
+    void navigator.clipboard.writeText(pwd);
+    setCopiedPwd(true);
+    setTimeout(() => setCopiedPwd(false), 2000);
+  }
+
   // ── Sort ─────────────────────────────────────────────────────────────────────
 
   function toggleSort(key: SortKey) {
@@ -322,9 +401,14 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
           </div>
           <p className="mt-1 text-sm text-gray-500">AI Career Mentor · {stats.total} total accounts</p>
         </div>
-        <button onClick={() => exportCsv(sorted)} className="shrink-0 rounded-full border border-white/10 bg-white/[0.05] px-5 py-2.5 text-sm font-black text-white transition hover:bg-white/[0.09]">
-          ↓ Export CSV ({sorted.length})
-        </button>
+        <div className="flex items-center gap-3">
+          <button onClick={openCreate} className="shrink-0 rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-600 px-5 py-2.5 text-sm font-black text-white shadow-lg transition hover:scale-[1.02]">
+            + Create user
+          </button>
+          <button onClick={() => exportCsv(sorted)} className="shrink-0 rounded-full border border-white/10 bg-white/[0.05] px-5 py-2.5 text-sm font-black text-white transition hover:bg-white/[0.09]">
+            ↓ Export CSV ({sorted.length})
+          </button>
+        </div>
       </div>
 
       {/* Stats */}
@@ -452,6 +536,150 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
       )}
 
       <p className="mt-10 text-center text-[11px] text-gray-700">AI Career Mentor · Internal admin · Not indexed · Not linked from any public page</p>
+
+      {/* ── Create user modal ────────────────────────────────────────────────────── */}
+      {showCreate && (
+        <div className="fixed inset-0 z-[9999] flex items-start justify-center overflow-y-auto bg-black/75 backdrop-blur-sm px-4 py-20" onClick={() => { if (!createLoading) { setShowCreate(false); setCreatedResult(null); } }}>
+          <div className="w-full max-w-md rounded-[1.75rem] border border-fuchsia-400/20 bg-[#120a1e] p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <p className="text-[11px] font-black uppercase tracking-[0.22em] text-fuchsia-300">Create user</p>
+            <h3 className="mt-1 text-xl font-black text-white">New account</h3>
+
+            {createdResult ? (
+              /* ── Success state ─────────────────────── */
+              <div className="mt-5 space-y-4">
+                <div className="flex items-start gap-3 rounded-2xl border border-emerald-400/20 bg-emerald-500/[0.07] px-4 py-3">
+                  <svg className="mt-0.5 h-5 w-5 shrink-0 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                  <div>
+                    <p className="text-sm font-black text-emerald-300">Account created</p>
+                    <p className="mt-0.5 text-[12px] text-emerald-200/70">{createdResult.email}</p>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-black uppercase tracking-[0.16em] text-gray-400">Temporary password — share this once</label>
+                  <div className="mt-1.5 flex items-center gap-2">
+                    <code className="flex-1 rounded-xl border border-white/10 bg-black/40 px-4 py-3 font-mono text-sm tracking-widest text-fuchsia-300 select-all">
+                      {createdResult.tempPassword}
+                    </code>
+                    <button
+                      onClick={() => copyPassword(createdResult.tempPassword)}
+                      className="rounded-xl border border-white/10 bg-white/[0.05] px-3 py-3 text-[11px] font-black text-gray-300 transition hover:bg-white/10"
+                    >
+                      {copiedPwd ? "✓" : "Copy"}
+                    </button>
+                  </div>
+                  <p className="mt-2 text-[11px] leading-4 text-amber-400/80">
+                    ⚠ This password will not be shown again. Share it securely with the user — they will be required to change it when they first sign in.
+                  </p>
+                </div>
+
+                <button
+                  onClick={() => { setShowCreate(false); setCreatedResult(null); }}
+                  className="w-full rounded-full border border-white/10 bg-white/[0.05] py-2.5 text-sm font-black text-white transition hover:bg-white/[0.09]"
+                >
+                  Done
+                </button>
+              </div>
+            ) : (
+              /* ── Form state ────────────────────────── */
+              <div className="mt-5 space-y-4">
+                <div>
+                  <label className="block text-[11px] font-black uppercase tracking-[0.16em] text-gray-400">Email address <span className="text-red-400">*</span></label>
+                  <input
+                    type="email"
+                    value={createForm.email}
+                    onChange={(e) => setCreateForm((f) => ({ ...f, email: e.target.value }))}
+                    disabled={createLoading}
+                    placeholder="user@example.com"
+                    className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2.5 text-sm text-white placeholder:text-gray-600 focus:border-fuchsia-400/40 focus:outline-none"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-[11px] font-black uppercase tracking-[0.16em] text-gray-400">First name</label>
+                    <input
+                      value={createForm.firstName}
+                      onChange={(e) => setCreateForm((f) => ({ ...f, firstName: e.target.value }))}
+                      disabled={createLoading}
+                      className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2.5 text-sm text-white placeholder:text-gray-600 focus:border-fuchsia-400/40 focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-black uppercase tracking-[0.16em] text-gray-400">Last name</label>
+                    <input
+                      value={createForm.lastName}
+                      onChange={(e) => setCreateForm((f) => ({ ...f, lastName: e.target.value }))}
+                      disabled={createLoading}
+                      className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2.5 text-sm text-white placeholder:text-gray-600 focus:border-fuchsia-400/40 focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-black uppercase tracking-[0.16em] text-gray-400">Account type <span className="text-red-400">*</span></label>
+                  <select
+                    value={createForm.accountType}
+                    onChange={(e) => setCreateForm((f) => ({ ...f, accountType: e.target.value }))}
+                    disabled={createLoading}
+                    className="mt-1.5 w-full rounded-xl border border-white/10 bg-[#0b0918] px-3 py-2.5 text-sm text-white focus:border-fuchsia-400/40 focus:outline-none"
+                  >
+                    <option value="candidate">Candidate</option>
+                    <option value="corporate">Corporate</option>
+                    <option value="university">University</option>
+                  </select>
+                </div>
+
+                {createForm.accountType !== "corporate" && (
+                  <>
+                    <div>
+                      <label className="block text-[11px] font-black uppercase tracking-[0.16em] text-gray-400">Subscription status <span className="text-gray-600">(optional)</span></label>
+                      <select
+                        value={createForm.candidateStatus}
+                        onChange={(e) => setCreateForm((f) => ({ ...f, candidateStatus: e.target.value }))}
+                        disabled={createLoading}
+                        className="mt-1.5 w-full rounded-xl border border-white/10 bg-[#0b0918] px-3 py-2.5 text-sm text-white focus:border-fuchsia-400/40 focus:outline-none"
+                      >
+                        <option value="">Free</option>
+                        <option value="active">Active</option>
+                        <option value="trialing">Trialing</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-black uppercase tracking-[0.16em] text-gray-400">Plan <span className="text-gray-600">(optional)</span></label>
+                      <select
+                        value={createForm.candidatePlanId}
+                        onChange={(e) => setCreateForm((f) => ({ ...f, candidatePlanId: e.target.value }))}
+                        disabled={createLoading}
+                        className="mt-1.5 w-full rounded-xl border border-white/10 bg-[#0b0918] px-3 py-2.5 text-sm text-white focus:border-fuchsia-400/40 focus:outline-none"
+                      >
+                        <option value="">None / Free</option>
+                        <option value="professional_monthly">Professional (Monthly)</option>
+                        <option value="professional_annual">Professional (Annual)</option>
+                        <option value="advanced_monthly">Advanced (Monthly)</option>
+                        <option value="advanced_annual">Advanced (Annual)</option>
+                      </select>
+                    </div>
+                  </>
+                )}
+
+                {createError && <p className="text-sm font-semibold text-red-300">{createError}</p>}
+
+                <div className="flex gap-3 pt-1">
+                  <button onClick={() => setShowCreate(false)} disabled={createLoading} className="flex-1 rounded-full border border-white/10 bg-white/[0.04] py-2.5 text-sm font-black text-white transition hover:bg-white/[0.08] disabled:opacity-50">Cancel</button>
+                  <button
+                    onClick={() => void submitCreate()}
+                    disabled={createLoading || !createForm.email.trim()}
+                    className="flex-1 rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 py-2.5 text-sm font-black text-white shadow-lg transition hover:scale-[1.02] disabled:opacity-60"
+                  >
+                    {createLoading ? "Creating…" : "Create account"}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* ── Edit modal ──────────────────────────────────────────────────────────── */}
       {editingUser && (
