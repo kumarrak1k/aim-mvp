@@ -551,7 +551,7 @@ function DashboardContent() {
       {/* Invite team member modal */}
       {showMemberInviteModal && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm px-4"
+          className="fixed inset-0 z-[9999] flex items-start justify-center overflow-y-auto bg-black/70 backdrop-blur-sm px-4 py-16"
           onClick={() => { if (!memberInviteLoading) { setShowMemberInviteModal(false); setMemberInviteLink(""); } }}
         >
           <div
@@ -648,7 +648,7 @@ function DashboardContent() {
       {/* Delete-workspace confirmation modal */}
       {showDeleteModal && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm px-4"
+          className="fixed inset-0 z-[9999] flex items-start justify-center overflow-y-auto bg-black/70 backdrop-blur-sm px-4 py-16"
           onClick={() => {
             if (!deleteSubmitting) setShowDeleteModal(false);
           }}
