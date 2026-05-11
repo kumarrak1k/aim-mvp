@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { CorporateAppShell } from "@/app/components/marketing/CorporateAppShell";
 import { getPlan, isPlanActive, trialDaysRemaining } from "@/app/lib/corporatePlan";
 
@@ -52,12 +52,18 @@ const STATUS_COLORS: Record<string, string> = {
 
 export default function CompanyDashboardPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const paymentResult = searchParams.get("payment"); // "success" | "cancelled" | null
   const [data, setData] = useState<CompanyData>(null);
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [templates, setTemplates] = useState<Template[]>([]);
   const [members, setMembers] = useState<TeamMember[]>([]);
   const [loading, setLoading] = useState(true);
   const [removingMemberId, setRemovingMemberId] = useState<string | null>(null);
+
+  // Billing action state
+  const [billingLoading, setBillingLoading] = useState(false);
+  const [billingError, setBillingError] = useState("");
 
   // Delete-workspace state
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -128,6 +134,42 @@ export default function CompanyDashboardPage() {
     }
   }
 
+  async function startCheckout() {
+    setBillingLoading(true);
+    setBillingError("");
+    try {
+      const res = await fetch("/api/company/checkout", { method: "POST" });
+      const json = await res.json();
+      if (!res.ok || !json.url) {
+        setBillingError(json.error || "Could not start checkout. Please try again.");
+        return;
+      }
+      window.location.href = json.url;
+    } catch {
+      setBillingError("Network error. Please try again.");
+    } finally {
+      setBillingLoading(false);
+    }
+  }
+
+  async function openBillingPortal() {
+    setBillingLoading(true);
+    setBillingError("");
+    try {
+      const res = await fetch("/api/company/billing-portal", { method: "POST" });
+      const json = await res.json();
+      if (!res.ok || !json.url) {
+        setBillingError(json.error || "Could not open billing portal. Please try again.");
+        return;
+      }
+      window.location.href = json.url;
+    } catch {
+      setBillingError("Network error. Please try again.");
+    } finally {
+      setBillingLoading(false);
+    }
+  }
+
   if (!data) return null;
 
   const { company, member } = data;
@@ -169,6 +211,24 @@ export default function CompanyDashboardPage() {
           </div>
         </div>
 
+        {/* Payment success / cancelled flash */}
+        {paymentResult === "success" && (
+          <div className="mb-8 flex items-center gap-3 rounded-2xl border border-emerald-400/25 bg-emerald-400/[0.07] px-5 py-4">
+            <span className="text-xl">🎉</span>
+            <div>
+              <p className="text-sm font-black text-emerald-200">Payment confirmed — welcome to {plan?.name ?? "your plan"}!</p>
+              <p className="mt-0.5 text-xs text-emerald-200/70">Your workspace is fully activated. Start sending candidate invites.</p>
+            </div>
+          </div>
+        )}
+
+        {/* Billing error */}
+        {billingError && (
+          <div className="mb-8 rounded-2xl border border-red-400/25 bg-red-400/[0.07] px-5 py-4">
+            <p className="text-sm font-semibold text-red-200">{billingError}</p>
+          </div>
+        )}
+
         {/* Plan / trial banner */}
         {company.planStatus === "none" && (
           <div className="mb-8 flex flex-col gap-3 rounded-2xl border border-amber-400/25 bg-amber-400/[0.07] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
@@ -189,28 +249,57 @@ export default function CompanyDashboardPage() {
               <p className="text-sm font-black text-fuchsia-200">
                 {plan?.name} plan — free trial · {daysLeft} day{daysLeft !== 1 ? "s" : ""} remaining
               </p>
-              <p className="mt-0.5 text-xs text-fuchsia-200/70">Full access until your trial ends. Add a payment method to continue.</p>
+              <p className="mt-0.5 text-xs text-fuchsia-200/70">Full access until your trial ends. Add a payment method to avoid interruption.</p>
             </div>
-            <Link href="/company/plan">
-              <button className="shrink-0 rounded-full border border-fuchsia-400/30 bg-fuchsia-500/10 px-5 py-2.5 text-sm font-black text-fuchsia-200 transition hover:bg-fuchsia-500/20">
-                Manage plan →
+            {member.role === "admin" && (
+              <button
+                onClick={() => void startCheckout()}
+                disabled={billingLoading}
+                className="shrink-0 rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 px-5 py-2.5 text-sm font-black text-white shadow-lg transition hover:scale-[1.02] disabled:opacity-60"
+              >
+                {billingLoading ? "Loading…" : "Upgrade to paid →"}
               </button>
-            </Link>
+            )}
           </div>
         )}
-        {(company.planStatus === "trial" && !planActive) || company.planStatus === "expired" ? (
+        {((company.planStatus === "trial" && !planActive) || company.planStatus === "expired" || company.planStatus === "cancelled") && (
           <div className="mb-8 flex flex-col gap-3 rounded-2xl border border-red-400/25 bg-red-400/[0.07] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-sm font-black text-red-200">Your trial has ended</p>
+              <p className="text-sm font-black text-red-200">
+                {company.planStatus === "cancelled" ? "Subscription cancelled" : "Your trial has ended"}
+              </p>
               <p className="mt-0.5 text-xs text-red-200/70">You can view existing data but cannot send invites or create templates until you upgrade.</p>
             </div>
-            <Link href="/company/plan">
-              <button className="shrink-0 rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 px-5 py-2.5 text-sm font-black text-white shadow-lg transition hover:scale-[1.02]">
-                Upgrade now →
+            {member.role === "admin" && (
+              <button
+                onClick={() => void startCheckout()}
+                disabled={billingLoading}
+                className="shrink-0 rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 px-5 py-2.5 text-sm font-black text-white shadow-lg transition hover:scale-[1.02] disabled:opacity-60"
+              >
+                {billingLoading ? "Loading…" : "Upgrade now →"}
               </button>
-            </Link>
+            )}
           </div>
-        ) : null}
+        )}
+        {company.planStatus === "active" && (
+          <div className="mb-8 flex flex-col gap-3 rounded-2xl border border-emerald-400/20 bg-emerald-400/[0.05] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-sm font-black text-emerald-200">
+                {plan?.name ?? "Active"} plan — paid
+              </p>
+              <p className="mt-0.5 text-xs text-emerald-200/70">Your workspace is fully active. Manage invoices, payment method or cancel in the billing portal.</p>
+            </div>
+            {member.role === "admin" && (
+              <button
+                onClick={() => void openBillingPortal()}
+                disabled={billingLoading}
+                className="shrink-0 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-5 py-2.5 text-sm font-black text-emerald-200 transition hover:bg-emerald-500/20 disabled:opacity-60"
+              >
+                {billingLoading ? "Loading…" : "Manage billing →"}
+              </button>
+            )}
+          </div>
+        )}
 
         {/* Stats */}
         <div className="mb-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
