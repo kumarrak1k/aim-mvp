@@ -1,25 +1,71 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
+import Link from "next/link";
 
 /**
  * Post-signup landing for the business flow. Stamps accountType =
  * "corporate" then forwards to /company/setup so the recruiter can name
  * their workspace and become the admin member.
+ *
+ * Soft-checks the email domain before stamping. If the user signed up with
+ * a common free/personal email provider (Gmail, Hotmail, etc.) they see a
+ * warning screen explaining this is a hiring-team account. They can either
+ * confirm they are indeed a recruiter ("Continue anyway") or bail to the
+ * candidate sign-up. This prevents accidental corporate registrations while
+ * not hard-blocking genuine recruiters who use personal emails.
  */
+
+/** Free / personal email domains that trigger the soft warning. */
+const FREE_DOMAINS = new Set([
+  "gmail.com", "googlemail.com",
+  "hotmail.com", "hotmail.co.uk", "hotmail.fr", "hotmail.de",
+  "outlook.com", "outlook.co.uk",
+  "live.com", "live.co.uk", "live.fr",
+  "msn.com",
+  "yahoo.com", "yahoo.co.uk", "yahoo.fr", "yahoo.de", "yahoo.es",
+  "ymail.com",
+  "icloud.com", "me.com", "mac.com",
+  "aol.com", "aol.co.uk",
+  "protonmail.com", "proton.me",
+  "tutanota.com", "tutamail.com",
+  "mail.com", "gmx.com", "gmx.net", "gmx.co.uk",
+]);
+
+function isPersonalEmail(email: string): boolean {
+  const domain = email.split("@")[1]?.toLowerCase();
+  return domain ? FREE_DOMAINS.has(domain) : false;
+}
+
+type Phase = "checking" | "warning" | "processing";
+
 export default function BusinessSignUpCompletePage() {
   const router = useRouter();
-  const { isLoaded, isSignedIn } = useUser();
+  const { isLoaded, isSignedIn, user } = useUser();
+  const [phase, setPhase] = useState<Phase>("checking");
 
+  // Step 1 — decide whether to warn or proceed
   useEffect(() => {
     if (!isLoaded) return;
-
     if (!isSignedIn) {
       router.replace("/for-business/sign-in");
       return;
     }
+    if (phase !== "checking") return;
+
+    const email = user?.primaryEmailAddress?.emailAddress ?? "";
+    if (isPersonalEmail(email)) {
+      setPhase("warning");
+    } else {
+      setPhase("processing");
+    }
+  }, [isLoaded, isSignedIn, user, phase, router]);
+
+  // Step 2 — stamp account type and redirect (only when processing)
+  useEffect(() => {
+    if (phase !== "processing") return;
 
     let cancelled = false;
 
@@ -39,11 +85,65 @@ export default function BusinessSignUpCompletePage() {
       }
     })();
 
-    return () => {
-      cancelled = true;
-    };
-  }, [isLoaded, isSignedIn, router]);
+    return () => { cancelled = true; };
+  }, [phase, router]);
 
+  // ── Warning screen ────────────────────────────────────────────────────────
+  if (phase === "warning") {
+    const email = user?.primaryEmailAddress?.emailAddress ?? "";
+    return (
+      <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#0a0614] px-4 text-white">
+        <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_25%_15%,rgba(232,80,180,0.18),transparent),radial-gradient(ellipse_60%_50%_at_75%_85%,rgba(120,60,255,0.12),transparent),linear-gradient(180deg,#0a0614_0%,#100a1f_50%,#0c0816_100%)]" />
+          <div className="absolute left-[-160px] top-[-80px] h-[520px] w-[520px] rounded-full bg-fuchsia-500/[0.18] blur-[160px]" />
+          <div className="absolute bottom-[-80px] right-[-160px] h-[520px] w-[520px] rounded-full bg-purple-500/[0.15] blur-[160px]" />
+        </div>
+
+        <div className="relative z-10 w-full max-w-md rounded-[1.75rem] border border-fuchsia-400/20 bg-white/[0.04] p-8 shadow-2xl shadow-fuchsia-950/30 backdrop-blur-2xl">
+          {/* Icon */}
+          <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full border border-amber-400/30 bg-amber-500/10 text-2xl">
+            ⚠️
+          </div>
+
+          <h1 className="mb-2 text-center text-xl font-black tracking-[-0.03em]">
+            Looks like a personal email
+          </h1>
+          <p className="mb-1 text-center text-sm leading-6 text-gray-400">
+            You signed up with{" "}
+            <span className="font-bold text-white">{email}</span>.
+          </p>
+          <p className="mb-6 text-center text-sm leading-6 text-gray-400">
+            Hiring team accounts are designed for recruiters and hiring
+            managers. Are you signing up to assess candidates for a role?
+          </p>
+
+          {/* Primary — confirm they're a recruiter */}
+          <button
+            onClick={() => setPhase("processing")}
+            className="w-full rounded-2xl bg-gradient-to-r from-fuchsia-500 to-purple-500 px-6 py-3.5 text-sm font-black text-white shadow-lg shadow-fuchsia-900/30 transition hover:scale-[1.02]"
+          >
+            Yes, I&rsquo;m a hiring manager — continue
+          </button>
+
+          {/* Secondary — escape to candidate flow */}
+          <Link
+            href="/for-candidates/sign-up"
+            className="mt-3 block w-full rounded-2xl border border-white/[0.1] bg-white/[0.04] px-6 py-3.5 text-center text-sm font-black text-white transition hover:bg-white/[0.08]"
+          >
+            I&rsquo;m actually a job applicant — candidate sign-up →
+          </Link>
+
+          <p className="mt-5 text-center text-xs leading-5 text-gray-600">
+            If you&rsquo;re a freelance recruiter or work from a personal
+            email, you can still use a hiring team account — just confirm
+            above.
+          </p>
+        </div>
+      </main>
+    );
+  }
+
+  // ── Loading / processing screen ───────────────────────────────────────────
   return (
     <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#0a0614] px-4 text-white">
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
