@@ -23,6 +23,7 @@ export type CorporateAppPath =
   | "/company/candidates"
   | "/company/results"
   | "/company/setup"
+  | "/company/plan"
   | "/company/api-keys";
 
 type CorporateAppShellProps = {

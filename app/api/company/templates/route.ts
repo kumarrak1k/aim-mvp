@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../../lib/prisma";
 import { parseJsonBody, templateCreateSchema } from "../../../lib/validation";
+import { isPlanActive } from "../../../lib/corporatePlan";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -38,6 +39,15 @@ export async function POST(request: NextRequest) {
       where: { clerkUserId: userId, role: { in: ["admin", "recruiter"] } },
     });
     if (!member) return NextResponse.json({ error: "Recruiter or admin access required." }, { status: 403 });
+
+    // Plan check — active trial or paid plan required to create templates
+    const company = await prisma.company.findUnique({ where: { id: member.companyId } });
+    if (!company || !isPlanActive(company)) {
+      return NextResponse.json(
+        { error: "Your workspace needs an active plan to create templates. Choose a plan from the dashboard." },
+        { status: 403 }
+      );
+    }
 
     const parsed = await parseJsonBody(request, templateCreateSchema);
     if ("response" in parsed) return parsed.response;

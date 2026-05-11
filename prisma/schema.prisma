@@ -37,6 +37,15 @@ model Company {
   industry    String?
   logoUrl     String?
   brandColor  String   @default("#8c5cff")
+
+  // Subscription / plan
+  planId                 String?   // "team" | "business" | "enterprise"
+  planStatus             String    @default("none") // "none" | "trial" | "active" | "expired" | "cancelled"
+  trialEndsAt            DateTime?
+  stripeCustomerId       String?
+  stripeSubscriptionId   String?
+  stripeCurrentPeriodEnd DateTime?
+
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

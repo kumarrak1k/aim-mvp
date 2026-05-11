@@ -1,0 +1,61 @@
+/**
+ * Corporate plan configuration — single source of truth for seat limits,
+ * invite limits, pricing, and trial duration.
+ *
+ * Enforcement happens in:
+ *   POST /api/company/members  — seat limit check before creating invite
+ *   POST /api/company/assignments — plan-active + monthly invite limit
+ *   POST /api/company/templates   — plan-active check
+ *
+ * Stripe price IDs are stored in env vars and wired up in stripe.ts
+ * once the products are created in the Stripe dashboard.
+ */
+
+export const PLAN_CONFIG = {
+  team: {
+    id: "team",
+    name: "Team",
+    seats: 3,
+    invitesPerMonth: 100,
+    priceGBP: 149,
+    trialDays: 14,
+  },
+  business: {
+    id: "business",
+    name: "Business",
+    seats: 10,
+    invitesPerMonth: 500,
+    priceGBP: 399,
+    trialDays: 14,
+  },
+} as const;
+
+export type CorporatePlanId = keyof typeof PLAN_CONFIG;
+
+/** Returns plan config or null if planId is unrecognised / null. */
+export function getPlan(planId: string | null | undefined) {
+  if (!planId || !(planId in PLAN_CONFIG)) return null;
+  return PLAN_CONFIG[planId as CorporatePlanId];
+}
+
+/** True if the workspace is on an active paid subscription or a live trial. */
+export function isPlanActive(company: {
+  planStatus: string;
+  trialEndsAt: Date | null | string | undefined;
+}): boolean {
+  if (company.planStatus === "active") return true;
+  if (company.planStatus === "trial") {
+    const ends = company.trialEndsAt ? new Date(company.trialEndsAt) : null;
+    return ends !== null && ends > new Date();
+  }
+  return false;
+}
+
+/** Calendar days remaining in the trial (0 if expired or no trial). */
+export function trialDaysRemaining(
+  trialEndsAt: Date | null | string | undefined
+): number {
+  if (!trialEndsAt) return 0;
+  const ms = new Date(trialEndsAt).getTime() - Date.now();
+  return Math.max(0, Math.ceil(ms / (1000 * 60 * 60 * 24)));
+}

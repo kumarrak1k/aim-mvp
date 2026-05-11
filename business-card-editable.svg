@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  AI Career Mentor — Business Card (Variant A)  ·  Editable SVG  ║
+  ╠══════════════════════════════════════════════════════════════════╣
+  ║  Card size : 85.6 × 53.98 mm  (standard CR80)                   ║
+  ║  Left side : Front of card                                       ║
+  ║  Right side: Back of card                                        ║
+  ║                                                                  ║
+  ║  HOW TO EDIT IN FIGMA                                            ║
+  ║    1. Go to figma.com  →  New file  →  Import                   ║
+  ║       (or drag this file onto the canvas)                        ║
+  ║    2. Every group becomes a layer — drag freely to reposition    ║
+  ║    3. Double-click any text to edit it                           ║
+  ║    4. Replace the logo placeholder with your actual logo image   ║
+  ║    5. Export as PDF at 300 dpi for print                         ║
+  ║                                                                  ║
+  ║  HOW TO EDIT IN INKSCAPE (free desktop app)                      ║
+  ║    Open file  →  click any element  →  drag / resize / edit      ║
+  ╚══════════════════════════════════════════════════════════════════╝
+
+  Coordinates: 1 user-unit = 1 mm throughout this file.
+  Front card occupies  x: 0    → 85.6
+  Back card occupies   x: 95.6 → 181.2  (10 mm gap between)
+-->
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="181.2mm" height="53.98mm"
+     viewBox="0 0 181.2 53.98">
+
+  <defs>
+
+    <!-- ─── Shared gradients (applied via objectBoundingBox, so they
+             scale correctly to whichever rect they are filled onto) ── -->
+
+    <radialGradient id="g-purple" cx="15%" cy="15%" r="70%">
+      <stop offset="0%"  stop-color="#7838ff" stop-opacity="0.55"/>
+      <stop offset="55%" stop-color="#7838ff" stop-opacity="0"/>
+    </radialGradient>
+
+    <radialGradient id="g-fuchsia" cx="85%" cy="85%" r="55%">
+      <stop offset="0%"  stop-color="#e850b4" stop-opacity="0.45"/>
+      <stop offset="55%" stop-color="#e850b4" stop-opacity="0"/>
+    </radialGradient>
+
+    <linearGradient id="g-rule" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%"   stop-color="#a855f7" stop-opacity="0"/>
+      <stop offset="35%"  stop-color="#a855f7" stop-opacity="1"/>
+      <stop offset="65%"  stop-color="#ec4899" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#ec4899" stop-opacity="0"/>
+    </linearGradient>
+
+    <linearGradient id="g-dot" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%"   stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#ec4899"/>
+    </linearGradient>
+
+    <!-- ─── Card-shaped clip paths (rounded corners 2.5 mm) ─────── -->
+
+    <clipPath id="clip-front">
+      <rect x="0" y="0" width="85.6" height="53.98" rx="2.5"/>
+    </clipPath>
+
+    <clipPath id="clip-back">
+      <rect x="95.6" y="0" width="85.6" height="53.98" rx="2.5"/>
+    </clipPath>
+
+  </defs>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       FRONT CARD   x: 0 → 85.6   y: 0 → 53.98
+       ═══════════════════════════════════════════════════════════════ -->
+  <g id="front-card" clip-path="url(#clip-front)">
+
+
+    <!-- Background — edit fill colours here to change the card colour -->
+    <g id="front-background">
+      <rect x="0" y="0" width="85.6" height="53.98" fill="#160a2a"/>
+      <rect x="0" y="0" width="85.6" height="53.98" fill="url(#g-purple)"/>
+      <rect x="0" y="0" width="85.6" height="53.98" fill="url(#g-fuchsia)"/>
+    </g>
+
+
+    <!-- ─── LOGO ────────────────────────────────────────────────────
+         Group is positioned at (35.8, 8). Move the group to reposition.
+         Replace the <image> element with your logo in Figma.          -->
+    <g id="front-logo" transform="translate(35.8, 8)">
+      <!-- White card behind logo -->
+      <rect x="0" y="0" width="14" height="14" rx="2" fill="white"
+            opacity="0.95"/>
+      <!-- Logo image — re-link in Figma if it doesn't load -->
+      <image href="./public/brand/logo.jpg"
+             xlink:href="./public/brand/logo.jpg"
+             x="0.8" y="0.8" width="12.4" height="12.4"
+             preserveAspectRatio="xMidYMid meet"/>
+    </g>
+
+
+    <!-- ─── NAME BLOCK ──────────────────────────────────────────────
+         Drag this group to move name + role together.
+         Double-click text in Figma to edit.                          -->
+    <g id="front-name-block">
+      <text id="text-name"
+            x="42.8" y="29"
+            font-family="Inter, -apple-system, Helvetica Neue, sans-serif"
+            font-size="3.88" font-weight="800"
+            letter-spacing="-0.03em"
+            fill="#ffffff"
+            text-anchor="middle">Rakesh Kumar</text>
+
+      <text id="text-role"
+            x="42.8" y="32.2"
+            font-family="Inter, -apple-system, Helvetica Neue, sans-serif"
+            font-size="1.59" font-weight="500"
+            letter-spacing="0.10em"
+            fill="rgba(255,255,255,0.42)"
+            text-anchor="middle">FOUNDER</text>
+    </g>
+
+
+    <!-- ─── DIVIDER RULE ────────────────────────────────────────────
+         Move or resize by editing x, y, width below.                 -->
+    <rect id="front-rule"
+          x="37.8" y="34.9" width="10" height="0.35" rx="0.175"
+          fill="url(#g-rule)"/>
+
+
+    <!-- ─── CONTACT DETAILS ─────────────────────────────────────────
+         Each row is its own group — drag independently.
+         The icon sits at (0,0) inside the group; text starts at x=4.4.
+         Adjust the translate() values to move each row.              -->
+    <g id="front-contact">
+
+      <!-- Email -->
+      <g id="row-email" transform="translate(12.5, 37.2)">
+        <g id="icon-email" transform="scale(0.108)">
+          <path fill="#c084fc" opacity="0.65"
+            d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16
+               c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+        </g>
+        <text x="4.4" y="1.76"
+              font-family="Inter, -apple-system, Helvetica Neue, sans-serif"
+              font-size="1.76" font-weight="400"
+              letter-spacing="0.01em"
+              fill="rgba(255,255,255,0.62)">r.kumar@aicareermentor.co.uk</text>
+      </g>
+
+      <!-- Website (bold highlight) -->
+      <g id="row-website" transform="translate(17.6, 40.2)">
+        <g id="icon-globe" transform="scale(0.108)">
+          <path fill="#c084fc" opacity="0.65"
+            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2
+               12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9
+               15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3
+               c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41
+               c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+        </g>
+        <text x="4.4" y="1.76"
+              font-family="Inter, -apple-system, Helvetica Neue, sans-serif"
+              font-size="1.76" font-weight="700"
+              letter-spacing="0.01em"
+              fill="rgba(255,255,255,0.90)">aicareermentor.co.uk</text>
+      </g>
+
+      <!-- Phone -->
+      <g id="row-phone" transform="translate(22.0, 43.2)">
+        <g id="icon-phone" transform="scale(0.108)">
+          <path fill="#c084fc" opacity="0.65"
+            d="M6.62 10.79a15.053 15.053 0 0 0 6.59 6.59l2.2-2.2
+               c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1
+               1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5
+               c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2
+               2.2z"/>
+        </g>
+        <text x="4.4" y="1.76"
+              font-family="Inter, -apple-system, Helvetica Neue, sans-serif"
+              font-size="1.76" font-weight="400"
+              letter-spacing="0.01em"
+              fill="rgba(255,255,255,0.62)">07904 351 555</text>
+      </g>
+
+    </g>
+  </g>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       BACK CARD   x: 95.6 → 181.2   y: 0 → 53.98
+       ═══════════════════════════════════════════════════════════════ -->
+  <g id="back-card" clip-path="url(#clip-back)">
+
+
+    <!-- Background — same gradient as front -->
+    <g id="back-background">
+      <rect x="95.6" y="0" width="85.6" height="53.98" fill="#160a2a"/>
+      <rect x="95.6" y="0" width="85.6" height="53.98" fill="url(#g-purple)"/>
+      <rect x="95.6" y="0" width="85.6" height="53.98" fill="url(#g-fuchsia)"/>
+    </g>
+
+
+    <!-- ─── LOGO (centred on back) ──────────────────────────────────
+         Group positioned at (130.4, 12) → logo centred at x=138.4    -->
+    <g id="back-logo" transform="translate(130.4, 12)">
+      <rect x="0" y="0" width="16" height="16" rx="2" fill="white"
+            opacity="0.95"/>
+      <image href="./public/brand/logo.jpg"
+             xlink:href="./public/brand/logo.jpg"
+             x="1" y="1" width="14" height="14"
+             preserveAspectRatio="xMidYMid meet"/>
+    </g>
+
+
+    <!-- ─── DOT accent ───────────────────────────────────────────── -->
+    <circle id="back-dot" cx="138.4" cy="31.5" r="0.55"
+            fill="url(#g-dot)"/>
+
+
+    <!-- ─── TAGLINE ──────────────────────────────────────────────── -->
+    <text id="back-tagline"
+          x="138.4" y="36"
+          font-family="Inter, -apple-system, Helvetica Neue, sans-serif"
+          font-size="1.59" font-weight="600"
+          letter-spacing="0.22em"
+          fill="rgba(255,255,255,0.38)"
+          text-anchor="middle">AI INTERVIEW &amp; ASSESSMENT PLATFORM</text>
+
+
+    <!-- ─── URL ──────────────────────────────────────────────────── -->
+    <text id="back-url"
+          x="138.4" y="40"
+          font-family="Inter, -apple-system, Helvetica Neue, sans-serif"
+          font-size="2.29" font-weight="700"
+          letter-spacing="0.04em"
+          fill="rgba(255,255,255,0.88)"
+          text-anchor="middle">aicareermentor.co.uk</text>
+
+
+  </g>
+
+</svg>

@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../../lib/prisma";
 import { sendCandidateInvite } from "../../../lib/email";
 import { assignmentCreateSchema, parseJsonBody } from "../../../lib/validation";
+import { getPlan, isPlanActive } from "../../../lib/corporatePlan";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -46,13 +47,33 @@ export async function POST(request: NextRequest) {
       prisma.assessmentTemplate.findFirst({
         where: { id: templateId, companyId: member.companyId, isActive: true },
       }),
-      prisma.company.findUnique({
-        where: { id: member.companyId },
-        select: { name: true, brandColor: true },
-      }),
+      prisma.company.findUnique({ where: { id: member.companyId } }),
     ]);
     if (!template) return NextResponse.json({ error: "Template not found or inactive." }, { status: 404 });
     if (!company) return NextResponse.json({ error: "Company not found." }, { status: 404 });
+
+    // Plan check — active trial or paid plan required to send candidate invites
+    if (!isPlanActive(company)) {
+      return NextResponse.json(
+        { error: "Your workspace needs an active plan to send candidate invites. Choose a plan from the dashboard." },
+        { status: 403 }
+      );
+    }
+
+    // Monthly invite limit check
+    const plan = getPlan(company.planId);
+    if (plan) {
+      const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+      const inviteCount = await prisma.candidateAssignment.count({
+        where: { companyId: member.companyId, createdAt: { gte: startOfMonth } },
+      });
+      if (inviteCount >= plan.invitesPerMonth) {
+        return NextResponse.json(
+          { error: `Monthly invite limit of ${plan.invitesPerMonth} reached for your ${plan.name} plan. Limit resets on the 1st of next month.` },
+          { status: 403 }
+        );
+      }
+    }
 
     const expiresAt = new Date(Date.now() + expiryDays * 24 * 60 * 60 * 1000);
 

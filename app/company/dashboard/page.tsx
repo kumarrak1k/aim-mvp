@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { CorporateAppShell } from "@/app/components/marketing/CorporateAppShell";
+import { getPlan, isPlanActive, trialDaysRemaining } from "@/app/lib/corporatePlan";
 
 type Assignment = {
   id: string;
@@ -22,12 +23,22 @@ type Template = {
   _count: { assignments: number };
 };
 
+type TeamMember = {
+  id: string;
+  clerkUserId: string;
+  role: string;
+  createdAt: string;
+};
+
 type CompanyData = {
   company: {
     id: string;
     name: string;
     industry: string | null;
     brandColor: string;
+    planId: string | null;
+    planStatus: string;
+    trialEndsAt: string | null;
     _count: { members: number; templates: number; assignments: number };
   };
   member: { id: string; role: string };
@@ -44,7 +55,9 @@ export default function CompanyDashboardPage() {
   const [data, setData] = useState<CompanyData>(null);
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [templates, setTemplates] = useState<Template[]>([]);
+  const [members, setMembers] = useState<TeamMember[]>([]);
   const [loading, setLoading] = useState(true);
+  const [removingMemberId, setRemovingMemberId] = useState<string | null>(null);
 
   // Delete-workspace state
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -65,10 +78,11 @@ export default function CompanyDashboardPage() {
           }
         }
 
-        const [companyRes, assignmentsRes, templatesRes] = await Promise.all([
+        const [companyRes, assignmentsRes, templatesRes, membersRes] = await Promise.all([
           fetch("/api/company"),
           fetch("/api/company/assignments"),
           fetch("/api/company/templates"),
+          fetch("/api/company/members"),
         ]);
         const companyData = await companyRes.json();
         if (!companyData.company) { router.push("/company/setup"); return; }
@@ -77,6 +91,8 @@ export default function CompanyDashboardPage() {
         setAssignments(aData.assignments || []);
         const tData = await templatesRes.json();
         setTemplates(tData.templates || []);
+        const mData = await membersRes.json();
+        setMembers(mData.members || []);
       } catch {
         // noop
       } finally {
@@ -96,6 +112,22 @@ export default function CompanyDashboardPage() {
     );
   }
 
+  async function removeMember(memberId: string) {
+    setRemovingMemberId(memberId);
+    try {
+      const res = await fetch("/api/company/members", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ memberId }),
+      });
+      if (res.ok) {
+        setMembers((prev) => prev.filter((m) => m.id !== memberId));
+      }
+    } finally {
+      setRemovingMemberId(null);
+    }
+  }
+
   if (!data) return null;
 
   const { company, member } = data;
@@ -103,6 +135,13 @@ export default function CompanyDashboardPage() {
   const activeTemplates = templates.filter((t) => t.isActive).length;
   const completedCount = assignments.filter((a) => a.status === "completed").length;
   const pendingCount = assignments.filter((a) => a.status === "pending").length;
+
+  // Plan & trial helpers
+  const plan = getPlan(company.planId);
+  const planActive = isPlanActive({ planStatus: company.planStatus, trialEndsAt: company.trialEndsAt });
+  const daysLeft = trialDaysRemaining(company.trialEndsAt);
+  const thisMonthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+  const invitesThisMonth = assignments.filter((a) => new Date(a.createdAt) >= thisMonthStart).length;
 
   return (
     <CorporateAppShell currentPath="/company/dashboard">
@@ -130,12 +169,63 @@ export default function CompanyDashboardPage() {
           </div>
         </div>
 
+        {/* Plan / trial banner */}
+        {company.planStatus === "none" && (
+          <div className="mb-8 flex flex-col gap-3 rounded-2xl border border-amber-400/25 bg-amber-400/[0.07] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-sm font-black text-amber-200">No active plan</p>
+              <p className="mt-0.5 text-xs text-amber-200/70">Choose a plan to send invites and create templates. Viewing existing data is unaffected.</p>
+            </div>
+            <Link href="/company/plan">
+              <button className="shrink-0 rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 px-5 py-2.5 text-sm font-black text-white shadow-lg transition hover:scale-[1.02]">
+                Choose a plan →
+              </button>
+            </Link>
+          </div>
+        )}
+        {company.planStatus === "trial" && planActive && (
+          <div className="mb-8 flex flex-col gap-3 rounded-2xl border border-fuchsia-400/20 bg-fuchsia-400/[0.06] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-sm font-black text-fuchsia-200">
+                {plan?.name} plan — free trial · {daysLeft} day{daysLeft !== 1 ? "s" : ""} remaining
+              </p>
+              <p className="mt-0.5 text-xs text-fuchsia-200/70">Full access until your trial ends. Add a payment method to continue.</p>
+            </div>
+            <Link href="/company/plan">
+              <button className="shrink-0 rounded-full border border-fuchsia-400/30 bg-fuchsia-500/10 px-5 py-2.5 text-sm font-black text-fuchsia-200 transition hover:bg-fuchsia-500/20">
+                Manage plan →
+              </button>
+            </Link>
+          </div>
+        )}
+        {(company.planStatus === "trial" && !planActive) || company.planStatus === "expired" ? (
+          <div className="mb-8 flex flex-col gap-3 rounded-2xl border border-red-400/25 bg-red-400/[0.07] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-sm font-black text-red-200">Your trial has ended</p>
+              <p className="mt-0.5 text-xs text-red-200/70">You can view existing data but cannot send invites or create templates until you upgrade.</p>
+            </div>
+            <Link href="/company/plan">
+              <button className="shrink-0 rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 px-5 py-2.5 text-sm font-black text-white shadow-lg transition hover:scale-[1.02]">
+                Upgrade now →
+              </button>
+            </Link>
+          </div>
+        ) : null}
+
         {/* Stats */}
         <div className="mb-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {[
-            { label: "Team members", value: company._count.members, color: "text-fuchsia-300" },
+            {
+              label: plan ? `Team members (${company._count.members}/${plan.seats} seats)` : "Team members",
+              value: company._count.members,
+              color: "text-fuchsia-300",
+            },
             { label: "Active templates", value: activeTemplates, color: "text-purple-300" },
-            { label: "Total invites sent", value: company._count.assignments, color: "text-cyan-300" },
+            {
+              label: plan ? `Invites this month (${invitesThisMonth}/${plan.invitesPerMonth})` : "Total invites sent",
+              value: plan ? invitesThisMonth : company._count.assignments,
+              color: "text-cyan-300",
+            },
             { label: "Completed assessments", value: completedCount, color: "text-green-300" },
           ].map(({ label, value, color }) => (
             <div key={label} className="rounded-2xl border border-white/10 bg-white/[0.05] p-6">
@@ -162,6 +252,63 @@ export default function CompanyDashboardPage() {
             </Link>
           ))}
         </div>
+
+        {/* Team member management — admin only */}
+        {member.role === "admin" && members.length > 0 && (
+          <div className="mb-10 rounded-[2rem] border border-white/10 bg-white/[0.04] p-6 shadow-xl shadow-black/10">
+            <div className="mb-5 flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-black">Team members</h2>
+                {plan && (
+                  <p className="mt-0.5 text-xs text-gray-500">
+                    {members.length} of {plan.seats} seats used
+                  </p>
+                )}
+              </div>
+              {planActive && plan && members.length < plan.seats && (
+                <Link href="/company/candidates">
+                  <button className="rounded-full border border-white/10 bg-white/[0.05] px-4 py-2 text-xs font-black text-white transition hover:bg-white/[0.09]">
+                    + Invite member
+                  </button>
+                </Link>
+              )}
+            </div>
+            <div className="divide-y divide-white/[0.06]">
+              {members.map((m) => {
+                // Find the current user's own member record to detect "you"
+                const myMember = members.find((x) => x.id === member.id);
+                const isYou = myMember ? m.id === myMember.id : false;
+                return (
+                  <div key={m.id} className="flex items-center justify-between py-3.5">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-fuchsia-500/20 text-xs font-black text-fuchsia-300">
+                        {m.role === "admin" ? "A" : "R"}
+                      </div>
+                      <div>
+                        <p className="text-sm font-bold text-white">
+                          {m.role.charAt(0).toUpperCase() + m.role.slice(1)}
+                          {isYou && <span className="ml-2 text-xs font-semibold text-gray-500">(you)</span>}
+                        </p>
+                        <p className="text-[11px] text-gray-500">
+                          Joined {new Date(m.createdAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
+                        </p>
+                      </div>
+                    </div>
+                    {!isYou && (
+                      <button
+                        onClick={() => void removeMember(m.id)}
+                        disabled={removingMemberId === m.id}
+                        className="rounded-full border border-red-400/25 bg-red-400/[0.07] px-3.5 py-1.5 text-xs font-black text-red-300 transition hover:bg-red-400/[0.14] disabled:opacity-50"
+                      >
+                        {removingMemberId === m.id ? "Removing…" : "Remove"}
+                      </button>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Danger zone — admin only */}
         {member.role === "admin" && (

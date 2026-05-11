@@ -30,7 +30,7 @@ export default function CompanySetupPage() {
       });
       const data = await res.json();
       if (!res.ok) { setError(data.error || "Failed to create company."); return; }
-      router.push("/company/dashboard");
+      router.push("/company/plan");
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {

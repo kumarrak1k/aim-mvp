@@ -8,15 +8,15 @@ export type PricingCurrency = "GBP" | "USD" | "EUR";
 type PriceSet = { monthly: string; annual: string; annualMonthly: string };
 
 const TEAM: Record<PricingCurrency, PriceSet> = {
-  GBP: { monthly: "£99",   annual: "£799",   annualMonthly: "£66.58"  },
-  USD: { monthly: "$119",  annual: "$999",   annualMonthly: "$83.25"  },
-  EUR: { monthly: "€109",  annual: "€899",   annualMonthly: "€74.92"  },
+  GBP: { monthly: "£149",  annual: "£1,193", annualMonthly: "£99.42"  },
+  USD: { monthly: "$179",  annual: "$1,432", annualMonthly: "$119.33" },
+  EUR: { monthly: "€169",  annual: "€1,352", annualMonthly: "€112.67" },
 };
 
 const BUSINESS: Record<PricingCurrency, PriceSet> = {
-  GBP: { monthly: "£249",  annual: "£1,999", annualMonthly: "£166.58" },
-  USD: { monthly: "$299",  annual: "$2,499", annualMonthly: "$208.25" },
-  EUR: { monthly: "€279",  annual: "€2,249", annualMonthly: "€187.42" },
+  GBP: { monthly: "£399",  annual: "£3,192", annualMonthly: "£266.00" },
+  USD: { monthly: "$479",  annual: "$3,832", annualMonthly: "$319.33" },
+  EUR: { monthly: "€449",  annual: "€3,592", annualMonthly: "€299.33" },
 };
 
 export function BusinessPricingPlans({ currency = "GBP" }: { currency?: PricingCurrency }) {
@@ -32,9 +32,9 @@ export function BusinessPricingPlans({ currency = "GBP" }: { currency?: PricingC
       annualMonthly: team.annualMonthly,
       period: "/month",
       description:
-        "For small hiring teams running structured assessments — up to 5 recruiters, 100 candidate invites per month.",
+        "For small hiring teams running structured assessments — up to 3 recruiters, 100 candidate invites per month.",
       features: [
-        "Up to 5 recruiter seats",
+        "Up to 3 recruiter seats",
         "100 candidate invites / month",
         "Unlimited assessment templates",
         "Full results dashboard",
@@ -54,7 +54,7 @@ export function BusinessPricingPlans({ currency = "GBP" }: { currency?: PricingC
       description:
         "For growing hiring teams. More seats, more volume, advanced reporting.",
       features: [
-        "Up to 15 recruiter seats",
+        "Up to 10 recruiter seats",
         "500 candidate invites / month",
         "Unlimited templates",
         "Advanced result analytics",
