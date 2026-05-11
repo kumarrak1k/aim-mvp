@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { CorporateAppShell } from "@/app/components/marketing/CorporateAppShell";
@@ -50,7 +50,7 @@ const STATUS_COLORS: Record<string, string> = {
   completed: "bg-green-400/15 text-green-200 border-green-400/25",
 };
 
-export default function CompanyDashboardPage() {
+function DashboardContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const paymentResult = searchParams.get("payment"); // "success" | "cancelled" | null
@@ -573,5 +573,13 @@ export default function CompanyDashboardPage() {
         </div>
       )}
     </CorporateAppShell>
+  );
+}
+
+export default function CompanyDashboardPage() {
+  return (
+    <Suspense>
+      <DashboardContent />
+    </Suspense>
   );
 }
