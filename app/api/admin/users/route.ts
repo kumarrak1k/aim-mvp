@@ -1,11 +1,11 @@
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { siteConfig } from "@/app/config/site";
+import { sendAdminWelcomeEmail } from "@/app/lib/email";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-/** Verify the caller is a signed-in superadmin. Returns null if not. */
 async function requireSuperadmin() {
   const { userId } = await auth();
   if (!userId) return null;
@@ -16,10 +16,6 @@ async function requireSuperadmin() {
   return { callerId: userId, client };
 }
 
-/**
- * Generate a secure temporary password (used internally by Clerk — never shown to admin).
- * Sign-in tokens are the primary access mechanism, so this just needs to satisfy Clerk.
- */
 function generateInternalPassword(): string {
   const upper   = "ABCDEFGHJKLMNPQRSTUVWXYZ";
   const lower   = "abcdefghjkmnpqrstuvwxyz";
@@ -46,7 +42,6 @@ function generateInternalPassword(): string {
   return chars.join("");
 }
 
-/** The sign-in page for each account type. */
 function signInPathForType(accountType: string): string {
   return accountType === "corporate"
     ? "/for-business/sign-in"
@@ -55,21 +50,13 @@ function signInPathForType(accountType: string): string {
 
 /**
  * POST /api/admin/users
- * Create a new Clerk user and return a one-click sign-in link.
+ * Create a Clerk account, generate a sign-in token, and immediately email
+ * the one-click link to the user via Resend.
  *
- * Body: { email, firstName?, lastName?, accountType, subscriptionStatus?, stripePlanId? }
- * Returns: { success, userId, email, signInUrl }
- *
- * The sign-in URL contains a Clerk sign-in token (__clerk_ticket param) that
- * authenticates the user without a password or email verification code — no
- * factor-two prompt, no email required from Clerk.
- *
- * privateMetadata.forcePasswordReset = true is set on the new account so
- * /auth/redirect bounces the user to /change-password on first sign-in,
- * where they set a permanent password via the backend API (no current
- * password required since we use Clerk's admin updateUser).
- *
- * Token expires in 7 days. Share the URL securely with the user.
+ * Returns: { success, userId, email, signInUrl, emailSent, emailError? }
+ * - signInUrl   always returned so the UI can show a copy-link fallback
+ * - emailSent   true if Resend accepted the email
+ * - emailError  human-readable reason if email sending failed
  */
 export async function POST(req: NextRequest) {
   const admin = await requireSuperadmin();
@@ -95,6 +82,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    // 1. Create Clerk account
     const privateMetadata: Record<string, unknown> = {
       accountType: body.accountType,
       forcePasswordReset: true,
@@ -102,35 +90,53 @@ export async function POST(req: NextRequest) {
     if (body.subscriptionStatus) privateMetadata.subscriptionStatus = body.subscriptionStatus;
     if (body.stripePlanId)        privateMetadata.stripePlanId       = body.stripePlanId;
 
-    // Create the Clerk account. Email addresses created via the Backend API are
-    // automatically marked as verified — no OTP needed.
     const user = await admin.client.users.createUser({
       emailAddress: [email],
-      password: generateInternalPassword(), // internal only, never shown
+      password: generateInternalPassword(),
       firstName: body.firstName?.trim() || undefined,
       lastName: body.lastName?.trim() || undefined,
       skipPasswordChecks: true,
       privateMetadata,
     });
 
-    // Generate a sign-in token — a one-time JWT that authenticates the user
-    // without password or MFA. Valid for 7 days.
+    // 2. Generate sign-in token (7 days, one-time use, bypasses MFA/factor-two)
     const tokenResponse = await admin.client.signInTokens.createSignInToken({
       userId: user.id,
-      expiresInSeconds: 7 * 24 * 60 * 60, // 7 days
+      expiresInSeconds: 7 * 24 * 60 * 60,
     });
 
-    // Build the full sign-in URL. Clerk's embedded <SignIn /> component
-    // automatically detects __clerk_ticket in the URL and authenticates
-    // the user without any further prompts.
     const signInPath = signInPathForType(body.accountType);
     const signInUrl = `${siteConfig.url}${signInPath}?__clerk_ticket=${tokenResponse.token}`;
+
+    // 3. Send welcome email immediately — non-fatal if it fails
+    let emailSent = false;
+    let emailError: string | undefined;
+
+    try {
+      const emailResult = await sendAdminWelcomeEmail({
+        to: email,
+        firstName: body.firstName?.trim() || null,
+        signInUrl,
+      });
+
+      if (emailResult.ok) {
+        emailSent = true;
+      } else {
+        emailError = emailResult.error;
+        console.error("ADMIN WELCOME EMAIL FAILED:", emailResult.error);
+      }
+    } catch (emailErr) {
+      emailError = emailErr instanceof Error ? emailErr.message : "Email send failed.";
+      console.error("ADMIN WELCOME EMAIL EXCEPTION:", emailErr);
+    }
 
     return NextResponse.json({
       success: true,
       userId: user.id,
       email,
-      signInUrl,
+      signInUrl,   // always returned so UI can show copy-link fallback
+      emailSent,
+      emailError,
     });
   } catch (error: unknown) {
     console.error("ADMIN CREATE USER ERROR:", error);

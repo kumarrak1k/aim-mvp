@@ -218,7 +218,10 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
   const [deleteError, setDeleteError]     = useState("");
 
   // Create user modal
-  type CreatedResult = { userId: string; email: string; firstName: string | null; accountType: string };
+  type CreatedResult = {
+    userId: string; email: string; firstName: string | null; accountType: string;
+    signInUrl: string; emailSent: boolean; emailError?: string;
+  };
   const [showCreate, setShowCreate]         = useState(false);
   const [createForm, setCreateForm]         = useState({
     email: "", firstName: "", lastName: "",
@@ -228,9 +231,11 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
   const [createLoading, setCreateLoading]   = useState(false);
   const [createError, setCreateError]       = useState("");
   const [createdResult, setCreatedResult]   = useState<CreatedResult | null>(null);
-  const [sendingEmail, setSendingEmail]     = useState(false);
-  const [emailSent, setEmailSent]           = useState(false);
-  const [emailError, setEmailError]         = useState("");
+  const [resendLoading, setResendLoading]   = useState(false);
+  const [resendSent, setResendSent]         = useState(false);
+  const [resendError, setResendError]       = useState("");
+  const [showFallbackUrl, setShowFallbackUrl] = useState(false);
+  const [copiedUrl, setCopiedUrl]           = useState(false);
 
   // ── Open modals ─────────────────────────────────────────────────────────────
 
@@ -334,8 +339,10 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
     setCreateForm({ email: "", firstName: "", lastName: "", accountType: "candidate", membership: "free" });
     setCreateError("");
     setCreatedResult(null);
-    setEmailSent(false);
-    setEmailError("");
+    setResendSent(false);
+    setResendError("");
+    setShowFallbackUrl(false);
+    setCopiedUrl(false);
     setShowCreate(true);
   }
 
@@ -356,7 +363,10 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
           stripePlanId: billing.stripePlanId || undefined,
         }),
       });
-      const json = await res.json() as { success?: boolean; error?: string; userId?: string; email?: string };
+      const json = await res.json() as {
+        success?: boolean; error?: string; userId?: string; email?: string;
+        signInUrl?: string; emailSent?: boolean; emailError?: string;
+      };
       if (!res.ok) { setCreateError(json.error ?? "Failed to create user."); return; }
 
       const result: CreatedResult = {
@@ -364,7 +374,12 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
         email: json.email!,
         firstName: createForm.firstName.trim() || null,
         accountType: createForm.accountType,
+        signInUrl: json.signInUrl!,
+        emailSent: json.emailSent ?? false,
+        emailError: json.emailError,
       };
+      // If email failed, show the fallback URL automatically
+      if (!result.emailSent) setShowFallbackUrl(true);
       setCreatedResult(result);
 
       // Add to local table immediately
@@ -391,9 +406,9 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
     }
   }
 
-  async function sendWelcomeEmail(result: CreatedResult) {
-    setSendingEmail(true);
-    setEmailError("");
+  async function resendWelcomeEmail(result: CreatedResult) {
+    setResendLoading(true);
+    setResendError("");
     try {
       const res = await fetch("/api/admin/send-welcome", {
         method: "POST",
@@ -405,14 +420,20 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
           accountType: result.accountType,
         }),
       });
-      const json = await res.json() as { success?: boolean; error?: string };
-      if (!res.ok) { setEmailError(json.error ?? "Failed to send email."); return; }
-      setEmailSent(true);
+      const json = await res.json() as { success?: boolean; error?: string; signInUrl?: string };
+      if (!res.ok) { setResendError(json.error ?? "Failed to send email."); return; }
+      setResendSent(true);
     } catch {
-      setEmailError("Network error. Please try again.");
+      setResendError("Network error. Please try again.");
     } finally {
-      setSendingEmail(false);
+      setResendLoading(false);
     }
+  }
+
+  function copyFallbackUrl(url: string) {
+    void navigator.clipboard.writeText(url);
+    setCopiedUrl(true);
+    setTimeout(() => setCopiedUrl(false), 2000);
   }
 
   // ── Sort ─────────────────────────────────────────────────────────────────────
@@ -625,49 +646,84 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
 
             {createdResult ? (
               /* ── Success state ─────────────────────── */
-              <div className="mt-5 space-y-4">
-                {/* Account created confirmation */}
-                <div className="flex items-center gap-3 rounded-2xl border border-emerald-400/20 bg-emerald-500/[0.07] px-4 py-3.5">
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-500/20">
-                    <svg className="h-4 w-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
-                  </div>
+              <div className="mt-5 space-y-3">
+
+                {/* Account created */}
+                <div className="flex items-center gap-3 rounded-2xl border border-emerald-400/20 bg-emerald-500/[0.07] px-4 py-3">
+                  <svg className="h-4 w-4 shrink-0 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
                   <div>
                     <p className="text-sm font-black text-emerald-300">Account created</p>
                     <p className="text-[12px] text-emerald-200/60">{createdResult.email}</p>
                   </div>
                 </div>
 
-                {/* Send email action */}
-                {emailSent ? (
-                  <div className="flex items-center gap-3 rounded-2xl border border-fuchsia-400/20 bg-fuchsia-500/[0.07] px-4 py-4">
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-fuchsia-500/20">
-                      <svg className="h-4 w-4 text-fuchsia-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
-                    </div>
-                    <div>
-                      <p className="text-sm font-black text-fuchsia-300">Sign-in link sent</p>
-                      <p className="text-[12px] text-fuchsia-200/60">Email delivered to {createdResult.email}</p>
-                    </div>
+                {/* Email status */}
+                {createdResult.emailSent && !resendSent && (
+                  <div className="flex items-center gap-3 rounded-2xl border border-fuchsia-400/20 bg-fuchsia-500/[0.07] px-4 py-3">
+                    <svg className="h-4 w-4 shrink-0 text-fuchsia-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                    <p className="text-sm font-black text-fuchsia-300">Sign-in link emailed to {createdResult.email}</p>
                   </div>
-                ) : (
-                  <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4">
-                    <p className="text-[11px] leading-5 text-gray-400">
-                      Send a sign-in link directly to the user. They click it, set a password, and get access — no verification code needed.
-                    </p>
-                    {emailError && (
-                      <p className="mt-2 text-[11px] font-semibold text-red-300">{emailError}</p>
+                )}
+
+                {resendSent && (
+                  <div className="flex items-center gap-3 rounded-2xl border border-fuchsia-400/20 bg-fuchsia-500/[0.07] px-4 py-3">
+                    <svg className="h-4 w-4 shrink-0 text-fuchsia-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                    <p className="text-sm font-black text-fuchsia-300">Email resent to {createdResult.email}</p>
+                  </div>
+                )}
+
+                {/* Email failed — hard-to-miss error + auto-show fallback */}
+                {!createdResult.emailSent && !resendSent && (
+                  <div className="rounded-2xl border border-red-400/30 bg-red-500/[0.08] px-4 py-3">
+                    <p className="text-sm font-black text-red-300">⚠ Email could not be sent</p>
+                    <p className="mt-0.5 text-[12px] text-red-200/70">{createdResult.emailError ?? "Unknown error — check Vercel logs."}</p>
+                  </div>
+                )}
+
+                {/* Resend button — shown if first email succeeded or failed */}
+                {!resendSent && (
+                  <div className="space-y-1.5">
+                    {resendError && (
+                      <p className="rounded-xl border border-red-400/20 bg-red-500/10 px-3 py-2 text-[12px] font-semibold text-red-300">{resendError}</p>
                     )}
                     <button
-                      onClick={() => void sendWelcomeEmail(createdResult)}
-                      disabled={sendingEmail}
-                      className="mt-3 w-full rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-600 py-3 text-sm font-black text-white shadow-lg transition hover:scale-[1.02] disabled:opacity-60"
+                      onClick={() => void resendWelcomeEmail(createdResult)}
+                      disabled={resendLoading}
+                      className="w-full rounded-full border border-fuchsia-400/25 bg-fuchsia-500/10 py-2.5 text-sm font-black text-fuchsia-300 transition hover:bg-fuchsia-500/20 disabled:opacity-50"
                     >
-                      {sendingEmail ? "Sending…" : `Send sign-in link to ${createdResult.email}`}
+                      {resendLoading ? "Sending…" : createdResult.emailSent ? "Resend email" : "Try sending email again"}
                     </button>
                   </div>
                 )}
 
+                {/* Fallback: copy link manually */}
+                <div>
+                  <button
+                    onClick={() => setShowFallbackUrl((v) => !v)}
+                    className="text-[11px] text-gray-500 hover:text-gray-300 transition"
+                  >
+                    {showFallbackUrl ? "Hide" : "Or copy sign-in link manually ↓"}
+                  </button>
+                  {showFallbackUrl && (
+                    <div className="mt-2 flex items-center gap-2">
+                      <input
+                        readOnly
+                        value={createdResult.signInUrl}
+                        onClick={(e) => (e.target as HTMLInputElement).select()}
+                        className="flex-1 rounded-xl border border-white/10 bg-black/40 px-3 py-2 font-mono text-[10px] text-fuchsia-300 focus:outline-none truncate"
+                      />
+                      <button
+                        onClick={() => copyFallbackUrl(createdResult.signInUrl)}
+                        className="shrink-0 rounded-xl border border-white/10 bg-white/[0.05] px-3 py-2 text-[11px] font-black text-gray-300 transition hover:bg-white/10"
+                      >
+                        {copiedUrl ? "✓" : "Copy"}
+                      </button>
+                    </div>
+                  )}
+                </div>
+
                 <button
-                  onClick={() => { setShowCreate(false); setCreatedResult(null); setEmailSent(false); }}
+                  onClick={() => { setShowCreate(false); setCreatedResult(null); }}
                   className="w-full rounded-full border border-white/10 bg-white/[0.04] py-2.5 text-sm font-black text-white transition hover:bg-white/[0.08]"
                 >
                   Done

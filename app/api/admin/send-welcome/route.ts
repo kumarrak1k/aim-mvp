@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: result.error }, { status: 500 });
     }
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, signInUrl });
   } catch (error: unknown) {
     console.error("SEND WELCOME ERROR:", error);
     const msg = (error as { errors?: Array<{ message?: string }> })?.errors?.[0]?.message
