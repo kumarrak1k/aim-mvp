@@ -353,8 +353,18 @@ export default function Stage1Page() {
         <StageProgress currentStage={1} selectedStages={session.selectedStages} />
 
         <div className="grid gap-6 lg:grid-cols-[1fr_480px]">
-          {/* Left: Scenario */}
-          <div className="space-y-5">
+          {/* Left: Scenario — copy/paste disabled to preserve assessment integrity */}
+          {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
+          <div
+            className="space-y-5 select-none"
+            onCopy={(e) => e.preventDefault()}
+            onCut={(e) => e.preventDefault()}
+            onContextMenu={(e) => e.preventDefault()}
+            onKeyDown={(e) => {
+              const blocked = (e.ctrlKey || e.metaKey) && ["a", "c", "x"].includes(e.key.toLowerCase());
+              if (blocked) e.preventDefault();
+            }}
+          >
             {/* Company header */}
             <div className="rounded-[1.75rem] border border-purple-500/[0.18] bg-purple-500/[0.05] p-6 backdrop-blur-xl">
               <div className="flex items-start justify-between gap-4">
@@ -370,6 +380,12 @@ export default function Stage1Page() {
                   {safeStr(scenario.industry)}
                 </span>
               </div>
+              <p className="mt-3 text-[10px] text-purple-300/50 flex items-center gap-1.5">
+                <svg className="h-3 w-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                </svg>
+                Copying is disabled — complete this exercise using only the information provided.
+              </p>
             </div>
 
             {/* Overview */}
