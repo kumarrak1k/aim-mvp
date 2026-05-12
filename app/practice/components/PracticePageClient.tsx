@@ -69,7 +69,7 @@ function formatResetTime(value: string) {
   });
 }
 
-export function PracticePageClient() {
+export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanName?: string }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { isLoaded, isSignedIn } = useUser();
@@ -115,7 +115,7 @@ export function PracticePageClient() {
   const [questionLoading, setQuestionLoading] = useState(false);
 
   const [practiceUsage, setPracticeUsage] =
-    useState<PracticeUsage>(defaultPracticeUsage);
+    useState<PracticeUsage>({ ...defaultPracticeUsage, planName: initialPlanName });
   const [usageLoaded, setUsageLoaded] = useState(false);
   const [usageMessage, setUsageMessage] = useState("");
 
