@@ -1,0 +1,273 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import { CandidateAppShell } from "@/app/components/marketing/CandidateAppShell";
+
+type CoverLetterResult = {
+  letter: string;
+  wordCount: number;
+  subject: string;
+  keyThemes: string[];
+  customisationTips: string[];
+};
+
+type Tone = "professional" | "enthusiastic" | "concise";
+
+const toneOptions: { value: Tone; label: string; desc: string }[] = [
+  { value: "professional", label: "Professional", desc: "Formal, polished, quietly confident" },
+  { value: "enthusiastic", label: "Enthusiastic", desc: "Warm, energetic, genuinely excited" },
+  { value: "concise", desc: "Sharp, direct, no padding", label: "Concise" },
+];
+
+export default function CoverLetterPage() {
+  const [companyName, setCompanyName] = useState("");
+  const [jobTitle, setJobTitle] = useState("");
+  const [jobDescription, setJobDescription] = useState("");
+  const [experience, setExperience] = useState("");
+  const [tone, setTone] = useState<Tone>("professional");
+  const [wordLimit, setWordLimit] = useState(350);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [upgrade, setUpgrade] = useState(false);
+  const [result, setResult] = useState<CoverLetterResult | null>(null);
+  const [copied, setCopied] = useState(false);
+
+  const canSubmit = companyName.trim() && jobTitle.trim() && jobDescription.trim().length >= 20 && experience.trim().length >= 20;
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!canSubmit) return;
+    setLoading(true);
+    setError("");
+    setResult(null);
+    try {
+      const res = await fetch("/api/career-docs/cover-letter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ companyName, jobTitle, jobDescription, experience, tone, wordLimit }),
+      });
+      const data = await res.json() as { result?: CoverLetterResult; error?: string; upgrade?: boolean };
+      if (!res.ok) {
+        if (data.upgrade) { setUpgrade(true); return; }
+        setError(data.error ?? "Something went wrong.");
+        return;
+      }
+      setResult(data.result!);
+    } catch {
+      setError("Could not reach the server. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function copyLetter() {
+    if (!result) return;
+    navigator.clipboard.writeText(result.letter).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    });
+  }
+
+  if (upgrade) {
+    return (
+      <CandidateAppShell currentPath="/career-docs">
+        <div className="mx-auto max-w-lg px-4 py-24 text-center">
+          <div className="mb-6 text-5xl">🔒</div>
+          <h1 className="text-2xl font-black text-white">Advanced plan required</h1>
+          <p className="mt-3 text-sm leading-7 text-gray-400">
+            Cover Letter Generator is available on the Advanced plan.
+          </p>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
+            <Link href="/for-candidates/pricing">
+              <button className="rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-6 py-3.5 text-sm font-black text-white shadow-lg">See plans →</button>
+            </Link>
+            <Link href="/career-docs">
+              <button className="rounded-2xl border border-white/10 bg-white/[0.06] px-6 py-3.5 text-sm font-black text-white">Back to Career Docs</button>
+            </Link>
+          </div>
+        </div>
+      </CandidateAppShell>
+    );
+  }
+
+  return (
+    <CandidateAppShell currentPath="/career-docs">
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
+        {/* Header */}
+        <div className="mb-8">
+          <Link href="/career-docs" className="mb-4 inline-flex items-center gap-1.5 text-xs font-black text-gray-500 hover:text-gray-300 transition">
+            ← Career Docs
+          </Link>
+          <div className="flex items-center gap-3">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-cyan-400/25 bg-cyan-400/10 text-cyan-300">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                <polyline points="22,6 12,13 2,6" />
+              </svg>
+            </div>
+            <div>
+              <p className="text-[11px] font-black uppercase tracking-[0.22em] text-cyan-300">AI Generator</p>
+              <h1 className="text-2xl font-black tracking-[-0.04em] text-white">Cover Letter Generator</h1>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid gap-6 lg:grid-cols-[480px_1fr]">
+          {/* Input */}
+          <form onSubmit={(e) => void handleSubmit(e)} className="space-y-4">
+            <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-6 backdrop-blur-xl space-y-4">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label className="mb-1.5 block text-xs font-black uppercase tracking-[0.18em] text-gray-400">Company *</label>
+                  <input type="text" value={companyName} onChange={(e) => setCompanyName(e.target.value)}
+                    placeholder="e.g. Goldman Sachs"
+                    className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-600 outline-none focus:border-cyan-400/40 focus:ring-1 focus:ring-cyan-400/20" required />
+                </div>
+                <div>
+                  <label className="mb-1.5 block text-xs font-black uppercase tracking-[0.18em] text-gray-400">Job title *</label>
+                  <input type="text" value={jobTitle} onChange={(e) => setJobTitle(e.target.value)}
+                    placeholder="e.g. Analyst"
+                    className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-600 outline-none focus:border-cyan-400/40 focus:ring-1 focus:ring-cyan-400/20" required />
+                </div>
+              </div>
+
+              <div>
+                <label className="mb-1.5 block text-xs font-black uppercase tracking-[0.18em] text-gray-400">Job description *</label>
+                <textarea value={jobDescription} onChange={(e) => setJobDescription(e.target.value)}
+                  placeholder="Paste the job posting here — the more detail the better for tailoring…"
+                  rows={6}
+                  className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-600 outline-none focus:border-cyan-400/40 focus:ring-1 focus:ring-cyan-400/20 resize-y" required />
+              </div>
+
+              <div>
+                <label className="mb-1.5 block text-xs font-black uppercase tracking-[0.18em] text-gray-400">Your key experience *</label>
+                <textarea value={experience} onChange={(e) => setExperience(e.target.value)}
+                  placeholder="Summarise your relevant experience — roles, key achievements, skills. Include numbers and specifics where possible…"
+                  rows={5}
+                  className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-600 outline-none focus:border-cyan-400/40 focus:ring-1 focus:ring-cyan-400/20 resize-y" required />
+              </div>
+
+              {/* Tone */}
+              <div>
+                <label className="mb-2 block text-xs font-black uppercase tracking-[0.18em] text-gray-400">Tone</label>
+                <div className="grid gap-2 sm:grid-cols-3">
+                  {toneOptions.map((opt) => (
+                    <button key={opt.value} type="button" onClick={() => setTone(opt.value)}
+                      className={`rounded-xl border px-3 py-2.5 text-left transition ${
+                        tone === opt.value
+                          ? "border-cyan-400/40 bg-cyan-400/10 text-white"
+                          : "border-white/[0.08] bg-white/[0.02] text-gray-500 hover:border-white/20 hover:text-gray-300"
+                      }`}>
+                      <p className="text-xs font-black">{opt.label}</p>
+                      <p className="text-[10px] mt-0.5 leading-4">{opt.desc}</p>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Word count */}
+              <div>
+                <label className="mb-2 flex items-center justify-between text-xs font-black uppercase tracking-[0.18em] text-gray-400">
+                  Word limit
+                  <span className="text-white">{wordLimit} words</span>
+                </label>
+                <input type="range" min={200} max={600} step={50} value={wordLimit}
+                  onChange={(e) => setWordLimit(Number(e.target.value))}
+                  className="w-full accent-cyan-400" />
+                <div className="mt-1 flex justify-between text-[10px] text-gray-600">
+                  <span>200 (short)</span><span>600 (detailed)</span>
+                </div>
+              </div>
+            </div>
+
+            {error && <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">{error}</div>}
+
+            <button type="submit" disabled={loading || !canSubmit}
+              className={`flex w-full items-center justify-center gap-2 rounded-2xl px-6 py-4 text-sm font-black transition-all ${
+                !loading && canSubmit
+                  ? "bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg hover:scale-[1.01]"
+                  : "cursor-not-allowed bg-white/[0.05] text-gray-600"
+              }`}>
+              {loading ? (
+                <><svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>Writing your letter…</>
+              ) : "Generate cover letter →"}
+            </button>
+          </form>
+
+          {/* Output */}
+          <div className="space-y-4">
+            {!result && !loading && (
+              <div className="flex h-full min-h-[400px] flex-col items-center justify-center gap-4 rounded-[1.75rem] border border-dashed border-white/[0.08] text-center">
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-cyan-400/20 bg-cyan-400/[0.06] text-cyan-400">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-7 w-7">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" />
+                  </svg>
+                </div>
+                <p className="text-sm text-gray-500">Your cover letter will appear here</p>
+              </div>
+            )}
+
+            {loading && (
+              <div className="flex min-h-[400px] flex-col items-center justify-center gap-4 rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04]">
+                <svg className="h-8 w-8 animate-spin text-cyan-400" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+                <p className="text-sm text-gray-400">Writing your tailored cover letter…</p>
+              </div>
+            )}
+
+            {result && (
+              <>
+                {/* Meta */}
+                <div className="flex flex-wrap items-center gap-3">
+                  <span className="rounded-full border border-cyan-400/20 bg-cyan-400/10 px-3 py-1 text-xs font-black text-cyan-300">
+                    {result.wordCount} words
+                  </span>
+                  <span className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-xs font-black text-gray-300">
+                    Subject: {result.subject}
+                  </span>
+                  <button onClick={copyLetter}
+                    className="ml-auto rounded-xl border border-white/10 bg-white/[0.06] px-4 py-2 text-xs font-black text-white transition hover:bg-white/[0.1]">
+                    {copied ? "✓ Copied!" : "Copy letter"}
+                  </button>
+                </div>
+
+                {/* Letter */}
+                <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-6 backdrop-blur-xl">
+                  <p className="mb-3 text-[11px] font-black uppercase tracking-[0.22em] text-cyan-300">Your cover letter</p>
+                  <div className="whitespace-pre-line text-sm leading-8 text-gray-200">
+                    {result.letter}
+                  </div>
+                </div>
+
+                {/* Key themes */}
+                <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-5 backdrop-blur-xl">
+                  <p className="mb-3 text-[11px] font-black uppercase tracking-[0.22em] text-gray-400">Key themes in this letter</p>
+                  <div className="flex flex-wrap gap-2">
+                    {result.keyThemes.map((t, i) => (
+                      <span key={i} className="rounded-full border border-purple-400/20 bg-purple-400/10 px-3 py-1 text-xs font-black text-purple-300">{t}</span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Customisation tips */}
+                <div className="rounded-[1.75rem] border border-amber-400/[0.18] bg-amber-400/[0.05] p-5 backdrop-blur-xl">
+                  <p className="mb-3 text-[11px] font-black uppercase tracking-[0.22em] text-amber-300">Before you send — personalise it</p>
+                  <ul className="space-y-2">
+                    {result.customisationTips.map((tip, i) => (
+                      <li key={i} className="flex items-start gap-2 text-sm text-gray-300">
+                        <span className="mt-0.5 text-amber-400">→</span>{tip}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+    </CandidateAppShell>
+  );
+}

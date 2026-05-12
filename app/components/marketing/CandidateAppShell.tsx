@@ -26,6 +26,10 @@ export type CandidateAppPath =
   | "/progress"
   | "/profile"
   | "/assessment-centre"
+  | "/career-docs"
+  | "/career-docs/cv-enhancer"
+  | "/career-docs/cover-letter"
+  | "/career-docs/personal-statement"
   // Resource pages — visible in the secondary strip, not the main nav
   | "/for-candidates"
   | "/for-candidates/about"
@@ -46,6 +50,7 @@ const navItems: Array<{ href: CandidateAppPath; label: string }> = [
   { href: "/profile",           label: "My Profile"          },
   { href: "/practice",          label: "Interview Practice"  },
   { href: "/assessment-centre", label: "Assessment Centre"   },
+  { href: "/career-docs",       label: "Career Docs"         },
   { href: "/progress",          label: "My Progress"         },
 ];
 
@@ -87,8 +92,8 @@ export function CandidateAppShell({
               {navItems.map((item) => {
                 const active =
                   currentPath === item.href ||
-                  (item.href === "/practice" &&
-                    currentPath === "/practice/session");
+                  (item.href === "/practice" && currentPath === "/practice/session") ||
+                  (item.href === "/career-docs" && currentPath.startsWith("/career-docs/"));
                 return (
                   <Link key={item.href} href={item.href}>
                     <span
@@ -143,8 +148,8 @@ export function CandidateAppShell({
             {navItems.map((item) => {
               const active =
                 currentPath === item.href ||
-                (item.href === "/practice" &&
-                  currentPath === "/practice/session");
+                (item.href === "/practice" && currentPath === "/practice/session") ||
+                (item.href === "/career-docs" && currentPath.startsWith("/career-docs/"));
               return (
                 <Link key={item.href} href={item.href}>
                   <span
@@ -198,47 +203,39 @@ export function CandidateAppShell({
         style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
       >
         <div className="flex h-[60px] items-stretch">
-          <BottomNavItem
-            href="/profile"
-            label="Profile"
-            active={currentPath === "/profile"}
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
+          <BottomNavItem href="/profile" label="Profile" active={currentPath === "/profile"}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-[18px] w-[18px]">
               <circle cx="12" cy="8" r="4" />
               <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
             </svg>
           </BottomNavItem>
 
-          <BottomNavItem
-            href="/practice"
-            label="Practice"
-            active={currentPath === "/practice" || currentPath === "/practice/session"}
-          >
-            <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
+          <BottomNavItem href="/practice" label="Practice" active={currentPath === "/practice" || currentPath === "/practice/session"}>
+            <svg viewBox="0 0 24 24" fill="currentColor" className="h-[18px] w-[18px]">
               <path d="M8 5.14v14l11-7-11-7z" />
             </svg>
           </BottomNavItem>
 
-          <BottomNavItem
-            href="/assessment-centre"
-            label="Assessment"
-            primary
-            primaryColor="cyan"
-            active={currentPath === "/assessment-centre"}
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
+          <BottomNavItem href="/assessment-centre" label="Assessment" primary primaryColor="cyan" active={currentPath === "/assessment-centre"}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-[18px] w-[18px]">
               <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" />
               <rect x="9" y="3" width="6" height="4" rx="1" />
               <path d="M9 12h6M9 16h4" />
             </svg>
           </BottomNavItem>
 
-          <BottomNavItem
-            href="/progress"
-            label="Progress"
-            active={currentPath === "/progress"}
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
+          <BottomNavItem href="/career-docs" label="Docs"
+            active={currentPath === "/career-docs" || currentPath.startsWith("/career-docs/")}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-[18px] w-[18px]">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+              <line x1="16" y1="13" x2="8" y2="13" />
+              <line x1="16" y1="17" x2="8" y2="17" />
+            </svg>
+          </BottomNavItem>
+
+          <BottomNavItem href="/progress" label="Progress" active={currentPath === "/progress"}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-[18px] w-[18px]">
               <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
             </svg>
           </BottomNavItem>
