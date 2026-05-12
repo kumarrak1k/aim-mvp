@@ -272,16 +272,18 @@ export default function PracticeSessionPage() {
     awaitingAutoRecordQuestionRef.current = null;
     questionPlaybackStartedRef.current = false;
 
-    // Brief pause to let the TTS audio hardware fully settle before the
-    // microphone starts listening. Without this, in voice-only mode the Web
-    // Speech API can pick up the tail-end of the TTS output through the
-    // speakers; those samples match question words and get stripped by the
-    // question-leakage guard, leaving the transcript empty. The camera-start
-    // delay in voice+camera mode incidentally avoided this problem.
-    await wait(350);
+    // Keep isSpeakingQuestionRef.current = true during the buffer window so
+    // any TTS audio still draining through the OS output buffer is blocked by
+    // the onresult guard in useBrowserSpeech. onPlaybackEnd intentionally does
+    // NOT clear this ref; we clear it here just before recognition starts so
+    // the first real candidate speech is captured correctly.
+    await wait(600);
+
+    // Now it is safe to open the microphone: TTS output buffer is clear.
+    isSpeakingQuestionRef.current = false;
 
     await startVoiceInputRef.current?.();
-  }, [activeIsSpeakingQuestion, isListening, question]);
+  }, [activeIsSpeakingQuestion, isSpeakingQuestionRef, isListening, question]);
 
   const {
     questionAudioLoading,
@@ -300,7 +302,9 @@ export default function PracticeSessionPage() {
       setIsSpeakingQuestion(true);
     },
     onPlaybackEnd: () => {
-      isSpeakingQuestionRef.current = false;
+      // isSpeakingQuestionRef.current is intentionally NOT cleared here.
+      // maybeStartPendingAutoRecord clears it after the 600 ms TTS echo
+      // buffer window, so any OS-buffered TTS audio is blocked by onresult.
       setIsSpeakingQuestion(false);
       void maybeStartPendingAutoRecord();
     },

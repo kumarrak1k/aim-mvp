@@ -172,13 +172,12 @@ export function useBrowserSpeech({
   }, []);
 
   const pushVisibleTranscript = useCallback(() => {
+    // No stripping here — stripping at display time kills valid short chunks.
+    // getCombinedTranscript strips once at submission time.
     const visibleTranscript = normaliseTranscriptToUkEnglish(
-      stripQuestionLeakageFromTranscript(
-        buildVisibleTranscript(
-          finalTranscriptRef.current,
-          interimTranscriptRef.current
-        ),
-        activeQuestionRef.current
+      buildVisibleTranscript(
+        finalTranscriptRef.current,
+        interimTranscriptRef.current
       )
     );
 
@@ -429,11 +428,11 @@ export function useBrowserSpeech({
           index < event.results.length;
           index += 1
         ) {
+          // Do not strip per-chunk — short answer fragments share many words
+          // with the question and stripping here removes valid candidate speech.
+          // Stripping happens once at submission time in getCombinedTranscript.
           const transcriptPart = normaliseTranscriptToUkEnglish(
-            stripQuestionLeakageFromTranscript(
-              event.results[index][0].transcript,
-              activeQuestionRef.current
-            )
+            event.results[index][0].transcript
           );
 
           if (!transcriptPart) continue;
@@ -447,12 +446,9 @@ export function useBrowserSpeech({
 
         if (newFinalText) {
           finalTranscriptRef.current = normaliseTranscriptToUkEnglish(
-            stripQuestionLeakageFromTranscript(
-              `${finalTranscriptRef.current} ${newFinalText}`
-                .replace(/\s+/g, " ")
-                .trim(),
-              activeQuestionRef.current
-            )
+            `${finalTranscriptRef.current} ${newFinalText}`
+              .replace(/\s+/g, " ")
+              .trim()
           );
         }
 
