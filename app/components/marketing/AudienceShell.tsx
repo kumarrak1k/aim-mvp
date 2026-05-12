@@ -187,7 +187,7 @@ export function AudienceShell({
         </div>
 
         {/* Tablet/mobile compact nav row — audience-only */}
-        <div className="border-t border-white/[0.05] px-4 py-2 sm:px-6 lg:hidden">
+        <div className="px-4 py-2 sm:px-6 lg:hidden">
           <nav className="mx-auto flex max-w-7xl gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {theme.navItems.map((item) => {
               const active = currentPath === item.href;
@@ -222,7 +222,7 @@ export function AudienceShell({
 
         {/* Desktop resource links — secondary strip for both audiences */}
         {(audience === "candidate" || audience === "business") && (
-          <div className="hidden border-t border-white/[0.04] px-4 py-1.5 lg:block">
+          <div className="hidden px-4 py-1.5 lg:block">
             <nav className="mx-auto flex max-w-7xl items-center justify-center gap-6">
               {(audience === "candidate" ? CANDIDATE_RESOURCE_LINKS : BUSINESS_RESOURCE_LINKS).map((item) => (
                 <Link
