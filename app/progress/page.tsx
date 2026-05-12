@@ -109,6 +109,8 @@ export default function ProgressPage() {
   const [sessions, setSessions] = useState<DashboardSession[]>([]);
   const [sessionsLoading, setSessionsLoading] = useState(false);
   const [sessionsError, setSessionsError] = useState("");
+  // planName is returned alongside sessions by /api/practice-sessions
+  const [planName, setPlanName] = useState<string>("Free");
 
   // ── Assessment centre sessions ─────────────────────────────────────────
   const [acSessions, setAcSessions] = useState<ACSession[]>([]);
@@ -148,6 +150,7 @@ export default function ProgressPage() {
         }
 
         setSessions(Array.isArray(data.sessions) ? data.sessions : []);
+        if (data.usage?.planName) setPlanName(data.usage.planName as string);
       } catch {
         if (!cancelled) {
           setSessions([]);
@@ -317,8 +320,8 @@ export default function ProgressPage() {
           <>
             {sessionsLoading && <ProgressLoadingState />}
             {!sessionsLoading && sessionsError && <ErrorState message={sessionsError} />}
-            {!sessionsLoading && !sessionsError && !stats.latestSession && <EmptyProgressState />}
-            {!sessionsLoading && !sessionsError && stats.latestSession && <ProgressDashboard stats={stats} />}
+            {!sessionsLoading && !sessionsError && !stats.latestSession && <EmptyProgressState isAdvancedPlan={planName === "Advanced"} />}
+            {!sessionsLoading && !sessionsError && stats.latestSession && <ProgressDashboard stats={stats} isAdvancedPlan={planName === "Advanced"} />}
           </>
         )}
 
@@ -337,7 +340,7 @@ export default function ProgressPage() {
   );
 }
 
-function ProgressDashboard({ stats }: { stats: ProgressStats }) {
+function ProgressDashboard({ stats, isAdvancedPlan }: { stats: ProgressStats; isAdvancedPlan: boolean }) {
   const latest = stats.latestSession;
   if (!latest) return null;
 
@@ -489,7 +492,7 @@ function ProgressDashboard({ stats }: { stats: ProgressStats }) {
         </GlassPanel>
       </div>
 
-      {/* Assessment centre upsell */}
+      {/* Assessment centre section — content differs by plan */}
       <section className="overflow-hidden rounded-[2rem] border border-cyan-400/20 bg-gradient-to-br from-cyan-500/[0.08] via-purple-500/[0.05] to-transparent p-6 shadow-2xl shadow-purple-950/10 backdrop-blur-2xl sm:p-8">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:gap-10">
           <div className="flex-1">
@@ -501,21 +504,33 @@ function ProgressDashboard({ stats }: { stats: ProgressStats }) {
             </h2>
             <p className="mt-3 text-sm leading-7 text-gray-300">
               Most employers now follow interviews with a full assessment centre —
-              case study, presentation, and more. Upgrade to Advanced and simulate
-              the complete format before the real thing.
+              case study, presentation, and more.{" "}
+              {isAdvancedPlan
+                ? "Simulate the complete format before the real thing — it's included in your plan."
+                : "Upgrade to Advanced and simulate the complete format before the real thing."}
             </p>
           </div>
           <div className="flex shrink-0 flex-col gap-3 sm:flex-row lg:flex-col">
-            <Link href="/for-candidates/pricing">
-              <button className="w-full whitespace-nowrap rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-6 py-3.5 text-sm font-black text-white shadow-lg transition hover:scale-[1.02] sm:w-auto lg:w-full">
-                Upgrade to Advanced →
-              </button>
-            </Link>
-            <Link href="/for-candidates/assessment-centre">
-              <button className="w-full whitespace-nowrap rounded-2xl border border-cyan-400/20 bg-cyan-400/[0.07] px-6 py-3.5 text-sm font-black text-cyan-100 transition hover:bg-cyan-400/[0.12] sm:w-auto lg:w-full">
-                See what&apos;s included
-              </button>
-            </Link>
+            {isAdvancedPlan ? (
+              <Link href="/assessment-centre">
+                <button className="w-full whitespace-nowrap rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-6 py-3.5 text-sm font-black text-white shadow-lg transition hover:scale-[1.02] sm:w-auto lg:w-full">
+                  Start mock assessment centre →
+                </button>
+              </Link>
+            ) : (
+              <>
+                <Link href="/for-candidates/pricing">
+                  <button className="w-full whitespace-nowrap rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-6 py-3.5 text-sm font-black text-white shadow-lg transition hover:scale-[1.02] sm:w-auto lg:w-full">
+                    Upgrade to Advanced →
+                  </button>
+                </Link>
+                <Link href="/for-candidates/assessment-centre">
+                  <button className="w-full whitespace-nowrap rounded-2xl border border-cyan-400/20 bg-cyan-400/[0.07] px-6 py-3.5 text-sm font-black text-cyan-100 transition hover:bg-cyan-400/[0.12] sm:w-auto lg:w-full">
+                    See what&apos;s included
+                  </button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </section>
@@ -696,7 +711,7 @@ function SignedOutState() {
   );
 }
 
-function EmptyProgressState() {
+function EmptyProgressState({ isAdvancedPlan }: { isAdvancedPlan: boolean }) {
   return (
     <div className="mt-6 space-y-4">
       <section className="rounded-[2rem] border border-white/10 bg-white/[0.055] p-6 shadow-2xl shadow-purple-950/10 backdrop-blur-2xl">
@@ -717,9 +732,9 @@ function EmptyProgressState() {
               Start tracked interview
             </button>
           </Link>
-          <Link href="/for-candidates/assessment-centre">
+          <Link href={isAdvancedPlan ? "/assessment-centre" : "/for-candidates/assessment-centre"}>
             <button className="rounded-2xl border border-cyan-400/20 bg-cyan-400/[0.07] px-6 py-4 text-sm font-black text-cyan-100 transition hover:bg-cyan-400/[0.12]">
-              Try mock assessment centre →
+              {isAdvancedPlan ? "Try mock assessment centre →" : "Learn about assessment centres →"}
             </button>
           </Link>
         </div>
@@ -727,7 +742,7 @@ function EmptyProgressState() {
 
       <section className="overflow-hidden rounded-[2rem] border border-cyan-400/20 bg-gradient-to-br from-cyan-500/[0.07] via-purple-500/[0.04] to-transparent p-6 shadow-2xl shadow-purple-950/10 backdrop-blur-2xl">
         <p className="text-[10px] font-black uppercase tracking-[0.22em] text-cyan-300">
-          Advanced · Mock assessment centre
+          {isAdvancedPlan ? "Your plan · Mock assessment centre" : "Advanced · Mock assessment centre"}
         </p>
         <h3 className="mt-2 text-xl font-black tracking-[-0.03em] text-white">
           Going for a role with an assessment centre?
@@ -736,11 +751,19 @@ function EmptyProgressState() {
           Simulate the full format — case study, interview, and presentation — in one
           session. Used by Big 4, investment banks, Civil Service, and most graduate employers.
         </p>
-        <Link href="/for-candidates/pricing">
-          <button className="mt-4 rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-5 py-3 text-sm font-black text-white shadow-lg transition hover:scale-[1.02]">
-            Upgrade to Advanced →
-          </button>
-        </Link>
+        {isAdvancedPlan ? (
+          <Link href="/assessment-centre">
+            <button className="mt-4 rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-5 py-3 text-sm font-black text-white shadow-lg transition hover:scale-[1.02]">
+              Start mock assessment centre →
+            </button>
+          </Link>
+        ) : (
+          <Link href="/for-candidates/pricing">
+            <button className="mt-4 rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-5 py-3 text-sm font-black text-white shadow-lg transition hover:scale-[1.02]">
+              Upgrade to Advanced →
+            </button>
+          </Link>
+        )}
       </section>
     </div>
   );
