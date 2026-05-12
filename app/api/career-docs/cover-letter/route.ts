@@ -12,7 +12,7 @@ const schema = z.object({
   companyName: z.string().trim().min(1).max(200),
   jobTitle: z.string().trim().min(1).max(200),
   jobDescription: z.string().trim().min(20).max(5000),
-  experience: z.string().trim().min(20).max(3000),
+  experience: z.string().trim().min(20).max(8000),
   tone: z.enum(["professional", "enthusiastic", "concise"]).default("professional"),
   wordLimit: z.number().int().min(200).max(600).default(350),
 });
