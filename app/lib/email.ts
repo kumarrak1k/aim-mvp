@@ -43,7 +43,7 @@ function getFromAddress(): string {
   // Accept EMAIL_FROM as either a plain address ("noreply@aicareermentor.co.uk")
   // or a full RFC address ("Anything <noreply@aicareermentor.co.uk>"). In the
   // latter case we extract only the address part and override the display name,
-  // so a misconfigured env var (e.g. "AIM <noreply@...>") never leaks through.
+  // so a misconfigured env var display name never leaks through.
   const bracketMatch = configured?.match(/<([^>]+)>/);
   const plainMatch = configured?.match(/^([^\s<>]+@[^\s<>]+)$/);
   const address = bracketMatch?.[1] ?? plainMatch?.[1] ?? `noreply@${siteConfig.domain}`;

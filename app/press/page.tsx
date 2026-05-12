@@ -124,7 +124,7 @@ export default function PressPage() {
         <section className="mb-12 rounded-2xl border border-amber-400/15 bg-amber-400/[0.04] p-6">
           <h2 className="mb-3 font-black text-amber-200">Usage guidelines</h2>
           <ul className="space-y-2 text-sm text-gray-400">
-            <li>• Refer to the product as &ldquo;AI Career Mentor&rdquo; — not &ldquo;AIM&rdquo; in public text</li>
+            <li>• Always refer to the product as &ldquo;AI Career Mentor&rdquo; — do not abbreviate</li>
             <li>• Do not alter the logo colours or proportions</li>
             <li>• Do not imply endorsement without written permission</li>
             <li>• Factual claims should reference official statistics from this page</li>

@@ -322,7 +322,13 @@ export default function PracticeSessionPage() {
     !cameraUserStarted;
 
   useEffect(() => {
-    const stored = localStorage.getItem("aim_sessions");
+    // One-time migration: move legacy "aim_sessions" key to "aicm_sessions"
+    const legacy = localStorage.getItem("aim_sessions");
+    if (legacy) {
+      try { localStorage.setItem("aicm_sessions", legacy); } catch { /* ignore */ }
+      localStorage.removeItem("aim_sessions");
+    }
+    const stored = localStorage.getItem("aicm_sessions");
     if (stored) {
       try {
         setSavedSessions(JSON.parse(stored));
@@ -497,7 +503,7 @@ export default function PracticeSessionPage() {
         const nextSessions = prependSavedSession(currentSessions, newSession);
 
         try {
-          localStorage.setItem("aim_sessions", JSON.stringify(nextSessions));
+          localStorage.setItem("aicm_sessions", JSON.stringify(nextSessions));
         } catch {
           // Keep UI state even if localStorage is unavailable.
         }
