@@ -516,6 +516,30 @@ export default function PracticeSessionPage() {
 
   const saveSession = useCallback(
     async (sessionSummary: InterviewSummary, sessionResults: ResultItem[]) => {
+      // ── Assessment centre interview ──────────────────────────────────────
+      // Skip ALL standalone practice-session saves (local + DB). The results
+      // belong exclusively to the AC session — saving them here too is what
+      // caused the double-count on the My Progress page.
+      if (assessmentCentreId) {
+        let nextStage = "stage-3";
+        try {
+          const acRes = await fetch(`/api/assessment-centre/${assessmentCentreId}/submit-interview`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ results: sessionResults, summary: sessionSummary }),
+          });
+          if (acRes.ok) {
+            const acData = await acRes.json() as { nextStage?: string };
+            if (acData.nextStage === "report") nextStage = "report";
+          }
+        } catch {
+          // non-fatal — navigate anyway
+        }
+        router.push(`/assessment-centre/${assessmentCentreId}/${nextStage}`);
+        return;
+      }
+
+      // ── Regular standalone practice session ─────────────────────────────
       addLocalSavedSession(sessionSummary);
 
       if (!isSignedIn) return;
@@ -550,26 +574,6 @@ export default function PracticeSessionPage() {
             "Practice session was not saved to database:",
             data?.error || response.statusText
           );
-        }
-
-        // If this session is part of an assessment centre, link it
-        if (assessmentCentreId) {
-          let nextStage = "stage-3";
-          try {
-            const acRes = await fetch(`/api/assessment-centre/${assessmentCentreId}/submit-interview`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ results: sessionResults, summary: sessionSummary }),
-            });
-            if (acRes.ok) {
-              const acData = await acRes.json() as { nextStage?: string };
-              if (acData.nextStage === "report") nextStage = "report";
-            }
-          } catch {
-            // non-fatal — session is already saved
-          }
-          router.push(`/assessment-centre/${assessmentCentreId}/${nextStage}`);
-          return;
         }
       } catch (error) {
         console.warn("Practice session database save failed:", error);
