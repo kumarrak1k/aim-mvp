@@ -23,7 +23,10 @@ const defaultSpeakerPreference: SpeakerPreference = {
   pace: "natural",
 };
 
-const AUDIO_FETCH_TIMEOUT_MS = 12000;
+// 25 s — the TTS API now streams so the first bytes arrive within seconds,
+// but we give a generous window for slow connections.  The old 12 s value
+// was tight enough to race with longer questions on a loaded OpenAI endpoint.
+const AUDIO_FETCH_TIMEOUT_MS = 25000;
 const PLAYBACK_START_TIMEOUT_MS = 5000;
 
 const cleanQuestionText = (text: string) => text.replace(/\s+/g, " ").trim();

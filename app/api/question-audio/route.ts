@@ -4,6 +4,9 @@ import { checkRateLimit } from "@/app/lib/rateLimit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+// Increase the Vercel function timeout to 30 s so longer TTS responses
+// can complete. The real fix is streaming (below), but this is a safety net.
+export const maxDuration = 30;
 
 const OPENAI_TTS_ENDPOINT = "https://api.openai.com/v1/audio/speech";
 
@@ -62,7 +65,10 @@ function cleanSpeakerPreference(value: unknown): SpeakerPreference {
 }
 
 function cleanQuestionText(text: string) {
-  return text.replace(/\s+/g, " ").trim().slice(0, 650);
+  // OpenAI TTS supports up to 4096 characters; we allow up to 4000 to give
+  // a small safety margin. The previous 650-char cap was far too aggressive
+  // for multi-sentence interview questions.
+  return text.replace(/\s+/g, " ").trim().slice(0, 4000);
 }
 
 async function getOpenAiErrorMessage(response: Response) {
@@ -92,7 +98,20 @@ function getMissingTextErrorResponse() {
   );
 }
 
-async function generateSpeechBuffer({
+/**
+ * Stream OpenAI's TTS response body directly to the client.
+ *
+ * Previously we used `response.arrayBuffer()` which buffers the entire MP3
+ * in the serverless function before sending anything. On a loaded OpenAI
+ * endpoint a long question can take 10–15 s to fully generate, hitting
+ * Vercel's default 10 s timeout and returning a truncated blob. The client
+ * then caches that broken blob and every replay of that question is cut off
+ * at the same word.
+ *
+ * With streaming the Vercel function forwards each chunk as it arrives, so
+ * the function never sits idle long enough to be killed.
+ */
+async function fetchSpeechStream({
   apiKey,
   text,
   speakerPreference,
@@ -121,16 +140,18 @@ async function generateSpeechBuffer({
     throw new Error(errorMessage);
   }
 
-  return response.arrayBuffer();
+  return response;
 }
 
-function audioResponse(audioBuffer: ArrayBuffer) {
-  return new NextResponse(audioBuffer, {
+function streamingAudioResponse(ttsResponse: Response) {
+  return new NextResponse(ttsResponse.body, {
     status: 200,
     headers: {
       "Content-Type": "audio/mpeg",
       "Cache-Control": "no-store, no-cache, must-revalidate",
-      "X-Audio-Mode": "tts-1-buffered",
+      "X-Audio-Mode": "tts-1-streamed",
+      // Tell the client the transfer is chunked so it can buffer progressively
+      "Transfer-Encoding": "chunked",
     },
   });
 }
@@ -172,13 +193,13 @@ export async function GET(request: NextRequest) {
       return getMissingTextErrorResponse();
     }
 
-    const audioBuffer = await generateSpeechBuffer({
+    const ttsResponse = await fetchSpeechStream({
       apiKey,
       text,
       speakerPreference,
     });
 
-    return audioResponse(audioBuffer);
+    return streamingAudioResponse(ttsResponse);
   } catch (error) {
     console.error("QUESTION AUDIO GET ERROR:", error);
 
@@ -228,13 +249,13 @@ export async function POST(request: NextRequest) {
       return getMissingTextErrorResponse();
     }
 
-    const audioBuffer = await generateSpeechBuffer({
+    const ttsResponse = await fetchSpeechStream({
       apiKey,
       text,
       speakerPreference,
     });
 
-    return audioResponse(audioBuffer);
+    return streamingAudioResponse(ttsResponse);
   } catch (error) {
     console.error("QUESTION AUDIO POST ERROR:", error);
 
