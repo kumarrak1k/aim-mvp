@@ -27,7 +27,7 @@ export async function POST(
     return NextResponse.json({ error: "Authentication required." }, { status: 401 });
   }
 
-  const rl = checkRateLimit(userId, "assessment-centre-interview", 20, 3600);
+  const rl = await checkRateLimit(userId, "assessment-centre-interview", 20, 3600);
   if (!rl.allowed) {
     return NextResponse.json(
       { error: `Rate limit reached. Try again in ${rl.retryAfterSeconds}s.` },

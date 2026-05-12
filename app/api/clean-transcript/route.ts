@@ -63,7 +63,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const rateLimitResult = checkRateLimit(userId, "clean-transcript", 30, 60);
+    const rateLimitResult = await checkRateLimit(userId, "clean-transcript", 30, 60);
     if (!rateLimitResult.allowed) {
       return Response.json(
         { error: `Too many requests. Please wait ${rateLimitResult.retryAfterSeconds} seconds.` },

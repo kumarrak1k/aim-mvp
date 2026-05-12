@@ -166,7 +166,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const rateLimitResult = checkRateLimit(userId, "question-audio", 60, 60);
+    const rateLimitResult = await checkRateLimit(userId, "question-audio", 60, 60);
     if (!rateLimitResult.allowed) {
       return NextResponse.json(
         { error: `Too many requests. Please wait ${rateLimitResult.retryAfterSeconds} seconds.` },
@@ -225,7 +225,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const rateLimitResult = checkRateLimit(userId, "question-audio", 60, 60);
+    const rateLimitResult = await checkRateLimit(userId, "question-audio", 60, 60);
     if (!rateLimitResult.allowed) {
       return NextResponse.json(
         { error: `Too many requests. Please wait ${rateLimitResult.retryAfterSeconds} seconds.` },

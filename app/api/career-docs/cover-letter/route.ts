@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const rl = checkRateLimit(userId, "cover-letter", 15, 3600);
+  const rl = await checkRateLimit(userId, "cover-letter", 15, 3600);
   if (!rl.allowed) {
     return NextResponse.json({ error: `Rate limit reached. Try again in ${rl.retryAfterSeconds}s.` }, { status: 429 });
   }

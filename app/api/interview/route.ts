@@ -1,4 +1,4 @@
-import { auth, clerkClient } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { checkRateLimit } from "@/app/lib/rateLimit";
 import { callOpenAIChat, OpenAIError } from "@/app/lib/openai-client";
@@ -6,50 +6,7 @@ import {
   getQuestionTypeAtPosition,
   type QuestionMix,
 } from "@/app/practice/session/utils";
-
-type CandidateProfile = {
-  cvText: string;
-  roleSpec: string;
-  interviewGoals: string;
-  cvFileName: string;
-  roleSpecFileName: string;
-  updatedAt: string;
-};
-
-const EMPTY_PROFILE: CandidateProfile = {
-  cvText: "",
-  roleSpec: "",
-  interviewGoals: "",
-  cvFileName: "",
-  roleSpecFileName: "",
-  updatedAt: "",
-};
-
-function cleanText(value: unknown) {
-  if (typeof value !== "string") return "";
-  return value.replace(/\r\n/g, "\n").trim();
-}
-
-function extractCandidateProfile(metadata: unknown): CandidateProfile {
-  const data = metadata as {
-    candidateProfile?: Partial<CandidateProfile>;
-  };
-
-  const candidateProfile = data?.candidateProfile;
-
-  if (!candidateProfile || typeof candidateProfile !== "object") {
-    return EMPTY_PROFILE;
-  }
-
-  return {
-    cvText: cleanText(candidateProfile.cvText),
-    roleSpec: cleanText(candidateProfile.roleSpec),
-    interviewGoals: cleanText(candidateProfile.interviewGoals),
-    cvFileName: cleanText(candidateProfile.cvFileName),
-    roleSpecFileName: cleanText(candidateProfile.roleSpecFileName),
-    updatedAt: cleanText(candidateProfile.updatedAt),
-  };
-}
+import { getCandidateProfile, EMPTY_PROFILE, type CandidateProfile } from "@/app/lib/candidateProfile";
 
 type TemplateContext = {
   customInstructions?: string;
@@ -159,15 +116,8 @@ function normaliseQuestionToUkEnglish(question: string) {
 async function getSignedInCandidateProfile() {
   try {
     const { userId } = await auth();
-
-    if (!userId) {
-      return EMPTY_PROFILE;
-    }
-
-    const client = await clerkClient();
-    const user = await client.users.getUser(userId);
-
-    return extractCandidateProfile(user.privateMetadata);
+    if (!userId) return EMPTY_PROFILE;
+    return await getCandidateProfile(userId);
   } catch (error) {
     console.error("INTERVIEW PROFILE LOAD WARNING:", error);
     return EMPTY_PROFILE;
@@ -184,7 +134,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const rateLimitResult = checkRateLimit(userId, "interview", 30, 60);
+    const rateLimitResult = await checkRateLimit(userId, "interview", 30, 60);
     if (!rateLimitResult.allowed) {
       return NextResponse.json(
         { error: `Too many requests. Please wait ${rateLimitResult.retryAfterSeconds} seconds.` },

@@ -247,3 +247,23 @@ model AssessmentCentreSession {
   @@index([clerkUserId])
   @@index([status])
 }
+
+model UserProfile {
+  id                    String   @id @default(cuid())
+  clerkUserId           String   @unique
+  cvText                String   @default("") @db.Text
+  roleSpec              String   @default("") @db.Text
+  interviewGoals        String   @default("")
+  cvFileName            String   @default("")
+  roleSpecFileName      String   @default("")
+  preferredPracticeMode String   @default("typed")
+  speakerPreference     Json     @default("{\"voice\":\"female\",\"accent\":\"british\",\"pace\":\"natural\"}")
+  defaultExperienceLevel String  @default("Graduate / entry level")
+  defaultInterviewType  String   @default("Competency / behavioural")
+  defaultDifficulty     String   @default("Standard")
+  defaultFocusArea      String   @default("Balanced")
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@index([clerkUserId])
+}

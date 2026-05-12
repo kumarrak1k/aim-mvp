@@ -1,53 +1,126 @@
-// Simple in-memory per-user rate limiter.
-// Works within a single serverless instance; resets on cold start.
-// For production scale, replace with Redis/Upstash Ratelimit.
+/**
+ * Rate limiting backed by Upstash Redis when env vars are present,
+ * falling back to a per-instance in-memory store for local dev.
+ *
+ * Production env vars required (add to Vercel + .env.local):
+ *   UPSTASH_REDIS_REST_URL   — Upstash REST API endpoint
+ *   UPSTASH_REDIS_REST_TOKEN — Upstash REST API token
+ *
+ * Without those vars the in-memory fallback is used. It works for a single
+ * serverless instance but does NOT share state across instances — only for dev.
+ */
 
-type RateLimitEntry = {
-  count: number;
-  resetAt: number;
-};
+import { Ratelimit } from "@upstash/ratelimit";
+import { Redis } from "@upstash/redis";
 
-const store = new Map<string, RateLimitEntry>();
+// ---------------------------------------------------------------------------
+// In-memory fallback (dev / no Upstash configured)
+// ---------------------------------------------------------------------------
 
-const CLEANUP_INTERVAL_MS = 5 * 60 * 1000;
+type RateLimitEntry = { count: number; resetAt: number };
+const memStore = new Map<string, RateLimitEntry>();
 
-let lastCleanup = Date.now();
-
-function cleanup() {
+function cleanupMem() {
   const now = Date.now();
-  if (now - lastCleanup < CLEANUP_INTERVAL_MS) return;
-  lastCleanup = now;
-  for (const [key, entry] of store.entries()) {
-    if (now > entry.resetAt) store.delete(key);
+  for (const [key, entry] of memStore.entries()) {
+    if (now > entry.resetAt) memStore.delete(key);
   }
 }
+
+function inMemoryLimit(
+  key: string,
+  maxRequests: number,
+  windowSeconds: number
+): RateLimitResult {
+  cleanupMem();
+  const now = Date.now();
+  const existing = memStore.get(key);
+
+  if (!existing || now > existing.resetAt) {
+    memStore.set(key, { count: 1, resetAt: now + windowSeconds * 1000 });
+    return { allowed: true };
+  }
+
+  if (existing.count >= maxRequests) {
+    return {
+      allowed: false,
+      retryAfterSeconds: Math.ceil((existing.resetAt - now) / 1000),
+    };
+  }
+
+  existing.count += 1;
+  return { allowed: true };
+}
+
+// ---------------------------------------------------------------------------
+// Upstash Redis limiter (production)
+// ---------------------------------------------------------------------------
+
+let redisClient: Redis | null = null;
+const limiterCache = new Map<string, Ratelimit>();
+
+function getRedisLimiter(
+  maxRequests: number,
+  windowSeconds: number
+): Ratelimit | null {
+  const url = process.env.UPSTASH_REDIS_REST_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+  if (!url || !token) return null;
+
+  const cacheKey = `${maxRequests}:${windowSeconds}`;
+  if (limiterCache.has(cacheKey)) return limiterCache.get(cacheKey)!;
+
+  if (!redisClient) {
+    redisClient = new Redis({ url, token });
+  }
+
+  const limiter = new Ratelimit({
+    redis: redisClient,
+    limiter: Ratelimit.slidingWindow(maxRequests, `${windowSeconds} s`),
+    analytics: false,
+    prefix: "aim:rl",
+  });
+
+  limiterCache.set(cacheKey, limiter);
+  return limiter;
+}
+
+// ---------------------------------------------------------------------------
+// Public API
+// ---------------------------------------------------------------------------
 
 export type RateLimitResult =
   | { allowed: true }
   | { allowed: false; retryAfterSeconds: number };
 
-export function checkRateLimit(
+/**
+ * Check rate limit for a user+endpoint combination.
+ * Uses Upstash Redis in production (shared across all Vercel instances).
+ * Falls back to in-memory for local development.
+ */
+export async function checkRateLimit(
   userId: string,
   endpoint: string,
   maxRequests: number,
   windowSeconds: number
-): RateLimitResult {
-  cleanup();
-
+): Promise<RateLimitResult> {
   const key = `${userId}:${endpoint}`;
-  const now = Date.now();
-  const existing = store.get(key);
+  const limiter = getRedisLimiter(maxRequests, windowSeconds);
 
-  if (!existing || now > existing.resetAt) {
-    store.set(key, { count: 1, resetAt: now + windowSeconds * 1000 });
+  if (!limiter) {
+    return inMemoryLimit(key, maxRequests, windowSeconds);
+  }
+
+  try {
+    const { success, reset } = await limiter.limit(key);
+    if (success) return { allowed: true };
+    return {
+      allowed: false,
+      retryAfterSeconds: Math.max(1, Math.ceil((reset - Date.now()) / 1000)),
+    };
+  } catch (err) {
+    // If Redis is unreachable, fail open — don't block all users.
+    console.error("RATE LIMIT REDIS ERROR:", err);
     return { allowed: true };
   }
-
-  if (existing.count >= maxRequests) {
-    const retryAfterSeconds = Math.ceil((existing.resetAt - now) / 1000);
-    return { allowed: false, retryAfterSeconds };
-  }
-
-  existing.count += 1;
-  return { allowed: true };
 }

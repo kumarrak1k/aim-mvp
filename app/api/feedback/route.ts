@@ -214,7 +214,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const rateLimitResult = checkRateLimit(userId, "feedback", 30, 60);
+    const rateLimitResult = await checkRateLimit(userId, "feedback", 30, 60);
     if (!rateLimitResult.allowed) {
       return NextResponse.json(
         { error: `Too many requests. Please wait ${rateLimitResult.retryAfterSeconds} seconds.` },

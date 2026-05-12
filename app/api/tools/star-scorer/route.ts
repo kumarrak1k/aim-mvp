@@ -23,7 +23,7 @@ type ScorerResult = {
 export async function POST(req: NextRequest) {
   const ip =
     req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
-  const limit = checkRateLimit(ip, "star-scorer", 5, 3600);
+  const limit = await checkRateLimit(ip, "star-scorer", 5, 3600);
   if (!limit.allowed) {
     return NextResponse.json(
       {

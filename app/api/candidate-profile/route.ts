@@ -1,296 +1,34 @@
-import { auth, clerkClient } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
+import {
+  getCandidateProfile,
+  upsertCandidateProfile,
+  deleteCandidateProfile,
+  EMPTY_PROFILE,
+  type CandidateProfile,
+} from "@/app/lib/candidateProfile";
 
-type PracticeMode = "typed" | "voice" | "voice-camera";
-type SpeakerVoice = "female" | "male" | "neutral";
-type SpeakerAccent = "british" | "american" | "neutral";
-type SpeakerPace = "slow" | "natural" | "energetic";
-
-type SpeakerPreference = {
-  voice: SpeakerVoice;
-  accent: SpeakerAccent;
-  pace: SpeakerPace;
-};
-
-type CandidateProfile = {
-  cvText: string;
-  roleSpec: string;
-  interviewGoals: string;
-  cvFileName: string;
-  roleSpecFileName: string;
-  preferredPracticeMode: PracticeMode;
-  speakerPreference: SpeakerPreference;
-  defaultExperienceLevel: string;
-  defaultInterviewType: string;
-  defaultDifficulty: string;
-  defaultFocusArea: string;
-  updatedAt: string;
-};
-
-const DEFAULT_SPEAKER_PREFERENCE: SpeakerPreference = {
-  voice: "female",
-  accent: "british",
-  pace: "natural",
-};
-
-const DEFAULT_EXPERIENCE_LEVEL = "Graduate / entry level";
-const DEFAULT_INTERVIEW_TYPE = "Competency / behavioural";
-const DEFAULT_DIFFICULTY = "Standard";
-const DEFAULT_FOCUS_AREA = "Balanced";
-
-const EMPTY_PROFILE: CandidateProfile = {
-  cvText: "",
-  roleSpec: "",
-  interviewGoals: "",
-  cvFileName: "",
-  roleSpecFileName: "",
-  preferredPracticeMode: "typed",
-  speakerPreference: DEFAULT_SPEAKER_PREFERENCE,
-  defaultExperienceLevel: DEFAULT_EXPERIENCE_LEVEL,
-  defaultInterviewType: DEFAULT_INTERVIEW_TYPE,
-  defaultDifficulty: DEFAULT_DIFFICULTY,
-  defaultFocusArea: DEFAULT_FOCUS_AREA,
-  updatedAt: "",
-};
-
-const PRACTICE_MODES: PracticeMode[] = ["typed", "voice", "voice-camera"];
-const SPEAKER_VOICES: SpeakerVoice[] = ["female", "male", "neutral"];
-const SPEAKER_ACCENTS: SpeakerAccent[] = ["british", "american", "neutral"];
-const SPEAKER_PACES: SpeakerPace[] = ["slow", "natural", "energetic"];
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 const MAX_CV_CHARS = 3500;
 const MAX_ROLE_SPEC_CHARS = 2500;
 const MAX_GOALS_CHARS = 900;
 const MAX_TOTAL_CHARS = 7000;
-const MAX_FILENAME_CHARS = 180;
-const MAX_SETUP_FIELD_CHARS = 90;
 
-function cleanText(value: unknown) {
-  if (typeof value !== "string") return "";
-  return value.replace(/\r\n/g, "\n").trim();
-}
-
-function cleanFileName(value: unknown) {
-  if (typeof value !== "string") return "";
-  return value
-    .replace(/[<>:"/\\|?*\u0000-\u001F]/g, "")
-    .trim()
-    .slice(0, MAX_FILENAME_CHARS);
-}
-
-function cleanSetupField(value: unknown, fallback: string) {
-  if (typeof value !== "string") return fallback;
-
-  const cleaned = value
-    .replace(/\s+/g, " ")
-    .trim()
-    .slice(0, MAX_SETUP_FIELD_CHARS);
-
-  return cleaned || fallback;
-}
-
-function cleanPracticeMode(
-  value: unknown,
-  fallback: PracticeMode = "typed"
-): PracticeMode {
-  if (typeof value !== "string") return fallback;
-  return PRACTICE_MODES.includes(value as PracticeMode)
-    ? (value as PracticeMode)
-    : fallback;
-}
-
-function cleanSpeakerPreference(
-  value: unknown,
-  fallback: SpeakerPreference = DEFAULT_SPEAKER_PREFERENCE
-): SpeakerPreference {
-  const input = value as Partial<SpeakerPreference> | undefined;
-
-  return {
-    voice:
-      typeof input?.voice === "string" &&
-      SPEAKER_VOICES.includes(input.voice as SpeakerVoice)
-        ? (input.voice as SpeakerVoice)
-        : fallback.voice,
-    accent:
-      typeof input?.accent === "string" &&
-      SPEAKER_ACCENTS.includes(input.accent as SpeakerAccent)
-        ? (input.accent as SpeakerAccent)
-        : fallback.accent,
-    pace:
-      typeof input?.pace === "string" &&
-      SPEAKER_PACES.includes(input.pace as SpeakerPace)
-        ? (input.pace as SpeakerPace)
-        : fallback.pace,
-  };
-}
-
-function trimToLimit(value: string, limit: number) {
-  if (value.length <= limit) {
-    return {
-      value,
-      wasTrimmed: false,
-    };
+function validateTotalLength(profile: Partial<CandidateProfile>): string {
+  const total =
+    (profile.cvText?.length ?? 0) +
+    (profile.roleSpec?.length ?? 0) +
+    (profile.interviewGoals?.length ?? 0);
+  if (total > MAX_TOTAL_CHARS) {
+    return `Profile is too long overall. Please keep the total under ${MAX_TOTAL_CHARS.toLocaleString()} characters.`;
   }
-
-  return {
-    value: value.slice(0, limit).trim(),
-    wasTrimmed: true,
-  };
-}
-
-function extractCandidateProfile(metadata: unknown): CandidateProfile {
-  const data = metadata as {
-    candidateProfile?: Partial<CandidateProfile>;
-  };
-
-  const candidateProfile = data?.candidateProfile;
-
-  if (!candidateProfile || typeof candidateProfile !== "object") {
-    return EMPTY_PROFILE;
-  }
-
-  return {
-    cvText: cleanText(candidateProfile.cvText).slice(0, MAX_CV_CHARS).trim(),
-    roleSpec: cleanText(candidateProfile.roleSpec)
-      .slice(0, MAX_ROLE_SPEC_CHARS)
-      .trim(),
-    interviewGoals: cleanText(candidateProfile.interviewGoals)
-      .slice(0, MAX_GOALS_CHARS)
-      .trim(),
-    cvFileName: cleanFileName(candidateProfile.cvFileName),
-    roleSpecFileName: cleanFileName(candidateProfile.roleSpecFileName),
-    preferredPracticeMode: cleanPracticeMode(
-      candidateProfile.preferredPracticeMode,
-      "typed"
-    ),
-    speakerPreference: cleanSpeakerPreference(
-      candidateProfile.speakerPreference,
-      DEFAULT_SPEAKER_PREFERENCE
-    ),
-    defaultExperienceLevel: cleanSetupField(
-      candidateProfile.defaultExperienceLevel,
-      DEFAULT_EXPERIENCE_LEVEL
-    ),
-    defaultInterviewType: cleanSetupField(
-      candidateProfile.defaultInterviewType,
-      DEFAULT_INTERVIEW_TYPE
-    ),
-    defaultDifficulty: cleanSetupField(
-      candidateProfile.defaultDifficulty,
-      DEFAULT_DIFFICULTY
-    ),
-    defaultFocusArea: cleanSetupField(
-      candidateProfile.defaultFocusArea,
-      DEFAULT_FOCUS_AREA
-    ),
-    updatedAt:
-      typeof candidateProfile.updatedAt === "string"
-        ? candidateProfile.updatedAt
-        : "",
-  };
-}
-
-function normaliseProfile(body: unknown, currentProfile: CandidateProfile) {
-  const input = body as Partial<CandidateProfile>;
-
-  const rawCvText =
-    typeof input.cvText === "string"
-      ? cleanText(input.cvText)
-      : currentProfile.cvText;
-  const rawRoleSpec =
-    typeof input.roleSpec === "string"
-      ? cleanText(input.roleSpec)
-      : currentProfile.roleSpec;
-  const rawInterviewGoals =
-    typeof input.interviewGoals === "string"
-      ? cleanText(input.interviewGoals)
-      : currentProfile.interviewGoals;
-
-  const cvText = trimToLimit(rawCvText, MAX_CV_CHARS);
-  const roleSpec = trimToLimit(rawRoleSpec, MAX_ROLE_SPEC_CHARS);
-  const interviewGoals = trimToLimit(rawInterviewGoals, MAX_GOALS_CHARS);
-
-  const profile: CandidateProfile = {
-    cvText: cvText.value,
-    roleSpec: roleSpec.value,
-    interviewGoals: interviewGoals.value,
-    cvFileName:
-      typeof input.cvFileName === "string"
-        ? cleanFileName(input.cvFileName)
-        : currentProfile.cvFileName,
-    roleSpecFileName:
-      typeof input.roleSpecFileName === "string"
-        ? cleanFileName(input.roleSpecFileName)
-        : currentProfile.roleSpecFileName,
-    preferredPracticeMode: cleanPracticeMode(
-      input.preferredPracticeMode,
-      currentProfile.preferredPracticeMode || "typed"
-    ),
-    speakerPreference: cleanSpeakerPreference(
-      input.speakerPreference,
-      currentProfile.speakerPreference || DEFAULT_SPEAKER_PREFERENCE
-    ),
-    defaultExperienceLevel: cleanSetupField(
-      input.defaultExperienceLevel,
-      currentProfile.defaultExperienceLevel || DEFAULT_EXPERIENCE_LEVEL
-    ),
-    defaultInterviewType: cleanSetupField(
-      input.defaultInterviewType,
-      currentProfile.defaultInterviewType || DEFAULT_INTERVIEW_TYPE
-    ),
-    defaultDifficulty: cleanSetupField(
-      input.defaultDifficulty,
-      currentProfile.defaultDifficulty || DEFAULT_DIFFICULTY
-    ),
-    defaultFocusArea: cleanSetupField(
-      input.defaultFocusArea,
-      currentProfile.defaultFocusArea || DEFAULT_FOCUS_AREA
-    ),
-    updatedAt: new Date().toISOString(),
-  };
-
-  const trimWarnings: string[] = [];
-
-  if (cvText.wasTrimmed) {
-    trimWarnings.push(
-      `CV / career background was automatically trimmed to ${MAX_CV_CHARS.toLocaleString()} characters.`
-    );
-  }
-
-  if (roleSpec.wasTrimmed) {
-    trimWarnings.push(
-      `Role spec was automatically trimmed to ${MAX_ROLE_SPEC_CHARS.toLocaleString()} characters.`
-    );
-  }
-
-  if (interviewGoals.wasTrimmed) {
-    trimWarnings.push(
-      `Interview goals were automatically trimmed to ${MAX_GOALS_CHARS.toLocaleString()} characters.`
-    );
-  }
-
-  return {
-    profile,
-    trimWarnings,
-  };
-}
-
-function validateProfile(profile: CandidateProfile) {
-  const totalLength =
-    profile.cvText.length +
-    profile.roleSpec.length +
-    profile.interviewGoals.length;
-
-  if (totalLength > MAX_TOTAL_CHARS) {
-    return `Profile is too long overall. Please keep the total under ${MAX_TOTAL_CHARS.toLocaleString()} characters for this first version.`;
-  }
-
   return "";
 }
 
 export async function GET() {
   try {
     const { userId } = await auth();
-
     if (!userId) {
       return Response.json(
         { error: "You must be signed in to view your candidate profile." },
@@ -298,11 +36,10 @@ export async function GET() {
       );
     }
 
-    const client = await clerkClient();
-    const user = await client.users.getUser(userId);
+    const profile = await getCandidateProfile(userId);
 
     return Response.json({
-      profile: extractCandidateProfile(user.privateMetadata),
+      profile,
       limits: {
         cvText: MAX_CV_CHARS,
         roleSpec: MAX_ROLE_SPEC_CHARS,
@@ -312,18 +49,13 @@ export async function GET() {
     });
   } catch (error) {
     console.error("CANDIDATE PROFILE GET ERROR:", error);
-
-    return Response.json(
-      { error: "Failed to load candidate profile." },
-      { status: 500 }
-    );
+    return Response.json({ error: "Failed to load candidate profile." }, { status: 500 });
   }
 }
 
 export async function POST(req: Request) {
   try {
     const { userId } = await auth();
-
     if (!userId) {
       return Response.json(
         { error: "You must be signed in to save your candidate profile." },
@@ -331,30 +63,31 @@ export async function POST(req: Request) {
       );
     }
 
-    const client = await clerkClient();
-    const user = await client.users.getUser(userId);
-    const currentProfile = extractCandidateProfile(user.privateMetadata);
+    const body = await req.json() as Partial<CandidateProfile>;
 
-    const body = await req.json();
-    const { profile, trimWarnings } = normaliseProfile(body, currentProfile);
-    const validationError = validateProfile(profile);
-
+    const validationError = validateTotalLength(body);
     if (validationError) {
       return Response.json({ error: validationError }, { status: 400 });
     }
 
-    await client.users.updateUserMetadata(userId, {
-      privateMetadata: {
-        candidateProfile: profile,
-      },
-    });
+    const trimWarnings: string[] = [];
+    if (typeof body.cvText === "string" && body.cvText.length > MAX_CV_CHARS) {
+      trimWarnings.push(`CV was automatically trimmed to ${MAX_CV_CHARS.toLocaleString()} characters.`);
+    }
+    if (typeof body.roleSpec === "string" && body.roleSpec.length > MAX_ROLE_SPEC_CHARS) {
+      trimWarnings.push(`Role spec was automatically trimmed to ${MAX_ROLE_SPEC_CHARS.toLocaleString()} characters.`);
+    }
+    if (typeof body.interviewGoals === "string" && body.interviewGoals.length > MAX_GOALS_CHARS) {
+      trimWarnings.push(`Interview goals were automatically trimmed to ${MAX_GOALS_CHARS.toLocaleString()} characters.`);
+    }
+
+    const profile = await upsertCandidateProfile(userId, body);
 
     return Response.json({
       profile,
-      message:
-        trimWarnings.length > 0
-          ? `Candidate profile saved. ${trimWarnings.join(" ")}`
-          : "Candidate profile saved.",
+      message: trimWarnings.length > 0
+        ? `Candidate profile saved. ${trimWarnings.join(" ")}`
+        : "Candidate profile saved.",
       trimWarnings,
       limits: {
         cvText: MAX_CV_CHARS,
@@ -365,18 +98,13 @@ export async function POST(req: Request) {
     });
   } catch (error) {
     console.error("CANDIDATE PROFILE POST ERROR:", error);
-
-    return Response.json(
-      { error: "Failed to save candidate profile." },
-      { status: 500 }
-    );
+    return Response.json({ error: "Failed to save candidate profile." }, { status: 500 });
   }
 }
 
 export async function DELETE() {
   try {
     const { userId } = await auth();
-
     if (!userId) {
       return Response.json(
         { error: "You must be signed in to clear your candidate profile." },
@@ -384,31 +112,15 @@ export async function DELETE() {
       );
     }
 
-    const client = await clerkClient();
-
-    const clearedProfile: CandidateProfile = {
-      ...EMPTY_PROFILE,
-      updatedAt: new Date().toISOString(),
-    };
-
-    await client.users.updateUserMetadata(userId, {
-      privateMetadata: {
-        candidateProfile: clearedProfile,
-      },
-    });
+    await deleteCandidateProfile(userId);
 
     return Response.json({
       success: true,
-      profile: clearedProfile,
-      message:
-        "Candidate profile context cleared. Saved defaults were reset to the beta defaults.",
+      profile: EMPTY_PROFILE,
+      message: "Candidate profile cleared.",
     });
   } catch (error) {
     console.error("CANDIDATE PROFILE DELETE ERROR:", error);
-
-    return Response.json(
-      { error: "Failed to clear candidate profile." },
-      { status: 500 }
-    );
+    return Response.json({ error: "Failed to clear candidate profile." }, { status: 500 });
   }
 }

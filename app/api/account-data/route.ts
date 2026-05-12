@@ -1,7 +1,8 @@
-import { auth, clerkClient } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { prisma } from "../../lib/prisma";
 import { getAssessmentLinkedSessionIds } from "../../lib/sessionScope";
+import { getCandidateProfile } from "@/app/lib/candidateProfile";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -17,11 +18,7 @@ export async function GET() {
       );
     }
 
-    const client = await clerkClient();
-    const user = await client.users.getUser(userId);
-    const profile =
-      (user.privateMetadata?.candidateProfile as Record<string, unknown>) ||
-      null;
+    const profile = await getCandidateProfile(userId);
 
     // Personal sessions only. Sessions completed as part of a company
     // assessment are evidence the hiring team commissioned — they are not
