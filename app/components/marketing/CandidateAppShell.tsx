@@ -76,7 +76,7 @@ export function CandidateAppShell({
       </div>
 
       {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-white/[0.07] backdrop-blur-2xl">
+      <header className="sticky top-0 z-50 backdrop-blur-2xl">
         <div className="relative mx-auto flex w-full max-w-7xl items-center px-4 py-3 sm:px-6 lg:px-8 lg:py-3.5">
           {/* Logo + badge */}
           <Link href="/practice" className="relative z-10 flex shrink-0 items-center gap-3">
@@ -143,7 +143,7 @@ export function CandidateAppShell({
         </div>
 
         {/* Tablet/mobile compact nav row */}
-        <div className="border-t border-white/[0.05] px-4 py-2 sm:px-6 lg:hidden">
+        <div className="px-4 py-2 sm:px-6 lg:hidden">
           <nav className="mx-auto flex max-w-7xl gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {navItems.map((item) => {
               const active =
@@ -176,7 +176,7 @@ export function CandidateAppShell({
         </div>
 
         {/* Desktop resource links — secondary strip */}
-        <div className="hidden border-t border-white/[0.04] px-4 py-1.5 lg:block">
+        <div className="hidden px-4 py-1.5 lg:block">
           <nav className="mx-auto flex max-w-7xl items-center justify-center gap-6">
             {resourceLinks.map((item) => (
               <Link
