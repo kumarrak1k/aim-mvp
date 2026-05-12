@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { CandidateAppShell } from "@/app/components/marketing/CandidateAppShell";
+import { useSavedCV } from "@/app/career-docs/hooks/useSavedCV";
 
 type CoverLetterResult = {
   letter: string;
@@ -32,6 +33,30 @@ export default function CoverLetterPage() {
   const [upgrade, setUpgrade] = useState(false);
   const [result, setResult] = useState<CoverLetterResult | null>(null);
   const [copied, setCopied] = useState(false);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const savedCV = useSavedCV();
+
+  // Pre-fill experience field when saved CV loads
+  useEffect(() => {
+    if (!savedCV.loading && savedCV.cvText && !experience) {
+      setExperience(savedCV.cvText);
+    }
+  }, [savedCV.loading, savedCV.cvText]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Keep in sync after upload / remove
+  useEffect(() => {
+    if (!savedCV.loading) {
+      setExperience(savedCV.cvText);
+    }
+  }, [savedCV.cvText, savedCV.loading]);
+
+  async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    await savedCV.uploadCV(file);
+    e.target.value = "";
+  }
 
   const canSubmit = companyName.trim() && jobTitle.trim() && jobDescription.trim().length >= 20 && experience.trim().length >= 20;
 
@@ -140,8 +165,58 @@ export default function CoverLetterPage() {
                   className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-600 outline-none focus:border-cyan-400/40 focus:ring-1 focus:ring-cyan-400/20 resize-y" required />
               </div>
 
+              {/* Experience field with CV integration */}
               <div>
                 <label className="mb-1.5 block text-xs font-black uppercase tracking-[0.18em] text-gray-400">Your key experience *</label>
+
+                {/* Saved CV banner */}
+                {!savedCV.loading && (
+                  <div className="mb-2 flex flex-wrap items-center gap-2 rounded-xl border border-cyan-400/20 bg-cyan-400/[0.05] px-3 py-2">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5 shrink-0 text-cyan-400">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" />
+                    </svg>
+                    <span className="flex-1 truncate text-[11px] font-semibold text-cyan-300">
+                      {savedCV.hasSavedCV
+                        ? savedCV.cvFileName
+                          ? `CV: ${savedCV.cvFileName}`
+                          : "Pre-filled from saved profile CV"
+                        : "No saved CV — upload one to use across Career Docs"}
+                    </span>
+                    <div className="flex shrink-0 items-center gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={savedCV.uploading}
+                        className="rounded-lg border border-cyan-400/30 bg-cyan-400/10 px-2.5 py-1 text-[10px] font-black text-cyan-300 transition hover:bg-cyan-400/20 disabled:opacity-50"
+                      >
+                        {savedCV.uploading ? "Uploading…" : savedCV.hasSavedCV ? "Replace" : "Upload CV"}
+                      </button>
+                      {savedCV.hasSavedCV && (
+                        <button
+                          type="button"
+                          onClick={() => void savedCV.removeCV()}
+                          disabled={savedCV.removing}
+                          className="rounded-lg border border-red-400/30 bg-red-400/[0.08] px-2.5 py-1 text-[10px] font-black text-red-400 transition hover:bg-red-400/20 disabled:opacity-50"
+                        >
+                          {savedCV.removing ? "Removing…" : "Remove"}
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".pdf,.doc,.docx,.txt"
+                  className="hidden"
+                  onChange={(e) => void handleFileChange(e)}
+                />
+
+                {savedCV.error && (
+                  <p className="mb-2 text-xs text-red-400">{savedCV.error}</p>
+                )}
+
                 <textarea value={experience} onChange={(e) => setExperience(e.target.value)}
                   placeholder="Summarise your relevant experience — roles, key achievements, skills. Include numbers and specifics where possible…"
                   rows={5}
