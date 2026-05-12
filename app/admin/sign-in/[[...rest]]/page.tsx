@@ -35,7 +35,7 @@ export default function AdminSignInPage() {
    */
   useEffect(() => {
     if (unauthorized) {
-      void signOut();
+      void signOut({ redirectUrl: "/admin/sign-in?error=unauthorized" });
     }
   }, [unauthorized, signOut]);
 
