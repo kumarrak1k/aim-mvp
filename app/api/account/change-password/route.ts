@@ -49,14 +49,17 @@ export async function POST(req: NextRequest) {
     // Set the new password via the backend API (no current-password check needed)
     await client.users.updateUser(userId, { password: newPassword });
 
-    // Clear the forcePasswordReset flag — keep all other metadata intact
-    const { forcePasswordReset: _removed, ...rest } = meta;
-    await client.users.updateUserMetadata(userId, { privateMetadata: rest });
+    // Clear the forcePasswordReset flag.
+    // Clerk's updateUserMetadata does a SHALLOW MERGE — omitting a key does NOT
+    // delete it. Passing null explicitly is the only way to remove the key.
+    await client.users.updateUserMetadata(userId, {
+      privateMetadata: { forcePasswordReset: null },
+    });
 
     // Determine where to send the user — read accountType from existing metadata
     // so the client can navigate directly without hitting /auth/redirect (which may
     // still see stale metadata due to Clerk propagation delay).
-    const accountType = (rest.accountType as string | undefined) ?? "candidate";
+    const accountType = (meta.accountType as string | undefined) ?? "candidate";
     const redirectTo = accountType === "corporate" ? "/company/dashboard" : "/practice";
 
     return NextResponse.json({ success: true, redirectTo });
