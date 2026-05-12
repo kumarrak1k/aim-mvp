@@ -272,6 +272,14 @@ export default function PracticeSessionPage() {
     awaitingAutoRecordQuestionRef.current = null;
     questionPlaybackStartedRef.current = false;
 
+    // Brief pause to let the TTS audio hardware fully settle before the
+    // microphone starts listening. Without this, in voice-only mode the Web
+    // Speech API can pick up the tail-end of the TTS output through the
+    // speakers; those samples match question words and get stripped by the
+    // question-leakage guard, leaving the transcript empty. The camera-start
+    // delay in voice+camera mode incidentally avoided this problem.
+    await wait(350);
+
     await startVoiceInputRef.current?.();
   }, [activeIsSpeakingQuestion, isListening, question]);
 
