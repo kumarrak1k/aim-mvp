@@ -207,6 +207,8 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
     lastName: "",
     accountType: "",
     membership: "free" as MembershipKey,
+    companyName: "",
+    periodEnd: "", // YYYY-MM-DD
   });
   const [editLoading, setEditLoading] = useState(false);
   const [editError, setEditError]     = useState("");
@@ -241,11 +243,14 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
 
   function openEdit(u: AdminUser) {
     setEditingUser(u);
+    const pe = getPeriodEnd(u);
     setEditForm({
       firstName: u.firstName ?? "",
       lastName: u.lastName ?? "",
       accountType: u.accountType,
       membership: toMembershipKey(u),
+      companyName: u.companyName ?? "",
+      periodEnd: pe ? pe.slice(0, 10) : "",
     });
     setEditError("");
   }
@@ -263,6 +268,7 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
     setEditError("");
     try {
       const billing = fromMembershipKey(editForm.accountType, editForm.membership);
+      const isCorp = editForm.accountType === "corporate";
       const res = await fetch(`/api/admin/users/${editingUser.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -274,12 +280,19 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
           stripePlanId: billing.stripePlanId,
           companyPlanStatus: billing.companyPlanStatus,
           companyPlanId: billing.companyPlanId,
+          // Company name (corporate only)
+          ...(isCorp && { companyName: editForm.companyName.trim() || null }),
+          // Period end — routed to the right field by account type
+          ...(isCorp
+            ? { companyPeriodEnd: editForm.periodEnd || null }
+            : { candidatePeriodEnd: editForm.periodEnd || null }),
         }),
       });
       const json = await res.json();
       if (!res.ok) { setEditError(json.error ?? "Failed to save."); return; }
 
       // Update local state immediately
+      const periodIso = editForm.periodEnd ? new Date(editForm.periodEnd).toISOString() : null;
       setUsers((prev) => prev.map((u) =>
         u.id === editingUser.id
           ? {
@@ -289,8 +302,11 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
               accountType: editForm.accountType,
               candidateStatus: billing.subscriptionStatus,
               candidatePlanId: billing.stripePlanId,
+              candidatePeriodEnd: editForm.accountType !== "corporate" ? periodIso : u.candidatePeriodEnd,
               companyPlanStatus: billing.companyPlanStatus,
               companyPlanId: billing.companyPlanId ?? u.companyPlanId,
+              companyName: editForm.accountType === "corporate" ? (editForm.companyName.trim() || u.companyName) : u.companyName,
+              companyPeriodEnd: editForm.accountType === "corporate" ? periodIso : u.companyPeriodEnd,
             }
           : u
       ));
@@ -902,6 +918,42 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
                   <p className="mt-1.5 text-[11px] text-gray-600">Affects all members of this company workspace.</p>
                 )}
               </div>
+
+              {/* Company name — corporate only */}
+              {editForm.accountType === "corporate" && (
+                <div>
+                  <label className="block text-[11px] font-black uppercase tracking-[0.16em] text-gray-400">Company name</label>
+                  <input
+                    value={editForm.companyName}
+                    onChange={(e) => setEditForm((f) => ({ ...f, companyName: e.target.value }))}
+                    disabled={editLoading}
+                    placeholder="Acme Corp"
+                    className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2.5 text-sm text-white placeholder:text-gray-600 focus:border-fuchsia-400/40 focus:outline-none"
+                  />
+                </div>
+              )}
+
+              {/* Period end */}
+              <div>
+                <label className="block text-[11px] font-black uppercase tracking-[0.16em] text-gray-400">
+                  {editForm.accountType === "corporate" ? "Trial / subscription end" : "Subscription end"}
+                </label>
+                <input
+                  type="date"
+                  value={editForm.periodEnd}
+                  onChange={(e) => setEditForm((f) => ({ ...f, periodEnd: e.target.value }))}
+                  disabled={editLoading}
+                  className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2.5 text-sm text-white focus:border-fuchsia-400/40 focus:outline-none [color-scheme:dark]"
+                />
+              </div>
+
+              {/* Joined — read-only */}
+              {editingUser && (
+                <div>
+                  <label className="block text-[11px] font-black uppercase tracking-[0.16em] text-gray-400">Joined</label>
+                  <p className="mt-1.5 px-3 py-2.5 text-sm text-gray-500">{fmtDate(editingUser.createdAt)}</p>
+                </div>
+              )}
 
               {editError && <p className="text-sm font-semibold text-red-300">{editError}</p>}
 

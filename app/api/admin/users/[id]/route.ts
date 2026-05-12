@@ -37,9 +37,12 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     // Candidate billing (stored in Clerk privateMetadata)
     subscriptionStatus?: string | null;
     stripePlanId?: string | null;
+    candidatePeriodEnd?: string | null; // ISO date → unix seconds in metadata
     // Corporate billing (stored in Prisma Company)
     companyPlanStatus?: string | null;
     companyPlanId?: string | null;
+    companyName?: string | null;        // updates Company.name
+    companyPeriodEnd?: string | null;   // ISO date → Company.stripeCurrentPeriodEnd
   };
 
   try {
@@ -56,6 +59,11 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     if (body.accountType !== undefined) metaUpdates.accountType = body.accountType;
     if (body.subscriptionStatus !== undefined) metaUpdates.subscriptionStatus = body.subscriptionStatus;
     if (body.stripePlanId !== undefined) metaUpdates.stripePlanId = body.stripePlanId;
+    if (body.candidatePeriodEnd !== undefined) {
+      metaUpdates.subscriptionCurrentPeriodEnd = body.candidatePeriodEnd
+        ? Math.floor(new Date(body.candidatePeriodEnd).getTime() / 1000)
+        : null;
+    }
 
     if (Object.keys(metaUpdates).length > 0) {
       const target = await admin.client.users.getUser(id);
@@ -65,8 +73,14 @@ export async function PATCH(req: NextRequest, { params }: Params) {
       });
     }
 
-    // 3. Update corporate workspace plan in Prisma (affects all members)
-    if (body.companyPlanStatus !== undefined || body.companyPlanId !== undefined) {
+    // 3. Update corporate workspace in Prisma (affects all members)
+    const hasCorporateUpdate =
+      body.companyPlanStatus !== undefined ||
+      body.companyPlanId !== undefined ||
+      body.companyName !== undefined ||
+      body.companyPeriodEnd !== undefined;
+
+    if (hasCorporateUpdate) {
       const member = await prisma.companyMember.findFirst({
         where: { clerkUserId: id },
         select: { companyId: true },
@@ -75,6 +89,12 @@ export async function PATCH(req: NextRequest, { params }: Params) {
         const companyData: Record<string, unknown> = {};
         if (body.companyPlanStatus !== undefined) companyData.planStatus = body.companyPlanStatus ?? "trial";
         if (body.companyPlanId !== undefined && body.companyPlanId !== null) companyData.planId = body.companyPlanId;
+        if (body.companyName !== undefined) companyData.name = body.companyName ?? "";
+        if (body.companyPeriodEnd !== undefined) {
+          companyData.stripeCurrentPeriodEnd = body.companyPeriodEnd
+            ? new Date(body.companyPeriodEnd)
+            : null;
+        }
         await prisma.company.update({
           where: { id: member.companyId },
           data: companyData,
