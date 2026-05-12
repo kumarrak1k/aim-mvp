@@ -11,13 +11,33 @@
  * Not linked anywhere on the public site.
  */
 
-import { SignIn } from "@clerk/nextjs";
+import { useEffect } from "react";
+import { SignIn, useClerk } from "@clerk/nextjs";
 import { useSearchParams } from "next/navigation";
 import { SiteLogo } from "@/app/components/brand/SiteLogo";
 
 export default function AdminSignInPage() {
   const params = useSearchParams();
   const unauthorized = params.get("error") === "unauthorized";
+  const { signOut } = useClerk();
+
+  /**
+   * When a non-admin account is rejected, the server revokes the
+   * Clerk session but the client-side JWT stays valid until it
+   * naturally expires (~1 min). During that window the <SignIn>
+   * component's forceRedirectUrl would detect the still-live token
+   * and redirect back to /admin, which re-triggers the reject
+   * route, creating a redirect loop.
+   *
+   * Calling signOut() here immediately clears the local token so
+   * the <SignIn> component sees no active session and renders
+   * normally instead of redirecting.
+   */
+  useEffect(() => {
+    if (unauthorized) {
+      void signOut();
+    }
+  }, [unauthorized, signOut]);
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-[#080412] px-4 text-white">
