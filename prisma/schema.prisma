@@ -110,6 +110,12 @@ model AssessmentTemplate {
   description         String?
   role                String
   experienceLevel     String   @default("Graduate / entry level")
+  // templateType: "interview" | "assessment-centre"
+  templateType        String   @default("interview")
+  // acStages: subset of ["stage1","stage2","stage3"] — only meaningful when templateType="assessment-centre"
+  acStages            String[] @default([])
+  // questionMix: JSON record of QuestionMixKey→count — null means use interviewType default
+  questionMix         Json?
   interviewType       String   @default("Competency / behavioural")
   difficulty          String   @default("Standard")
   focusArea           String   @default("Balanced")
@@ -134,7 +140,8 @@ model CandidateAssignment {
   inviteToken     String    @unique @default(cuid())
   status          String    @default("pending")
   clerkUserId     String?
-  sessionId       String?
+  sessionId       String?   // interview-only: PracticeSession id
+  acSessionId     String?   // assessment-centre: AssessmentCentreSession id
   expiresAt       DateTime
   startedAt       DateTime?
   completedAt     DateTime?
@@ -207,6 +214,11 @@ model Certificate {
 model AssessmentCentreSession {
   id                   String    @id @default(cuid())
   clerkUserId          String
+
+  // When created from a company invite (not self-serve), these link back to
+  // the CandidateAssignment and carry the template-driven configuration.
+  assignmentToken      String?   @unique  // CandidateAssignment.inviteToken
+  templateConfig       Json?              // {interviewType,difficulty,focusArea,questionCount,questionMix?,customInstructions?,competencyFramework?}
 
   // Setup
   role                 String

@@ -10,6 +10,8 @@ type Template = {
   name: string;
   role: string;
   description: string | null;
+  templateType: string;
+  acStages: string[];
   experienceLevel: string;
   interviewType: string;
   difficulty: string;
@@ -110,6 +112,17 @@ export default function TemplatesPage() {
               <div key={t.id} className={`rounded-[2rem] border bg-white/[0.04] p-6 shadow-xl shadow-black/10 transition ${t.isActive ? "border-white/10" : "border-white/5 opacity-60"}`}>
                 <div className="mb-4 flex items-start justify-between gap-3">
                   <div className="min-w-0">
+                    <div className="mb-1 flex items-center gap-2">
+                      {t.templateType === "assessment-centre" ? (
+                        <span className="rounded-full border border-purple-400/30 bg-purple-400/10 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-[0.12em] text-purple-200">
+                          Assessment centre
+                        </span>
+                      ) : (
+                        <span className="rounded-full border border-white/10 bg-white/[0.05] px-2.5 py-0.5 text-[10px] font-black uppercase tracking-[0.12em] text-gray-400">
+                          Interview
+                        </span>
+                      )}
+                    </div>
                     <p className="truncate text-lg font-black text-white">{t.name}</p>
                     <p className="mt-0.5 text-sm text-gray-400">{t.role}</p>
                   </div>
@@ -124,7 +137,13 @@ export default function TemplatesPage() {
 
                 <div className="mb-5 flex flex-wrap gap-2 text-xs">
                   <span className="rounded-full bg-white/[0.06] px-2.5 py-1 text-gray-300">{t.experienceLevel}</span>
-                  <span className="rounded-full bg-white/[0.06] px-2.5 py-1 text-gray-300">{t.interviewType}</span>
+                  {t.templateType === "assessment-centre" ? (
+                    <span className="rounded-full bg-white/[0.06] px-2.5 py-1 text-gray-300">
+                      {t.acStages.length} stage{t.acStages.length !== 1 ? "s" : ""}
+                    </span>
+                  ) : (
+                    <span className="rounded-full bg-white/[0.06] px-2.5 py-1 text-gray-300">{t.interviewType}</span>
+                  )}
                 </div>
 
                 <div className="flex items-center justify-between text-xs text-gray-400">

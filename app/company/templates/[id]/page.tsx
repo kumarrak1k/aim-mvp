@@ -10,6 +10,9 @@ type Template = {
   name: string;
   role: string;
   description: string | null;
+  templateType: string;
+  acStages: string[];
+  questionMix: Record<string, number> | null;
   experienceLevel: string;
   interviewType: string;
   difficulty: string;
@@ -96,6 +99,9 @@ export default function EditTemplatePage() {
             name: template.name,
             role: template.role,
             description: template.description || "",
+            templateType: (template.templateType as "interview" | "assessment-centre") || "interview",
+            acStages: (template.acStages as Array<"stage1" | "stage2" | "stage3">) || [],
+            questionMix: template.questionMix as Record<string, number> | null,
             experienceLevel: template.experienceLevel,
             interviewType: template.interviewType,
             difficulty: template.difficulty,

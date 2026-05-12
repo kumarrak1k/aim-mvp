@@ -58,6 +58,9 @@ export async function PATCH(request: NextRequest, { params }: Params) {
     if (data.name !== undefined) updates.name = data.name;
     if (data.role !== undefined) updates.role = data.role;
     if (data.description !== undefined) updates.description = data.description ?? null;
+    if (data.templateType !== undefined) updates.templateType = data.templateType;
+    if (data.acStages !== undefined) updates.acStages = data.acStages ?? [];
+    if (data.questionMix !== undefined) updates.questionMix = data.questionMix ?? null;
     if (data.experienceLevel !== undefined) updates.experienceLevel = data.experienceLevel;
     if (data.interviewType !== undefined) updates.interviewType = data.interviewType;
     if (data.difficulty !== undefined) updates.difficulty = data.difficulty;

@@ -124,17 +124,46 @@ export const companyDeleteSchema = z.object({
   confirmName: cleanStringSchema(120, "Confirmation name"),
 });
 
+// ─── Question mix (for advanced question type control) ────────────────────────
+
+export const QUESTION_MIX_KEYS = [
+  "competency",
+  "technical",
+  "leadership",
+  "motivation",
+  "situational",
+  "commercial",
+] as const;
+
+export type QuestionMixKey = (typeof QUESTION_MIX_KEYS)[number];
+
+/** Partial record — each key is an optional non-negative integer count. */
+export const questionMixSchema = z
+  .record(z.enum(QUESTION_MIX_KEYS), z.number().int().min(0).max(10))
+  .optional();
+
+// ─── AC stages ────────────────────────────────────────────────────────────────
+
+export const AC_STAGES = ["stage1", "stage2", "stage3"] as const;
+export type AcStage = (typeof AC_STAGES)[number];
+
 /** Assessment template — POST and PATCH share the same shape, with PATCH
  *  marking everything optional so partial updates work. */
 const templateBaseSchema = z.object({
   name: cleanStringSchema(120, "Template name"),
   description: optionalStringSchema(500),
   role: cleanStringSchema(120, "Role"),
+  // templateType: "interview" (default) | "assessment-centre"
+  templateType: z.enum(["interview", "assessment-centre"]).default("interview"),
+  // AC-only: which stages to include
+  acStages: z.array(z.enum(AC_STAGES)).max(3).optional(),
+  // Optional question mix — overrides interviewType-based defaults
+  questionMix: questionMixSchema,
   experienceLevel: z.enum(EXPERIENCE_LEVELS).default("Graduate / entry level"),
   interviewType: z.enum(INTERVIEW_TYPES).default("Competency / behavioural"),
   difficulty: z.enum(DIFFICULTIES).default("Standard"),
   focusArea: z.enum(FOCUS_AREAS).default("Balanced"),
-  questionCount: z.number().int().min(3).max(10).default(5),
+  questionCount: z.number().int().min(1).max(10).default(5),
   customInstructions: optionalStringSchema(2000),
   competencyFramework: optionalStringSchema(2000),
 });

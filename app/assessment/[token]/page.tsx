@@ -28,6 +28,9 @@ type AssessmentData = {
     name: string;
     role: string;
     description: string | null;
+    templateType: string;
+    acStages: string[];
+    questionMix: Record<string, number> | null;
     experienceLevel: string;
     interviewType: string;
     difficulty: string;
@@ -36,6 +39,12 @@ type AssessmentData = {
     customInstructions: string | null;
     competencyFramework: string | null;
   };
+};
+
+const AC_STAGE_LABELS: Record<string, { title: string; time: string }> = {
+  stage1: { title: "Case study", time: "~30 min" },
+  stage2: { title: "Competency interview", time: "~20–40 min" },
+  stage3: { title: "Presentation", time: "~20 min" },
 };
 
 type Step = "welcome" | "setup";
@@ -60,6 +69,8 @@ export default function AssessmentLandingPage() {
   const [practiceMode, setPracticeMode] = useState<PracticeMode>("voice");
   const [speakerPreference, setSpeakerPreference] =
     useState<SpeakerPreference>(DEFAULT_SPEAKER);
+  const [acStarting, setAcStarting] = useState(false);
+  const [acError, setAcError] = useState("");
 
   useEffect(() => {
     async function load() {
@@ -80,10 +91,40 @@ export default function AssessmentLandingPage() {
     if (token) load();
   }, [token]);
 
-  function handleStart() {
+  async function handleStart() {
     if (!data) return;
     const t = data.template;
 
+    // ── Assessment centre path ──────────────────────────────────────────────
+    if (t.templateType === "assessment-centre") {
+      setAcStarting(true);
+      setAcError("");
+      try {
+        const res = await fetch(`/api/assessment/${token}/start-ac`, {
+          method: "POST",
+        });
+        const json = await res.json();
+        if (!res.ok) {
+          setAcError(json.error || "Failed to start assessment centre. Please try again.");
+          return;
+        }
+        const { sessionId, initialStage } = json as { sessionId: string; initialStage: number };
+        if (initialStage === 1) {
+          router.push(`/assessment-centre/${sessionId}`);
+        } else if (initialStage === 2) {
+          router.push(`/assessment-centre/${sessionId}/stage-2`);
+        } else {
+          router.push(`/assessment-centre/${sessionId}/stage-3`);
+        }
+      } catch {
+        setAcError("Something went wrong. Please try again.");
+      } finally {
+        setAcStarting(false);
+      }
+      return;
+    }
+
+    // ── Interview-only path ─────────────────────────────────────────────────
     const config: PracticeSessionConfig = {
       role: t.role,
       experienceLevel: t.experienceLevel,
@@ -196,7 +237,16 @@ export default function AssessmentLandingPage() {
             assignment={assignment}
             isSignedIn={Boolean(isSignedIn)}
             brand={brand}
-            onContinue={() => setStep("setup")}
+            acStarting={acStarting}
+            acError={acError}
+            onContinue={() => {
+              // AC invites skip the mode-picker step and start directly
+              if (template.templateType === "assessment-centre") {
+                handleStart();
+              } else {
+                setStep("setup");
+              }
+            }}
           />
         )}
 
@@ -233,6 +283,8 @@ function WelcomeStep({
   assignment,
   isSignedIn,
   brand,
+  acStarting,
+  acError,
   onContinue,
 }: {
   template: AssessmentData["template"];
@@ -240,6 +292,8 @@ function WelcomeStep({
   assignment: AssessmentData["assignment"];
   isSignedIn: boolean;
   brand: string;
+  acStarting: boolean;
+  acError: string;
   onContinue: () => void;
 }) {
   const daysLeft = Math.max(
@@ -247,14 +301,35 @@ function WelcomeStep({
     Math.ceil((new Date(assignment.expiresAt).getTime() - Date.now()) / 86400000)
   );
 
-  const infoItems = [
-    { label: "Role", value: template.role },
-    { label: "Level", value: template.experienceLevel },
-    { label: "Type", value: template.interviewType },
-    { label: "Questions", value: `${template.questionCount} questions` },
-    { label: "Difficulty", value: template.difficulty },
-    { label: "Focus", value: template.focusArea },
-  ];
+  const isAC = template.templateType === "assessment-centre";
+  const stages = (template.acStages || []).filter((s) => s in AC_STAGE_LABELS);
+
+  const infoItems = isAC
+    ? [
+        { label: "Role", value: template.role },
+        { label: "Level", value: template.experienceLevel },
+        { label: "Stages", value: `${stages.length} stage${stages.length !== 1 ? "s" : ""}` },
+        ...(stages.includes("stage2")
+          ? [
+              { label: "Interview difficulty", value: template.difficulty },
+              { label: "Questions", value: `${template.questionCount} per stage` },
+            ]
+          : []),
+      ]
+    : [
+        { label: "Role", value: template.role },
+        { label: "Level", value: template.experienceLevel },
+        { label: "Type", value: template.interviewType },
+        { label: "Questions", value: `${template.questionCount} questions` },
+        { label: "Difficulty", value: template.difficulty },
+        { label: "Focus", value: template.focusArea },
+      ];
+
+  const ctaLabel = isAC
+    ? acStarting
+      ? "Preparing your assessment…"
+      : "Start assessment centre →"
+    : "Continue to setup →";
 
   return (
     <>
@@ -273,28 +348,64 @@ function WelcomeStep({
           ))}
         </div>
 
-        <div className="mt-6 border-t border-white/10 pt-5">
-          <h3 className="mb-3 text-sm font-black text-gray-300">What to expect</h3>
-          <ul className="space-y-2 text-sm text-gray-400">
-            <li className="flex gap-2">
-              <span className="text-purple-400">→</span>{" "}
-              {template.questionCount} tailored questions for the {template.role} role
-            </li>
-            <li className="flex gap-2">
-              <span className="text-purple-400">→</span> Roughly{" "}
-              {Math.max(10, template.questionCount * 4)}–
-              {template.questionCount * 6} minutes of focused interview time
-            </li>
-            <li className="flex gap-2">
-              <span className="text-purple-400">→</span> You choose typed, voice or
-              voice + camera in the next step
-            </li>
-            <li className="flex gap-2">
-              <span className="text-purple-400">→</span> Your results are sent
-              automatically to {company.name}
-            </li>
-          </ul>
-        </div>
+        {/* AC stage list */}
+        {isAC && stages.length > 0 && (
+          <div className="mt-6 space-y-2 border-t border-white/10 pt-5">
+            <p className="mb-3 text-sm font-black text-gray-300">Assessment stages</p>
+            {stages.map((stage, i) => {
+              const info = AC_STAGE_LABELS[stage];
+              return (
+                <div
+                  key={stage}
+                  className="flex items-center gap-3 rounded-xl border border-white/[0.07] bg-white/[0.03] px-4 py-3"
+                >
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-white/20 text-[11px] font-black text-gray-400">
+                    {i + 1}
+                  </span>
+                  <div className="flex-1">
+                    <p className="text-sm font-black text-white">{info.title}</p>
+                  </div>
+                  <span className="shrink-0 text-xs text-gray-500">{info.time}</span>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Interview-only what to expect */}
+        {!isAC && (
+          <div className="mt-6 border-t border-white/10 pt-5">
+            <h3 className="mb-3 text-sm font-black text-gray-300">What to expect</h3>
+            <ul className="space-y-2 text-sm text-gray-400">
+              <li className="flex gap-2">
+                <span className="text-purple-400">→</span>{" "}
+                {template.questionCount} tailored questions for the {template.role} role
+              </li>
+              <li className="flex gap-2">
+                <span className="text-purple-400">→</span> Roughly{" "}
+                {Math.max(10, template.questionCount * 4)}–
+                {template.questionCount * 6} minutes of focused interview time
+              </li>
+              <li className="flex gap-2">
+                <span className="text-purple-400">→</span> You choose typed, voice or
+                voice + camera in the next step
+              </li>
+              <li className="flex gap-2">
+                <span className="text-purple-400">→</span> Your results are sent
+                automatically to {company.name}
+              </li>
+            </ul>
+          </div>
+        )}
+
+        {/* AC note */}
+        {isAC && (
+          <div className="mt-5 rounded-xl border border-blue-400/20 bg-blue-400/[0.07] px-4 py-3">
+            <p className="text-sm text-blue-200">
+              Your results from all stages are automatically sent to {company.name} when you complete the process.
+            </p>
+          </div>
+        )}
 
         <div className="mt-5 flex items-center gap-2 rounded-xl border border-yellow-400/20 bg-yellow-400/10 px-4 py-3">
           <span className="text-yellow-300">⏰</span>
@@ -306,19 +417,38 @@ function WelcomeStep({
         </div>
       </div>
 
+      {acError && (
+        <p className="mb-4 rounded-xl border border-red-400/30 bg-red-400/10 px-4 py-3 text-sm text-red-300">
+          {acError}
+        </p>
+      )}
+
       {/* CTA */}
       {isSignedIn ? (
         <div className="text-center">
           <button
             onClick={onContinue}
-            className="w-full rounded-full py-4 text-base font-black text-white shadow-xl transition hover:scale-[1.02] sm:w-auto sm:px-12"
+            disabled={acStarting}
+            className="w-full rounded-full py-4 text-base font-black text-white shadow-xl transition hover:scale-[1.02] disabled:opacity-60 sm:w-auto sm:px-12"
             style={{
               background: `linear-gradient(135deg, ${brand}, #6c4cff)`,
               boxShadow: `0 12px 32px ${brand}40`,
             }}
           >
-            Continue to setup →
+            {acStarting ? (
+              <span className="flex items-center justify-center gap-2">
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                Preparing your assessment…
+              </span>
+            ) : (
+              ctaLabel
+            )}
           </button>
+          {isAC && (
+            <p className="mt-3 text-xs text-gray-500">
+              This may take up to 30 seconds while we generate your case study.
+            </p>
+          )}
           <p className="mt-3 text-xs text-gray-500">
             Invite was sent to {assignment.candidateEmailMasked}. Make sure you are
             signed in to the correct account.

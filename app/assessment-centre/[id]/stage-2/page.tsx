@@ -6,6 +6,16 @@ import { CandidateAppShell } from "@/app/components/marketing/CandidateAppShell"
 import { StageProgress } from "@/app/assessment-centre/components/StageProgress";
 import { PRACTICE_SESSION_CONFIG_KEY } from "@/app/practice/session/utils";
 
+type TemplateConfig = {
+  interviewType?: string;
+  difficulty?: string;
+  focusArea?: string;
+  questionCount?: number;
+  questionMix?: Record<string, number> | null;
+  customInstructions?: string | null;
+  competencyFramework?: string | null;
+};
+
 type Session = {
   id: string;
   status: string;
@@ -14,6 +24,7 @@ type Session = {
   sector: string;
   experienceLevel: string;
   selectedStages: string[];
+  templateConfig?: TemplateConfig | null;
 };
 
 type PracticeMode = "typed" | "voice" | "voice-camera";
@@ -63,14 +74,20 @@ export default function Stage2Page() {
   function handleStart() {
     if (!session) return;
 
+    // Use templateConfig values when this session was created from a company
+    // invite; fall back to the self-serve defaults when it's a personal AC run.
+    const tc = session.templateConfig ?? {};
+
     window.sessionStorage.setItem(
       PRACTICE_SESSION_CONFIG_KEY,
       JSON.stringify({
         role: session.role,
         experienceLevel: session.experienceLevel,
-        interviewType: "Competency / behavioural",
-        difficulty: "Standard",
-        focusArea: "Balanced",
+        interviewType: tc.interviewType ?? "Competency / behavioural",
+        difficulty: tc.difficulty ?? "Standard",
+        focusArea: tc.focusArea ?? "Balanced",
+        totalQuestions: tc.questionCount ?? 5,
+        questionMix: tc.questionMix ?? undefined,
         speakerEnabled: mode !== "typed",
         cameraEnabled: mode === "voice-camera",
         speakerPreference: { voice: "female", accent: "british", pace: "natural" },
@@ -78,6 +95,13 @@ export default function Stage2Page() {
         practiceMode: mode,
         createdAt: new Date().toISOString(),
         assessmentCentreId: id,
+        // Pass through custom instructions / competency framework if set
+        templateContext: (tc.customInstructions || tc.competencyFramework)
+          ? {
+              customInstructions: tc.customInstructions ?? undefined,
+              competencyFramework: tc.competencyFramework ?? undefined,
+            }
+          : undefined,
       })
     );
 
@@ -127,7 +151,7 @@ export default function Stage2Page() {
             </span>
           </h1>
           <p className="mt-3 text-base leading-7 text-gray-400">
-            You&apos;ll answer 5 competency questions tailored to your role as{" "}
+            You&apos;ll answer {session.templateConfig?.questionCount ?? 5} competency questions tailored to your role as{" "}
             <strong className="text-white">{session.role}</strong> in the{" "}
             <strong className="text-white">{session.sector}</strong> sector. This stage uses
             the same AI coaching engine as your interview practice, with voice and camera
@@ -142,7 +166,7 @@ export default function Stage2Page() {
           </p>
           <ul className="space-y-2.5">
             {[
-              "5 competency questions generated for your specific role and level",
+              `${session.templateConfig?.questionCount ?? 5} competency questions generated for your specific role and level`,
               "Full AI feedback on every answer — content, structure and delivery",
               "Your overall interview score feeds into your final assessment centre report",
             ].map((item, i) => (
@@ -203,7 +227,7 @@ export default function Stage2Page() {
         </button>
 
         <p className="mt-3 text-center text-xs text-gray-600">
-          ~15 minutes · 5 questions · AI feedback on every answer
+          ~{Math.max(10, (session.templateConfig?.questionCount ?? 5) * 4)} minutes · {session.templateConfig?.questionCount ?? 5} questions · AI feedback on every answer
         </p>
       </div>
     </CandidateAppShell>
