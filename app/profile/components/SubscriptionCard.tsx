@@ -73,7 +73,7 @@ export function SubscriptionCard() {
           )}
         </div>
 
-        {info.isActive && info.hasCustomer ? (
+        {info.isActive ? (
           <button
             onClick={handleManageBilling}
             disabled={managing}
