@@ -351,7 +351,7 @@ export function useBrowserSpeech({
       userStoppedRecognitionRef.current = false;
       clearRestartTimer();
 
-      recognition.lang = "en-GB";
+      recognition.lang = "en";
 
       if (recognitionRunningRef.current) {
         setIsListening(true);
@@ -405,11 +405,11 @@ export function useBrowserSpeech({
 
       recognition.continuous = true;
       recognition.interimResults = true;
-      recognition.lang = "en-GB";
+      recognition.lang = "en";
 
       recognition.onstart = () => {
         recognitionRunningRef.current = true;
-        recognition.lang = "en-GB";
+        recognition.lang = "en";
         setIsListening(true);
       };
 
