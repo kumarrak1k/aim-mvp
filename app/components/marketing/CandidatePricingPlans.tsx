@@ -26,6 +26,8 @@ type StripePlanId =
   | "advanced_monthly"
   | "advanced_annual";
 
+type PlanFeature = { text: string; isNew?: boolean };
+
 export function CandidatePricingPlans({ currency = "GBP" }: { currency?: PricingCurrency }) {
   const [annual, setAnnual] = useState(false);
   const router = useRouter();
@@ -42,11 +44,11 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
       period: null as string | null,
       description: "Try the platform with 3 keyboard-only practice sessions. No card required — just create a free account.",
       features: [
-        "3 keyboard-only practice sessions",
-        "AI-generated tailored interview questions",
-        "Written answer feedback per question",
-        "Session transcript review",
-      ],
+        { text: "3 keyboard-only practice sessions" },
+        { text: "AI-generated tailored interview questions" },
+        { text: "Written answer feedback per question" },
+        { text: "Session transcript review" },
+      ] as PlanFeature[],
       cta: "Start free",
       stripePlanMonthly: null as StripePlanId | null,
       stripePlanAnnual: null as StripePlanId | null,
@@ -61,13 +63,13 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
       description:
         "For candidates actively preparing — unlimited practice with full feedback, voice interview and camera analysis.",
       features: [
-        "Unlimited interview practice sessions",
-        "All 3 interview modes: typed, voice and voice + camera",
-        "Voice delivery and camera presence analysis",
-        "Full structured feedback per answer",
-        "Model answers per question",
-        "Progress history saved and tracked",
-      ],
+        { text: "Unlimited interview practice sessions" },
+        { text: "All 3 interview modes: typed, voice and voice + camera" },
+        { text: "Voice delivery and camera presence analysis" },
+        { text: "Full structured feedback per answer" },
+        { text: "Model answers per question" },
+        { text: "Progress history saved and tracked" },
+      ] as PlanFeature[],
       cta: "Get started",
       stripePlanMonthly: "professional_monthly" as StripePlanId,
       stripePlanAnnual: "professional_annual" as StripePlanId,
@@ -80,14 +82,16 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
       annualMonthly: adv.annualMonthly,
       period: "/month",
       description:
-        "For intensive preparation — adds the mock assessment centre, advanced analytics and priority support.",
+        "For intensive preparation — build fully custom sessions, run mock assessment centres, and track performance with advanced analytics.",
       features: [
-        "Everything in Professional",
-        "Mock assessment centre (case study + interview + presentation)",
-        "Advanced session analytics",
-        "Competency gap tracking across sessions",
-        "Priority coaching queue",
-      ],
+        { text: "Everything in Professional" },
+        { text: "Custom session builder: 3–10 questions per session", isNew: true },
+        { text: "Hybrid question mix — set your own blend of competency, technical, leadership, motivation and situational", isNew: true },
+        { text: "Mock assessment centre (case study + interview + presentation)" },
+        { text: "Advanced session analytics" },
+        { text: "Competency gap tracking across sessions" },
+        { text: "Priority coaching queue" },
+      ] as PlanFeature[],
       cta: "Get started",
       stripePlanMonthly: "advanced_monthly" as StripePlanId,
       stripePlanAnnual: "advanced_annual" as StripePlanId,
@@ -189,7 +193,7 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
               </p>
               <div className="mt-5 flex-1 space-y-2.5">
                 {plan.features.map((f) => (
-                  <div key={f} className="flex items-start gap-2.5 text-sm text-gray-300">
+                  <div key={f.text} className="flex items-start gap-2.5 text-sm text-gray-300">
                     <span
                       className={`mt-[3px] h-3.5 w-3.5 shrink-0 ${
                         plan.highlight ? "text-purple-400" : "text-gray-500"
@@ -197,7 +201,12 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
                     >
                       ✓
                     </span>
-                    {f}
+                    <span className="flex-1">{f.text}</span>
+                    {f.isNew && (
+                      <span className="mt-[1px] shrink-0 rounded-full bg-fuchsia-400/15 px-1.5 py-0.5 text-[9px] font-black uppercase tracking-[0.12em] text-fuchsia-300">
+                        New
+                      </span>
+                    )}
                   </div>
                 ))}
               </div>

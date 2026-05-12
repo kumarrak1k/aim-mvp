@@ -57,6 +57,11 @@ const faqs = [
       "Interview practice (competency, technical, and behavioural) is included on Professional. The full mock assessment centre — case study, interview, and presentation — is an Advanced plan feature.",
   },
   {
+    question: "Can I customise how many questions I get and what types?",
+    answer:
+      "Yes, on the Advanced plan. You can set your session length from 3 to 10 questions and build a hybrid question mix — for example, 3 competency, 3 technical, 2 leadership and 1 motivation question in a single session. This lets you replicate the exact interview format you are preparing for. Free and Professional sessions use 5 questions of the type selected at setup.",
+  },
+  {
     question: "Can I cancel at any time?",
     answer:
       "Yes. Monthly plans can be cancelled at any time with no penalty. Annual plans are charged for the full year upfront — contact support if you need to discuss early cancellation.",

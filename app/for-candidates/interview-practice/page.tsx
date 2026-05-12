@@ -24,26 +24,32 @@ const features = [
   {
     title: "Tailored to your role",
     text: "Choose role, level and interview type. Every question is generated for your exact situation — not recycled from a generic bank.",
+    badge: null,
   },
   {
     title: "Natural audio delivery",
     text: "Hear questions spoken aloud. Answer by voice or by typing. Practice that feels close to the real thing.",
+    badge: null,
   },
   {
     title: "Honest, structured feedback",
     text: "Each answer is scored on content, clarity, structure, confidence and pace — paired with a model answer for direct comparison.",
+    badge: null,
+  },
+  {
+    title: "Custom session builder",
+    text: "On the Advanced plan, choose between 3 and 10 questions per session and set your own question type mix — any blend of competency, technical, leadership, motivation and situational questions.",
+    badge: "Advanced",
   },
   {
     title: "Voice and camera presence",
     text: "Pace, filler words, eye contact, posture — all measured. The full picture an interviewer evaluates.",
+    badge: null,
   },
   {
     title: "Progress tracked",
     text: "Sessions are saved. Patterns across sessions become focus areas. A readiness score closes every practice round.",
-  },
-  {
-    title: "Your data stays yours",
-    text: "CV and answer data is never sold or shared. Delete everything any time.",
+    badge: null,
   },
 ];
 
@@ -51,7 +57,7 @@ const steps = [
   {
     number: "01",
     title: "Configure",
-    text: "Pick role, level, type, difficulty and focus. The AI builds the question set.",
+    text: "Pick role, level, type, difficulty and focus. Advanced users can also set session length (3–10 questions) and a custom question type mix. The AI builds the question set.",
   },
   {
     number: "02",
@@ -85,7 +91,7 @@ const faqs = [
   },
   {
     q: "What does a session look like?",
-    a: "You receive five tailored questions, each read aloud in natural audio. Answer by speaking or typing. After each answer you get structured feedback, then a full session report including model answers, scores, and a next-step action plan.",
+    a: "You receive tailored questions read aloud in natural audio — 5 by default, or 3–10 on the Advanced plan. Answer by speaking or typing. After each answer you get structured feedback, then a full session report including model answers, scores, and a next-step action plan.",
   },
   {
     q: "Can I compare my answer to a model answer?",
@@ -132,9 +138,9 @@ export default async function InterviewPracticePage() {
           </span>
         </h1>
         <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-gray-400 sm:text-lg sm:leading-9">
-          Five tailored questions for your exact role and level. Detailed
-          coaching on every answer. Voice delivery scored. Camera presence
-          reviewed. Progress saved.
+          Tailored questions for your exact role and level. Detailed coaching on
+          every answer. Voice delivery scored. Camera presence reviewed. Advanced
+          users can configure up to 10 questions in a custom type mix.
         </p>
         <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link href="/for-candidates/sign-up">
@@ -186,9 +192,20 @@ export default async function InterviewPracticePage() {
           {features.map((f) => (
             <div
               key={f.title}
-              className="rounded-[1.5rem] border border-white/[0.08] bg-white/[0.03] p-6"
+              className={`rounded-[1.5rem] border p-6 ${
+                f.badge
+                  ? "border-fuchsia-400/20 bg-fuchsia-400/[0.05]"
+                  : "border-white/[0.08] bg-white/[0.03]"
+              }`}
             >
-              <p className="font-black text-white">{f.title}</p>
+              <div className="flex items-center gap-2">
+                <p className="font-black text-white">{f.title}</p>
+                {f.badge && (
+                  <span className="rounded-full bg-fuchsia-400/15 px-2 py-0.5 text-[9px] font-black uppercase tracking-[0.12em] text-fuchsia-300">
+                    {f.badge}
+                  </span>
+                )}
+              </div>
               <p className="mt-2 text-sm leading-6 text-gray-400">{f.text}</p>
             </div>
           ))}
