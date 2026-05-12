@@ -15,9 +15,10 @@ import type {
   SpeakerPreference,
 } from "../types";
 import {
-  DEFAULT_TOTAL_QUESTIONS as totalQuestions,
+  DEFAULT_TOTAL_QUESTIONS,
   defaultSpeakerPreference,
   PRACTICE_SESSION_CONFIG_KEY,
+  type QuestionMix,
 } from "../session/utils";
 
 type PracticeUsage = {
@@ -94,6 +95,18 @@ export function PracticePageClient() {
   );
   const [difficulty, setDifficulty] = useState("Standard");
   const [focusArea, setFocusArea] = useState("Balanced");
+
+  // Advanced plan — custom question count & hybrid mix
+  const [totalQuestions, setTotalQuestions] = useState(DEFAULT_TOTAL_QUESTIONS);
+  const [useHybridMix, setUseHybridMix] = useState(false);
+  const [questionMix, setQuestionMix] = useState<QuestionMix>({
+    competency: DEFAULT_TOTAL_QUESTIONS,
+    technical: 0,
+    leadership: 0,
+    motivation: 0,
+    situational: 0,
+    commercial: 0,
+  });
 
   const [speakerEnabled, setSpeakerEnabled] = useState(false);
   const [cameraEnabled, setCameraEnabled] = useState(false);
@@ -192,6 +205,7 @@ export function PracticePageClient() {
   // free users and not-yet-signed-in visitors). While usage is still loading
   // default to free so voice options stay hidden rather than flicker in.
   const isFreePlan = practiceUsage.planName === "Free";
+  const isAdvancedPlan = practiceUsage.planName === "Advanced";
 
   const canStartInterview = Boolean(role.trim()) && !signedInLimitReached;
 
@@ -451,6 +465,9 @@ export function PracticePageClient() {
           freePlan: isFreePlan,
           practiceMode: isFreePlan ? "typed" : selectedPracticeMode,
           createdAt: new Date().toISOString(),
+          // Advanced plan extras
+          totalQuestions: isAdvancedPlan ? totalQuestions : DEFAULT_TOTAL_QUESTIONS,
+          questionMix: isAdvancedPlan && useHybridMix ? questionMix : undefined,
         })
       );
 
@@ -465,12 +482,16 @@ export function PracticePageClient() {
     focusArea,
     interviewType,
     isFreePlan,
+    isAdvancedPlan,
     practiceUsage.resetsAt,
     role,
     router,
     signedInLimitReached,
     speakerEnabled,
     speakerPreference,
+    totalQuestions,
+    useHybridMix,
+    questionMix,
   ]);
 
   return (
@@ -510,7 +531,7 @@ export function PracticePageClient() {
         )}
 
         <PracticeHero
-          totalQuestions={totalQuestions}
+          totalQuestions={isAdvancedPlan ? totalQuestions : DEFAULT_TOTAL_QUESTIONS}
           canStartInterview={canStartInterview}
           questionLoading={questionLoading}
           setupSummary={setupSummary}
@@ -592,6 +613,13 @@ export function PracticePageClient() {
             startInterview={startInterview}
             questionLoading={questionLoading}
             isFreePlan={isFreePlan}
+            isAdvancedPlan={isAdvancedPlan}
+            totalQuestions={totalQuestions}
+            setTotalQuestions={setTotalQuestions}
+            useHybridMix={useHybridMix}
+            setUseHybridMix={setUseHybridMix}
+            questionMix={questionMix}
+            setQuestionMix={setQuestionMix}
             startDisabled={signedInLimitReached}
             startDisabledMessage={usageSummary}
           />

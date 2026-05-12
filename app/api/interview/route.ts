@@ -2,6 +2,10 @@ import { auth, clerkClient } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { checkRateLimit } from "@/app/lib/rateLimit";
 import { callOpenAIChat, OpenAIError } from "@/app/lib/openai-client";
+import {
+  getQuestionTypeAtPosition,
+  type QuestionMix,
+} from "@/app/practice/session/utils";
 
 type CandidateProfile = {
   cvText: string;
@@ -188,6 +192,15 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const body = await req.json() as {
+      role: unknown;
+      questionNumber: unknown;
+      totalQuestions: unknown;
+      history: unknown;
+      assessmentMode?: unknown;
+      templateContext?: TemplateContext;
+      questionMix?: QuestionMix;
+    };
     const {
       role,
       questionNumber,
@@ -195,7 +208,8 @@ export async function POST(req: NextRequest) {
       history,
       assessmentMode,
       templateContext,
-    } = await req.json();
+      questionMix,
+    } = body;
 
     if (!role || typeof role !== "string") {
       return NextResponse.json(
@@ -228,6 +242,18 @@ export async function POST(req: NextRequest) {
       typeof totalQuestions === "number" && totalQuestions > 0
         ? totalQuestions
         : 5;
+
+    // Derive the required question type when the candidate set a custom mix.
+    // Empty string means no constraint — the existing interviewType/focusArea
+    // in the role prompt already handles style.
+    const requiredQuestionType =
+      questionMix && typeof questionMix === "object"
+        ? getQuestionTypeAtPosition(questionMix, safeQuestionNumber)
+        : "";
+
+    const questionTypeInstruction = requiredQuestionType
+      ? `This question MUST be a ${requiredQuestionType} question. Do not deviate from this type.`
+      : "";
 
     const previousQuestions = Array.isArray(history)
       ? history
@@ -310,7 +336,7 @@ ${role}
 ${templateContextBlock}
 
 Current question:
-${safeQuestionNumber} of ${safeTotalQuestions}
+${safeQuestionNumber} of ${safeTotalQuestions}${questionTypeInstruction ? `\n\nRequired question type for this position:\n${questionTypeInstruction}` : ""}
 
 Previous interview history:
 ${previousQuestions || "No previous questions yet."}
@@ -325,7 +351,7 @@ Saved profile context for signed-in user:
 ${savedProfileContext}
 
 Current question:
-${safeQuestionNumber} of ${safeTotalQuestions}
+${safeQuestionNumber} of ${safeTotalQuestions}${questionTypeInstruction ? `\n\nRequired question type for this position:\n${questionTypeInstruction}` : ""}
 
 Previous interview history:
 ${previousQuestions || "No previous questions yet."}

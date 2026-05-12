@@ -9,6 +9,7 @@ import type {
   VideoMetrics,
   VoiceAnalysis,
 } from "../types";
+import type { QuestionMix } from "../session/utils";
 
 const postJson = async <TResponse, TBody>(
   url: string,
@@ -62,6 +63,7 @@ export const fetchInterviewQuestion = async ({
   history,
   assessmentMode,
   templateContext,
+  questionMix,
 }: {
   role: string;
   questionNumber: number;
@@ -69,6 +71,7 @@ export const fetchInterviewQuestion = async ({
   history: ResultItem[];
   assessmentMode?: boolean;
   templateContext?: AssessmentTemplateContext;
+  questionMix?: QuestionMix;
 }) => {
   const data = await postJson<
     { question?: string },
@@ -79,6 +82,7 @@ export const fetchInterviewQuestion = async ({
       history: Array<{ question: string; answer: string }>;
       assessmentMode?: boolean;
       templateContext?: AssessmentTemplateContext;
+      questionMix?: QuestionMix;
     }
   >("/api/interview", {
     role,
@@ -90,6 +94,7 @@ export const fetchInterviewQuestion = async ({
     })),
     ...(assessmentMode ? { assessmentMode: true } : {}),
     ...(templateContext ? { templateContext } : {}),
+    ...(questionMix ? { questionMix } : {}),
   });
 
   return data.question || "Tell me about yourself.";

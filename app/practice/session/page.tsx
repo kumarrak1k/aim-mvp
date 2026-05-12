@@ -67,6 +67,7 @@ import {
   defaultSpeakerPreference,
   parseSessionConfig,
   wait,
+  type QuestionMix,
 } from "./utils";
 
 export default function PracticeSessionPage() {
@@ -94,6 +95,8 @@ export default function PracticeSessionPage() {
   // totalQuestions is now driven by config (template-defined for assessment
   // invites; defaulted to 5 for the classic personal practice flow).
   const [totalQuestions, setTotalQuestions] = useState<number>(DEFAULT_TOTAL_QUESTIONS);
+  // Advanced-plan custom mix — null means use the interviewType string as before.
+  const [questionMix, setQuestionMix] = useState<QuestionMix | undefined>(undefined);
   const [assessmentMode, setAssessmentMode] = useState(false);
   const [assignmentToken, setAssignmentToken] = useState<string | undefined>(undefined);
   const [assessmentCentreId, setAssessmentCentreId] = useState<string | undefined>(undefined);
@@ -366,6 +369,7 @@ export default function PracticeSessionPage() {
     setCameraEnabled(sessionIsKeyboardOnly ? false : config.cameraEnabled);
     setSpeakerPreference(config.speakerPreference || defaultSpeakerPreference);
     setTotalQuestions(config.totalQuestions ?? DEFAULT_TOTAL_QUESTIONS);
+    setQuestionMix(config.questionMix);
     setAssessmentMode(Boolean(config.assessmentMode));
     setAssignmentToken(config.assignmentToken);
     setAssessmentCentreId(config.assessmentCentreId);
@@ -881,6 +885,7 @@ export default function PracticeSessionPage() {
           history,
           assessmentMode,
           templateContext,
+          questionMix,
         });
 
         setActiveQuestion(nextQuestion);
@@ -920,6 +925,7 @@ export default function PracticeSessionPage() {
       totalQuestions,
       assessmentMode,
       templateContext,
+      questionMix,
     ]
   );
 

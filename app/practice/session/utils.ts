@@ -7,6 +7,85 @@ export const DEFAULT_TOTAL_QUESTIONS = 5;
 export const MAX_TOTAL_QUESTIONS = 10;
 export const MIN_TOTAL_QUESTIONS = 3;
 
+// ── Question mix (Advanced plan only) ────────────────────────────────────────
+
+export type QuestionMixKey =
+  | "competency"
+  | "technical"
+  | "leadership"
+  | "motivation"
+  | "situational"
+  | "commercial";
+
+/** Per-type question count breakdown chosen by the candidate. */
+export type QuestionMix = Record<QuestionMixKey, number>;
+
+/** Order in which types are sequenced within the session. */
+export const QUESTION_TYPE_ORDER: QuestionMixKey[] = [
+  "competency",
+  "technical",
+  "leadership",
+  "motivation",
+  "situational",
+  "commercial",
+];
+
+export const QUESTION_TYPE_LABELS: Record<QuestionMixKey, string> = {
+  competency: "Competency / Behavioural",
+  technical: "Technical",
+  leadership: "Leadership",
+  motivation: "Motivation for the role",
+  situational: "Situational",
+  commercial: "Commercial awareness",
+};
+
+/** Sum of all type counts. */
+export function mixTotal(mix: QuestionMix): number {
+  return QUESTION_TYPE_ORDER.reduce((sum, k) => sum + mix[k], 0);
+}
+
+/**
+ * Returns the human-readable question type label for position `questionNumber`
+ * (1-based) given a mix definition, or an empty string if the mix has no
+ * allocation for that position.
+ */
+export function getQuestionTypeAtPosition(
+  mix: QuestionMix,
+  questionNumber: number
+): string {
+  const sequence: QuestionMixKey[] = [];
+  for (const key of QUESTION_TYPE_ORDER) {
+    for (let i = 0; i < mix[key]; i++) {
+      sequence.push(key);
+    }
+  }
+  const type = sequence[questionNumber - 1];
+  return type ? QUESTION_TYPE_LABELS[type] : "";
+}
+
+/** Validate and clamp each mix value. Total is NOT enforced here (UI does that). */
+export function cleanQuestionMix(value: unknown): QuestionMix | undefined {
+  if (!value || typeof value !== "object") return undefined;
+  const raw = value as Record<string, unknown>;
+  const mix: QuestionMix = {
+    competency: 0,
+    technical: 0,
+    leadership: 0,
+    motivation: 0,
+    situational: 0,
+    commercial: 0,
+  };
+  let hasAny = false;
+  for (const key of QUESTION_TYPE_ORDER) {
+    const v = raw[key];
+    if (typeof v === "number" && Number.isFinite(v) && v >= 0) {
+      mix[key] = Math.min(Math.round(v), MAX_TOTAL_QUESTIONS);
+      if (mix[key] > 0) hasAny = true;
+    }
+  }
+  return hasAny ? mix : undefined;
+}
+
 export const PRACTICE_SESSION_CONFIG_KEY = "aim_practice_session_config";
 
 export const defaultSpeakerPreference: SpeakerPreference = {
@@ -69,6 +148,12 @@ export type PracticeSessionConfig = {
    * API and redirect to /assessment-centre/[id]/stage-3.
    */
   assessmentCentreId?: string;
+  /**
+   * Advanced plan only. When set, questions are generated in the specified
+   * type order (competency → technical → leadership → motivation → …).
+   * When absent the interviewType string drives question style as before.
+   */
+  questionMix?: QuestionMix;
 };
 
 export const defaultSessionConfig: PracticeSessionConfig = {
@@ -248,6 +333,7 @@ export function parseSessionConfig(): PracticeSessionConfig | null {
         typeof parsed.assessmentCentreId === "string" && parsed.assessmentCentreId.length > 0
           ? parsed.assessmentCentreId
           : undefined,
+      questionMix: cleanQuestionMix(parsed.questionMix),
     };
   } catch {
     return null;
