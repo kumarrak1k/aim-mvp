@@ -154,10 +154,10 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
       <div className="grid gap-5 md:grid-cols-3">
         {plans.map((plan) => {
           const displayPrice =
-            annual && plan.annualPrice ? plan.annualMonthly! : plan.monthlyPrice;
+            annual && plan.annualPrice ? plan.annualPrice : plan.monthlyPrice;
           const displayPeriod =
-            annual && plan.annualPrice ? "/month, billed annually" : plan.period;
-          const annualTotal = annual && plan.annualPrice;
+            annual && plan.annualPrice ? "/year" : plan.period;
+          const annualMonthlyEquiv = annual && plan.annualMonthly ? plan.annualMonthly : null;
           const isPaid = plan.stripePlanMonthly !== null;
 
           return (
@@ -185,8 +185,10 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
                   <span className="mb-1.5 text-sm text-gray-500">{displayPeriod}</span>
                 )}
               </div>
-              {annualTotal && (
-                <p className="mt-1 text-xs text-gray-500">{plan.annualPrice} billed annually</p>
+              {annualMonthlyEquiv && (
+                <p className="mt-1 text-xs text-gray-500">
+                  {annualMonthlyEquiv}/month — charged as a single annual payment
+                </p>
               )}
               <p className="mt-4 min-h-[60px] text-sm leading-6 text-gray-400">
                 {plan.description}
