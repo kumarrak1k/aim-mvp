@@ -5,15 +5,20 @@
  *
  * Minimal sign-in page used exclusively by the /admin route.
  * After signing in, Clerk redirects back to /admin where the
- * superadmin check runs — non-superadmins are bounced to "/".
+ * superadmin check runs — non-superadmins have their session
+ * revoked and are returned here with ?error=unauthorized.
  *
  * Not linked anywhere on the public site.
  */
 
 import { SignIn } from "@clerk/nextjs";
+import { useSearchParams } from "next/navigation";
 import { SiteLogo } from "@/app/components/brand/SiteLogo";
 
 export default function AdminSignInPage() {
+  const params = useSearchParams();
+  const unauthorized = params.get("error") === "unauthorized";
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-[#080412] px-4 text-white">
       {/* Background glow */}
@@ -28,6 +33,16 @@ export default function AdminSignInPage() {
             Admin access
           </span>
         </div>
+
+        {/* Error banner — shown when a non-admin account tried to access /admin */}
+        {unauthorized && (
+          <div className="w-full rounded-2xl border border-red-500/30 bg-red-500/10 px-5 py-4 text-center">
+            <p className="text-sm font-bold text-red-300">Access denied</p>
+            <p className="mt-1 text-xs text-red-400/80">
+              That account does not have admin privileges. You have been signed out.
+            </p>
+          </div>
+        )}
 
         <SignIn
           routing="path"

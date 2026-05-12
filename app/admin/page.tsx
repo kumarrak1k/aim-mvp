@@ -28,7 +28,7 @@ export default async function AdminPage() {
   const client = await clerkClient();
   const me = await client.users.getUser(userId);
   const myMeta = me.privateMetadata as { role?: string };
-  if (myMeta.role !== "superadmin") redirect("/");
+  if (myMeta.role !== "superadmin") redirect("/api/admin/reject");
 
   // ── Fetch all Clerk users ────────────────────────────────────────────────
   // Single call up to 500 users — fine for MVP. Add pagination loop when needed.
