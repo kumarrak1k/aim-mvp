@@ -90,7 +90,7 @@ export function PublicShell({ children, currentPath }: PublicShellProps) {
         </div>
 
         {/* Mobile / tablet scrollable nav strip */}
-        <div className="border-t border-white/[0.05] px-4 py-2 sm:px-6 lg:hidden">
+        <div className="px-4 py-2 sm:px-6 lg:hidden">
           <nav className="mx-auto flex max-w-7xl gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {NAV_LINKS.map((item) => {
               const active = currentPath === item.href;
