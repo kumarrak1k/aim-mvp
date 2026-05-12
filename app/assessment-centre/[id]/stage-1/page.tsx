@@ -53,7 +53,105 @@ function safeStr(v: unknown): string {
   if (v == null) return "";
   if (typeof v === "string") return v;
   if (typeof v === "number" || typeof v === "boolean") return String(v);
+  if (Array.isArray(v)) return (v as unknown[]).map((x) => safeStr(x)).join("\n");
   return JSON.stringify(v);
+}
+
+/** Parse a markdown pipe-table string into header + body rows */
+function parsePipeTable(lines: string[]): { header: string[]; rows: string[][] } | null {
+  const tableLines = lines.filter((l) => l.trim().startsWith("|"));
+  if (tableLines.length < 2) return null;
+  const dataLines = tableLines.filter((l) => !/^\|[\s\-:|]+\|$/.test(l.trim()));
+  if (dataLines.length < 1) return null;
+  const splitRow = (l: string) =>
+    l.split("|").slice(1, -1).map((c) => c.trim());
+  const [header, ...rows] = dataLines.map(splitRow);
+  return { header, rows };
+}
+
+/** Render a single exhibit's content intelligently */
+function ExhibitContent({ content }: { content: unknown }) {
+  const raw = safeStr(content);
+  const lines = raw.split("\n").map((l) => l.trimEnd());
+
+  // ── Markdown pipe table ──────────────────────────────────────────────────
+  const parsed = parsePipeTable(lines);
+  if (parsed) {
+    return (
+      <div className="overflow-x-auto">
+        <table className="w-full text-xs">
+          <thead>
+            <tr>
+              {parsed.header.map((cell, i) => (
+                <th
+                  key={i}
+                  className="border border-white/10 bg-white/5 px-3 py-2 text-left font-black text-gray-200"
+                >
+                  {cell}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {parsed.rows.map((row, ri) => (
+              <tr key={ri} className={ri % 2 === 0 ? "" : "bg-white/[0.02]"}>
+                {row.map((cell, ci) => (
+                  <td key={ci} className="border border-white/10 px-3 py-1.5 text-gray-300">
+                    {cell}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  }
+
+  // ── Bullet list (lines starting with - / • / *) ──────────────────────────
+  const nonEmpty = lines.filter((l) => l.trim() !== "");
+  const isBullet = (l: string) => /^[-•*]\s/.test(l.trim());
+  if (nonEmpty.length > 0 && nonEmpty.every(isBullet)) {
+    return (
+      <ul className="space-y-1.5">
+        {nonEmpty.map((l, i) => (
+          <li key={i} className="flex items-start gap-2.5 text-sm text-gray-300">
+            <span className="mt-[0.45rem] h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-400/60" />
+            {l.replace(/^[-•*]\s+/, "")}
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
+  // ── Mixed content — group into bullets and prose blocks ─────────────────
+  return (
+    <div className="space-y-1">
+      {nonEmpty.map((l, i) => {
+        if (isBullet(l)) {
+          return (
+            <div key={i} className="flex items-start gap-2.5 text-sm text-gray-300">
+              <span className="mt-[0.45rem] h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-400/60" />
+              <span>{l.replace(/^[-•*]\s+/, "")}</span>
+            </div>
+          );
+        }
+        // Label lines (e.g. "Revenue: $X") rendered as key-value
+        if (/^[A-Z][^:]{0,40}:\s/.test(l)) {
+          const colon = l.indexOf(":");
+          return (
+            <div key={i} className="flex items-baseline gap-2 text-sm">
+              <span className="shrink-0 font-black text-gray-400">{l.slice(0, colon)}:</span>
+              <span className="text-gray-300">{l.slice(colon + 1).trimStart()}</span>
+            </div>
+          );
+        }
+        return (
+          <p key={i} className="text-sm leading-6 text-gray-300">{l}</p>
+        );
+      })}
+    </div>
+  );
 }
 
 function formatTime(seconds: number): string {
@@ -299,11 +397,7 @@ export default function Stage1Page() {
                 <h2 className="mb-3 text-[11px] font-black uppercase tracking-[0.22em] text-cyan-400/90">
                   {safeStr((exhibit as Record<string, unknown>).title)}
                 </h2>
-                <div className="prose prose-invert prose-sm max-w-none text-gray-300 [&_table]:w-full [&_table]:text-xs [&_td]:border [&_td]:border-white/10 [&_td]:px-2 [&_td]:py-1.5 [&_th]:border [&_th]:border-white/10 [&_th]:bg-white/5 [&_th]:px-2 [&_th]:py-1.5 [&_th]:font-black">
-                  <pre className="whitespace-pre-wrap text-xs leading-6 font-mono text-gray-300 bg-transparent border-0 p-0">
-                    {safeStr((exhibit as Record<string, unknown>).content)}
-                  </pre>
-                </div>
+                <ExhibitContent content={(exhibit as Record<string, unknown>).content} />
               </div>
             ))}
 

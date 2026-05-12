@@ -77,9 +77,30 @@ export async function POST(request: NextRequest) {
   let scenario: unknown = null;
 
   if (hasStage1) {
-    const systemPrompt = `You are a senior assessment centre designer creating realistic business case studies for graduate and professional candidates. Generate a rigorous, realistic scenario appropriate for ${role} at ${experienceLevel} in the ${sector} sector. Output must be valid JSON only, no markdown.`;
+    const systemPrompt = `You are a senior assessment centre designer at a top-tier consultancy. You create rigorous, realistic business case studies for graduate and professional assessment centres — equivalent in depth to those used by McKinsey, Deloitte, KPMG, and large corporates. Output must be valid JSON only — no markdown fences, no commentary.`;
 
-    const userPrompt = `Create a case study scenario for a ${role} candidate (${experienceLevel}) in the ${sector} sector. Include: a realistic company name and industry, 3-4 sentence background, a clear business challenge, 2-3 data exhibits with realistic numbers (as markdown tables or bullet lists), a 12-minute timed task instruction, a specific question, and 4 guidance tips for structuring the response. Return JSON matching this schema exactly: { company, industry, overview, challenge, exhibits: [{title, content}], task, question, guidance: [] }`;
+    const userPrompt = `Create a comprehensive, realistic assessment centre case study for a ${role} candidate (${experienceLevel}) in the ${sector} sector.
+
+The case study must be substantial and detailed — matching the depth of a real graduate or professional assessment centre pack. Follow these requirements exactly:
+
+OVERVIEW (overview field): Write 3–4 paragraphs covering: (1) the company's history, size, and core business model; (2) its market position, key products/services, and competitive landscape; (3) recent financial performance trajectory and strategic context. Be specific — include realistic revenue figures, headcount, and market share percentages.
+
+CHALLENGE (challenge field): Write 2–3 paragraphs describing a complex, multi-faceted business problem. Include what triggered it, which parts of the business are affected, and what is at stake if not resolved. Make it nuanced — not a single obvious fix.
+
+EXHIBITS (exhibits field): Provide exactly 3–4 exhibits. Each exhibit content MUST be a STRING (not an array). Use newline characters within the string for line breaks. Format tables using markdown pipe syntax (| Col1 | Col2 |). Include:
+- Exhibit 1: A 3-year financial summary table (revenue, gross profit, EBITDA, net income, key cost lines — show YoY trend)
+- Exhibit 2: An operational or market data table (relevant KPIs vs prior year and vs industry benchmark, or market share by segment)
+- Exhibit 3: Customer or stakeholder insight data (satisfaction metrics, NPS, key feedback themes, segment breakdown)
+- Exhibit 4 (optional but recommended): Workforce data, strategic options summary, or risk register — whichever is most relevant to the challenge
+
+TASK (task field): A realistic 12-minute written task instruction framed as if the candidate is a consultant or analyst advising senior leadership. Be specific about the role they are playing and what deliverable is expected.
+
+QUESTION (question field): One substantive, specific question that requires synthesis of at least two exhibits. It should demand a structured recommendation with supporting evidence — not a simple factual answer.
+
+GUIDANCE (guidance field): Provide 5 practical tips for structuring an excellent response — include advice on frameworks (e.g. issue tree, pyramid principle), how to use the data, and common pitfalls to avoid.
+
+Return valid JSON matching this schema exactly:
+{ "company": string, "industry": string, "overview": string, "challenge": string, "exhibits": [{"title": string, "content": string}], "task": string, "question": string, "guidance": string[] }`;
 
     const aiResponse = await callOpenAIChat({
       model: "gpt-4o",
@@ -87,9 +108,9 @@ export async function POST(request: NextRequest) {
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt },
       ],
-      temperature: 0.8,
-      max_tokens: 2000,
-    }, { timeoutMs: 60000 });
+      temperature: 0.7,
+      max_tokens: 4000,
+    }, { timeoutMs: 90000 });
 
     const raw = stripMarkdownFences(aiResponse.choices[0].message.content);
     try {
