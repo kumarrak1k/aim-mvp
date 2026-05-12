@@ -13,7 +13,7 @@ const schema = z.object({
   targetProgramOrRole: z.string().trim().min(1).max(300),
   institution: z.string().trim().max(200).default(""),
   whyThis: z.string().trim().min(20).max(2000),
-  background: z.string().trim().min(20).max(3000),
+  background: z.string().trim().min(20).max(8000),
   achievements: z.string().trim().min(10).max(2000),
   wordLimit: z.number().int().min(300).max(1000).default(500),
 });

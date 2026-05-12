@@ -65,6 +65,7 @@ export default function PersonalStatementPage() {
     targetProgramOrRole.trim() &&
     whyThis.trim().length >= 20 &&
     background.trim().length >= 20 &&
+    background.length <= 8000 &&
     achievements.trim().length >= 10;
 
   async function handleSubmit(e: React.FormEvent) {
@@ -79,10 +80,11 @@ export default function PersonalStatementPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ statementType, targetProgramOrRole, institution, whyThis, background, achievements, wordLimit }),
       });
-      const data = await res.json() as { result?: PSResult; error?: string; upgrade?: boolean };
+      const data = await res.json() as { result?: PSResult; error?: string; details?: string[]; upgrade?: boolean };
       if (!res.ok) {
         if (data.upgrade) { setUpgrade(true); return; }
-        setError(data.error ?? "Something went wrong.");
+        const detail = data.details?.join(", ");
+        setError(detail ? `${data.error ?? "Invalid request."} (${detail})` : (data.error ?? "Something went wrong."));
         return;
       }
       setResult(data.result!);
@@ -240,6 +242,9 @@ export default function PersonalStatementPage() {
                   placeholder="Academic qualifications, relevant work experience, courses, extracurriculars, skills…"
                   rows={4}
                   className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-600 outline-none focus:border-emerald-400/40 focus:ring-1 focus:ring-emerald-400/20 resize-y" required />
+                <p className={`mt-1 text-right text-[10px] ${background.length > 8000 ? "text-red-400" : "text-gray-600"}`}>
+                  {background.length.toLocaleString()} / 8,000 characters
+                </p>
               </div>
 
               <div>
