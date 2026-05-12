@@ -136,7 +136,7 @@ function CompanyBrandedHeader({
 
 function PersonalPracticeHeader() {
   return (
-    <header className="sticky top-0 z-50 bg-[#1a0b2e]/95">
+    <header className="sticky top-0 z-50 bg-[#2d1b4e]/95">
       <div className="mx-auto flex w-full max-w-7xl items-center gap-3 px-4 py-3 sm:px-6 lg:gap-6 lg:px-8 lg:py-3">
         {/* Logo */}
         <div className="shrink-0">
