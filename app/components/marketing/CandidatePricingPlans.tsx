@@ -15,7 +15,7 @@ const PROFESSIONAL: Record<PricingCurrency, PriceSet> = {
 };
 
 const ADVANCED: Record<PricingCurrency, PriceSet> = {
-  GBP: { monthly: "£29",  annual: "£249",  annualMonthly: "£20.75" },
+  GBP: { monthly: "£39",  annual: "£337",  annualMonthly: "£28.08" },
   USD: { monthly: "$37",  annual: "$299",  annualMonthly: "$24.92" },
   EUR: { monthly: "€32",  annual: "€279",  annualMonthly: "€23.25" },
 };
