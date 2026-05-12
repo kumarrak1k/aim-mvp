@@ -87,6 +87,9 @@ export default function Stage3Page() {
 
   const wordCount = transcript.trim() === "" ? 0 : transcript.trim().split(/\s+/).length;
 
+  // Ensure the page starts at the top when navigating from stage-2
+  useEffect(() => { window.scrollTo({ top: 0 }); }, []);
+
   useEffect(() => {
     fetch(`/api/assessment-centre/${id}`)
       .then((r) => r.json())

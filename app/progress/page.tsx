@@ -10,6 +10,30 @@ import {
   emptyCategoryAverages,
 } from "./lib/buildCategoryAverages";
 
+// ─── Assessment Centre session type ────────────────────────────────────────
+type ACReport = {
+  overallScore?: number;
+  readinessLevel?: string;
+  headline?: string;
+  topStrengths?: string[];
+  priorityImprovements?: string[];
+  competencyScores?: Record<string, number>;
+};
+
+type ACSession = {
+  id: string;
+  role: string;
+  sector: string;
+  experienceLevel: string;
+  selectedStages: string[];
+  overallScore: number | null;
+  caseStudyScore: number | null;
+  interviewScore: number | null;
+  presentationScore: number | null;
+  report: ACReport | null;
+  createdAt: string;
+};
+
 type CategoryBreakdown = {
   content?: number;
   clarity?: number;
@@ -79,9 +103,17 @@ const emptyStats: ProgressStats = {
 
 export default function ProgressPage() {
   const { isLoaded, isSignedIn } = useUser();
+  const [activeTab, setActiveTab] = useState<"practice" | "assessment">("practice");
+
+  // ── Interview practice sessions ────────────────────────────────────────
   const [sessions, setSessions] = useState<DashboardSession[]>([]);
   const [sessionsLoading, setSessionsLoading] = useState(false);
   const [sessionsError, setSessionsError] = useState("");
+
+  // ── Assessment centre sessions ─────────────────────────────────────────
+  const [acSessions, setAcSessions] = useState<ACSession[]>([]);
+  const [acLoading, setAcLoading] = useState(false);
+  const [acError, setAcError] = useState("");
 
   useEffect(() => {
     if (!isLoaded || !isSignedIn) {
@@ -133,6 +165,32 @@ export default function ProgressPage() {
     return () => {
       cancelled = true;
     };
+  }, [isLoaded, isSignedIn]);
+
+  // ── Fetch assessment centre sessions ──────────────────────────────────
+  useEffect(() => {
+    if (!isLoaded || !isSignedIn) {
+      setAcSessions([]);
+      return;
+    }
+    let cancelled = false;
+    const loadAC = async () => {
+      setAcLoading(true);
+      setAcError("");
+      try {
+        const res = await fetch("/api/assessment-centre/sessions");
+        const data = await res.json() as { sessions?: ACSession[]; error?: string };
+        if (cancelled) return;
+        if (!res.ok || data.error) { setAcError(data.error ?? "Could not load results."); return; }
+        setAcSessions(Array.isArray(data.sessions) ? data.sessions : []);
+      } catch {
+        if (!cancelled) setAcError("Could not load assessment centre results.");
+      } finally {
+        if (!cancelled) setAcLoading(false);
+      }
+    };
+    void loadAC();
+    return () => { cancelled = true; };
   }, [isLoaded, isSignedIn]);
 
   const stats = useMemo<ProgressStats>(() => {
@@ -189,59 +247,91 @@ export default function ProgressPage() {
   return (
     <CandidateAppShell currentPath="/progress">
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:py-10">
+
+        {/* ── Page header ────────────────────────────────────────────────── */}
         <section className="relative overflow-hidden rounded-[2.25rem] border border-white/10 bg-white/[0.065] p-6 text-center shadow-2xl shadow-purple-950/20 backdrop-blur-2xl sm:p-10 lg:p-12">
           <div className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-cyan-400/10 blur-3xl" />
           <div className="pointer-events-none absolute -bottom-28 left-10 h-80 w-80 rounded-full bg-purple-500/15 blur-3xl" />
-
           <div className="relative mx-auto max-w-3xl">
             <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-cyan-300/20 bg-cyan-300/10 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-cyan-100">
               Track progress
             </div>
-
             <h1 className="text-4xl font-black leading-[1.02] tracking-[-0.055em] sm:text-5xl lg:text-6xl">
-              See whether your interview performance is{" "}
+              See whether your performance is{" "}
               <span className="bg-gradient-to-r from-purple-200 via-fuchsia-200 to-cyan-200 bg-clip-text text-transparent">
                 actually improving.
               </span>
             </h1>
-
             <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-gray-300 sm:text-lg">
-              Your completed practice sessions are saved securely and turned
-              into a clear improvement dashboard: score trends, readiness
-              signal, category strengths and your next focus area.
+              Every completed session is saved and turned into a clear
+              improvement dashboard — score trends, readiness signals, category
+              strengths and your personalised focus areas.
             </p>
-
-            <div className="mt-7 flex justify-center">
-              <Link href="/practice">
-                <button className="rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-7 py-3.5 text-sm font-black text-white shadow-2xl shadow-purple-900/30 transition hover:scale-[1.02]">
-                  Start new practice session
-                </button>
-              </Link>
-            </div>
           </div>
         </section>
 
-        {!isLoaded && <ProgressLoadingState />}
-
-        {isLoaded && !isSignedIn && <SignedOutState />}
-
-        {isLoaded && isSignedIn && sessionsLoading && <ProgressLoadingState />}
-
-        {isLoaded && isSignedIn && sessionsError && (
-          <ErrorState message={sessionsError} />
+        {/* ── Tab bar (only when signed in) ──────────────────────────────── */}
+        {isLoaded && isSignedIn && (
+          <div className="mt-6 flex gap-1 rounded-2xl border border-white/[0.08] bg-white/[0.04] p-1.5 backdrop-blur-xl">
+            <button
+              onClick={() => setActiveTab("practice")}
+              className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-black transition-all ${
+                activeTab === "practice"
+                  ? "bg-gradient-to-r from-purple-500/20 to-fuchsia-500/20 border border-purple-400/25 text-white shadow-sm"
+                  : "text-gray-500 hover:text-gray-300"
+              }`}
+            >
+              <span className={`h-1.5 w-1.5 rounded-full ${activeTab === "practice" ? "bg-fuchsia-400" : "bg-gray-600"}`} />
+              Interview Practice
+              {sessions.length > 0 && (
+                <span className="ml-1 rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-black text-gray-400">
+                  {sessions.length}
+                </span>
+              )}
+            </button>
+            <button
+              onClick={() => setActiveTab("assessment")}
+              className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-black transition-all ${
+                activeTab === "assessment"
+                  ? "bg-gradient-to-r from-cyan-500/20 to-purple-500/20 border border-cyan-400/25 text-white shadow-sm"
+                  : "text-gray-500 hover:text-gray-300"
+              }`}
+            >
+              <span className={`h-1.5 w-1.5 rounded-full ${activeTab === "assessment" ? "bg-cyan-400" : "bg-gray-600"}`} />
+              Assessment Centre
+              {acSessions.length > 0 && (
+                <span className="ml-1 rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-black text-gray-400">
+                  {acSessions.length}
+                </span>
+              )}
+            </button>
+          </div>
         )}
 
-        {isLoaded &&
-          isSignedIn &&
-          !sessionsLoading &&
-          !sessionsError &&
-          !stats.latestSession && <EmptyProgressState />}
+        {/* ── Not loaded / signed out ────────────────────────────────────── */}
+        {!isLoaded && <ProgressLoadingState />}
+        {isLoaded && !isSignedIn && <SignedOutState />}
 
-        {isLoaded &&
-          isSignedIn &&
-          !sessionsLoading &&
-          !sessionsError &&
-          stats.latestSession && <ProgressDashboard stats={stats} />}
+        {/* ── Interview Practice tab ─────────────────────────────────────── */}
+        {isLoaded && isSignedIn && activeTab === "practice" && (
+          <>
+            {sessionsLoading && <ProgressLoadingState />}
+            {!sessionsLoading && sessionsError && <ErrorState message={sessionsError} />}
+            {!sessionsLoading && !sessionsError && !stats.latestSession && <EmptyProgressState />}
+            {!sessionsLoading && !sessionsError && stats.latestSession && <ProgressDashboard stats={stats} />}
+          </>
+        )}
+
+        {/* ── Assessment Centre tab ──────────────────────────────────────── */}
+        {isLoaded && isSignedIn && activeTab === "assessment" && (
+          <>
+            {acLoading && <ProgressLoadingState />}
+            {!acLoading && acError && <ErrorState message={acError} />}
+            {!acLoading && !acError && acSessions.length === 0 && <EmptyACState />}
+            {!acLoading && !acError && acSessions.length > 0 && <ACDashboard sessions={acSessions} />}
+          </>
+        )}
+
       </main>
     </CandidateAppShell>
   );
@@ -674,6 +764,263 @@ function ErrorState({ message }: { message: string }) {
       </p>
       <p className="mt-2 text-sm leading-7 text-gray-300">{message}</p>
     </section>
+  );
+}
+
+// ─── Assessment Centre components ───────────────────────────────────────────
+
+function EmptyACState() {
+  return (
+    <div className="mt-6 space-y-4">
+      <section className="rounded-[2rem] border border-white/10 bg-white/[0.055] p-6 shadow-2xl shadow-purple-950/10 backdrop-blur-2xl">
+        <p className="text-xs font-black uppercase tracking-[0.2em] text-cyan-300">No results yet</p>
+        <h2 className="mt-3 text-3xl font-black tracking-[-0.045em] text-white">
+          Complete your first Assessment Centre.
+        </h2>
+        <p className="mt-3 max-w-2xl text-sm leading-7 text-gray-300">
+          Once you finish a full mock assessment centre session — case study,
+          interview, and presentation — your scores and AI-generated report
+          will appear here.
+        </p>
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+          <Link href="/assessment-centre">
+            <button className="rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-6 py-4 text-sm font-black text-white shadow-2xl shadow-purple-900/30 transition hover:scale-[1.01]">
+              Start assessment centre →
+            </button>
+          </Link>
+          <Link href="/for-candidates/assessment-centre">
+            <button className="rounded-2xl border border-cyan-400/20 bg-cyan-400/[0.07] px-6 py-4 text-sm font-black text-cyan-100 transition hover:bg-cyan-400/[0.12]">
+              What&apos;s included
+            </button>
+          </Link>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function ACScoreBar({ label, score, colour = "purple" }: { label: string; score: number | null; colour?: string }) {
+  if (score === null) return null;
+  const safe = Math.max(0, Math.min(10, score));
+  const pct = safe * 10;
+  const colMap: Record<string, string> = {
+    purple: "from-purple-500 to-fuchsia-400",
+    cyan: "from-cyan-400 to-blue-400",
+    amber: "from-amber-400 to-orange-400",
+    emerald: "from-emerald-400 to-teal-400",
+  };
+  const gradient = colMap[colour] ?? colMap.purple;
+  const textCol =
+    safe >= 7 ? "text-emerald-400" : safe >= 5 ? "text-amber-300" : "text-rose-400";
+  return (
+    <div>
+      <div className="mb-1.5 flex items-center justify-between">
+        <span className="text-sm font-black text-white">{label}</span>
+        <span className={`text-sm font-black ${textCol}`}>{safe.toFixed(1)}/10</span>
+      </div>
+      <div className="h-3 overflow-hidden rounded-full bg-white/10">
+        <div
+          className={`h-full rounded-full bg-gradient-to-r ${gradient} shadow-[0_0_12px_rgba(168,85,247,0.3)]`}
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+    </div>
+  );
+}
+
+function ACSessionRow({ session }: { session: ACSession }) {
+  const score = session.overallScore;
+  const scoreCol =
+    score === null ? "text-gray-500"
+    : score >= 7 ? "text-emerald-400"
+    : score >= 5 ? "text-amber-300"
+    : "text-rose-400";
+
+  const stageLabels: Record<string, string> = {
+    stage1: "Case Study",
+    stage2: "Interview",
+    stage3: "Presentation",
+  };
+
+  return (
+    <Link href={`/assessment-centre/${session.id}/report`} className="block">
+      <div className="grid gap-3 rounded-[1.35rem] border border-white/10 bg-black/25 p-4 transition hover:-translate-y-0.5 hover:border-cyan-300/25 hover:bg-white/[0.055] sm:grid-cols-[minmax(0,1fr)_100px] sm:items-center">
+        <div className="min-w-0">
+          <div className="mb-2 flex flex-wrap items-center gap-1.5">
+            {session.selectedStages.map((s) => (
+              <span key={s} className="rounded-full border border-cyan-300/15 bg-cyan-300/10 px-2.5 py-0.5 text-[10px] font-black text-cyan-200">
+                {stageLabels[s] ?? s}
+              </span>
+            ))}
+          </div>
+          <p className="truncate text-sm font-black text-white">{session.role}</p>
+          <p className="mt-0.5 text-xs leading-5 text-gray-500">
+            {session.sector} · {session.experienceLevel} · {formatSessionDate(session.createdAt)}
+          </p>
+        </div>
+        <div className="rounded-2xl border border-white/10 bg-white/[0.05] p-3 text-center">
+          <p className={`text-2xl font-black tracking-[-0.04em] ${scoreCol}`}>
+            {score !== null ? score.toFixed(1) : "—"}
+          </p>
+          <p className="text-[10px] font-black uppercase tracking-[0.16em] text-gray-500">/10</p>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+function ACDashboard({ sessions }: { sessions: ACSession[] }) {
+  const latest = sessions[0];
+  const scores = sessions.map((s) => s.overallScore).filter((s): s is number => s !== null);
+  const avg = scores.length ? Math.round((scores.reduce((a, b) => a + b, 0) / scores.length) * 10) / 10 : null;
+  const best = scores.length ? Math.max(...scores) : null;
+  const report = latest.report;
+
+  const competencyLabels: Record<string, string> = {
+    analyticalThinking: "Analytical Thinking",
+    communication: "Communication",
+    commercialAwareness: "Commercial Awareness",
+    leadership: "Leadership",
+    problemSolving: "Problem Solving",
+  };
+
+  return (
+    <div className="mt-6 space-y-6">
+      {/* Metrics */}
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="rounded-[1.55rem] border border-cyan-300/20 bg-cyan-300/10 p-5 shadow-2xl backdrop-blur-2xl">
+          <p className="text-xs font-black uppercase tracking-[0.18em] text-gray-400">Latest score</p>
+          <p className="mt-3 text-3xl font-black tracking-[-0.045em] text-white">
+            {latest.overallScore !== null ? `${latest.overallScore.toFixed(1)}/10` : "—"}
+          </p>
+          <p className="mt-2 text-xs font-semibold text-gray-500">{formatSessionDate(latest.createdAt)}</p>
+        </div>
+        <div className="rounded-[1.55rem] border border-white/10 bg-white/[0.055] p-5 shadow-2xl backdrop-blur-2xl">
+          <p className="text-xs font-black uppercase tracking-[0.18em] text-gray-400">Average</p>
+          <p className="mt-3 text-3xl font-black tracking-[-0.045em] text-white">
+            {avg !== null ? `${avg}/10` : "—"}
+          </p>
+          <p className="mt-2 text-xs font-semibold text-gray-500">{sessions.length} completed session{sessions.length !== 1 ? "s" : ""}</p>
+        </div>
+        <div className="rounded-[1.55rem] border border-white/10 bg-white/[0.055] p-5 shadow-2xl backdrop-blur-2xl">
+          <p className="text-xs font-black uppercase tracking-[0.18em] text-gray-400">Best score</p>
+          <p className="mt-3 text-3xl font-black tracking-[-0.045em] text-white">
+            {best !== null ? `${best.toFixed(1)}/10` : "—"}
+          </p>
+          <p className="mt-2 text-xs font-semibold text-gray-500">Highest session</p>
+        </div>
+        <div className="rounded-[1.55rem] border border-white/10 bg-white/[0.055] p-5 shadow-2xl backdrop-blur-2xl">
+          <p className="text-xs font-black uppercase tracking-[0.18em] text-gray-400">Readiness</p>
+          <p className="mt-3 text-xl font-black tracking-[-0.03em] text-white">
+            {report?.readinessLevel ?? "—"}
+          </p>
+          <p className="mt-2 text-xs font-semibold text-gray-500">From latest report</p>
+        </div>
+      </div>
+
+      <div className="grid gap-6 xl:grid-cols-2">
+        {/* Latest session stage breakdown */}
+        <section className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.055] p-5 shadow-2xl shadow-purple-950/10 backdrop-blur-2xl sm:p-6">
+          <p className="text-xs font-black uppercase tracking-[0.2em] text-cyan-300">Latest session</p>
+          <h2 className="mt-2 text-2xl font-black tracking-[-0.035em] text-white">Stage breakdown</h2>
+          <p className="mt-1 text-sm text-gray-400">{latest.role} · {latest.sector}</p>
+          <div className="mt-6 space-y-4">
+            {latest.caseStudyScore !== null && (
+              <ACScoreBar label="Case Study" score={latest.caseStudyScore} colour="purple" />
+            )}
+            {latest.interviewScore !== null && (
+              <ACScoreBar label="Interview" score={latest.interviewScore} colour="cyan" />
+            )}
+            {latest.presentationScore !== null && (
+              <ACScoreBar label="Presentation" score={latest.presentationScore} colour="amber" />
+            )}
+            {latest.overallScore !== null && (
+              <div className="mt-2 border-t border-white/[0.07] pt-4">
+                <ACScoreBar label="Overall" score={latest.overallScore} colour="emerald" />
+              </div>
+            )}
+          </div>
+          <Link href={`/assessment-centre/${latest.id}/report`}>
+            <button className="mt-6 w-full rounded-2xl border border-cyan-300/20 bg-cyan-300/[0.08] px-5 py-3 text-sm font-black text-cyan-100 transition hover:bg-cyan-300/15">
+              View full report →
+            </button>
+          </Link>
+        </section>
+
+        {/* Competency scores or strengths/improvements */}
+        <section className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.055] p-5 shadow-2xl shadow-purple-950/10 backdrop-blur-2xl sm:p-6">
+          {report?.competencyScores && Object.keys(report.competencyScores).length > 0 ? (
+            <>
+              <p className="text-xs font-black uppercase tracking-[0.2em] text-purple-300">Latest session</p>
+              <h2 className="mt-2 text-2xl font-black tracking-[-0.035em] text-white">Competency scores</h2>
+              <p className="mt-1 text-sm text-gray-400">From the final assessment report</p>
+              <div className="mt-6 space-y-4">
+                {Object.entries(report.competencyScores).map(([key, val]) => (
+                  <ACScoreBar
+                    key={key}
+                    label={competencyLabels[key] ?? key}
+                    score={val}
+                    colour="purple"
+                  />
+                ))}
+              </div>
+            </>
+          ) : (
+            <>
+              <p className="text-xs font-black uppercase tracking-[0.2em] text-purple-300">Latest report</p>
+              <h2 className="mt-2 text-2xl font-black tracking-[-0.035em] text-white">Feedback summary</h2>
+              {report?.headline && (
+                <p className="mt-3 text-sm leading-7 text-gray-300 italic">&ldquo;{report.headline}&rdquo;</p>
+              )}
+              {report?.topStrengths && report.topStrengths.length > 0 && (
+                <div className="mt-4">
+                  <p className="mb-2 text-[11px] font-black uppercase tracking-[0.18em] text-emerald-400">Strengths</p>
+                  <ul className="space-y-1.5">
+                    {report.topStrengths.slice(0, 3).map((s, i) => (
+                      <li key={i} className="flex items-start gap-2 text-sm text-gray-300">
+                        <span className="mt-0.5 text-emerald-400">✓</span>{s}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {report?.priorityImprovements && report.priorityImprovements.length > 0 && (
+                <div className="mt-4">
+                  <p className="mb-2 text-[11px] font-black uppercase tracking-[0.18em] text-amber-400">To improve</p>
+                  <ul className="space-y-1.5">
+                    {report.priorityImprovements.slice(0, 3).map((s, i) => (
+                      <li key={i} className="flex items-start gap-2 text-sm text-gray-300">
+                        <span className="mt-0.5 text-amber-400">→</span>{s}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </>
+          )}
+        </section>
+      </div>
+
+      {/* Session history */}
+      <section className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.055] p-5 shadow-2xl shadow-purple-950/10 backdrop-blur-2xl sm:p-6">
+        <div className="flex items-center justify-between gap-4 mb-5">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.2em] text-cyan-300">History</p>
+            <h2 className="mt-1 text-2xl font-black tracking-[-0.035em] text-white">All completed sessions</h2>
+          </div>
+          <Link href="/assessment-centre">
+            <button className="shrink-0 rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-5 py-2.5 text-xs font-black text-white shadow-lg transition hover:scale-[1.02]">
+              New session →
+            </button>
+          </Link>
+        </div>
+        <div className="space-y-3">
+          {sessions.map((s) => (
+            <ACSessionRow key={s.id} session={s} />
+          ))}
+        </div>
+      </section>
+    </div>
   );
 }
 

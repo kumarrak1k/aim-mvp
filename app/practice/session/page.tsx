@@ -1375,6 +1375,42 @@ export default function PracticeSessionPage() {
       );
     }
 
+    // Assessment centre sessions — show a purposeful stage-transition
+    // screen instead of the full SessionSummary. The router.push inside
+    // saveSession() will redirect as soon as the API calls complete.
+    if (assessmentCentreId) {
+      return (
+        <PracticeSessionShell assessmentMode={assessmentMode} templateContext={templateContext}>
+          <div className="flex min-h-[72vh] flex-col items-center justify-center gap-8 px-4 text-center">
+            <div className="flex h-20 w-20 items-center justify-center rounded-[1.75rem] border border-fuchsia-400/25 bg-fuchsia-500/[0.10] shadow-xl shadow-fuchsia-900/20">
+              <svg className="h-8 w-8 animate-spin text-fuchsia-400" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+              </svg>
+            </div>
+            <div className="max-w-sm">
+              <p className="text-[11px] font-black uppercase tracking-[0.24em] text-fuchsia-300">
+                Stage 2 Complete
+              </p>
+              <h2 className="mt-2 text-2xl font-black tracking-[-0.04em] text-white">
+                Preparing your presentation brief…
+              </h2>
+              <p className="mt-3 text-sm leading-7 text-gray-400">
+                Your interview answers are being scored and a tailored
+                presentation topic is being generated. Stage 3 will start
+                automatically.
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="h-2 w-2 rounded-full bg-emerald-400" />
+              <span className="h-2 w-2 rounded-full bg-fuchsia-400 animate-pulse" />
+              <span className="h-2 w-2 rounded-full bg-white/20" />
+            </div>
+          </div>
+        </PracticeSessionShell>
+      );
+    }
+
     return (
       <PracticeSessionShell assessmentMode={assessmentMode} templateContext={templateContext}>
         <SessionSummary
