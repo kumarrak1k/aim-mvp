@@ -16,7 +16,6 @@ import { useBrowserSpeech } from "../hooks/useBrowserSpeech";
 import { useCameraTracking } from "../hooks/useCameraTracking";
 import { useDeviceProfile } from "../hooks/useDeviceProfile";
 import { useQuestionAudio } from "../hooks/useQuestionAudio";
-import { unlockAudioOutput } from "../lib/iosAudioUnlock";
 import { defaultAudioMetrics } from "../config";
 import type {
   AudioMetrics,
@@ -459,7 +458,7 @@ export default function PracticeSessionPage() {
   );
 
   useEffect(() => {
-    if (!question || !speakerEnabled || manualDeviceMode) return;
+    if (!question || !speakerEnabled || manualDeviceMode || isTablet) return;
     if (!hasUserInteracted) return;
     if (question === lastSpokenQuestionRef.current) return;
 
@@ -490,6 +489,7 @@ export default function PracticeSessionPage() {
     };
   }, [
     hasUserInteracted,
+    isTablet,
     lastSpokenQuestionRef,
     manualDeviceMode,
     playQuestionWithNaturalAudio,
@@ -499,10 +499,11 @@ export default function PracticeSessionPage() {
   ]);
 
   useEffect(() => {
-    if (!question || !interviewStarted || !manualDeviceMode) return;
+    if (!question || !interviewStarted || (!manualDeviceMode && !isTablet)) return;
     void prepareQuestionAudio(question, speakerPreference);
   }, [
     interviewStarted,
+    isTablet,
     manualDeviceMode,
     prepareQuestionAudio,
     question,
@@ -907,8 +908,8 @@ export default function PracticeSessionPage() {
         setActiveQuestion(nextQuestion);
         setQuestion(nextQuestion);
 
-        if (manualDeviceMode) {
-          // Phone: user must tap — pre-fetch audio so it's ready when they do.
+        if (manualDeviceMode || isTablet) {
+          // Phone/tablet: user must tap — pre-fetch audio so it's ready when they do.
           setQuestionAudioMessage("Preparing natural question audio...");
           void prepareQuestionAudio(nextQuestion, speakerPreference);
         } else if (speakerEnabled) {
@@ -930,6 +931,7 @@ export default function PracticeSessionPage() {
       candidateProfile,
       cleanupPreparedQuestionAudio,
       clearAudioSamples,
+      isTablet,
       manualDeviceMode,
       prepareQuestionAudio,
       resetTranscript,
@@ -947,9 +949,6 @@ export default function PracticeSessionPage() {
   );
 
   const startInterview = useCallback(async () => {
-    // Unlock iOS audio output synchronously — must be the very first thing
-    // before any await so the user gesture chain is intact.
-    unlockAudioOutput();
     setHasUserInteracted(true);
     setInterviewStarted(true);
     setInterviewFinished(false);
@@ -968,7 +967,7 @@ export default function PracticeSessionPage() {
     awaitingAutoRecordQuestionRef.current = null;
     questionPlaybackStartedRef.current = false;
 
-    if (speakerEnabled && !manualDeviceMode && voiceSupported) {
+    if (speakerEnabled && !manualDeviceMode && !isTablet && voiceSupported) {
       try {
         setQuestionAudioMessage("Preparing microphone access...");
         await primeAudioInput();
