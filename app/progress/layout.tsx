@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { requireTosAcceptance } from "@/app/lib/legal";
 
 export const metadata: Metadata = {
   title: "Interview Progress Dashboard",
@@ -28,10 +29,11 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ProgressLayout({
+export default async function ProgressLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  await requireTosAcceptance("/progress");
   return children;
 }

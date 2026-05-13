@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { requireTosAcceptance } from "@/app/lib/legal";
 
 export const metadata: Metadata = {
   title: "AI Mock Interview Practice",
@@ -33,10 +34,11 @@ export const metadata: Metadata = {
   },
 };
 
-export default function PracticeLayout({
+export default async function PracticeLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  await requireTosAcceptance("/practice");
   return children;
 }

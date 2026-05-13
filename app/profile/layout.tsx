@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { requireTosAcceptance } from "@/app/lib/legal";
 
 export const metadata: Metadata = {
   title: "Candidate Profile Builder",
@@ -37,10 +38,11 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ProfileLayout({
+export default async function ProfileLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  await requireTosAcceptance("/profile");
   return children;
 }
