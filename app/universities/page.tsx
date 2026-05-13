@@ -133,7 +133,7 @@ export default function UniversitiesPage() {
         </section>
 
         {/* Custom pricing contact */}
-        <section className="mx-auto max-w-4xl px-4 pb-20 sm:px-6">
+        <section className="mx-auto max-w-4xl px-4 pb-24 sm:px-6">
           <div className="rounded-[2rem] border border-purple-300/20 bg-purple-300/[0.06] p-8 sm:p-10">
             <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-purple-400/25 bg-purple-400/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-purple-200">
               Custom pricing
@@ -171,26 +171,6 @@ export default function UniversitiesPage() {
           </div>
         </section>
 
-        {/* CTA */}
-        <section className="mx-auto max-w-3xl px-4 pb-24 text-center sm:px-6">
-          <h2 className="mb-4 text-2xl font-black tracking-[-0.04em] sm:text-3xl">
-            Ready to talk?
-          </h2>
-          <p className="mb-8 text-base text-gray-400">
-            Our team works with university careers services to set up trials, provide
-            institutional pricing, and handle procurement paperwork. Get in touch and
-            we&rsquo;ll respond within one working day.
-          </p>
-          <a
-            href="mailto:universities@aicareermentor.co.uk"
-            className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-8 py-4 text-base font-black text-white shadow-2xl shadow-purple-950/40 transition hover:scale-[1.02]"
-          >
-            Contact us →
-          </a>
-          <p className="mt-3 text-xs text-gray-600">
-            universities@aicareermentor.co.uk
-          </p>
-        </section>
       </div>
     </PublicShell>
   );
