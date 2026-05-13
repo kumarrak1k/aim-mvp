@@ -61,6 +61,9 @@ export function NeutralShell({ children }: NeutralShellProps) {
               <Link href="/for-business" className="hover:text-gray-400">
                 Corporates
               </Link>
+              <Link href="/contact" className="hover:text-gray-400">
+                Contact
+              </Link>
               <Link href="/privacy" className="hover:text-gray-400">
                 Privacy
               </Link>
