@@ -34,14 +34,27 @@ export function useDeviceProfile() {
     };
   }, []);
 
-  const manualDeviceMode = useMemo(() => {
-    return isTouchDevice || isSmallScreen || isAppleMobileDevice;
-  }, [isTouchDevice, isSmallScreen, isAppleMobileDevice]);
+  // Phone: small screen (≤767px) — full manual mode, no auto-play
+  const isPhone = useMemo(() => isSmallScreen, [isSmallScreen]);
+
+  // Tablet: large touch screen (iPad, Android tablet, Surface)
+  // Auto-play is allowed (user gesture on "Start interview" unlocks iOS audio)
+  // but camera still requires a manual tap for the permission prompt.
+  const isTablet = useMemo(
+    () => !isSmallScreen && (isAppleMobileDevice || isTouchDevice),
+    [isAppleMobileDevice, isSmallScreen, isTouchDevice]
+  );
+
+  // manualDeviceMode = phones only. Disables auto-play entirely and skips
+  // primeAudioInput (no reliable gesture chain on phones).
+  const manualDeviceMode = useMemo(() => isPhone, [isPhone]);
 
   return {
     isTouchDevice,
     isSmallScreen,
     isAppleMobileDevice,
+    isPhone,
+    isTablet,
     manualDeviceMode,
   };
 }

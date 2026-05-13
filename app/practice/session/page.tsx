@@ -73,7 +73,7 @@ import {
 export default function PracticeSessionPage() {
   const router = useRouter();
   const { isLoaded, isSignedIn, user } = useUser();
-  const { manualDeviceMode } = useDeviceProfile();
+  const { manualDeviceMode, isTablet } = useDeviceProfile();
 
   const [sessionConfig, setSessionConfig] = useState<ReturnType<
     typeof parseSessionConfig
@@ -156,7 +156,9 @@ export default function PracticeSessionPage() {
   const awaitingAutoRecordQuestionRef = useRef<string | null>(null);
   const questionPlaybackStartedRef = useRef(false);
 
-  const requiresManualCameraStart = manualDeviceMode;
+  // Camera requires a manual tap on any touch device (iOS needs a user gesture
+  // for the camera permission prompt regardless of screen size).
+  const requiresManualCameraStart = manualDeviceMode || isTablet;
 
   const practiceMode = useMemo<PracticeMode>(() => {
     if (speakerEnabled && cameraEnabled) return "voice-camera";
@@ -216,6 +218,7 @@ export default function PracticeSessionPage() {
     interviewStarted,
     requiresManualCameraStart,
     cameraUserStarted,
+    isTablet,
   });
 
   const {
@@ -904,6 +907,7 @@ export default function PracticeSessionPage() {
         setQuestion(nextQuestion);
 
         if (manualDeviceMode) {
+          // Phone: user must tap — pre-fetch audio so it's ready when they do.
           setQuestionAudioMessage("Preparing natural question audio...");
           void prepareQuestionAudio(nextQuestion, speakerPreference);
         } else if (speakerEnabled) {

@@ -18,11 +18,13 @@ export function useCameraTracking({
   interviewStarted,
   requiresManualCameraStart,
   cameraUserStarted,
+  isTablet = false,
 }: {
   cameraEnabled: boolean;
   interviewStarted: boolean;
   requiresManualCameraStart: boolean;
   cameraUserStarted: boolean;
+  isTablet?: boolean;
 }) {
   const [cameraReady, setCameraReady] = useState(false);
   const [cameraError, setCameraError] = useState("");
@@ -206,12 +208,16 @@ export function useCameraTracking({
       setCameraError("");
 
       if (!cameraStreamRef.current) {
+        // Tablets/phones: request by aspect ratio only — letting the device
+        // choose its native resolution avoids iOS applying digital zoom to
+        // reach a fixed pixel count from a different sensor crop.
+        // Desktop: keep the explicit 640×480 that face-tracking is tuned for.
+        const videoConstraints: MediaTrackConstraints = isTablet
+          ? { facingMode: "user", aspectRatio: { ideal: 4 / 3 } }
+          : { facingMode: "user", width: { ideal: 640 }, height: { ideal: 480 } };
+
         cameraStreamRef.current = await navigator.mediaDevices.getUserMedia({
-          video: {
-            facingMode: "user",
-            width: { ideal: 640 },
-            height: { ideal: 480 },
-          },
+          video: videoConstraints,
           audio: false,
         });
       }
