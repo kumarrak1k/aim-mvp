@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { SpeakerPreference } from "../types";
+import { unlockAudioOutput } from "../lib/iosAudioUnlock";
 
 type PlayPreparedQuestionAudioOptions = {
   text: string;
@@ -565,6 +566,12 @@ export function useQuestionAudio({
       startRecordingAfterPlayback = false,
       fallbackToBrowserSpeech,
     }: PlayPreparedQuestionAudioOptions) => {
+      // iOS Safari blocks audio.play() when it is called asynchronously after
+      // a user gesture. Playing a silent sound RIGHT NOW (synchronously, before
+      // any await) unlocks the audio session for this page load so that all
+      // subsequent play() calls — even on elements created later — are allowed.
+      unlockAudioOutput();
+
       const safeText = cleanQuestionText(text);
       if (!safeText) return false;
 

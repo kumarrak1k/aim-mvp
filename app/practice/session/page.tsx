@@ -16,6 +16,7 @@ import { useBrowserSpeech } from "../hooks/useBrowserSpeech";
 import { useCameraTracking } from "../hooks/useCameraTracking";
 import { useDeviceProfile } from "../hooks/useDeviceProfile";
 import { useQuestionAudio } from "../hooks/useQuestionAudio";
+import { unlockAudioOutput } from "../lib/iosAudioUnlock";
 import { defaultAudioMetrics } from "../config";
 import type {
   AudioMetrics,
@@ -946,6 +947,9 @@ export default function PracticeSessionPage() {
   );
 
   const startInterview = useCallback(async () => {
+    // Unlock iOS audio output synchronously — must be the very first thing
+    // before any await so the user gesture chain is intact.
+    unlockAudioOutput();
     setHasUserInteracted(true);
     setInterviewStarted(true);
     setInterviewFinished(false);
