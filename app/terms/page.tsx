@@ -1,7 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { NeutralShell } from "@/app/components/marketing/NeutralShell";
-import { GlassCard, SectionHeading } from "@/app/components/marketing/primitives";
+import { PublicShell } from "@/app/components/marketing/PublicShell";
 
 export const metadata: Metadata = {
   title: "Terms of Use",
@@ -35,16 +34,6 @@ const coreSections = [
   },
 ];
 
-const responsibleUse = [
-  "Use feedback as preparation guidance, not as a guaranteed outcome.",
-  "Keep answers truthful and based on your real work, study or life experience.",
-  "Review AI-generated model answers before using any wording in a real interview.",
-  "Avoid uploading documents containing unnecessary sensitive or third-party data.",
-  "Check browser microphone and camera permissions before live practice sessions.",
-  "Do not attempt to reverse-engineer, extract or abuse the platform's AI systems.",
-  "Do not use the service to generate content that is false, harmful or deceptive.",
-];
-
 const limitations = [
   {
     title: "No hiring decisions",
@@ -64,234 +53,279 @@ const limitations = [
   },
 ];
 
+const prohibitedUse = [
+  { title: "Copying or cloning", text: "You must not copy, reproduce, replicate, or create derivative works based on the platform's design, code, UI, or functionality — in whole or in part." },
+  { title: "Scraping and data extraction", text: "Automated scraping, crawling, indexing, or extraction of any platform content — including questions, feedback, prompts, or scoring logic — is strictly prohibited." },
+  { title: "Reverse engineering", text: "You must not decompile, disassemble, reverse-engineer, or attempt to derive source code, AI prompts, algorithms, or scoring logic from the platform." },
+  { title: "Competitive intelligence", text: "You must not access the platform for the purpose of building, benchmarking, or improving a competing product or service." },
+  { title: "Unauthorised access", text: "You must not attempt to gain unauthorised access to any part of the platform, its infrastructure, or other users' accounts." },
+  { title: "Resale or sublicensing", text: "You must not resell, sublicence, or provide third-party access to any part of the platform or its outputs without express written permission." },
+];
+
+const responsibleUse = [
+  "Use feedback as preparation guidance, not as a guaranteed outcome.",
+  "Keep answers truthful and based on your real work, study or life experience.",
+  "Review AI-generated model answers before using any wording in a real interview.",
+  "Avoid uploading documents containing unnecessary sensitive or third-party data.",
+  "Check browser microphone and camera permissions before live practice sessions.",
+  "Do not attempt to reverse-engineer, extract or abuse the platform's AI systems.",
+  "Do not use the service to generate content that is false, harmful or deceptive.",
+];
+
 export default function TermsPage() {
   return (
-    <NeutralShell>
-      <section className="mx-auto max-w-7xl px-4 pb-6 pt-8 sm:px-6 sm:pb-10 sm:pt-12">
-        <div className="overflow-hidden rounded-[2.25rem] border border-white/10 bg-white/[0.065] p-6 shadow-2xl shadow-purple-950/20 backdrop-blur-2xl sm:p-8 md:p-10">
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/50 to-transparent" />
+    <PublicShell currentPath="/terms">
+      <div>
+        {/* Hero */}
+        <section className="mx-auto max-w-4xl px-4 pb-12 pt-6 text-center sm:px-6 sm:pt-10">
+          <p className="mx-auto mb-5 inline-flex items-center gap-2 rounded-full border border-purple-400/25 bg-purple-400/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-purple-200">
+            Terms of use
+          </p>
+          <h1 className="mx-auto max-w-3xl text-[2.2rem] font-black leading-[1.06] tracking-[-0.05em] sm:text-5xl">
+            Use AI Career Mentor as a{" "}
+            <span className="bg-gradient-to-r from-purple-300 via-fuchsia-200 to-cyan-200 bg-clip-text text-transparent">
+              preparation tool.
+            </span>
+          </h1>
+          <p className="mx-auto mt-5 max-w-xl text-base leading-8 text-gray-400">
+            These terms explain how AI Career Mentor may be used, what you can
+            expect from the platform, what we do not provide, and your
+            responsibilities as a user.
+          </p>
+          <p className="mx-auto mt-5 max-w-xl rounded-2xl border border-amber-300/15 bg-amber-300/[0.08] px-5 py-3 text-sm leading-6 text-amber-100">
+            Last updated: May 2026. By using AI Career Mentor you agree to these
+            terms. For questions contact{" "}
+            <span className="font-bold text-amber-50">
+              support@aicareermentor.co.uk
+            </span>
+            .
+          </p>
+        </section>
 
-          <div className="max-w-4xl">
-            <p className="mb-3 text-sm font-black uppercase tracking-[0.25em] text-purple-300">
-              Terms of use
-            </p>
-            <h1 className="text-4xl font-black leading-[1.02] tracking-[-0.055em] md:text-5xl">
-              Use AI Career Mentor as a preparation tool, not a guarantee.
-            </h1>
-            <p className="mt-5 max-w-3xl text-base leading-8 text-gray-300 md:text-lg">
-              These terms explain how AI Career Mentor may be used, what you can
-              expect from the platform, what we do not provide, and your
-              responsibilities as a user.
-            </p>
+        {/* Body */}
+        <section className="mx-auto max-w-5xl px-4 pb-24 sm:px-6">
+          <div className="grid gap-10 lg:grid-cols-[1fr_300px]">
 
-            <p className="mt-5 rounded-2xl border border-amber-300/15 bg-amber-300/10 p-4 text-sm leading-6 text-amber-100">
-              Last updated: May 2026. By using AI Career Mentor you agree to
-              these terms. For questions, contact{" "}
-              <span className="font-bold text-amber-50">
-                support@aicareermentor.co.uk
-              </span>
-              .
-            </p>
-          </div>
-        </div>
-      </section>
+            {/* Main column */}
+            <div className="space-y-10">
 
-      <section className="mx-auto max-w-7xl px-4 pb-8 sm:px-6 sm:pb-12">
-        <div className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
-          <div className="space-y-6">
-
-            <GlassCard>
-              <SectionHeading
-                eyebrow="Core terms"
-                title="How the service works."
-                description="These terms apply to all users of AI Career Mentor."
-              />
-              <div className="mt-6 grid gap-4 md:grid-cols-2">
-                {coreSections.map((section) => (
-                  <div
-                    key={section.title}
-                    className="rounded-[1.5rem] border border-white/10 bg-black/25 p-5"
-                  >
-                    <h3 className="mb-2 font-black text-white">{section.title}</h3>
-                    <p className="text-sm leading-7 text-gray-400">{section.text}</p>
-                  </div>
-                ))}
+              {/* Core terms */}
+              <div>
+                <h2 className="mb-2 text-2xl font-black tracking-[-0.04em] sm:text-3xl">
+                  How the service works.
+                </h2>
+                <p className="mb-6 text-sm leading-7 text-gray-400">
+                  These terms apply to all users of AI Career Mentor.
+                </p>
+                <div className="grid gap-5 sm:grid-cols-2">
+                  {coreSections.map((item) => (
+                    <div
+                      key={item.title}
+                      className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-6"
+                    >
+                      <p className="mb-2 font-black text-white">{item.title}</p>
+                      <p className="text-sm leading-7 text-gray-400">{item.text}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </GlassCard>
 
-            <GlassCard>
-              <SectionHeading
-                eyebrow="Limitations"
-                title="What we do not provide."
-                description="Please read these carefully before relying on AI-generated feedback."
-              />
-              <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                {limitations.map((item) => (
-                  <div
-                    key={item.title}
-                    className="rounded-[1.5rem] border border-white/10 bg-black/25 p-5"
-                  >
-                    <h3 className="mb-2 font-black text-white">{item.title}</h3>
-                    <p className="text-sm leading-7 text-gray-400">{item.text}</p>
-                  </div>
-                ))}
+              {/* Limitations */}
+              <div>
+                <h2 className="mb-2 text-2xl font-black tracking-[-0.04em] sm:text-3xl">
+                  What we do not provide.
+                </h2>
+                <p className="mb-6 text-sm leading-7 text-gray-400">
+                  Please read these carefully before relying on AI-generated feedback.
+                </p>
+                <div className="grid gap-5 sm:grid-cols-2">
+                  {limitations.map((item) => (
+                    <div
+                      key={item.title}
+                      className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-6"
+                    >
+                      <p className="mb-2 font-black text-white">{item.title}</p>
+                      <p className="text-sm leading-7 text-gray-400">{item.text}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </GlassCard>
 
-            <GlassCard>
-              <SectionHeading
-                eyebrow="Uploads and content"
-                title="What you upload to AI Career Mentor."
-              />
-              <div className="mt-5 space-y-4 text-sm leading-7 text-gray-300">
-                <p>
-                  You should only upload or enter information that you are
-                  comfortable using for interview practice. This includes CV
-                  text, role specifications and interview goal notes.
-                </p>
-                <p>
-                  Uploaded files (PDF, Word, text) are converted into plain
-                  text for personalisation. Extracted text may not perfectly
-                  reproduce the original document, particularly for
-                  complex-formatted CVs.
-                </p>
-                <p>
-                  Do not upload documents containing confidential employer
-                  information, third-party personal data, or sensitive
-                  information that is not necessary for interview preparation.
-                </p>
-                <p>
-                  AI Career Mentor does not retain raw uploaded files. Only
-                  extracted text that you choose to save to your profile is
-                  stored.
-                </p>
+              {/* Uploads */}
+              <div>
+                <h2 className="mb-6 text-2xl font-black tracking-[-0.04em] sm:text-3xl">
+                  What you upload to AI Career Mentor.
+                </h2>
+                <div className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-7 space-y-4 text-sm leading-7 text-gray-300">
+                  <p>
+                    You should only upload or enter information that you are
+                    comfortable using for interview practice. This includes CV
+                    text, role specifications and interview goal notes.
+                  </p>
+                  <p>
+                    Uploaded files (PDF, Word, text) are converted into plain
+                    text for personalisation. Extracted text may not perfectly
+                    reproduce the original document, particularly for
+                    complex-formatted CVs.
+                  </p>
+                  <p>
+                    Do not upload documents containing confidential employer
+                    information, third-party personal data, or sensitive
+                    information that is not necessary for interview preparation.
+                  </p>
+                  <p>
+                    AI Career Mentor does not retain raw uploaded files. Only
+                    extracted text that you choose to save to your profile is
+                    stored.
+                  </p>
+                </div>
               </div>
-            </GlassCard>
 
-            <GlassCard>
-              <SectionHeading
-                eyebrow="Intellectual property"
-                title="Ownership and protection of the platform."
-              />
-              <div className="mt-5 space-y-4 text-sm leading-7 text-gray-300">
-                <p>
-                  The AI Career Mentor platform — including its source code, software architecture, user interface design, visual design, branding, copy, question library, scoring methodology, AI coaching systems, prompts, workflows, and all other technology — is the exclusive property of AI Career Mentor and is protected by copyright, database rights, and other intellectual property laws of England and Wales and applicable international treaties.
-                </p>
-                <p>
-                  The name <strong className="text-white">AI Career Mentor</strong>, the associated logo, and all related brand assets are trade marks of AI Career Mentor. You may not use our name, logo, or branding in any way without prior written consent.
-                </p>
-                <p>
-                  You retain ownership of personal content you provide (CV text, interview answers, goal notes). By submitting content to the platform, you grant AI Career Mentor a limited, non-exclusive, royalty-free licence to process and store that content solely for the purpose of delivering the service to you.
-                </p>
-                <p>
-                  AI-generated outputs — including feedback, scores, model answers, and session summaries — are generated by AI Career Mentor's systems and are provided for your personal interview preparation only. You may not redistribute, resell, sublicence, or incorporate these outputs into any commercial product or service.
-                </p>
+              {/* Intellectual property */}
+              <div>
+                <h2 className="mb-6 text-2xl font-black tracking-[-0.04em] sm:text-3xl">
+                  Ownership and protection of the platform.
+                </h2>
+                <div className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-7 space-y-4 text-sm leading-7 text-gray-300">
+                  <p>
+                    The AI Career Mentor platform — including its source code,
+                    software architecture, user interface design, visual design,
+                    branding, copy, question library, scoring methodology, AI
+                    coaching systems, prompts, workflows, and all other technology
+                    — is the exclusive property of AI Career Mentor and is
+                    protected by copyright, database rights, and other intellectual
+                    property laws of England and Wales and applicable international
+                    treaties.
+                  </p>
+                  <p>
+                    The name{" "}
+                    <strong className="text-white">AI Career Mentor</strong>, the
+                    associated logo, and all related brand assets are trade marks
+                    of AI Career Mentor. You may not use our name, logo, or
+                    branding in any way without prior written consent.
+                  </p>
+                  <p>
+                    You retain ownership of personal content you provide (CV text,
+                    interview answers, goal notes). By submitting content to the
+                    platform, you grant AI Career Mentor a limited, non-exclusive,
+                    royalty-free licence to process and store that content solely
+                    for the purpose of delivering the service to you.
+                  </p>
+                  <p>
+                    AI-generated outputs — including feedback, scores, model
+                    answers, and session summaries — are generated by AI Career
+                    Mentor&apos;s systems and are provided for your personal
+                    interview preparation only. You may not redistribute, resell,
+                    sublicence, or incorporate these outputs into any commercial
+                    product or service.
+                  </p>
+                </div>
               </div>
-            </GlassCard>
 
-            <GlassCard>
-              <SectionHeading
-                eyebrow="Prohibited use"
-                title="What you must not do."
-              />
-              <div className="mt-5 space-y-4 text-sm leading-7 text-gray-300">
-                <p>The following are strictly prohibited and may result in immediate termination of your access and legal action:</p>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  {[
-                    { title: "Copying or cloning", text: "You must not copy, reproduce, replicate, or create derivative works based on the platform's design, code, UI, or functionality — in whole or in part." },
-                    { title: "Scraping and data extraction", text: "Automated scraping, crawling, indexing, or extraction of any platform content — including questions, feedback, prompts, or scoring logic — is strictly prohibited." },
-                    { title: "Reverse engineering", text: "You must not decompile, disassemble, reverse-engineer, or attempt to derive source code, AI prompts, algorithms, or scoring logic from the platform." },
-                    { title: "Competitive intelligence", text: "You must not access the platform for the purpose of building, benchmarking, or improving a competing product or service." },
-                    { title: "Unauthorised access", text: "You must not attempt to gain unauthorised access to any part of the platform, its infrastructure, or other users' accounts." },
-                    { title: "Resale or sublicensing", text: "You must not resell, sublicence, or provide third-party access to any part of the platform or its outputs without express written permission." },
-                  ].map((item) => (
-                    <div key={item.title} className="rounded-[1.5rem] border border-white/10 bg-black/25 p-5">
-                      <h3 className="mb-2 font-black text-white">{item.title}</h3>
+              {/* Prohibited use */}
+              <div>
+                <h2 className="mb-2 text-2xl font-black tracking-[-0.04em] sm:text-3xl">
+                  What you must not do.
+                </h2>
+                <p className="mb-6 text-sm leading-7 text-gray-400">
+                  The following are strictly prohibited and may result in
+                  immediate termination of your access and legal action.
+                </p>
+                <div className="grid gap-5 sm:grid-cols-2">
+                  {prohibitedUse.map((item) => (
+                    <div
+                      key={item.title}
+                      className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-6"
+                    >
+                      <p className="mb-2 font-black text-white">{item.title}</p>
                       <p className="text-sm leading-6 text-gray-400">{item.text}</p>
                     </div>
                   ))}
                 </div>
-                <p className="rounded-2xl border border-red-400/15 bg-red-400/[0.07] p-4 text-sm leading-6 text-red-200">
-                  AI Career Mentor reserves the right to pursue all available legal remedies — including injunctive relief and damages — against any individual or organisation found to be in violation of these terms.
+                <p className="mt-5 rounded-2xl border border-red-400/15 bg-red-400/[0.07] p-4 text-sm leading-6 text-red-200">
+                  AI Career Mentor reserves the right to pursue all available
+                  legal remedies — including injunctive relief and damages —
+                  against any individual or organisation found to be in violation
+                  of these terms.
                 </p>
               </div>
-            </GlassCard>
 
-            <GlassCard>
-              <SectionHeading
-                eyebrow="Governing law"
-                title="Jurisdiction and disputes."
-              />
-              <div className="mt-5 space-y-4 text-sm leading-7 text-gray-300">
-                <p>
-                  These terms are governed by the laws of England and Wales. Any
-                  disputes arising under these terms shall be subject to the
-                  exclusive jurisdiction of the courts of England and Wales.
-                </p>
-                <p>
-                  If any provision of these terms is found to be unenforceable,
-                  the remaining provisions will continue to apply.
-                </p>
-              </div>
-            </GlassCard>
-
-          </div>
-
-          <aside className="space-y-6">
-            <GlassCard>
-              <p className="mb-4 text-sm font-black uppercase tracking-[0.2em] text-purple-300">
-                Responsible use checklist
-              </p>
-              <div className="space-y-3 text-sm leading-6 text-gray-400">
-                {responsibleUse.map((item) => (
-                  <p key={item} className="flex gap-2">
-                    <span className="mt-0.5 text-purple-400">✓</span>
-                    <span>{item}</span>
+              {/* Governing law */}
+              <div>
+                <h2 className="mb-6 text-2xl font-black tracking-[-0.04em] sm:text-3xl">
+                  Jurisdiction and disputes.
+                </h2>
+                <div className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-7 space-y-4 text-sm leading-7 text-gray-300">
+                  <p>
+                    These terms are governed by the laws of England and Wales. Any
+                    disputes arising under these terms shall be subject to the
+                    exclusive jurisdiction of the courts of England and Wales.
                   </p>
-                ))}
+                  <p>
+                    If any provision of these terms is found to be unenforceable,
+                    the remaining provisions will continue to apply.
+                  </p>
+                </div>
               </div>
-            </GlassCard>
 
-            <GlassCard>
-              <p className="mb-4 text-sm font-black uppercase tracking-[0.2em] text-cyan-300">
-                Quick links
-              </p>
-              <div className="space-y-3">
-                <Link href="/practice">
-                  <button className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-3 text-sm font-black text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01]">
-                    Start practice
-                  </button>
-                </Link>
-                <Link href="/privacy">
-                  <button className="w-full rounded-2xl border border-cyan-300/20 bg-cyan-300/10 px-5 py-3 text-sm font-black text-cyan-100 transition hover:bg-cyan-300/15">
-                    Privacy policy
-                  </button>
-                </Link>
-                <Link href="/profile">
-                  <button className="w-full rounded-2xl border border-white/10 bg-white/[0.05] px-5 py-3 text-sm font-black text-white transition hover:bg-white/[0.09]">
-                    Manage profile
-                  </button>
-                </Link>
+            </div>
+
+            {/* Sidebar */}
+            <aside className="space-y-6">
+
+              <div className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-6">
+                <p className="mb-4 text-[11px] font-black uppercase tracking-[0.18em] text-purple-200">
+                  Responsible use
+                </p>
+                <div className="space-y-3 text-sm leading-6 text-gray-400">
+                  {responsibleUse.map((item) => (
+                    <p key={item} className="flex gap-2">
+                      <span className="mt-0.5 shrink-0 text-purple-400">✓</span>
+                      <span>{item}</span>
+                    </p>
+                  ))}
+                </div>
               </div>
-            </GlassCard>
 
-            <GlassCard>
-              <p className="mb-3 text-sm font-black uppercase tracking-[0.2em] text-purple-300">
-                Contact
-              </p>
-              <div className="space-y-3 text-sm leading-6 text-gray-400">
-                <p>
-                  For questions about these terms or to report a concern,
-                  contact us at:
+              <div className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-6">
+                <p className="mb-4 text-[11px] font-black uppercase tracking-[0.18em] text-purple-200">
+                  Quick links
+                </p>
+                <div className="space-y-3">
+                  <Link href="/for-candidates/sign-up">
+                    <button className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-3 text-sm font-black text-white shadow-lg transition hover:scale-[1.02]">
+                      Start free
+                    </button>
+                  </Link>
+                  <Link href="/privacy">
+                    <button className="w-full rounded-2xl border border-white/[0.08] bg-white/[0.03] px-5 py-3 text-sm font-black text-gray-300 transition hover:bg-white/[0.06]">
+                      Privacy policy
+                    </button>
+                  </Link>
+                  <Link href="/contact">
+                    <button className="w-full rounded-2xl border border-white/[0.08] bg-white/[0.03] px-5 py-3 text-sm font-black text-gray-300 transition hover:bg-white/[0.06]">
+                      Contact us
+                    </button>
+                  </Link>
+                </div>
+              </div>
+
+              <div className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-6">
+                <p className="mb-3 text-[11px] font-black uppercase tracking-[0.18em] text-purple-200">
+                  Questions about these terms
+                </p>
+                <p className="mb-2 text-sm leading-6 text-gray-400">
+                  Contact us at:
                 </p>
                 <p className="font-bold text-gray-200">
                   support@aicareermentor.co.uk
                 </p>
               </div>
-            </GlassCard>
-          </aside>
-        </div>
-      </section>
-    </NeutralShell>
+
+            </aside>
+          </div>
+        </section>
+      </div>
+    </PublicShell>
   );
 }
