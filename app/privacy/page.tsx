@@ -19,7 +19,7 @@ const dataWeCollect = [
   },
   {
     title: "Microphone input",
-    text: "When you use voice mode, your speech is transcribed by your browser's built-in speech recognition. In Chrome this is processed by Google; in Safari by Apple. AI Career Mentor receives only the resulting text transcript — not the audio. Only that transcript is used for feedback.",
+    text: "When you use voice mode, your speech is transcribed by your browser's built-in speech recognition — AI Career Mentor receives only the resulting text transcript, not the audio. The browser vendor that processes your speech depends on which browser you use: Chrome and other Chromium-based browsers (Brave, Opera) use Google; Edge uses Microsoft; Safari uses Apple. Firefox does not support voice mode. Voice mode is entirely optional — typed answers receive the same feedback.",
   },
   {
     title: "Camera input",
