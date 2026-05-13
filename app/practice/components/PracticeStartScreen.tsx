@@ -331,6 +331,13 @@ export function PracticeStartScreen({
           defaultInterviewType: interviewType,
           defaultDifficulty: difficulty,
           defaultFocusArea: focusArea,
+          ...(isAdvancedPlan
+            ? {
+                defaultTotalQuestions: totalQuestions,
+                defaultUseHybridMix: useHybridMix,
+                defaultQuestionMix: useHybridMix ? questionMix : null,
+              }
+            : {}),
         }),
       });
 
@@ -357,9 +364,13 @@ export function PracticeStartScreen({
     focusArea,
     interviewType,
     isSignedIn,
+    isAdvancedPlan,
+    questionMix,
     savedCandidateProfile,
     selectedPracticeMode,
     speakerPreference,
+    totalQuestions,
+    useHybridMix,
   ]);
 
   // Block start if Advanced hybrid mix doesn't add up to the chosen total

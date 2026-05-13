@@ -255,6 +255,32 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
     }
   }, []);
 
+  const applySavedAdvancedDefaults = useCallback((profile: CandidateProfile | null) => {
+    if (!profile || setupManuallyEditedRef.current) return;
+
+    const savedTotal = profile.defaultTotalQuestions;
+    if (typeof savedTotal === "number" && savedTotal >= 3 && savedTotal <= 10) {
+      setTotalQuestions(savedTotal);
+    }
+
+    if (typeof profile.defaultUseHybridMix === "boolean") {
+      setUseHybridMix(profile.defaultUseHybridMix);
+    }
+
+    if (profile.defaultUseHybridMix && profile.defaultQuestionMix) {
+      setQuestionMix(profile.defaultQuestionMix);
+    } else if (typeof savedTotal === "number") {
+      setQuestionMix({
+        competency: savedTotal,
+        technical: 0,
+        leadership: 0,
+        motivation: 0,
+        situational: 0,
+        commercial: 0,
+      });
+    }
+  }, []);
+
   // Account-type guard — corporate users who reach /practice get sent home.
   useEffect(() => {
     if (!isLoaded || !isSignedIn) return;
@@ -383,6 +409,21 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
       cancelled = true;
     };
   }, [applySavedSetupDefaults, isLoaded, isSignedIn]);
+
+  const advancedDefaultsAppliedRef = useRef(false);
+  useEffect(() => {
+    if (advancedDefaultsAppliedRef.current) return;
+    if (!usageLoaded || !profileContextLoaded) return;
+    if (!isAdvancedPlan || !savedCandidateProfile) return;
+    advancedDefaultsAppliedRef.current = true;
+    applySavedAdvancedDefaults(savedCandidateProfile);
+  }, [
+    applySavedAdvancedDefaults,
+    isAdvancedPlan,
+    profileContextLoaded,
+    savedCandidateProfile,
+    usageLoaded,
+  ]);
 
   const onRoleChange = useCallback((value: string) => {
     roleManuallyEditedRef.current = true;

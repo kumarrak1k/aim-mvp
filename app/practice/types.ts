@@ -210,6 +210,9 @@ export type CandidateProfile = {
   defaultInterviewType: string;
   defaultDifficulty: string;
   defaultFocusArea: string;
+  defaultTotalQuestions: number;
+  defaultUseHybridMix: boolean;
+  defaultQuestionMix: import("./session/utils").QuestionMix | null;
   updatedAt: string;
 };
 

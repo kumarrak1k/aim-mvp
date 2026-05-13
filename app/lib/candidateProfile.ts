@@ -10,6 +10,12 @@
 
 import { clerkClient } from "@clerk/nextjs/server";
 import { prisma } from "./prisma";
+import {
+  cleanQuestionMix,
+  MAX_TOTAL_QUESTIONS,
+  MIN_TOTAL_QUESTIONS,
+  type QuestionMix,
+} from "@/app/practice/session/utils";
 
 export type PracticeMode = "typed" | "voice" | "voice-camera";
 export type SpeakerVoice = "female" | "male" | "neutral";
@@ -34,6 +40,9 @@ export type CandidateProfile = {
   defaultInterviewType: string;
   defaultDifficulty: string;
   defaultFocusArea: string;
+  defaultTotalQuestions: number;
+  defaultUseHybridMix: boolean;
+  defaultQuestionMix: QuestionMix | null;
   updatedAt: string;
 };
 
@@ -55,8 +64,19 @@ export const EMPTY_PROFILE: CandidateProfile = {
   defaultInterviewType: "Competency / behavioural",
   defaultDifficulty: "Standard",
   defaultFocusArea: "Balanced",
+  defaultTotalQuestions: 5,
+  defaultUseHybridMix: false,
+  defaultQuestionMix: null,
   updatedAt: "",
 };
+
+function clampTotal(value: unknown, fallback: number): number {
+  if (typeof value !== "number" || !Number.isFinite(value)) return fallback;
+  const rounded = Math.round(value);
+  if (rounded < MIN_TOTAL_QUESTIONS) return MIN_TOTAL_QUESTIONS;
+  if (rounded > MAX_TOTAL_QUESTIONS) return MAX_TOTAL_QUESTIONS;
+  return rounded;
+}
 
 const PRACTICE_MODES: PracticeMode[] = ["typed", "voice", "voice-camera"];
 const SPEAKER_VOICES: SpeakerVoice[] = ["female", "male", "neutral"];
@@ -99,6 +119,9 @@ function rowToProfile(row: {
   defaultInterviewType: string;
   defaultDifficulty: string;
   defaultFocusArea: string;
+  defaultTotalQuestions: number;
+  defaultUseHybridMix: boolean;
+  defaultQuestionMix: unknown;
   updatedAt: Date;
 }): CandidateProfile {
   return {
@@ -113,6 +136,9 @@ function rowToProfile(row: {
     defaultInterviewType: row.defaultInterviewType,
     defaultDifficulty: row.defaultDifficulty,
     defaultFocusArea: row.defaultFocusArea,
+    defaultTotalQuestions: clampTotal(row.defaultTotalQuestions, 5),
+    defaultUseHybridMix: Boolean(row.defaultUseHybridMix),
+    defaultQuestionMix: cleanQuestionMix(row.defaultQuestionMix) ?? null,
     updatedAt: row.updatedAt.toISOString(),
   };
 }
@@ -141,6 +167,9 @@ async function migrateFromClerk(clerkUserId: string): Promise<CandidateProfile> 
       defaultInterviewType: cleanText(cp.defaultInterviewType) || "Competency / behavioural",
       defaultDifficulty: cleanText(cp.defaultDifficulty) || "Standard",
       defaultFocusArea: cleanText(cp.defaultFocusArea) || "Balanced",
+      defaultTotalQuestions: clampTotal(cp.defaultTotalQuestions, 5),
+      defaultUseHybridMix: Boolean(cp.defaultUseHybridMix),
+      defaultQuestionMix: cleanQuestionMix(cp.defaultQuestionMix) ?? null,
       updatedAt: cleanText(cp.updatedAt),
     };
   } catch {
@@ -176,6 +205,9 @@ export async function getCandidateProfile(clerkUserId: string): Promise<Candidat
         defaultInterviewType: migrated.defaultInterviewType,
         defaultDifficulty: migrated.defaultDifficulty,
         defaultFocusArea: migrated.defaultFocusArea,
+        defaultTotalQuestions: migrated.defaultTotalQuestions,
+        defaultUseHybridMix: migrated.defaultUseHybridMix,
+        defaultQuestionMix: migrated.defaultQuestionMix ?? undefined,
       },
     });
 
@@ -207,12 +239,21 @@ export async function upsertCandidateProfile(
     defaultInterviewType: typeof updates.defaultInterviewType === "string" ? (updates.defaultInterviewType.trim().slice(0, 90) || current.defaultInterviewType) : current.defaultInterviewType,
     defaultDifficulty: typeof updates.defaultDifficulty === "string" ? (updates.defaultDifficulty.trim().slice(0, 90) || current.defaultDifficulty) : current.defaultDifficulty,
     defaultFocusArea: typeof updates.defaultFocusArea === "string" ? (updates.defaultFocusArea.trim().slice(0, 90) || current.defaultFocusArea) : current.defaultFocusArea,
+    defaultTotalQuestions: updates.defaultTotalQuestions !== undefined ? clampTotal(updates.defaultTotalQuestions, current.defaultTotalQuestions) : current.defaultTotalQuestions,
+    defaultUseHybridMix: typeof updates.defaultUseHybridMix === "boolean" ? updates.defaultUseHybridMix : current.defaultUseHybridMix,
+    defaultQuestionMix:
+      updates.defaultQuestionMix !== undefined
+        ? (cleanQuestionMix(updates.defaultQuestionMix) ?? null)
+        : current.defaultQuestionMix,
   };
+
+  const { defaultQuestionMix, ...scalarNext } = next;
+  const mixPersist = defaultQuestionMix ?? undefined;
 
   const row = await prisma.userProfile.upsert({
     where: { clerkUserId },
-    create: { clerkUserId, ...next },
-    update: next,
+    create: { clerkUserId, ...scalarNext, defaultQuestionMix: mixPersist },
+    update: { ...scalarNext, defaultQuestionMix: mixPersist },
   });
 
   return rowToProfile(row);
