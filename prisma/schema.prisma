@@ -137,7 +137,7 @@ model CandidateAssignment {
   companyId       String
   templateId      String
   candidateEmail  String
-  inviteToken     String    @unique @default(cuid())
+  inviteToken     String    @unique @default(uuid())
   status          String    @default("pending")
   clerkUserId     String?
   sessionId       String?   // interview-only: PracticeSession id

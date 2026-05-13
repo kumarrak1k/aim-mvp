@@ -20,6 +20,7 @@
     "@clerk/nextjs": "^7.0.12",
     "@mediapipe/tasks-vision": "^0.10.34",
     "@prisma/client": "^6.19.0",
+    "@sentry/nextjs": "^10.53.1",
     "@upstash/ratelimit": "^2.0.8",
     "@upstash/redis": "^1.38.0",
     "@vercel/analytics": "^2.0.1",

@@ -18,9 +18,14 @@ function maskEmail(email: string): string {
 }
 
 /** Validate token format before hitting the database — stops obvious
- *  scraper traffic with a cheap response. */
+ *  scraper traffic with a cheap response.
+ *  Accepts UUID v4 (new tokens) and legacy cuid/alphanumeric (old tokens). */
 function isValidTokenFormat(token: string): boolean {
-  return /^[a-zA-Z0-9_-]{8,80}$/.test(token);
+  // UUID v4: xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx
+  const uuidV4 = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  // Legacy cuid / alphanumeric tokens
+  const legacy = /^[a-zA-Z0-9_-]{8,80}$/;
+  return uuidV4.test(token) || legacy.test(token);
 }
 
 export async function GET(_req: NextRequest, { params }: Params) {

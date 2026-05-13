@@ -32,7 +32,6 @@ export async function GET() {
   const body = {
     status: databaseUp ? "ok" : "degraded",
     timestamp: new Date().toISOString(),
-    uptimeSeconds: Math.round(process.uptime()),
     responseTimeMs: Date.now() - startedAt,
     database: databaseUp ? "up" : "down",
   };
