@@ -92,6 +92,6 @@ export default hasSentryDsn
       // Requires SENTRY_AUTH_TOKEN env var (set in Vercel project settings).
       sourcemaps: { disable: false },
       // Automatically instrument server components and route handlers.
-      autoInstrumentServerFunctions: true,
+      autoInstrumentServerFunctions: false,
     })
   : nextConfig;
