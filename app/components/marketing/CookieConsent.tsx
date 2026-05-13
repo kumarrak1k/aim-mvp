@@ -33,7 +33,8 @@ export function CookieConsent() {
     <div
       role="dialog"
       aria-label="Cookie notice"
-      className="fixed bottom-4 left-1/2 z-[9999] w-[calc(100%-2rem)] max-w-xl -translate-x-1/2 rounded-2xl border border-white/10 bg-[#0e0920]/95 px-5 py-4 shadow-2xl backdrop-blur-2xl sm:px-6 sm:py-5"
+      className="fixed left-1/2 z-[9999] w-[calc(100%-2rem)] max-w-xl -translate-x-1/2 rounded-2xl border border-white/10 bg-[#0e0920]/95 px-5 py-4 shadow-2xl backdrop-blur-2xl sm:px-6 sm:py-5"
+      style={{ bottom: "max(1rem, env(safe-area-inset-bottom, 1rem))" }}
     >
       <p className="text-sm leading-6 text-gray-300">
         We use strictly necessary cookies for sign-in (Clerk auth). Our
