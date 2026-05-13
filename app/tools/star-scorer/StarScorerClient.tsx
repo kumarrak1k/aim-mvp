@@ -271,6 +271,10 @@ export function STARScorerClient() {
             ·{" "}
             <Link href="/privacy" className="hover:text-gray-400">
               Privacy
+            </Link>{" "}
+            ·{" "}
+            <Link href="/contact" className="hover:text-gray-400">
+              Contact
             </Link>
           </div>
         </div>

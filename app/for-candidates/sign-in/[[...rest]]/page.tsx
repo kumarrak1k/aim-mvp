@@ -121,7 +121,8 @@ export default function CandidateSignInPage() {
         <footer className="mt-auto border-t border-white/[0.06] pt-5 text-center text-xs text-gray-600">
           © {new Date().getFullYear()} AI Career Mentor Ltd ·{" "}
           <Link href="/privacy" className="hover:text-gray-400">Privacy</Link> ·{" "}
-          <Link href="/terms" className="hover:text-gray-400">Terms</Link>
+          <Link href="/terms" className="hover:text-gray-400">Terms</Link> ·{" "}
+          <Link href="/contact" className="hover:text-gray-400">Contact</Link>
         </footer>
       </div>
     </main>
