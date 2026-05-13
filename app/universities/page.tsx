@@ -91,16 +91,12 @@ export default function UniversitiesPage() {
               Request a demo →
             </a>
             <a
-              href="mailto:universities@aicareermentor.co.uk?subject=Campus%20licence%20pricing"
+              href="mailto:universities@aicareermentor.co.uk?subject=Campus%20licence%20pricing%20enquiry"
               className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.05] px-8 py-4 text-base font-black text-white transition hover:bg-white/[0.09]"
             >
-              Get pricing
+              Discuss pricing
             </a>
           </div>
-          <p className="mt-4 text-xs text-gray-600">
-            Typical campus licence: £5,000–£15,000/year for unlimited students.
-            Custom pricing for multi-campus and Russell Group institutions.
-          </p>
         </section>
 
         {/* Benefits */}
@@ -136,34 +132,41 @@ export default function UniversitiesPage() {
           </div>
         </section>
 
-        {/* Pricing signal */}
+        {/* Custom pricing contact */}
         <section className="mx-auto max-w-4xl px-4 pb-20 sm:px-6">
           <div className="rounded-[2rem] border border-purple-300/20 bg-purple-300/[0.06] p-8 sm:p-10">
-            <h2 className="mb-4 text-2xl font-black tracking-[-0.04em]">Pricing</h2>
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-purple-400/25 bg-purple-400/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-purple-200">
+              Custom pricing
+            </div>
+            <h2 className="mb-4 text-2xl font-black tracking-[-0.04em]">Pricing tailored to your institution</h2>
             <p className="mb-6 text-base leading-7 text-gray-400">
-              Campus licences are priced per institution, not per student — so your
-              entire student body is covered from day one. Pricing depends on
-              institution size, modules required, and contract length.
+              Every university is different — in size, structure, and what they need from
+              a careers platform. We don&rsquo;t publish fixed price lists because the right
+              deal depends on your student numbers, modules required, contract length, and
+              existing procurement arrangements. Get in touch and we&rsquo;ll put together a
+              proposal that works for your institution.
             </p>
             <div className="mb-6 grid gap-4 sm:grid-cols-3">
               {[
-                { tier: "Small institution", range: "Under 5,000 students", price: "From £5,000/yr" },
-                { tier: "Mid-size university", range: "5,000–20,000 students", price: "From £9,500/yr" },
-                { tier: "Large / Russell Group", range: "20,000+ students", price: "Custom" },
-              ].map((t) => (
-                <div
-                  key={t.tier}
-                  className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-5"
-                >
-                  <p className="text-lg font-black">{t.price}</p>
-                  <p className="mt-0.5 text-xs font-bold text-purple-300">{t.tier}</p>
-                  <p className="mt-1 text-xs text-gray-500">{t.range}</p>
+                { icon: "🎓", label: "Institution size", desc: "Priced per campus, not per student — your whole cohort is covered." },
+                { icon: "📋", label: "Modules & features", desc: "Interview coaching, assessment centre prep, career docs — mix as needed." },
+                { icon: "📄", label: "Procurement ready", desc: "DPA, GDPR documentation and institutional paperwork provided as standard." },
+              ].map((item) => (
+                <div key={item.label} className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-5">
+                  <p className="mb-2 text-2xl">{item.icon}</p>
+                  <p className="mb-1 text-sm font-black text-white">{item.label}</p>
+                  <p className="text-xs leading-5 text-gray-500">{item.desc}</p>
                 </div>
               ))}
             </div>
-            <p className="text-xs text-gray-600">
-              All prices exclude VAT. Multi-year contracts available at a discount.
-              DPA and institutional procurement documentation provided as standard.
+            <a
+              href="mailto:universities@aicareermentor.co.uk?subject=Campus%20licence%20pricing%20enquiry"
+              className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-6 py-3.5 text-sm font-black text-white shadow-lg transition hover:scale-[1.02]"
+            >
+              Contact us to discuss pricing →
+            </a>
+            <p className="mt-3 text-xs text-gray-600">
+              universities@aicareermentor.co.uk · We respond within one working day
             </p>
           </div>
         </section>
