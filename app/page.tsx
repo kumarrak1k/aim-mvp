@@ -88,12 +88,12 @@ const capabilities = [
 
 export default function HomePage() {
   return (
-    <>
+    <div className="bg-[#0a0614] text-white">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(siteSchema) }}
       />
-    <main className="relative min-h-screen overflow-hidden bg-[#0a0614] text-white">
+    <main className="relative min-h-screen overflow-hidden">
       {/* Background atmosphere */}
       <div className="pointer-events-none absolute inset-0 z-0">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_25%_15%,rgba(120,60,255,0.18),transparent),radial-gradient(ellipse_60%_50%_at_75%_85%,rgba(232,80,180,0.12),transparent),linear-gradient(180deg,#0a0614_0%,#100a1f_50%,#0c0816_100%)]" />
@@ -345,6 +345,6 @@ export default function HomePage() {
       </div>
     </main>
     <SiteFooter />
-    </>
+    </div>
   );
 }
