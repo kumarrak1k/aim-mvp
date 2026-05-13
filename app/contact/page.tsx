@@ -59,10 +59,6 @@ const faqs = [
     a: "Go to your Profile page → Billing → Manage billing. This opens the Stripe customer portal where you can cancel at any time. You keep access until the end of your current billing period.",
   },
   {
-    q: "Can I get a refund?",
-    a: "Email support@aicareermentor.co.uk within 7 days of your payment and we'll sort it out.",
-  },
-  {
     q: "My voice recording isn't working.",
     a: "Make sure you've allowed microphone access in your browser (look for the mic icon in the address bar). Chrome and Edge work best. Safari on iOS requires a manual tap to start recording.",
   },
