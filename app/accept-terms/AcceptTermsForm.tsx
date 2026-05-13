@@ -24,7 +24,7 @@ const KEY_POINTS = [
   },
   {
     title: "Liability is limited",
-    body: "To the fullest extent allowed by law, AI Career Mentor Ltd is not liable for lost opportunities, missed offers, or any indirect, consequential, or incidental loss arising from your use of the service. Total liability is capped at the fees you have paid us in the prior 12 months (or £100 if none). Nothing in these terms limits liability that cannot be excluded under English law.",
+    body: "To the fullest extent allowed by law, AI Career Mentor is not liable for lost opportunities, missed offers, or any indirect, consequential, or incidental loss arising from your use of the service. Total liability is capped at the fees you have paid us in the prior 12 months (or £100 if none). Nothing in these terms limits liability that cannot be excluded under English law.",
   },
   {
     title: "Your data and consent",

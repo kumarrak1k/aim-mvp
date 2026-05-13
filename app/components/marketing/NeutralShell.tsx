@@ -48,7 +48,7 @@ export function NeutralShell({ children }: NeutralShellProps) {
             <div>
               <SiteLogo href="/" size="sm" showText />
               <p className="mt-3 text-xs text-gray-600">
-                © {new Date().getFullYear()} AI Career Mentor Ltd · England &amp; Wales
+                © {new Date().getFullYear()} AI Career Mentor · England &amp; Wales
               </p>
             </div>
             <div className="flex flex-wrap gap-5 text-xs text-gray-600">
