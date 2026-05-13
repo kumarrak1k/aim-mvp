@@ -19,7 +19,7 @@ const dataWeCollect = [
   },
   {
     title: "Microphone input",
-    text: "Voice recordings processed in your browser to produce transcripts. Audio is not stored by AI Career Mentor — only the cleaned text transcript is used.",
+    text: "When you use voice mode, your speech is transcribed by your browser's built-in speech recognition. In Chrome this is processed by Google; in Safari by Apple. AI Career Mentor receives only the resulting text transcript — not the audio. Only that transcript is used for feedback.",
   },
   {
     title: "Camera input",
@@ -30,7 +30,7 @@ const dataWeCollect = [
 const dataProcessors = [
   {
     name: "OpenAI",
-    purpose: "Generates interview questions, cleans transcripts, produces feedback and model answers. Your practice content may be sent to OpenAI APIs.",
+    purpose: "Generates interview questions, cleans transcripts, produces feedback and model answers. CV text, role details and practice answers are sent to OpenAI's API to deliver these features. We have disabled all data-sharing and model-training settings in our OpenAI account. OpenAI processes data under their API usage policy and does not use API inputs to train models. A formal Data Processing Agreement will be put in place upon our incorporation.",
     link: "https://openai.com/policies/privacy-policy",
   },
   {
@@ -44,8 +44,18 @@ const dataProcessors = [
     link: "https://neon.tech/privacy-policy",
   },
   {
+    name: "Stripe",
+    purpose: "Handles payment processing for subscriptions. Receives your email address and billing details. No interview content is shared with Stripe.",
+    link: "https://stripe.com/gb/privacy",
+  },
+  {
+    name: "Resend",
+    purpose: "Sends transactional emails (invite links, account emails). Receives your email address only. No CV or interview data is included in emails.",
+    link: "https://resend.com/legal/privacy-policy",
+  },
+  {
     name: "Vercel",
-    purpose: "Hosts the AI Career Mentor platform and serves all pages and API routes.",
+    purpose: "Hosts the AI Career Mentor platform and serves all pages and API routes. Collects anonymous page-view analytics and Core Web Vitals — no personal identity data.",
     link: "https://vercel.com/legal/privacy-policy",
   },
 ];
@@ -142,16 +152,22 @@ export default function PrivacyPage() {
               />
               <div className="mt-6 space-y-4 text-sm leading-7 text-gray-300">
                 <p>
-                  Your profile context (CV text, role details, goals) is sent
-                  to OpenAI to generate more relevant and personalised interview
-                  questions. It is not stored by OpenAI under the API terms in
-                  use.
+                  Your profile context (CV text, role details, goals) and
+                  practice answers are sent to OpenAI to generate personalised
+                  interview questions, feedback, scores and session summaries.
+                  This is necessary to deliver the core coaching features.
                 </p>
                 <p>
-                  Your practice answers are sent to OpenAI to produce feedback,
-                  scores, improved model answers and session summaries. If you
-                  choose to save a session, this feedback is stored in your
-                  account.
+                  We have disabled all data-sharing and training settings in our
+                  OpenAI account. OpenAI&apos;s API terms prohibit using API
+                  inputs to train models. We are working to put a formal Data
+                  Processing Agreement in place and will update this page when
+                  that is complete.
+                </p>
+                <p>
+                  If you choose to save a session, your feedback and scores are
+                  stored in your account. Unsaved sessions are discarded at the
+                  end of the session.
                 </p>
                 <p>
                   Voice delivery metrics (pace, fillers, energy) are calculated
