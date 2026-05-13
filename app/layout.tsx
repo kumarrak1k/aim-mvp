@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import Script from "next/script";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -282,11 +281,6 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en-GB">
         <body>
-          <Script
-            id="cookieyes"
-            src="https://cdn-cookieyes.com/client_data/3df5094fb47a083ab73f722e0a4953f6/script.js"
-            strategy="beforeInteractive"
-          />
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{
