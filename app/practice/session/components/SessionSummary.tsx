@@ -658,7 +658,7 @@ export function SessionSummary({
                 You&apos;ve used your 3 free sessions
               </h3>
               <p className="mt-2 text-sm leading-7 text-gray-300">
-                Upgrade to Professional to get unlimited sessions, voice interview mode,
+                Upgrade to Plus to get unlimited sessions, voice interview mode,
                 camera presence scoring, detailed voice delivery analysis, and your
                 personalised 7-day improvement plan tracked over time.
               </p>

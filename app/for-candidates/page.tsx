@@ -27,10 +27,10 @@ const products = [
     eyebrow: "Product 1",
     title: "Interview practice",
     description:
-      "Tailored questions for your exact role and level — 5 by default, up to 10 on Advanced. Honest feedback on every answer. Voice delivery scored. Camera presence reviewed. Model answers included.",
+      "Tailored questions for your exact role and level — 5 by default, up to 10 on Professional. Honest feedback on every answer. Voice delivery scored. Camera presence reviewed. Model answers included.",
     bullets: [
       "Tailored to your role, level and interview type",
-      "Custom session: 3–10 questions in your own type mix (Advanced)",
+      "Custom session: 3–10 questions in your own type mix (Professional)",
       "Voice and camera delivery feedback",
       "Model answers and improvement steps",
     ],
@@ -59,7 +59,7 @@ const howItWorks = [
   {
     number: "01",
     title: "Configure your session",
-    text: "Pick role, level, interview type, difficulty and focus. Advanced users can also set 3–10 questions and build a custom type mix. Or step through the full assessment-centre flow.",
+    text: "Pick role, level, interview type, difficulty and focus. Professional users can also set 3–10 questions and build a custom type mix. Or step through the full assessment-centre flow.",
     color: "purple",
   },
   {
@@ -132,7 +132,7 @@ const testimonials = [
 const faqs = [
   {
     q: "Is AI Career Mentor free?",
-    a: "Free to start — no credit card required. You can run a complete interview session and receive feedback at no cost. Advanced features including unlimited sessions and assessment centre access are available from £19 per month.",
+    a: "Free to start — no credit card required. You can run a complete interview session and receive feedback at no cost. Plus and Professional features including unlimited sessions and assessment centre access are available from £19 per month.",
   },
   {
     q: "What interview types does it cover?",
@@ -148,7 +148,7 @@ const faqs = [
   },
   {
     q: "Can I choose how many questions I get and what types?",
-    a: "Yes, on the Advanced plan. You can set your session length anywhere from 3 to 10 questions and build a custom type mix — for example 3 competency, 3 technical, 2 leadership and 1 motivation question. On Free and Professional plans, sessions use 5 questions of the type you select at setup.",
+    a: "Yes, on the Professional plan. You can set your session length anywhere from 3 to 10 questions and build a custom type mix — for example 3 competency, 3 technical, 2 leadership and 1 motivation question. On Free and Plus plans, sessions use 5 questions of the type you select at setup.",
   },
   {
     q: "What roles and levels does it support?",
@@ -156,7 +156,7 @@ const faqs = [
   },
   {
     q: "Can I choose how many questions I get and what types?",
-    a: "Yes, on the Advanced plan. You can set your session length anywhere from 3 to 10 questions and build a custom type mix — for example 3 competency, 3 technical, 2 leadership and 1 motivation question. On Free and Professional plans, sessions use 5 questions of the type you select at setup.",
+    a: "Yes, on the Professional plan. You can set your session length anywhere from 3 to 10 questions and build a custom type mix — for example 3 competency, 3 technical, 2 leadership and 1 motivation question. On Free and Plus plans, sessions use 5 questions of the type you select at setup.",
   },
 ];
 

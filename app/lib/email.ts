@@ -356,7 +356,7 @@ function renderNurtureHtml(type: NurtureType): string {
       </p>
       <div style="background:#f7f5fb;border-left:3px solid #8c5cff;border-radius:0 12px 12px 0;padding:18px 22px;margin:0 0 24px;">
         <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#7c6a99;">
-          Professional plan — from £14.08/month
+          Plus plan — from £14.08/month
         </p>
         <p style="margin:0;font-size:15px;line-height:1.7;color:#2a2238;">
           Unlimited AI mock interviews · Voice &amp; camera delivery coaching ·
@@ -453,7 +453,7 @@ function renderNurtureHtml(type: NurtureType): string {
         </p>
       </div>
       <p style="margin:0 0 28px;font-size:15px;line-height:1.7;color:#2a2238;">
-        When you're ready to go unlimited, the Professional plan is £14.08/month.
+        When you're ready to go unlimited, the Plus plan is £14.08/month.
         But there's no pressure — come back whenever you need us.
       </p>
       <table role="presentation" cellpadding="0" cellspacing="0">
@@ -501,7 +501,7 @@ function renderNurturePlainText(type: NurtureType): string {
     welcome:        `Welcome to AI Career Mentor!\n\nTip #1 — The STAR method.\nEvery behavioural question is best answered with Situation → Task → Action → Result.\n\nRun your first session: ${practiceUrl}`,
     day2_tip:       `Most candidates never practise voice delivery — but it's scored in every session.\n\nFix: slow down, cut filler words, finish sentences firmly.\n\nRun a session and check your delivery: ${practiceUrl}`,
     day4_social:    `From nervous to offer in two weeks — real story from a Financial Services graduate.\n\nConsistent, specific feedback makes the difference.\n\nContinue practising: ${practiceUrl}\nShare your referral link: ${referUrl}`,
-    day7_upgrade:   `One week in. Unlock unlimited sessions and interview as many times as you need.\n\nProfessional plan from £14.08/month — see pricing: ${upgradeUrl}`,
+    day7_upgrade:   `One week in. Unlock unlimited sessions and interview as many times as you need.\n\nPlus plan from £14.08/month — see pricing: ${upgradeUrl}`,
     day14_reengage: `Got an interview coming up? Run a 10-day sprint: competency, strength, and motivation questions, then a full mock on day 10.\n\nStart here: ${practiceUrl}`,
     day21_nudge:    `Still here — one 15-minute session will move you forward. Pick your role, answer 5 questions, get scored.\n\n${practiceUrl}`,
     day30_winback:  `Your practice sessions are still here. Come back whenever you're ready.\n\n${practiceUrl}`,

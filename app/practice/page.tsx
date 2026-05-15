@@ -30,8 +30,8 @@ async function getInitialPlanName(userId: string): Promise<string> {
     const isActive = meta?.subscriptionStatus === "active";
     const planId = (meta?.stripePlanId ?? "").toLowerCase();
     if (!isActive) return "Free";
-    if (planId.includes("advanced")) return "Advanced";
     if (planId.includes("professional")) return "Professional";
+    if (planId.includes("plus")) return "Plus";
     return "Free";
   } catch {
     return "Free";

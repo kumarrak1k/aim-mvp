@@ -138,7 +138,7 @@ export function PlanPage() {
   // ─── Plan state ───────────────────────────────────────────────────────────
 
   const isFree = !sub?.isActive || sub.planName === "Free";
-  const isProfessional = sub?.planName === "Professional";
+  const isProfessional = sub?.planName === "Plus";
   // True when Stripe customer exists but webhook hasn't confirmed yet
   const isConfirming = !sub?.isActive && Boolean(sub?.hasCustomer);
 
@@ -260,9 +260,9 @@ export function PlanPage() {
             Upgrade your plan
           </p>
 
-          {/* Professional */}
+          {/* Plus */}
           <button
-            onClick={() => void upgradeToPlan("professional_monthly")}
+            onClick={() => void upgradeToPlan("plus_monthly")}
             disabled={checkoutLoading !== null}
             style={{
               display: "flex",
@@ -280,19 +280,19 @@ export function PlanPage() {
             }}
           >
             <div>
-              <p style={{ fontWeight: 900, color: "white", marginBottom: "0.15rem" }}>Professional</p>
+              <p style={{ fontWeight: 900, color: "white", marginBottom: "0.15rem" }}>Plus</p>
               <p style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.45)" }}>
                 Unlimited · Voice · Camera · from £19/mo
               </p>
             </div>
             <span style={{ fontSize: "0.72rem", fontWeight: 900, color: "#c084fc", flexShrink: 0, marginLeft: "1rem" }}>
-              {checkoutLoading === "professional_monthly" ? "…" : "Upgrade →"}
+              {checkoutLoading === "plus_monthly" ? "…" : "Upgrade →"}
             </span>
           </button>
 
-          {/* Advanced */}
+          {/* Professional */}
           <button
-            onClick={() => void upgradeToPlan("advanced_monthly")}
+            onClick={() => void upgradeToPlan("professional_monthly")}
             disabled={checkoutLoading !== null}
             style={{
               display: "flex",
@@ -310,13 +310,13 @@ export function PlanPage() {
             }}
           >
             <div>
-              <p style={{ fontWeight: 900, color: "white", marginBottom: "0.15rem" }}>Advanced</p>
+              <p style={{ fontWeight: 900, color: "white", marginBottom: "0.15rem" }}>Professional</p>
               <p style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.45)" }}>
                 Everything + Assessment Centre · from £29/mo
               </p>
             </div>
             <span style={{ fontSize: "0.72rem", fontWeight: 900, color: "rgba(255,255,255,0.5)", flexShrink: 0, marginLeft: "1rem" }}>
-              {checkoutLoading === "advanced_monthly" ? "…" : "Upgrade →"}
+              {checkoutLoading === "professional_monthly" ? "…" : "Upgrade →"}
             </span>
           </button>
 
@@ -328,12 +328,12 @@ export function PlanPage() {
         </div>
       )}
 
-      {/* Paid — upgrade to Advanced + manage billing */}
+      {/* Paid — upgrade to Professional + manage billing */}
       {PAYMENTS_ENABLED && !isFree && (
         <div>
           {isProfessional && (
             <button
-              onClick={() => void upgradeToPlan("advanced_monthly")}
+              onClick={() => void upgradeToPlan("professional_monthly")}
               disabled={checkoutLoading !== null}
               style={{
                 display: "flex",
@@ -351,13 +351,13 @@ export function PlanPage() {
               }}
             >
               <div>
-                <p style={{ fontWeight: 900, color: "white", marginBottom: "0.15rem" }}>Upgrade to Advanced</p>
+                <p style={{ fontWeight: 900, color: "white", marginBottom: "0.15rem" }}>Upgrade to Professional</p>
                 <p style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.45)" }}>
                   Adds Assessment Centre + analytics · from £29/mo
                 </p>
               </div>
               <span style={{ fontSize: "0.72rem", fontWeight: 900, color: "rgba(255,255,255,0.5)", flexShrink: 0, marginLeft: "1rem" }}>
-                {checkoutLoading === "advanced_monthly" ? "…" : "Switch →"}
+                {checkoutLoading === "professional_monthly" ? "…" : "Switch →"}
               </span>
             </button>
           )}

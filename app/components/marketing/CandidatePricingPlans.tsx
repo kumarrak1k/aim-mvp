@@ -8,23 +8,23 @@ export type PricingCurrency = "GBP" | "USD" | "EUR";
 
 type PriceSet = { monthly: string; annual: string; annualMonthly: string };
 
-const PROFESSIONAL: Record<PricingCurrency, PriceSet> = {
+const PLUS: Record<PricingCurrency, PriceSet> = {
   GBP: { monthly: "£19",  annual: "£169",  annualMonthly: "£14.08" },
   USD: { monthly: "$25",  annual: "$209",  annualMonthly: "$17.42" },
   EUR: { monthly: "€22",  annual: "€189",  annualMonthly: "€15.75" },
 };
 
-const ADVANCED: Record<PricingCurrency, PriceSet> = {
+const PROFESSIONAL: Record<PricingCurrency, PriceSet> = {
   GBP: { monthly: "£39",  annual: "£337",  annualMonthly: "£28.08" },
   USD: { monthly: "$37",  annual: "$299",  annualMonthly: "$24.92" },
   EUR: { monthly: "€32",  annual: "€279",  annualMonthly: "€23.25" },
 };
 
 type StripePlanId =
+  | "plus_monthly"
+  | "plus_annual"
   | "professional_monthly"
-  | "professional_annual"
-  | "advanced_monthly"
-  | "advanced_annual";
+  | "professional_annual";
 
 type PlanFeature = { text: string; isNew?: boolean };
 
@@ -32,8 +32,8 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
   const [annual, setAnnual] = useState(false);
   const router = useRouter();
 
-  const pro = PROFESSIONAL[currency];
-  const adv = ADVANCED[currency];
+  const pro = PLUS[currency];
+  const adv = PROFESSIONAL[currency];
 
   const plans = [
     {
@@ -55,7 +55,7 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
       highlight: false,
     },
     {
-      name: "Professional",
+      name: "Plus",
       monthlyPrice: pro.monthly,
       annualPrice: pro.annual,
       annualMonthly: pro.annualMonthly,
@@ -71,12 +71,12 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
         { text: "Progress history saved and tracked" },
       ] as PlanFeature[],
       cta: "Get started",
-      stripePlanMonthly: "professional_monthly" as StripePlanId,
-      stripePlanAnnual: "professional_annual" as StripePlanId,
+      stripePlanMonthly: "plus_monthly" as StripePlanId,
+      stripePlanAnnual: "plus_annual" as StripePlanId,
       highlight: true,
     },
     {
-      name: "Advanced",
+      name: "Professional",
       monthlyPrice: adv.monthly,
       annualPrice: adv.annual,
       annualMonthly: adv.annualMonthly,
@@ -84,7 +84,7 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
       description:
         "For intensive preparation — build fully custom sessions, run mock assessment centres, and track performance with advanced analytics.",
       features: [
-        { text: "Everything in Professional" },
+        { text: "Everything in Plus" },
         { text: "Custom session builder: 3–10 questions per session", isNew: true },
         { text: "Hybrid question mix — set your own blend of competency, technical, leadership, motivation and situational", isNew: true },
         { text: "Mock assessment centre (case study + interview + presentation)" },
@@ -93,8 +93,8 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
         { text: "Priority coaching queue" },
       ] as PlanFeature[],
       cta: "Get started",
-      stripePlanMonthly: "advanced_monthly" as StripePlanId,
-      stripePlanAnnual: "advanced_annual" as StripePlanId,
+      stripePlanMonthly: "professional_monthly" as StripePlanId,
+      stripePlanAnnual: "professional_annual" as StripePlanId,
       highlight: false,
     },
   ];

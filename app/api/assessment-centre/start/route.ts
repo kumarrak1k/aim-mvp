@@ -19,7 +19,7 @@ const startSchema = z.object({
     .default(["stage1", "stage2", "stage3"]),
 });
 
-async function getUserPlanInfo(userId: string): Promise<{ planName: string; isAdvanced: boolean }> {
+async function getUserPlanInfo(userId: string): Promise<{ planName: string; isProfessional: boolean }> {
   try {
     const client = await clerkClient();
     const user = await client.users.getUser(userId);
@@ -29,11 +29,11 @@ async function getUserPlanInfo(userId: string): Promise<{ planName: string; isAd
     };
     const isActive = meta?.subscriptionStatus === "active";
     const planId = (meta?.stripePlanId ?? "").toLowerCase();
-    if (!isActive) return { planName: "Free", isAdvanced: false };
-    if (planId.includes("advanced")) return { planName: "Advanced", isAdvanced: true };
-    return { planName: "Professional", isAdvanced: false };
+    if (!isActive) return { planName: "Free", isProfessional: false };
+    if (planId.includes("professional")) return { planName: "Professional", isProfessional: true };
+    return { planName: "Plus", isProfessional: false };
   } catch {
-    return { planName: "Free", isAdvanced: false };
+    return { planName: "Free", isProfessional: false };
   }
 }
 
@@ -56,9 +56,9 @@ export async function POST(request: NextRequest) {
   }
 
   const planInfo = await getUserPlanInfo(userId);
-  if (!planInfo.isAdvanced) {
+  if (!planInfo.isProfessional) {
     return NextResponse.json(
-      { error: "Assessment centre requires the Advanced plan." },
+      { error: "Assessment centre requires the Professional plan." },
       { status: 403 }
     );
   }

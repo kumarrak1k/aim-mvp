@@ -25,8 +25,8 @@ async function getUserPlanInfo(userId: string): Promise<PlanInfo> {
     const planId = (meta?.stripePlanId ?? "").toLowerCase();
 
     if (!isActive) return { planName: "Free", isUnlimited: false };
-    if (planId.includes("advanced")) return { planName: "Advanced", isUnlimited: true };
     if (planId.includes("professional")) return { planName: "Professional", isUnlimited: true };
+    if (planId.includes("plus")) return { planName: "Plus", isUnlimited: true };
     return { planName: "Free", isUnlimited: false };
   } catch {
     return { planName: "Free", isUnlimited: false };
@@ -154,7 +154,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           error:
-            "You have reached your daily session limit. Upgrade to Professional for unlimited sessions.",
+            "You have reached your daily session limit. Upgrade to Plus for unlimited sessions.",
           usage,
         },
         { status: 429 }

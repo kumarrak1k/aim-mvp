@@ -79,7 +79,7 @@ export function PracticeHero({
                   href="/for-candidates/pricing"
                   className="mt-3 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-4 py-2.5 text-sm font-black text-white shadow-lg transition hover:scale-[1.02]"
                 >
-                  Upgrade to Professional →
+                  Upgrade to Plus →
                 </Link>
               </div>
             ) : (
@@ -190,17 +190,17 @@ export function PracticeHero({
             </div>
           </div>
 
-          {/* Assessment centre — links direct for Advanced users, upsell for others */}
+          {/* Assessment centre — links direct for Professional users, upsell for others */}
           <Link
-            href={planName === "Advanced" ? "/assessment-centre" : "/for-candidates/assessment-centre"}
+            href={planName === "Professional" ? "/assessment-centre" : "/for-candidates/assessment-centre"}
             className="mt-3 block"
           >
             <div className="rounded-[1.35rem] border border-cyan-400/20 bg-gradient-to-br from-cyan-500/[0.09] to-purple-500/[0.09] p-4 transition hover:border-cyan-400/35 hover:from-cyan-500/[0.13] hover:to-purple-500/[0.13]">
               <div className="mb-2 flex items-center justify-between gap-2">
                 <p className="text-[10px] font-black uppercase tracking-[0.18em] text-cyan-300">
-                  Advanced · Mock assessment centre
+                  Professional · Mock assessment centre
                 </p>
-                {planName === "Advanced" ? (
+                {planName === "Professional" ? (
                   <span className="rounded-full border border-emerald-400/30 bg-emerald-400/10 px-2 py-0.5 text-[10px] font-black text-emerald-300">
                     Included
                   </span>
@@ -217,7 +217,7 @@ export function PracticeHero({
                 Case study · Competency interview · Presentation — three stages, one full report.
               </p>
               <p className="mt-2.5 text-xs font-black text-cyan-300">
-                {planName === "Advanced" ? "Go to assessment centre →" : "See assessment centre →"}
+                {planName === "Professional" ? "Go to assessment centre →" : "See assessment centre →"}
               </p>
             </div>
           </Link>

@@ -205,7 +205,7 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
   // free users and not-yet-signed-in visitors). While usage is still loading
   // default to free so voice options stay hidden rather than flicker in.
   const isFreePlan = practiceUsage.planName === "Free";
-  const isAdvancedPlan = practiceUsage.planName === "Advanced";
+  const isAdvancedPlan = practiceUsage.planName === "Professional";
 
   const canStartInterview = Boolean(role.trim()) && !signedInLimitReached;
 
@@ -221,7 +221,7 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
     }
 
     if (practiceUsage.limitReached) {
-      return `You have used all 3 free trial sessions. Upgrade to Professional for unlimited sessions and all interview modes.`;
+      return `You have used all 3 free trial sessions. Upgrade to Plus for unlimited sessions and all interview modes.`;
     }
 
     if (practiceUsage.dailyLimit === null) {
@@ -589,7 +589,7 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
             <div className="flex flex-col gap-6 p-6 sm:p-8 lg:flex-row lg:items-center lg:gap-10">
               <div className="flex-1">
                 <p className="mb-2 text-[10px] font-black uppercase tracking-[0.22em] text-cyan-300">
-                  Advanced plan · Mock assessment centre
+                  Professional plan · Mock assessment centre
                 </p>
                 <h2 className="text-xl font-black leading-tight tracking-[-0.035em] text-white sm:text-2xl">
                   Ready to simulate the full assessment centre?
@@ -611,7 +611,7 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
               <div className="flex shrink-0 flex-col gap-3 sm:flex-row lg:flex-col">
                 <a href="/for-candidates/pricing">
                   <button className="w-full whitespace-nowrap rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-6 py-3.5 text-sm font-black text-white shadow-lg transition hover:scale-[1.02] sm:w-auto lg:w-full">
-                    Upgrade to Advanced →
+                    Upgrade to Professional →
                   </button>
                 </a>
                 <a href="/for-candidates/assessment-centre">

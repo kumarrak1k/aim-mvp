@@ -32,7 +32,7 @@ export type AdminUser = {
  */
 type MembershipKey =
   // Candidate tiers
-  | "free" | "advanced" | "professional"
+  | "free" | "plus" | "professional"
   // Corporate tiers + states
   | "none" | "team_trial" | "team" | "business_trial" | "business" | "custom"
   | "expired" | "cancelled";
@@ -56,7 +56,7 @@ function toMembershipKey(u: AdminUser): MembershipKey {
   const plan   = (u.candidatePlanId ?? "").toLowerCase();
   if (status !== "active" && status !== "trialing" && status !== "past_due") return "free";
   if (plan.includes("professional")) return "professional";
-  if (plan.includes("advanced"))     return "advanced";
+  if (plan.includes("plus"))         return "plus";
   return "free";
 }
 
@@ -82,7 +82,7 @@ function fromMembershipKey(accountType: string, key: MembershipKey): {
   }
   // Candidate
   switch (key) {
-    case "advanced":      return { subscriptionStatus: "active", stripePlanId: "advanced_monthly",      companyPlanStatus: null, companyPlanId: null };
+    case "plus":          return { subscriptionStatus: "active", stripePlanId: "plus_monthly",          companyPlanStatus: null, companyPlanId: null };
     case "professional":  return { subscriptionStatus: "active", stripePlanId: "professional_monthly",  companyPlanStatus: null, companyPlanId: null };
     default:              return { subscriptionStatus: null,     stripePlanId: null,                    companyPlanStatus: null, companyPlanId: null };
   }
@@ -104,7 +104,7 @@ function getMembershipLabel(u: AdminUser): string {
   // Candidate
   const status = u.candidateStatus ?? "";
   const plan   = (u.candidatePlanId ?? "").toLowerCase();
-  const tier   = plan.includes("professional") ? "Professional" : plan.includes("advanced") ? "Advanced" : null;
+  const tier   = plan.includes("professional") ? "Professional" : plan.includes("plus") ? "Plus" : null;
   if (!tier || (!["active","trialing","past_due"].includes(status))) return "Free";
   if (status === "trialing") return `${tier} — Trial`;
   if (status === "past_due") return `${tier} — Past due`;
@@ -815,7 +815,7 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
                     ) : (
                       <>
                         <option value="free">Free</option>
-                        <option value="advanced">Advanced</option>
+                        <option value="plus">Plus</option>
                         <option value="professional">Professional</option>
                       </>
                     )}
@@ -909,7 +909,7 @@ export function AdminClient({ users: initialUsers }: { users: AdminUser[] }) {
                   ) : (
                     <>
                       <option value="free">Free</option>
-                      <option value="advanced">Advanced</option>
+                      <option value="plus">Plus</option>
                       <option value="professional">Professional</option>
                     </>
                   )}

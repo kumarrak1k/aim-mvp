@@ -217,7 +217,7 @@ export function PracticeStartScreen({
       // Free plan is keyboard-only — block voice and camera modes.
       if (isFreePlan && mode !== "typed") {
         setPreferenceMessage(
-          "Voice and camera modes are available on Professional and Advanced plans."
+          "Voice and camera modes are available on Plus and Professional plans."
         );
         return;
       }
@@ -726,7 +726,7 @@ export function PracticeStartScreen({
             <div className="mt-4 flex flex-col gap-2 rounded-2xl border border-purple-300/20 bg-purple-300/[0.07] p-4 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-sm leading-6 text-gray-300">
                 <span className="font-black text-purple-200">Voice &amp; camera modes</span> are
-                available on Professional and Advanced plans.
+                available on Plus and Professional plans.
               </p>
               <Link href="/for-candidates/pricing" className="shrink-0">
                 <button

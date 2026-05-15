@@ -13,8 +13,8 @@ type SubscriptionInfo = {
 };
 
 const PLAN_COLOURS: Record<string, string> = {
-  Advanced: "text-fuchsia-300 border-fuchsia-300/20 bg-fuchsia-300/[0.06]",
-  Professional: "text-purple-300 border-purple-300/20 bg-purple-300/[0.06]",
+  Professional: "text-fuchsia-300 border-fuchsia-300/20 bg-fuchsia-300/[0.06]",
+  Plus: "text-purple-300 border-purple-300/20 bg-purple-300/[0.06]",
   Free: "text-gray-400 border-white/10 bg-white/[0.03]",
 };
 

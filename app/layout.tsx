@@ -144,7 +144,7 @@ const structuredData = {
         },
         {
           "@type": "Offer",
-          name: "Professional",
+          name: "Plus",
           price: "19",
           priceCurrency: "GBP",
           availability: "https://schema.org/InStock",
@@ -157,7 +157,7 @@ const structuredData = {
         },
         {
           "@type": "Offer",
-          name: "Advanced",
+          name: "Professional",
           price: "29",
           priceCurrency: "GBP",
           availability: "https://schema.org/InStock",

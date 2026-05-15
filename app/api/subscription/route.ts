@@ -29,8 +29,8 @@ export async function GET() {
 
     let planName = "Free";
     if (isActive) {
-      if (planId.includes("advanced")) planName = "Advanced";
-      else if (planId.includes("professional")) planName = "Professional";
+      if (planId.includes("professional")) planName = "Professional";
+      else if (planId.includes("plus")) planName = "Plus";
     }
 
     return NextResponse.json({

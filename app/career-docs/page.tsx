@@ -74,7 +74,7 @@ export default function CareerDocsPage() {
         {/* Hero */}
         <div className="mb-12 text-center">
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-purple-300/20 bg-purple-300/10 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-purple-200">
-            Advanced · Career Documents
+            Professional · Career Documents
           </div>
           <h1 className="text-4xl font-black tracking-[-0.05em] text-white sm:text-5xl lg:text-6xl">
             AI-powered{" "}
@@ -133,8 +133,8 @@ export default function CareerDocsPage() {
         <div className="mt-10 rounded-[1.75rem] border border-white/[0.07] bg-white/[0.03] p-6 text-center">
           <p className="text-sm text-gray-400">
             Career Documents are included in the{" "}
-            <span className="font-black text-white">Advanced plan.</span>{" "}
-            Not on Advanced?{" "}
+            <span className="font-black text-white">Professional plan.</span>{" "}
+            Not on Professional?{" "}
             <Link href="/for-candidates/pricing" className="font-black text-purple-300 hover:text-purple-200 underline underline-offset-2">
               See plans →
             </Link>

@@ -1,10 +1,10 @@
 import Stripe from "stripe";
 
 export type StripePlanId =
+  | "plus_monthly"
+  | "plus_annual"
   | "professional_monthly"
-  | "professional_annual"
-  | "advanced_monthly"
-  | "advanced_annual";
+  | "professional_annual";
 
 function createStripeClient(): Stripe | null {
   const key = process.env.STRIPE_SECRET_KEY;
@@ -21,10 +21,10 @@ export function requireStripe(): Stripe {
 
 export function getStripePriceId(planId: StripePlanId): string {
   const map: Record<StripePlanId, string | undefined> = {
+    plus_monthly: process.env.STRIPE_PRICE_PLUS_MONTHLY,
+    plus_annual: process.env.STRIPE_PRICE_PLUS_ANNUAL,
     professional_monthly: process.env.STRIPE_PRICE_PROFESSIONAL_MONTHLY,
     professional_annual: process.env.STRIPE_PRICE_PROFESSIONAL_ANNUAL,
-    advanced_monthly: process.env.STRIPE_PRICE_ADVANCED_MONTHLY,
-    advanced_annual: process.env.STRIPE_PRICE_ADVANCED_ANNUAL,
   };
   const priceId = map[planId];
   if (!priceId) throw new Error(`Stripe price ID not configured for plan: ${planId}`);

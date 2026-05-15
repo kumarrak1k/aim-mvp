@@ -72,7 +72,7 @@ function StageCard({ stage }: { stage: typeof stages[number] }) {
 // ─── Upgrade gate (wrong plan) ────────────────────────────────────────────────
 
 function UpgradeGate({ planName }: { planName: string }) {
-  const isProfessional = planName === "Professional";
+  const isProfessional = planName === "Plus";
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:py-10">
@@ -82,7 +82,7 @@ function UpgradeGate({ planName }: { planName: string }) {
         <div className="pointer-events-none absolute -bottom-28 left-10 h-80 w-80 rounded-full bg-purple-500/10 blur-3xl" />
         <div className="relative">
           <p className="mx-auto mb-4 inline-flex items-center gap-2 rounded-full border border-cyan-400/25 bg-cyan-400/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-cyan-200">
-            Advanced plan · Assessment centre
+            Professional plan · Assessment centre
           </p>
           <h1 className="text-3xl font-black leading-[1.04] tracking-[-0.05em] text-white sm:text-4xl lg:text-5xl">
             Simulate the full assessment centre experience.
@@ -95,8 +95,8 @@ function UpgradeGate({ planName }: { planName: string }) {
           <div className="mt-8 inline-flex flex-col items-center gap-2">
             <span className="rounded-full border border-amber-400/30 bg-amber-400/[0.08] px-4 py-1.5 text-xs font-black text-amber-300">
               {isProfessional
-                ? "Your Professional plan includes interview practice. Upgrade to Advanced to unlock the assessment centre."
-                : "This feature requires the Advanced plan."}
+                ? "Your Plus plan includes interview practice. Upgrade to Professional to unlock the assessment centre."
+                : "This feature requires the Professional plan."}
             </span>
           </div>
         </div>
@@ -118,13 +118,13 @@ function UpgradeGate({ planName }: { planName: string }) {
           Unlock the assessment centre
         </h2>
         <p className="mx-auto mt-3 max-w-xl text-sm leading-7 text-gray-400">
-          Upgrade to the Advanced plan to run unlimited mock assessment centre sessions
+          Upgrade to the Professional plan to run unlimited mock assessment centre sessions
           with new scenarios each time.
         </p>
         <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link href="/for-candidates/pricing">
             <button className="rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-8 py-4 text-sm font-black text-white shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.02]">
-              Upgrade to Advanced →
+              Upgrade to Professional →
             </button>
           </Link>
           <Link href="/for-candidates/assessment-centre">
@@ -154,7 +154,7 @@ function SignInGate() {
         <div className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-cyan-400/10 blur-3xl" />
         <div className="relative">
           <p className="mx-auto mb-4 inline-flex items-center gap-2 rounded-full border border-cyan-400/25 bg-cyan-400/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-cyan-200">
-            Advanced plan · Assessment centre
+            Professional plan · Assessment centre
           </p>
           <h1 className="text-3xl font-black tracking-[-0.05em] text-white sm:text-4xl">
             The full mock assessment centre experience.
@@ -196,7 +196,7 @@ function AssessmentCentreAccess() {
         <div className="pointer-events-none absolute -bottom-28 left-10 h-80 w-80 rounded-full bg-purple-500/15 blur-3xl" />
         <div className="relative">
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-300/20 bg-emerald-300/10 px-4 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-emerald-100">
-            Advanced · Unlocked
+            Professional · Unlocked
           </div>
           <h1 className="text-3xl font-black leading-[1.04] tracking-[-0.05em] text-white sm:text-4xl lg:text-5xl">
             Mock assessment centre
@@ -259,7 +259,7 @@ export default function AssessmentCentrePage() {
     return () => { cancelled = true; };
   }, [isLoaded, isSignedIn]);
 
-  const isAdvanced = plan?.planName === "Advanced" && plan.isActive;
+  const isAdvanced = plan?.planName === "Professional" && plan.isActive;
 
   function renderContent() {
     if (!isLoaded || planLoading) {

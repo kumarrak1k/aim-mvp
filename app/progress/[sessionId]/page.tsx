@@ -317,7 +317,7 @@ function UpgradeNudge() {
           Ready to practise more?
         </h2>
         <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-gray-400">
-          You&apos;ve used all 3 free sessions today. Upgrade to Professional for
+          You&apos;ve used all 3 free sessions today. Upgrade to Plus for
           unlimited daily sessions, plus voice coaching, camera analysis and
           model answers — all included.
         </p>
@@ -326,7 +326,7 @@ function UpgradeNudge() {
             href="/for-candidates/pricing"
             className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-7 py-3.5 text-sm font-black text-white shadow-xl shadow-purple-950/35 transition hover:scale-[1.02]"
           >
-            Upgrade to Professional →
+            Upgrade to Plus →
           </Link>
           <Link
             href="/practice"

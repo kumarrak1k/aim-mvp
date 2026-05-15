@@ -108,8 +108,8 @@ export default function PersonalStatementPage() {
       <CandidateAppShell currentPath="/career-docs">
         <div className="mx-auto max-w-lg px-4 py-24 text-center">
           <div className="mb-6 text-5xl">🔒</div>
-          <h1 className="text-2xl font-black text-white">Advanced plan required</h1>
-          <p className="mt-3 text-sm leading-7 text-gray-400">Personal Statement Generator is available on the Advanced plan.</p>
+          <h1 className="text-2xl font-black text-white">Professional plan required</h1>
+          <p className="mt-3 text-sm leading-7 text-gray-400">Personal Statement Generator is available on the Professional plan.</p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
             <Link href="/for-candidates/pricing"><button className="rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-6 py-3.5 text-sm font-black text-white shadow-lg">See plans →</button></Link>
             <Link href="/career-docs"><button className="rounded-2xl border border-white/10 bg-white/[0.06] px-6 py-3.5 text-sm font-black text-white">Back to Career Docs</button></Link>

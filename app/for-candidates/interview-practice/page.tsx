@@ -38,8 +38,8 @@ const features = [
   },
   {
     title: "Custom session builder",
-    text: "On the Advanced plan, choose between 3 and 10 questions per session and set your own question type mix — any blend of competency, technical, leadership, motivation and situational questions.",
-    badge: "Advanced",
+    text: "On the Professional plan, choose between 3 and 10 questions per session and set your own question type mix — any blend of competency, technical, leadership, motivation and situational questions.",
+    badge: "Professional",
   },
   {
     title: "Voice and camera presence",
@@ -57,7 +57,7 @@ const steps = [
   {
     number: "01",
     title: "Configure",
-    text: "Pick role, level, type, difficulty and focus. Advanced users can also set session length (3–10 questions) and a custom question type mix. The AI builds the question set.",
+    text: "Pick role, level, type, difficulty and focus. Professional users can also set session length (3–10 questions) and a custom question type mix. The AI builds the question set.",
   },
   {
     number: "02",
@@ -91,7 +91,7 @@ const faqs = [
   },
   {
     q: "What does a session look like?",
-    a: "You receive tailored questions read aloud in natural audio — 5 by default, or 3–10 on the Advanced plan. Answer by speaking or typing. After each answer you get structured feedback, then a full session report including model answers, scores, and a next-step action plan.",
+    a: "You receive tailored questions read aloud in natural audio — 5 by default, or 3–10 on the Professional plan. Answer by speaking or typing. After each answer you get structured feedback, then a full session report including model answers, scores, and a next-step action plan.",
   },
   {
     q: "Can I compare my answer to a model answer?",
@@ -139,7 +139,7 @@ export default async function InterviewPracticePage() {
         </h1>
         <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-gray-400 sm:text-lg sm:leading-9">
           Tailored questions for your exact role and level. Detailed coaching on
-          every answer. Voice delivery scored. Camera presence reviewed. Advanced
+          every answer. Voice delivery scored. Camera presence reviewed. Professional
           users can configure up to 10 questions in a custom type mix.
         </p>
         <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">

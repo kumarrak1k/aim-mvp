@@ -23,7 +23,7 @@ async function requireAdvancedPlan(userId: string) {
     const user = await client.users.getUser(userId);
     const meta = user.privateMetadata as { subscriptionStatus?: string; stripePlanId?: string };
     const isActive = meta?.subscriptionStatus === "active";
-    return isActive && (meta?.stripePlanId ?? "").toLowerCase().includes("advanced");
+    return isActive && (meta?.stripePlanId ?? "").toLowerCase().includes("professional");
   } catch {
     return false;
   }
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
 
   if (!(await requireAdvancedPlan(userId))) {
     return NextResponse.json(
-      { error: "Cover Letter Generator requires the Advanced plan.", upgrade: true },
+      { error: "Cover Letter Generator requires the Professional plan.", upgrade: true },
       { status: 403 }
     );
   }

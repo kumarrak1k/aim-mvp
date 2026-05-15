@@ -39,7 +39,7 @@ const faqs = [
   {
     question: "Is there a free trial on paid plans?",
     answer:
-      "Yes — Professional and Advanced plans start with a free trial. No credit card required to begin.",
+      "Yes — Plus and Professional plans start with a free trial. No credit card required to begin.",
   },
   {
     question: "Can I switch between monthly and annual billing?",
@@ -49,17 +49,17 @@ const faqs = [
   {
     question: "What happens when I reach my session limit on the free tier?",
     answer:
-      "You can continue using the platform but won't be able to start new practice sessions until the next month, or you can upgrade to Professional for unlimited sessions.",
+      "You can continue using the platform but won't be able to start new practice sessions until the next month, or you can upgrade to Plus for unlimited sessions.",
   },
   {
     question: "Does the Professional plan include assessment centre practice?",
     answer:
-      "Interview practice (competency, technical, and behavioural) is included on Professional. The full mock assessment centre — case study, interview, and presentation — is an Advanced plan feature.",
+      "Interview practice (competency, technical, and behavioural) is included on Plus. The full mock assessment centre — case study, interview, and presentation — is a Professional plan feature.",
   },
   {
     question: "Can I customise how many questions I get and what types?",
     answer:
-      "Yes, on the Advanced plan. You can set your session length from 3 to 10 questions and build a hybrid question mix — for example, 3 competency, 3 technical, 2 leadership and 1 motivation question in a single session. This lets you replicate the exact interview format you are preparing for. Free and Professional sessions use 5 questions of the type selected at setup.",
+      "Yes, on the Professional plan. You can set your session length from 3 to 10 questions and build a hybrid question mix — for example, 3 competency, 3 technical, 2 leadership and 1 motivation question in a single session. This lets you replicate the exact interview format you are preparing for. Free and Plus sessions use 5 questions of the type selected at setup.",
   },
   {
     question: "Can I cancel at any time?",

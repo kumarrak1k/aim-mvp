@@ -4,10 +4,10 @@ import { requireStripe, getStripePriceId, StripePlanId } from "@/app/lib/stripe"
 import { absoluteUrl } from "@/app/config/site";
 
 const VALID_PLAN_IDS: StripePlanId[] = [
+  "plus_monthly",
+  "plus_annual",
   "professional_monthly",
   "professional_annual",
-  "advanced_monthly",
-  "advanced_annual",
 ];
 
 export async function POST(req: NextRequest) {

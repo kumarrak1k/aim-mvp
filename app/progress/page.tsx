@@ -320,8 +320,8 @@ export default function ProgressPage() {
           <>
             {sessionsLoading && <ProgressLoadingState />}
             {!sessionsLoading && sessionsError && <ErrorState message={sessionsError} />}
-            {!sessionsLoading && !sessionsError && !stats.latestSession && <EmptyProgressState isAdvancedPlan={planName === "Advanced"} />}
-            {!sessionsLoading && !sessionsError && stats.latestSession && <ProgressDashboard stats={stats} isAdvancedPlan={planName === "Advanced"} />}
+            {!sessionsLoading && !sessionsError && !stats.latestSession && <EmptyProgressState isAdvancedPlan={planName === "Professional"} />}
+            {!sessionsLoading && !sessionsError && stats.latestSession && <ProgressDashboard stats={stats} isAdvancedPlan={planName === "Professional"} />}
           </>
         )}
 
@@ -507,7 +507,7 @@ function ProgressDashboard({ stats, isAdvancedPlan }: { stats: ProgressStats; is
               case study, presentation, and more.{" "}
               {isAdvancedPlan
                 ? "Simulate the complete format before the real thing — it's included in your plan."
-                : "Upgrade to Advanced and simulate the complete format before the real thing."}
+                : "Upgrade to Professional and simulate the complete format before the real thing."}
             </p>
           </div>
           <div className="flex shrink-0 flex-col gap-3 sm:flex-row lg:flex-col">
@@ -521,7 +521,7 @@ function ProgressDashboard({ stats, isAdvancedPlan }: { stats: ProgressStats; is
               <>
                 <Link href="/for-candidates/pricing">
                   <button className="w-full whitespace-nowrap rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-6 py-3.5 text-sm font-black text-white shadow-lg transition hover:scale-[1.02] sm:w-auto lg:w-full">
-                    Upgrade to Advanced →
+                    Upgrade to Professional →
                   </button>
                 </Link>
                 <Link href="/for-candidates/assessment-centre">
@@ -742,7 +742,7 @@ function EmptyProgressState({ isAdvancedPlan }: { isAdvancedPlan: boolean }) {
 
       <section className="overflow-hidden rounded-[2rem] border border-cyan-400/20 bg-gradient-to-br from-cyan-500/[0.07] via-purple-500/[0.04] to-transparent p-6 shadow-2xl shadow-purple-950/10 backdrop-blur-2xl">
         <p className="text-[10px] font-black uppercase tracking-[0.22em] text-cyan-300">
-          {isAdvancedPlan ? "Your plan · Mock assessment centre" : "Advanced · Mock assessment centre"}
+          {isAdvancedPlan ? "Your plan · Mock assessment centre" : "Professional · Mock assessment centre"}
         </p>
         <h3 className="mt-2 text-xl font-black tracking-[-0.03em] text-white">
           Going for a role with an assessment centre?
@@ -760,7 +760,7 @@ function EmptyProgressState({ isAdvancedPlan }: { isAdvancedPlan: boolean }) {
         ) : (
           <Link href="/for-candidates/pricing">
             <button className="mt-4 rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-5 py-3 text-sm font-black text-white shadow-lg transition hover:scale-[1.02]">
-              Upgrade to Advanced →
+              Upgrade to Professional →
             </button>
           </Link>
         )}

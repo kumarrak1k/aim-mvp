@@ -100,9 +100,9 @@ export default function CoverLetterPage() {
       <CandidateAppShell currentPath="/career-docs">
         <div className="mx-auto max-w-lg px-4 py-24 text-center">
           <div className="mb-6 text-5xl">🔒</div>
-          <h1 className="text-2xl font-black text-white">Advanced plan required</h1>
+          <h1 className="text-2xl font-black text-white">Professional plan required</h1>
           <p className="mt-3 text-sm leading-7 text-gray-400">
-            Cover Letter Generator is available on the Advanced plan.
+            Cover Letter Generator is available on the Professional plan.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
             <Link href="/for-candidates/pricing">
