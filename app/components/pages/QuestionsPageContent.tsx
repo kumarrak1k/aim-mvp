@@ -14,7 +14,7 @@ export function QuestionsPageContent({
           Interview question library
         </p>
         <h1 className="text-[2.2rem] font-black leading-[1.05] tracking-[-0.05em] sm:text-4xl">
-          Questions for every role and interview type.
+          A curated library of interview questions across roles and formats.
         </h1>
         <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-gray-400">
           {sets.length}+ question sets covering competency, behavioural, technical, and
