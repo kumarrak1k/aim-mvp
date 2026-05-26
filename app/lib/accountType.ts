@@ -30,10 +30,15 @@ const VALID_TYPES: ReadonlyArray<AccountType> = ["candidate", "corporate"];
 export async function getAccountType(userId: string): Promise<AccountType> {
   const client = await clerkClient();
   const user = await client.users.getUser(userId);
-  const stored = user.privateMetadata?.accountType;
+  const meta = user.privateMetadata as { accountType?: string; role?: string };
 
-  if (stored === "candidate" || stored === "corporate") {
-    return stored;
+  // Superadmin accounts must never be stamped as candidate/corporate.
+  if (meta.role === "superadmin") {
+    throw new Error("superadmin accounts do not have a candidate/corporate account type");
+  }
+
+  if (meta.accountType === "candidate" || meta.accountType === "corporate") {
+    return meta.accountType;
   }
 
   // Lazy migration for pre-split accounts.
@@ -61,14 +66,21 @@ export async function getAccountType(userId: string): Promise<AccountType> {
 export async function setAccountTypeIfUnset(
   userId: string,
   accountType: AccountType
-): Promise<{ accountType: AccountType; alreadySet: boolean }> {
+): Promise<{ accountType: AccountType; alreadySet: boolean; isSuperAdmin?: boolean }> {
   if (!VALID_TYPES.includes(accountType)) {
     throw new Error(`Invalid accountType: ${accountType}`);
   }
 
   const client = await clerkClient();
   const user = await client.users.getUser(userId);
-  const existing = user.privateMetadata?.accountType;
+  const meta = user.privateMetadata as { accountType?: string; role?: string };
+
+  // Superadmin accounts are isolated — they cannot be used as candidate/corporate.
+  if (meta.role === "superadmin") {
+    return { accountType: "candidate", alreadySet: false, isSuperAdmin: true };
+  }
+
+  const existing = meta.accountType;
 
   if (existing === "candidate" || existing === "corporate") {
     return { accountType: existing, alreadySet: true };

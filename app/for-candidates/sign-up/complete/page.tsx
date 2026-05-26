@@ -38,6 +38,12 @@ export default function CandidateSignUpCompletePage() {
 
       if (cancelled) return;
 
+      // Superadmin accounts cannot be used as candidate/corporate.
+      if (resolvedType === "superadmin") {
+        router.replace("/admin");
+        return;
+      }
+
       // If the account was already stamped as "corporate", respect that and
       // send them to the corporate dashboard rather than the candidate one.
       if (resolvedType === "corporate") {

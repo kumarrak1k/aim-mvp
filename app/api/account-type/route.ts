@@ -62,6 +62,12 @@ export async function POST(request: NextRequest) {
 
     const result = await setAccountTypeIfUnset(userId, requested);
 
+    // Superadmin accounts cannot be used as candidate/corporate — signal
+    // this to the sign-up complete pages so they redirect to /admin.
+    if (result.isSuperAdmin) {
+      return NextResponse.json({ accountType: "superadmin" });
+    }
+
     return NextResponse.json({
       accountType: result.accountType,
       alreadySet: result.alreadySet,
