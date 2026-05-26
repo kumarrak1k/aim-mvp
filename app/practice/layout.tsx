@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 import { requireTosAcceptance } from "@/app/lib/legal";
 
 export const metadata: Metadata = {
@@ -39,6 +41,16 @@ export default async function PracticeLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Block superadmin accounts from candidate areas — they belong in /admin.
+  const { userId } = await auth();
+  if (userId) {
+    const client = await clerkClient();
+    const user = await client.users.getUser(userId);
+    if ((user.privateMetadata as { role?: string })?.role === "superadmin") {
+      redirect("/admin");
+    }
+  }
+
   await requireTosAcceptance("/practice");
   return children;
 }
