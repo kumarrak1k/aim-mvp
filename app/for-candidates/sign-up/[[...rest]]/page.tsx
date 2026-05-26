@@ -30,8 +30,9 @@ export default function CandidateSignUpPage() {
         <div className="absolute bottom-[-80px] right-[-160px] h-[520px] w-[520px] rounded-full bg-fuchsia-500/[0.18] blur-[160px]" />
       </div>
 
-      <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col px-4 py-6 sm:px-6 sm:py-8 lg:px-10">
-        <header className="mb-8 flex items-center justify-between sm:mb-12">
+      <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col px-4 py-4 sm:px-6 sm:py-6 lg:px-10">
+        {/* Compact header */}
+        <header className="mb-4 flex items-center justify-between sm:mb-5">
           <Link href="/" className="flex items-center gap-3">
             <SiteLogo href="" size="md" showText />
             <span className="hidden rounded-full border border-purple-300/20 bg-white/[0.04] px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-purple-100 sm:inline-block">
@@ -54,31 +55,19 @@ export default function CandidateSignUpPage() {
           </div>
         </header>
 
-        <section className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center pb-10">
-          <div className="mb-7 text-center">
-            <h1 className="text-3xl font-black tracking-[-0.045em] sm:text-4xl">
+        <section className="mx-auto w-full max-w-md pb-8">
+          {/* Compact heading */}
+          <div className="mb-4 text-center">
+            <h1 className="text-2xl font-black tracking-[-0.04em] sm:text-3xl">
               Start practising free.
             </h1>
-            <p className="mt-3 text-sm leading-6 text-gray-400">
-              Create your candidate account and run your first interview or
-              assessment-centre practice in minutes.
+            <p className="mt-1.5 text-sm leading-5 text-gray-400">
+              Create your account and run your first interview in minutes.
             </p>
-          </div>
-
-          {/* Account-type confirmation — makes it unambiguous before they fill the form */}
-          <div className="mb-5 rounded-2xl border border-purple-400/20 bg-purple-500/[0.08] px-4 py-3.5">
-            <p className="mb-2 text-[11px] font-black uppercase tracking-[0.18em] text-purple-300">
-              Candidate account
-            </p>
-            <ul className="space-y-1 text-xs text-gray-400">
-              <li>✓ Mock interviews tailored to your role &amp; level</li>
-              <li>✓ Assessment centre practice (case study, presentation, group ex)</li>
-              <li>✓ AI scoring on voice, content &amp; camera</li>
-            </ul>
-            <p className="mt-3 border-t border-white/[0.06] pt-3 text-[11px] text-gray-500">
-              Are you a hiring manager?{" "}
+            <p className="mt-2 text-[11px] text-gray-600">
+              Hiring manager?{" "}
               <Link href="/for-business/sign-up" className="font-bold text-fuchsia-300 hover:text-fuchsia-200">
-                Create a hiring team account instead →
+                Create a hiring team account →
               </Link>
             </p>
           </div>
@@ -117,7 +106,7 @@ export default function CandidateSignUpPage() {
             }}
           />
 
-          <p className="mt-6 text-center text-xs text-gray-500">
+          <p className="mt-5 text-center text-xs text-gray-500">
             Already have an account?{" "}
             <Link
               href="/for-candidates/sign-in"
@@ -128,7 +117,7 @@ export default function CandidateSignUpPage() {
           </p>
         </section>
 
-        <footer className="mt-auto border-t border-white/[0.06] pt-5 text-center text-xs text-gray-600">
+        <footer className="mt-auto border-t border-white/[0.06] pt-4 text-center text-xs text-gray-600">
           © {new Date().getFullYear()} AI Career Mentor ·{" "}
           <Link href="/privacy" className="hover:text-gray-400">Privacy</Link> ·{" "}
           <Link href="/terms" className="hover:text-gray-400">Terms</Link> ·{" "}
