@@ -1,4 +1,4 @@
-import { auth } from "@clerk/nextjs/server";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import {
   AUDIENCE_PATHS,
@@ -19,6 +19,14 @@ export async function GET() {
     const { userId } = await auth();
     if (!userId) {
       return NextResponse.json({ error: "Unauthorised." }, { status: 401 });
+    }
+
+    // Superadmin accounts have no candidate/corporate type — return early
+    // so getAccountType never throws and Sentry stays quiet.
+    const client = await clerkClient();
+    const user = await client.users.getUser(userId);
+    if ((user.privateMetadata as { role?: string })?.role === "superadmin") {
+      return NextResponse.json({ accountType: "superadmin" });
     }
 
     const accountType = await getAccountType(userId);
