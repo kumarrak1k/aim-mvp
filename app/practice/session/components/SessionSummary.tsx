@@ -250,7 +250,7 @@ function QuestionCard({
           )}
 
           {result.feedback.improvements.length > 0 && (
-            <div>
+            <div className="mb-4">
               <p className="mb-2 text-xs font-black uppercase tracking-[0.16em] text-amber-400">
                 Improvements
               </p>
@@ -261,6 +261,17 @@ function QuestionCard({
                   </li>
                 ))}
               </ul>
+            </div>
+          )}
+
+          {result.feedback.improved_answer && (
+            <div className="rounded-[1rem] border border-purple-400/20 bg-purple-500/[0.07] p-4">
+              <p className="mb-2 text-xs font-black uppercase tracking-[0.16em] text-purple-300">
+                Model answer
+              </p>
+              <p className="text-sm leading-7 text-gray-300">
+                {result.feedback.improved_answer}
+              </p>
             </div>
           )}
         </div>
@@ -282,6 +293,7 @@ type SessionSummaryProps = {
   interviewType: string;
   difficulty: string;
   freePlan?: boolean;
+  sessionsUsed?: number;
 };
 
 export function SessionSummary({
@@ -295,6 +307,7 @@ export function SessionSummary({
   interviewType,
   difficulty,
   freePlan = false,
+  sessionsUsed,
 }: SessionSummaryProps) {
   const [certificateId, setCertificateId] = useState<string | null>(null);
   const [certLoading, setCertLoading] = useState(false);
@@ -655,7 +668,11 @@ export function SessionSummary({
                 Unlock your full potential
               </p>
               <h3 className="mt-2 text-lg font-black text-white">
-                You&apos;ve used your 3 free sessions
+                {sessionsUsed != null && sessionsUsed >= 3
+                  ? "You've used all 3 free sessions"
+                  : sessionsUsed != null
+                  ? `You've used ${sessionsUsed} of 3 free session${sessionsUsed === 1 ? "" : "s"}`
+                  : "You're on the free plan"}
               </h3>
               <p className="mt-2 text-sm leading-7 text-gray-300">
                 Upgrade to Plus to get unlimited sessions, voice interview mode,

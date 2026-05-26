@@ -138,6 +138,8 @@ export default function PracticeSessionPage() {
 
   /** True when the user is actually on the free plan — controls upgrade CTAs. */
   const [freePlan, setFreePlan] = useState(false);
+  /** Number of sessions the user has used (populated after session save). */
+  const [sessionsUsed, setSessionsUsed] = useState<number | null>(null);
   /** True when the session must use keyboard-only mode — hides all voice and
    *  camera controls. This is true for free-plan users AND for paid users who
    *  explicitly chose "Typed answers only" on the setup screen. */
@@ -589,6 +591,11 @@ export default function PracticeSessionPage() {
         });
 
         const data = await response.json().catch(() => null);
+
+        // Update session count so the summary banner shows the real number.
+        if (data?.usage?.usedToday != null) {
+          setSessionsUsed(Number(data.usage.usedToday));
+        }
 
         if (!response.ok || data?.error) {
           console.warn(
@@ -1459,6 +1466,7 @@ export default function PracticeSessionPage() {
           interviewType={interviewType}
           difficulty={difficulty}
           freePlan={freePlan}
+          sessionsUsed={sessionsUsed ?? undefined}
         />
       </PracticeSessionShell>
     );
