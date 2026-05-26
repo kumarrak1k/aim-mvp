@@ -5,7 +5,7 @@ import { AboutPageContent } from "@/app/components/pages/AboutPageContent";
 
 export const metadata: Metadata = createPageMetadata({
   path: "/about",
-  title: "About AI Career Mentor — Mission, Team & Story",
+  title: "About AI Career Mentor — Mission & Story",
 });
 
 export default function AboutPage() {

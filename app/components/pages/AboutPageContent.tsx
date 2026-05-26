@@ -1,30 +1,16 @@
 import Link from "next/link";
 import { absoluteUrl, siteConfig } from "@/app/config/site";
 
-const founderSchema = {
-  "@context": "https://schema.org",
-  "@type": "Person",
-  "@id": `${siteConfig.url}/#founder`,
-  name: "Rakesh Kumar",
-  jobTitle: "Founder & CEO",
-  worksFor: { "@id": `${siteConfig.url}/#organization` },
-  url: absoluteUrl("/about"),
-  image: absoluteUrl("/team/rakesh-kumar.jpeg"),
-  // Add sameAs once LinkedIn URL is confirmed:
-  // sameAs: ["https://www.linkedin.com/in/YOUR-HANDLE"],
-};
-
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "AboutPage",
   url: absoluteUrl("/about"),
   name: "About AI Career Mentor",
   description:
-    "The mission, team, and story behind AI Career Mentor — a UK-built AI coaching platform for candidates and hiring teams.",
+    "The mission and story behind AI Career Mentor — a UK-built AI coaching platform for candidates and hiring teams.",
   mainEntity: {
     "@id": `${siteConfig.url}/#organization`,
   },
-  mentions: [{ "@id": `${siteConfig.url}/#founder` }],
 };
 
 const values = [
@@ -46,26 +32,12 @@ const values = [
   },
 ];
 
-const team = [
-  {
-    name: "Rakesh Kumar",
-    role: "Founder & CEO",
-    bio: "Background in talent assessment and career coaching. Passionate about creating fair and inclusive access to opportunity — built AI Career Mentor so that the quality of your preparation is never determined by your background, network, or budget.",
-    photo: "/team/rakesh-kumar.jpeg",
-    linkedin: null,
-  },
-];
-
 export function AboutPageContent() {
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(founderSchema) }}
       />
 
       <div className="mx-auto max-w-4xl px-4 pb-24 pt-6 sm:px-6 sm:pt-10">
@@ -136,10 +108,11 @@ export function AboutPageContent() {
           <h2 className="mb-6 text-2xl font-black tracking-[-0.04em]">The story</h2>
           <div className="space-y-5 text-base leading-8 text-gray-400">
             <p>
-              I built AI Career Mentor because I&rsquo;ve seen the difference that
-              preparation makes — and how unevenly distributed that preparation is.
-              Candidates who practise with structured feedback perform meaningfully
-              better. The coaching works. The problem is access.
+              AI Career Mentor was built around one observation: preparation makes a
+              meaningful difference to interview outcomes — and access to that
+              preparation is anything but equal. Candidates who practise with
+              structured feedback perform measurably better. The coaching works. The
+              problem is access.
             </p>
             <p>
               The platform started with one question: what would it look like if every
@@ -151,9 +124,9 @@ export function AboutPageContent() {
               voice delivery, and camera presence.
             </p>
             <p>
-              We built it in the UK, GDPR-first, and we&rsquo;re committed to keeping
-              the core experience genuinely accessible. Because inclusive hiring has to
-              start with inclusive preparation.
+              Built in the UK, GDPR-first, and committed to keeping the core
+              experience genuinely accessible. Because inclusive hiring has to start
+              with inclusive preparation.
             </p>
           </div>
         </section>
@@ -172,52 +145,6 @@ export function AboutPageContent() {
               </div>
             ))}
           </div>
-        </section>
-
-        {/* Team */}
-        <section className="mb-16">
-          <h2 className="mb-8 text-2xl font-black tracking-[-0.04em]">Team</h2>
-          <div className="grid gap-5 sm:grid-cols-2">
-            {team.map((member) => (
-              <div
-                key={member.name}
-                className="flex flex-col rounded-2xl border border-white/[0.08] bg-white/[0.03] p-6"
-              >
-                <div className="mb-4 h-20 w-20 overflow-hidden rounded-full border-2 border-purple-400/30">
-                  {/* Plain <img> ensures this is in server-rendered HTML for Googlebot */}
-                  <img
-                    src={member.photo}
-                    alt={member.name}
-                    width={80}
-                    height={80}
-                    className="h-full w-full object-cover object-top"
-                  />
-                </div>
-                <p className="font-black">{member.name}</p>
-                <p className="mb-3 text-xs text-purple-300/80">{member.role}</p>
-                <p className="text-sm leading-6 text-gray-400">{member.bio}</p>
-                {member.linkedin && (
-                  <a
-                    href={member.linkedin}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-4 text-xs font-semibold text-purple-300 hover:text-purple-200"
-                  >
-                    LinkedIn →
-                  </a>
-                )}
-              </div>
-            ))}
-          </div>
-          <p className="mt-6 text-sm text-gray-600">
-            We&rsquo;re hiring.{" "}
-            <a
-              href="mailto:team@aicareermentor.co.uk"
-              className="text-purple-300 hover:text-purple-200"
-            >
-              Get in touch →
-            </a>
-          </p>
         </section>
 
         {/* CTA */}
