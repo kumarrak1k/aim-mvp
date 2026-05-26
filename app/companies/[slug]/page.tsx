@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const guide = getCompanyGuide(slug);
   if (!guide) return {};
   return {
-    title: `${guide.name} Interview Guide ${new Date().getFullYear()} | AI Career Mentor`,
+    title: { absolute: `${guide.name} Interview Guide ${new Date().getFullYear()} | AI Career Mentor` },
     description: guide.metaDescription,
     alternates: { canonical: absoluteUrl(`/companies/${slug}`) },
   };

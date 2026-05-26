@@ -6,7 +6,7 @@ import { CandidateAppShell } from "@/app/components/marketing/CandidateAppShell"
 import { QuestionsPageContent } from "@/app/components/pages/QuestionsPageContent";
 
 export const metadata: Metadata = {
-  title: "Interview Question Library | AI Career Mentor",
+  title: { absolute: "Interview Question Library | AI Career Mentor" },
 };
 
 export default async function CandidateQuestionsPage() {

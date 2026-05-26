@@ -3,7 +3,7 @@ import Link from "next/link";
 import { SiteLogo } from "@/app/components/brand/SiteLogo";
 
 export const metadata: Metadata = {
-  title: "ATS API Reference | AI Career Mentor",
+  title: { absolute: "ATS API Reference | AI Career Mentor" },
   description:
     "Integrate AI Career Mentor's candidate assessment data directly into your ATS or HRIS via our REST API.",
 };

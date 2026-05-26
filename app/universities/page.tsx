@@ -5,7 +5,7 @@ import { PublicShell } from "@/app/components/marketing/PublicShell";
 
 export const metadata: Metadata = createPageMetadata({
   path: "/universities",
-  title: "University & Campus Licensing — AI Career Mentor",
+  title: "University & Campus Licensing",
   description:
     "Campus licensing for universities and careers services. Give every student unlimited access to AI interview coaching under a single institutional licence.",
 });

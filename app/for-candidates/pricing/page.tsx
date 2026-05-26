@@ -11,7 +11,7 @@ import { FAQSection } from "@/app/components/marketing/FAQSection";
 
 export const metadata: Metadata = createPageMetadata({
   path: "/for-candidates/pricing",
-  title: "Candidate Pricing — AI Career Mentor",
+  title: "Candidate Pricing",
   description:
     "Transparent candidate pricing for AI interview practice and assessment centre coaching. Free to start, then unlock unlimited sessions. Annual plans save up to 28%.",
   keywords: [

@@ -4,7 +4,7 @@ import { COMPANY_GUIDES } from "./data";
 import { PublicShell } from "@/app/components/marketing/PublicShell";
 
 export const metadata: Metadata = {
-  title: "Company Interview Guides | AI Career Mentor",
+  title: { absolute: "Company Interview Guides | AI Career Mentor" },
   description:
     "In-depth interview guides for McKinsey, Deloitte, Goldman Sachs, KPMG, Civil Service Fast Stream, and more. Process breakdowns, sample questions, and insider tips.",
 };

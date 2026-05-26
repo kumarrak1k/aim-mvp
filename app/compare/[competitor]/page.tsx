@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const data = getCompetitor(slug);
   if (!data) return {};
   return {
-    title: `${data.tagline} | AI Career Mentor`,
+    title: { absolute: `${data.tagline} | AI Career Mentor` },
     description: data.description,
     alternates: { canonical: absoluteUrl(`/compare/${slug}`) },
     openGraph: {

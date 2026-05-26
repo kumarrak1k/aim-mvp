@@ -5,7 +5,7 @@ import { CandidateAppShell } from "@/app/components/marketing/CandidateAppShell"
 import { STARScorerClient } from "@/app/tools/star-scorer/StarScorerClient";
 
 export const metadata: Metadata = {
-  title: "Free STAR Answer Scorer | AI Career Mentor",
+  title: { absolute: "Free STAR Answer Scorer | AI Career Mentor" },
 };
 
 export default async function CandidateSTARScorerPage() {

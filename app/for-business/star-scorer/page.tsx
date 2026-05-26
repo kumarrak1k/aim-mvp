@@ -3,7 +3,7 @@ import { AudienceShell } from "@/app/components/marketing/AudienceShell";
 import { STARScorerClient } from "@/app/tools/star-scorer/StarScorerClient";
 
 export const metadata: Metadata = {
-  title: "Free STAR Answer Scorer | AI Career Mentor",
+  title: { absolute: "Free STAR Answer Scorer | AI Career Mentor" },
 };
 
 export default function BusinessSTARScorerPage() {

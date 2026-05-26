@@ -21,11 +21,19 @@ function buildTitle(title?: string) {
     return siteConfig.title;
   }
 
-  if (title.includes(siteConfig.name)) {
-    return title;
+  // Strip any trailing brand suffix so it can never be doubled.
+  const stripped = title
+    .replace(/\s*\|\s*AI Career Mentor\s*$/, "")
+    .replace(/\s*—\s*AI Career Mentor\s*$/, "")
+    .trim();
+
+  // If the brand still appears mid-title (e.g. "About AI Career Mentor — Story")
+  // return it as-is — appending the suffix would produce double-brand.
+  if (stripped.includes(siteConfig.name)) {
+    return stripped;
   }
 
-  return `${title} | ${siteConfig.name}`;
+  return `${stripped} | ${siteConfig.name}`;
 }
 
 export function createPageMetadata({

@@ -6,7 +6,7 @@ import { PublicShell } from "@/app/components/marketing/PublicShell";
 
 export const metadata: Metadata = createPageMetadata({
   path: "/security",
-  title: "Security — AI Career Mentor",
+  title: "Security",
 });
 
 const structuredData = {
