@@ -1,5 +1,6 @@
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
+import { stripe } from "@/app/lib/stripe";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -18,6 +19,7 @@ export async function GET() {
       stripePlanId?: string;
       subscriptionCurrentPeriodEnd?: number;
       stripeCustomerId?: string;
+      stripeSubscriptionId?: string;
     };
 
     // Accept both "active" and "trialing" — Stripe uses "trialing" when a
@@ -38,12 +40,34 @@ export async function GET() {
       else if (planId.includes("plus")) planName = "Plus";
     }
 
+    // Derive billing interval from the planId string
+    const billingInterval: "monthly" | "annual" | null = planId.includes("annual")
+      ? "annual"
+      : planId.includes("monthly")
+      ? "monthly"
+      : null;
+
+    // Fetch cancel_at_period_end directly from Stripe (not stored in metadata)
+    let cancelAtPeriodEnd = false;
+    if (isActive && meta?.stripeSubscriptionId && stripe) {
+      try {
+        const stripeSub = await stripe.subscriptions.retrieve(
+          meta.stripeSubscriptionId
+        );
+        cancelAtPeriodEnd = stripeSub.cancel_at_period_end;
+      } catch {
+        // Non-fatal — UI degrades gracefully
+      }
+    }
+
     return NextResponse.json({
       planName,
       isActive,
       planId: meta?.stripePlanId ?? null,
       currentPeriodEnd: periodEnd,
       hasCustomer,
+      billingInterval,
+      cancelAtPeriodEnd,
     });
   } catch (error) {
     console.error("SUBSCRIPTION GET ERROR:", error);
