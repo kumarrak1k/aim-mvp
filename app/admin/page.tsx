@@ -32,12 +32,47 @@ export default async function AdminPage() {
   if (role !== "superadmin") redirect("/api/admin/reject");
 
   // ── Fetch all Clerk users ────────────────────────────────────────────────
-  // Single call up to 500 users — fine for MVP. Add pagination loop when needed.
+  // getUserList is the one remaining live Clerk API call on this page.
+  // Wrap in try-catch so a Clerk 500 shows a friendly error rather than
+  // crashing the page with an unhandled Internal Server Error.
   const client = await clerkClient();
-  const { data: clerkUsers } = await client.users.getUserList({
-    limit: 500,
-    orderBy: "-created_at",
-  });
+  const getUserListResult = await (async () => {
+    try {
+      return await client.users.getUserList({
+        limit: 500,
+        orderBy: "-created_at",
+      });
+    } catch {
+      return null;
+    }
+  })();
+
+  if (!getUserListResult) {
+    return (
+      <main
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontFamily: "system-ui, sans-serif",
+          background: "#f9fafb",
+        }}
+      >
+        <div style={{ textAlign: "center", maxWidth: 400, padding: "2rem" }}>
+          <p style={{ fontSize: "2rem", marginBottom: "1rem" }}>⚠️</p>
+          <h2 style={{ marginBottom: "0.5rem", color: "#111827" }}>
+            Admin temporarily unavailable
+          </h2>
+          <p style={{ color: "#6b7280", margin: 0 }}>
+            Clerk&apos;s API returned an error. Please refresh in a moment.
+          </p>
+        </div>
+      </main>
+    );
+  }
+
+  const clerkUsers = getUserListResult.data;
 
   // ── Fetch Prisma company + member data ───────────────────────────────────
   const [allMembers, allCompanies] = await Promise.all([
