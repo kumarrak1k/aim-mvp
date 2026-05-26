@@ -50,10 +50,10 @@ export const metadata: Metadata = {
     siteName,
     images: [
       {
-        url: "/brand/logo.jpg",
+        url: "/opengraph-image",
         width: 1200,
-        height: 1200,
-        alt: "AI Career Mentor logo",
+        height: 630,
+        alt: "AI Career Mentor — AI Interview Coaching",
       },
     ],
     locale: "en_GB",
@@ -63,7 +63,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "AI Career Mentor | AI Interview Coach",
     description: siteDescription,
-    images: ["/brand/logo.jpg"],
+    images: ["/opengraph-image"],
   },
   icons: {
     icon: "/brand/logo.jpg",

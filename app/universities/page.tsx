@@ -1,7 +1,16 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { createPageMetadata } from "@/app/config/seo";
 import { absoluteUrl, siteConfig } from "@/app/config/site";
 import { PublicShell } from "@/app/components/marketing/PublicShell";
+
+// ─── TODO: Replace with your Tally form ID ────────────────────────────────────
+// 1. Go to https://tally.so and create a free account
+// 2. Create a form with fields: Name, Institution, Role, Student numbers, Message
+// 3. Copy the form ID from the share URL: https://tally.so/r/XXXXXXX  ← that part
+// 4. Paste it below (just the ID, not the full URL)
+const TALLY_FORM_ID = "wgdemo"; // ← replace this
+// ─────────────────────────────────────────────────────────────────────────────
 
 export const metadata: Metadata = createPageMetadata({
   path: "/universities",
@@ -59,6 +68,10 @@ const useCases = [
 export default function UniversitiesPage() {
   return (
     <PublicShell currentPath="/universities">
+      <Script
+        src="https://tally.so/widgets/embed.js"
+        strategy="lazyOnload"
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
@@ -84,18 +97,24 @@ export default function UniversitiesPage() {
           </p>
 
           <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-            <a
-              href="mailto:universities@aicareermentor.co.uk?subject=Campus%20licence%20enquiry"
-              className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-8 py-4 text-base font-black text-white shadow-2xl shadow-purple-950/40 transition hover:scale-[1.02]"
+            <button
+              data-tally-open={TALLY_FORM_ID}
+              data-tally-width="600"
+              data-tally-overlay="1"
+              data-tally-emoji-text="👋"
+              data-tally-emoji-animation="wave"
+              className="inline-flex cursor-pointer items-center gap-2 rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-8 py-4 text-base font-black text-white shadow-2xl shadow-purple-950/40 transition hover:scale-[1.02]"
             >
               Request a demo →
-            </a>
-            <a
-              href="mailto:universities@aicareermentor.co.uk?subject=Campus%20licence%20pricing%20enquiry"
-              className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.05] px-8 py-4 text-base font-black text-white transition hover:bg-white/[0.09]"
+            </button>
+            <button
+              data-tally-open={TALLY_FORM_ID}
+              data-tally-width="600"
+              data-tally-overlay="1"
+              className="inline-flex cursor-pointer items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.05] px-8 py-4 text-base font-black text-white transition hover:bg-white/[0.09]"
             >
               Discuss pricing
-            </a>
+            </button>
           </div>
         </section>
 
@@ -146,7 +165,7 @@ export default function UniversitiesPage() {
               existing procurement arrangements. Get in touch and we&rsquo;ll put together a
               proposal that works for your institution.
             </p>
-            <div className="mb-6 grid gap-4 sm:grid-cols-3">
+            <div className="mb-8 grid gap-4 sm:grid-cols-3">
               {[
                 { icon: "🎓", label: "Institution size", desc: "Priced per campus, not per student — your whole cohort is covered." },
                 { icon: "📋", label: "Modules & features", desc: "Interview coaching, assessment centre prep, career docs — mix as needed." },
@@ -159,18 +178,28 @@ export default function UniversitiesPage() {
                 </div>
               ))}
             </div>
-            <a
-              href="mailto:universities@aicareermentor.co.uk?subject=Campus%20licence%20pricing%20enquiry"
-              className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-6 py-3.5 text-sm font-black text-white shadow-lg transition hover:scale-[1.02]"
+            <button
+              data-tally-open={TALLY_FORM_ID}
+              data-tally-width="600"
+              data-tally-overlay="1"
+              data-tally-emoji-text="👋"
+              data-tally-emoji-animation="wave"
+              className="inline-flex cursor-pointer items-center gap-2 rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-6 py-3.5 text-sm font-black text-white shadow-lg transition hover:scale-[1.02]"
             >
-              Contact us to discuss pricing →
-            </a>
+              Request a proposal →
+            </button>
             <p className="mt-3 text-xs text-gray-600">
-              universities@aicareermentor.co.uk · We respond within one working day
+              Or email{" "}
+              <a
+                href="mailto:universities@aicareermentor.co.uk"
+                className="text-gray-500 underline hover:text-gray-400"
+              >
+                universities@aicareermentor.co.uk
+              </a>{" "}
+              · We respond within one working day
             </p>
           </div>
         </section>
-
       </div>
     </PublicShell>
   );
