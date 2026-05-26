@@ -20,7 +20,12 @@ export async function GET() {
       stripeCustomerId?: string;
     };
 
-    const isActive = meta?.subscriptionStatus === "active";
+    // Accept both "active" and "trialing" — Stripe uses "trialing" when a
+    // subscription begins with a trial period, but the user should be treated
+    // as a paid subscriber immediately.
+    const isActive =
+      meta?.subscriptionStatus === "active" ||
+      meta?.subscriptionStatus === "trialing";
     const planId = (meta?.stripePlanId ?? "").toLowerCase();
     const periodEnd = meta?.subscriptionCurrentPeriodEnd
       ? new Date(meta.subscriptionCurrentPeriodEnd * 1000).toISOString()

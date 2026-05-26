@@ -198,6 +198,18 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
     };
   }, [searchParams]);
 
+  // Secondary signal: if the usage API already shows a paid plan while we are
+  // still waiting for the subscription poll, dismiss the activating banner
+  // immediately — no need to keep the spinner going.
+  useEffect(() => {
+    if (!paymentActivating) return;
+    if (!usageLoaded) return;
+    if (practiceUsage.planName && practiceUsage.planName !== "Free") {
+      setPaymentActivating(false);
+      setConfirmedPlanName(practiceUsage.planName);
+    }
+  }, [paymentActivating, usageLoaded, practiceUsage.planName]);
+
   const signedInLimitReached =
     Boolean(isSignedIn) && usageLoaded && practiceUsage.limitReached;
 
