@@ -1,23 +1,28 @@
 import { redirect } from "next/navigation";
-import { auth, clerkClient } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 
 /**
  * Corporate workspace layout.
- * Blocks superadmin accounts from entering the corporate area —
- * they are redirected to /admin instead.
+ * Blocks superadmin accounts from entering the corporate area using session
+ * claims (JWT-based — no Clerk API call required, resilient to Clerk API 500s).
  */
 export default async function CompanyLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { userId } = await auth();
-  if (userId) {
-    const client = await clerkClient();
-    const user = await client.users.getUser(userId);
-    if ((user.privateMetadata as { role?: string })?.role === "superadmin") {
-      redirect("/admin");
+  try {
+    const { userId, sessionClaims } = await auth();
+    if (userId) {
+      const role = (sessionClaims as { metadata?: { role?: string } } | null)
+        ?.metadata?.role;
+      if (role === "superadmin") {
+        redirect("/admin");
+      }
     }
+  } catch {
+    // Auth error — render the page normally. Middleware edge guard is the
+    // primary superadmin protection.
   }
 
   return <>{children}</>;

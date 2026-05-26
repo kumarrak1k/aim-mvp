@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { auth, clerkClient } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 import { createPageMetadata } from "@/app/config/seo";
 import { PracticePageClient } from "./components/PracticePageClient";
 
@@ -19,28 +19,35 @@ export const metadata: Metadata = createPageMetadata({
   ],
 });
 
-async function getInitialPlanName(userId: string): Promise<string> {
-  try {
-    const client = await clerkClient();
-    const user = await client.users.getUser(userId);
-    const meta = user.privateMetadata as {
-      subscriptionStatus?: string;
-      stripePlanId?: string;
-    };
-    const isActive = meta?.subscriptionStatus === "active";
-    const planId = (meta?.stripePlanId ?? "").toLowerCase();
-    if (!isActive) return "Free";
-    if (planId.includes("professional")) return "Professional";
-    if (planId.includes("plus")) return "Plus";
-    return "Free";
-  } catch {
-    return "Free";
-  }
+/**
+ * Derives the initial plan name from JWT session claims — no Clerk API call
+ * required, so this never fails due to a Clerk API 500 error.
+ */
+function planNameFromClaims(
+  sessionClaims: Record<string, unknown> | null
+): string {
+  const meta = (
+    sessionClaims as {
+      metadata?: { subscriptionStatus?: string; stripePlanId?: string };
+    } | null
+  )?.metadata;
+
+  const isActive =
+    meta?.subscriptionStatus === "active" ||
+    meta?.subscriptionStatus === "trialing";
+  if (!isActive) return "Free";
+
+  const planId = (meta?.stripePlanId ?? "").toLowerCase();
+  if (planId.includes("professional")) return "Professional";
+  if (planId.includes("plus")) return "Plus";
+  return "Free";
 }
 
 export default async function PracticePage() {
-  const { userId } = await auth();
-  const initialPlanName = userId ? await getInitialPlanName(userId) : "Free";
+  const { userId, sessionClaims } = await auth();
+  const initialPlanName = userId
+    ? planNameFromClaims(sessionClaims as Record<string, unknown> | null)
+    : "Free";
 
   return (
     <Suspense>

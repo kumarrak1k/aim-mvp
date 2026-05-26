@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { auth, clerkClient } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 import { requireTosAcceptance } from "@/app/lib/legal";
 
 export const metadata: Metadata = {
@@ -41,14 +41,20 @@ export default async function PracticeLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Block superadmin accounts from candidate areas — they belong in /admin.
-  const { userId } = await auth();
-  if (userId) {
-    const client = await clerkClient();
-    const user = await client.users.getUser(userId);
-    if ((user.privateMetadata as { role?: string })?.role === "superadmin") {
-      redirect("/admin");
+  // Block superadmin accounts from candidate areas using session claims
+  // (JWT-based — no Clerk API call required, resilient to Clerk API 500s).
+  try {
+    const { userId, sessionClaims } = await auth();
+    if (userId) {
+      const role = (sessionClaims as { metadata?: { role?: string } } | null)
+        ?.metadata?.role;
+      if (role === "superadmin") {
+        redirect("/admin");
+      }
     }
+  } catch {
+    // Auth error — continue to render the page. The middleware edge guard
+    // handles the superadmin redirect as a fallback.
   }
 
   await requireTosAcceptance("/practice");
