@@ -22,16 +22,18 @@ export const metadata = { robots: "noindex, nofollow" };
  */
 export default async function AdminPage() {
   // ── Auth gate ────────────────────────────────────────────────────────────
-  const { userId } = await auth();
+  // Use session claims (JWT) for the role check — no Clerk API call required,
+  // so this never crashes due to a Clerk API 500.
+  const { userId, sessionClaims } = await auth();
   if (!userId) redirect("/admin/sign-in");
 
-  const client = await clerkClient();
-  const me = await client.users.getUser(userId);
-  const myMeta = me.privateMetadata as { role?: string };
-  if (myMeta.role !== "superadmin") redirect("/api/admin/reject");
+  const role = (sessionClaims as { metadata?: { role?: string } } | null)
+    ?.metadata?.role;
+  if (role !== "superadmin") redirect("/api/admin/reject");
 
   // ── Fetch all Clerk users ────────────────────────────────────────────────
   // Single call up to 500 users — fine for MVP. Add pagination loop when needed.
+  const client = await clerkClient();
   const { data: clerkUsers } = await client.users.getUserList({
     limit: 500,
     orderBy: "-created_at",
@@ -119,9 +121,14 @@ export default async function AdminPage() {
     };
   });
 
+  // Derive adminEmail from the getUserList result — avoids a separate getUser() call.
+  const meFromList = clerkUsers.find((u) => u.id === userId);
   const adminEmail =
-    me.emailAddresses.find((e) => e.id === me.primaryEmailAddressId)
-      ?.emailAddress ?? me.emailAddresses[0]?.emailAddress ?? "";
+    meFromList?.emailAddresses.find(
+      (e) => e.id === meFromList.primaryEmailAddressId
+    )?.emailAddress ??
+    meFromList?.emailAddresses[0]?.emailAddress ??
+    "";
 
   return <AdminClient users={adminUsers} adminEmail={adminEmail} />;
 }
