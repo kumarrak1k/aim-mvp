@@ -25,9 +25,8 @@ export default function CandidateSignInPage() {
         <div className="absolute bottom-[-80px] right-[-160px] h-[520px] w-[520px] rounded-full bg-fuchsia-500/[0.18] blur-[160px]" />
       </div>
 
-      <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col px-4 py-6 sm:px-6 sm:py-8 lg:px-10">
-        {/* Top bar */}
-        <header className="mb-8 flex items-center justify-between sm:mb-12">
+      <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col px-4 py-4 sm:px-6 sm:py-6 lg:px-10">
+        <header className="mb-4 flex items-center justify-between sm:mb-5">
           <Link href="/" className="flex items-center gap-3">
             <SiteLogo href="" size="md" showText />
             <span className="hidden rounded-full border border-purple-300/20 bg-white/[0.04] px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-purple-100 sm:inline-block">
@@ -50,25 +49,20 @@ export default function CandidateSignInPage() {
           </div>
         </header>
 
-        {/* Centred sign-in card */}
-        <section className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center pb-10">
-          <div className="mb-7 text-center">
-            <h1 className="text-3xl font-black tracking-[-0.045em] sm:text-4xl">
-              Welcome back, candidate.
+        <section className="mx-auto w-full max-w-md pb-8">
+          <div className="mb-4 text-center">
+            <h1 className="text-2xl font-black tracking-[-0.04em] sm:text-3xl">
+              Welcome back.
             </h1>
-            <p className="mt-3 text-sm leading-6 text-gray-400">
-              Sign in to your interview practice and assessment centre account.
+            <p className="mt-1.5 text-sm leading-5 text-gray-400">
+              Sign in to your interview practice account.
             </p>
-          </div>
-
-          {/* Account-type indicator */}
-          <div className="mb-5 flex items-center justify-between rounded-2xl border border-purple-400/20 bg-purple-500/[0.08] px-4 py-3">
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] font-black uppercase tracking-[0.18em] text-purple-300">Candidate sign-in</span>
-            </div>
-            <Link href="/for-business/sign-in" className="text-[11px] font-bold text-fuchsia-300 hover:text-fuchsia-200">
-              Hiring team? →
-            </Link>
+            <p className="mt-2 text-[11px] text-gray-600">
+              Hiring team?{" "}
+              <Link href="/for-business/sign-in" className="font-bold text-fuchsia-300 hover:text-fuchsia-200">
+                Sign in here →
+              </Link>
+            </p>
           </div>
 
           <SignIn
@@ -107,18 +101,18 @@ export default function CandidateSignInPage() {
             }}
           />
 
-          <p className="mt-6 text-center text-xs text-gray-500">
-            Don&rsquo;t have an account yet?{" "}
+          <div className="mt-4 text-center">
+            <p className="mb-2 text-xs text-gray-500">Don&rsquo;t have an account yet?</p>
             <Link
               href="/for-candidates/sign-up"
-              className="font-black text-purple-300 hover:text-purple-200"
+              className="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/[0.05] px-6 py-2.5 text-sm font-black text-white transition hover:bg-white/[0.1]"
             >
               Start free →
             </Link>
-          </p>
+          </div>
         </section>
 
-        <footer className="mt-auto border-t border-white/[0.06] pt-5 text-center text-xs text-gray-600">
+        <footer className="mt-auto border-t border-white/[0.06] pt-4 text-center text-xs text-gray-600">
           © {new Date().getFullYear()} AI Career Mentor ·{" "}
           <Link href="/privacy" className="hover:text-gray-400">Privacy</Link> ·{" "}
           <Link href="/terms" className="hover:text-gray-400">Terms</Link> ·{" "}
