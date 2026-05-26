@@ -172,6 +172,7 @@ const faqSchema = {
 
 export default async function ForCandidatesPage() {
   const { userId } = await auth();
+
   const Shell = userId
     ? ({ children }: { children: React.ReactNode }) => (
         <CandidateAppShell currentPath="/for-candidates">{children}</CandidateAppShell>

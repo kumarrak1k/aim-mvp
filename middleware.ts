@@ -12,10 +12,9 @@ import { NextResponse } from "next/server";
  *   Add: { "metadata": "{{user.private_metadata}}" }
  */
 
-const isCandidateArea = createRouteMatcher(["/practice(.*)"]);
-const isCorporateArea = createRouteMatcher(["/company(.*)"]);
-const isAdminArea     = createRouteMatcher(["/admin(.*)"]);
-const isAdminSignIn   = createRouteMatcher(["/admin/sign-in(.*)"]);
+const isAdminArea   = createRouteMatcher(["/admin(.*)"]);
+const isAdminSignIn = createRouteMatcher(["/admin/sign-in(.*)"]);
+const isApiRoute    = createRouteMatcher(["/api(.*)"]);
 
 // Routes that require authentication
 const isProtected = createRouteMatcher([
@@ -29,8 +28,10 @@ export default clerkMiddleware(async (auth, req) => {
   const { userId, sessionClaims } = await auth();
 
   // ── Superadmin guard ────────────────────────────────────────────────────
-  // Block superadmins from candidate/corporate areas entirely.
-  if (userId && (isCandidateArea(req) || isCorporateArea(req))) {
+  // Superadmin accounts must ONLY access /admin pages. Any signed-in
+  // superadmin hitting any other page is redirected to /admin.
+  // Requires Clerk session token customisation — see comment at top of file.
+  if (userId && !isAdminArea(req) && !isApiRoute(req)) {
     const role = (sessionClaims as { metadata?: { role?: string } } | null)
       ?.metadata?.role;
     if (role === "superadmin") {
