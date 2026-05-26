@@ -106,15 +106,15 @@ export default function CandidateSignUpPage() {
             }}
           />
 
-          <p className="mt-5 text-center text-xs text-gray-500">
-            Already have an account?{" "}
+          <div className="mt-4 text-center">
+            <p className="mb-2 text-xs text-gray-500">Already have an account?</p>
             <Link
               href="/for-candidates/sign-in"
-              className="font-black text-purple-300 hover:text-purple-200"
+              className="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/[0.05] px-6 py-2.5 text-sm font-black text-white transition hover:bg-white/[0.1]"
             >
               Sign in →
             </Link>
-          </p>
+          </div>
         </section>
 
         <footer className="mt-auto border-t border-white/[0.06] pt-4 text-center text-xs text-gray-600">
