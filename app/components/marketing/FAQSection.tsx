@@ -21,22 +21,8 @@ export function FAQSection({
   const summaryColor =
     accentColor === "fuchsia" ? "text-fuchsia-300" : "text-purple-300";
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: items.map((item) => ({
-      "@type": "Question",
-      name: item.question,
-      acceptedAnswer: { "@type": "Answer", text: item.answer },
-    })),
-  };
-
   return (
     <section className="mx-auto max-w-3xl px-4 py-16 sm:px-6 sm:py-20">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
       <h2 className="mb-10 text-center text-2xl font-black tracking-[-0.04em] sm:text-3xl">
         {heading}
       </h2>

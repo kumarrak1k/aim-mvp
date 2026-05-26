@@ -208,67 +208,6 @@ const structuredData = {
         },
       ],
     },
-    {
-      "@type": "FAQPage",
-      mainEntity: [
-        {
-          "@type": "Question",
-          name: "How does AI Career Mentor work?",
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: "You set up your practice session by entering your target role, experience level and interview type. AI Career Mentor generates tailored questions, plays them as natural audio, and scores your answers on content, clarity, structure, confidence and delivery. You receive feedback, a model answer and a 7-day improvement plan.",
-          },
-        },
-        {
-          "@type": "Question",
-          name: "Does AI Career Mentor record my voice or camera?",
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: "Voice recording and camera access are only activated when you choose to enable them in a practice session. Voice transcripts are processed to generate feedback. Camera video is analysed locally in your browser and never sent to our servers.",
-          },
-        },
-        {
-          "@type": "Question",
-          name: "Is AI Career Mentor free to use?",
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: "AI Career Mentor offers a free tier for interview practice. Paid plans provide additional coaching features and session limits. See the pricing page for current plan details.",
-          },
-        },
-        {
-          "@type": "Question",
-          name: "Who is AI Career Mentor for?",
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: "AI Career Mentor is built for graduates entering the job market, career changers preparing for new roles, and experienced professionals facing leadership or senior interviews. It adapts questions to your role, level and interview type.",
-          },
-        },
-        {
-          "@type": "Question",
-          name: "Can I delete my interview data?",
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: "Yes. You can delete individual sessions, all saved sessions, or your full candidate profile (including CV context and role details) from the profile page at any time.",
-          },
-        },
-        {
-          "@type": "Question",
-          name: "Is AI Career Mentor better than a human interview coach?",
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: "AI Career Mentor gives you unlimited, on-demand practice at a fraction of the cost of a human coach. It scores answers objectively across multiple dimensions every time, without scheduling. For targeted feedback on specific areas, a human coach adds value — but for volume practice and delivery coaching, AI Career Mentor is purpose-built for it.",
-          },
-        },
-        {
-          "@type": "Question",
-          name: "Do you offer a university or campus licence?",
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: "Yes. AI Career Mentor offers campus licences for universities and careers services, giving unlimited student access under a single annual fee. Contact universities@aicareermentor.co.uk to discuss pricing.",
-          },
-        },
-      ],
-    },
   ],
 };
 
