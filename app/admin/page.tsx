@@ -64,7 +64,13 @@ export default async function AdminPage() {
   );
 
   // ── Merge into AdminUser shape ───────────────────────────────────────────
-  const adminUsers: AdminUser[] = clerkUsers.map((u) => {
+  // Exclude superadmin accounts — they are not candidates or corporate users.
+  const nonAdminClerkUsers = clerkUsers.filter((u) => {
+    const m = (u.privateMetadata ?? {}) as { role?: string };
+    return m.role !== "superadmin";
+  });
+
+  const adminUsers: AdminUser[] = nonAdminClerkUsers.map((u) => {
     type UserMeta = {
       accountType?: string;
       stripePlanId?: string;
@@ -113,5 +119,9 @@ export default async function AdminPage() {
     };
   });
 
-  return <AdminClient users={adminUsers} />;
+  const adminEmail =
+    me.emailAddresses.find((e) => e.id === me.primaryEmailAddressId)
+      ?.emailAddress ?? me.emailAddresses[0]?.emailAddress ?? "";
+
+  return <AdminClient users={adminUsers} adminEmail={adminEmail} />;
 }
