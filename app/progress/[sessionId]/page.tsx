@@ -418,9 +418,7 @@ function SummaryPanel({ session }: { session: PracticeSessionDetail }) {
             <p className="text-sm text-gray-400">Readiness score</p>
             <div className="mt-2 flex items-end gap-2">
               <span className="text-6xl font-black tracking-[-0.08em] text-white">
-                {summary?.readiness_score ||
-                  summary?.overall_score ||
-                  session.overallScore}
+                {session.overallScore}
               </span>
               <span className="mb-2 text-lg font-black text-gray-500">/10</span>
             </div>
