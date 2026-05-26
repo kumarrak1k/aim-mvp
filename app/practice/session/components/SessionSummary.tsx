@@ -224,56 +224,68 @@ function QuestionCard({
       </button>
 
       {open && (
-        <div className="border-t border-white/[0.07] px-4 pb-4 pt-4 sm:px-5 sm:pb-5">
-          {result.answer.trim() ? (
-            <div className="mb-4">
-              <p className="mb-2 text-xs font-black uppercase tracking-[0.16em] text-gray-500">
-                Your answer
-              </p>
-              <p className="text-sm leading-7 text-gray-300">{result.answer}</p>
-            </div>
-          ) : null}
+        <div className="border-t border-white/[0.07] px-4 pb-4 pt-4 sm:px-5 sm:pb-5 space-y-4">
 
-          {result.feedback.strengths.length > 0 && (
-            <div className="mb-3">
-              <p className="mb-2 text-xs font-black uppercase tracking-[0.16em] text-emerald-400">
-                Strengths
-              </p>
-              <ul className="space-y-1">
-                {result.feedback.strengths.map((s) => (
-                  <li key={s} className="text-sm leading-6 text-gray-300">
-                    ✓ {s}
-                  </li>
-                ))}
-              </ul>
+          {/* Your answer | Model answer — side by side */}
+          <div className="grid gap-4 lg:grid-cols-2">
+            {result.answer.trim() && (
+              <div className="rounded-[1.35rem] border border-white/10 bg-white/[0.04] p-4">
+                <p className="mb-3 text-xs font-black uppercase tracking-[0.18em] text-cyan-300">
+                  Your answer
+                </p>
+                <p className="whitespace-pre-wrap text-sm leading-7 text-gray-300">
+                  {result.answer}
+                </p>
+              </div>
+            )}
+            {result.feedback.improved_answer && (
+              <div className="rounded-[1.35rem] border border-white/10 bg-white/[0.04] p-4">
+                <p className="mb-3 text-xs font-black uppercase tracking-[0.18em] text-cyan-300">
+                  Model answer
+                </p>
+                <p className="whitespace-pre-wrap text-sm leading-7 text-gray-300">
+                  {result.feedback.improved_answer}
+                </p>
+              </div>
+            )}
+          </div>
+
+          {/* Strengths | Improvements — side by side */}
+          {(result.feedback.strengths.length > 0 || result.feedback.improvements.length > 0) && (
+            <div className="grid gap-4 lg:grid-cols-2">
+              {result.feedback.strengths.length > 0 && (
+                <div className="rounded-[1.35rem] border border-white/10 bg-white/[0.04] p-4">
+                  <p className="text-xs font-black uppercase tracking-[0.18em] text-emerald-300">
+                    Strengths
+                  </p>
+                  <ul className="mt-3 space-y-2">
+                    {result.feedback.strengths.map((s) => (
+                      <li key={s} className="flex gap-2 text-sm leading-6 text-gray-300">
+                        <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-300" />
+                        <span>{s}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {result.feedback.improvements.length > 0 && (
+                <div className="rounded-[1.35rem] border border-white/10 bg-white/[0.04] p-4">
+                  <p className="text-xs font-black uppercase tracking-[0.18em] text-purple-300">
+                    Improvements
+                  </p>
+                  <ul className="mt-3 space-y-2">
+                    {result.feedback.improvements.map((s) => (
+                      <li key={s} className="flex gap-2 text-sm leading-6 text-gray-300">
+                        <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-purple-300" />
+                        <span>{s}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
           )}
 
-          {result.feedback.improvements.length > 0 && (
-            <div className="mb-4">
-              <p className="mb-2 text-xs font-black uppercase tracking-[0.16em] text-amber-400">
-                Improvements
-              </p>
-              <ul className="space-y-1">
-                {result.feedback.improvements.map((s) => (
-                  <li key={s} className="text-sm leading-6 text-gray-300">
-                    → {s}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {result.feedback.improved_answer && (
-            <div className="rounded-[1rem] border border-purple-400/20 bg-purple-500/[0.07] p-4">
-              <p className="mb-2 text-xs font-black uppercase tracking-[0.16em] text-purple-300">
-                Model answer
-              </p>
-              <p className="text-sm leading-7 text-gray-300">
-                {result.feedback.improved_answer}
-              </p>
-            </div>
-          )}
         </div>
       )}
     </div>
