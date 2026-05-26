@@ -9,7 +9,7 @@ import { PublicShell } from "@/app/components/marketing/PublicShell";
 // 2. Create a form with fields: Name, Institution, Role, Student numbers, Message
 // 3. Copy the form ID from the share URL: https://tally.so/r/XXXXXXX  ← that part
 // 4. Paste it below (just the ID, not the full URL)
-const TALLY_FORM_ID = "wgdemo"; // ← replace this
+const TALLY_FORM_ID = "kdk4Do";
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const metadata: Metadata = createPageMetadata({
