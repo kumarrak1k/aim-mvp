@@ -22,14 +22,34 @@ export const metadata = { robots: "noindex, nofollow" };
  */
 export default async function AdminPage() {
   // ── Auth gate ────────────────────────────────────────────────────────────
-  // Use session claims (JWT) for the role check — no Clerk API call required,
-  // so this never crashes due to a Clerk API 500.
+  // Primary: check JWT session claims (no Clerk API call).
+  // Fallback: live getUser() when claims don't carry the role — covers the
+  //   case where the Clerk JWT template isn't configured or the session was
+  //   issued before the template was set up.
+  // If both fail (Clerk API 500), access is denied rather than crashing.
   const { userId, sessionClaims } = await auth();
   if (!userId) redirect("/admin/sign-in");
 
-  const role = (sessionClaims as { metadata?: { role?: string } } | null)
-    ?.metadata?.role;
-  if (role !== "superadmin") redirect("/api/admin/reject");
+  const claimsRole = (
+    sessionClaims as { metadata?: { role?: string } } | null
+  )?.metadata?.role;
+
+  let isSuperAdmin = claimsRole === "superadmin";
+
+  if (!isSuperAdmin && !claimsRole) {
+    // JWT template may not include metadata yet — fall back to live API.
+    try {
+      const verifyClient = await clerkClient();
+      const me = await verifyClient.users.getUser(userId);
+      const myMeta = me.privateMetadata as { role?: string };
+      isSuperAdmin = myMeta.role === "superadmin";
+    } catch {
+      // Clerk API down — deny access rather than crash.
+      isSuperAdmin = false;
+    }
+  }
+
+  if (!isSuperAdmin) redirect("/api/admin/reject");
 
   // ── Fetch all Clerk users ────────────────────────────────────────────────
   // getUserList is the one remaining live Clerk API call on this page.
