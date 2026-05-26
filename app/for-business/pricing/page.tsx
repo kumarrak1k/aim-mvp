@@ -36,7 +36,7 @@ const faqs = [
   {
     question: "Is there a free trial?",
     answer:
-      "Yes — Team and Business plans start with a free trial. No credit card required. Enterprise pricing includes a structured pilot programme.",
+      "Team and Business plans are pay-as-you-subscribe — no lock-in, cancel any time. Enterprise pricing includes a structured pilot programme before commitment.",
   },
   {
     question: "What counts as a candidate invite?",
@@ -79,7 +79,7 @@ export default async function BusinessPricingPage() {
         </h1>
         <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-gray-400 sm:text-lg sm:leading-9">
           Per-seat plans for small teams, custom pricing for enterprise.
-          Start with a free trial, no credit card.
+          Subscribe monthly or save up to 33% annually.
         </p>
       </section>
 

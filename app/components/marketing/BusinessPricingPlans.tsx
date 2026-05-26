@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export type PricingCurrency = "GBP" | "USD" | "EUR";
 
@@ -19,13 +20,46 @@ const BUSINESS: Record<PricingCurrency, PriceSet> = {
   EUR: { monthly: "€449",  annual: "€3,592", annualMonthly: "€299.33" },
 };
 
+type PlanKey = "team" | "business" | "enterprise";
+
 export function BusinessPricingPlans({ currency = "GBP" }: { currency?: PricingCurrency }) {
   const [annual, setAnnual] = useState(false);
+  const [loading, setLoading] = useState<PlanKey | null>(null);
+  const router = useRouter();
   const team = TEAM[currency];
   const biz = BUSINESS[currency];
 
+  async function handleCheckout(planKey: "team" | "business") {
+    setLoading(planKey);
+    try {
+      const res = await fetch("/api/stripe/corporate-checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plan: planKey, billing: annual ? "annual" : "monthly" }),
+      });
+
+      if (res.status === 401) {
+        // Not signed in — send to business sign-up
+        router.push("/for-business/sign-up");
+        return;
+      }
+
+      const data = await res.json() as { url?: string; error?: string };
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert(data.error ?? "Something went wrong. Please try again.");
+      }
+    } catch {
+      alert("Something went wrong. Please try again.");
+    } finally {
+      setLoading(null);
+    }
+  }
+
   const plans = [
     {
+      planKey: "team" as PlanKey,
       name: "Team",
       monthlyPrice: team.monthly,
       annualPrice: team.annual,
@@ -41,11 +75,12 @@ export function BusinessPricingPlans({ currency = "GBP" }: { currency?: PricingC
         "Email invite branding",
         "UK GDPR-ready",
       ],
-      cta: "Start free trial",
-      ctaHref: "/for-business/sign-up",
+      cta: "Get started",
+      ctaType: "checkout" as const,
       highlight: false,
     },
     {
+      planKey: "business" as PlanKey,
       name: "Business",
       monthlyPrice: biz.monthly,
       annualPrice: biz.annual,
@@ -61,11 +96,12 @@ export function BusinessPricingPlans({ currency = "GBP" }: { currency?: PricingC
         "Custom branding (logo + colour)",
         "Priority email support",
       ],
-      cta: "Start free trial",
-      ctaHref: "/for-business/sign-up",
+      cta: "Get started",
+      ctaType: "checkout" as const,
       highlight: true,
     },
     {
+      planKey: "enterprise" as PlanKey,
       name: "Enterprise",
       monthlyPrice: "Custom",
       annualPrice: null as string | null,
@@ -83,7 +119,8 @@ export function BusinessPricingPlans({ currency = "GBP" }: { currency?: PricingC
         "SLA + priority support",
       ],
       cta: "Talk to our team",
-      ctaHref: "/for-business/sign-up",
+      ctaType: "link" as const,
+      ctaHref: "/contact",
       highlight: false,
     },
   ];
@@ -127,6 +164,7 @@ export function BusinessPricingPlans({ currency = "GBP" }: { currency?: PricingC
           const displayPeriod =
             annual && plan.annualPrice ? "/year" : plan.period;
           const annualMonthlyEquiv = annual && plan.annualMonthly;
+          const isLoading = loading === plan.planKey;
 
           return (
             <div
@@ -175,16 +213,31 @@ export function BusinessPricingPlans({ currency = "GBP" }: { currency?: PricingC
                   </div>
                 ))}
               </div>
-              <Link
-                href={plan.ctaHref}
-                className={`mt-8 flex w-full justify-center rounded-2xl px-5 py-3.5 text-sm font-black transition ${
-                  plan.highlight
-                    ? "bg-gradient-to-r from-fuchsia-500 to-purple-500 text-white shadow-xl shadow-fuchsia-950/35 hover:scale-[1.02]"
-                    : "border border-white/10 bg-white/[0.06] text-white hover:bg-white/[0.1]"
-                }`}
-              >
-                {plan.cta}
-              </Link>
+
+              {plan.ctaType === "checkout" ? (
+                <button
+                  onClick={() => handleCheckout(plan.planKey as "team" | "business")}
+                  disabled={isLoading || loading !== null}
+                  className={`mt-8 flex w-full justify-center rounded-2xl px-5 py-3.5 text-sm font-black transition disabled:opacity-60 disabled:cursor-not-allowed ${
+                    plan.highlight
+                      ? "bg-gradient-to-r from-fuchsia-500 to-purple-500 text-white shadow-xl shadow-fuchsia-950/35 hover:scale-[1.02]"
+                      : "border border-white/10 bg-white/[0.06] text-white hover:bg-white/[0.1]"
+                  }`}
+                >
+                  {isLoading ? "Redirecting…" : plan.cta}
+                </button>
+              ) : (
+                <Link
+                  href={(plan as { ctaHref: string }).ctaHref}
+                  className={`mt-8 flex w-full justify-center rounded-2xl px-5 py-3.5 text-sm font-black transition ${
+                    plan.highlight
+                      ? "bg-gradient-to-r from-fuchsia-500 to-purple-500 text-white shadow-xl shadow-fuchsia-950/35 hover:scale-[1.02]"
+                      : "border border-white/10 bg-white/[0.06] text-white hover:bg-white/[0.1]"
+                  }`}
+                >
+                  {plan.cta}
+                </Link>
+              )}
             </div>
           );
         })}
