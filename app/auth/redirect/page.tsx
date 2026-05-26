@@ -31,7 +31,12 @@ export default async function AuthRedirectPage() {
   // Check for admin-created accounts that must set a new password first
   const client = await clerkClient();
   const user = await client.users.getUser(userId);
-  const meta = (user.privateMetadata ?? {}) as { forcePasswordReset?: boolean };
+  const meta = (user.privateMetadata ?? {}) as { forcePasswordReset?: boolean; role?: string };
+
+  // Superadmin accounts belong in /admin — never in candidate/corporate flows.
+  if (meta.role === "superadmin") {
+    redirect("/admin");
+  }
 
   if (meta.forcePasswordReset) {
     redirect("/change-password");
