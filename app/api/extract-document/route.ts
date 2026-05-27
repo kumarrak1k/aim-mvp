@@ -1,4 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
+import path from "path";
+import { pathToFileURL } from "url";
 
 export const runtime = "nodejs";
 
@@ -69,9 +71,21 @@ async function extractTextFromPdf(buffer: Buffer): Promise<string> {
     );
   }
 
-  // Configure the worker path so pdfjs-dist can find it in serverless envs.
+  // pdfjs-dist requires a worker URL even in Node.js.  Without it the
+  // serverless function throws "No GlobalWorkerOptions.workerSrc specified."
+  // We resolve the path from process.cwd() (project root on Vercel) so the
+  // file URL is always correct regardless of __dirname / import.meta.url
+  // transforms applied by webpack during bundling.
   if (typeof PDFParse.setWorker === "function") {
-    PDFParse.setWorker();
+    const workerPath = path.join(
+      process.cwd(),
+      "node_modules",
+      "pdfjs-dist",
+      "legacy",
+      "build",
+      "pdf.worker.mjs"
+    );
+    PDFParse.setWorker(pathToFileURL(workerPath).href);
   }
 
   const parser = new PDFParse({ data: buffer });
