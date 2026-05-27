@@ -920,9 +920,13 @@ export default function PracticeSessionPage() {
           setQuestionAudioMessage("Preparing natural question audio...");
           void prepareQuestionAudio(nextQuestion, speakerPreference);
         } else if (speakerEnabled) {
+          // Desktop: kick off the TTS fetch immediately alongside displaying
+          // the question so the audio is ready (or further along) by the time
+          // the auto-play effect fires or the user clicks Play.
           setQuestionAudioMessage(
             "Press Play question + record when you are ready."
           );
+          void prepareQuestionAudio(nextQuestion, speakerPreference);
         }
       } catch (error) {
         setQuestion(

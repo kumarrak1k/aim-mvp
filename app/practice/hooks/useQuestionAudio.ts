@@ -87,6 +87,171 @@ const fetchQuestionAudioBlobWithTimeout = async (
   }
 };
 
+// ── MediaSource streaming ────────────────────────────────────────────────────
+// Instead of buffering the full blob, pipe chunks from the streaming API
+// response directly into a MediaSource SourceBuffer.  The Audio element fires
+// `canplay` once it has ~500 ms of data — at that point we resolve and let
+// playback start, while the rest of the audio continues streaming in the
+// background.  Falls back to the blob path on any failure.
+
+/** True when the browser supports MP3 streaming via MediaSource. */
+const supportsMediaSourceStreaming = (): boolean => {
+  try {
+    return (
+      typeof window !== "undefined" &&
+      typeof window.MediaSource !== "undefined" &&
+      MediaSource.isTypeSupported("audio/mpeg")
+    );
+  } catch {
+    return false;
+  }
+};
+
+/**
+ * Fetch TTS audio and stream it into a MediaSource-backed Audio element.
+ * Resolves as soon as `canplay` fires (first ~500 ms buffered) rather than
+ * waiting for the full download.
+ */
+const streamQuestionAudioToEntry = async (
+  text: string,
+  speakerPreference?: SpeakerPreference
+): Promise<{ audio: HTMLAudioElement; url: string }> => {
+  const controller = new AbortController();
+  const fetchTimeout = window.setTimeout(
+    () => controller.abort(),
+    AUDIO_FETCH_TIMEOUT_MS
+  );
+
+  let response: Response;
+  try {
+    response = await fetch("/api/question-audio", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text, speakerPreference }),
+      signal: controller.signal,
+    });
+  } catch (err) {
+    window.clearTimeout(fetchTimeout);
+    throw err;
+  }
+
+  if (!response.ok || !response.body) {
+    window.clearTimeout(fetchTimeout);
+    let message = "Interviewer voice could not be prepared.";
+    try {
+      const data = (await response.json()) as { error?: string };
+      message = data.error ?? message;
+    } catch {
+      // Keep default message.
+    }
+    throw new Error(message);
+  }
+
+  const ms = new MediaSource();
+  const url = URL.createObjectURL(ms);
+  const audio = new Audio(url);
+  audio.preload = "auto";
+
+  await new Promise<void>((resolve, reject) => {
+    let settled = false;
+
+    const settle = (fn: () => void) => {
+      if (settled) return;
+      settled = true;
+      window.clearTimeout(fetchTimeout);
+      window.clearTimeout(canPlayGuard);
+      fn();
+    };
+
+    // Resolve as soon as the browser has buffered enough to start playback.
+    audio.addEventListener("canplay", () => settle(resolve), { once: true });
+
+    // Hard timeout — give up waiting for canplay after 10 s.
+    const canPlayGuard = window.setTimeout(
+      () =>
+        settle(() => reject(new Error("MediaSource streaming timed out"))),
+      10_000
+    );
+
+    ms.addEventListener(
+      "sourceopen",
+      () => {
+        let sb: SourceBuffer;
+        try {
+          sb = ms.addSourceBuffer("audio/mpeg");
+        } catch (err) {
+          settle(() => reject(err));
+          return;
+        }
+
+        const queue: ArrayBuffer[] = [];
+        let isAppending = false;
+        let streamEnded = false;
+
+        const flushQueue = () => {
+          if (isAppending || !queue.length || ms.readyState !== "open") return;
+          isAppending = true;
+          try {
+            sb.appendBuffer(queue.shift()!);
+          } catch {
+            isAppending = false;
+          }
+        };
+
+        sb.addEventListener("updateend", () => {
+          isAppending = false;
+          if (streamEnded && !queue.length) {
+            try {
+              if (ms.readyState === "open") ms.endOfStream();
+            } catch {
+              // Ignore.
+            }
+            // Resolve here too in case canplay never fired (short audio).
+            settle(resolve);
+          } else {
+            flushQueue();
+          }
+        });
+
+        void (async () => {
+          const reader = response.body!.getReader();
+          try {
+            for (;;) {
+              const { value, done } = await reader.read();
+              if (done) {
+                streamEnded = true;
+                // If nothing is currently appending and queue is empty, end now.
+                if (!isAppending && !queue.length) {
+                  try {
+                    if (ms.readyState === "open") ms.endOfStream();
+                  } catch {
+                    // Ignore.
+                  }
+                  settle(resolve);
+                }
+                break;
+              }
+              // Slice to own the ArrayBuffer (value may alias a shared buffer).
+              queue.push(
+                value.buffer.slice(
+                  value.byteOffset,
+                  value.byteOffset + value.byteLength
+                )
+              );
+              flushQueue();
+            }
+          } catch (err) {
+            settle(() => reject(err));
+          }
+        })();
+      },
+      { once: true }
+    );
+  });
+
+  return { audio, url };
+};
+
 export function useQuestionAudio({
   onPlaybackStart,
   onPlaybackEnd,
@@ -411,19 +576,44 @@ export function useQuestionAudio({
         preparedAudioCacheRef.current.delete(cacheKey);
       }
 
-      const blob = await fetchQuestionAudioBlobWithTimeout(
-        safeText,
-        speakerPreference
-      );
+      // Try MediaSource streaming for lower latency (resolves on first ~500 ms
+      // of audio rather than waiting for the full download).  Fall back to the
+      // blob path on any failure or when MediaSource isn't supported.
+      let audio: HTMLAudioElement;
+      let url: string;
+      let usedStreaming = false;
+
+      if (supportsMediaSourceStreaming()) {
+        try {
+          ({ audio, url } = await streamQuestionAudioToEntry(
+            safeText,
+            speakerPreference
+          ));
+          usedStreaming = true;
+        } catch {
+          // MediaSource failed — fall through to the reliable blob path.
+          const blob = await fetchQuestionAudioBlobWithTimeout(
+            safeText,
+            speakerPreference
+          );
+          url = URL.createObjectURL(blob);
+          audio = new Audio(url);
+        }
+      } else {
+        const blob = await fetchQuestionAudioBlobWithTimeout(
+          safeText,
+          speakerPreference
+        );
+        url = URL.createObjectURL(blob);
+        audio = new Audio(url);
+      }
 
       if (generation !== audioGenerationRef.current) {
+        URL.revokeObjectURL(url);
         return null;
       }
 
-      const url = URL.createObjectURL(blob);
-      const audio = new Audio(url);
       audio.preload = "auto";
-
       attachAudioHandlers(audio);
 
       const entry: PreparedAudioEntry = {
@@ -436,10 +626,14 @@ export function useQuestionAudio({
       preparedAudioCacheRef.current.set(cacheKey, entry);
       setActivePreparedAudioEntry(cacheKey, entry);
 
-      try {
-        audio.load();
-      } catch {
-        // Audio can still attempt playback later.
+      // For MediaSource entries the audio element loads automatically when
+      // src is set — calling audio.load() would reset the stream.
+      if (!usedStreaming) {
+        try {
+          audio.load();
+        } catch {
+          // Audio can still attempt playback later.
+        }
       }
 
       return entry;
