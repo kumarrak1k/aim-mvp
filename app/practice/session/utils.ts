@@ -10,44 +10,54 @@ export const MIN_TOTAL_QUESTIONS = 3;
 // ── Question mix (Advanced plan only) ────────────────────────────────────────
 
 export type QuestionMixKey =
+  | "opener"      // "Tell me about yourself" style opening question (AI-generated)
   | "competency"
   | "technical"
   | "leadership"
   | "motivation"
   | "situational"
-  | "commercial";
+  | "commercial"
+  | "custom";     // User-typed verbatim question (bypasses AI generation)
 
 /** Per-type question count breakdown chosen by the candidate. */
 export type QuestionMix = Record<QuestionMixKey, number>;
 
 /** Order in which types are sequenced within the session. */
 export const QUESTION_TYPE_ORDER: QuestionMixKey[] = [
+  "opener",
   "competency",
   "technical",
   "leadership",
   "motivation",
   "situational",
   "commercial",
+  "custom",
 ];
 
 export const QUESTION_TYPE_LABELS: Record<QuestionMixKey, string> = {
+  opener: "Tell me about yourself",
   competency: "Competency / Behavioural",
   technical: "Technical",
   leadership: "Leadership",
   motivation: "Motivation for the role",
   situational: "Situational",
   commercial: "Commercial awareness",
+  custom: "Custom question",
 };
+
+/** Hard cap on characters per user-typed custom question. */
+export const MAX_CUSTOM_QUESTION_LENGTH = 500;
 
 /** Sum of all type counts. */
 export function mixTotal(mix: QuestionMix): number {
-  return QUESTION_TYPE_ORDER.reduce((sum, k) => sum + mix[k], 0);
+  return QUESTION_TYPE_ORDER.reduce((sum, k) => sum + (mix[k] ?? 0), 0);
 }
 
 /**
  * Returns the human-readable question type label for position `questionNumber`
  * (1-based) given a mix definition, or an empty string if the mix has no
  * allocation for that position.
+ * Custom slots return "" — they bypass AI generation entirely.
  */
 export function getQuestionTypeAtPosition(
   mix: QuestionMix,
@@ -55,12 +65,32 @@ export function getQuestionTypeAtPosition(
 ): string {
   const sequence: QuestionMixKey[] = [];
   for (const key of QUESTION_TYPE_ORDER) {
-    for (let i = 0; i < mix[key]; i++) {
+    for (let i = 0; i < (mix[key] ?? 0); i++) {
       sequence.push(key);
     }
   }
   const type = sequence[questionNumber - 1];
-  return type ? QUESTION_TYPE_LABELS[type] : "";
+  if (!type || type === "custom") return "";
+  return QUESTION_TYPE_LABELS[type];
+}
+
+/**
+ * For positions that map to a "custom" slot, returns the 0-based index into
+ * the `customQuestions` array.  Returns -1 for all other question types.
+ */
+export function getCustomQuestionIndex(
+  mix: QuestionMix,
+  questionNumber: number
+): number {
+  const sequence: QuestionMixKey[] = [];
+  for (const key of QUESTION_TYPE_ORDER) {
+    for (let i = 0; i < (mix[key] ?? 0); i++) {
+      sequence.push(key);
+    }
+  }
+  const type = sequence[questionNumber - 1];
+  if (type !== "custom") return -1;
+  return sequence.slice(0, questionNumber - 1).filter((k) => k === "custom").length;
 }
 
 /** Validate and clamp each mix value. Total is NOT enforced here (UI does that). */
@@ -68,12 +98,14 @@ export function cleanQuestionMix(value: unknown): QuestionMix | undefined {
   if (!value || typeof value !== "object") return undefined;
   const raw = value as Record<string, unknown>;
   const mix: QuestionMix = {
+    opener: 0,
     competency: 0,
     technical: 0,
     leadership: 0,
     motivation: 0,
     situational: 0,
     commercial: 0,
+    custom: 0,
   };
   let hasAny = false;
   for (const key of QUESTION_TYPE_ORDER) {
@@ -150,10 +182,16 @@ export type PracticeSessionConfig = {
   assessmentCentreId?: string;
   /**
    * Advanced plan only. When set, questions are generated in the specified
-   * type order (competency → technical → leadership → motivation → …).
+   * type order (opener → competency → technical → leadership → motivation → …).
    * When absent the interviewType string drives question style as before.
    */
   questionMix?: QuestionMix;
+  /**
+   * Advanced plan only. Verbatim text for each "custom" slot in questionMix,
+   * in order. The nth custom slot in the session sequence maps to
+   * customQuestions[n]. These bypass AI generation and are played directly.
+   */
+  customQuestions?: string[];
 };
 
 export const defaultSessionConfig: PracticeSessionConfig = {
@@ -334,6 +372,12 @@ export function parseSessionConfig(): PracticeSessionConfig | null {
           ? parsed.assessmentCentreId
           : undefined,
       questionMix: cleanQuestionMix(parsed.questionMix),
+      customQuestions: Array.isArray(parsed.customQuestions)
+        ? (parsed.customQuestions as unknown[])
+            .filter((q): q is string => typeof q === "string")
+            .map((q) => q.slice(0, MAX_CUSTOM_QUESTION_LENGTH).trim())
+            .filter(Boolean)
+        : undefined,
     };
   } catch {
     return null;

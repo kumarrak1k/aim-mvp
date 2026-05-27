@@ -18,6 +18,7 @@ import { hasCandidateProfileContext } from "../lib/profileHelpers";
 import { CheckItem, GlassCard, SelectField } from "./PracticeUi";
 import {
   MAX_TOTAL_QUESTIONS,
+  MAX_CUSTOM_QUESTION_LENGTH,
   MIN_TOTAL_QUESTIONS,
   QUESTION_TYPE_ORDER,
   QUESTION_TYPE_LABELS,
@@ -64,6 +65,9 @@ type PracticeStartScreenProps = {
   setUseHybridMix: (v: boolean) => void;
   questionMix: QuestionMix;
   setQuestionMix: (v: QuestionMix) => void;
+  /** Verbatim text for each "custom" mix slot (index-matched). */
+  customQuestions: string[];
+  setCustomQuestions: (v: string[]) => void;
   startDisabled?: boolean;
   startDisabledMessage?: string;
 };
@@ -154,6 +158,8 @@ export function PracticeStartScreen({
   setUseHybridMix,
   questionMix,
   setQuestionMix,
+  customQuestions,
+  setCustomQuestions,
   startDisabled = false,
   startDisabledMessage = "",
 }: PracticeStartScreenProps) {
@@ -166,12 +172,18 @@ export function PracticeStartScreen({
 
   const adjustMix = useCallback(
     (key: keyof QuestionMix, delta: number) => {
-      setQuestionMix({
-        ...questionMix,
-        [key]: Math.max(0, (questionMix[key] ?? 0) + delta),
-      });
+      const newVal = Math.max(0, (questionMix[key] ?? 0) + delta);
+      setQuestionMix({ ...questionMix, [key]: newVal });
+      // Keep the customQuestions text array in sync with the custom slot count.
+      if (key === "custom") {
+        if (delta > 0) {
+          setCustomQuestions([...customQuestions, ""]);
+        } else if (delta < 0 && customQuestions.length > 0) {
+          setCustomQuestions(customQuestions.slice(0, -1));
+        }
+      }
     },
-    [questionMix, setQuestionMix]
+    [questionMix, setQuestionMix, customQuestions, setCustomQuestions]
   );
 
   // When total questions changes (Advanced stepper), sync the default mix
@@ -181,7 +193,7 @@ export function PracticeStartScreen({
       setTotalQuestions(newTotal);
       if (!useHybridMix) {
         // Keep competency aligned with the new total
-        setQuestionMix({ ...questionMix, competency: newTotal, technical: 0, leadership: 0, motivation: 0, situational: 0, commercial: 0 });
+        setQuestionMix({ opener: 0, competency: newTotal, technical: 0, leadership: 0, motivation: 0, situational: 0, commercial: 0, custom: 0 });
       }
     },
     [setTotalQuestions, useHybridMix, questionMix, setQuestionMix]
@@ -191,13 +203,14 @@ export function PracticeStartScreen({
     (on: boolean) => {
       setUseHybridMix(on);
       if (!on) {
-        // Reset mix to single-type (all competency)
-        setQuestionMix({ competency: totalQuestions, technical: 0, leadership: 0, motivation: 0, situational: 0, commercial: 0 });
+        // Reset mix to single-type (all competency) and clear custom texts.
+        setQuestionMix({ opener: 0, competency: totalQuestions, technical: 0, leadership: 0, motivation: 0, situational: 0, commercial: 0, custom: 0 });
+        setCustomQuestions([]);
       } else {
         // Seed with a sensible starting split
         const each = Math.floor(totalQuestions / 2);
         const rem = totalQuestions - each * 2;
-        setQuestionMix({ competency: each, technical: each + rem, leadership: 0, motivation: 0, situational: 0, commercial: 0 });
+        setQuestionMix({ opener: 0, competency: each, technical: each + rem, leadership: 0, motivation: 0, situational: 0, commercial: 0, custom: 0 });
       }
     },
     [setUseHybridMix, setQuestionMix, totalQuestions]
@@ -375,9 +388,15 @@ export function PracticeStartScreen({
 
   // Block start if Advanced hybrid mix doesn't add up to the chosen total
   const hybridMixInvalid = isAdvancedPlan && useHybridMix && !mixMatchesTotal;
+  // Block start if any custom question slot has no text entered
+  const customQuestionsInvalid =
+    isAdvancedPlan &&
+    useHybridMix &&
+    (questionMix.custom ?? 0) > 0 &&
+    customQuestions.some((q) => !q.trim());
 
   const interviewStartDisabled =
-    !role.trim() || questionLoading || startDisabled || hybridMixInvalid;
+    !role.trim() || questionLoading || startDisabled || hybridMixInvalid || customQuestionsInvalid;
 
   return (
     <div className="grid gap-6 lg:grid-cols-[2fr_0.9fr]">
@@ -629,38 +648,83 @@ export function PracticeStartScreen({
 
                 <div className="space-y-2">
                   {QUESTION_TYPE_ORDER.map((key) => (
-                    <div
-                      key={key}
-                      className="flex items-center gap-3"
-                    >
-                      <span className="w-44 shrink-0 text-xs font-semibold text-gray-300">
-                        {QUESTION_TYPE_LABELS[key]}
-                      </span>
-                      <button
-                        type="button"
-                        disabled={questionMix[key] <= 0}
-                        onClick={() => adjustMix(key, -1)}
-                        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-sm font-black text-white transition hover:bg-white/[0.1] disabled:cursor-not-allowed disabled:opacity-25"
-                      >
-                        −
-                      </button>
-                      <span className="w-6 text-center text-sm font-black text-white">
-                        {questionMix[key]}
-                      </span>
-                      <button
-                        type="button"
-                        disabled={currentMixTotal >= totalQuestions}
-                        onClick={() => adjustMix(key, 1)}
-                        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-sm font-black text-white transition hover:bg-white/[0.1] disabled:cursor-not-allowed disabled:opacity-25"
-                      >
-                        +
-                      </button>
-                      {questionMix[key] > 0 && (
-                        <div className="flex-1 overflow-hidden rounded-full bg-white/[0.06]">
-                          <div
-                            className="h-1.5 rounded-full bg-gradient-to-r from-purple-400 to-fuchsia-400 transition-all"
-                            style={{ width: `${(questionMix[key] / totalQuestions) * 100}%` }}
-                          />
+                    <div key={key}>
+                      <div className="flex items-center gap-3">
+                        <div className="w-44 shrink-0">
+                          <span className="text-xs font-semibold text-gray-300">
+                            {QUESTION_TYPE_LABELS[key]}
+                          </span>
+                          {key === "opener" && (
+                            <p className="text-[10px] text-gray-500 leading-tight mt-0.5">
+                              AI-generated intro question
+                            </p>
+                          )}
+                          {key === "custom" && (
+                            <p className="text-[10px] text-gray-500 leading-tight mt-0.5">
+                              Your own verbatim question
+                            </p>
+                          )}
+                        </div>
+                        <button
+                          type="button"
+                          disabled={(questionMix[key] ?? 0) <= 0}
+                          onClick={() => adjustMix(key, -1)}
+                          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-sm font-black text-white transition hover:bg-white/[0.1] disabled:cursor-not-allowed disabled:opacity-25"
+                        >
+                          −
+                        </button>
+                        <span className="w-6 text-center text-sm font-black text-white">
+                          {questionMix[key] ?? 0}
+                        </span>
+                        <button
+                          type="button"
+                          disabled={currentMixTotal >= totalQuestions}
+                          onClick={() => adjustMix(key, 1)}
+                          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-sm font-black text-white transition hover:bg-white/[0.1] disabled:cursor-not-allowed disabled:opacity-25"
+                        >
+                          +
+                        </button>
+                        {(questionMix[key] ?? 0) > 0 && (
+                          <div className="flex-1 overflow-hidden rounded-full bg-white/[0.06]">
+                            <div
+                              className="h-1.5 rounded-full bg-gradient-to-r from-purple-400 to-fuchsia-400 transition-all"
+                              style={{ width: `${((questionMix[key] ?? 0) / totalQuestions) * 100}%` }}
+                            />
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Custom question text inputs — one per custom slot */}
+                      {key === "custom" && (questionMix.custom ?? 0) > 0 && (
+                        <div className="mt-2 ml-[188px] space-y-2">
+                          {Array.from({ length: questionMix.custom ?? 0 }).map((_, i) => (
+                            <div key={i}>
+                              <textarea
+                                value={customQuestions[i] ?? ""}
+                                onChange={(e) => {
+                                  const updated = [...customQuestions];
+                                  updated[i] = e.target.value.slice(
+                                    0,
+                                    MAX_CUSTOM_QUESTION_LENGTH
+                                  );
+                                  setCustomQuestions(updated);
+                                }}
+                                placeholder={`Question ${i + 1} — type it exactly as you want it asked`}
+                                maxLength={MAX_CUSTOM_QUESTION_LENGTH}
+                                rows={2}
+                                className="w-full rounded-xl border border-white/10 bg-white/[0.06] px-3 py-2 text-xs text-white placeholder-gray-600 focus:border-purple-400/50 focus:outline-none resize-none"
+                              />
+                              {!(customQuestions[i] ?? "").trim() && (
+                                <p className="mt-0.5 text-[10px] font-semibold text-amber-300">
+                                  Enter question text to continue.
+                                </p>
+                              )}
+                              <p className="mt-0.5 text-right text-[10px] text-gray-600">
+                                {(customQuestions[i] ?? "").length} /{" "}
+                                {MAX_CUSTOM_QUESTION_LENGTH}
+                              </p>
+                            </div>
+                          ))}
                         </div>
                       )}
                     </div>
@@ -846,6 +910,8 @@ export function PracticeStartScreen({
             ? "Starting..."
             : hybridMixInvalid
             ? `Allocate all ${totalQuestions} questions to start`
+            : customQuestionsInvalid
+            ? "Enter text for all custom questions to start"
             : `Start Tailored ${isAdvancedPlan ? totalQuestions : 5}-Question Interview`}
         </button>
 

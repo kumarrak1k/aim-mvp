@@ -65,6 +65,7 @@ import {
   createFeedbackError,
   defaultSessionConfig,
   defaultSpeakerPreference,
+  getCustomQuestionIndex,
   parseSessionConfig,
   wait,
   type QuestionMix,
@@ -95,8 +96,10 @@ export default function PracticeSessionPage() {
   // totalQuestions is now driven by config (template-defined for assessment
   // invites; defaulted to 5 for the classic personal practice flow).
   const [totalQuestions, setTotalQuestions] = useState<number>(DEFAULT_TOTAL_QUESTIONS);
-  // Advanced-plan custom mix — null means use the interviewType string as before.
+  // Advanced-plan custom mix — undefined means use the interviewType string as before.
   const [questionMix, setQuestionMix] = useState<QuestionMix | undefined>(undefined);
+  // Verbatim text for each "custom" slot in the mix (parallel array, index-matched).
+  const [customQuestions, setCustomQuestions] = useState<string[]>([]);
   const [assessmentMode, setAssessmentMode] = useState(false);
   const [assignmentToken, setAssignmentToken] = useState<string | undefined>(undefined);
   const [assessmentCentreId, setAssessmentCentreId] = useState<string | undefined>(undefined);
@@ -387,6 +390,7 @@ export default function PracticeSessionPage() {
     setSpeakerPreference(config.speakerPreference || defaultSpeakerPreference);
     setTotalQuestions(config.totalQuestions ?? DEFAULT_TOTAL_QUESTIONS);
     setQuestionMix(config.questionMix);
+    setCustomQuestions(config.customQuestions ?? []);
     setAssessmentMode(Boolean(config.assessmentMode));
     setAssignmentToken(config.assignmentToken);
     setAssessmentCentreId(config.assessmentCentreId);
@@ -902,15 +906,23 @@ export default function PracticeSessionPage() {
         awaitingAutoRecordQuestionRef.current = null;
         questionPlaybackStartedRef.current = false;
 
-        const nextQuestion = await fetchInterviewQuestion({
-          role: candidateProfile,
-          questionNumber,
-          totalQuestions,
-          history,
-          assessmentMode,
-          templateContext,
-          questionMix,
-        });
+        // Custom question slots bypass AI generation — use verbatim text.
+        const customIdx = questionMix
+          ? getCustomQuestionIndex(questionMix, questionNumber)
+          : -1;
+
+        const nextQuestion =
+          customIdx >= 0 && customQuestions[customIdx]?.trim()
+            ? customQuestions[customIdx].trim()
+            : await fetchInterviewQuestion({
+                role: candidateProfile,
+                questionNumber,
+                totalQuestions,
+                history,
+                assessmentMode,
+                templateContext,
+                questionMix,
+              });
 
         setActiveQuestion(nextQuestion);
         setQuestion(nextQuestion);
@@ -956,6 +968,7 @@ export default function PracticeSessionPage() {
       assessmentMode,
       templateContext,
       questionMix,
+      customQuestions,
     ]
   );
 

@@ -201,9 +201,11 @@ export async function POST(req: NextRequest) {
         ? getQuestionTypeAtPosition(questionMix, safeQuestionNumber)
         : "";
 
-    const questionTypeInstruction = requiredQuestionType
-      ? `This question MUST be a ${requiredQuestionType} question. Do not deviate from this type.`
-      : "";
+    const questionTypeInstruction = !requiredQuestionType
+      ? ""
+      : requiredQuestionType === "Tell me about yourself"
+      ? `This question MUST be an opening/introduction question — for example "Tell me about yourself", "Walk me through your background", or "Could you start with a brief introduction?". Adapt the phrasing naturally to the candidate's target role and experience level.`
+      : `This question MUST be a ${requiredQuestionType} question. Do not deviate from this type.`;
 
     const previousQuestions = Array.isArray(history)
       ? history

@@ -100,13 +100,19 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
   const [totalQuestions, setTotalQuestions] = useState(DEFAULT_TOTAL_QUESTIONS);
   const [useHybridMix, setUseHybridMix] = useState(false);
   const [questionMix, setQuestionMix] = useState<QuestionMix>({
+    opener: 0,
     competency: DEFAULT_TOTAL_QUESTIONS,
     technical: 0,
     leadership: 0,
     motivation: 0,
     situational: 0,
     commercial: 0,
+    custom: 0,
   });
+  // Verbatim text for each "custom" mix slot (index-matched to custom slots).
+  const [customQuestions, setCustomQuestions] = useState<string[]>([]);
+  // Corporate plan detection — also unlocks advanced features for Team/Business.
+  const [corporatePlanId, setCorporatePlanId] = useState<string | null>(null);
 
   const [speakerEnabled, setSpeakerEnabled] = useState(false);
   const [cameraEnabled, setCameraEnabled] = useState(false);
@@ -217,7 +223,10 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
   // free users and not-yet-signed-in visitors). While usage is still loading
   // default to free so voice options stay hidden rather than flicker in.
   const isFreePlan = practiceUsage.planName === "Free";
-  const isAdvancedPlan = practiceUsage.planName === "Professional";
+  const isAdvancedPlan =
+    practiceUsage.planName === "Professional" ||
+    corporatePlanId === "team" ||
+    corporatePlanId === "business";
 
   const canStartInterview = Boolean(role.trim()) && !signedInLimitReached;
 
@@ -280,18 +289,51 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
     }
 
     if (profile.defaultUseHybridMix && profile.defaultQuestionMix) {
-      setQuestionMix(profile.defaultQuestionMix);
+      // Merge with zero-defaults for newer keys (opener / custom) so restored
+      // mixes from older saved profiles still type-check correctly.
+      // Spread the saved mix; opener/custom default to 0 if not present in
+      // an older profile that pre-dates these question types.
+      setQuestionMix({
+        ...(profile.defaultQuestionMix as QuestionMix),
+        opener: (profile.defaultQuestionMix as QuestionMix).opener ?? 0,
+        custom: (profile.defaultQuestionMix as QuestionMix).custom ?? 0,
+      });
     } else if (typeof savedTotal === "number") {
       setQuestionMix({
+        opener: 0,
         competency: savedTotal,
         technical: 0,
         leadership: 0,
         motivation: 0,
         situational: 0,
         commercial: 0,
+        custom: 0,
       });
     }
   }, []);
+
+  // Detect corporate plan to extend advanced features to Team / Business members.
+  useEffect(() => {
+    if (!isSignedIn) return;
+    let cancelled = false;
+    fetch("/api/company/subscription")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data: { planId?: string; isActive?: boolean } | null) => {
+        if (cancelled) return;
+        if (
+          data?.isActive &&
+          (data.planId === "team" || data.planId === "business")
+        ) {
+          setCorporatePlanId(data.planId);
+        }
+      })
+      .catch(() => {
+        // Not a corporate member — ignore silently.
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [isSignedIn]);
 
   // Account-type guard — corporate users who reach /practice get sent home.
   useEffect(() => {
@@ -521,6 +563,10 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
           // Advanced plan extras
           totalQuestions: isAdvancedPlan ? totalQuestions : DEFAULT_TOTAL_QUESTIONS,
           questionMix: isAdvancedPlan && useHybridMix ? questionMix : undefined,
+          customQuestions:
+            isAdvancedPlan && useHybridMix && customQuestions.length > 0
+              ? customQuestions.map((q) => q.trim()).filter(Boolean)
+              : undefined,
         })
       );
 
@@ -545,6 +591,7 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
     totalQuestions,
     useHybridMix,
     questionMix,
+    customQuestions,
   ]);
 
   return (
@@ -673,6 +720,8 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
             setUseHybridMix={setUseHybridMix}
             questionMix={questionMix}
             setQuestionMix={setQuestionMix}
+            customQuestions={customQuestions}
+            setCustomQuestions={setCustomQuestions}
             startDisabled={signedInLimitReached}
             startDisabledMessage={usageSummary}
           />
