@@ -86,31 +86,45 @@ export async function POST(req: NextRequest) {
     }
 
     /**
+     * Optional preceding context sent by the client when doing incremental
+     * chunk-by-chunk polling.  Passing the previous Whisper result as the
+     * prompt gives the model continuity across chunk boundaries.
+     */
+    const contextField = formData.get("context");
+    const contextText =
+      typeof contextField === "string" ? contextField.trim() : "";
+
+    /**
      * The prompt primes Whisper to transcribe disfluencies.  Whisper uses the
      * prompt as a stylistic hint — including filler words here biases the model
      * toward keeping them rather than cleaning them away.
      */
+    const fillerHint =
+      "Um, uh, er, erm, ah. The speaker may use filler words and hesitation sounds.";
+    const whisperPrompt = contextText
+      ? `${contextText} ${fillerHint}`
+      : `${fillerHint} This is a spoken English interview answer.`;
+
     const transcription = await openai.audio.transcriptions.create({
       file: namedFile,
       model: "whisper-1",
       language: "en",
-      prompt:
-        "Um, uh, er, erm, ah. The speaker may use filler words and hesitation sounds in this spoken English interview answer.",
+      prompt: whisperPrompt,
       response_format: "text",
     });
 
     const transcript = typeof transcription === "string" ? transcription.trim() : "";
 
-    // Count each filler in the Whisper transcript.
-    const fillerCount = FILLER_WORDS.reduce(
-      (sum, word) => sum + countPhrase(transcript, word),
-      0
-    );
-    const fillersDetected = FILLER_WORDS.filter(
-      (word) => countPhrase(transcript, word) > 0
-    );
+    // Count each filler in the Whisper transcript and return per-word breakdown.
+    const fillerCounts: Record<string, number> = {};
+    for (const word of FILLER_WORDS) {
+      const count = countPhrase(transcript, word);
+      if (count > 0) fillerCounts[word] = count;
+    }
+    const fillerCount = Object.values(fillerCounts).reduce((a, b) => a + b, 0);
+    const fillersDetected = Object.keys(fillerCounts);
 
-    return NextResponse.json({ transcript, fillerCount, fillersDetected });
+    return NextResponse.json({ transcript, fillerCount, fillerCounts, fillersDetected });
   } catch (error) {
     console.error("WHISPER FILLER API ERROR:", error);
     // Return empty rather than an error so the UI degrades gracefully.

@@ -215,16 +215,28 @@ export const cleanTranscript = async (transcript: string) => {
   return data.cleanedTranscript?.trim() || transcript;
 };
 
+export type WhisperFillerResult = {
+  transcript: string;
+  fillerCount: number;
+  fillerCounts: Record<string, number>;
+  fillersDetected: string[];
+};
+
 /**
  * Sends the recorded audio blob to the Whisper filler-detection endpoint.
+ * Optionally pass `context` (the previous Whisper transcript) when doing
+ * incremental chunk-by-chunk polling — this gives the model continuity
+ * across chunk boundaries.
  * Returns the Whisper transcript and filler analysis, or null on failure.
  */
 export const fetchWhisperFillerAnalysis = async (
-  audioBlob: Blob
-): Promise<{ transcript: string; fillerCount: number; fillersDetected: string[] } | null> => {
+  audioBlob: Blob,
+  context?: string
+): Promise<WhisperFillerResult | null> => {
   try {
     const formData = new FormData();
     formData.append("audio", audioBlob);
+    if (context) formData.append("context", context);
 
     const response = await fetch("/api/whisper-filler", {
       method: "POST",
@@ -233,15 +245,12 @@ export const fetchWhisperFillerAnalysis = async (
 
     if (!response.ok) return null;
 
-    const data = await response.json() as {
-      transcript?: string;
-      fillerCount?: number;
-      fillersDetected?: string[];
-    };
+    const data = await response.json() as Partial<WhisperFillerResult>;
 
     return {
       transcript: data.transcript ?? "",
       fillerCount: data.fillerCount ?? 0,
+      fillerCounts: data.fillerCounts ?? {},
       fillersDetected: data.fillersDetected ?? [],
     };
   } catch {

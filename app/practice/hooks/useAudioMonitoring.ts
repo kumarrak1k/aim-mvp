@@ -214,6 +214,27 @@ export function useAudioMonitoring() {
     };
   }, [cleanupAudioMonitoring]);
 
+  /** Total number of MediaRecorder chunks collected so far. */
+  const getAudioChunkCount = useCallback((): number => {
+    return audioChunksRef.current.length;
+  }, []);
+
+  /**
+   * Returns a Blob of audio chunks starting from `fromIndex` up to the most
+   * recent chunk, or null if there are no new chunks.  Used for incremental
+   * Whisper polling during recording.
+   */
+  const getAudioChunksSince = useCallback(
+    (fromIndex: number): Blob | null => {
+      const chunks = audioChunksRef.current.slice(fromIndex);
+      if (chunks.length === 0) return null;
+      return new Blob(chunks, {
+        type: recordingMimeTypeRef.current || "audio/webm",
+      });
+    },
+    []
+  );
+
   return {
     audioSamplesRef,
     primeAudioInput,
@@ -222,6 +243,8 @@ export function useAudioMonitoring() {
     clearAudioSamples,
     clearAudioRecording,
     getRecordedAudioBlob,
+    getAudioChunkCount,
+    getAudioChunksSince,
     calculateCurrentAudioMetrics,
   };
 }
