@@ -41,44 +41,46 @@ async function extractTextFromDocx(buffer: Buffer) {
   return result.value || "";
 }
 
-async function extractTextFromPdf(buffer: Buffer) {
-  const pdfParseModule = (await import("pdf-parse")) as unknown as {
-    default?: unknown;
-    PDFParse?: unknown;
-  };
+type PDFParserInstance = {
+  getText(): Promise<{ text?: string } | string>;
+  destroy?(): Promise<void> | void;
+};
 
-  const defaultParser = pdfParseModule.default;
+type PDFParseClass = {
+  new (options: { data: Buffer }): PDFParserInstance;
+  setWorker?: (src?: string) => string;
+};
 
-  if (typeof defaultParser === "function") {
-    const result = await defaultParser(buffer);
-    const data = result as { text?: string };
-    return data.text || "";
+async function extractTextFromPdf(buffer: Buffer): Promise<string> {
+  const mod = await import("pdf-parse");
+
+  // Webpack bundles CJS modules wrapped as { default: <exports> }.
+  // The ESM entry hoists named exports directly onto the module object.
+  // We handle both shapes so this works in every Next.js/Vercel build.
+  const exports = mod as unknown as Record<string, unknown>;
+  const PDFParse = (
+    exports.PDFParse ??
+    (exports.default as Record<string, unknown> | undefined)?.PDFParse
+  ) as PDFParseClass | undefined;
+
+  if (!PDFParse) {
+    throw new Error(
+      "PDF parser could not be initialised — PDFParse class not found."
+    );
   }
 
-  const PDFParse = pdfParseModule.PDFParse as
-    | (new (input: { data: Buffer }) => {
-        getText: () => Promise<{ text?: string } | string>;
-        destroy?: () => Promise<void> | void;
-      })
-    | undefined;
-
-  if (PDFParse) {
-    const parser = new PDFParse({ data: buffer });
-
-    try {
-      const result = await parser.getText();
-
-      if (typeof result === "string") {
-        return result;
-      }
-
-      return result.text || "";
-    } finally {
-      await parser.destroy?.();
-    }
+  // Configure the worker path so pdfjs-dist can find it in serverless envs.
+  if (typeof PDFParse.setWorker === "function") {
+    PDFParse.setWorker();
   }
 
-  throw new Error("PDF parser could not be initialised.");
+  const parser = new PDFParse({ data: buffer });
+  try {
+    const result = await parser.getText();
+    return typeof result === "string" ? result : (result.text ?? "");
+  } finally {
+    await parser.destroy?.();
+  }
 }
 
 export async function POST(req: Request) {
@@ -169,7 +171,7 @@ export async function POST(req: Request) {
     return Response.json(
       {
         error:
-          "Failed to extract text from this document. Try a .txt or .docx file, or paste the text manually.",
+          "Couldn't extract text from this file. If it's a scanned or image-based PDF, please paste your CV text below instead.",
       },
       { status: 500 }
     );
