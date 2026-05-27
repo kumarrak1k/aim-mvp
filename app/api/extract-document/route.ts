@@ -78,51 +78,76 @@ function decodePdfHexString(hex: string): string {
  * string forms.
  */
 function extractPdfTextContent(content: string): string {
-  const parts: string[] = [];
+  const lines: string[] = [];
 
   // Iterate over BT...ET text blocks
   const btEt = /BT\b([\s\S]*?)\bET\b/g;
   let blockMatch: RegExpExecArray | null;
+
   while ((blockMatch = btEt.exec(content)) !== null) {
     const block = blockMatch[1];
-    const blockParts: string[] = [];
 
-    // Combined pattern: literal string, hex string, or line-break operators
-    // Order matters — check Tj/TJ operators after the string prefix.
+    // Within a BT/ET block we accumulate a "run" — consecutive text operators
+    // with no intervening position change.  Consecutive Tj/TJ calls concatenate
+    // directly (no space) because the PDF writer may split words at font/encoding
+    // boundaries (e.g. "john" Tj + "@" Tj + "example.com" Tj = "john@example.com").
+    // A space is only added when a position-change operator (Td/TD/T*/Tm) is
+    // seen between two non-empty text runs.
+    const segments: string[] = [];
+    let run = "";
+    let afterMove = true; // treat start-of-block like "after a move"
+
     const tokenRe =
       /\(([^)\\]*(?:\\[\s\S][^)\\]*)*)\)\s*(Tj|'|")|<([0-9a-fA-F\s]+)>\s*(Tj|'|")|(\[[\s\S]*?\])\s*TJ|\b(Td|TD|T\*|Tm)\b/g;
     let m: RegExpExecArray | null;
+
     while ((m = tokenRe.exec(block)) !== null) {
+      if (m[6] !== undefined) {
+        // Position operator — next text starts a fresh segment
+        afterMove = true;
+        continue;
+      }
+
+      let chunk = "";
+
       if (m[1] !== undefined) {
         // (literal string) Tj/'/''
-        const text = unescapePdfString(m[1]).trim();
-        if (text) blockParts.push(text);
+        chunk = unescapePdfString(m[1]);
       } else if (m[3] !== undefined) {
         // <hexstring> Tj/'/''
-        const text = decodePdfHexString(m[3]).trim();
-        if (text) blockParts.push(text);
+        chunk = decodePdfHexString(m[3]);
       } else if (m[5] !== undefined) {
-        // [...] TJ — array of strings and kerning numbers
-        const arrayContent = m[5];
-        const strRe =
-          /\(([^)\\]*(?:\\[\s\S][^)\\]*)*)\)|<([0-9a-fA-F\s]+)>/g;
+        // [...] TJ — array of strings interleaved with kerning numbers.
+        // Strings are concatenated directly. In the PDF spec a negative number
+        // advances the position rightward (i.e. adds space); a magnitude >= 200
+        // typically represents a word space in most fonts.
+        const inner = m[5];
+        const tjTokRe =
+          /\(([^)\\]*(?:\\[\s\S][^)\\]*)*)\)|<([0-9a-fA-F\s]+)>|(-?\d+(?:\.\d+)?)/g;
         let s: RegExpExecArray | null;
-        while ((s = strRe.exec(arrayContent)) !== null) {
-          const text = s[1] !== undefined
-            ? unescapePdfString(s[1]).trim()
-            : decodePdfHexString(s[2]).trim();
-          if (text) blockParts.push(text);
+        while ((s = tjTokRe.exec(inner)) !== null) {
+          if (s[1] !== undefined) chunk += unescapePdfString(s[1]);
+          else if (s[2] !== undefined) chunk += decodePdfHexString(s[2]);
+          else if (s[3] !== undefined && parseFloat(s[3]) <= -200) chunk += " ";
         }
-      } else if (m[6] !== undefined) {
-        // Td/TD/T*/Tm — text position operator → signals a new line
-        if (blockParts.length) blockParts.push("\n");
+      }
+
+      if (afterMove) {
+        const flushed = run.trim();
+        if (flushed) segments.push(flushed);
+        run = chunk;
+        afterMove = false;
+      } else {
+        run += chunk;
       }
     }
 
-    if (blockParts.length) parts.push(blockParts.join(" "));
+    const lastRun = run.trim();
+    if (lastRun) segments.push(lastRun);
+    if (segments.length) lines.push(segments.join(" "));
   }
 
-  return parts.join("\n").replace(/( ?\n ?)+/g, "\n").trim();
+  return lines.join("\n").replace(/\n{3,}/g, "\n\n").trim();
 }
 
 /**
