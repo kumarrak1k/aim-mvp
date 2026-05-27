@@ -45,6 +45,18 @@ type WindowWithSpeechRecognition = Window & {
   webkitSpeechRecognition?: SpeechRecognitionConstructor;
 };
 
+/**
+ * Single-word filler sounds that Chrome's Speech Recognition engine sometimes
+ * emits in interim results before silently dropping them in the final result.
+ * We track these across interim→final transitions and re-inject any that were
+ * dropped so the transcript accurately reflects the candidate's speech.
+ *
+ * Multi-word fillers ("you know", "sort of") cannot appear in a single interim
+ * chunk that gets dropped, so they are handled by the existing transcript scan
+ * in the voice analysis pipeline.
+ */
+const RECOVERABLE_FILLERS = ["um", "umm", "uh", "er", "erm", "ah"] as const;
+
 const normaliseTranscriptToUkEnglish = (value: string) => {
   return value
     .replace(/\bresume\b/gi, "CV")
@@ -130,6 +142,14 @@ export function useBrowserSpeech({
   const userStoppedRecognitionRef = useRef(false);
   const restartTimerRef = useRef<number | null>(null);
 
+  /**
+   * Per-result-index store of the most recent interim transcript text (raw,
+   * lowercase).  When a final result arrives for the same index we compare it
+   * against the stored interim to discover fillers that the browser's
+   * normalisation pass silently removed.
+   */
+  const interimTextByIndexRef = useRef<Map<number, string>>(new Map());
+
   const onAnswerChangeRef = useRef(onAnswerChange);
   const onListeningEndRef = useRef(onListeningEnd);
   const onListeningErrorRef = useRef(onListeningError);
@@ -152,6 +172,7 @@ export function useBrowserSpeech({
   const resetTranscript = useCallback(() => {
     finalTranscriptRef.current = "";
     interimTranscriptRef.current = "";
+    interimTextByIndexRef.current.clear();
   }, []);
 
   const setTranscript = useCallback((value: string) => {
@@ -351,7 +372,7 @@ export function useBrowserSpeech({
       userStoppedRecognitionRef.current = false;
       clearRestartTimer();
 
-      recognition.lang = "en";
+      recognition.lang = "en-GB";
 
       if (recognitionRunningRef.current) {
         setIsListening(true);
@@ -405,11 +426,11 @@ export function useBrowserSpeech({
 
       recognition.continuous = true;
       recognition.interimResults = true;
-      recognition.lang = "en";
+      recognition.lang = "en-GB";
 
       recognition.onstart = () => {
         recognitionRunningRef.current = true;
-        recognition.lang = "en";
+        recognition.lang = "en-GB";
         setIsListening(true);
       };
 
@@ -428,19 +449,51 @@ export function useBrowserSpeech({
           index < event.results.length;
           index += 1
         ) {
-          // Do not strip per-chunk — short answer fragments share many words
-          // with the question and stripping here removes valid candidate speech.
-          // Stripping happens once at submission time in getCombinedTranscript.
-          const transcriptPart = normaliseTranscriptToUkEnglish(
-            event.results[index][0].transcript
-          );
-
-          if (!transcriptPart) continue;
+          const rawPart = event.results[index][0].transcript;
+          const rawPartLower = rawPart.toLowerCase().trim();
 
           if (event.results[index].isFinal) {
-            newFinalText += `${transcriptPart} `;
+            // ── Filler recovery ─────────────────────────────────────────────
+            // The browser's speech recognition normalisation pass often silently
+            // drops filler sounds ("um", "er", "uh") between the interim and
+            // the final result.  We compare the stored interim text for this
+            // result index against the final text and re-inject any fillers
+            // that were dropped so the transcript reflects actual speech.
+            const storedInterim = interimTextByIndexRef.current.get(index);
+            if (storedInterim) {
+              const fillerRecovery: string[] = [];
+              for (const filler of RECOVERABLE_FILLERS) {
+                const re = new RegExp(`\\b${filler}\\b`, "gi");
+                const inInterim = (storedInterim.match(re) || []).length;
+                const inFinal   = (rawPartLower.match(re)   || []).length;
+                const dropped   = Math.max(0, inInterim - inFinal);
+                for (let d = 0; d < dropped; d++) fillerRecovery.push(filler);
+              }
+              if (fillerRecovery.length > 0) {
+                newFinalText += `${fillerRecovery.join(" ")} `;
+              }
+              interimTextByIndexRef.current.delete(index);
+            }
+            // ────────────────────────────────────────────────────────────────
+
+            // Do not strip per-chunk — short answer fragments share many words
+            // with the question and stripping here removes valid candidate speech.
+            // Stripping happens once at submission time in getCombinedTranscript.
+            const transcriptPart = normaliseTranscriptToUkEnglish(rawPart);
+            if (transcriptPart) {
+              newFinalText += `${transcriptPart} `;
+            }
           } else {
-            newInterimText += `${transcriptPart} `;
+            // Store the raw lowercase interim text for this index so we can
+            // compare it against the eventual final result.
+            if (rawPartLower) {
+              interimTextByIndexRef.current.set(index, rawPartLower);
+            }
+
+            const transcriptPart = normaliseTranscriptToUkEnglish(rawPart);
+            if (transcriptPart) {
+              newInterimText += `${transcriptPart} `;
+            }
           }
         }
 
@@ -461,6 +514,8 @@ export function useBrowserSpeech({
 
       recognition.onend = () => {
         recognitionRunningRef.current = false;
+        // Clear any pending interim filler tracking — indices reset on restart.
+        interimTextByIndexRef.current.clear();
 
         const combined = getCombinedTranscript();
         finalTranscriptRef.current = combined;
