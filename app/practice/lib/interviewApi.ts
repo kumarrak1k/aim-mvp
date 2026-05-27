@@ -215,6 +215,40 @@ export const cleanTranscript = async (transcript: string) => {
   return data.cleanedTranscript?.trim() || transcript;
 };
 
+/**
+ * Sends the recorded audio blob to the Whisper filler-detection endpoint.
+ * Returns the Whisper transcript and filler analysis, or null on failure.
+ */
+export const fetchWhisperFillerAnalysis = async (
+  audioBlob: Blob
+): Promise<{ transcript: string; fillerCount: number; fillersDetected: string[] } | null> => {
+  try {
+    const formData = new FormData();
+    formData.append("audio", audioBlob);
+
+    const response = await fetch("/api/whisper-filler", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!response.ok) return null;
+
+    const data = await response.json() as {
+      transcript?: string;
+      fillerCount?: number;
+      fillersDetected?: string[];
+    };
+
+    return {
+      transcript: data.transcript ?? "",
+      fillerCount: data.fillerCount ?? 0,
+      fillersDetected: data.fillersDetected ?? [],
+    };
+  } catch {
+    return null;
+  }
+};
+
 export const fetchQuestionAudioBlob = async (
   text: string,
   speakerPreference?: SpeakerPreference

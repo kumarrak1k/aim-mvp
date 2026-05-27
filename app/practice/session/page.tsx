@@ -40,6 +40,7 @@ import {
   fetchInterviewSummary,
   fetchVideoAnalysis,
   fetchVoiceAnalysis,
+  fetchWhisperFillerAnalysis,
 } from "../lib/interviewApi";
 import { buildCandidateProfilePrompt } from "../lib/profileHelpers";
 import {
@@ -128,6 +129,7 @@ export default function PracticeSessionPage() {
   const [voiceAnalysisLoading, setVoiceAnalysisLoading] = useState(false);
   const [videoAnalysisLoading, setVideoAnalysisLoading] = useState(false);
   const [cleaningTranscript, setCleaningTranscript] = useState(false);
+  const [whisperEnhancing, setWhisperEnhancing] = useState(false);
 
   const [interviewStarted, setInterviewStarted] = useState(false);
   const [interviewFinished, setInterviewFinished] = useState(false);
@@ -205,6 +207,8 @@ export default function PracticeSessionPage() {
     startAudioMonitoring,
     cleanupAudioMonitoring,
     clearAudioSamples,
+    clearAudioRecording,
+    getRecordedAudioBlob,
     calculateCurrentAudioMetrics,
   } = useAudioMonitoring();
 
@@ -706,6 +710,7 @@ export default function PracticeSessionPage() {
     cleanupAudioMonitoring();
     resetTranscript();
     clearAudioSamples();
+    clearAudioRecording();
     recordingStartRef.current = null;
     answerDurationSecondsRef.current = null;
     rawAnswerTranscriptRef.current = "";
@@ -718,9 +723,11 @@ export default function PracticeSessionPage() {
     setAnswer("");
     setVoiceAnalysis(null);
     setVideoAnalysis(null);
+    setWhisperEnhancing(false);
     resetVideoFrames();
   }, [
     cleanupAudioMonitoring,
+    clearAudioRecording,
     clearAudioSamples,
     isListening,
     recognitionRef,
@@ -742,6 +749,7 @@ export default function PracticeSessionPage() {
     try {
       resetTranscript();
       clearAudioSamples();
+      clearAudioRecording();
       recordingStartRef.current = Date.now();
       latestVoiceAnalysisRef.current = null;
       latestVideoAnalysisRef.current = null;
@@ -785,6 +793,7 @@ export default function PracticeSessionPage() {
     cameraReady,
     cameraUserStarted,
     cleanupAudioMonitoring,
+    clearAudioRecording,
     clearAudioSamples,
     recognitionRef,
     requiresManualCameraStart,
@@ -819,6 +828,9 @@ export default function PracticeSessionPage() {
 
     const audioMetrics = calculateCurrentAudioMetrics();
     const videoMetrics = cameraEnabled ? calculateCurrentVideoMetrics() : null;
+
+    // Capture the audio blob BEFORE cleanup stops the MediaRecorder stream.
+    const audioBlob = getRecordedAudioBlob();
 
     cleanupAudioMonitoring();
 
@@ -857,6 +869,58 @@ export default function PracticeSessionPage() {
       } finally {
         setCleaningTranscript(false);
       }
+
+      // ── Whisper filler enhancement ───────────────────────────────────────
+      // Runs in the background after the initial analysis.  Whisper is far
+      // better than the Web Speech API at capturing hesitation sounds (um,
+      // er, uh) because the browser's engine strips them before emitting
+      // events.  If Whisper finds fillers that aren't in the current
+      // transcript, we update the transcript and re-score voice delivery.
+      if (audioBlob && audioBlob.size > 1500) {
+        setWhisperEnhancing(true);
+
+        fetchWhisperFillerAnalysis(audioBlob)
+          .then((whisperResult) => {
+            if (!whisperResult || !whisperResult.transcript) return;
+
+            // Guard: if the user has moved on to the next question (or cleared
+            // the answer), rawAnswerTranscriptRef is now empty — discard the
+            // stale Whisper result so we don't clobber the new answer.
+            const currentTranscript = rawAnswerTranscriptRef.current;
+            if (!currentTranscript) return;
+
+            // Count fillers that are already in the current transcript.
+            const SIMPLE_FILLERS = ["um", "umm", "uh", "er", "err", "erm", "ah"];
+            const currentFillerCount = SIMPLE_FILLERS.reduce((sum, f) => {
+              const re = new RegExp(`\\b${f}\\b`, "gi");
+              return sum + (currentTranscript.match(re) || []).length;
+            }, 0);
+
+            if (whisperResult.fillerCount > 0 && whisperResult.fillerCount > currentFillerCount) {
+              // Whisper found more fillers than the current transcript.
+              // Use Whisper's transcript as the new displayed answer so users
+              // can see their actual filler usage inline.
+              const whisperTranscript = whisperResult.transcript;
+              setTranscript(whisperTranscript);
+              setAnswer(whisperTranscript);
+              rawAnswerTranscriptRef.current = whisperTranscript;
+
+              // Re-score with the Whisper transcript so filler score is accurate.
+              void runVoiceAnalysis(
+                whisperTranscript,
+                durationSeconds,
+                audioMetrics
+              );
+            }
+          })
+          .catch(() => {
+            // Non-fatal — the original transcript and analysis remain.
+          })
+          .finally(() => {
+            setWhisperEnhancing(false);
+          });
+      }
+      // ────────────────────────────────────────────────────────────────────
     }
   }, [
     activeQuestionRef,
@@ -865,6 +929,7 @@ export default function PracticeSessionPage() {
     cameraEnabled,
     cleanupAudioMonitoring,
     getCombinedTranscript,
+    getRecordedAudioBlob,
     recognitionRef,
     runVideoAnalysis,
     runVoiceAnalysis,
@@ -1536,7 +1601,7 @@ export default function PracticeSessionPage() {
               isSpeakingQuestion={activeIsSpeakingQuestion}
               questionLoading={questionLoading}
               questionAudioLoading={questionAudioLoading}
-              cleaningTranscript={cleaningTranscript}
+              cleaningTranscript={cleaningTranscript || whisperEnhancing}
               feedbackLoading={feedbackLoading}
               voiceAnalysisLoading={voiceAnalysisLoading}
               videoAnalysisLoading={videoAnalysisLoading}

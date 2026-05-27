@@ -15,6 +15,21 @@ const audioConstraints: MediaStreamConstraints = {
   },
 };
 
+/** Returns the best supported MIME type for MediaRecorder audio capture. */
+function getSupportedRecordingMimeType(): string {
+  if (typeof MediaRecorder === "undefined") return "";
+  const candidates = [
+    "audio/webm;codecs=opus",
+    "audio/webm",
+    "audio/ogg;codecs=opus",
+    "audio/mp4",
+  ];
+  for (const type of candidates) {
+    if (MediaRecorder.isTypeSupported(type)) return type;
+  }
+  return "";
+}
+
 export function useAudioMonitoring() {
   const audioContextRef = useRef<AudioContext | null>(null);
   const audioStreamRef = useRef<MediaStream | null>(null);
@@ -22,6 +37,11 @@ export function useAudioMonitoring() {
   const audioSourceRef = useRef<MediaStreamAudioSourceNode | null>(null);
   const audioIntervalRef = useRef<number | null>(null);
   const audioSamplesRef = useRef<number[]>([]);
+
+  /** MediaRecorder that runs alongside the volume analyser to capture raw audio. */
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+  const recordingMimeTypeRef = useRef<string>("");
 
   const hasLiveAudioStream = useCallback(() => {
     return Boolean(
@@ -36,6 +56,19 @@ export function useAudioMonitoring() {
       window.clearInterval(audioIntervalRef.current);
       audioIntervalRef.current = null;
     }
+
+    // Stop MediaRecorder before stopping the stream.
+    if (
+      mediaRecorderRef.current &&
+      mediaRecorderRef.current.state !== "inactive"
+    ) {
+      try {
+        mediaRecorderRef.current.stop();
+      } catch {
+        // Ignore cleanup failures.
+      }
+    }
+    mediaRecorderRef.current = null;
 
     if (audioSourceRef.current) {
       try {
@@ -93,6 +126,24 @@ export function useAudioMonitoring() {
     audioSamplesRef.current = [];
   }, []);
 
+  /** Discard any previously recorded audio so each answer starts fresh. */
+  const clearAudioRecording = useCallback(() => {
+    audioChunksRef.current = [];
+    recordingMimeTypeRef.current = "";
+  }, []);
+
+  /**
+   * Returns a Blob of the recorded audio for this recording session, or null
+   * if recording is unsupported / nothing was captured.  Must be called BEFORE
+   * cleanupAudioMonitoring() because cleanup stops the stream.
+   */
+  const getRecordedAudioBlob = useCallback((): Blob | null => {
+    if (audioChunksRef.current.length === 0) return null;
+    return new Blob(audioChunksRef.current, {
+      type: recordingMimeTypeRef.current || "audio/webm",
+    });
+  }, []);
+
   const startAudioMonitoring = useCallback(async () => {
     cleanupAudioGraph(false);
     audioSamplesRef.current = [];
@@ -128,6 +179,29 @@ export function useAudioMonitoring() {
       analyser.getByteTimeDomainData(dataArray);
       audioSamplesRef.current.push(calculateScaledVolumeSample(dataArray));
     }, 100);
+
+    // ── MediaRecorder (audio capture for Whisper filler detection) ──────────
+    // Runs alongside the volume analyser on the same stream.  Chunks are
+    // collected every second and assembled into a Blob via getRecordedAudioBlob().
+    try {
+      const mimeType = getSupportedRecordingMimeType();
+      if (mimeType) {
+        audioChunksRef.current = [];
+        recordingMimeTypeRef.current = mimeType;
+        const recorder = new MediaRecorder(stream, { mimeType });
+        recorder.ondataavailable = (e) => {
+          if (e.data && e.data.size > 0) {
+            audioChunksRef.current.push(e.data);
+          }
+        };
+        recorder.start(1000); // emit a chunk every second
+        mediaRecorderRef.current = recorder;
+      }
+    } catch {
+      // MediaRecorder is optional — fall back gracefully.
+      mediaRecorderRef.current = null;
+    }
+    // ────────────────────────────────────────────────────────────────────────
   }, [cleanupAudioGraph, getOrCreateAudioStream]);
 
   const calculateCurrentAudioMetrics = useCallback((): AudioMetrics => {
@@ -146,6 +220,8 @@ export function useAudioMonitoring() {
     startAudioMonitoring,
     cleanupAudioMonitoring,
     clearAudioSamples,
+    clearAudioRecording,
+    getRecordedAudioBlob,
     calculateCurrentAudioMetrics,
   };
 }
