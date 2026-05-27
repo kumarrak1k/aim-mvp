@@ -33,14 +33,6 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
-  // The pdf.worker.mjs file is referenced at runtime via process.cwd() but
-  // not imported statically, so Vercel's file tracer won't auto-detect it.
-  // Include it explicitly so it is present in the serverless function bundle.
-  outputFileTracingIncludes: {
-    "/api/extract-document": [
-      "./node_modules/pdfjs-dist/legacy/build/pdf.worker.mjs",
-    ],
-  },
   async headers() {
     return [
       {
