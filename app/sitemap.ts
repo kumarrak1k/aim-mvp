@@ -7,13 +7,18 @@ import { COMPANY_GUIDES } from "@/app/companies/data";
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
 
-  const staticRoutes: MetadataRoute.Sitemap = siteConfig.routes.map((route) => ({
-    url: absoluteUrl(route.path),
-    lastModified: now,
-    changeFrequency:
-      route.path === "/" || route.path === "/practice" ? "weekly" : "monthly",
-    priority: route.priority,
-  }));
+  // Exclude authenticated-only routes — they redirect to Clerk sign-in
+  // for unauthenticated users and must not appear in the sitemap.
+  const EXCLUDE_FROM_SITEMAP = new Set(["/practice", "/profile"]);
+
+  const staticRoutes: MetadataRoute.Sitemap = siteConfig.routes
+    .filter((route) => !EXCLUDE_FROM_SITEMAP.has(route.path))
+    .map((route) => ({
+      url: absoluteUrl(route.path),
+      lastModified: now,
+      changeFrequency: route.path === "/" ? "weekly" : "monthly",
+      priority: route.priority,
+    }));
 
   const blogPosts: MetadataRoute.Sitemap = getAllPosts().map((post) => ({
     url: absoluteUrl(`/blog/${post.slug}`),
