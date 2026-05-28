@@ -100,6 +100,8 @@ export default function HomePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(siteSchema) }}
       />
+      {/* Data trust bar — top of homepage */}
+      <DataTrustStrip variant="topbar" />
     <main className="relative z-10 min-h-screen">
 
       <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col px-4 py-6 sm:px-6 sm:py-8 lg:px-10">
@@ -182,9 +184,6 @@ export default function HomePage() {
           <p className="mt-4 text-xs text-gray-600">
             Free to start. No credit card required.
           </p>
-          <div className="mt-5">
-            <DataTrustStrip />
-          </div>
         </section>
 
         {/* Stats */}

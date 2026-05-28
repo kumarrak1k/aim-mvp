@@ -5,7 +5,6 @@ import { auth } from "@clerk/nextjs/server";
 import { createPageMetadata } from "@/app/config/seo";
 import { AudienceShell } from "@/app/components/marketing/AudienceShell";
 import { CandidateAppShell } from "@/app/components/marketing/CandidateAppShell";
-import { DataTrustStrip } from "@/app/components/DataTrustStrip";
 
 export const metadata: Metadata = createPageMetadata({
   path: "/for-candidates",
@@ -223,9 +222,6 @@ export default async function ForCandidatesPage() {
         <p className="mt-5 text-xs text-gray-600">
           Free to start. No credit card required.
         </p>
-        <div className="mt-5">
-          <DataTrustStrip />
-        </div>
       </section>
 
       {/* Two products */}

@@ -16,6 +16,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { SiteLogo } from "@/app/components/brand/SiteLogo";
 import { SiteFooter } from "@/app/components/marketing/SiteFooter";
+import { DataTrustStrip } from "@/app/components/DataTrustStrip";
 
 export type Audience = "candidate" | "business";
 
@@ -112,6 +113,9 @@ export function AudienceShell({
 
   return (
     <div className="relative min-h-screen bg-[#0a0614] text-white">
+      {/* Data trust bar — top of every audience page */}
+      <DataTrustStrip variant="topbar" />
+
       {/* Background atmosphere — tinted by audience */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_25%_15%,rgba(120,60,255,0.18),transparent),radial-gradient(ellipse_60%_50%_at_75%_85%,rgba(232,80,180,0.12),transparent),linear-gradient(180deg,#0a0614_0%,#100a1f_50%,#0c0816_100%)]" />
