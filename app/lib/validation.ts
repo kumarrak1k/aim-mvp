@@ -127,12 +127,14 @@ export const companyDeleteSchema = z.object({
 // ─── Question mix (for advanced question type control) ────────────────────────
 
 export const QUESTION_MIX_KEYS = [
+  "opener",
   "competency",
   "technical",
   "leadership",
   "motivation",
   "situational",
   "commercial",
+  "custom",
 ] as const;
 
 export type QuestionMixKey = (typeof QUESTION_MIX_KEYS)[number];
@@ -166,6 +168,17 @@ const templateBaseSchema = z.object({
   questionCount: z.number().int().min(1).max(10).default(5),
   customInstructions: optionalStringSchema(2000),
   competencyFramework: optionalStringSchema(2000),
+  // Verbatim text for each "custom" slot in questionMix, in order.
+  // Max 10 slots × 500 chars each.
+  customQuestions: z
+    .array(z.string().trim().max(500))
+    .max(10)
+    .optional()
+    .transform((arr) =>
+      arr && arr.length > 0
+        ? arr.map((q) => q.trim()).filter((q) => q.length > 0)
+        : undefined
+    ),
 });
 
 export const templateCreateSchema = templateBaseSchema;

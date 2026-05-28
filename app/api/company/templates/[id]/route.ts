@@ -68,6 +68,7 @@ export async function PATCH(request: NextRequest, { params }: Params) {
     if (data.questionCount !== undefined) updates.questionCount = data.questionCount;
     if (data.customInstructions !== undefined) updates.customInstructions = data.customInstructions ?? null;
     if (data.competencyFramework !== undefined) updates.competencyFramework = data.competencyFramework ?? null;
+    if (data.customQuestions !== undefined) updates.customQuestions = data.customQuestions ?? [];
     if (data.isActive !== undefined) updates.isActive = data.isActive;
 
     const template = await prisma.assessmentTemplate.update({

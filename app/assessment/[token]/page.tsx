@@ -7,6 +7,7 @@ import Link from "next/link";
 import {
   PRACTICE_SESSION_CONFIG_KEY,
   clampTotalQuestions,
+  cleanQuestionMix,
   type PracticeSessionConfig,
 } from "@/app/practice/session/utils";
 import type { SpeakerPreference } from "@/app/practice/types";
@@ -38,6 +39,7 @@ type AssessmentData = {
     questionCount: number;
     customInstructions: string | null;
     competencyFramework: string | null;
+    customQuestions: string[];
   };
 };
 
@@ -125,6 +127,7 @@ export default function AssessmentLandingPage() {
     }
 
     // ── Interview-only path ─────────────────────────────────────────────────
+    const cleanedMix = cleanQuestionMix(t.questionMix);
     const config: PracticeSessionConfig = {
       role: t.role,
       experienceLevel: t.experienceLevel,
@@ -148,6 +151,14 @@ export default function AssessmentLandingPage() {
         companyBrandColor: data.company.brandColor || undefined,
         companyLogoUrl: data.company.logoUrl || undefined,
       },
+      // Forward the recruiter's question mix so the session uses the
+      // correct type sequence (incl. opener/custom slots if configured).
+      questionMix: cleanedMix,
+      // Verbatim custom questions bypass AI generation and are played in order.
+      customQuestions:
+        t.customQuestions && t.customQuestions.length > 0
+          ? t.customQuestions
+          : undefined,
       createdAt: new Date().toISOString(),
     };
 

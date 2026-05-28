@@ -55,6 +55,7 @@ export async function GET(_req: NextRequest, { params }: Params) {
             questionCount: true,
             customInstructions: true,
             competencyFramework: true,
+            customQuestions: true,
           },
         },
       },

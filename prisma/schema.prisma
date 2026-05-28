@@ -122,6 +122,8 @@ model AssessmentTemplate {
   questionCount       Int      @default(5)
   customInstructions  String?
   competencyFramework String?
+  // verbatim questions for "custom" mix slots — index-matched to custom slots in questionMix
+  customQuestions     String[] @default([])
   isActive            Boolean  @default(true)
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt

@@ -65,6 +65,7 @@ export async function POST(request: NextRequest) {
       questionCount,
       customInstructions,
       competencyFramework,
+      customQuestions,
     } = parsed.data;
 
     const template = await prisma.assessmentTemplate.create({
@@ -83,6 +84,7 @@ export async function POST(request: NextRequest) {
         questionCount,
         customInstructions: customInstructions ?? null,
         competencyFramework: competencyFramework ?? null,
+        customQuestions: customQuestions ?? [],
       },
     });
 

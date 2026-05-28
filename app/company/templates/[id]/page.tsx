@@ -20,6 +20,7 @@ type Template = {
   questionCount: number;
   customInstructions: string | null;
   competencyFramework: string | null;
+  customQuestions: string[];
   isActive: boolean;
 };
 
@@ -109,6 +110,7 @@ export default function EditTemplatePage() {
             questionCount: template.questionCount,
             customInstructions: template.customInstructions || "",
             competencyFramework: template.competencyFramework || "",
+            customQuestions: template.customQuestions ?? [],
           }}
           onSave={handleSave}
           saving={saving}

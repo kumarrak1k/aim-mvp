@@ -7,39 +7,47 @@ import { useState } from "react";
 type TemplateType = "interview" | "assessment-centre";
 type AcStage = "stage1" | "stage2" | "stage3";
 type QuestionMixKey =
+  | "opener"
   | "competency"
   | "technical"
   | "leadership"
   | "motivation"
   | "situational"
-  | "commercial";
+  | "commercial"
+  | "custom";
 type QuestionMix = Record<QuestionMixKey, number>;
 
 const QUESTION_MIX_KEYS: QuestionMixKey[] = [
+  "opener",
   "competency",
   "technical",
   "leadership",
   "motivation",
   "situational",
   "commercial",
+  "custom",
 ];
 
 const QUESTION_MIX_LABELS: Record<QuestionMixKey, string> = {
+  opener: "Tell me about yourself (opener)",
   competency: "Competency / Behavioural",
   technical: "Technical",
   leadership: "Leadership",
   motivation: "Motivation for role",
   situational: "Situational",
   commercial: "Commercial awareness",
+  custom: "Your own question (verbatim)",
 };
 
 const EMPTY_MIX: QuestionMix = {
+  opener: 0,
   competency: 0,
   technical: 0,
   leadership: 0,
   motivation: 0,
   situational: 0,
   commercial: 0,
+  custom: 0,
 };
 
 function mixTotal(mix: QuestionMix): number {
@@ -107,6 +115,7 @@ type TemplateFormProps = {
     questionCount?: number;
     customInstructions?: string;
     competencyFramework?: string;
+    customQuestions?: string[];
   };
   onSave: (data: Record<string, unknown>) => void;
   onCancel: () => void;
@@ -146,17 +155,25 @@ export function TemplateForm({ initial, onSave, onCancel, saving }: TemplateForm
     !!(initial?.questionMix && Object.values(initial.questionMix).some((v) => v > 0))
   );
   const [questionMix, setQuestionMix] = useState<QuestionMix>(() => {
-    const init = initial?.questionMix;
+    const init = initial?.questionMix as Partial<QuestionMix> | null | undefined;
     if (!init) return { ...EMPTY_MIX };
     return {
+      opener: init.opener ?? 0,
       competency: init.competency ?? 0,
       technical: init.technical ?? 0,
       leadership: init.leadership ?? 0,
       motivation: init.motivation ?? 0,
       situational: init.situational ?? 0,
       commercial: init.commercial ?? 0,
+      custom: init.custom ?? 0,
     };
   });
+
+  // Verbatim text for each "custom" question slot — shared between interview
+  // and AC-stage2 since a template can only be one type at a time.
+  const [customQuestions, setCustomQuestions] = useState<string[]>(
+    initial?.customQuestions ?? []
+  );
 
   // — AC fields —
   const [acStages, setAcStages] = useState<AcStage[]>(
@@ -175,15 +192,17 @@ export function TemplateForm({ initial, onSave, onCancel, saving }: TemplateForm
     !!(initial?.questionMix && Object.values(initial.questionMix).some((v) => v > 0))
   );
   const [acQuestionMix, setAcQuestionMix] = useState<QuestionMix>(() => {
-    const init = initial?.questionMix;
+    const init = initial?.questionMix as Partial<QuestionMix> | null | undefined;
     if (!init) return { ...EMPTY_MIX };
     return {
+      opener: init.opener ?? 0,
       competency: init.competency ?? 0,
       technical: init.technical ?? 0,
       leadership: init.leadership ?? 0,
       motivation: init.motivation ?? 0,
       situational: init.situational ?? 0,
       commercial: init.commercial ?? 0,
+      custom: init.custom ?? 0,
     };
   });
 
@@ -213,6 +232,9 @@ export function TemplateForm({ initial, onSave, onCancel, saving }: TemplateForm
     if (!name.trim()) { setFormError("Template name is required."); return; }
     if (!role.trim()) { setFormError("Role is required."); return; }
 
+    // Determine which mix is active so we can validate custom slots
+    let activeCustomCount = 0;
+
     if (templateType === "assessment-centre") {
       if (acStages.length === 0) {
         setFormError("Select at least one assessment centre stage.");
@@ -229,6 +251,9 @@ export function TemplateForm({ initial, onSave, onCancel, saving }: TemplateForm
         );
         return;
       }
+      if (hasInterview && acUseQuestionMix) {
+        activeCustomCount = acQuestionMix.custom;
+      }
     } else {
       if (useQuestionMix && mixTotal(questionMix) === 0) {
         setFormError("Add at least one question to the question mix.");
@@ -240,12 +265,36 @@ export function TemplateForm({ initial, onSave, onCancel, saving }: TemplateForm
         );
         return;
       }
+      if (useQuestionMix) {
+        activeCustomCount = questionMix.custom;
+      }
+    }
+
+    // Validate that every custom question slot has text
+    for (let i = 0; i < activeCustomCount; i++) {
+      if (!customQuestions[i]?.trim()) {
+        setFormError(
+          activeCustomCount === 1
+            ? "Please enter the text for your custom question."
+            : `Please enter the text for custom question ${i + 1}.`
+        );
+        return;
+      }
     }
 
     setFormError("");
 
     const isAC = templateType === "assessment-centre";
     const hasInterviewStage = isAC && acStages.includes("stage2");
+
+    // Trim and include only the active custom question slots
+    const savedCustomQuestions =
+      activeCustomCount > 0
+        ? customQuestions
+            .slice(0, activeCustomCount)
+            .map((q) => q.trim())
+            .filter(Boolean)
+        : undefined;
 
     onSave({
       name: name.trim(),
@@ -255,6 +304,7 @@ export function TemplateForm({ initial, onSave, onCancel, saving }: TemplateForm
       experienceLevel,
       customInstructions: customInstructions.trim() || undefined,
       competencyFramework: competencyFramework.trim() || undefined,
+      customQuestions: savedCustomQuestions,
       // AC-specific
       ...(isAC
         ? {
@@ -482,6 +532,15 @@ export function TemplateForm({ initial, onSave, onCancel, saving }: TemplateForm
                   setMixKey(questionMix, setQuestionMix, key, val)
                 }
               />
+
+              {/* Custom question text inputs */}
+              {useQuestionMix && questionMix.custom > 0 && (
+                <CustomQuestionsSection
+                  count={questionMix.custom}
+                  questions={customQuestions}
+                  onChange={setCustomQuestions}
+                />
+              )}
             </div>
           </div>
         )}
@@ -620,6 +679,15 @@ export function TemplateForm({ initial, onSave, onCancel, saving }: TemplateForm
                       setMixKey(acQuestionMix, setAcQuestionMix, key, val)
                     }
                   />
+
+                  {/* Custom question text inputs for AC stage2 */}
+                  {acUseQuestionMix && acQuestionMix.custom > 0 && (
+                    <CustomQuestionsSection
+                      count={acQuestionMix.custom}
+                      questions={customQuestions}
+                      onChange={setCustomQuestions}
+                    />
+                  )}
                 </div>
               </div>
             )}
@@ -687,6 +755,57 @@ export function TemplateForm({ initial, onSave, onCancel, saving }: TemplateForm
         </button>
       </div>
     </form>
+  );
+}
+
+// ─── Custom question text inputs ──────────────────────────────────────────────
+
+function CustomQuestionsSection({
+  count,
+  questions,
+  onChange,
+}: {
+  count: number;
+  questions: string[];
+  onChange: (qs: string[]) => void;
+}) {
+  const inputClass =
+    "w-full rounded-xl border border-white/15 bg-white/[0.06] px-4 py-3 text-sm text-white placeholder-gray-500 outline-none focus:border-fuchsia-400/60 focus:ring-2 focus:ring-fuchsia-400/20 resize-none";
+
+  return (
+    <div className="mt-4 rounded-2xl border border-fuchsia-400/20 bg-fuchsia-400/[0.04] p-5">
+      <p className="mb-1 text-xs font-black uppercase tracking-[0.16em] text-fuchsia-300">
+        Custom question{count > 1 ? "s" : ""}
+      </p>
+      <p className="mb-4 text-xs text-gray-400">
+        These questions are asked verbatim — the AI skips generation and plays
+        your exact text.
+      </p>
+      <div className="space-y-3">
+        {Array.from({ length: count }).map((_, i) => (
+          <div key={i}>
+            <label className="mb-1.5 block text-xs font-semibold text-gray-300">
+              Question {i + 1}
+            </label>
+            <textarea
+              value={questions[i] ?? ""}
+              onChange={(e) => {
+                const next = [...questions];
+                next[i] = e.target.value;
+                onChange(next);
+              }}
+              placeholder={`e.g. "Tell us about a project where you led cross-functional stakeholders…"`}
+              rows={2}
+              maxLength={500}
+              className={inputClass}
+            />
+            <p className="mt-1 text-right text-[10px] text-gray-600">
+              {(questions[i] ?? "").length}/500
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -759,6 +878,16 @@ function QuestionMixSection({
               <div key={key} className="flex items-center gap-3">
                 <span className="min-w-0 flex-1 text-xs font-semibold text-gray-300">
                   {QUESTION_MIX_LABELS[key]}
+                  {key === "opener" && (
+                    <span className="ml-1.5 rounded-full bg-purple-400/15 px-1.5 py-0.5 text-[9px] font-black text-purple-300">
+                      AI
+                    </span>
+                  )}
+                  {key === "custom" && (
+                    <span className="ml-1.5 rounded-full bg-fuchsia-400/15 px-1.5 py-0.5 text-[9px] font-black text-fuchsia-300">
+                      TYPE BELOW
+                    </span>
+                  )}
                 </span>
                 <div className="flex shrink-0 items-center gap-2">
                   <button
