@@ -16,12 +16,64 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const set = getQuestionSet(slug);
   if (!set) return {};
+
+  const ogImageUrl = absoluteUrl("/brand/logo.jpg");
+
   return {
     title: set.title,
     description: set.description,
     keywords: set.keywords,
     alternates: { canonical: absoluteUrl(`/questions/${slug}`) },
+    openGraph: {
+      title: set.title,
+      description: set.description,
+      url: absoluteUrl(`/questions/${slug}`),
+      siteName: "AI Career Mentor",
+      type: "website",
+      images: [{ url: ogImageUrl, width: 1200, height: 1200, alt: set.title }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: set.title,
+      description: set.description,
+      images: [ogImageUrl],
+    },
   };
+}
+
+/**
+ * Extract up to `limit` real Q&A pairs from structured question MDX content.
+ * Questions use the pattern: **Q<n>. Question text?**
+ * Answers use the pattern: **Strong answer approach:** Answer text
+ */
+function extractFAQPairs(
+  source: string,
+  limit = 10
+): Array<{ question: string; answer: string }> {
+  const pairs: Array<{ question: string; answer: string }> = [];
+  const lines = source.split("\n");
+
+  for (let i = 0; i < lines.length && pairs.length < limit; i++) {
+    const qMatch = lines[i].trimEnd().match(/^\*\*Q\d+\.\s+(.+?)\*\*\s*$/);
+    if (!qMatch) continue;
+
+    const question = qMatch[1].trim();
+
+    // Look ahead up to 7 lines for the "Strong answer approach:" line
+    let answer =
+      "Prepare a structured, example-led response demonstrating relevant skills and experience.";
+    for (let j = i + 1; j < Math.min(i + 7, lines.length); j++) {
+      const aMatch = lines[j].match(/^\*\*Strong answer approach:\*\*\s+(.+)/);
+      if (aMatch) {
+        answer = aMatch[1].trim().substring(0, 350);
+        break;
+      }
+    }
+
+    pairs.push({ question, answer });
+  }
+
+  return pairs;
 }
 
 const mdxComponents = {
@@ -83,6 +135,8 @@ export default async function QuestionSetPage({ params }: Props) {
   const set = getQuestionSet(slug);
   if (!set) notFound();
 
+  const faqPairs = extractFAQPairs(set.source, 10);
+
   const schema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -95,16 +149,22 @@ export default async function QuestionSetPage({ params }: Props) {
       url: "https://www.aicareermentor.co.uk",
     },
     datePublished: set.date,
-    mainEntity: [
-      {
-        "@type": "Question",
-        name: `What are common ${set.title} interview questions?`,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: set.description,
-        },
-      },
-    ],
+    // Use real Q&A pairs extracted from the MDX content. Fall back to a
+    // synthetic summary entry only if the parser finds nothing (e.g. non-standard format).
+    mainEntity:
+      faqPairs.length > 0
+        ? faqPairs.map(({ question, answer }) => ({
+            "@type": "Question",
+            name: question,
+            acceptedAnswer: { "@type": "Answer", text: answer },
+          }))
+        : [
+            {
+              "@type": "Question",
+              name: `What are common ${set.title} interview questions?`,
+              acceptedAnswer: { "@type": "Answer", text: set.description },
+            },
+          ],
   };
 
   return (

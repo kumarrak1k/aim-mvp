@@ -18,7 +18,7 @@ const dataWeCollect = [
   },
   {
     title: "Microphone input",
-    text: "When you use voice mode, your speech is transcribed by your browser's built-in speech recognition — AI Career Mentor receives only the resulting text transcript, not the audio. The browser vendor that processes your speech depends on which browser you use: Chrome and other Chromium-based browsers (Brave, Opera) use Google; Edge uses Microsoft; Safari uses Apple. Firefox does not support voice mode. Voice mode is entirely optional — typed answers receive the same feedback.",
+    text: "When you use voice mode, your speech is transcribed using your browser's built-in speech recognition — AI Career Mentor receives only the resulting text transcript, not the audio file. The browser vendor that processes the audio depends on which browser you use: Chrome and Chromium-based browsers use Google; Edge uses Microsoft; Safari uses Apple. Firefox does not support voice mode. Voice mode is entirely optional — typed answers receive identical feedback.",
   },
   {
     title: "Camera input",
@@ -29,32 +29,42 @@ const dataWeCollect = [
 const dataProcessors = [
   {
     name: "OpenAI",
-    purpose: "Generates interview questions, cleans transcripts, produces feedback and model answers. CV text, role details and practice answers are sent to OpenAI's API to deliver these features. We have disabled all data-sharing and model-training settings in our OpenAI account. OpenAI processes data under their API usage policy and does not use API inputs to train models. A formal Data Processing Agreement will be put in place upon our incorporation.",
+    purpose: "Generates interview questions, feedback, scores, model answers, and audio question prompts (TTS). Also used for content moderation. Your CV text, role details, and practice answers are sent to OpenAI's API to deliver these features. We have disabled all data-sharing and model-training settings in our OpenAI account — OpenAI's API terms prohibit using API inputs to train models. Data is processed under a Data Processing Agreement.",
     link: "https://openai.com/policies/privacy-policy",
   },
   {
     name: "Clerk",
-    purpose: "Handles authentication, account management and stores your candidate profile metadata securely.",
+    purpose: "Handles authentication, account management and session tokens for both candidates and hiring teams. Stores your email address, name, and account metadata. No interview content or CV data is stored by Clerk.",
     link: "https://clerk.com/legal/privacy",
   },
   {
     name: "Neon / PostgreSQL",
-    purpose: "Stores your saved practice session records in a managed PostgreSQL database.",
+    purpose: "Stores your saved practice sessions, scores, feedback, candidate profile context, and corporate assessment data in a managed PostgreSQL database hosted on AWS eu-west-2 (London, UK).",
     link: "https://neon.tech/privacy-policy",
   },
   {
     name: "Stripe",
-    purpose: "Handles payment processing for subscriptions. Receives your email address and billing details. No interview content is shared with Stripe.",
+    purpose: "Handles payment processing for individual and corporate subscriptions. Receives your email address and billing details. No interview content, CV data, or assessment responses are ever shared with Stripe.",
     link: "https://stripe.com/gb/privacy",
   },
   {
     name: "Resend",
-    purpose: "Sends transactional emails (invite links, account emails). Receives your email address only. No CV or interview data is included in emails.",
+    purpose: "Sends transactional emails such as assessment invite links, account notifications, and result emails. Receives your email address only — no CV content, interview answers, or assessment scores are included in any email.",
     link: "https://resend.com/legal/privacy-policy",
   },
   {
+    name: "Upstash Redis",
+    purpose: "Provides in-memory rate limiting across API endpoints to protect the platform from abuse. Receives anonymised request identifiers (a hash of your IP address or user ID) only — no personal content, CV data, or interview answers are stored.",
+    link: "https://upstash.com/trust/privacy.pdf",
+  },
+  {
+    name: "Sentry",
+    purpose: "Error monitoring and alerting. When an unexpected application error occurs, Sentry receives a crash report that may include a stack trace and partial request context. We apply PII scrubbing rules to prevent CV content, interview answers, or personal profile data from appearing in error logs. Sentry does not receive audio or video data.",
+    link: "https://sentry.io/privacy/",
+  },
+  {
     name: "Vercel",
-    purpose: "Hosts the AI Career Mentor platform and serves all pages and API routes. Collects anonymous page-view analytics and Core Web Vitals — no personal identity data.",
+    purpose: "Hosts and serves all pages and API routes for the AI Career Mentor platform. Collects anonymous page-view analytics and Core Web Vitals via Vercel Analytics and Speed Insights — no personal identity data is captured by these tools.",
     link: "https://vercel.com/legal/privacy-policy",
   },
 ];
@@ -83,7 +93,9 @@ const commitments = [
   "We do not use your interview answers or CV to make hiring decisions.",
   "We do not share your data with employers.",
   "Raw uploaded files are not stored — only extracted text you choose to save.",
-  "Voice recordings and camera video stay in your browser and are not stored.",
+  "Voice recordings and camera video stay in your browser and are never uploaded.",
+  "Camera analysis is done locally in your browser — no video leaves your device.",
+  "Error monitoring uses PII scrubbing to keep interview content out of logs.",
   "You control deletion of all your practice data from your profile.",
 ];
 
@@ -150,15 +162,16 @@ export default function PrivacyPage() {
                   <p>
                     Your profile context (CV text, role details, goals) and
                     practice answers are sent to OpenAI to generate personalised
-                    interview questions, feedback, scores and session summaries.
-                    This is necessary to deliver the core coaching features.
+                    interview questions, feedback, scores, and session summaries.
+                    OpenAI is also used to generate spoken question audio (TTS)
+                    and to screen content through its moderation API. This is
+                    necessary to deliver the core coaching features.
                   </p>
                   <p>
                     We have disabled all data-sharing and training settings in our
                     OpenAI account. OpenAI&apos;s API terms prohibit using API
-                    inputs to train models. We are working to put a formal Data
-                    Processing Agreement in place and will update this page when
-                    that is complete.
+                    inputs to train models, and we operate under a Data Processing
+                    Agreement with OpenAI.
                   </p>
                   <p>
                     If you choose to save a session, your feedback and scores are
@@ -171,8 +184,16 @@ export default function PrivacyPage() {
                     derived from audio files sent to a server.
                   </p>
                   <p>
-                    Camera presence signals are generated locally using browser
-                    APIs. No video frames are transmitted to our servers.
+                    Camera presence signals are generated locally in your browser
+                    using MediaPipe (a client-side library). No video frames are
+                    ever transmitted to our servers or to any third party.
+                  </p>
+                  <p>
+                    Rate limiting uses Upstash Redis to store anonymised request
+                    identifiers only — no personal data or content is stored there.
+                    Error monitoring via Sentry receives crash reports with PII
+                    scrubbing applied to prevent interview or CV content from
+                    appearing in logs.
                   </p>
                   <p className="font-semibold text-white">
                     Your data is never used to train AI models, never sold to

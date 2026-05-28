@@ -129,11 +129,28 @@ export default async function BlogPostPage({ params }: Props) {
     headline: post.title,
     description: post.description,
     datePublished: post.date,
+    dateModified: post.date,
     url: absoluteUrl(`/blog/${slug}`),
+    image: absoluteUrl(post.image ?? "/brand/logo.jpg"),
+    author: {
+      "@type": "Organization",
+      name: "AI Career Mentor",
+      url: "https://www.aicareermentor.co.uk",
+    },
     publisher: {
       "@type": "Organization",
       name: "AI Career Mentor",
       url: "https://www.aicareermentor.co.uk",
+      logo: {
+        "@type": "ImageObject",
+        url: absoluteUrl("/brand/logo.jpg"),
+        width: 512,
+        height: 512,
+      },
+    },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": absoluteUrl(`/blog/${slug}`),
     },
   };
 
