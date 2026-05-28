@@ -16,6 +16,7 @@ import {
 } from "../lib/interviewOptions";
 import { hasCandidateProfileContext } from "../lib/profileHelpers";
 import { CheckItem, GlassCard, SelectField } from "./PracticeUi";
+import { DataTrustStrip } from "@/app/components/DataTrustStrip";
 import {
   MAX_TOTAL_QUESTIONS,
   MAX_CUSTOM_QUESTION_LENGTH,
@@ -920,6 +921,10 @@ export function PracticeStartScreen({
             {startDisabledMessage}
           </p>
         )}
+
+        <div className="mt-4">
+          <DataTrustStrip compact />
+        </div>
       </GlassCard>
 
       <aside className="space-y-6">

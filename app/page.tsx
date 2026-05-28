@@ -5,6 +5,7 @@ import { absoluteUrl } from "@/app/config/site";
 import { SiteLogo } from "@/app/components/brand/SiteLogo";
 import { DemoVideo } from "@/app/components/marketing/DemoVideo";
 import { SiteFooter } from "@/app/components/marketing/SiteFooter";
+import { DataTrustStrip } from "@/app/components/DataTrustStrip";
 
 export const metadata: Metadata = createPageMetadata({
   path: "/",
@@ -181,6 +182,9 @@ export default function HomePage() {
           <p className="mt-4 text-xs text-gray-600">
             Free to start. No credit card required.
           </p>
+          <div className="mt-5">
+            <DataTrustStrip />
+          </div>
         </section>
 
         {/* Stats */}

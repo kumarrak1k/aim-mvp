@@ -153,7 +153,7 @@ export type AcStage = (typeof AC_STAGES)[number];
  *  marking everything optional so partial updates work. */
 const templateBaseSchema = z.object({
   name: cleanStringSchema(120, "Template name"),
-  description: optionalStringSchema(500),
+  description: optionalStringSchema(5000),
   role: cleanStringSchema(120, "Role"),
   // templateType: "interview" (default) | "assessment-centre"
   templateType: z.enum(["interview", "assessment-centre"]).default("interview"),

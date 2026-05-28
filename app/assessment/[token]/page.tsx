@@ -11,6 +11,7 @@ import {
   type PracticeSessionConfig,
 } from "@/app/practice/session/utils";
 import type { SpeakerPreference } from "@/app/practice/types";
+import { DataTrustStrip } from "@/app/components/DataTrustStrip";
 
 type AssessmentData = {
   assignment: {
@@ -708,6 +709,10 @@ function SetupStep({
         You&rsquo;ll be taken straight into the interview. Once finished, your
         results are sent to {company.name} automatically.
       </p>
+
+      <div className="mt-4">
+        <DataTrustStrip compact />
+      </div>
     </>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -208,6 +208,48 @@ export function TemplateForm({ initial, onSave, onCancel, saving }: TemplateForm
 
   const [formError, setFormError] = useState("");
 
+  // ─── role profile upload ───────────────────────────────────────────────────
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploadingFile, setUploadingFile] = useState(false);
+  const [uploadError, setUploadError] = useState("");
+  const [uploadedFileName, setUploadedFileName] = useState<string | null>(
+    null
+  );
+
+  async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingFile(true);
+    setUploadError("");
+    const fd = new FormData();
+    fd.append("file", file);
+    try {
+      const res = await fetch("/api/extract-document", {
+        method: "POST",
+        body: fd,
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setUploadError(data.error || "Failed to read this file. Try a different format.");
+        return;
+      }
+      setDescription(data.text ?? "");
+      setUploadedFileName(file.name);
+    } catch {
+      setUploadError("Upload failed. Check your connection and try again.");
+    } finally {
+      setUploadingFile(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  }
+
+  function clearUpload() {
+    setDescription("");
+    setUploadedFileName(null);
+    setUploadError("");
+  }
+
   // ─── helpers ───────────────────────────────────────────────────────────────
 
   function toggleAcStage(stage: AcStage) {
@@ -414,17 +456,75 @@ export function TemplateForm({ initial, onSave, onCancel, saving }: TemplateForm
 
             <div>
               <label className="mb-2 block text-sm font-black text-white">
-                Description{" "}
+                Description and Role Profile{" "}
                 <span className="font-normal text-gray-400">(optional)</span>
               </label>
-              <input
-                type="text"
+
+              {/* Uploaded file chip */}
+              {uploadedFileName && (
+                <div className="mb-3 flex items-center gap-2 rounded-xl border border-cyan-400/25 bg-cyan-400/[0.07] px-3 py-2">
+                  <span className="text-sm">📄</span>
+                  <span className="min-w-0 flex-1 truncate text-xs font-semibold text-cyan-200">
+                    {uploadedFileName}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={clearUpload}
+                    className="ml-1 shrink-0 rounded-full p-1 text-cyan-400 transition hover:bg-white/10"
+                    title="Remove file and clear text"
+                  >
+                    ✕
+                  </button>
+                </div>
+              )}
+
+              <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="Brief description of this template (optional)"
-                maxLength={300}
-                className={inputClass}
+                placeholder={
+                  "Paste your role profile, job description, or a brief overview of what you're looking for in a candidate…"
+                }
+                rows={6}
+                maxLength={5000}
+                className={`${inputClass} resize-y`}
               />
+
+              <div className="mt-2 flex items-center justify-between">
+                <span className="text-[10px] text-gray-600">
+                  {description.length}/5000
+                </span>
+                <div>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept=".pdf,.docx,.txt,.md"
+                    className="hidden"
+                    onChange={handleFileUpload}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={uploadingFile}
+                    className="flex items-center gap-1.5 rounded-full border border-white/15 bg-white/[0.05] px-3 py-1.5 text-xs font-black text-gray-300 transition hover:bg-white/[0.10] disabled:opacity-50"
+                  >
+                    {uploadingFile ? (
+                      <>
+                        <span className="h-3 w-3 animate-spin rounded-full border border-white/40 border-t-transparent" />
+                        Reading…
+                      </>
+                    ) : (
+                      <>📎 Upload role profile</>
+                    )}
+                  </button>
+                </div>
+              </div>
+              <p className="mt-1 text-[10px] text-gray-600">
+                Accepts PDF, DOCX, TXT, MD — text is extracted and pasted above.
+              </p>
+
+              {uploadError && (
+                <p className="mt-2 text-xs text-red-300">{uploadError}</p>
+              )}
             </div>
 
             <div>

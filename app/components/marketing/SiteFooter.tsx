@@ -1,9 +1,14 @@
 import Link from "next/link";
 import { SiteLogo } from "@/app/components/brand/SiteLogo";
+import { DataTrustStrip } from "@/app/components/DataTrustStrip";
 
 export function SiteFooter() {
   return (
     <footer className="relative z-10 border-t border-white/[0.08] bg-black/20">
+      {/* Data trust strip — visible on every page */}
+      <div className="border-b border-white/[0.05] bg-white/[0.02] px-4 py-3">
+        <DataTrustStrip />
+      </div>
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:py-16">
         <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[1.6fr_1fr_1fr_1fr]">
 
