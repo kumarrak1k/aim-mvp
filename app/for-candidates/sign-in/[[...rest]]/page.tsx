@@ -49,7 +49,9 @@ export default function CandidateSignInPage() {
           </div>
         </header>
 
-        <section className="mx-auto w-full max-w-md pb-8">
+        {/* Centring wrapper — pushes form to vertical centre of remaining space */}
+        <div className="flex flex-1 flex-col items-center justify-center py-6">
+        <section className="w-full max-w-md">
           <div className="mb-4 text-center">
             <h1 className="text-2xl font-black tracking-[-0.04em] sm:text-3xl">
               Welcome back.
@@ -111,6 +113,7 @@ export default function CandidateSignInPage() {
             </Link>
           </div>
         </section>
+        </div>
 
         <footer className="mt-auto border-t border-white/[0.06] pt-4 text-center text-xs text-gray-600">
           © {new Date().getFullYear()} AI Career Mentor ·{" "}
