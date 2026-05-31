@@ -27,8 +27,26 @@ const securityHeaders = [
     value: "camera=(self), microphone=(self), geolocation=()",
   },
   {
+    // Deprecated header; modern guidance is to disable it and rely on CSP.
     key: "X-XSS-Protection",
-    value: "1; mode=block",
+    value: "0",
+  },
+  {
+    // Report-only first so it can't break Clerk/Stripe/Sentry — review reports,
+    // then promote to an enforcing Content-Security-Policy.
+    key: "Content-Security-Policy-Report-Only",
+    value: [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.clerk.accounts.dev https://*.clerk.com https://challenges.cloudflare.com https://js.stripe.com https://*.vercel-scripts.com https://va.vercel-scripts.com",
+      "style-src 'self' 'unsafe-inline'",
+      "img-src 'self' data: blob: https:",
+      "font-src 'self' data:",
+      "connect-src 'self' https://*.clerk.accounts.dev https://*.clerk.com https://api.stripe.com https://*.ingest.sentry.io https://*.ingest.de.sentry.io https://*.upstash.io https://vitals.vercel-insights.com",
+      "frame-src 'self' https://js.stripe.com https://*.clerk.com https://challenges.cloudflare.com",
+      "worker-src 'self' blob:",
+      "base-uri 'self'",
+      "form-action 'self'",
+    ].join("; "),
   },
 ];
 

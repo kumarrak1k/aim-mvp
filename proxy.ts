@@ -25,6 +25,18 @@ const isProtected = createRouteMatcher([
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
+  // ── Canonical host ──────────────────────────────────────────────────────
+  // Redirect the bare apex to www so there's a single canonical origin
+  // (matches siteConfig.url, all OG/canonical/email links). Exact match only,
+  // so preview/localhost hosts are unaffected.
+  const host = req.headers.get("host");
+  if (host === "aicareermentor.co.uk") {
+    const url = new URL(req.url);
+    url.host = "www.aicareermentor.co.uk";
+    url.protocol = "https:";
+    return NextResponse.redirect(url, 308);
+  }
+
   const { userId, sessionClaims } = await auth();
 
   // ── Superadmin guard ────────────────────────────────────────────────────
