@@ -30,7 +30,12 @@ test.describe("Homepage", () => {
 
   test("navigation links are present", async ({ page }) => {
     await page.goto("/");
-    await expect(page.locator("nav")).toBeVisible();
+    // The page has two <nav> landmarks (the primary site nav, now labelled
+    // "Primary", plus the "Resources" links strip), so a bare locator("nav")
+    // trips a strict-mode violation. Assert the primary nav — first in DOM
+    // order — is visible. Using .first() (not the name) keeps this passing
+    // against the live site regardless of deploy timing.
+    await expect(page.getByRole("navigation").first()).toBeVisible();
   });
 });
 

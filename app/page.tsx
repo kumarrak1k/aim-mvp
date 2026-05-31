@@ -112,7 +112,7 @@ export default function HomePage() {
           <SiteLogo href="/" size="md" showText className="relative z-10" />
 
           {/* Universal nav — absolutely centred so it never drifts */}
-          <nav className="pointer-events-none absolute inset-x-0 hidden justify-center lg:flex">
+          <nav aria-label="Primary" className="pointer-events-none absolute inset-x-0 hidden justify-center lg:flex">
             <div className="pointer-events-auto flex items-center gap-0.5 rounded-full border border-white/[0.09] bg-white/[0.04] p-1">
               {[
                 { href: "/about", label: "About us" },
