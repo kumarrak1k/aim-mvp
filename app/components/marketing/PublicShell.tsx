@@ -14,6 +14,7 @@ import type { ReactNode } from "react";
 import { SiteLogo } from "@/app/components/brand/SiteLogo";
 import { SiteFooter } from "@/app/components/marketing/SiteFooter";
 import { DataTrustStrip } from "@/app/components/DataTrustStrip";
+import { TrialBadge } from "@/app/components/marketing/TrialBadge";
 
 const NAV_LINKS = [
   { href: "/about", label: "About us" },
@@ -113,6 +114,11 @@ export function PublicShell({ children, currentPath }: PublicShellProps) {
               );
             })}
           </nav>
+        </div>
+
+        {/* Site-wide free-trial CTA */}
+        <div className="flex justify-center px-4 pb-3 pt-1">
+          <TrialBadge audience="candidate" />
         </div>
       </header>
 

@@ -7,6 +7,7 @@ import { DemoVideo } from "@/app/components/marketing/DemoVideo";
 import { SiteFooter } from "@/app/components/marketing/SiteFooter";
 import { DataTrustStrip } from "@/app/components/DataTrustStrip";
 import { ResourceLinksRow } from "@/app/components/marketing/ResourceLinksRow";
+import { TrialBadge } from "@/app/components/marketing/TrialBadge";
 
 export const metadata: Metadata = createPageMetadata({
   path: "/",
@@ -160,13 +161,7 @@ export default function HomePage() {
 
         {/* Hero */}
         <section className="mb-10 text-center sm:mb-14 lg:mb-16">
-          <Link
-            href="/for-candidates/sign-up"
-            className="mx-auto mb-6 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-2.5 text-[12px] font-black uppercase tracking-[0.14em] text-white shadow-lg shadow-purple-900/40 transition hover:scale-[1.03]"
-          >
-            <span className="text-sm" aria-hidden>✨</span>
-            7-day full-access trial · no card
-          </Link>
+          <TrialBadge audience="candidate" className="mx-auto mb-6" />
           <h1 className="mx-auto max-w-5xl text-[2.6rem] font-black leading-[1.02] tracking-[-0.055em] sm:text-5xl lg:text-[4rem] xl:text-[4.5rem]">
             The AI interview coach that{" "}
             <span className="bg-gradient-to-r from-purple-300 via-fuchsia-200 to-cyan-200 bg-clip-text text-transparent">
