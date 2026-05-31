@@ -175,11 +175,15 @@ function DashboardContent() {
     }
   }
 
-  async function startCheckout() {
+  async function startCheckout(billing: "monthly" | "annual" = "monthly") {
     setBillingLoading(true);
     setBillingError("");
     try {
-      const res = await fetch("/api/company/checkout", { method: "POST" });
+      const res = await fetch("/api/company/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ billing }),
+      });
       const json = await res.json();
       if (!res.ok || !json.url) {
         setBillingError(json.error || "Could not start checkout. Please try again.");
@@ -297,13 +301,22 @@ function DashboardContent() {
               </p>
             </div>
             {member.role === "admin" && (
-              <button
-                onClick={() => void startCheckout()}
-                disabled={billingLoading}
-                className="shrink-0 rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 px-5 py-2.5 text-sm font-black text-white shadow-lg transition hover:scale-[1.02] disabled:opacity-60"
-              >
-                {billingLoading ? "Loading…" : "Upgrade to paid →"}
-              </button>
+              <div className="flex shrink-0 flex-wrap items-center gap-2">
+                <button
+                  onClick={() => void startCheckout("monthly")}
+                  disabled={billingLoading}
+                  className="rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 px-5 py-2.5 text-sm font-black text-white shadow-lg transition hover:scale-[1.02] disabled:opacity-60"
+                >
+                  {billingLoading ? "Loading…" : "Upgrade — monthly"}
+                </button>
+                <button
+                  onClick={() => void startCheckout("annual")}
+                  disabled={billingLoading}
+                  className="rounded-full border border-fuchsia-400/30 bg-fuchsia-500/10 px-5 py-2.5 text-sm font-black text-fuchsia-100 transition hover:bg-fuchsia-500/20 disabled:opacity-60"
+                >
+                  Annual · save 2 months
+                </button>
+              </div>
             )}
           </div>
         )}

@@ -1,7 +1,12 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { prisma } from "@/app/lib/prisma";
-import { requireStripe } from "@/app/lib/stripe";
+import {
+  requireStripe,
+  getCorporateStripePriceId,
+  type CorporateStripePlan,
+  type CorporateBilling,
+} from "@/app/lib/stripe";
 import { getPlan } from "@/app/lib/corporatePlan";
 import { absoluteUrl } from "@/app/config/site";
 
@@ -19,11 +24,14 @@ export const dynamic = "force-dynamic";
  *   STRIPE_PRICE_CORPORATE_TEAM_MONTHLY
  *   STRIPE_PRICE_CORPORATE_BUSINESS_MONTHLY
  */
-export async function POST() {
+export async function POST(request: Request) {
   try {
     const { userId } = await auth();
     if (!userId)
       return NextResponse.json({ error: "Unauthorised." }, { status: 401 });
+
+    const body = (await request.json().catch(() => ({}))) as { billing?: string };
+    const billing: CorporateBilling = body?.billing === "annual" ? "annual" : "monthly";
 
     const admin = await prisma.companyMember.findFirst({
       where: { clerkUserId: userId, role: "admin" },
@@ -49,18 +57,16 @@ export async function POST() {
         { status: 400 }
       );
 
-    // Resolve the Stripe price ID from env
-    const priceIdMap: Record<string, string | undefined> = {
-      team: process.env.STRIPE_PRICE_CORPORATE_TEAM_MONTHLY,
-      business: process.env.STRIPE_PRICE_CORPORATE_BUSINESS_MONTHLY,
-    };
-    const priceId = priceIdMap[company.planId];
-    if (!priceId) {
+    // Resolve the Stripe price ID for the plan + chosen billing period.
+    let priceId: string;
+    try {
+      priceId = getCorporateStripePriceId(company.planId as CorporateStripePlan, billing);
+    } catch {
       console.error(
-        `COMPANY CHECKOUT: No Stripe price ID configured for plan "${company.planId}"`
+        `COMPANY CHECKOUT: No Stripe price ID for "${company.planId}_${billing}"`
       );
       return NextResponse.json(
-        { error: "Billing not configured for this plan. Contact support." },
+        { error: "Billing not configured for this plan/period. Contact support." },
         { status: 503 }
       );
     }
@@ -98,6 +104,7 @@ export async function POST() {
           companyId: company.id,
           planId: company.planId,
           planName: plan?.name ?? company.planId,
+          billing,
         },
       },
     });
