@@ -65,21 +65,68 @@ STRIPE_PRICE_CORPORATE_BUSINESS_MONTHLY / _ANNUAL
 
 ---
 
-## 4. Prisma migration baseline (before relying on migrations / a new env)
+## 4. Database schema & migrations (NOT a go-live blocker)
 
-9 tables exist on prod via `db push` only, so `migrations/` can't rebuild the DB. The live DB is fine today; do this before any DR/staging rebuild:
+**Current reality:** the schema is maintained with `prisma db push`. Some tables
+were added that way and have **no migration file**, so `prisma/migrations/`
+can't rebuild the DB on its own. The Vercel build runs `prisma generate && next
+build` — it does **not** run `prisma migrate deploy`, so nothing is ever
+auto-applied to prod. **The live DB is healthy and this works as-is.** Neon's
+pooler supports prepared statements, so no `pgbouncer=true` is needed.
+
+A complete, shadow-DB-free DDL snapshot of the whole schema lives at
+**`prisma/baseline/0001_baseline.sql`** (see `prisma/baseline/README.md`). It's
+your DR / fresh-environment bootstrap and the reviewable source of truth.
+Regenerate it after any `schema.prisma` change:
 
 ```bash
-# 1. Generate a baseline migration capturing current prod state (review the SQL)
-npx prisma migrate diff --from-migrations prisma/migrations \
-  --to-schema-datamodel prisma/schema.prisma --script \
-  > prisma/migrations/0_baseline/migration.sql
-# 2. Mark it applied on prod WITHOUT re-running (it already exists)
-npx prisma migrate resolve --applied 0_baseline
-# 3. From now on: `prisma migrate dev` locally, `prisma migrate deploy` in CI.
+npx prisma migrate diff --from-empty \
+  --to-schema-datamodel prisma/schema.prisma \
+  --script > prisma/baseline/0001_baseline.sql   # no DB connection needed
 ```
+
+### Option A — stay on `db push` (recommended, no action needed)
+
+It's working, needs no shadow DB, and survives Neon's pooler. After editing
+`schema.prisma`: `npx prisma db push` (or `db push --skip-generate && prisma
+generate`), then regenerate the baseline snapshot above and commit both. Done.
+
+### Option B — graduate to real migrations (optional, do this off the live DB)
+
+Best done when standing up a **fresh** DB (e.g. staging from the baseline), not
+retrofitted onto the live DB under load. When you're ready:
+
+```bash
+# 1. Archive the 5 partial pre-drift migrations so they don't double-create.
+mkdir -p prisma/migrations_archive && mv prisma/migrations/2026* prisma/migrations_archive/
+
+# 2. Promote the full baseline to the single first migration.
+mkdir -p prisma/migrations/0_init
+cp prisma/baseline/0001_baseline.sql prisma/migrations/0_init/migration.sql
+
+# 3. On the target DB, mark it applied WITHOUT running it (tables already exist).
+#    RUN THIS ONCE, BY HAND, against the intended DB. NEVER wire it into CI for
+#    the existing prod DB — it must not re-run DDL on live tables.
+npx prisma migrate resolve --applied 0_init
+npx prisma migrate status   # verify: "Database schema is up to date"
+
+# 4. ONLY after step 3 is confirmed, add deploy to the build:
+#    "build": "prisma generate && prisma migrate deploy && next build"
+# 5. From then on: `prisma migrate dev` locally → commit → deploy applies it.
+```
+
+> ⚠️ If prod's `_prisma_migrations` already recorded the 5 old dated migrations,
+> `migrate status` will flag them as "applied but missing locally" after step 1.
+> That's cosmetic (they're archived, not deleted); leave them or clean up only
+> with a reviewed `migrate resolve`. Don't let it block you — verify status,
+> don't guess.
 
 ---
 
-## Deferred (not blockers, schedule post-launch)
-Moderation on assessment-centre / career-doc / clean-transcript inputs · Resend bounce/complaint webhook + suppression · self-serve account deletion (GDPR Art. 17) · www↔apex 308 redirect · transaction around session-save + assignment-complete · `CandidateAssignment.template` `onDelete` · `Content-Security-Policy` header · corporate **annual** checkout UI · nightly Stripe↔DB reconcile job.
+## Done since the audit (no longer outstanding)
+Moderation on assessment-centre / career-doc / clean-transcript inputs · Resend bounce/complaint webhook + suppression · self-serve account deletion (GDPR Art. 17) · www↔apex 308 redirect · transaction around session-save + assignment-complete · `CandidateAssignment.template` `onDelete: Cascade` · `Content-Security-Policy` (report-only) · corporate **annual** checkout UI · candidate checkout idempotency + dunning/`past_due` handling · email suppression purge in cron · schema baseline snapshot + migration runbook.
+
+## Still deferred (not blockers, schedule post-launch)
+- **Nightly Stripe↔DB reconcile job** — cron to catch any webhook the app missed (drift between Stripe subscription state and Clerk/Company records). Needs Vercel Pro for sub-daily cron, or an external scheduler.
+- **Promote CSP from report-only to enforcing** — collect `report-only` violations for a week first, then flip the header once the allowlist is proven clean.
+- **Migration adoption (GO-LIVE §4 Option B)** — only if/when you want `db push` replaced by enforced migrations; best done off a fresh DB.
