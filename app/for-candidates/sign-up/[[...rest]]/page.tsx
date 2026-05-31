@@ -72,8 +72,8 @@ export default function CandidateSignUpPage() {
           </div>
         </header>
 
-        {/* Resource links — visible nav strip, matches the marketing pages */}
-        <ResourceLinksRow className="mb-2 justify-center border-b border-white/[0.06] pb-3" />
+        {/* Resource links — pill nav, matches the homepage/marketing header */}
+        <ResourceLinksRow pill className="mb-4" />
 
         <div className="flex flex-1 flex-col items-center justify-center py-6">
         <section className="w-full max-w-md">
