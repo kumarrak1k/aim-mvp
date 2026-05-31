@@ -19,6 +19,7 @@ import { type ReactNode } from "react";
 import { SiteLogo } from "@/app/components/brand/SiteLogo";
 import { SiteFooter } from "@/app/components/marketing/SiteFooter";
 import { PlanPage } from "@/app/components/account/PlanPage";
+import { TrialBanner } from "@/app/components/account/TrialBanner";
 
 export type CandidateAppPath =
   | "/practice"
@@ -190,6 +191,9 @@ export function CandidateAppShell({
           </nav>
         </div>
       </header>
+
+      {/* Reverse-trial countdown / start / upgrade bar */}
+      <TrialBanner />
 
       {/* Main content — pb-20 on mobile leaves room for the bottom nav */}
       <main className="relative z-10 pb-20 sm:pb-0">{children}</main>

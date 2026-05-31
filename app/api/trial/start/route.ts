@@ -1,7 +1,8 @@
-import { auth } from "@clerk/nextjs/server";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { getAccountType } from "@/app/lib/accountType";
 import { startCandidateTrialIfEligible } from "@/app/lib/candidatePlan";
+import { enqueueTrialEmails } from "@/app/lib/trialEmails";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -46,6 +47,19 @@ export async function POST() {
         { status: 409 }
       );
     }
+
+    // Schedule the trial reminder + expiry emails (idempotent).
+    if (result.trialEndsAt) {
+      try {
+        const client = await clerkClient();
+        const user = await client.users.getUser(userId);
+        const email = user.emailAddresses[0]?.emailAddress ?? "";
+        await enqueueTrialEmails(userId, email, new Date(result.trialEndsAt));
+      } catch (err) {
+        console.error("ENQUEUE TRIAL EMAILS ERROR:", err);
+      }
+    }
+
     return NextResponse.json({
       started: true,
       trialEndsAt: result.trialEndsAt,

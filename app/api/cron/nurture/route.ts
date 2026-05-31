@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/app/lib/prisma";
-import { sendNurtureEmail } from "@/app/lib/email";
+import {
+  sendNurtureEmail,
+  TRANSACTIONAL_NURTURE_TYPES,
+  type NurtureType,
+} from "@/app/lib/email";
+import { getOrCreateEmailPreference } from "@/app/lib/emailPreferences";
+import { getCandidatePlan } from "@/app/lib/candidatePlan";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -26,24 +32,62 @@ export async function GET(req: NextRequest) {
 
   let sent = 0;
   let failed = 0;
+  let skipped = 0;
 
   for (const job of due) {
+    const type = job.type as NurtureType;
+
     await prisma.emailJob.update({
       where: { id: job.id },
       data: { attempts: { increment: 1 } },
     });
 
-    const result = await sendNurtureEmail(
-      job.email,
-      job.type as
-        | "welcome"
-        | "day2_tip"
-        | "day4_social"
-        | "day7_upgrade"
-        | "day14_reengage"
-        | "day21_nudge"
-        | "day30_winback"
-    );
+    // Trial emails are state-sensitive: never tell a converted/paid user their
+    // trial ended, and don't nudge someone who already upgraded.
+    if (type === "trial_midway" || type === "trial_ended") {
+      try {
+        const plan = await getCandidatePlan(job.userId);
+        const stillRelevant =
+          type === "trial_midway" ? plan.isTrial : !plan.isPaid && !plan.isTrial;
+        if (!stillRelevant) {
+          await prisma.emailJob.update({
+            where: { id: job.id },
+            data: { status: "skipped", error: "trial state changed", sentAt: new Date() },
+          });
+          skipped++;
+          continue;
+        }
+      } catch {
+        // If we can't resolve plan state, skip trial emails to stay safe.
+        await prisma.emailJob.update({
+          where: { id: job.id },
+          data: { status: "skipped", error: "plan lookup failed", sentAt: new Date() },
+        });
+        skipped++;
+        continue;
+      }
+    }
+
+    // Resolve consent + unsubscribe token. Marketing emails are suppressed for
+    // users who've opted out; transactional trial-status notices always send.
+    let unsubscribeToken: string | undefined;
+    try {
+      const pref = await getOrCreateEmailPreference(job.userId, job.email);
+      unsubscribeToken = pref.unsubscribeToken;
+      if (!TRANSACTIONAL_NURTURE_TYPES.has(type) && pref.marketingConsent === false) {
+        await prisma.emailJob.update({
+          where: { id: job.id },
+          data: { status: "skipped", error: "marketing opt-out", sentAt: new Date() },
+        });
+        skipped++;
+        continue;
+      }
+    } catch {
+      // Preference lookup failed — fall through and still send (legacy behaviour),
+      // just without a one-click unsubscribe token.
+    }
+
+    const result = await sendNurtureEmail(job.email, type, { unsubscribeToken });
 
     if (result.ok) {
       await prisma.emailJob.update({
@@ -64,5 +108,5 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  return NextResponse.json({ ok: true, sent, failed, processed: due.length });
+  return NextResponse.json({ ok: true, sent, failed, skipped, processed: due.length });
 }

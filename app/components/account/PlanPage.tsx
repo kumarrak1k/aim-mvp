@@ -23,6 +23,13 @@ type SubscriptionInfo = {
   hasCustomer: boolean;
   billingInterval: "monthly" | "annual" | null;
   cancelAtPeriodEnd: boolean;
+  // Reverse-trial state
+  isTrial?: boolean;
+  isPaid?: boolean;
+  paidPlanName?: string;
+  trialEndsAt?: string | null;
+  trialDaysRemaining?: number;
+  trialConsumed?: boolean;
 };
 
 type UsageInfo = {
@@ -301,9 +308,16 @@ export function PlanPage() {
 
   // ── Derived state ─────────────────────────────────────────────────────────
 
-  const isFree = !sub?.isActive || sub.planName === "Free";
-  const isPlus = sub?.planName === "Plus";
-  const isProfessional = sub?.planName === "Professional";
+  // Trial = full access with no paid subscription. isPaid = genuine Stripe plan.
+  const isTrial = sub?.isTrial ?? false;
+  const isPaid = sub?.isPaid ?? false;
+  const trialDays = Math.max(0, sub?.trialDaysRemaining ?? 0);
+  // "Free" here means "no upgrade options taken" — covers both the never-paid
+  // Free tier and an active trial (both should see upgrade buttons).
+  const isFreeOrTrial = !isPaid;
+  const isFree = isFreeOrTrial && !isTrial;
+  const isPlus = isPaid && sub?.planName === "Plus";
+  const isProfessional = isPaid && sub?.planName === "Professional";
   const isMonthly = sub?.billingInterval === "monthly";
   const isAnnual = sub?.billingInterval === "annual";
   const cancelAtPeriodEnd = sub?.cancelAtPeriodEnd ?? false;
@@ -399,6 +413,8 @@ export function PlanPage() {
                 ? "rgba(251,191,36,0.15)"
                 : cancelAtPeriodEnd
                 ? "rgba(248,113,113,0.15)"
+                : isTrial
+                ? "linear-gradient(to right, #a855f7, #ec4899)"
                 : isFree
                 ? "rgba(255,255,255,0.08)"
                 : "linear-gradient(to right, #a855f7, #ec4899)",
@@ -406,7 +422,7 @@ export function PlanPage() {
                 ? "#fbbf24"
                 : cancelAtPeriodEnd
                 ? "#f87171"
-                : isFree
+                : isFree && !isTrial
                 ? "rgba(255,255,255,0.6)"
                 : "white",
             }}
@@ -415,8 +431,10 @@ export function PlanPage() {
               ? "Activating…"
               : cancelAtPeriodEnd
               ? "Cancelling"
+              : isTrial
+              ? `Trial · ${trialDays}d left`
               : isFree
-              ? "Trial"
+              ? "Free"
               : "Active"}
           </span>
         </div>
@@ -465,8 +483,22 @@ export function PlanPage() {
           </div>
         )}
 
+        {/* Trial — full access, days remaining */}
+        {isTrial && !isConfirming && (
+          <div style={{ marginTop: "0.75rem" }}>
+            <p style={{ color: "rgba(255,255,255,0.6)" }}>
+              Full Professional access · voice, camera &amp; assessment centres
+            </p>
+            <p style={{ marginTop: "0.35rem", fontSize: "0.8rem", color: trialDays <= 2 ? "#fbbf24" : "rgba(255,255,255,0.45)" }}>
+              {trialDays === 0
+                ? "Your trial ends today — upgrade to keep full access."
+                : `${trialDays} day${trialDays === 1 ? "" : "s"} left · no card on file · upgrade any time to keep access`}
+            </p>
+          </div>
+        )}
+
         {/* Paid — renewal / cancellation info */}
-        {!isFree && !isConfirming && (
+        {isPaid && !isConfirming && (
           <div style={{ marginTop: "0.75rem" }}>
             <p style={{ color: "rgba(255,255,255,0.5)" }}>
               Unlimited sessions · All interview modes
@@ -558,8 +590,8 @@ export function PlanPage() {
         </div>
       )}
 
-      {/* ── Actions — Free plan ───────────────────────────────────────────── */}
-      {PAYMENTS_ENABLED && isFree && !confirm && (
+      {/* ── Actions — Free plan or active trial (convert to paid) ─────────── */}
+      {PAYMENTS_ENABLED && isFreeOrTrial && !confirm && (
         <div>
           <p
             style={{
@@ -571,7 +603,7 @@ export function PlanPage() {
               marginBottom: "0.75rem",
             }}
           >
-            Upgrade your plan
+            {isTrial ? "Keep your access — choose a plan" : "Upgrade your plan"}
           </p>
 
           {planRow(
@@ -754,7 +786,7 @@ export function PlanPage() {
       )}
 
       {/* ── Actions — Annual plans ────────────────────────────────────────── */}
-      {PAYMENTS_ENABLED && !isFree && isAnnual && !confirm && (
+      {PAYMENTS_ENABLED && isPaid && isAnnual && !confirm && (
         <div>
           <p
             style={{
@@ -816,8 +848,8 @@ export function PlanPage() {
         </div>
       )}
 
-      {/* ── Manage billing (Stripe portal) — always available for paid ───── */}
-      {PAYMENTS_ENABLED && !isFree && !isAnnual && !confirm && (
+      {/* ── Manage billing (Stripe portal) — paid subscriptions only ─────── */}
+      {PAYMENTS_ENABLED && isPaid && !isAnnual && !confirm && (
         <button
           onClick={() => void openPortal()}
           disabled={busy}

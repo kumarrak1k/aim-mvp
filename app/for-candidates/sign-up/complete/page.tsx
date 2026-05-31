@@ -51,8 +51,22 @@ export default function CandidateSignUpCompletePage() {
         return;
       }
 
-      // 2. Enqueue nurture email sequence (fire and forget)
-      fetch("/api/nurture/enqueue", { method: "POST" }).catch(() => {});
+      // 2. Persist the marketing-email consent captured at sign-up, then
+      //    enqueue the nurture/trial email sequence (fire and forget).
+      const consentRaw = sessionStorage.getItem("aim_marketing_consent");
+      sessionStorage.removeItem("aim_marketing_consent");
+      fetch("/api/email-preferences", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          marketingConsent: consentRaw === "1",
+          source: "signup",
+        }),
+      })
+        .catch(() => {})
+        .finally(() => {
+          fetch("/api/nurture/enqueue", { method: "POST" }).catch(() => {});
+        });
 
       // 3. Credit referral if present
       const ref = sessionStorage.getItem("aim_ref");

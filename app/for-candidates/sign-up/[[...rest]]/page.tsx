@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { SignUp } from "@clerk/nextjs";
 import { SiteLogo } from "@/app/components/brand/SiteLogo";
@@ -21,6 +22,18 @@ export default function CandidateSignUpPage() {
   if (typeof window !== "undefined") {
     const ref = new URLSearchParams(window.location.search).get("ref");
     if (ref) sessionStorage.setItem("aim_ref", ref);
+  }
+
+  // Marketing-email consent — unticked by default (UK PECR: explicit opt-in).
+  // Captured to sessionStorage so the post-signup step can persist it.
+  const [marketingConsent, setMarketingConsent] = useState(false);
+  function onConsentChange(checked: boolean) {
+    setMarketingConsent(checked);
+    try {
+      sessionStorage.setItem("aim_marketing_consent", checked ? "1" : "0");
+    } catch {
+      /* ignore */
+    }
   }
 
   return (
@@ -109,6 +122,21 @@ export default function CandidateSignUpPage() {
               },
             }}
           />
+
+          {/* Marketing consent — explicit opt-in, unticked by default */}
+          <label className="mt-4 flex cursor-pointer items-start gap-3 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-3.5 text-left">
+            <input
+              type="checkbox"
+              checked={marketingConsent}
+              onChange={(e) => onConsentChange(e.target.checked)}
+              className="mt-0.5 h-4 w-4 shrink-0 accent-purple-500"
+            />
+            <span className="text-xs leading-5 text-gray-400">
+              Email me interview tips, practice nudges and trial reminders. You can
+              unsubscribe any time, and we never sell your data. Essential account
+              emails are always sent.
+            </span>
+          </label>
 
           <div className="mt-4 text-center">
             <p className="mb-2 text-xs text-gray-500">Already have an account?</p>

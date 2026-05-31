@@ -215,14 +215,25 @@ function renderPlainText({
 
 // ── Nurture emails ────────────────────────────────────────────────────────────
 
-type NurtureType =
+export type NurtureType =
   | "welcome"
   | "day2_tip"
   | "day4_social"
   | "day7_upgrade"
   | "day14_reengage"
   | "day21_nudge"
-  | "day30_winback";
+  | "day30_winback"
+  | "trial_midway"
+  | "trial_ended";
+
+/**
+ * Trial-status notices are service notifications about a material change to the
+ * user's account access, so they bypass the marketing-consent suppression.
+ * (trial_midway is a value nudge and is treated as marketing.)
+ */
+export const TRANSACTIONAL_NURTURE_TYPES: ReadonlySet<NurtureType> = new Set([
+  "trial_ended",
+]);
 
 const NURTURE_SUBJECTS: Record<NurtureType, string> = {
   welcome:        "Welcome to AI Career Mentor — your first interview tip",
@@ -232,13 +243,14 @@ const NURTURE_SUBJECTS: Record<NurtureType, string> = {
   day14_reengage: "Got an interview coming up?",
   day21_nudge:    "Still here — want to run a quick session?",
   day30_winback:  "Last chance — your free practice sessions are waiting",
+  trial_midway:   "A few days left on your Professional trial",
+  trial_ended:    "Your free trial has ended",
 };
 
-function renderNurtureHtml(type: NurtureType): string {
+function renderNurtureHtml(type: NurtureType, unsubUrl: string): string {
   const year = new Date().getFullYear();
   const practiceUrl = `${siteConfig.url}/practice`;
   const starUrl     = `${siteConfig.url}/tools/star-scorer`;
-  const unsubUrl    = `${siteConfig.url}/profile`;
 
   const upgradeUrl = `${siteConfig.url}/for-candidates/pricing`;
   const referUrl   = `${siteConfig.url}/refer`;
@@ -463,6 +475,60 @@ function renderNurtureHtml(type: NurtureType): string {
           </a>
         </td></tr>
       </table>`,
+
+    trial_midway: `
+      <h2 style="margin:0 0 16px;font-size:22px;font-weight:800;color:#1a1426;">
+        A few days left on your Professional trial.
+      </h2>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#2a2238;">
+        You're partway through your 7-day full-access trial — make the most of
+        everything that unlocks before it ends:
+      </p>
+      <div style="background:#f7f5fb;border-left:3px solid #8c5cff;border-radius:0 12px 12px 0;padding:18px 22px;margin:0 0 24px;">
+        <p style="margin:0;font-size:15px;line-height:1.7;color:#2a2238;">
+          <strong>Voice &amp; camera coaching</strong> — see your delivery scored.<br/>
+          <strong>Mock assessment centre</strong> — case study, interview &amp; presentation.<br/>
+          <strong>Career docs</strong> — CV enhancer, personal statement &amp; cover letter.
+        </p>
+      </div>
+      <p style="margin:0 0 28px;font-size:15px;line-height:1.7;color:#2a2238;">
+        When the trial ends you'll move to the Free plan. Upgrade any time to keep
+        full access — no card needed until you decide.
+      </p>
+      <table role="presentation" cellpadding="0" cellspacing="0" style="margin-bottom:12px;">
+        <tr><td style="border-radius:12px;background:#8c5cff;">
+          <a href="${practiceUrl}" style="display:inline-block;padding:14px 28px;color:#fff;font-size:15px;font-weight:800;text-decoration:none;">
+            Jump back in →
+          </a>
+        </td></tr>
+      </table>
+      <p style="margin:0 0 28px;">
+        <a href="${upgradeUrl}" style="font-size:14px;color:#8c5cff;text-decoration:none;font-weight:700;">
+          Keep full access — see plans →
+        </a>
+      </p>`,
+
+    trial_ended: `
+      <h2 style="margin:0 0 16px;font-size:22px;font-weight:800;color:#1a1426;">
+        Your free trial has ended.
+      </h2>
+      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#2a2238;">
+        Your 7-day Professional trial is now over and your account has moved to
+        the <strong>Free plan</strong> — that's 3 keyboard-only practice sessions.
+      </p>
+      <div style="background:#f7f5fb;border-left:3px solid #8c5cff;border-radius:0 12px 12px 0;padding:18px 22px;margin:0 0 24px;">
+        <p style="margin:0;font-size:15px;line-height:1.7;color:#2a2238;">
+          Upgrade to keep <strong>unlimited practice</strong>, voice &amp; camera
+          coaching, mock assessment centres and career docs.
+        </p>
+      </div>
+      <table role="presentation" cellpadding="0" cellspacing="0">
+        <tr><td style="border-radius:12px;background:#8c5cff;">
+          <a href="${upgradeUrl}" style="display:inline-block;padding:14px 28px;color:#fff;font-size:15px;font-weight:800;text-decoration:none;">
+            See plans &amp; upgrade →
+          </a>
+        </td></tr>
+      </table>`,
   };
 
   return `<!doctype html>
@@ -481,9 +547,10 @@ function renderNurtureHtml(type: NurtureType): string {
           ${bodies[type]}
           <hr style="border:none;border-top:1px solid #e7e3ee;margin:32px 0 20px;" />
           <p style="margin:0;font-size:12px;line-height:1.6;color:#7c6a99;">
-            You're receiving this because you signed up to AI Career Mentor.
-            <a href="${unsubUrl}" style="color:#7c6a99;">Manage email preferences</a>.<br/>
-            &copy; ${year} AI Career Mentor Ltd &middot; England &amp; Wales
+            You're receiving this because you have an AI Career Mentor account.
+            <a href="${unsubUrl}" style="color:#7c6a99;">Unsubscribe</a> &middot;
+            <a href="${siteConfig.url}/account/notifications" style="color:#7c6a99;">manage email preferences</a>.<br/>
+            &copy; ${year} AI Career Mentor &middot; England &amp; Wales
           </p>
         </td></tr>
       </table>
@@ -505,25 +572,46 @@ function renderNurturePlainText(type: NurtureType): string {
     day14_reengage: `Got an interview coming up? Run a 10-day sprint: competency, strength, and motivation questions, then a full mock on day 10.\n\nStart here: ${practiceUrl}`,
     day21_nudge:    `Still here — one 15-minute session will move you forward. Pick your role, answer 5 questions, get scored.\n\n${practiceUrl}`,
     day30_winback:  `Your practice sessions are still here. Come back whenever you're ready.\n\n${practiceUrl}`,
+    trial_midway:   `A few days left on your Professional trial. Make the most of voice & camera coaching, the mock assessment centre, and career docs before it ends.\n\nJump back in: ${practiceUrl}\nKeep full access: ${upgradeUrl}`,
+    trial_ended:    `Your 7-day Professional trial has ended — your account is now on the Free plan (3 keyboard-only sessions).\n\nUpgrade to keep unlimited practice, voice & camera coaching and assessment centres: ${upgradeUrl}`,
   };
   return texts[type] + `\n\n— AI Career Mentor\n${siteConfig.url}`;
 }
 
 export async function sendNurtureEmail(
   to: string,
-  type: NurtureType
+  type: NurtureType,
+  opts?: { unsubscribeToken?: string }
 ): Promise<SendResult> {
   const client = getResendClient();
   if (!client) return { ok: false, error: "RESEND_API_KEY missing" };
+
+  // The List-Unsubscribe link points at the API route (GET redirects a human
+  // to the confirmation page; POST is the RFC 8058 one-click path).
+  const unsubUrl = opts?.unsubscribeToken
+    ? `${siteConfig.url}/api/email/unsubscribe/${opts.unsubscribeToken}`
+    : `${siteConfig.url}/account/notifications`;
+
+  const headers: Record<string, string> = {};
+  if (opts?.unsubscribeToken) {
+    headers["List-Unsubscribe"] = `<${unsubUrl}>`;
+    headers["List-Unsubscribe-Post"] = "List-Unsubscribe=One-Click";
+  }
 
   try {
     const result = await client.emails.send({
       from: getFromAddress(),
       to,
       subject: NURTURE_SUBJECTS[type],
-      html: renderNurtureHtml(type),
+      html: renderNurtureHtml(type, unsubUrl),
       text: renderNurturePlainText(type),
-      tags: [{ name: "category", value: "nurture" }],
+      ...(Object.keys(headers).length > 0 ? { headers } : {}),
+      tags: [
+        {
+          name: "category",
+          value: TRANSACTIONAL_NURTURE_TYPES.has(type) ? "trial-status" : "nurture",
+        },
+      ],
     });
 
     if (result.error) return { ok: false, error: result.error.message };
