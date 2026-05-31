@@ -32,10 +32,26 @@ export const PLAN_CONFIG = {
 
 export type CorporatePlanId = keyof typeof PLAN_CONFIG;
 
+/**
+ * Fair-usage cap on candidate invites during a free trial (cost control —
+ * each assessment a candidate completes drives OpenAI spend). Applies only
+ * while planStatus === "trial"; paid plans use the monthly limit instead.
+ */
+export const CORPORATE_TRIAL_INVITE_CAP = 10;
+
 /** Returns plan config or null if planId is unrecognised / null. */
 export function getPlan(planId: string | null | undefined) {
   if (!planId || !(planId in PLAN_CONFIG)) return null;
   return PLAN_CONFIG[planId as CorporatePlanId];
+}
+
+/** Candidate invites left in a trial (0 if not on trial or cap reached). */
+export function trialInvitesRemaining(company: {
+  planStatus: string;
+  trialInvitesUsed?: number | null;
+}): number {
+  if (company.planStatus !== "trial") return 0;
+  return Math.max(0, CORPORATE_TRIAL_INVITE_CAP - (company.trialInvitesUsed ?? 0));
 }
 
 /** True if the workspace is on an active paid subscription or a live trial. */

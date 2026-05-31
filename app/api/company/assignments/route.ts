@@ -3,7 +3,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../../lib/prisma";
 import { sendCandidateInvite } from "../../../lib/email";
 import { assignmentCreateSchema, parseJsonBody } from "../../../lib/validation";
-import { getPlan, isPlanActive } from "../../../lib/corporatePlan";
+import {
+  getPlan,
+  isPlanActive,
+  CORPORATE_TRIAL_INVITE_CAP,
+} from "../../../lib/corporatePlan";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -60,6 +64,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Trial fair-usage cap — limits invites (and therefore OpenAI cost) during
+    // a free trial. Paid plans skip this and use the monthly limit below.
+    const onTrial = company.planStatus === "trial";
+    if (onTrial && (company.trialInvitesUsed ?? 0) >= CORPORATE_TRIAL_INVITE_CAP) {
+      return NextResponse.json(
+        {
+          error: `Your free trial includes ${CORPORATE_TRIAL_INVITE_CAP} candidate invites. Upgrade your plan to send more.`,
+        },
+        { status: 403 }
+      );
+    }
+
     // Monthly invite limit check
     const plan = getPlan(company.planId);
     if (plan) {
@@ -86,6 +102,14 @@ export async function POST(request: NextRequest) {
       },
       include: { template: { select: { id: true, name: true, role: true } } },
     });
+
+    // Count this invite against the trial fair-usage cap.
+    if (onTrial) {
+      await prisma.company.update({
+        where: { id: member.companyId },
+        data: { trialInvitesUsed: { increment: 1 } },
+      });
+    }
 
     // Send the invite email. Don't fail the request if email errors —
     // recruiters can still copy the link manually, and we record the

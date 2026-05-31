@@ -66,8 +66,9 @@ export function BusinessPricingPlans({ currency = "GBP" }: { currency?: PricingC
       annualMonthly: team.annualMonthly,
       period: "/month",
       description:
-        "For small hiring teams running structured assessments — up to 3 recruiters, 100 candidate invites per month.",
+        "For small hiring teams running structured assessments — up to 3 recruiters, 100 candidate invites per month. Start with a 14-day free trial, no card required.",
       features: [
+        "14-day free trial — no card, 10 invites to evaluate",
         "Up to 3 recruiter seats",
         "100 candidate invites / month",
         "Unlimited assessment templates",

@@ -33,13 +33,18 @@ export async function POST(request: NextRequest) {
     }
 
     const plan = PLAN_CONFIG[planId as keyof typeof PLAN_CONFIG];
-    const trialEndsAt = new Date(
-      Date.now() + plan.trialDays * 24 * 60 * 60 * 1000
-    );
+    const now = new Date();
+    const trialEndsAt = new Date(now.getTime() + plan.trialDays * 24 * 60 * 60 * 1000);
 
     const company = await prisma.company.update({
       where: { id: admin.companyId },
-      data: { planId, planStatus: "trial", trialEndsAt },
+      data: {
+        planId,
+        planStatus: "trial",
+        trialStartedAt: now,
+        trialEndsAt,
+        trialInvitesUsed: 0,
+      },
     });
 
     return NextResponse.json({ company });

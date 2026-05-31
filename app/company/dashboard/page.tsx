@@ -4,7 +4,12 @@ import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { CorporateAppShell } from "@/app/components/marketing/CorporateAppShell";
-import { getPlan, isPlanActive, trialDaysRemaining } from "@/app/lib/corporatePlan";
+import {
+  getPlan,
+  isPlanActive,
+  trialDaysRemaining,
+  CORPORATE_TRIAL_INVITE_CAP,
+} from "@/app/lib/corporatePlan";
 
 type Assignment = {
   id: string;
@@ -39,6 +44,7 @@ type CompanyData = {
     planId: string | null;
     planStatus: string;
     trialEndsAt: string | null;
+    trialInvitesUsed: number;
     _count: { members: number; templates: number; assignments: number };
   };
   member: { id: string; role: string };
@@ -284,7 +290,11 @@ function DashboardContent() {
               <p className="text-sm font-black text-fuchsia-200">
                 {plan?.name} plan — free trial · {daysLeft} day{daysLeft !== 1 ? "s" : ""} remaining
               </p>
-              <p className="mt-0.5 text-xs text-fuchsia-200/70">Full access until your trial ends. Add a payment method to avoid interruption.</p>
+              <p className="mt-0.5 text-xs text-fuchsia-200/70">
+                Full access until your trial ends ·{" "}
+                {Math.min(company.trialInvitesUsed ?? 0, CORPORATE_TRIAL_INVITE_CAP)} of{" "}
+                {CORPORATE_TRIAL_INVITE_CAP} trial invites used. Add a payment method to avoid interruption.
+              </p>
             </div>
             {member.role === "admin" && (
               <button
@@ -345,11 +355,17 @@ function DashboardContent() {
               color: "text-fuchsia-300",
             },
             { label: "Active templates", value: activeTemplates, color: "text-purple-300" },
-            {
-              label: plan ? `Invites this month (${invitesThisMonth}/${plan.invitesPerMonth})` : "Total invites sent",
-              value: plan ? invitesThisMonth : company._count.assignments,
-              color: "text-cyan-300",
-            },
+            company.planStatus === "trial"
+              ? {
+                  label: `Trial invites (${Math.min(company.trialInvitesUsed ?? 0, CORPORATE_TRIAL_INVITE_CAP)}/${CORPORATE_TRIAL_INVITE_CAP})`,
+                  value: company.trialInvitesUsed ?? 0,
+                  color: "text-cyan-300",
+                }
+              : {
+                  label: plan ? `Invites this month (${invitesThisMonth}/${plan.invitesPerMonth})` : "Total invites sent",
+                  value: plan ? invitesThisMonth : company._count.assignments,
+                  color: "text-cyan-300",
+                },
             { label: "Completed assessments", value: completedCount, color: "text-green-300" },
           ].map(({ label, value, color }) => (
             <div key={label} className="rounded-2xl border border-white/10 bg-white/[0.05] p-6">
