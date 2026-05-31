@@ -5,7 +5,7 @@
 > Do them in order. Nothing here requires a code change.
 >
 > ✅ Verify readiness any time with the one-click probe (signed in as superadmin):
-> **`GET https://www.aicareermentor.co.uk/api/admin/go-live-check`** → expect `"ready": true`.
+> **`GET https://aicareermentor.co.uk/api/admin/go-live-check`** → expect `"ready": true`.
 
 ---
 
@@ -13,7 +13,7 @@
 
 - [x] **Neon `DATABASE_URL` — already correct, no change needed.** Neon's connection **pooler natively supports prepared statements**, so the pooled (`-pooler`) host is scale-safe **without** `pgbouncer=true`. Neon's own Prisma preset (Console → Connect → Prisma + Pooled) uses `?sslmode=require&channel_binding=require` and omits `pgbouncer` — which is exactly what's in production now. The earlier "add pgbouncer" idea was generic PgBouncer advice that does **not** apply to Neon; adding it would only risk an outage. **Leave `DATABASE_URL` as Neon's pooled preset.** (If you ever migrate off Neon to raw PgBouncer, *then* you'd need `pgbouncer=true&connection_limit=1` — and only via Neon-style presets, never by hand-editing the password area.)
 - [ ] **`CRON_SECRET`** set in Vercel (any long random string). The nurture cron fails closed without it.
-- [ ] **Cron frequency.** `vercel.json` runs `/api/cron/nurture` once daily (`0 9 * * *`) — Hobby-compatible. For faster trial/nurture emails, either upgrade to Vercel Pro and change it to `*/10 * * * *`, **or** point an external scheduler (e.g. cron-job.org) at `https://www.aicareermentor.co.uk/api/cron/nurture` every 10 min with header `Authorization: Bearer <CRON_SECRET>`.
+- [ ] **Cron frequency.** `vercel.json` runs `/api/cron/nurture` once daily (`0 9 * * *`) — Hobby-compatible. For faster trial/nurture emails, either upgrade to Vercel Pro and change it to `*/10 * * * *`, **or** point an external scheduler (e.g. cron-job.org) at `https://aicareermentor.co.uk/api/cron/nurture` every 10 min with header `Authorization: Bearer <CRON_SECRET>`.
 - [ ] **Clerk:** confirm Production uses **live** Clerk keys (`pk_live_`/`sk_live_`), and the JWT session token maps `metadata = {{user.private_metadata}}` (needed so `/practice` SSR sees plan/trial fields).
 - [ ] **Resend:** domain `aicareermentor.co.uk` verified with **SPF, DKIM, and a DMARC** record. Warm the domain before bulk nurture.
 - [ ] **Upstash:** `UPSTASH_REDIS_REST_URL` / `_TOKEN` set in Production (rate limits multiply per-instance without it).
@@ -45,9 +45,9 @@ STRIPE_PRICE_CORPORATE_BUSINESS_MONTHLY / _ANNUAL
 
 - [ ] Set **live** keys in Vercel: `STRIPE_SECRET_KEY=sk_live_…`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_live_…`.
 - [ ] Create **two** live webhook endpoints:
-  - **Candidate** → `https://www.aicareermentor.co.uk/api/stripe/webhook`
+  - **Candidate** → `https://aicareermentor.co.uk/api/stripe/webhook`
     events: `customer.subscription.created`, `…updated`, `…deleted`
-  - **Corporate** → `https://www.aicareermentor.co.uk/api/webhooks/stripe`
+  - **Corporate** → `https://aicareermentor.co.uk/api/webhooks/stripe`
     events: `checkout.session.completed`, `customer.subscription.created`, `…updated`, `…deleted`
   - Copy each signing secret → `STRIPE_WEBHOOK_SECRET` (candidate) and `STRIPE_WEBHOOK_SECRET_CORPORATE` (corporate).
 - [ ] **Billing → Subscriptions → Smart Retries:** set the failed-payment retry schedule to **cancel** the subscription at the end (so `past_due` can't grant free access indefinitely).
@@ -124,7 +124,7 @@ npx prisma migrate status   # verify: "Database schema is up to date"
 ---
 
 ## Done since the audit (no longer outstanding)
-Moderation on assessment-centre / career-doc / clean-transcript inputs · Resend bounce/complaint webhook + suppression · self-serve account deletion (GDPR Art. 17) · www↔apex 308 redirect · transaction around session-save + assignment-complete · `CandidateAssignment.template` `onDelete: Cascade` · `Content-Security-Policy` (report-only) · corporate **annual** checkout UI · candidate checkout idempotency + dunning/`past_due` handling · email suppression purge in cron · schema baseline snapshot + migration runbook.
+Moderation on assessment-centre / career-doc / clean-transcript inputs · Resend bounce/complaint webhook + suppression · self-serve account deletion (GDPR Art. 17) · apex canonicalisation (Vercel www→apex + apex `siteConfig.url`, all canonical/OG/sitemap/webhook URLs on the apex) · transaction around session-save + assignment-complete · `CandidateAssignment.template` `onDelete: Cascade` · `Content-Security-Policy` (report-only) · corporate **annual** checkout UI · candidate checkout idempotency + dunning/`past_due` handling · email suppression purge in cron · schema baseline snapshot + migration runbook.
 
 ## Still deferred (not blockers, schedule post-launch)
 - **Nightly Stripe↔DB reconcile job** — cron to catch any webhook the app missed (drift between Stripe subscription state and Clerk/Company records). Needs Vercel Pro for sub-daily cron, or an external scheduler.

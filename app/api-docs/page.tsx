@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     "Integrate AI Career Mentor's candidate assessment data directly into your ATS or HRIS via our REST API.",
 };
 
-const BASE = "https://www.aicareermentor.co.uk/api/v1";
+const BASE = "https://aicareermentor.co.uk/api/v1";
 
 function Code({ children }: { children: string }) {
   return (

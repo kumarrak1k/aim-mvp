@@ -11,7 +11,7 @@ const spec = {
       "Integrate AI Career Mentor's candidate assessment data with your ATS. Authenticate with a Bearer API key generated in your company dashboard.",
     contact: { email: "support@aicareermentor.co.uk" },
   },
-  servers: [{ url: "https://www.aicareermentor.co.uk/api/v1" }],
+  servers: [{ url: "https://aicareermentor.co.uk/api/v1" }],
   security: [{ bearerAuth: [] }],
   components: {
     securitySchemes: {

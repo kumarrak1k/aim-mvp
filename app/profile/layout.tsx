@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description:
     "Save your CV, target role specification and interview goals so AI Career Mentor can generate more personalised interview questions, feedback and practice plans.",
   alternates: {
-    canonical: "https://www.aicareermentor.co.uk/profile",
+    canonical: "https://aicareermentor.co.uk/profile",
   },
   robots: {
     index: false,
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     title: "Candidate Profile Builder | AI Career Mentor",
     description:
       "Build a personalised interview context from your CV, target role and goals.",
-    url: "https://www.aicareermentor.co.uk/profile",
+    url: "https://aicareermentor.co.uk/profile",
     siteName: "AI Career Mentor",
     images: [
       {

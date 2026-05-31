@@ -26,16 +26,10 @@ const isProtected = createRouteMatcher([
 
 export default clerkMiddleware(async (auth, req) => {
   // ── Canonical host ──────────────────────────────────────────────────────
-  // Redirect the bare apex to www so there's a single canonical origin
-  // (matches siteConfig.url, all OG/canonical/email links). Exact match only,
-  // so preview/localhost hosts are unaffected.
-  const host = req.headers.get("host");
-  if (host === "aicareermentor.co.uk") {
-    const url = new URL(req.url);
-    url.host = "www.aicareermentor.co.uk";
-    url.protocol = "https:";
-    return NextResponse.redirect(url, 308);
-  }
+  // Canonicalisation is handled at the Vercel platform level (www → apex 307),
+  // and siteConfig.url / NEXT_PUBLIC_SITE_URL are the bare apex. We deliberately
+  // do NOT add an apex → www redirect here: it would fight Vercel's www → apex
+  // and create an infinite redirect loop. Leave host canonicalisation to Vercel.
 
   const { userId, sessionClaims } = await auth();
 

@@ -8,13 +8,13 @@ export const metadata: Metadata = {
   description:
     "Run a tailored AI mock interview with answer scoring, voice delivery analysis, camera presence feedback, model answers and final readiness reporting.",
   alternates: {
-    canonical: "https://www.aicareermentor.co.uk/practice",
+    canonical: "https://aicareermentor.co.uk/practice",
   },
   openGraph: {
     title: "AI Mock Interview Practice | AI Career Mentor",
     description:
       "Practise interviews with AI coaching that scores your answers, voice delivery and camera presence.",
-    url: "https://www.aicareermentor.co.uk/practice",
+    url: "https://aicareermentor.co.uk/practice",
     siteName: "AI Career Mentor",
     images: [
       {

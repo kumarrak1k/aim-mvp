@@ -6,13 +6,13 @@ export const metadata: Metadata = {
   description:
     "Track your mock interview performance over time. Review saved sessions, scores, voice delivery trends and camera presence feedback from AI Career Mentor.",
   alternates: {
-    canonical: "https://www.aicareermentor.co.uk/progress",
+    canonical: "https://aicareermentor.co.uk/progress",
   },
   openGraph: {
     title: "Interview Progress Dashboard | AI Career Mentor",
     description:
       "Review your saved practice sessions, scores and coaching insights over time.",
-    url: "https://www.aicareermentor.co.uk/progress",
+    url: "https://aicareermentor.co.uk/progress",
     siteName: "AI Career Mentor",
     locale: "en_GB",
     type: "website",

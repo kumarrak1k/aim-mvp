@@ -146,7 +146,7 @@ export default async function QuestionSetPage({ params }: Props) {
     publisher: {
       "@type": "Organization",
       name: "AI Career Mentor",
-      url: "https://www.aicareermentor.co.uk",
+      url: "https://aicareermentor.co.uk",
     },
     datePublished: set.date,
     // Use real Q&A pairs extracted from the MDX content. Fall back to a

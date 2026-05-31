@@ -5,13 +5,13 @@ export const metadata: Metadata = {
   description:
     "Learn how AI Career Mentor handles candidate profile context, microphone and camera permissions, interview practice data and user controls.",
   alternates: {
-    canonical: "https://www.aicareermentor.co.uk/privacy",
+    canonical: "https://aicareermentor.co.uk/privacy",
   },
   openGraph: {
     title: "Privacy and Data Transparency | AI Career Mentor",
     description:
       "Plain-English privacy and data transparency information for AI Career Mentor users.",
-    url: "https://www.aicareermentor.co.uk/privacy",
+    url: "https://aicareermentor.co.uk/privacy",
     siteName: "AI Career Mentor",
     images: [
       {

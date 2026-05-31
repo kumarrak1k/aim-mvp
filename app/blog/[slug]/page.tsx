@@ -135,12 +135,12 @@ export default async function BlogPostPage({ params }: Props) {
     author: {
       "@type": "Organization",
       name: "AI Career Mentor",
-      url: "https://www.aicareermentor.co.uk",
+      url: "https://aicareermentor.co.uk",
     },
     publisher: {
       "@type": "Organization",
       name: "AI Career Mentor",
-      url: "https://www.aicareermentor.co.uk",
+      url: "https://aicareermentor.co.uk",
       logo: {
         "@type": "ImageObject",
         url: absoluteUrl("/brand/logo.jpg"),

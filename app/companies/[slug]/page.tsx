@@ -36,7 +36,7 @@ export default async function CompanyGuidePage({ params }: Props) {
     publisher: {
       "@type": "Organization",
       name: "AI Career Mentor",
-      url: "https://www.aicareermentor.co.uk",
+      url: "https://aicareermentor.co.uk",
     },
     about: {
       "@type": "Organization",

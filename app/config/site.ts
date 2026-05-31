@@ -8,7 +8,11 @@ export type SiteRoute = {
 export const siteConfig = {
   name: "AI Career Mentor",
   domain: "aicareermentor.co.uk",
-  url: "https://www.aicareermentor.co.uk",
+  // Bare apex is the canonical origin: Vercel redirects www → apex (307), and
+  // NEXT_PUBLIC_SITE_URL is the apex. Keep this the apex so every canonical/OG
+  // tag, sitemap entry, Stripe return URL and email link points at the origin
+  // Vercel actually serves (no extra hop, no www↔apex canonical split).
+  url: "https://aicareermentor.co.uk",
   title: "AI Career Mentor | AI Interview Coach for Answers, Voice and Camera Presence",
   description:
     "Premium AI interview coaching for sharper answers, stronger voice delivery and more confident camera presence.",

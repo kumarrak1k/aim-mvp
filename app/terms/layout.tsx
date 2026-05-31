@@ -5,13 +5,13 @@ export const metadata: Metadata = {
   description:
     "Read the responsible-use guidance and plain-English terms for using AI Career Mentor as an AI interview practice and coaching tool.",
   alternates: {
-    canonical: "https://www.aicareermentor.co.uk/terms",
+    canonical: "https://aicareermentor.co.uk/terms",
   },
   openGraph: {
     title: "Terms and Responsible Use | AI Career Mentor",
     description:
       "Plain-English terms and responsible-use guidance for AI Career Mentor users.",
-    url: "https://www.aicareermentor.co.uk/terms",
+    url: "https://aicareermentor.co.uk/terms",
     siteName: "AI Career Mentor",
     images: [
       {
