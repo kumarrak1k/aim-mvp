@@ -96,7 +96,7 @@ export default async function CandidatePricingPage() {
           Plans are built around how seriously you&rsquo;re preparing — from
           first-time practice to full assessment centre prep.
         </p>
-        <p className="mx-auto mt-6 inline-flex items-center gap-2 rounded-full border border-purple-400/25 bg-purple-400/[0.07] px-4 py-2 text-sm font-bold text-purple-100">
+        <p className="mx-auto mt-6 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-2.5 text-sm font-black text-white shadow-lg shadow-purple-900/40">
           <span aria-hidden>✨</span>
           Every new account starts with a 7-day full-access trial — no card
         </p>

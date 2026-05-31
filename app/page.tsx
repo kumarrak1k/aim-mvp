@@ -156,7 +156,7 @@ export default function HomePage() {
         <section className="mb-10 text-center sm:mb-14 lg:mb-16">
           <Link
             href="/for-candidates/sign-up"
-            className="mx-auto mb-6 inline-flex items-center gap-2 rounded-full border border-purple-400/30 bg-purple-400/[0.09] px-4 py-2 text-[12px] font-black uppercase tracking-[0.14em] text-purple-100 transition hover:bg-purple-400/[0.16]"
+            className="mx-auto mb-6 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-2.5 text-[12px] font-black uppercase tracking-[0.14em] text-white shadow-lg shadow-purple-900/40 transition hover:scale-[1.03]"
           >
             <span className="text-sm" aria-hidden>✨</span>
             7-day full-access trial · no card

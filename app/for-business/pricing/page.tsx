@@ -81,7 +81,7 @@ export default async function BusinessPricingPage() {
           Per-seat plans for small teams, custom pricing for enterprise.
           Subscribe monthly or save up to 33% annually.
         </p>
-        <p className="mx-auto mt-6 inline-flex items-center gap-2 rounded-full border border-fuchsia-400/25 bg-fuchsia-400/[0.07] px-4 py-2 text-sm font-bold text-fuchsia-100">
+        <p className="mx-auto mt-6 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 px-5 py-2.5 text-sm font-black text-white shadow-lg shadow-fuchsia-900/40">
           <span aria-hidden>✨</span>
           Try the Team plan free for 14 days — no card, 10 candidate invites
         </p>
