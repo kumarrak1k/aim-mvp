@@ -14,6 +14,9 @@ export default function NotificationSettingsPage() {
   const [saving, setSaving] = useState(false);
   const [savedMsg, setSavedMsg] = useState("");
   const [error, setError] = useState("");
+  const [deleteConfirm, setDeleteConfirm] = useState("");
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
 
   useEffect(() => {
     fetch("/api/email-preferences")
@@ -43,6 +46,28 @@ export default function NotificationSettingsPage() {
       setConsent(!next); // revert
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function deleteAccount() {
+    setDeleting(true);
+    setDeleteError("");
+    try {
+      const res = await fetch("/api/account/delete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ confirm: "DELETE" }),
+      });
+      if (res.ok) {
+        window.location.href = "/?deleted=1";
+        return;
+      }
+      const data = (await res.json().catch(() => ({}))) as { error?: string };
+      setDeleteError(data.error ?? "Couldn't delete your account.");
+      setDeleting(false);
+    } catch {
+      setDeleteError("Couldn't delete your account. Please try again.");
+      setDeleting(false);
     }
   }
 
@@ -116,6 +141,40 @@ export default function NotificationSettingsPage() {
             {savedMsg && <span className="font-semibold text-emerald-300">{savedMsg}</span>}
             {error && <span className="font-semibold text-amber-300">{error}</span>}
           </div>
+        </div>
+
+        {/* Danger zone — account deletion (GDPR right to erasure) */}
+        <div className="mt-8 rounded-[1.5rem] border border-red-500/25 bg-red-500/[0.04] p-6">
+          <p className="text-[11px] font-black uppercase tracking-[0.2em] text-red-300">
+            Danger zone
+          </p>
+          <h2 className="mt-2 text-lg font-black">Delete your account</h2>
+          <p className="mt-1 text-sm leading-6 text-gray-400">
+            Permanently deletes your account and all personal data — profile, saved
+            practice sessions, career docs and email preferences. Assessment results
+            you completed for an employer are retained by that employer. This cannot
+            be undone.
+          </p>
+          <label className="mt-4 block text-xs font-black uppercase tracking-wider text-gray-400">
+            Type DELETE to confirm
+          </label>
+          <input
+            type="text"
+            value={deleteConfirm}
+            onChange={(e) => setDeleteConfirm(e.target.value)}
+            placeholder="DELETE"
+            className="mt-2 w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm font-semibold text-white placeholder:text-gray-600 focus:border-red-400/40 focus:outline-none"
+          />
+          <button
+            onClick={deleteAccount}
+            disabled={deleteConfirm !== "DELETE" || deleting}
+            className="mt-4 rounded-full bg-red-500/90 px-5 py-2.5 text-sm font-black text-white transition hover:bg-red-500 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {deleting ? "Deleting…" : "Permanently delete my account"}
+          </button>
+          {deleteError && (
+            <p className="mt-3 text-sm font-semibold text-amber-300">{deleteError}</p>
+          )}
         </div>
       </div>
     </main>
