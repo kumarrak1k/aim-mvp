@@ -241,6 +241,15 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
           );
         })}
       </div>
+
+      {/* Auto-renewal disclosure — required for recurring UK/EU subscriptions */}
+      <p className="mx-auto mt-8 max-w-2xl text-center text-xs leading-5 text-gray-500">
+        Paid plans are recurring subscriptions that renew automatically
+        (monthly or annually) at the price shown until you cancel. You can
+        cancel any time from your account — you keep access until the end of the
+        period you&rsquo;ve paid for. The 7-day free trial requires no card and
+        never auto-charges.
+      </p>
     </>
   );
 }

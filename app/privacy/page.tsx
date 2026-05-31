@@ -18,7 +18,7 @@ const dataWeCollect = [
   },
   {
     title: "Microphone input",
-    text: "When you use voice mode, your speech is transcribed using your browser's built-in speech recognition — AI Career Mentor receives only the resulting text transcript, not the audio file. The browser vendor that processes the audio depends on which browser you use: Chrome and Chromium-based browsers use Google; Edge uses Microsoft; Safari uses Apple. Firefox does not support voice mode. Voice mode is entirely optional — typed answers receive identical feedback.",
+    text: "When you use voice mode, live transcription uses your browser's built-in speech recognition (Chrome/Chromium use Google, Edge uses Microsoft, Safari uses Apple; Firefox is unsupported). Separately, for filler-word and voice-delivery analysis, a short audio clip is sent to OpenAI's Whisper API, transcribed, and then discarded — it is not stored on our servers. Voice mode is entirely optional; typed answers receive identical feedback and send no audio anywhere.",
   },
   {
     title: "Camera input",
@@ -93,8 +93,8 @@ const commitments = [
   "We do not use your interview answers or CV to make hiring decisions.",
   "We do not share your data with employers.",
   "Raw uploaded files are not stored — only extracted text you choose to save.",
-  "Voice recordings and camera video stay in your browser and are never uploaded.",
-  "Camera analysis is done locally in your browser — no video leaves your device.",
+  "Camera video stays in your browser and is never uploaded — analysis runs locally.",
+  "Voice audio for delivery analysis is sent to OpenAI Whisper, transcribed, then discarded — never stored on our servers.",
   "Error monitoring uses PII scrubbing to keep interview content out of logs.",
   "You control deletion of all your practice data from your profile.",
 ];

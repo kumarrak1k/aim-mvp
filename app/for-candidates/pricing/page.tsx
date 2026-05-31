@@ -69,7 +69,7 @@ const faqs = [
   {
     question: "Is my data deleted when I cancel?",
     answer:
-      "Your data is retained for 30 days after cancellation to allow reactivation. After 30 days, your profile and sessions are permanently deleted. You can also delete everything manually from the profile page at any time.",
+      "You stay in control of your data. You can permanently delete your saved practice sessions and profile at any time from your profile page, or email privacy@aicareermentor.co.uk to request full deletion. If you cancel a paid plan you move to the Free plan and keep access to your saved data unless you delete it.",
   },
 ];
 

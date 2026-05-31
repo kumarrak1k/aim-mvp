@@ -170,7 +170,7 @@ function renderHtml({
             If you weren&rsquo;t expecting it, you can safely ignore this email.
           </p>
           <p style="margin:0;font-size:12px;line-height:1.6;color:#7c6a99;">
-            &copy; ${new Date().getFullYear()} AI Career Mentor Ltd
+            &copy; ${new Date().getFullYear()} AI Career Mentor &middot; England &amp; Wales
           </p>
         </td></tr>
       </table>
@@ -689,7 +689,7 @@ function renderAdminWelcomeHtml({ to, firstName, signInUrl }: SendAdminWelcomePa
           <p style="margin:0;font-size:12px;line-height:1.7;color:#7c6a99;">
             This link works once and expires in 7 days. If you weren&rsquo;t
             expecting this email, please ignore it &mdash; no action is needed.<br/>
-            &copy; ${year} AI Career Mentor Ltd
+            &copy; ${year} AI Career Mentor &middot; England &amp; Wales
           </p>
         </td></tr>
       </table>

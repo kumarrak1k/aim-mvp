@@ -35,7 +35,7 @@ const subprocessors = [
   {
     name: "Neon",
     purpose: "PostgreSQL database (candidate profiles, sessions)",
-    location: "EU (AWS eu-west-1)",
+    location: "UK (AWS eu-west-2, London)",
     link: "https://neon.tech/security",
   },
   {
@@ -71,7 +71,7 @@ const controls = [
   },
   {
     area: "Voice/audio",
-    detail: "Voice transcripts are generated in-browser via the Web Speech API and sent for AI analysis only. Raw audio is never stored or transmitted.",
+    detail: "Live transcription uses your browser's built-in speech recognition. For filler-word and delivery analysis a short audio clip is sent to OpenAI's Whisper API, transcribed, and then discarded — it is not stored on our servers. Voice mode is optional.",
   },
   {
     area: "Access controls *",

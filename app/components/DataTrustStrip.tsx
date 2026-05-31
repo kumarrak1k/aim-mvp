@@ -10,8 +10,7 @@ import { Fragment } from "react";
  *   footer  — subtle badge row for the site footer.
  *
  * Copy is factually accurate per vendor policies:
- *   Anthropic (Claude API) — does not train on API inputs/outputs by default.
- *   OpenAI (Whisper API)   — does not train on API inputs/outputs by default.
+ *   OpenAI (API + Whisper) — does not train on API inputs/outputs by default.
  *   Neon / AWS eu-west-2   — data stored in London, UK.
  *   No vendor sells user data to third parties.
  */
