@@ -81,6 +81,17 @@ model TrialGrant {
 }
 
 /**
+ * Email addresses to never send to again — populated by the Resend webhook on
+ * hard bounces and spam complaints. Protects sender reputation.
+ */
+model SuppressedEmail {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  reason    String // "bounced" | "complained"
+  createdAt DateTime @default(now())
+}
+
+/**
  * Idempotency ledger for Stripe webhooks. Stripe guarantees at-least-once
  * delivery and retries on any non-2xx, so every handler must dedupe on the
  * event id before processing.

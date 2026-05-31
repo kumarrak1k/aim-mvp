@@ -6,6 +6,7 @@ import {
   type NurtureType,
 } from "@/app/lib/email";
 import { getOrCreateEmailPreference } from "@/app/lib/emailPreferences";
+import { isEmailSuppressed } from "@/app/lib/emailSuppression";
 import { getCandidatePlan } from "@/app/lib/candidatePlan";
 
 export const runtime = "nodejs";
@@ -42,6 +43,16 @@ export async function GET(req: NextRequest) {
         where: { id: job.id },
         data: { attempts: { increment: 1 } },
       });
+
+      // Never send to a hard-bounced / complained address (sender reputation).
+      if (await isEmailSuppressed(job.email)) {
+        await prisma.emailJob.update({
+          where: { id: job.id },
+          data: { status: "skipped", error: "suppressed (bounce/complaint)", sentAt: new Date() },
+        });
+        skipped++;
+        continue;
+      }
 
       // Trial emails are state-sensitive: never tell a converted/paid user their
       // trial ended, and don't nudge someone who already upgraded.
