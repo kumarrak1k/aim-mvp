@@ -11,12 +11,7 @@
 
 ## 0. Pre-flight (do these first, can be done now)
 
-- [ ] **Neon `DATABASE_URL` pooler tuning (Vercel → Production).** Adds `pgbouncer=true&connection_limit=1` so Prisma is PgBouncer-safe under load (prevents "prepared statement already exists" 500s — the #1 scaling risk). **⚠️ Do NOT hand-edit the connection string** — one mistyped character = a database outage (learned the hard way). Use Neon's preset instead:
-      1. Neon Console → **Connect** → choose **Prisma** + **Pooled connection**. Neon outputs a `DATABASE_URL` that already contains `pgbouncer=true` and the **correct password** — copy it whole, no editing.
-      2. If it doesn't already include `connection_limit`, append **`&connection_limit=1`** to the very end (the only safe edit).
-      3. Vercel → replace `DATABASE_URL` with that value → **Redeploy**.
-      4. **Verify immediately:** open `https://www.aicareermentor.co.uk/api/health` → must show `"database":"up"`. If it 503s, **roll back instantly**: paste your known-good string from the local `.env` and redeploy.
-      Leave `DIRECT_URL` (non-pooler host) unchanged. *(Optional before launch — only matters under real concurrent load.)*
+- [x] **Neon `DATABASE_URL` — already correct, no change needed.** Neon's connection **pooler natively supports prepared statements**, so the pooled (`-pooler`) host is scale-safe **without** `pgbouncer=true`. Neon's own Prisma preset (Console → Connect → Prisma + Pooled) uses `?sslmode=require&channel_binding=require` and omits `pgbouncer` — which is exactly what's in production now. The earlier "add pgbouncer" idea was generic PgBouncer advice that does **not** apply to Neon; adding it would only risk an outage. **Leave `DATABASE_URL` as Neon's pooled preset.** (If you ever migrate off Neon to raw PgBouncer, *then* you'd need `pgbouncer=true&connection_limit=1` — and only via Neon-style presets, never by hand-editing the password area.)
 - [ ] **`CRON_SECRET`** set in Vercel (any long random string). The nurture cron fails closed without it.
 - [ ] **Cron frequency.** `vercel.json` runs `/api/cron/nurture` once daily (`0 9 * * *`) — Hobby-compatible. For faster trial/nurture emails, either upgrade to Vercel Pro and change it to `*/10 * * * *`, **or** point an external scheduler (e.g. cron-job.org) at `https://www.aicareermentor.co.uk/api/cron/nurture` every 10 min with header `Authorization: Bearer <CRON_SECRET>`.
 - [ ] **Clerk:** confirm Production uses **live** Clerk keys (`pk_live_`/`sk_live_`), and the JWT session token maps `metadata = {{user.private_metadata}}` (needed so `/practice` SSR sees plan/trial fields).

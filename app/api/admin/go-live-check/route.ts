@@ -75,15 +75,21 @@ export async function GET() {
   add("NEXT_PUBLIC_PAYMENTS_ENABLED", process.env.NEXT_PUBLIC_PAYMENTS_ENABLED === "true" ? "ok" : "warn", process.env.NEXT_PUBLIC_PAYMENTS_ENABLED === "true" ? "true" : "not 'true' — upgrade/subscribe buttons hidden");
   add("CRON_SECRET", present("CRON_SECRET") ? "ok" : "fail", present("CRON_SECRET") ? "set" : "missing — nurture cron fails closed");
 
-  // ── DB pooler params (serverless scale) ───────────────────────────────────
+  // ── DB connection (serverless scale) ──────────────────────────────────────
+  // Neon's connection pooler natively supports prepared statements, so the
+  // pooled (-pooler) host is scale-safe WITHOUT pgbouncer=true — Neon's own
+  // Prisma preset omits it. Just confirm we're on the pooled host.
   const db = process.env.DATABASE_URL ?? "";
+  const isNeonPooler = db.includes("-pooler.");
   const hasPgbouncer = db.includes("pgbouncer=true");
-  const hasConnLimit = db.includes("connection_limit=");
-  const hasChannelBinding = db.includes("channel_binding");
   add(
-    "DATABASE_URL pooler params",
-    hasPgbouncer && hasConnLimit && !hasChannelBinding ? "ok" : "warn",
-    `pgbouncer=${hasPgbouncer}, connection_limit=${hasConnLimit}, channel_binding(present on pooled = bad)=${hasChannelBinding}`
+    "DATABASE_URL connection",
+    isNeonPooler || hasPgbouncer ? "ok" : "warn",
+    isNeonPooler
+      ? "Neon pooled host (prepared statements supported natively — pgbouncer not required)"
+      : hasPgbouncer
+      ? "pgbouncer=true set"
+      : "not on a Neon pooler host and no pgbouncer=true — check the connection string"
   );
 
   // ── Price IDs — present AND resolvable in the current Stripe mode ──────────
