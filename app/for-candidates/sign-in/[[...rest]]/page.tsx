@@ -53,6 +53,9 @@ export default function CandidateSignInPage() {
           </div>
         </header>
 
+        {/* Resource links — visible nav strip, matches the marketing pages */}
+        <ResourceLinksRow className="mb-2 justify-center border-b border-white/[0.06] pb-3" />
+
         {/* Centring wrapper — pushes form to vertical centre of remaining space */}
         <div className="flex flex-1 flex-col items-center justify-center py-6">
         <section className="w-full max-w-md">
@@ -120,7 +123,6 @@ export default function CandidateSignInPage() {
         </div>
 
         <footer className="mt-auto border-t border-white/[0.06] pt-4 text-center text-xs text-gray-600">
-          <ResourceLinksRow className="mb-3 justify-center" />
           © {new Date().getFullYear()} AI Career Mentor ·{" "}
           <Link href="/privacy" className="hover:text-gray-400">Privacy</Link> ·{" "}
           <Link href="/terms" className="hover:text-gray-400">Terms</Link> ·{" "}
