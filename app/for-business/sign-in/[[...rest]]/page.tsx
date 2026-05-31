@@ -4,6 +4,7 @@ import Link from "next/link";
 import { SignIn } from "@clerk/nextjs";
 import { SiteLogo } from "@/app/components/brand/SiteLogo";
 import { DataTrustStrip } from "@/app/components/DataTrustStrip";
+import { ResourceLinksRow } from "@/app/components/marketing/ResourceLinksRow";
 
 /**
  * Dedicated business / hiring-team sign-in page.
@@ -113,6 +114,7 @@ export default function BusinessSignInPage() {
         </div>
 
         <footer className="mt-auto border-t border-white/[0.06] pt-4 text-center text-xs text-gray-600">
+          <ResourceLinksRow className="mb-3 justify-center" />
           © {new Date().getFullYear()} AI Career Mentor ·{" "}
           <Link href="/privacy" className="hover:text-gray-400">Privacy</Link> ·{" "}
           <Link href="/terms" className="hover:text-gray-400">Terms</Link> ·{" "}

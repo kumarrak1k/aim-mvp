@@ -6,6 +6,7 @@ import { SiteLogo } from "@/app/components/brand/SiteLogo";
 import { DemoVideo } from "@/app/components/marketing/DemoVideo";
 import { SiteFooter } from "@/app/components/marketing/SiteFooter";
 import { DataTrustStrip } from "@/app/components/DataTrustStrip";
+import { ResourceLinksRow } from "@/app/components/marketing/ResourceLinksRow";
 
 export const metadata: Metadata = createPageMetadata({
   path: "/",
@@ -151,6 +152,11 @@ export default function HomePage() {
             </Link>
           </div>
         </header>
+
+        {/* Mobile resource links — desktop shows these in the centred nav above */}
+        <div className="mb-8 -mt-4 lg:hidden">
+          <ResourceLinksRow scroll className="px-0.5" />
+        </div>
 
         {/* Hero */}
         <section className="mb-10 text-center sm:mb-14 lg:mb-16">

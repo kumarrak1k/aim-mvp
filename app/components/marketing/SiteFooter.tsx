@@ -44,9 +44,10 @@ export function SiteFooter() {
               Free resources
             </p>
             <div className="space-y-3 text-sm text-gray-400">
+              <Link href="/about" className="block transition hover:text-white">About us</Link>
               <Link href="/blog" className="block transition hover:text-white">Interview guides</Link>
               <Link href="/questions" className="block transition hover:text-white">Question library</Link>
-              <Link href="/tools/star-scorer" className="block transition hover:text-white">STAR scorer</Link>
+              <Link href="/tools/star-scorer" className="block transition hover:text-white">Free STAR scorer</Link>
               <Link href="/for-business" className="block transition hover:text-white">For hiring teams</Link>
               <Link href="/universities" className="block transition hover:text-white">Universities</Link>
             </div>
