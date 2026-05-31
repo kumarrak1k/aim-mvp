@@ -12,12 +12,12 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
+  // Fail CLOSED: a missing CRON_SECRET must not leave this email-sending
+  // endpoint publicly triggerable. Vercel Cron injects this Authorization
+  // header automatically when CRON_SECRET is set in the project env.
   const secret = process.env.CRON_SECRET;
-  if (secret) {
-    const auth = req.headers.get("authorization");
-    if (auth !== `Bearer ${secret}`) {
-      return NextResponse.json({ error: "Unauthorised" }, { status: 401 });
-    }
+  if (!secret || req.headers.get("authorization") !== `Bearer ${secret}`) {
+    return NextResponse.json({ error: "Unauthorised" }, { status: 401 });
   }
 
   const due = await prisma.emailJob.findMany({
@@ -26,7 +26,7 @@ export async function GET(req: NextRequest) {
       scheduledAt: { lte: new Date() },
       attempts: { lt: 3 },
     },
-    take: 50,
+    take: 200,
     orderBy: { scheduledAt: "asc" },
   });
 
@@ -36,19 +36,24 @@ export async function GET(req: NextRequest) {
 
   for (const job of due) {
     const type = job.type as NurtureType;
+    // Per-job try/catch so one bad job can't abort the whole batch.
+    try {
+      await prisma.emailJob.update({
+        where: { id: job.id },
+        data: { attempts: { increment: 1 } },
+      });
 
-    await prisma.emailJob.update({
-      where: { id: job.id },
-      data: { attempts: { increment: 1 } },
-    });
-
-    // Trial emails are state-sensitive: never tell a converted/paid user their
-    // trial ended, and don't nudge someone who already upgraded.
-    if (type === "trial_midway" || type === "trial_ended") {
-      try {
-        const plan = await getCandidatePlan(job.userId);
-        const stillRelevant =
-          type === "trial_midway" ? plan.isTrial : !plan.isPaid && !plan.isTrial;
+      // Trial emails are state-sensitive: never tell a converted/paid user their
+      // trial ended, and don't nudge someone who already upgraded.
+      if (type === "trial_midway" || type === "trial_ended") {
+        let stillRelevant = false;
+        try {
+          const plan = await getCandidatePlan(job.userId);
+          stillRelevant =
+            type === "trial_midway" ? plan.isTrial : !plan.isPaid && !plan.isTrial;
+        } catch {
+          stillRelevant = false; // can't resolve → skip to stay safe
+        }
         if (!stillRelevant) {
           await prisma.emailJob.update({
             where: { id: job.id },
@@ -57,53 +62,53 @@ export async function GET(req: NextRequest) {
           skipped++;
           continue;
         }
+      }
+
+      // Resolve consent + unsubscribe token. Marketing is suppressed for opted-out
+      // users; transactional trial-status notices always send.
+      let unsubscribeToken: string | undefined;
+      let prefResolved = true;
+      try {
+        const pref = await getOrCreateEmailPreference(job.userId, job.email);
+        unsubscribeToken = pref.unsubscribeToken;
+        if (!TRANSACTIONAL_NURTURE_TYPES.has(type) && pref.marketingConsent === false) {
+          await prisma.emailJob.update({
+            where: { id: job.id },
+            data: { status: "skipped", error: "marketing opt-out", sentAt: new Date() },
+          });
+          skipped++;
+          continue;
+        }
       } catch {
-        // If we can't resolve plan state, skip trial emails to stay safe.
-        await prisma.emailJob.update({
-          where: { id: job.id },
-          data: { status: "skipped", error: "plan lookup failed", sentAt: new Date() },
-        });
+        prefResolved = false;
+      }
+
+      // PECR: never send MARKETING without a verified consent + one-click
+      // unsubscribe token. On lookup failure, only transactional notices proceed;
+      // marketing is left pending to retry next run.
+      if (!prefResolved && !TRANSACTIONAL_NURTURE_TYPES.has(type)) {
         skipped++;
         continue;
       }
-    }
 
-    // Resolve consent + unsubscribe token. Marketing emails are suppressed for
-    // users who've opted out; transactional trial-status notices always send.
-    let unsubscribeToken: string | undefined;
-    try {
-      const pref = await getOrCreateEmailPreference(job.userId, job.email);
-      unsubscribeToken = pref.unsubscribeToken;
-      if (!TRANSACTIONAL_NURTURE_TYPES.has(type) && pref.marketingConsent === false) {
+      const result = await sendNurtureEmail(job.email, type, { unsubscribeToken });
+
+      if (result.ok) {
         await prisma.emailJob.update({
           where: { id: job.id },
-          data: { status: "skipped", error: "marketing opt-out", sentAt: new Date() },
+          data: { status: "sent", sentAt: new Date(), messageId: result.id, error: null },
         });
-        skipped++;
-        continue;
+        sent++;
+      } else {
+        const isFinal = job.attempts + 1 >= 3;
+        await prisma.emailJob.update({
+          where: { id: job.id },
+          data: { status: isFinal ? "failed" : "pending", error: result.error },
+        });
+        failed++;
       }
-    } catch {
-      // Preference lookup failed — fall through and still send (legacy behaviour),
-      // just without a one-click unsubscribe token.
-    }
-
-    const result = await sendNurtureEmail(job.email, type, { unsubscribeToken });
-
-    if (result.ok) {
-      await prisma.emailJob.update({
-        where: { id: job.id },
-        data: { status: "sent", sentAt: new Date(), messageId: result.id, error: null },
-      });
-      sent++;
-    } else {
-      const isFinal = job.attempts + 1 >= 3;
-      await prisma.emailJob.update({
-        where: { id: job.id },
-        data: {
-          status: isFinal ? "failed" : "pending",
-          error: result.error,
-        },
-      });
+    } catch (err) {
+      console.error("NURTURE CRON: job failed", job.id, err);
       failed++;
     }
   }

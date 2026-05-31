@@ -1,4 +1,9 @@
 import { NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs/server";
+import { checkRateLimit } from "@/app/lib/rateLimit";
+
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 type VideoMetrics = {
   faceDetectedRatio: number;
@@ -23,6 +28,18 @@ function round1(value: number) {
 
 export async function POST(req: Request) {
   try {
+    const { userId } = await auth();
+    if (!userId) {
+      return NextResponse.json({ error: "Authentication required." }, { status: 401 });
+    }
+    const rl = await checkRateLimit(userId, "video-analysis", 60, 60);
+    if (!rl.allowed) {
+      return NextResponse.json(
+        { error: `Rate limit reached. Try again in ${rl.retryAfterSeconds}s.` },
+        { status: 429 }
+      );
+    }
+
     const { metrics } = (await req.json()) as {
       metrics?: Partial<VideoMetrics>;
     };

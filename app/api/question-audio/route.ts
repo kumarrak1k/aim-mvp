@@ -1,6 +1,10 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { checkRateLimit } from "@/app/lib/rateLimit";
+import {
+  resolveCandidatePlanFromClaims,
+  type CandidateBillingMeta,
+} from "@/app/lib/candidatePlan";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -158,11 +162,22 @@ function streamingAudioResponse(ttsResponse: Response) {
 
 export async function GET(request: NextRequest) {
   try {
-    const { userId } = await auth();
+    const { userId, sessionClaims } = await auth();
     if (!userId) {
       return NextResponse.json(
         { error: "You must be signed in to use question audio." },
         { status: 401 }
+      );
+    }
+
+    // Spoken questions (TTS) are a paid feature — gate from JWT claims.
+    const plan = resolveCandidatePlanFromClaims(
+      sessionClaims as { metadata?: CandidateBillingMeta } | null
+    );
+    if (!plan.isUnlimited) {
+      return NextResponse.json(
+        { error: "Spoken questions are available on Plus, Professional, or your free trial." },
+        { status: 403 }
       );
     }
 
@@ -217,11 +232,22 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const { userId } = await auth();
+    const { userId, sessionClaims } = await auth();
     if (!userId) {
       return NextResponse.json(
         { error: "You must be signed in to use question audio." },
         { status: 401 }
+      );
+    }
+
+    // Spoken questions (TTS) are a paid feature — gate from JWT claims.
+    const plan = resolveCandidatePlanFromClaims(
+      sessionClaims as { metadata?: CandidateBillingMeta } | null
+    );
+    if (!plan.isUnlimited) {
+      return NextResponse.json(
+        { error: "Spoken questions are available on Plus, Professional, or your free trial." },
+        { status: 403 }
       );
     }
 

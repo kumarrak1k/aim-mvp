@@ -456,6 +456,7 @@ ${isTypedMode
       data = await callOpenAIChat({
         model: "gpt-4o-mini",
         temperature: 0.2,
+        max_tokens: 1500,
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },

@@ -2,6 +2,10 @@ import { auth } from "@clerk/nextjs/server";
 import OpenAI from "openai";
 import { NextRequest, NextResponse } from "next/server";
 import { checkRateLimit } from "@/app/lib/rateLimit";
+import {
+  resolveCandidatePlanFromClaims,
+  type CandidateBillingMeta,
+} from "@/app/lib/candidatePlan";
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
@@ -47,7 +51,7 @@ export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
   try {
-    const { userId } = await auth();
+    const { userId, sessionClaims } = await auth();
     if (!userId) {
       return NextResponse.json(
         { error: "You must be signed in." },
@@ -55,8 +59,22 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Shared rate-limit pool with voice-analysis — 30 calls per minute.
-    const rateLimitResult = await checkRateLimit(userId, "voice-analysis", 30, 60);
+    // Voice transcription (Whisper) is a paid feature — Free users are
+    // keyboard-only. Gate from JWT claims (no extra Clerk API call).
+    const plan = resolveCandidatePlanFromClaims(
+      sessionClaims as { metadata?: CandidateBillingMeta } | null
+    );
+    if (!plan.isUnlimited) {
+      return NextResponse.json(
+        { error: "Voice practice is available on Plus, Professional, or your free trial." },
+        { status: 403 }
+      );
+    }
+
+    // Whisper is billed per audio-minute — fail closed if the limiter is down.
+    const rateLimitResult = await checkRateLimit(userId, "whisper-filler", 30, 60, {
+      failClosed: true,
+    });
     if (!rateLimitResult.allowed) {
       return NextResponse.json(
         { error: `Too many requests. Please wait ${rateLimitResult.retryAfterSeconds} seconds.` },

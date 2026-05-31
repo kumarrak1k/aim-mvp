@@ -102,7 +102,8 @@ export async function checkRateLimit(
   userId: string,
   endpoint: string,
   maxRequests: number,
-  windowSeconds: number
+  windowSeconds: number,
+  opts?: { failClosed?: boolean }
 ): Promise<RateLimitResult> {
   const key = `${userId}:${endpoint}`;
   const limiter = getRedisLimiter(maxRequests, windowSeconds);
@@ -119,8 +120,30 @@ export async function checkRateLimit(
       retryAfterSeconds: Math.max(1, Math.ceil((reset - Date.now()) / 1000)),
     };
   } catch (err) {
-    // If Redis is unreachable, fail open — don't block all users.
     console.error("RATE LIMIT REDIS ERROR:", err);
+    // For expensive (cost-bearing) endpoints, fail CLOSED so an Upstash outage
+    // can't become an unbounded OpenAI-spend window. Cheap/UX limits fail open.
+    if (opts?.failClosed) {
+      return { allowed: false, retryAfterSeconds: 30 };
+    }
     return { allowed: true };
   }
+}
+
+/**
+ * Best-effort trusted client IP for per-IP limits on unauthenticated routes.
+ * On Vercel, `x-vercel-forwarded-for` / `x-real-ip` are platform-injected and
+ * client copies are stripped, so they can't be spoofed — unlike the left-most
+ * value of `x-forwarded-for`. Falls back to XFF only for local dev.
+ */
+export function getClientIp(req: Request): string {
+  const trusted =
+    req.headers.get("x-vercel-forwarded-for") ?? req.headers.get("x-real-ip");
+  if (trusted) return trusted.split(",")[0]?.trim() || "unknown";
+  const xff = req.headers.get("x-forwarded-for");
+  if (xff) {
+    const parts = xff.split(",").map((s) => s.trim()).filter(Boolean);
+    if (parts.length) return parts[0];
+  }
+  return "unknown";
 }

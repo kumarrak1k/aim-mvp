@@ -1,4 +1,9 @@
 import OpenAI from "openai";
+import { auth } from "@clerk/nextjs/server";
+import { checkRateLimit } from "@/app/lib/rateLimit";
+
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -360,6 +365,20 @@ const buildFallbackSummary = (
 
 export async function POST(req: Request) {
   try {
+    // AuthN + throttle — this endpoint drives a gpt-4o-mini completion and must
+    // never be reachable anonymously.
+    const { userId } = await auth();
+    if (!userId) {
+      return Response.json({ error: "Authentication required." }, { status: 401 });
+    }
+    const rl = await checkRateLimit(userId, "summary", 20, 3600);
+    if (!rl.allowed) {
+      return Response.json(
+        { error: `Rate limit reached. Try again in ${rl.retryAfterSeconds}s.` },
+        { status: 429 }
+      );
+    }
+
     const { role, results, practiceMode, assessmentMode, templateContext } = await req.json();
     const isAssessment = Boolean(assessmentMode);
     const isTypedMode = practiceMode === "typed";
@@ -401,6 +420,14 @@ export async function POST(req: Request) {
         {
           error: "No interview results were provided.",
         },
+        { status: 400 }
+      );
+    }
+
+    // Bound the payload so a crafted request can't run up token cost.
+    if (safeResults.length > 25) {
+      return Response.json(
+        { error: "Too many results in one request." },
         { status: 400 }
       );
     }
@@ -467,6 +494,7 @@ Video analysis ${index + 1}:
     const response = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       temperature: 0.35,
+      max_tokens: 2500,
       messages: [
         {
           role: "system",

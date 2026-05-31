@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { callOpenAIChat } from "@/app/lib/openai-client";
-import { checkRateLimit } from "@/app/lib/rateLimit";
+import { checkRateLimit, getClientIp } from "@/app/lib/rateLimit";
 import { moderateText } from "@/app/lib/moderation";
 
 export const runtime = "nodejs";
@@ -21,9 +21,10 @@ type ScorerResult = {
 };
 
 export async function POST(req: NextRequest) {
-  const ip =
-    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
-  const limit = await checkRateLimit(ip, "star-scorer", 5, 3600);
+  // Trusted client IP (spoof-resistant on Vercel); fail closed so an Upstash
+  // outage can't open this public, no-auth OpenAI endpoint to unlimited abuse.
+  const ip = getClientIp(req);
+  const limit = await checkRateLimit(ip, "star-scorer", 5, 3600, { failClosed: true });
   if (!limit.allowed) {
     return NextResponse.json(
       {

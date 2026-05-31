@@ -33,6 +33,30 @@ export async function POST(request: NextRequest) {
     }
 
     const plan = PLAN_CONFIG[planId as keyof typeof PLAN_CONFIG];
+
+    const existing = await prisma.company.findUnique({
+      where: { id: admin.companyId },
+    });
+    if (!existing) {
+      return NextResponse.json({ error: "Company not found." }, { status: 404 });
+    }
+
+    // A free trial may be started only ONCE per workspace. If one has already
+    // been used (or the workspace is/was on a paid plan), allow switching the
+    // selected plan but never reset the trial clock or the invite counter —
+    // otherwise an admin could re-POST to renew the trial forever.
+    const trialAlreadyUsed =
+      existing.trialStartedAt != null ||
+      ["active", "expired", "cancelled"].includes(existing.planStatus);
+
+    if (trialAlreadyUsed) {
+      const company = await prisma.company.update({
+        where: { id: admin.companyId },
+        data: { planId },
+      });
+      return NextResponse.json({ company, trialStarted: false });
+    }
+
     const now = new Date();
     const trialEndsAt = new Date(now.getTime() + plan.trialDays * 24 * 60 * 60 * 1000);
 
@@ -47,7 +71,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    return NextResponse.json({ company });
+    return NextResponse.json({ company, trialStarted: true });
   } catch (error) {
     console.error("COMPANY PLAN POST ERROR:", error);
     return NextResponse.json({ error: "Failed to start trial." }, { status: 500 });

@@ -80,11 +80,17 @@ export async function POST(req: Request) {
       );
     }
 
+    // Bound input so a giant paste can't run up token cost.
+    if (transcript.length > 8000) {
+      return Response.json({ error: "Transcript is too long." }, { status: 400 });
+    }
+
     const ukTranscript = normaliseTranscriptToUkEnglish(transcript);
 
     const response = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       temperature: 0,
+      max_tokens: 2000,
       messages: [
         {
           role: "system",

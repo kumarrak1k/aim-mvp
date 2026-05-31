@@ -7,6 +7,7 @@ import {
   type AccountType,
 } from "@/app/lib/accountType";
 import { startCandidateTrialIfEligible } from "@/app/lib/candidatePlan";
+import { claimTrialEligibility } from "@/app/lib/trialEligibility";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -77,13 +78,19 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ accountType: "superadmin" });
     }
 
-    // Auto-start the 7-day reverse trial for new candidates. Idempotent —
-    // never grants twice and never to an existing paying user.
+    // Auto-start the 7-day reverse trial for new candidates — but only for a
+    // genuine, not-already-trialed email (blocks disposable + plus-tag farming).
     let trialStarted = false;
     if (result.accountType === "candidate") {
       try {
-        const trial = await startCandidateTrialIfEligible(userId);
-        trialStarted = trial.started;
+        const client = await clerkClient();
+        const user = await client.users.getUser(userId);
+        const email = user.emailAddresses[0]?.emailAddress ?? "";
+        const eligibility = await claimTrialEligibility(userId, email);
+        if (eligibility.eligible) {
+          const trial = await startCandidateTrialIfEligible(userId);
+          trialStarted = trial.started;
+        }
       } catch (err) {
         // Non-fatal: a failed trial grant must not block sign-up completion.
         console.error("TRIAL START ERROR:", err);

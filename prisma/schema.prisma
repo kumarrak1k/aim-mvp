@@ -64,6 +64,20 @@ model EmailPreference {
 }
 
 /**
+ * One row per normalized email that has ever been granted a candidate free
+ * trial. Stops trial-farming via plus-tags / dot tricks / fresh accounts —
+ * the email is normalized then SHA-256 hashed (we never store the address).
+ */
+model TrialGrant {
+  id          String   @id @default(cuid())
+  emailHash   String   @unique
+  clerkUserId String
+  createdAt   DateTime @default(now())
+
+  @@index([clerkUserId])
+}
+
+/**
  * Idempotency ledger for Stripe webhooks. Stripe guarantees at-least-once
  * delivery and retries on any non-2xx, so every handler must dedupe on the
  * event id before processing.

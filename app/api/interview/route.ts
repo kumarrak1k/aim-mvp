@@ -316,6 +316,7 @@ Generate the next best UK English interview question.
       data = await callOpenAIChat({
         model: "gpt-4o-mini",
         temperature: 0.65,
+        max_tokens: 300,
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },

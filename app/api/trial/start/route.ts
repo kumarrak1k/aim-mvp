@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { getAccountType } from "@/app/lib/accountType";
 import { startCandidateTrialIfEligible } from "@/app/lib/candidatePlan";
 import { enqueueTrialEmails } from "@/app/lib/trialEmails";
+import { claimTrialEligibility } from "@/app/lib/trialEligibility";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -34,6 +35,23 @@ export async function POST() {
   }
 
   try {
+    const client = await clerkClient();
+    const user = await client.users.getUser(userId);
+    const email = user.emailAddresses[0]?.emailAddress ?? "";
+
+    // Block disposable / already-trialed emails (anti-farming).
+    const eligibility = await claimTrialEligibility(userId, email);
+    if (!eligibility.eligible) {
+      const message =
+        eligibility.reason === "disposable_email"
+          ? "Please use a non-disposable email address to start a free trial."
+          : "This email has already used a free trial.";
+      return NextResponse.json(
+        { started: false, reason: eligibility.reason, message },
+        { status: 409 }
+      );
+    }
+
     const result = await startCandidateTrialIfEligible(userId);
     if (!result.started) {
       const message =
@@ -51,9 +69,6 @@ export async function POST() {
     // Schedule the trial reminder + expiry emails (idempotent).
     if (result.trialEndsAt) {
       try {
-        const client = await clerkClient();
-        const user = await client.users.getUser(userId);
-        const email = user.emailAddresses[0]?.emailAddress ?? "";
         await enqueueTrialEmails(userId, email, new Date(result.trialEndsAt));
       } catch (err) {
         console.error("ENQUEUE TRIAL EMAILS ERROR:", err);
