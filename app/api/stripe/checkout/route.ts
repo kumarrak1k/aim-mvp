@@ -45,10 +45,12 @@ export async function POST(req: NextRequest) {
   let customerId = meta?.stripeCustomerId;
 
   if (!customerId) {
-    const customer = await stripeClient.customers.create({
-      email,
-      metadata: { clerkUserId: userId },
-    });
+    // Idempotency key keyed to the user prevents duplicate Stripe customers
+    // (and double-billing) if checkout is clicked twice or the request retries.
+    const customer = await stripeClient.customers.create(
+      { email, metadata: { clerkUserId: userId } },
+      { idempotencyKey: `customer_${userId}` }
+    );
     customerId = customer.id;
     await client.users.updateUserMetadata(userId, {
       privateMetadata: { stripeCustomerId: customerId },

@@ -7,6 +7,27 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 /**
+ * Release any active subscription schedule for this subscription. A pending
+ * downgrade leaves a schedule whose phase-2 price would otherwise overwrite a
+ * later upgrade at the cycle boundary — so we release it before mutating.
+ */
+async function releaseActiveSchedule(
+  stripeClient: Stripe,
+  customerId: string,
+  subscriptionId: string
+) {
+  try {
+    const schedules = await stripeClient.subscriptionSchedules.list({ customer: customerId });
+    const active = schedules.data.find(
+      (s) => s.subscription === subscriptionId && s.status === "active"
+    );
+    if (active) await stripeClient.subscriptionSchedules.release(active.id);
+  } catch (err) {
+    console.error("RELEASE SCHEDULE ERROR:", err);
+  }
+}
+
+/**
  * POST /api/subscription/change
  *
  * Handles in-app subscription changes for candidate plans.
@@ -75,6 +96,7 @@ export async function POST(request: NextRequest) {
 
     // ── Undo cancellation ───────────────────────────────────────────────────
     if (action === "undo_cancel") {
+      await releaseActiveSchedule(stripeClient, subscription.customer as string, meta.stripeSubscriptionId);
       await stripeClient.subscriptions.update(meta.stripeSubscriptionId, {
         cancel_at_period_end: false,
       });
@@ -89,9 +111,16 @@ export async function POST(request: NextRequest) {
       }
       const newPriceId = getStripePriceId(targetPlanId as StripePlanId);
 
+      // Release any pending downgrade schedule first, otherwise its phase-2
+      // price would silently revert this upgrade at the next cycle boundary.
+      await releaseActiveSchedule(stripeClient, subscription.customer as string, meta.stripeSubscriptionId);
+
       await stripeClient.subscriptions.update(meta.stripeSubscriptionId, {
         items: [{ id: itemId, price: newPriceId }],
         proration_behavior: "create_prorations",
+        // Keep subscription.metadata.planId current so the reconciling webhook
+        // (which reads it) doesn't overwrite stripePlanId back to the old plan.
+        metadata: { ...subscription.metadata, clerkUserId: userId, planId: targetPlanId },
       });
 
       // Update Clerk metadata immediately so the UI reflects the change

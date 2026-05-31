@@ -58,6 +58,22 @@ async function handleSubscriptionUpsert(subscription: Stripe.Subscription) {
   });
 }
 
+/**
+ * checkout.session.completed fires the instant payment succeeds — before
+ * customer.subscription.created in many cases. Writing the metadata here too
+ * shrinks the window where a brand-new subscriber lands on /practice still
+ * showing the Free tier.
+ */
+async function handleCandidateCheckoutCompleted(
+  session: Stripe.Checkout.Session,
+  stripeClient: Stripe
+) {
+  if (session.metadata?.planType === "corporate" || session.metadata?.companyId) return;
+  if (!session.subscription) return;
+  const sub = await stripeClient.subscriptions.retrieve(session.subscription as string);
+  await handleSubscriptionUpsert(sub);
+}
+
 async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
   if (isCorporateSubscription(subscription)) return;
 
@@ -103,6 +119,12 @@ export async function POST(req: NextRequest) {
 
   try {
     switch (event.type) {
+      case "checkout.session.completed":
+        await handleCandidateCheckoutCompleted(
+          event.data.object as Stripe.Checkout.Session,
+          stripeClient
+        );
+        break;
       case "customer.subscription.created":
       case "customer.subscription.updated":
         await handleSubscriptionUpsert(event.data.object as Stripe.Subscription);

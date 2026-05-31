@@ -71,10 +71,10 @@ export async function POST() {
     // Reuse existing Stripe customer if one was already created for this company
     let customerId = company.stripeCustomerId ?? undefined;
     if (!customerId) {
-      const customer = await stripe.customers.create({
-        name: company.name,
-        metadata: { companyId: company.id },
-      });
+      const customer = await stripe.customers.create(
+        { name: company.name, metadata: { companyId: company.id } },
+        { idempotencyKey: `customer_company_${company.id}` }
+      );
       customerId = customer.id;
       // Persist immediately so we don't create duplicates on retries
       await prisma.company.update({
