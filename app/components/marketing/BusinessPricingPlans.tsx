@@ -29,32 +29,22 @@ export function BusinessPricingPlans({ currency = "GBP" }: { currency?: PricingC
   const team = TEAM[currency];
   const biz = BUSINESS[currency];
 
-  async function handleCheckout(planKey: "team" | "business") {
+  function handleCheckout(planKey: "team" | "business") {
     setLoading(planKey);
+    // Corporate billing belongs to a workspace (seats, invites, branding), so a
+    // company must exist before we can charge. Send buyers through sign-up →
+    // workspace onboarding, where they choose a plan and pay via the
+    // workspace-scoped checkout (which correctly syncs the Company record).
+    // Stash their selection so onboarding can pre-fill it.
     try {
-      const res = await fetch("/api/stripe/corporate-checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan: planKey, billing: annual ? "annual" : "monthly" }),
-      });
-
-      if (res.status === 401) {
-        // Not signed in — send to business sign-up
-        router.push("/for-business/sign-up");
-        return;
-      }
-
-      const data = await res.json() as { url?: string; error?: string };
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        alert(data.error ?? "Something went wrong. Please try again.");
-      }
+      sessionStorage.setItem(
+        "aim_corp_plan",
+        JSON.stringify({ plan: planKey, billing: annual ? "annual" : "monthly" })
+      );
     } catch {
-      alert("Something went wrong. Please try again.");
-    } finally {
-      setLoading(null);
+      /* sessionStorage unavailable — onboarding just won't pre-fill */
     }
+    router.push("/for-business/sign-up");
   }
 
   const plans = [

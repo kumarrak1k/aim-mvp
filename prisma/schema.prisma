@@ -63,6 +63,17 @@ model EmailPreference {
   @@index([clerkUserId])
 }
 
+/**
+ * Idempotency ledger for Stripe webhooks. Stripe guarantees at-least-once
+ * delivery and retries on any non-2xx, so every handler must dedupe on the
+ * event id before processing.
+ */
+model ProcessedStripeEvent {
+  id        String   @id // Stripe event id (evt_...)
+  type      String
+  createdAt DateTime @default(now())
+}
+
 model Company {
   id          String   @id @default(cuid())
   name        String

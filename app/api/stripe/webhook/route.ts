@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { clerkClient } from "@clerk/nextjs/server";
 import { requireStripe } from "@/app/lib/stripe";
+import { recordStripeEvent, subscriptionPeriodEnd } from "@/app/lib/stripeEvents";
 import Stripe from "stripe";
 
 export const runtime = "nodejs";
@@ -28,7 +29,18 @@ async function updateUserSubscription(
   });
 }
 
+/** True if this subscription belongs to a corporate workspace, not a candidate. */
+function isCorporateSubscription(subscription: Stripe.Subscription): boolean {
+  return (
+    subscription.metadata?.planType === "corporate" ||
+    Boolean(subscription.metadata?.companyId)
+  );
+}
+
 async function handleSubscriptionUpsert(subscription: Stripe.Subscription) {
+  // Defensive: corporate subscriptions are handled by /api/webhooks/stripe.
+  if (isCorporateSubscription(subscription)) return;
+
   const clerkUserId = subscription.metadata?.clerkUserId;
   if (!clerkUserId) {
     console.warn("STRIPE WEBHOOK: subscription missing clerkUserId metadata", subscription.id);
@@ -36,16 +48,19 @@ async function handleSubscriptionUpsert(subscription: Stripe.Subscription) {
   }
 
   const item = subscription.items.data[0];
+  const periodEnd = subscriptionPeriodEnd(subscription);
   await updateUserSubscription(clerkUserId, {
     stripeCustomerId: subscription.customer as string,
     stripeSubscriptionId: subscription.id,
     stripePlanId: subscription.metadata?.planId ?? item?.price?.lookup_key ?? null,
     subscriptionStatus: subscription.status,
-    subscriptionCurrentPeriodEnd: (subscription as Stripe.Subscription & { current_period_end: number }).current_period_end,
+    subscriptionCurrentPeriodEnd: periodEnd ?? undefined,
   });
 }
 
 async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
+  if (isCorporateSubscription(subscription)) return;
+
   const clerkUserId = subscription.metadata?.clerkUserId;
   if (!clerkUserId) return;
 
@@ -78,6 +93,12 @@ export async function POST(req: NextRequest) {
   } catch (err) {
     console.error("STRIPE WEBHOOK: signature verification failed", err);
     return NextResponse.json({ error: "Webhook signature invalid." }, { status: 400 });
+  }
+
+  // Idempotency — Stripe retries/replays; process each event id at most once.
+  const { firstTime } = await recordStripeEvent(event.id, event.type);
+  if (!firstTime) {
+    return NextResponse.json({ received: true, duplicate: true });
   }
 
   try {

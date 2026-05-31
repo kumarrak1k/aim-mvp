@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireStripe } from "@/app/lib/stripe";
 import { prisma } from "@/app/lib/prisma";
+import { recordStripeEvent, subscriptionPeriodEnd } from "@/app/lib/stripeEvents";
 import Stripe from "stripe";
 
 export const runtime = "nodejs";
@@ -47,9 +48,7 @@ async function handleSubscriptionUpsert(subscription: Stripe.Subscription) {
       ? "active" // still active, payment failing — let Stripe retry
       : "expired";
 
-  const periodEnd = (
-    subscription as Stripe.Subscription & { current_period_end: number }
-  ).current_period_end;
+  const periodEnd = subscriptionPeriodEnd(subscription);
 
   await prisma.company.update({
     where: { id: companyId },
@@ -99,9 +98,7 @@ async function handleCheckoutCompleted(
       const sub = await stripeClient.subscriptions.retrieve(
         session.subscription as string
       );
-      periodEnd = (
-        sub as unknown as Stripe.Subscription & { current_period_end: number }
-      ).current_period_end;
+      periodEnd = subscriptionPeriodEnd(sub);
     } catch (err) {
       console.error("CORPORATE WEBHOOK: could not retrieve subscription", err);
     }
@@ -154,6 +151,12 @@ export async function POST(req: NextRequest) {
       { error: "Webhook signature invalid." },
       { status: 400 }
     );
+  }
+
+  // Idempotency — Stripe retries/replays; process each event id at most once.
+  const { firstTime } = await recordStripeEvent(event.id, event.type);
+  if (!firstTime) {
+    return NextResponse.json({ received: true, duplicate: true });
   }
 
   try {
