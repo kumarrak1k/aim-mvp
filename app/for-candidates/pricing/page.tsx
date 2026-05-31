@@ -13,7 +13,7 @@ export const metadata: Metadata = createPageMetadata({
   path: "/for-candidates/pricing",
   title: "Candidate Pricing",
   description:
-    "Transparent candidate pricing for AI interview practice and assessment centre coaching. Free to start, then unlock unlimited sessions. Annual plans save up to 28%.",
+    "Transparent candidate pricing for AI interview practice and assessment centre coaching. Every account starts with a 7-day full-access trial — no card required. Annual plans save up to 28%.",
   keywords: [
     "AI interview coach pricing",
     "assessment centre pricing",
@@ -37,9 +37,9 @@ async function detectCurrency(): Promise<PricingCurrency> {
 
 const faqs = [
   {
-    question: "Is there a free trial on paid plans?",
+    question: "Is there a free trial?",
     answer:
-      "Yes — Plus and Professional plans start with a free trial. No credit card required to begin.",
+      "Yes. Every new account starts with a 7-day free trial of full Professional features — unlimited practice, voice and camera coaching, and mock assessment centres — with no credit card required. When the trial ends you move to the Free plan automatically (no charge), and can upgrade any time to keep full access.",
   },
   {
     question: "Can I switch between monthly and annual billing?",
@@ -47,9 +47,9 @@ const faqs = [
       "Yes. You can switch at any time from your account settings. Annual billing is charged upfront and gives you up to 28% off versus monthly.",
   },
   {
-    question: "What happens when I reach my session limit on the free tier?",
+    question: "What happens when my trial ends, or I reach the free limit?",
     answer:
-      "You can continue using the platform but won't be able to start new practice sessions until the next month, or you can upgrade to Plus for unlimited sessions.",
+      "After your 7-day trial you move to the Free plan, which includes 3 keyboard-only practice sessions. Once those are used you can upgrade to Plus for unlimited practice with voice and camera, or Professional to add mock assessment centres.",
   },
   {
     question: "Does the Professional plan include assessment centre practice?",
@@ -95,6 +95,10 @@ export default async function CandidatePricingPage() {
         <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-gray-400 sm:text-lg sm:leading-9">
           Plans are built around how seriously you&rsquo;re preparing — from
           first-time practice to full assessment centre prep.
+        </p>
+        <p className="mx-auto mt-6 inline-flex items-center gap-2 rounded-full border border-purple-400/25 bg-purple-400/[0.07] px-4 py-2 text-sm font-bold text-purple-100">
+          <span aria-hidden>✨</span>
+          Every new account starts with a 7-day full-access trial — no card
         </p>
       </section>
 

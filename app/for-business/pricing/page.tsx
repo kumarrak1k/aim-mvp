@@ -10,7 +10,7 @@ export const metadata: Metadata = createPageMetadata({
   path: "/for-business/pricing",
   title: "Hiring Team Pricing — AI Career Mentor for Business",
   description:
-    "Pricing for the AI assessment platform. Per-seat plans for small teams, custom enterprise pricing for high-volume hiring. Annual plans save up to 33%.",
+    "Pricing for the AI assessment platform. Per-seat plans for small teams, custom enterprise pricing for high-volume hiring. Start the Team plan with a 14-day free trial — no card. Annual plans save up to 33%.",
   keywords: [
     "AI assessment platform pricing",
     "talent assessment pricing",
@@ -36,7 +36,7 @@ const faqs = [
   {
     question: "Is there a free trial?",
     answer:
-      "Team and Business plans are pay-as-you-subscribe — no lock-in, cancel any time. Enterprise pricing includes a structured pilot programme before commitment.",
+      "Yes — the Team plan includes a 14-day free trial with no credit card required, giving you 10 candidate invites to evaluate the platform with real candidates. Business and Enterprise include a structured pilot before commitment. All plans are pay-as-you-subscribe with no lock-in, cancel any time.",
   },
   {
     question: "What counts as a candidate invite?",
@@ -80,6 +80,10 @@ export default async function BusinessPricingPage() {
         <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-gray-400 sm:text-lg sm:leading-9">
           Per-seat plans for small teams, custom pricing for enterprise.
           Subscribe monthly or save up to 33% annually.
+        </p>
+        <p className="mx-auto mt-6 inline-flex items-center gap-2 rounded-full border border-fuchsia-400/25 bg-fuchsia-400/[0.07] px-4 py-2 text-sm font-bold text-fuchsia-100">
+          <span aria-hidden>✨</span>
+          Try the Team plan free for 14 days — no card, 10 candidate invites
         </p>
       </section>
 

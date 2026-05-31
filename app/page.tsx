@@ -154,6 +154,13 @@ export default function HomePage() {
 
         {/* Hero */}
         <section className="mb-10 text-center sm:mb-14 lg:mb-16">
+          <Link
+            href="/for-candidates/sign-up"
+            className="mx-auto mb-6 inline-flex items-center gap-2 rounded-full border border-purple-400/30 bg-purple-400/[0.09] px-4 py-2 text-[12px] font-black uppercase tracking-[0.14em] text-purple-100 transition hover:bg-purple-400/[0.16]"
+          >
+            <span className="text-sm" aria-hidden>✨</span>
+            7-day full-access trial · no card
+          </Link>
           <h1 className="mx-auto max-w-5xl text-[2.6rem] font-black leading-[1.02] tracking-[-0.055em] sm:text-5xl lg:text-[4rem] xl:text-[4.5rem]">
             The AI interview coach that{" "}
             <span className="bg-gradient-to-r from-purple-300 via-fuchsia-200 to-cyan-200 bg-clip-text text-transparent">
@@ -181,8 +188,10 @@ export default function HomePage() {
               Try free STAR scorer
             </Link>
           </div>
-          <p className="mt-4 text-xs text-gray-600">
-            Free to start. No credit card required.
+          <p className="mt-4 text-xs text-gray-500">
+            Every new account starts with a{" "}
+            <span className="font-bold text-gray-300">7-day full-access trial</span> —
+            voice, camera &amp; assessment centres. No credit card required.
           </p>
         </section>
 
@@ -266,10 +275,10 @@ export default function HomePage() {
 
             <div className="mt-auto pt-8">
               <span className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-7 py-4 text-base font-black text-white shadow-2xl shadow-purple-900/40 transition group-hover:scale-[1.02]">
-                I&rsquo;m a candidate →
+                Start your 7-day free trial →
               </span>
               <p className="mt-3 text-xs text-gray-500">
-                Free to start. No credit card required.
+                Full access for 7 days. No credit card required.
               </p>
             </div>
           </Link>
