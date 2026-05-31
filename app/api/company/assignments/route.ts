@@ -20,10 +20,13 @@ export async function GET() {
     const member = await prisma.companyMember.findFirst({ where: { clerkUserId: userId } });
     if (!member) return NextResponse.json({ error: "Not a company member." }, { status: 403 });
 
+    // Bound the result set so a high-volume workspace can't load thousands of
+    // rows into one serverless response. Newest 200; full history via the v1 API.
     const assignments = await prisma.candidateAssignment.findMany({
       where: { companyId: member.companyId },
       include: { template: { select: { id: true, name: true, role: true } } },
       orderBy: { createdAt: "desc" },
+      take: 200,
     });
 
     return NextResponse.json({ assignments });

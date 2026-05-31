@@ -28,6 +28,9 @@ model PracticeSession {
 
   @@index([clerkUserId])
   @@index([createdAt])
+  // Supports the trial/free usage windowed count (clerkUserId + createdAt >= start)
+  // and the dashboard list (clerkUserId, newest first).
+  @@index([clerkUserId, createdAt])
 }
 
 /**

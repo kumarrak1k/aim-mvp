@@ -57,6 +57,8 @@ export async function GET() {
         },
       },
       orderBy: { createdAt: "desc" },
+      // Bound the response — newest 200 assessments (each pulls a session blob).
+      take: 200,
     });
 
     // Pull all linked sessions in one go to avoid N+1.
