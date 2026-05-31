@@ -11,11 +11,14 @@
 
 ## 0. Pre-flight (do these first, can be done now)
 
-- [ ] **Neon `DATABASE_URL` (Vercel → Production env).** Append the pooler params to the **pooled** (`-pooler`) URL and remove `channel_binding`:
-      `...neon.tech/neondb?sslmode=require&pgbouncer=true&connection_limit=1`
-      Leave `DIRECT_URL` on the non-pooler host unchanged. *(Prevents "prepared statement already exists" 500s under load — the #1 scaling risk.)*
-- [ ] **`CRON_SECRET`** set in Vercel (any long random string). The nurture cron now fails closed without it.
-- [ ] **Cron frequency:** `vercel.json` runs `/api/cron/nurture` every 10 min (`*/10 * * * *`). This **requires Vercel Pro**. If you're on Hobby and the deploy rejects it, set it back to `0 9 * * *` and instead call the endpoint every 10 min from an external scheduler (e.g. cron-job.org) with header `Authorization: Bearer <CRON_SECRET>`.
+- [ ] **Neon `DATABASE_URL` pooler tuning (Vercel → Production).** Adds `pgbouncer=true&connection_limit=1` so Prisma is PgBouncer-safe under load (prevents "prepared statement already exists" 500s — the #1 scaling risk). **⚠️ Do NOT hand-edit the connection string** — one mistyped character = a database outage (learned the hard way). Use Neon's preset instead:
+      1. Neon Console → **Connect** → choose **Prisma** + **Pooled connection**. Neon outputs a `DATABASE_URL` that already contains `pgbouncer=true` and the **correct password** — copy it whole, no editing.
+      2. If it doesn't already include `connection_limit`, append **`&connection_limit=1`** to the very end (the only safe edit).
+      3. Vercel → replace `DATABASE_URL` with that value → **Redeploy**.
+      4. **Verify immediately:** open `https://www.aicareermentor.co.uk/api/health` → must show `"database":"up"`. If it 503s, **roll back instantly**: paste your known-good string from the local `.env` and redeploy.
+      Leave `DIRECT_URL` (non-pooler host) unchanged. *(Optional before launch — only matters under real concurrent load.)*
+- [ ] **`CRON_SECRET`** set in Vercel (any long random string). The nurture cron fails closed without it.
+- [ ] **Cron frequency.** `vercel.json` runs `/api/cron/nurture` once daily (`0 9 * * *`) — Hobby-compatible. For faster trial/nurture emails, either upgrade to Vercel Pro and change it to `*/10 * * * *`, **or** point an external scheduler (e.g. cron-job.org) at `https://www.aicareermentor.co.uk/api/cron/nurture` every 10 min with header `Authorization: Bearer <CRON_SECRET>`.
 - [ ] **Clerk:** confirm Production uses **live** Clerk keys (`pk_live_`/`sk_live_`), and the JWT session token maps `metadata = {{user.private_metadata}}` (needed so `/practice` SSR sees plan/trial fields).
 - [ ] **Resend:** domain `aicareermentor.co.uk` verified with **SPF, DKIM, and a DMARC** record. Warm the domain before bulk nurture.
 - [ ] **Upstash:** `UPSTASH_REDIS_REST_URL` / `_TOKEN` set in Production (rate limits multiply per-instance without it).
