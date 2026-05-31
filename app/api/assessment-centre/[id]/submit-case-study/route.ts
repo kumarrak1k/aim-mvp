@@ -5,6 +5,7 @@ import { prisma } from "@/app/lib/prisma";
 import { callOpenAIChat } from "@/app/lib/openai-client";
 import { checkRateLimit } from "@/app/lib/rateLimit";
 import { parseJsonBody } from "@/app/lib/validation";
+import { moderateText } from "@/app/lib/moderation";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -45,6 +46,15 @@ export async function POST(
   const parsed = await parseJsonBody(request, submitSchema);
   if ("response" in parsed) return parsed.response;
   const { response, timeMs } = parsed.data;
+
+  // Moderate candidate free-text before it's scored, stored, and shown to the
+  // hiring team.
+  if ((await moderateText(response)).flagged) {
+    return NextResponse.json(
+      { error: "Your response couldn't be submitted as it was flagged by our content filter." },
+      { status: 400 }
+    );
+  }
 
   const scenario = JSON.stringify(session.caseStudyScenario);
 

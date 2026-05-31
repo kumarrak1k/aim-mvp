@@ -5,6 +5,7 @@ import { prisma } from "@/app/lib/prisma";
 import { callOpenAIChat } from "@/app/lib/openai-client";
 import { checkRateLimit } from "@/app/lib/rateLimit";
 import { parseJsonBody } from "@/app/lib/validation";
+import { moderateText } from "@/app/lib/moderation";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -44,6 +45,14 @@ export async function POST(
   const parsed = await parseJsonBody(request, submitSchema);
   if ("response" in parsed) return parsed.response;
   const { transcript } = parsed.data;
+
+  // Moderate candidate free-text before scoring/storage/recruiter view.
+  if ((await moderateText(transcript)).flagged) {
+    return NextResponse.json(
+      { error: "Your submission couldn't be processed as it was flagged by our content filter." },
+      { status: 400 }
+    );
+  }
 
   // Score the presentation
   const scoreSystemPrompt = `You are a senior assessor scoring a presentation transcript from a ${session.role} candidate (${session.experienceLevel}) in the ${session.sector} sector. Score rigorously and honestly. Output valid JSON only.`;

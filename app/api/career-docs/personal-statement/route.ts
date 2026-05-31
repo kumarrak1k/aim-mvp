@@ -8,6 +8,7 @@ import {
   checkCareerDocAccess,
   recordCareerDocGeneration,
 } from "@/app/lib/careerDocs";
+import { moderateText } from "@/app/lib/moderation";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -54,6 +55,10 @@ export async function POST(request: NextRequest) {
   const parsed = await parseJsonBody(request, schema);
   if ("response" in parsed) return parsed.response;
   const { statementType, targetProgramOrRole, institution, whyThis, background, achievements, wordLimit } = parsed.data;
+
+  if ((await moderateText(`${whyThis}\n${background}\n${achievements}`)).flagged) {
+    return NextResponse.json({ error: "This content can't be processed." }, { status: 400 });
+  }
 
   const typeLabel = typeLabels[statementType] ?? statementType;
 

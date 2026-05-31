@@ -8,6 +8,7 @@ import {
   checkCareerDocAccess,
   recordCareerDocGeneration,
 } from "@/app/lib/careerDocs";
+import { moderateText } from "@/app/lib/moderation";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -43,6 +44,10 @@ export async function POST(request: NextRequest) {
   const parsed = await parseJsonBody(request, schema);
   if ("response" in parsed) return parsed.response;
   const { targetRole, industry, cvText, jobDescription } = parsed.data;
+
+  if ((await moderateText(cvText)).flagged) {
+    return NextResponse.json({ error: "This content can't be processed." }, { status: 400 });
+  }
 
   const systemPrompt = `You are a senior career consultant and professional CV writer with 15+ years of experience helping candidates land roles at top employers. You specialise in ATS optimisation, impactful bullet writing, and making CVs stand out to hiring managers. Return only valid JSON — no markdown, no commentary.`;
 

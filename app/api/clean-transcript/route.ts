@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import OpenAI from "openai";
 import { checkRateLimit } from "@/app/lib/rateLimit";
+import { moderateText } from "@/app/lib/moderation";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -83,6 +84,10 @@ export async function POST(req: Request) {
     // Bound input so a giant paste can't run up token cost.
     if (transcript.length > 8000) {
       return Response.json({ error: "Transcript is too long." }, { status: 400 });
+    }
+
+    if ((await moderateText(transcript)).flagged) {
+      return Response.json({ error: "This content can't be processed." }, { status: 400 });
     }
 
     const ukTranscript = normaliseTranscriptToUkEnglish(transcript);

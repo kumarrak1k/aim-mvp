@@ -8,6 +8,7 @@ import {
   checkCareerDocAccess,
   recordCareerDocGeneration,
 } from "@/app/lib/careerDocs";
+import { moderateText } from "@/app/lib/moderation";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -45,6 +46,10 @@ export async function POST(request: NextRequest) {
   const parsed = await parseJsonBody(request, schema);
   if ("response" in parsed) return parsed.response;
   const { companyName, jobTitle, jobDescription, experience, tone, wordLimit } = parsed.data;
+
+  if ((await moderateText(`${jobDescription}\n${experience}`)).flagged) {
+    return NextResponse.json({ error: "This content can't be processed." }, { status: 400 });
+  }
 
   const toneGuide = {
     professional: "formal, polished, and measured — conveying quiet confidence and credibility",
