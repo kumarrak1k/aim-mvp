@@ -6,6 +6,7 @@ import {
   setAccountTypeIfUnset,
   type AccountType,
 } from "@/app/lib/accountType";
+import { startCandidateTrialIfEligible } from "@/app/lib/candidatePlan";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -76,9 +77,23 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ accountType: "superadmin" });
     }
 
+    // Auto-start the 7-day reverse trial for new candidates. Idempotent —
+    // never grants twice and never to an existing paying user.
+    let trialStarted = false;
+    if (result.accountType === "candidate") {
+      try {
+        const trial = await startCandidateTrialIfEligible(userId);
+        trialStarted = trial.started;
+      } catch (err) {
+        // Non-fatal: a failed trial grant must not block sign-up completion.
+        console.error("TRIAL START ERROR:", err);
+      }
+    }
+
     return NextResponse.json({
       accountType: result.accountType,
       alreadySet: result.alreadySet,
+      trialStarted,
       paths: AUDIENCE_PATHS[result.accountType],
     });
   } catch (error) {

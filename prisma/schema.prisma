@@ -30,6 +30,39 @@ model PracticeSession {
   @@index([createdAt])
 }
 
+/**
+ * One row per career-doc generation (CV enhancer, personal statement, cover
+ * letter). Doubles as a generation log and as the counter for the free-trial
+ * fair-usage cap (counted since the user's trial start).
+ */
+model CareerDocGeneration {
+  id          String   @id @default(cuid())
+  clerkUserId String
+  kind        String // "cv-enhancer" | "personal-statement" | "cover-letter"
+  createdAt   DateTime @default(now())
+
+  @@index([clerkUserId, createdAt])
+}
+
+/**
+ * Candidate email / notification consent. Marketing & nurture emails are only
+ * sent when marketingConsent is true; transactional emails ignore this.
+ * unsubscribeToken powers one-click List-Unsubscribe links (no login needed).
+ */
+model EmailPreference {
+  id               String   @id @default(cuid())
+  clerkUserId      String   @unique
+  email            String // snapshot of the address at consent time
+  marketingConsent Boolean  @default(false)
+  unsubscribeToken String   @unique @default(uuid())
+  consentSource    String   @default("signup") // "signup" | "preferences" | "unsubscribe"
+  consentUpdatedAt DateTime @default(now())
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([clerkUserId])
+}
+
 model Company {
   id          String   @id @default(cuid())
   name        String
@@ -41,7 +74,9 @@ model Company {
   // Subscription / plan
   planId                 String?   // "team" | "business" | "enterprise"
   planStatus             String    @default("none") // "none" | "trial" | "active" | "expired" | "cancelled"
+  trialStartedAt         DateTime?
   trialEndsAt            DateTime?
+  trialInvitesUsed       Int       @default(0) // candidate invites consumed during a self-serve trial
   stripeCustomerId       String?
   stripeSubscriptionId   String?
   stripeCurrentPeriodEnd DateTime?

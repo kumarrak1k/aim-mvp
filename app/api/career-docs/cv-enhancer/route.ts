@@ -1,9 +1,13 @@
-import { auth, clerkClient } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { callOpenAIChat } from "@/app/lib/openai-client";
 import { checkRateLimit } from "@/app/lib/rateLimit";
 import { parseJsonBody } from "@/app/lib/validation";
+import {
+  checkCareerDocAccess,
+  recordCareerDocGeneration,
+} from "@/app/lib/careerDocs";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -15,18 +19,6 @@ const schema = z.object({
   jobDescription: z.string().trim().max(4000).default(""),
 });
 
-async function requireAdvancedPlan(userId: string) {
-  try {
-    const client = await clerkClient();
-    const user = await client.users.getUser(userId);
-    const meta = user.privateMetadata as { subscriptionStatus?: string; stripePlanId?: string };
-    const isActive = meta?.subscriptionStatus === "active";
-    return isActive && (meta?.stripePlanId ?? "").toLowerCase().includes("professional");
-  } catch {
-    return false;
-  }
-}
-
 function stripFences(text: string): string {
   return text.replace(/^```(?:json)?\s*/i, "").replace(/\s*```\s*$/i, "").trim();
 }
@@ -35,10 +27,11 @@ export async function POST(request: NextRequest) {
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "Authentication required." }, { status: 401 });
 
-  if (!(await requireAdvancedPlan(userId))) {
+  const access = await checkCareerDocAccess(userId, "CV Enhancer");
+  if (!access.ok) {
     return NextResponse.json(
-      { error: "CV Enhancer requires the Professional plan.", upgrade: true },
-      { status: 403 }
+      { error: access.error, upgrade: access.upgrade },
+      { status: access.status }
     );
   }
 
@@ -108,6 +101,7 @@ Rules:
   const raw = stripFences(aiResponse.choices[0].message.content);
   try {
     const result = JSON.parse(raw);
+    await recordCareerDocGeneration(userId, "cv-enhancer");
     return NextResponse.json({ result });
   } catch {
     return NextResponse.json({ error: "Failed to parse AI response." }, { status: 500 });

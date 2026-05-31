@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { auth } from "@clerk/nextjs/server";
 import { createPageMetadata } from "@/app/config/seo";
+import {
+  resolveCandidatePlanFromClaims,
+  type CandidateBillingMeta,
+} from "@/app/lib/candidatePlan";
 import { PracticePageClient } from "./components/PracticePageClient";
 
 export const metadata: Metadata = createPageMetadata({
@@ -19,34 +23,15 @@ export const metadata: Metadata = createPageMetadata({
   ],
 });
 
-/**
- * Derives the initial plan name from JWT session claims — no Clerk API call
- * required, so this never fails due to a Clerk API 500 error.
- */
-function planNameFromClaims(
-  sessionClaims: Record<string, unknown> | null
-): string {
-  const meta = (
-    sessionClaims as {
-      metadata?: { subscriptionStatus?: string; stripePlanId?: string };
-    } | null
-  )?.metadata;
-
-  const isActive =
-    meta?.subscriptionStatus === "active" ||
-    meta?.subscriptionStatus === "trialing";
-  if (!isActive) return "Free";
-
-  const planId = (meta?.stripePlanId ?? "").toLowerCase();
-  if (planId.includes("professional")) return "Professional";
-  if (planId.includes("plus")) return "Plus";
-  return "Free";
-}
-
 export default async function PracticePage() {
   const { userId, sessionClaims } = await auth();
+  // Resolve the initial plan from JWT session claims — no Clerk API call, so
+  // this never fails on a Clerk API 500. Honours the reverse trial (an active
+  // trial resolves to "Professional").
   const initialPlanName = userId
-    ? planNameFromClaims(sessionClaims as Record<string, unknown> | null)
+    ? resolveCandidatePlanFromClaims(
+        sessionClaims as { metadata?: CandidateBillingMeta } | null
+      ).planName
     : "Free";
 
   return (

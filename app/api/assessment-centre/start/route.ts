@@ -1,10 +1,11 @@
-import { auth, clerkClient } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/app/lib/prisma";
 import { callOpenAIChat } from "@/app/lib/openai-client";
 import { checkRateLimit } from "@/app/lib/rateLimit";
 import { parseJsonBody } from "@/app/lib/validation";
+import { getCandidatePlan, TRIAL_USAGE_CAPS } from "@/app/lib/candidatePlan";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -18,24 +19,6 @@ const startSchema = z.object({
     .min(1)
     .default(["stage1", "stage2", "stage3"]),
 });
-
-async function getUserPlanInfo(userId: string): Promise<{ planName: string; isProfessional: boolean }> {
-  try {
-    const client = await clerkClient();
-    const user = await client.users.getUser(userId);
-    const meta = user.privateMetadata as {
-      subscriptionStatus?: string;
-      stripePlanId?: string;
-    };
-    const isActive = meta?.subscriptionStatus === "active";
-    const planId = (meta?.stripePlanId ?? "").toLowerCase();
-    if (!isActive) return { planName: "Free", isProfessional: false };
-    if (planId.includes("professional")) return { planName: "Professional", isProfessional: true };
-    return { planName: "Plus", isProfessional: false };
-  } catch {
-    return { planName: "Free", isProfessional: false };
-  }
-}
 
 function stripMarkdownFences(text: string): string {
   return text.replace(/^```(?:json)?\s*/i, "").replace(/\s*```\s*$/i, "").trim();
@@ -55,12 +38,29 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const planInfo = await getUserPlanInfo(userId);
-  if (!planInfo.isProfessional) {
+  const plan = await getCandidatePlan(userId);
+  if (!plan.isProfessional) {
     return NextResponse.json(
       { error: "Assessment centre requires the Professional plan." },
       { status: 403 }
     );
+  }
+
+  // Fair-usage cap during the free trial (cost control). Paid Professional is
+  // unlimited; the cap only applies while access comes from the no-card trial.
+  if (plan.isTrial) {
+    const since = plan.trialStartedAt ? new Date(plan.trialStartedAt) : undefined;
+    const used = await prisma.assessmentCentreSession.count({
+      where: { clerkUserId: userId, ...(since && { createdAt: { gte: since } }) },
+    });
+    if (used >= TRIAL_USAGE_CAPS.assessmentCentres) {
+      return NextResponse.json(
+        {
+          error: `Your free trial includes ${TRIAL_USAGE_CAPS.assessmentCentres} mock assessment centres. Upgrade to Professional for unlimited assessment centres.`,
+        },
+        { status: 429 }
+      );
+    }
   }
 
   const parsed = await parseJsonBody(request, startSchema);

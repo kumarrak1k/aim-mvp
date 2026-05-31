@@ -1,6 +1,10 @@
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { stripe } from "@/app/lib/stripe";
+import {
+  resolveCandidatePlan,
+  type CandidateBillingMeta,
+} from "@/app/lib/candidatePlan";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -14,31 +18,19 @@ export async function GET() {
   try {
     const client = await clerkClient();
     const user = await client.users.getUser(userId);
-    const meta = user.privateMetadata as {
-      subscriptionStatus?: string;
-      stripePlanId?: string;
-      subscriptionCurrentPeriodEnd?: number;
+    const meta = user.privateMetadata as CandidateBillingMeta & {
       stripeCustomerId?: string;
       stripeSubscriptionId?: string;
     };
 
-    // Accept both "active" and "trialing" — Stripe uses "trialing" when a
-    // subscription begins with a trial period, but the user should be treated
-    // as a paid subscriber immediately.
-    const isActive =
-      meta?.subscriptionStatus === "active" ||
-      meta?.subscriptionStatus === "trialing";
+    // Single source of truth — honours the no-card reverse trial.
+    const plan = resolveCandidatePlan(meta);
+
     const planId = (meta?.stripePlanId ?? "").toLowerCase();
     const periodEnd = meta?.subscriptionCurrentPeriodEnd
       ? new Date(meta.subscriptionCurrentPeriodEnd * 1000).toISOString()
       : null;
     const hasCustomer = Boolean(meta?.stripeCustomerId);
-
-    let planName = "Free";
-    if (isActive) {
-      if (planId.includes("professional")) planName = "Professional";
-      else if (planId.includes("plus")) planName = "Plus";
-    }
 
     // Derive billing interval from the planId string
     const billingInterval: "monthly" | "annual" | null = planId.includes("annual")
@@ -47,9 +39,11 @@ export async function GET() {
       ? "monthly"
       : null;
 
-    // Fetch cancel_at_period_end directly from Stripe (not stored in metadata)
+    // Fetch cancel_at_period_end directly from Stripe (not stored in metadata).
+    // Only relevant for genuine paid subscriptions — trial users have no Stripe
+    // subscription, so we skip the call entirely.
     let cancelAtPeriodEnd = false;
-    if (isActive && meta?.stripeSubscriptionId && stripe) {
+    if (plan.isPaid && meta?.stripeSubscriptionId && stripe) {
       try {
         const stripeSub = await stripe.subscriptions.retrieve(
           meta.stripeSubscriptionId
@@ -61,13 +55,20 @@ export async function GET() {
     }
 
     return NextResponse.json({
-      planName,
-      isActive,
+      planName: plan.planName,
+      isActive: plan.isActive,
       planId: meta?.stripePlanId ?? null,
       currentPeriodEnd: periodEnd,
       hasCustomer,
       billingInterval,
       cancelAtPeriodEnd,
+      // ── Reverse-trial state (drives trial UI) ──────────────────────────
+      isTrial: plan.isTrial,
+      isPaid: plan.isPaid,
+      paidPlanName: plan.paidPlanName,
+      trialEndsAt: plan.trialEndsAt,
+      trialDaysRemaining: plan.trialDaysRemaining,
+      trialConsumed: plan.trialConsumed,
     });
   } catch (error) {
     console.error("SUBSCRIPTION GET ERROR:", error);

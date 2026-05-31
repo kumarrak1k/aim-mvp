@@ -1,37 +1,20 @@
-import { auth, clerkClient } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 import { Prisma } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../lib/prisma";
 import { getAssessmentLinkedSessionIds } from "../../lib/sessionScope";
 import { parseJsonBody, practiceSessionCreateSchema } from "../../lib/validation";
+import {
+  getCandidatePlan,
+  type CandidatePlan,
+  TRIAL_USAGE_CAPS,
+} from "../../lib/candidatePlan";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 /** Total number of sessions a free-tier user can save (all-time, not per day). */
 const FREE_TRIAL_LIMIT = 3;
-
-type PlanInfo = { planName: string; isUnlimited: boolean };
-
-async function getUserPlanInfo(userId: string): Promise<PlanInfo> {
-  try {
-    const client = await clerkClient();
-    const user = await client.users.getUser(userId);
-    const meta = user.privateMetadata as {
-      subscriptionStatus?: string;
-      stripePlanId?: string;
-    };
-    const isActive = meta?.subscriptionStatus === "active";
-    const planId = (meta?.stripePlanId ?? "").toLowerCase();
-
-    if (!isActive) return { planName: "Free", isUnlimited: false };
-    if (planId.includes("professional")) return { planName: "Professional", isUnlimited: true };
-    if (planId.includes("plus")) return { planName: "Plus", isUnlimited: true };
-    return { planName: "Free", isUnlimited: false };
-  } catch {
-    return { planName: "Free", isUnlimited: false };
-  }
-}
 
 function getSummaryScore(summary: Record<string, unknown>): number {
   const value = summary.overall_score;
@@ -45,10 +28,31 @@ function getHireSignal(summary: Record<string, unknown>): string {
   return value.replace(/\s+/g, " ").trim().slice(0, 40) || "Moderate";
 }
 
-async function getUsageInfo(clerkUserId: string, planInfo: PlanInfo) {
-  if (planInfo.isUnlimited) {
+async function getUsageInfo(clerkUserId: string, plan: CandidatePlan) {
+  // Free trial: fair-usage cap on saved practice interviews (cost control).
+  // Real paid plans below are genuinely unlimited — the cap only applies
+  // while the access is coming from the no-card trial.
+  if (plan.isTrial) {
+    const cap = TRIAL_USAGE_CAPS.practiceSessions;
+    const since = plan.trialStartedAt ? new Date(plan.trialStartedAt) : undefined;
+    const used = await prisma.practiceSession.count({
+      where: { clerkUserId, ...(since && { createdAt: { gte: since } }) },
+    });
     return {
-      planName: planInfo.planName,
+      planName: plan.planName,
+      isTrial: true,
+      dailyLimit: cap,
+      usedToday: used,
+      remainingToday: Math.max(0, cap - used),
+      limitReached: used >= cap,
+      resetsAt: "",
+    };
+  }
+
+  if (plan.isUnlimited) {
+    return {
+      planName: plan.planName,
+      isTrial: false,
       dailyLimit: null as null,
       usedToday: 0,
       remainingToday: null as null,
@@ -66,7 +70,8 @@ async function getUsageInfo(clerkUserId: string, planInfo: PlanInfo) {
   const limitReached = totalUsed >= FREE_TRIAL_LIMIT;
 
   return {
-    planName: planInfo.planName,
+    planName: plan.planName,
+    isTrial: false,
     dailyLimit: FREE_TRIAL_LIMIT,
     usedToday: totalUsed,
     remainingToday: remaining,
@@ -86,7 +91,7 @@ export async function GET() {
       );
     }
 
-    const planInfo = await getUserPlanInfo(userId);
+    const plan = await getCandidatePlan(userId);
 
     const [sessions, usage, assessmentLinkedIds] = await Promise.all([
       prisma.practiceSession.findMany({
@@ -110,7 +115,7 @@ export async function GET() {
           createdAt: true,
         },
       }),
-      getUsageInfo(userId, planInfo),
+      getUsageInfo(userId, plan),
       getAssessmentLinkedSessionIds(userId),
     ]);
 
@@ -147,18 +152,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const planInfo = await getUserPlanInfo(userId);
-    const usage = await getUsageInfo(userId, planInfo);
+    const plan = await getCandidatePlan(userId);
+    const usage = await getUsageInfo(userId, plan);
 
     if (usage.limitReached) {
-      return NextResponse.json(
-        {
-          error:
-            "You have reached your daily session limit. Upgrade to Plus for unlimited sessions.",
-          usage,
-        },
-        { status: 429 }
-      );
+      const error = usage.isTrial
+        ? `You've reached your free-trial fair-use limit of ${TRIAL_USAGE_CAPS.practiceSessions} practice interviews. Upgrade to Plus for unlimited practice.`
+        : "You've used all 3 free sessions. Upgrade to Plus for unlimited practice.";
+      return NextResponse.json({ error, usage }, { status: 429 });
     }
 
     const parsed = await parseJsonBody(request, practiceSessionCreateSchema);
@@ -224,7 +225,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const updatedUsage = await getUsageInfo(userId, planInfo);
+    const updatedUsage = await getUsageInfo(userId, plan);
 
     return NextResponse.json({
       usage: updatedUsage,
