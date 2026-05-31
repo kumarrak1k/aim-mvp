@@ -113,5 +113,19 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  return NextResponse.json({ ok: true, sent, failed, skipped, processed: due.length });
+  // Housekeeping: prune terminal jobs older than 30 days. Each signup enqueues
+  // ~8–10 jobs that are never queried again once sent/skipped/failed, so this
+  // keeps the table (and its [status, scheduledAt] index) from growing forever.
+  let purged = 0;
+  try {
+    const cutoff = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+    const res = await prisma.emailJob.deleteMany({
+      where: { status: { not: "pending" }, scheduledAt: { lt: cutoff } },
+    });
+    purged = res.count;
+  } catch (err) {
+    console.error("NURTURE CRON: purge failed", err);
+  }
+
+  return NextResponse.json({ ok: true, sent, failed, skipped, purged, processed: due.length });
 }

@@ -178,54 +178,70 @@ export async function POST(request: NextRequest) {
       assignmentToken,
     } = parsed.data;
 
-    const session = await prisma.practiceSession.create({
-      data: {
-        clerkUserId: userId,
-        role,
-        experienceLevel,
-        interviewType,
-        difficulty,
-        focusArea,
-        practiceMode,
-        totalQuestions,
-        overallScore: getSummaryScore(summary),
-        hireSignal: getHireSignal(summary),
-        summary: summary as Prisma.InputJsonValue,
-        results: results as Prisma.InputJsonValue,
-        speakerPreference: (speakerPreference ?? null) as Prisma.InputJsonValue,
-      },
-      select: {
-        id: true,
-        role: true,
-        experienceLevel: true,
-        interviewType: true,
-        difficulty: true,
-        focusArea: true,
-        practiceMode: true,
-        totalQuestions: true,
-        overallScore: true,
-        hireSignal: true,
-        summary: true,
-        results: true,
-        speakerPreference: true,
-        createdAt: true,
-      },
+    // Save the session and (if it fulfils a company assessment invite) mark the
+    // assignment complete atomically — so we never end up with a saved session
+    // the hiring team can't see, or a completed assignment with no session.
+    const session = await prisma.$transaction(async (tx) => {
+      const created = await tx.practiceSession.create({
+        data: {
+          clerkUserId: userId,
+          role,
+          experienceLevel,
+          interviewType,
+          difficulty,
+          focusArea,
+          practiceMode,
+          totalQuestions,
+          overallScore: getSummaryScore(summary),
+          hireSignal: getHireSignal(summary),
+          summary: summary as Prisma.InputJsonValue,
+          results: results as Prisma.InputJsonValue,
+          speakerPreference: (speakerPreference ?? null) as Prisma.InputJsonValue,
+        },
+        select: {
+          id: true,
+          role: true,
+          experienceLevel: true,
+          interviewType: true,
+          difficulty: true,
+          focusArea: true,
+          practiceMode: true,
+          totalQuestions: true,
+          overallScore: true,
+          hireSignal: true,
+          summary: true,
+          results: true,
+          speakerPreference: true,
+          createdAt: true,
+        },
+      });
+
+      if (assignmentToken) {
+        const assignment = await tx.candidateAssignment.findUnique({
+          where: { inviteToken: assignmentToken },
+        });
+        if (assignment && assignment.status !== "completed" && assignment.expiresAt > new Date()) {
+          await tx.candidateAssignment.update({
+            where: { inviteToken: assignmentToken },
+            data: { status: "completed", clerkUserId: userId, sessionId: created.id, completedAt: new Date() },
+          });
+        }
+      }
+
+      return created;
     });
 
-    // Link to company assessment assignment if token provided
-    if (assignmentToken) {
-      const assignment = await prisma.candidateAssignment.findUnique({
-        where: { inviteToken: assignmentToken },
-      });
-      if (assignment && assignment.status !== "completed" && assignment.expiresAt > new Date()) {
-        await prisma.candidateAssignment.update({
-          where: { inviteToken: assignmentToken },
-          data: { status: "completed", clerkUserId: userId, sessionId: session.id, completedAt: new Date() },
-        });
-      }
-    }
-
-    const updatedUsage = await getUsageInfo(userId, plan);
+    // Derive post-save usage locally — the pre-save check already counted, and
+    // we just added exactly one session. Avoids a second count() per save.
+    const updatedUsage =
+      usage.dailyLimit === null
+        ? usage
+        : {
+            ...usage,
+            usedToday: usage.usedToday + 1,
+            remainingToday: Math.max(0, (usage.remainingToday ?? 0) - 1),
+            limitReached: usage.usedToday + 1 >= usage.dailyLimit,
+          };
 
     return NextResponse.json({
       usage: updatedUsage,
