@@ -37,7 +37,7 @@ The pack seeds users + runs interviews, so it needs a throwaway/test environment
    CLERK_PUBLISHABLE_KEY=pk_test_xxx
    CLERK_SECRET_KEY=sk_test_xxx
    AIM_TEST_PASSWORD=Test-Passw0rd!2026
-   # DATABASE_URL=...                            # only for corporate/AC seeding (Phase 3)
+   DATABASE_URL=postgresql://...                 # REQUIRED — /practice reads the DB (a Neon branch is easiest)
    ```
 4. **Run it** (load `.env.test` into the Playwright process):
    ```

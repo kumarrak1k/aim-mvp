@@ -12,7 +12,10 @@ import { BASE_URL } from "./tests/e2e/pack/fixtures/env";
  * The app under test MUST run with AIM_TEST_MODE=mock (the webServer below sets
  * it for local runs; for a preview deployment, set it in that env).
  */
-const useLocalServer = !process.env.PLAYWRIGHT_BASE_URL;
+// Boot a local dev server whenever we're targeting localhost — whether that's
+// the default or an explicit PLAYWRIGHT_BASE_URL=http://localhost:3000. For a
+// remote preview URL, don't boot one — run against that deployment instead.
+const useLocalServer = /localhost|127\.0\.0\.1/.test(BASE_URL);
 
 export default defineConfig({
   testDir: "./tests/e2e/pack",
