@@ -3,6 +3,7 @@ import { auth } from "@clerk/nextjs/server";
 import { checkRateLimit } from "@/app/lib/rateLimit";
 
 export const runtime = "nodejs";
+export const maxDuration = 60;
 export const dynamic = "force-dynamic";
 
 const openai = new OpenAI({

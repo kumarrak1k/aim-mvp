@@ -4,6 +4,9 @@ import { checkRateLimit } from "@/app/lib/rateLimit";
 import { callOpenAIChat, OpenAIError } from "@/app/lib/openai-client";
 import { moderateText } from "@/app/lib/moderation";
 
+export const runtime = "nodejs";
+export const maxDuration = 60;
+
 type VoiceAnalysisLike = {
   paceScore?: number;
   metrics?: {

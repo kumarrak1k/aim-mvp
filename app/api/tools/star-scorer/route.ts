@@ -4,6 +4,7 @@ import { checkRateLimit, getClientIp } from "@/app/lib/rateLimit";
 import { moderateText } from "@/app/lib/moderation";
 
 export const runtime = "nodejs";
+export const maxDuration = 60;
 
 type STARScore = {
   score: number;

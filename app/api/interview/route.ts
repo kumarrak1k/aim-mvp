@@ -8,6 +8,9 @@ import {
 } from "@/app/practice/session/utils";
 import { getCandidateProfile, EMPTY_PROFILE, type CandidateProfile } from "@/app/lib/candidateProfile";
 
+export const runtime = "nodejs";
+export const maxDuration = 60;
+
 type TemplateContext = {
   customInstructions?: string;
   competencyFramework?: string;
