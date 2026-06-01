@@ -4,13 +4,8 @@ import { createPageMetadata } from "@/app/config/seo";
 import { absoluteUrl, siteConfig } from "@/app/config/site";
 import { PublicShell } from "@/app/components/marketing/PublicShell";
 
-// ─── TODO: Replace with your Tally form ID ────────────────────────────────────
-// 1. Go to https://tally.so and create a free account
-// 2. Create a form with fields: Name, Institution, Role, Student numbers, Message
-// 3. Copy the form ID from the share URL: https://tally.so/r/XXXXXXX  ← that part
-// 4. Paste it below (just the ID, not the full URL)
+// Tally form embedded on this page (campus-licensing enquiries).
 const TALLY_FORM_ID = "kdk4Do";
-// ─────────────────────────────────────────────────────────────────────────────
 
 export const metadata: Metadata = createPageMetadata({
   path: "/universities",
