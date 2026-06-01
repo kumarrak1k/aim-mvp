@@ -9,8 +9,11 @@ import { BASE_URL } from "./tests/e2e/pack/fixtures/env";
  * so it targets a local dev server or a Vercel preview, never production.
  *
  * Run:  npm run test:pack        (mocked AI, deterministic, ~free)
- * The app under test MUST run with AIM_TEST_MODE=mock (the webServer below sets
- * it for local runs; for a preview deployment, set it in that env).
+ *       npm run test:pack:real   (@real-ai tests against the real OpenAI API)
+ * The app under test runs with AIM_TEST_MODE=mock by default; test:pack:real
+ * sets AIM_TEST_MODE=real (and forwards OPENAI_API_KEY) to exercise the live
+ * parsers. NOTE: reuseExistingServer is on, so stop any running dev server first
+ * — otherwise a real run would reuse a server still booted in mock mode.
  */
 // Boot a local dev server whenever we're targeting localhost — whether that's
 // the default or an explicit PLAYWRIGHT_BASE_URL=http://localhost:3000. For a
@@ -68,7 +71,10 @@ export default defineConfig({
           //   npx dotenv-cli -e .env.test -- npm run test:pack
           // so only .env.test is needed (no .env.local juggling).
           env: {
-            AIM_TEST_MODE: "mock",
+            // Mock by default (deterministic, ~free). test:pack:real sets
+            // AIM_TEST_MODE=real, which routes through the real OpenAI API.
+            AIM_TEST_MODE: process.env.AIM_TEST_MODE ?? "mock",
+            OPENAI_API_KEY: process.env.OPENAI_API_KEY ?? "",
             NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY ?? "",
             CLERK_PUBLISHABLE_KEY: process.env.CLERK_PUBLISHABLE_KEY ?? "",
             CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY ?? "",

@@ -15,6 +15,7 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:pack": "playwright test -c playwright.tests.config.ts",
+    "test:pack:real": "playwright test -c playwright.tests.config.ts --grep @real-ai",
     "test:pack:ui": "playwright test -c playwright.tests.config.ts --ui",
     "test:all": "vitest run && playwright test"
   },

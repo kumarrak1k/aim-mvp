@@ -11,7 +11,9 @@ import { runTypedInterview } from "../fixtures/candidateBot";
 test.describe("typed interview — Free persona", () => {
   test.use({ storageState: statePath("free") });
 
-  test("completes a full typed interview and reaches the summary", async ({ page }) => {
+  // @real-ai: this is the one interview the nightly real-AI run exercises (the
+  // Professional path below is the same plumbing, so it stays mock-only).
+  test("completes a full typed interview and reaches the summary", { tag: "@real-ai" }, async ({ page }) => {
     await runTypedInterview(page, { role: "Graduate software engineer", totalQuestions: 5 });
   });
 });

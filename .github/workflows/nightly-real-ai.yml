@@ -1,0 +1,88 @@
+name: Nightly real-AI smoke
+
+# Runs the @real-ai subset of the test pack (one typed interview + the full
+# assessment-centre pipeline) against the REAL OpenAI API, so contract drift in
+# the response parsers is caught on a schedule. The day-to-day pack runs mocked
+# and deterministic (npm run test:pack); this is the occasional live check.
+#
+# Cost is small (~15-20 OpenAI calls per run). It boots its own dev server and
+# uses the TEST Clerk instance + a schema-only test DB branch — never production.
+#
+# Required repo secrets (Settings → Secrets and variables → Actions). Until they
+# are set, the job SKIPS cleanly (the guard step below), so the schedule never
+# fails noisily:
+#   OPENAI_API_KEY              - an OpenAI key (a low-budget test key is ideal)
+#   TEST_DATABASE_URL           - the Neon test-branch pooled connection string
+#   TEST_CLERK_SECRET_KEY       - sk_test_... from the TEST Clerk instance
+#   TEST_CLERK_PUBLISHABLE_KEY  - pk_test_... from the TEST Clerk instance
+#   AIM_TEST_PASSWORD           - (optional) password for seeded personas
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: "0 3 * * *" # 03:00 UTC nightly
+
+concurrency:
+  group: nightly-real-ai
+  cancel-in-progress: true
+
+jobs:
+  real-ai:
+    name: Real-AI smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      AIM_TEST_MODE: real
+      PLAYWRIGHT_BASE_URL: http://localhost:3000
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
+      CLERK_SECRET_KEY: ${{ secrets.TEST_CLERK_SECRET_KEY }}
+      NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.TEST_CLERK_PUBLISHABLE_KEY }}
+      CLERK_PUBLISHABLE_KEY: ${{ secrets.TEST_CLERK_PUBLISHABLE_KEY }}
+      AIM_TEST_PASSWORD: ${{ secrets.AIM_TEST_PASSWORD }}
+
+    steps:
+      - name: Guard — skip unless real-AI secrets are configured
+        id: guard
+        run: |
+          if [ -z "$OPENAI_API_KEY" ] || [ -z "$DATABASE_URL" ] || [ -z "$CLERK_SECRET_KEY" ]; then
+            echo "Real-AI secrets not configured — skipping. See tests/e2e/pack/README.md."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout code
+        if: steps.guard.outputs.ready == 'true'
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        if: steps.guard.outputs.ready == 'true'
+        uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install dependencies
+        if: steps.guard.outputs.ready == 'true'
+        run: npm ci
+
+      - name: Generate Prisma client
+        if: steps.guard.outputs.ready == 'true'
+        run: npx prisma generate
+
+      - name: Install Playwright browser
+        if: steps.guard.outputs.ready == 'true'
+        run: npx playwright install chromium --with-deps
+
+      - name: Run real-AI smoke
+        if: steps.guard.outputs.ready == 'true'
+        run: npm run test:pack:real
+
+      - name: Upload Playwright report
+        if: ${{ always() && steps.guard.outputs.ready == 'true' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: real-ai-report
+          path: playwright-report/
+          retention-days: 14

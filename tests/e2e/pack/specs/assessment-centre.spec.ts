@@ -13,7 +13,7 @@ import { AC_INVITE_TOKEN } from "../fixtures/seedCompany";
 test.describe("assessment centre", () => {
   test.use({ storageState: statePath("free") });
 
-  test("candidate starts the AC and submits the case study for scoring", async ({ page }) => {
+  test("candidate starts the AC and submits the case study for scoring", { tag: "@real-ai" }, async ({ page }) => {
     // Start the assessment centre from the invite token (generates the scenario).
     const startRes = await page.request.post(`/api/assessment/${AC_INVITE_TOKEN}/start-ac`);
     expect(startRes.status(), await startRes.text()).toBe(200);
@@ -39,7 +39,7 @@ test.describe("assessment centre", () => {
     expect(typeof body.feedback.overall).toBe("number");
   });
 
-  test("completes the interview and presentation stages through to a final report", async ({ page }) => {
+  test("completes the interview and presentation stages through to a final report", { tag: "@real-ai" }, async ({ page }) => {
     // Same session as stage 1 — start-ac is idempotent on the assignment token.
     const { sessionId } = await (await page.request.post(`/api/assessment/${AC_INVITE_TOKEN}/start-ac`)).json();
 
