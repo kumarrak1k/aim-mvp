@@ -18,6 +18,8 @@ config (`playwright.tests.config.ts`). The production smoke suite
 - ✅ Assessment centre — the full three-stage pipeline (case study → interview/brief → presentation/report) driven at the API level — `specs/assessment-centre.spec.ts`.
 - ✅ Standalone AI / analysis routes — `specs/ai-routes.spec.ts`: STAR scorer, transcript cleaner, voice-analysis + video-analysis (pure scoring, no AI), and the whisper-filler paid-plan gate.
 - ✅ Career-doc generators (Professional) — personal statement, cover letter, CV enhancer, plus the Plus-persona `403` — `specs/career-docs.spec.ts`.
+- ✅ Account lifecycle — GDPR **account deletion** (confirmation + workspace-admin-block guards, plus the destructive purge via a throwaway persona) and the **change-password** forced-reset guards — `specs/account.spec.ts`.
+- ✅ One-click **email unsubscribe** (RFC 8058) flips marketing consent off — `specs/email.spec.ts`.
 - Deterministic and ~free via the AI mock seam (`AIM_TEST_MODE=mock`).
 - ♻️ **Real-AI nightly** — the `@real-ai`-tagged subset (typed interview + AC pipeline + STAR scorer + CV enhancer) re-run against the live OpenAI API to catch parser/contract drift (see below).
 
