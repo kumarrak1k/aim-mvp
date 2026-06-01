@@ -14,6 +14,8 @@
     "test:ui": "vitest --ui",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
+    "test:pack": "playwright test -c playwright.tests.config.ts",
+    "test:pack:ui": "playwright test -c playwright.tests.config.ts --ui",
     "test:all": "vitest run && playwright test"
   },
   "dependencies": {
@@ -38,6 +40,8 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@clerk/backend": "^3.4.14",
+    "@clerk/testing": "^2.0.34",
     "@playwright/test": "^1.59.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
