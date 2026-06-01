@@ -16,16 +16,20 @@ config (`playwright.tests.config.ts`). The production smoke suite
 - ✅ A full **typed** interview end to end with feedback-contract assertions — `specs/candidate-typed.spec.ts`.
 - ✅ Corporate admin journey — dashboard, invite a recruiter, assign an assessment, plus the **seat-limit** and **trial-cap** `403` rejections — `specs/corporate-admin.spec.ts`.
 - ✅ Assessment centre — the full three-stage pipeline (case study → interview/brief → presentation/report) driven at the API level — `specs/assessment-centre.spec.ts`.
+- ✅ Standalone AI / analysis routes — `specs/ai-routes.spec.ts`: STAR scorer, transcript cleaner, voice-analysis + video-analysis (pure scoring, no AI), and the whisper-filler paid-plan gate.
+- ✅ Career-doc generators (Professional) — personal statement, cover letter, CV enhancer, plus the Plus-persona `403` — `specs/career-docs.spec.ts`.
 - Deterministic and ~free via the AI mock seam (`AIM_TEST_MODE=mock`).
-- ♻️ **Real-AI nightly** — the `@real-ai`-tagged subset (one typed interview + the AC pipeline) re-run against the live OpenAI API to catch parser/contract drift (see below).
+- ♻️ **Real-AI nightly** — the `@real-ai`-tagged subset (typed interview + AC pipeline + STAR scorer + CV enhancer) re-run against the live OpenAI API to catch parser/contract drift (see below).
 
 - ✅ **Stripe checkout (test mode)** — candidate + corporate checkout routes return a real `checkout.stripe.com` session URL — `specs/stripe.spec.ts`. Opt-in: tagged `@stripe`, excluded from the default pack, and **skips** unless `STRIPE_SECRET_KEY` is an `sk_test_` key (so it can never hit live). Run with `npm run test:pack:stripe` after adding `sk_test_` + the `STRIPE_PRICE_*` test ids to `.env.test`.
 
-Not covered by automation: the browser's live **voice/camera capture** and the
-realtime `/api/voice-analysis` + `/api/video-analysis` routes (the AC *submit*
-endpoints they feed ARE covered at the API level); and Stripe's **hosted card
-page + webhook→entitlement** flow (rehearse with a test card per the GO-LIVE
-"Rehearse in Stripe TEST mode" section).
+Not covered by automation: the browser's live **voice/camera capture** (getUserMedia
++ the client-side camera ML that *produces* the metrics — the scoring routes that
+*consume* them ARE covered above); routes that gate on the JWT `metadata` claim can
+only assert the reject case (`@clerk/testing` tokens don't surface private_metadata
+to a route handler — the resolver is covered by the unit matrix); and Stripe's
+**hosted card page + webhook→entitlement** flow (rehearse with a test card per the
+GO-LIVE "Rehearse in Stripe TEST mode" section).
 
 ## One-time setup (required to RUN the pack)
 The pack seeds users + runs interviews, so it needs a throwaway/test environment
