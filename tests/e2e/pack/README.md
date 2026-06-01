@@ -14,6 +14,8 @@ config (`playwright.tests.config.ts`). The production smoke suite
 - ✅ Persona logins: Free / Trial / Plus / Professional + a corporate admin, seeded via Clerk `privateMetadata` (no Stripe).
 - ✅ Plan gating on `/practice` per persona — `specs/personas.spec.ts`.
 - ✅ A full **typed** interview end to end with feedback-contract assertions — `specs/candidate-typed.spec.ts`.
+- ✅ **Voice** and **voice+camera** interviews end to end (mode → question → answer → feedback → summary) — `specs/voice-interview.spec.ts`. Live speech-to-text / webcam capture is stubbed (browser hardware); the pipeline + scoring routes are exercised.
+- ✅ **Setup customisation reaches the API** — the chosen interview type / difficulty / focus / experience level are asserted in the `/api/interview` request — `specs/practice-config.spec.ts`.
 - ✅ Corporate admin journey — dashboard, invite a recruiter, assign an assessment, plus the **seat-limit** and **trial-cap** `403` rejections — `specs/corporate-admin.spec.ts`.
 - ✅ Assessment centre — the full three-stage pipeline (case study → interview/brief → presentation/report) driven at the API level — `specs/assessment-centre.spec.ts`.
 - ✅ Standalone AI / analysis routes — `specs/ai-routes.spec.ts`: STAR scorer, transcript cleaner, voice-analysis + video-analysis (pure scoring, no AI), and the whisper-filler paid-plan gate.
@@ -21,13 +23,14 @@ config (`playwright.tests.config.ts`). The production smoke suite
 - ✅ Account lifecycle — GDPR **account deletion** (confirmation + workspace-admin-block guards, plus the destructive purge via a throwaway persona) and the **change-password** forced-reset guards — `specs/account.spec.ts`.
 - ✅ One-click **email unsubscribe** (RFC 8058) flips marketing consent off — `specs/email.spec.ts`.
 - Deterministic and ~free via the AI mock seam (`AIM_TEST_MODE=mock`).
-- ♻️ **Real-AI nightly** — the `@real-ai`-tagged subset (typed interview + AC pipeline + STAR scorer + CV enhancer) re-run against the live OpenAI API to catch parser/contract drift (see below).
+- ♻️ **Real-AI nightly** — the `@real-ai`-tagged subset (typed interview + AC pipeline + STAR scorer + CV enhancer) re-run against the live OpenAI API to catch parser/contract drift, plus an **output-quality** check (`specs/output-quality.spec.ts`: a strong answer must out-score a weak one) — see below.
 
 - ✅ **Stripe checkout (test mode)** — candidate + corporate checkout routes return a real `checkout.stripe.com` session URL — `specs/stripe.spec.ts`. Opt-in: tagged `@stripe`, excluded from the default pack, and **skips** unless `STRIPE_SECRET_KEY` is an `sk_test_` key (so it can never hit live). Run with `npm run test:pack:stripe` after adding `sk_test_` + the `STRIPE_PRICE_*` test ids to `.env.test`.
 
-Not covered by automation: the browser's live **voice/camera capture** (getUserMedia
-+ the client-side camera ML that *produces* the metrics — the scoring routes that
-*consume* them ARE covered above); routes that gate on the JWT `metadata` claim can
+Not covered by automation: only the browser's live **speech-to-text + webcam capture**
+itself (getUserMedia + the client-side camera ML that *produces* the metrics — the
+voice/camera *modes*, the full *pipeline*, and the scoring routes that *consume* the
+metrics ARE covered above); routes that gate on the JWT `metadata` claim can
 only assert the reject case (`@clerk/testing` tokens don't surface private_metadata
 to a route handler — the resolver is covered by the unit matrix); and Stripe's
 **hosted card page + webhook→entitlement** flow (rehearse with a test card per the
