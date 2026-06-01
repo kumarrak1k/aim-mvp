@@ -55,6 +55,32 @@ STRIPE_PRICE_CORPORATE_BUSINESS_MONTHLY / _ANNUAL
 
 ---
 
+## Rehearse in Stripe TEST mode first (recommended)
+
+Before the live flip, rehearse the whole payment flow with **test** keys and
+**test** cards — no real money, fully reversible. Do it in a throwaway/staging
+env (or locally), never against the live DB.
+
+1. In Stripe **test mode**, create the same products/prices as §1, and put the
+   `sk_test_…` key + the `STRIPE_PRICE_*` **test** ids into your test env
+   (`.env.test` locally, or a staging Vercel env).
+2. **Automated — session creation:** `npm run test:pack:stripe` (in the test pack).
+   It signs in a candidate + a corporate admin and asserts both checkout routes
+   return a real `checkout.stripe.com` session URL with your test prices. It
+   **skips itself** unless `STRIPE_SECRET_KEY` is an `sk_test_` key, so it can
+   never hit live.
+3. **Manual — full flow:** open a candidate Plus checkout and pay with Stripe's
+   test card `4242 4242 4242 4242` (any future expiry / any CVC); confirm
+   `/practice` shows the paid plan within ~1 min. Repeat for a corporate Team
+   checkout from the dashboard → `Company.planStatus` becomes `active`. In
+   Stripe → Webhooks (test mode), confirm both endpoints show **200**. Cancel via
+   the billing portal → confirm access reverts.
+
+These are the same assertions as the live smoke in §3 — proving them in test mode
+first means the live flip is just a key swap.
+
+---
+
 ## 3. Flip + verify
 
 - [ ] Redeploy (or it auto-deploys on the env change).

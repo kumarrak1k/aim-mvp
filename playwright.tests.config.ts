@@ -20,6 +20,15 @@ import { BASE_URL } from "./tests/e2e/pack/fixtures/env";
 // remote preview URL, don't boot one — run against that deployment instead.
 const useLocalServer = /localhost|127\.0\.0\.1/.test(BASE_URL);
 
+// Forward any STRIPE_* vars (secret key + price IDs) to the app under test, so
+// the optional @stripe checkout suite can create sessions in Stripe TEST mode.
+// Empty when none are set, so the suite simply skips.
+const stripeEnv: Record<string, string> = Object.fromEntries(
+  Object.entries(process.env)
+    .filter(([k]) => k.startsWith("STRIPE_"))
+    .map(([k, v]) => [k, v ?? ""]),
+);
+
 export default defineConfig({
   testDir: "./tests/e2e/pack",
   timeout: 90_000,
@@ -79,6 +88,7 @@ export default defineConfig({
             CLERK_PUBLISHABLE_KEY: process.env.CLERK_PUBLISHABLE_KEY ?? "",
             CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY ?? "",
             DATABASE_URL: process.env.DATABASE_URL ?? "",
+            ...stripeEnv,
           },
         },
       }

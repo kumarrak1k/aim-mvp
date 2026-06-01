@@ -19,10 +19,13 @@ config (`playwright.tests.config.ts`). The production smoke suite
 - Deterministic and ~free via the AI mock seam (`AIM_TEST_MODE=mock`).
 - ♻️ **Real-AI nightly** — the `@real-ai`-tagged subset (one typed interview + the AC pipeline) re-run against the live OpenAI API to catch parser/contract drift (see below).
 
-Not covered by the mocked pack: the browser's live **voice/camera capture** and
-the realtime `/api/voice-analysis` + `/api/video-analysis` routes (the AC *submit*
-endpoints they feed ARE covered at the API level); and **live Stripe checkout**
-(kept out of the entitlement path — verify in Stripe test mode).
+- ✅ **Stripe checkout (test mode)** — candidate + corporate checkout routes return a real `checkout.stripe.com` session URL — `specs/stripe.spec.ts`. Opt-in: tagged `@stripe`, excluded from the default pack, and **skips** unless `STRIPE_SECRET_KEY` is an `sk_test_` key (so it can never hit live). Run with `npm run test:pack:stripe` after adding `sk_test_` + the `STRIPE_PRICE_*` test ids to `.env.test`.
+
+Not covered by automation: the browser's live **voice/camera capture** and the
+realtime `/api/voice-analysis` + `/api/video-analysis` routes (the AC *submit*
+endpoints they feed ARE covered at the API level); and Stripe's **hosted card
+page + webhook→entitlement** flow (rehearse with a test card per the GO-LIVE
+"Rehearse in Stripe TEST mode" section).
 
 ## One-time setup (required to RUN the pack)
 The pack seeds users + runs interviews, so it needs a throwaway/test environment
@@ -58,8 +61,9 @@ The pack seeds users + runs interviews, so it needs a throwaway/test environment
 | Command | What |
 |---|---|
 | `npm test` | unit suite incl. the persona matrix (no infra) |
-| `npm run test:pack` | the full pack (mocked AI) |
+| `npm run test:pack` | the full pack (mocked AI; excludes `@stripe`) |
 | `npm run test:pack:real` | only the `@real-ai` subset, against the live OpenAI API |
+| `npm run test:pack:stripe` | only the `@stripe` subset — checkout-session creation in Stripe **test mode** |
 | `npm run test:pack:ui` | Playwright UI mode |
 
 ## Real-AI nightly (optional)
