@@ -111,6 +111,56 @@ const MOCK_AC_REPORT = {
   finalRecommendation: "A strong candidate who is assessment-centre ready and would benefit from polishing executive communication.",
 };
 
+// /tools/star-scorer — schema matches the route's ScorerResult exactly.
+const MOCK_STAR_SCORE = {
+  situation: { score: 8, feedback: "Clear, concise context." },
+  task: { score: 8, feedback: "Well-defined objective." },
+  action: { score: 8, feedback: "Specific, owned actions." },
+  result: { score: 8, feedback: "Quantified, relevant outcome." },
+  overall: 8,
+  summary: "A strong STAR answer with a clear, measurable result.",
+  topImprovement: "Lead with the result to hook the interviewer.",
+};
+
+// Career-doc generators (Professional). Each fixture matches its route's schema.
+const MOCK_PERSONAL_STATEMENT = {
+  statement:
+    "When I automated my school library's returns desk at sixteen, I learned that the best technology disappears into the problem it solves.\n\nThat conviction has shaped every step since.",
+  wordCount: 480,
+  openingHook: "Opens on a specific, concrete moment rather than a generic passion statement.",
+  keyNarrativeThread: "Using technology to solve real, human problems.",
+  strengths: ["Specific opening hook", "Coherent narrative arc", "Authentic, personal voice"],
+  suggestions: ["Add one more quantified achievement", "Name specific programme modules", "Tighten the closing sentence"],
+};
+
+const MOCK_COVER_LETTER = {
+  letter:
+    "Dear Hiring Manager,\n\nWhen I saw how your team rebuilt the analytics stack last year, I recognised the kind of problem I want to work on.\n\nI would welcome the chance to discuss how I can help.",
+  wordCount: 320,
+  subject: "Application for Data Analyst — retail analytics experience",
+  keyThemes: ["Commercial impact", "Technical fluency", "Genuine fit"],
+  customisationTips: ["Name a specific recent initiative", "Mirror two phrases from the advert", "Add one quantified win"],
+};
+
+const MOCK_CV_ENHANCER = {
+  overallScore: 7,
+  overallLabel: "A solid CV with clear room to sharpen impact.",
+  summary: "Strong experience that is undersold by vague bullets. Quantify outcomes and lead with impact.",
+  sections: [
+    { name: "Work Experience", score: 7, feedback: "Good roles, but bullets describe duties, not impact.", suggestion: "Rewrite each as action + scope + measurable result." },
+    { name: "Skills", score: 6, feedback: "A flat keyword list.", suggestion: "Group by theme and tie each to evidence." },
+  ],
+  quickWins: ["Add metrics to the top three bullets", "Move skills below experience", "Cut the generic profile statement"],
+  enhancedBullets: [
+    { original: "Responsible for managing the team.", enhanced: "Led a 6-person team to deliver the roadmap two weeks early, lifting retention 12%." },
+    { original: "Worked on dashboards.", enhanced: "Built four exec dashboards in SQL that informed weekly pricing decisions." },
+  ],
+  missingKeywords: ["A/B testing", "stakeholder management", "roadmapping", "SQL", "experimentation"],
+  atsTips: ["Use a single-column layout", "Match the advert's exact job title", "Avoid tables and text boxes"],
+  topStrength: "Genuine end-to-end product ownership across the lifecycle.",
+  biggestGap: "No quantified outcomes — impact is invisible to a skim-reader.",
+};
+
 function systemContent(request: ChatCompletionRequest): string {
   return request.messages.find((m) => m.role === "system")?.content ?? "";
 }
@@ -154,6 +204,17 @@ export function mockChatCompletion(request: ChatCompletionRequest): string {
     return JSON.stringify(MOCK_AC_SCENARIO);
   }
 
+  // Career-doc generators — each keyed off a field unique to its JSON schema.
+  if (all.includes("openingHook")) {
+    return JSON.stringify(MOCK_PERSONAL_STATEMENT);
+  }
+  if (all.includes("customisationTips")) {
+    return JSON.stringify(MOCK_COVER_LETTER);
+  }
+  if (all.includes("enhancedBullets")) {
+    return JSON.stringify(MOCK_CV_ENHANCER);
+  }
+
   // /feedback — its system prompt defines the category_scores schema.
   if (sys.includes("category_scores") || all.includes('"category_scores"')) {
     return JSON.stringify(MOCK_FEEDBACK);
@@ -167,16 +228,9 @@ export function mockChatCompletion(request: ChatCompletionRequest): string {
     return JSON.stringify({ question: MOCK_QUESTIONS[answered % MOCK_QUESTIONS.length] });
   }
 
-  // /tools/star-scorer — best-effort STAR breakdown (not on the typed path).
+  // /tools/star-scorer — distinctive STAR scoring prompt (STAR + score schema).
   if (all.includes("STAR") && all.includes("score")) {
-    return JSON.stringify({
-      score: 8,
-      situation: { score: 8, feedback: "Clear context." },
-      task: { score: 8, feedback: "Well-defined objective." },
-      action: { score: 8, feedback: "Specific, owned actions." },
-      result: { score: 8, feedback: "Quantified outcome." },
-      overall: "A strong STAR answer.",
-    });
+    return JSON.stringify(MOCK_STAR_SCORE);
   }
 
   // /clean-transcript — best-effort echo.

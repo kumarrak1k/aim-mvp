@@ -105,6 +105,11 @@ export async function checkRateLimit(
   windowSeconds: number,
   opts?: { failClosed?: boolean }
 ): Promise<RateLimitResult> {
+  // Test pack: the limiter isn't under test, and the dev server is reused across
+  // runs so in-memory counters would accumulate (e.g. star-scorer's 5/hour).
+  // Bypass in mock mode. Inert in production — only the test runner sets this.
+  if (process.env.AIM_TEST_MODE === "mock") return { allowed: true };
+
   const key = `${userId}:${endpoint}`;
   const limiter = getRedisLimiter(maxRequests, windowSeconds);
 

@@ -93,6 +93,13 @@ export async function POST(req: Request) {
 
     const ukTranscript = normaliseTranscriptToUkEnglish(transcript);
 
+    // Test pack: this route calls the OpenAI SDK directly (not callOpenAIChat),
+    // so the mock seam can't intercept it — return the UK-normalised transcript
+    // without an API call. Inert in production (only the test runner sets this).
+    if (process.env.AIM_TEST_MODE === "mock") {
+      return Response.json({ cleanedTranscript: ukTranscript });
+    }
+
     const response = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       temperature: 0,
