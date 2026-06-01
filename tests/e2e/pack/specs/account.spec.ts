@@ -37,4 +37,21 @@ test.describe("account deletion", () => {
       expect(body.ok).toBe(true);
     });
   });
+
+  // /api/account/change-password is a backend password set, allowed ONLY for
+  // admin-created accounts flagged forcePasswordReset. Both guards are tested
+  // non-destructively (a normal persona is refused before any password changes).
+  test.describe("forced-password-reset guard", () => {
+    test.use({ storageState: statePath("free") });
+
+    test("rejects a too-short new password", async ({ page }) => {
+      const res = await page.request.post("/api/account/change-password", { data: { newPassword: "short" } });
+      expect(res.status()).toBe(400);
+    });
+
+    test("refuses unless the account is flagged for a forced reset", async ({ page }) => {
+      const res = await page.request.post("/api/account/change-password", { data: { newPassword: "ValidLongPass123" } });
+      expect(res.status()).toBe(403);
+    });
+  });
 });

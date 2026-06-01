@@ -7,6 +7,7 @@ import { test as teardown } from "@playwright/test";
 import { CANDIDATE_PERSONAS, CORPORATE_ADMIN, DISPOSABLE_CANDIDATE } from "../fixtures/personas";
 import { deletePersona } from "../fixtures/seedClerkUser";
 import { deleteCompany } from "../fixtures/seedCompany";
+import { deleteEmailPreference } from "../fixtures/seedEmail";
 
 teardown("delete seeded personas", async () => {
   for (const persona of CANDIDATE_PERSONAS) {
@@ -16,4 +17,5 @@ teardown("delete seeded personas", async () => {
   await deletePersona(CORPORATE_ADMIN);
   // The account-deletion spec usually deletes this one itself; tolerate that.
   await deletePersona(DISPOSABLE_CANDIDATE);
+  await deleteEmailPreference();
 });
