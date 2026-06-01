@@ -1,13 +1,23 @@
 /**
- * Persona seeding via the Clerk Backend SDK.
+ * Persona seeding: Clerk user (Backend SDK) + a UserProfile row (Prisma) that
+ * marks Terms-of-Use accepted.
  *
- * Uses a DEDICATED test Clerk instance (CLERK_SECRET_KEY = sk_test_… of a
- * non-production app). Idempotent: deletes any pre-existing user with the
- * persona email first, so every run starts from a clean slate.
+ * Uses a DEDICATED test Clerk instance (CLERK_SECRET_KEY = sk_test_…) and the
+ * test DATABASE_URL (a throwaway Neon branch). Idempotent: deletes any existing
+ * user + profile for the persona email first, so every run starts clean.
+ *
+ * Why the UserProfile row: app/lib/legal.ts `requireTosAcceptance()` redirects
+ * any signed-in user to /accept-terms until their UserProfile.tosAcceptedVersion
+ * matches CURRENT_TOS_VERSION. Without this, /practice bounces every persona to
+ * the terms gate.
  */
 import { createClerkClient } from "@clerk/backend";
+import { PrismaClient } from "@prisma/client";
 import { TEST_PASSWORD } from "./env";
 import type { Persona } from "./personas";
+
+// Keep in sync with CURRENT_TOS_VERSION in app/lib/legal.ts.
+const TOS_VERSION = "2026-05-13";
 
 const secretKey = process.env.CLERK_SECRET_KEY;
 if (secretKey && /sk_live_/.test(secretKey)) {
@@ -15,11 +25,13 @@ if (secretKey && /sk_live_/.test(secretKey)) {
 }
 
 export const clerk = createClerkClient({ secretKey: secretKey ?? "" });
+const prisma = new PrismaClient();
 
-/** Delete any users with this email, then create a fresh one with the metadata. */
+/** Delete any existing user + profile for this email, then create fresh. */
 export async function seedPersona(persona: Persona) {
   const existing = await clerk.users.getUserList({ emailAddress: [persona.email] });
   for (const u of existing.data) {
+    await prisma.userProfile.deleteMany({ where: { clerkUserId: u.id } });
     await clerk.users.deleteUser(u.id);
   }
 
@@ -33,13 +45,22 @@ export async function seedPersona(persona: Persona) {
     await clerk.users.updateUserMetadata(user.id, { privateMetadata: persona.privateMetadata });
   }
 
+  // Mark Terms of Use accepted so the app doesn't redirect to /accept-terms.
+  const now = new Date();
+  await prisma.userProfile.upsert({
+    where: { clerkUserId: user.id },
+    create: { clerkUserId: user.id, tosAcceptedAt: now, tosAcceptedVersion: TOS_VERSION },
+    update: { tosAcceptedAt: now, tosAcceptedVersion: TOS_VERSION },
+  });
+
   return user;
 }
 
-/** Remove all seeded persona users (run by the teardown project). */
+/** Remove the seeded user + profile (run by the teardown project). */
 export async function deletePersona(persona: Persona) {
   const existing = await clerk.users.getUserList({ emailAddress: [persona.email] });
   for (const u of existing.data) {
+    await prisma.userProfile.deleteMany({ where: { clerkUserId: u.id } });
     await clerk.users.deleteUser(u.id);
   }
 }
