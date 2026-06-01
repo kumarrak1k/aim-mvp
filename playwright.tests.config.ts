@@ -58,7 +58,14 @@ export default defineConfig({
     {
       name: "chromium",
       testDir: "./tests/e2e/pack/specs",
-      use: { ...devices["Desktop Chrome"] },
+      use: {
+        ...devices["Desktop Chrome"],
+        // Synthetic mic/camera so the voice + camera interview specs run without
+        // real hardware (inert for the other specs, which request no media).
+        launchOptions: {
+          args: ["--use-fake-device-for-media-stream", "--use-fake-ui-for-media-stream"],
+        },
+      },
       dependencies: ["auth"],
     },
     {

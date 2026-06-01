@@ -14,16 +14,24 @@ import { answerFor } from "./answerBank";
 
 export async function runTypedInterview(
   page: Page,
-  opts: { role: string; totalQuestions?: number },
+  opts: { role: string; totalQuestions?: number; mode?: "typed" | "voice" | "voice-camera" },
 ): Promise<void> {
   const total = opts.totalQuestions ?? 5;
+  const mode = opts.mode ?? "typed";
+  const modeButton =
+    mode === "voice"
+      ? "Voice interview"
+      : mode === "voice-camera"
+        ? "Voice + camera interview"
+        : "Typed answers only";
 
   // ── Start screen ───────────────────────────────────────────────────────────
   await page.goto("/practice");
   await page.getByPlaceholder(/Example:|saved profile context/i).first().fill(opts.role);
-  // Typed is the default mode; clicking it is safe and explicit (it's the only
-  // unlocked mode for the Free persona).
-  await page.getByRole("button", { name: "Typed answers only" }).click();
+  // Select the interview mode. In voice / voice+camera the answer textarea is
+  // still editable, so the bot types its answer — the live speech-to-text /
+  // camera capture is browser hardware and is stubbed out by the spec.
+  await page.getByRole("button", { name: modeButton }).click();
 
   await Promise.all([
     page.waitForResponse((r) => r.url().includes("/api/interview") && r.ok()).catch(() => null),
