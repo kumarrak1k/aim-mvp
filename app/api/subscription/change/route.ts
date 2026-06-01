@@ -159,10 +159,18 @@ export async function POST(request: NextRequest) {
           end_date: periodEnd,
           items: [{ price: currentPriceId }],
           proration_behavior: "none",
+          // Preserve the CURRENT metadata for the remainder of this cycle, so
+          // entitlement is unchanged until the downgrade actually takes effect.
+          metadata: { ...subscription.metadata, clerkUserId: userId },
         },
         {
           items: [{ price: newPriceId }],
           proration_behavior: "none",
+          // When the downgrade takes effect the subscription's planId must follow
+          // the new price — Stripe applies a phase's metadata to the subscription
+          // when the phase begins. Without this, the webhook/reconcile read the
+          // stale planId and keep granting the old (higher) tier after downgrade.
+          metadata: { ...subscription.metadata, clerkUserId: userId, planId: targetPlanId },
         },
       ];
 
