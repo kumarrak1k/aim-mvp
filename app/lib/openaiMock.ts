@@ -70,6 +70,47 @@ const MOCK_AC_SCORE = {
   modelAnswer: "An excellent response opens with a one-line recommendation, supports it with two exhibits, quantifies the upside, and names the key risk and mitigation.",
 };
 
+// Assessment-centre stage 2 (interview → presentation brief) and stage 3
+// (presentation scoring → final report). Kept marker-clean: when these get
+// embedded into later-stage prompts they must not trip an earlier matcher.
+const MOCK_AC_BRIEF = {
+  topic: "Launching a new own-brand product line into a competitive market",
+  audience: "The senior leadership team",
+  context:
+    "The business wants to grow margin by expanding its own-brand range but faces strong incumbents and a limited marketing budget. Set out the case.",
+  format: "3-minute spoken presentation",
+  objectives: ["Make a clear recommendation", "Support it with evidence", "Set out the main risk and mitigation"],
+  timeMinutes: 3,
+};
+
+const MOCK_PRESENTATION_SCORE = {
+  scores: { structure: 8, content: 8, persuasion: 7, clarity: 8, delivery: 7 },
+  overall: 8,
+  commentary: "A clear, well-organised presentation with a defensible recommendation and good use of evidence.",
+  strengths: ["Clear structure", "Confident delivery", "Evidence-backed recommendation"],
+  improvements: ["Sharpen the opening", "Quantify the upside", "Name the key risk earlier"],
+};
+
+const MOCK_AC_REPORT = {
+  overallScore: 8,
+  readinessLevel: "High",
+  headline: "A well-rounded candidate who performs consistently across all assessment centre stages.",
+  competencyScores: { analyticalThinking: 8, communication: 8, commercialAwareness: 8, leadership: 7, problemSolving: 8 },
+  stageScores: { caseStudy: 8, interview: 8, presentation: 8 },
+  topStrengths: ["Structured analysis", "Clear communication", "Commercial judgement"],
+  priorityImprovements: ["Deeper risk analysis", "More quantified outcomes", "Stronger executive summaries"],
+  sevenDayPlan: [
+    "Review an issue-tree framework",
+    "Practise STAR answers with a timer",
+    "Record and review a 3-minute presentation",
+    "Read one sector report",
+    "Write five strong STAR stories",
+    "Do a mock interview",
+    "Set three specific goals",
+  ],
+  finalRecommendation: "A strong candidate who is assessment-centre ready and would benefit from polishing executive communication.",
+};
+
 function systemContent(request: ChatCompletionRequest): string {
   return request.messages.find((m) => m.role === "system")?.content ?? "";
 }
@@ -82,13 +123,33 @@ export function mockChatCompletion(request: ChatCompletionRequest): string {
   const sys = systemContent(request);
   const all = allContent(request);
 
-  // Assessment-centre case-study SCORING (submit-case-study) — distinctive
-  // "commercialAwareness" score key. Checked before the scenario case because the
-  // scoring prompt embeds the scenario (which also contains "exhibits").
+  // ── Assessment-centre chain. ORDER MATTERS: a later stage's prompt embeds the
+  // earlier stages' JSON outputs, so each is matched by a marker unique to the
+  // schema IT asks the model to RETURN, most-specific first.
+  //
+  // Final REPORT (chief assessor; stage-2 no-stage3 path and stage 3) —
+  // "sevenDayPlan" is unique to the report schema. First, because the report
+  // prompt also embeds the presentation feedback ("persuasion") and the case
+  // feedback ("commercialAwareness").
+  if (all.includes("sevenDayPlan")) {
+    return JSON.stringify(MOCK_AC_REPORT);
+  }
+  // Presentation SCORING (submit-presentation) — "persuasion" is unique to its
+  // score schema. Before the brief: the score prompt embeds the stored brief
+  // (which contains "3-minute spoken presentation").
+  if (all.includes('"persuasion"')) {
+    return JSON.stringify(MOCK_PRESENTATION_SCORE);
+  }
+  // Presentation BRIEF generation (submit-interview, stage-3 path).
+  if (all.includes("Generate a presentation brief")) {
+    return JSON.stringify(MOCK_AC_BRIEF);
+  }
+  // Case-study SCORING (submit-case-study) — distinctive "commercialAwareness".
+  // Before the scenario case (the scoring prompt embeds the scenario's "exhibits").
   if (all.includes("commercialAwareness")) {
     return JSON.stringify(MOCK_AC_SCORE);
   }
-  // Assessment-centre case-study SCENARIO (start-ac) — distinctive "exhibits".
+  // Case-study SCENARIO (start-ac) — distinctive "exhibits".
   if (all.includes('"exhibits"') || all.includes("assessment centre designer")) {
     return JSON.stringify(MOCK_AC_SCENARIO);
   }
