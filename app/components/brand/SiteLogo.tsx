@@ -70,6 +70,7 @@ function LogoContent({
               src="/brand/logo.jpg"
               alt="AI Career Mentor"
               fill
+              priority
               sizes="128px"
               className={`${styles.image} object-contain`}
               style={{
