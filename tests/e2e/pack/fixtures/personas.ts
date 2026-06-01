@@ -73,3 +73,14 @@ export const CORPORATE_ADMIN: { key: string; email: string; privateMetadata: Rec
   email: "corpadmin+aimtest@aimtest.dev",
   privateMetadata: { accountType: "corporate" },
 };
+
+/**
+ * A throwaway candidate the account-deletion spec consumes — it signs in and
+ * then DELETEs its own account, so it must be separate from the shared personas
+ * above (which later specs reuse).
+ */
+export const DISPOSABLE_CANDIDATE: { key: string; email: string; privateMetadata: Record<string, unknown> } = {
+  key: "disposable",
+  email: "disposable+aimtest@aimtest.dev",
+  privateMetadata: { accountType: "candidate", trialConsumed: true },
+};

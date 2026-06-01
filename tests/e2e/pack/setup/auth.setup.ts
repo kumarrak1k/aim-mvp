@@ -6,7 +6,7 @@
  */
 import { test as setup } from "@playwright/test";
 import { clerk } from "@clerk/testing/playwright";
-import { CANDIDATE_PERSONAS, CORPORATE_ADMIN } from "../fixtures/personas";
+import { CANDIDATE_PERSONAS, CORPORATE_ADMIN, DISPOSABLE_CANDIDATE } from "../fixtures/personas";
 import { TEST_PASSWORD, statePath } from "../fixtures/env";
 import { seedPersona } from "../fixtures/seedClerkUser";
 import { seedCompany } from "../fixtures/seedCompany";
@@ -43,4 +43,17 @@ setup(`seed + sign in: ${CORPORATE_ADMIN.key}`, async ({ page }) => {
 
   await page.goto("/company/dashboard");
   await page.context().storageState({ path: statePath(CORPORATE_ADMIN.key) });
+});
+
+setup(`seed + sign in: ${DISPOSABLE_CANDIDATE.key}`, async ({ page }) => {
+  await seedPersona(DISPOSABLE_CANDIDATE);
+
+  await page.goto("/");
+  await clerk.signIn({
+    page,
+    signInParams: { strategy: "password", identifier: DISPOSABLE_CANDIDATE.email, password: TEST_PASSWORD },
+  });
+
+  await page.goto("/practice");
+  await page.context().storageState({ path: statePath(DISPOSABLE_CANDIDATE.key) });
 });
