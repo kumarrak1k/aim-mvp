@@ -59,9 +59,18 @@ export default defineConfig({
           url: "http://localhost:3000",
           reuseExistingServer: true,
           timeout: 120_000,
-          // Boot the app with the AI mock seam ON so the suite is deterministic
-          // and needs no OpenAI key.
-          env: { AIM_TEST_MODE: "mock" },
+          // Boot the app with the AI mock seam ON, and forward the TEST Clerk
+          // instance + DB so the app-under-test and the test process use the
+          // SAME instance. These come from .env.test via:
+          //   npx dotenv-cli -e .env.test -- npm run test:pack
+          // so only .env.test is needed (no .env.local juggling).
+          env: {
+            AIM_TEST_MODE: "mock",
+            NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY ?? "",
+            CLERK_PUBLISHABLE_KEY: process.env.CLERK_PUBLISHABLE_KEY ?? "",
+            CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY ?? "",
+            DATABASE_URL: process.env.DATABASE_URL ?? "",
+          },
         },
       }
     : {}),

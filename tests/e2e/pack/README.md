@@ -43,9 +43,9 @@ The pack seeds users + runs interviews, so it needs a throwaway/test environment
    ```
    npx dotenv-cli -e .env.test -- npm run test:pack
    ```
-   - **Local**: the config boots `npm run dev` with `AIM_TEST_MODE=mock`. The dev
-     server reads Clerk keys from `.env.local`, so put the **test** `pk_test_/sk_test_`
-     there while testing (or run against a preview instead).
+   - **Local**: the config boots `npm run dev` and FORWARDS your `.env.test`
+     values (Clerk keys, DATABASE_URL, AIM_TEST_MODE) to it — so only `.env.test`
+     is needed; no `.env.local` juggling.
    - **Preview**: set `PLAYWRIGHT_BASE_URL` to a preview deployment whose Vercel
      env has `AIM_TEST_MODE=mock` + the test Clerk keys; the `CLERK_*` vars above
      are still needed by the test process (for seeding + the testing token).
