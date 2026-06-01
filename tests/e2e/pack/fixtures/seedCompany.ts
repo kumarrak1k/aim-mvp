@@ -17,6 +17,10 @@ export const AC_INVITE_TOKEN = "aimtest-ac-invite-token";
 export const AC_CANDIDATE_EMAIL = "free+aimtest@aimtest.dev";
 
 export async function seedCompany(adminClerkUserId: string) {
+  // AssessmentCentreSession.assignmentToken is @unique and the session is NOT
+  // cascade-deleted with the company (the FK points the other way), so a prior
+  // run's AC session would collide with this run's start-ac. Drop it first.
+  await prisma.assessmentCentreSession.deleteMany({ where: { assignmentToken: AC_INVITE_TOKEN } });
   await prisma.company.deleteMany({ where: { slug: SLUG } });
 
   const company = await prisma.company.create({
@@ -58,5 +62,26 @@ export async function seedCompany(adminClerkUserId: string) {
 }
 
 export async function deleteCompany() {
+  await prisma.assessmentCentreSession.deleteMany({ where: { assignmentToken: AC_INVITE_TOKEN } });
   await prisma.company.deleteMany({ where: { slug: SLUG } });
+}
+
+/** Add N extra recruiter members to the seeded company (for the seat-limit test). */
+export async function addCompanyMembers(count: number) {
+  const company = await prisma.company.findUnique({ where: { slug: SLUG } });
+  if (!company) return;
+  for (let i = 0; i < count; i++) {
+    await prisma.companyMember.create({
+      data: { companyId: company.id, clerkUserId: `seed-member-${i}`, role: "recruiter" },
+    });
+  }
+}
+
+/** Put the seeded company on a trial that has already hit the invite cap. */
+export async function setCompanyTrialAtCap() {
+  // 10 = CORPORATE_TRIAL_INVITE_CAP in app/lib/corporatePlan.ts
+  await prisma.company.updateMany({
+    where: { slug: SLUG },
+    data: { planStatus: "trial", trialInvitesUsed: 10 },
+  });
 }
