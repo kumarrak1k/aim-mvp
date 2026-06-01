@@ -206,7 +206,7 @@ export default function HomePage() {
               <p className="text-3xl font-black tracking-[-0.06em] text-white">
                 {s.value}
               </p>
-              <p className="mt-1 text-xs leading-5 text-gray-500">{s.label}</p>
+              <p className="mt-1 text-xs leading-5 text-gray-400">{s.label}</p>
             </div>
           ))}
         </section>
@@ -342,7 +342,7 @@ export default function HomePage() {
               <p className="mt-1.5 text-base font-black">
                 Try before you commit
               </p>
-              <p className="mt-1 text-sm text-gray-500">
+              <p className="mt-1 text-sm text-gray-400">
                 Paste your answer and get an instant STAR score with specific feedback.
               </p>
             </div>

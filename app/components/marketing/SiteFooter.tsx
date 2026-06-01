@@ -15,18 +15,18 @@ export function SiteFooter() {
           {/* Brand */}
           <div>
             <SiteLogo href="/" size="sm" showText />
-            <p className="mt-4 max-w-xs text-sm leading-6 text-gray-500">
+            <p className="mt-4 max-w-xs text-sm leading-6 text-gray-400">
               AI-powered interview coaching for candidates, hiring teams, and
               university careers services. Built in the UK.
             </p>
-            <p className="mt-5 text-xs text-gray-600">
+            <p className="mt-5 text-xs text-gray-400">
               © {new Date().getFullYear()}{" "}AI Career Mentor · England &amp; Wales
             </p>
           </div>
 
           {/* For candidates */}
           <div>
-            <p className="mb-4 text-[11px] font-black uppercase tracking-[0.18em] text-gray-600">
+            <p className="mb-4 text-[11px] font-black uppercase tracking-[0.18em] text-gray-400">
               For candidates
             </p>
             <div className="space-y-3 text-sm text-gray-400">
@@ -40,7 +40,7 @@ export function SiteFooter() {
 
           {/* Resources */}
           <div>
-            <p className="mb-4 text-[11px] font-black uppercase tracking-[0.18em] text-gray-600">
+            <p className="mb-4 text-[11px] font-black uppercase tracking-[0.18em] text-gray-400">
               Free resources
             </p>
             <div className="space-y-3 text-sm text-gray-400">
@@ -55,7 +55,7 @@ export function SiteFooter() {
 
           {/* Company */}
           <div>
-            <p className="mb-4 text-[11px] font-black uppercase tracking-[0.18em] text-gray-600">
+            <p className="mb-4 text-[11px] font-black uppercase tracking-[0.18em] text-gray-400">
               Company
             </p>
             <div className="space-y-3 text-sm text-gray-400">

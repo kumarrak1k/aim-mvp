@@ -55,9 +55,9 @@ export function CookieConsent() {
         </button>
         <Link
           href="/privacy"
-          className="text-[13px] text-gray-500 transition hover:text-gray-300"
+          className="text-[13px] text-gray-400 transition hover:text-gray-200"
         >
-          Learn more
+          Learn more about cookies
         </Link>
       </div>
     </div>
