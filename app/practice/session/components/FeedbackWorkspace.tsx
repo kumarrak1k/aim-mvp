@@ -34,7 +34,7 @@ export function FeedbackWorkspace({
             <p className="text-xs font-black uppercase tracking-[0.22em] text-emerald-300 sm:text-sm">
               AI feedback
             </p>
-            <h2 className="mt-2 text-3xl font-black tracking-[-0.04em] text-white">
+            <h2 data-testid="overall-score" className="mt-2 text-3xl font-black tracking-[-0.04em] text-white">
               {feedback.overall_score}/10
             </h2>
             <p className="mt-1 text-sm leading-6 text-gray-400">
@@ -198,8 +198,8 @@ export function FeedbackList({
       </p>
       <div className="space-y-3">
         {items.length ? (
-          items.map((item) => (
-            <p key={item} className="text-sm leading-6 text-gray-300">
+          items.map((item, index) => (
+            <p key={index} className="text-sm leading-6 text-gray-300">
               • {item}
             </p>
           ))

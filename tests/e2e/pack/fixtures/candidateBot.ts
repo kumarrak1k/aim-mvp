@@ -37,13 +37,12 @@ export async function runTypedInterview(
 
     // Best-effort read of the question so the answer can match its intent;
     // falls back to a strong default if the text can't be located.
+    // Read the question via the stable test-id (data-testid="question-text" on
+    // QuestionHero) so a strong, intent-matched answer can be chosen; falls back
+    // to a generic STAR answer if it can't be read.
     let questionText = "";
     try {
-      questionText = await page
-        .locator("section p")
-        .filter({ hasText: /\?\s*$/ })
-        .first()
-        .innerText({ timeout: 2_000 });
+      questionText = await page.getByTestId("question-text").innerText({ timeout: 5_000 });
     } catch {
       questionText = "";
     }
@@ -56,8 +55,10 @@ export async function runTypedInterview(
     ]);
     expect(feedbackResponse.ok(), "feedback API should return 2xx").toBeTruthy();
 
-    // The "AI feedback is ready" banner confirms feedback rendered.
+    // The "AI feedback is ready" banner confirms feedback rendered, and the
+    // scored panel shows the overall score (data-testid="overall-score").
     await expect(page.getByText("AI feedback is ready")).toBeVisible({ timeout: 30_000 });
+    await expect(page.getByTestId("overall-score").first()).toBeVisible({ timeout: 10_000 });
 
     // Advance — "Next question" until the last, then "Finish interview…".
     await page.getByRole("button", { name: /Next question|Finish interview/ }).first().click();

@@ -182,7 +182,7 @@ export function QuestionHero(props: QuestionHeroProps) {
         )}
 
         <div className="flex rounded-[1.25rem] border border-cyan-300/15 bg-cyan-300/10 px-4 py-4 sm:px-5 xl:flex-1">
-          <p className="self-start text-[1rem] font-bold leading-7 text-white sm:text-[1.08rem] sm:leading-8 xl:text-[1.08rem] 2xl:text-[1.16rem]">
+          <p data-testid="question-text" className="self-start text-[1rem] font-bold leading-7 text-white sm:text-[1.08rem] sm:leading-8 xl:text-[1.08rem] 2xl:text-[1.16rem]">
             {questionLoading ? "Generating your question..." : question}
           </p>
         </div>

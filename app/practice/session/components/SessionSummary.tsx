@@ -259,8 +259,8 @@ function QuestionCard({
                     Strengths
                   </p>
                   <ul className="mt-3 space-y-2">
-                    {result.feedback.strengths.map((s) => (
-                      <li key={s} className="flex gap-2 text-sm leading-6 text-gray-300">
+                    {result.feedback.strengths.map((s, idx) => (
+                      <li key={idx} className="flex gap-2 text-sm leading-6 text-gray-300">
                         <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-300" />
                         <span>{s}</span>
                       </li>
@@ -274,8 +274,8 @@ function QuestionCard({
                     Improvements
                   </p>
                   <ul className="mt-3 space-y-2">
-                    {result.feedback.improvements.map((s) => (
-                      <li key={s} className="flex gap-2 text-sm leading-6 text-gray-300">
+                    {result.feedback.improvements.map((s, idx) => (
+                      <li key={idx} className="flex gap-2 text-sm leading-6 text-gray-300">
                         <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-purple-300" />
                         <span>{s}</span>
                       </li>
@@ -600,8 +600,8 @@ export function SessionSummary({
                 Top strengths
               </p>
               <ul className="space-y-3">
-                {summary.top_strengths.map((s) => (
-                  <li key={s} className="flex items-start gap-2 text-sm leading-6 text-gray-300">
+                {summary.top_strengths.map((s, idx) => (
+                  <li key={idx} className="flex items-start gap-2 text-sm leading-6 text-gray-300">
                     <span className="mt-1 text-emerald-400">✓</span>
                     <span>{s}</span>
                   </li>
@@ -617,8 +617,8 @@ export function SessionSummary({
                 {(summary.priority_improvements?.length
                   ? summary.priority_improvements
                   : summary.top_improvements
-                ).map((s) => (
-                  <li key={s} className="flex items-start gap-2 text-sm leading-6 text-gray-300">
+                ).map((s, idx) => (
+                  <li key={idx} className="flex items-start gap-2 text-sm leading-6 text-gray-300">
                     <span className="mt-1 text-amber-400">→</span>
                     <span>{s}</span>
                   </li>
