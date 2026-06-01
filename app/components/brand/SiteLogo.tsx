@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 
 type SiteLogoProps = {
   href?: string;
@@ -65,9 +66,11 @@ function LogoContent({
           <div
             className={`relative flex h-[92%] w-[92%] items-center justify-center overflow-hidden bg-white shadow-inner shadow-black/10 ${styles.inner}`}
           >
-            <img
+            <Image
               src="/brand/logo.jpg"
               alt="AI Career Mentor"
+              fill
+              sizes="128px"
               className={`${styles.image} object-contain`}
               style={{
                 transform: `scale(${styles.zoom})`,
