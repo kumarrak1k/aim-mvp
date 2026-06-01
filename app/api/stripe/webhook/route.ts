@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { clerkClient } from "@clerk/nextjs/server";
 import { requireStripe } from "@/app/lib/stripe";
-import { recordStripeEvent, subscriptionPeriodEnd } from "@/app/lib/stripeEvents";
+import { recordStripeEvent } from "@/app/lib/stripeEvents";
+import {
+  isCorporateSubscription,
+  candidateUpsertMeta,
+  candidateDeletedMeta,
+  type CandidateSubscriptionMeta,
+} from "@/app/lib/stripeSync";
 import Stripe from "stripe";
 
 export const runtime = "nodejs";
@@ -9,17 +15,9 @@ export const runtime = "nodejs";
 // Stripe sends raw bodies — Next.js must not parse this route.
 export const dynamic = "force-dynamic";
 
-type SubscriptionMeta = {
-  stripeCustomerId?: string;
-  stripeSubscriptionId?: string;
-  stripePlanId?: string;
-  subscriptionStatus?: string;
-  subscriptionCurrentPeriodEnd?: number;
-};
-
 async function updateUserSubscription(
   clerkUserId: string,
-  data: Partial<SubscriptionMeta>
+  data: Partial<CandidateSubscriptionMeta>
 ) {
   const client = await clerkClient();
   const user = await client.users.getUser(clerkUserId);
@@ -27,14 +25,6 @@ async function updateUserSubscription(
   await client.users.updateUserMetadata(clerkUserId, {
     privateMetadata: { ...existing, ...data },
   });
-}
-
-/** True if this subscription belongs to a corporate workspace, not a candidate. */
-function isCorporateSubscription(subscription: Stripe.Subscription): boolean {
-  return (
-    subscription.metadata?.planType === "corporate" ||
-    Boolean(subscription.metadata?.companyId)
-  );
 }
 
 async function handleSubscriptionUpsert(subscription: Stripe.Subscription) {
@@ -47,15 +37,7 @@ async function handleSubscriptionUpsert(subscription: Stripe.Subscription) {
     return;
   }
 
-  const item = subscription.items.data[0];
-  const periodEnd = subscriptionPeriodEnd(subscription);
-  await updateUserSubscription(clerkUserId, {
-    stripeCustomerId: subscription.customer as string,
-    stripeSubscriptionId: subscription.id,
-    stripePlanId: subscription.metadata?.planId ?? item?.price?.lookup_key ?? null,
-    subscriptionStatus: subscription.status,
-    subscriptionCurrentPeriodEnd: periodEnd ?? undefined,
-  });
+  await updateUserSubscription(clerkUserId, candidateUpsertMeta(subscription));
 }
 
 /**
@@ -80,12 +62,7 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
   const clerkUserId = subscription.metadata?.clerkUserId;
   if (!clerkUserId) return;
 
-  await updateUserSubscription(clerkUserId, {
-    stripeSubscriptionId: subscription.id,
-    stripePlanId: undefined,
-    subscriptionStatus: "cancelled",
-    subscriptionCurrentPeriodEnd: undefined,
-  });
+  await updateUserSubscription(clerkUserId, candidateDeletedMeta(subscription));
 }
 
 export async function POST(req: NextRequest) {

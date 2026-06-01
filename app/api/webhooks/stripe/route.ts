@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireStripe } from "@/app/lib/stripe";
 import { prisma } from "@/app/lib/prisma";
-import { recordStripeEvent, subscriptionPeriodEnd } from "@/app/lib/stripeEvents";
+import { recordStripeEvent } from "@/app/lib/stripeEvents";
+import {
+  corporateUpsertData,
+  corporateDeletedData,
+  subscriptionPeriodEnd,
+} from "@/app/lib/stripeSync";
 import Stripe from "stripe";
 
 export const runtime = "nodejs";
@@ -39,27 +44,9 @@ async function handleSubscriptionUpsert(subscription: Stripe.Subscription) {
     return;
   }
 
-  // Map Stripe subscription status → our planStatus
-  const stripeStatus = subscription.status;
-  const planStatus =
-    stripeStatus === "active" || stripeStatus === "trialing"
-      ? "active"
-      : stripeStatus === "past_due"
-      ? "active" // still active, payment failing — let Stripe retry
-      : "expired";
-
-  const periodEnd = subscriptionPeriodEnd(subscription);
-
   await prisma.company.update({
     where: { id: companyId },
-    data: {
-      planStatus,
-      stripeCustomerId: subscription.customer as string,
-      stripeSubscriptionId: subscription.id,
-      stripeCurrentPeriodEnd: periodEnd
-        ? new Date(periodEnd * 1000)
-        : null,
-    },
+    data: corporateUpsertData(subscription),
   });
 }
 
@@ -69,11 +56,7 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
 
   await prisma.company.update({
     where: { id: companyId },
-    data: {
-      planStatus: "cancelled",
-      stripeSubscriptionId: subscription.id,
-      stripeCurrentPeriodEnd: null,
-    },
+    data: corporateDeletedData(subscription),
   });
 }
 

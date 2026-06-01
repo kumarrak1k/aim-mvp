@@ -1,4 +1,3 @@
-import type Stripe from "stripe";
 import { prisma } from "./prisma";
 
 /**
@@ -17,22 +16,4 @@ export async function recordStripeEvent(
     // Unique-constraint violation (P2002) → already processed.
     return { firstTime: false };
   }
-}
-
-/**
- * Reads the current period end (unix seconds) from a subscription. On the
- * pinned API version (2026-04-22.dahlia) this moved onto the subscription
- * ITEM, so read the item first and fall back to the subscription field.
- */
-export function subscriptionPeriodEnd(
-  subscription: Stripe.Subscription
-): number | null {
-  const item = subscription.items?.data?.[0] as
-    | (Stripe.SubscriptionItem & { current_period_end?: number })
-    | undefined;
-  const fromItem = item?.current_period_end;
-  const fromSub = (subscription as Stripe.Subscription & {
-    current_period_end?: number;
-  }).current_period_end;
-  return fromItem ?? fromSub ?? null;
 }
