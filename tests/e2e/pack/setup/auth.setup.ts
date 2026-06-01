@@ -6,9 +6,10 @@
  */
 import { test as setup } from "@playwright/test";
 import { clerk } from "@clerk/testing/playwright";
-import { CANDIDATE_PERSONAS } from "../fixtures/personas";
+import { CANDIDATE_PERSONAS, CORPORATE_ADMIN } from "../fixtures/personas";
 import { TEST_PASSWORD, statePath } from "../fixtures/env";
 import { seedPersona } from "../fixtures/seedClerkUser";
+import { seedCompany } from "../fixtures/seedCompany";
 
 for (const persona of CANDIDATE_PERSONAS) {
   setup(`seed + sign in: ${persona.key}`, async ({ page }) => {
@@ -27,3 +28,19 @@ for (const persona of CANDIDATE_PERSONAS) {
     await page.context().storageState({ path: statePath(persona.key) });
   });
 }
+
+setup(`seed + sign in: ${CORPORATE_ADMIN.key}`, async ({ page }) => {
+  const user = await seedPersona(CORPORATE_ADMIN);
+  // The corporate dashboard reads the company via the signed-in user's
+  // CompanyMember — seed a Company + admin member + AC template in the test DB.
+  await seedCompany(user.id);
+
+  await page.goto("/");
+  await clerk.signIn({
+    page,
+    signInParams: { strategy: "password", identifier: CORPORATE_ADMIN.email, password: TEST_PASSWORD },
+  });
+
+  await page.goto("/company/dashboard");
+  await page.context().storageState({ path: statePath(CORPORATE_ADMIN.key) });
+});

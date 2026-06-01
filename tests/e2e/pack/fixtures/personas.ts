@@ -62,3 +62,14 @@ export const CANDIDATE_PERSONAS: Persona[] = [
     voiceLocked: false,
   },
 ];
+
+/**
+ * Corporate admin — a Clerk user (accountType corporate) that ALSO gets a
+ * Company + admin CompanyMember + an assessment-centre template seeded in the
+ * test DB (see seedCompany.ts).
+ */
+export const CORPORATE_ADMIN: { key: string; email: string; privateMetadata: Record<string, unknown> } = {
+  key: "corpadmin",
+  email: "corpadmin+aimtest@aimtest.dev",
+  privateMetadata: { accountType: "corporate" },
+};

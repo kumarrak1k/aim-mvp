@@ -14,7 +14,8 @@
 import { createClerkClient } from "@clerk/backend";
 import { PrismaClient } from "@prisma/client";
 import { TEST_PASSWORD } from "./env";
-import type { Persona } from "./personas";
+
+type SeedUser = { email: string; privateMetadata: Record<string, unknown> };
 
 // Keep in sync with CURRENT_TOS_VERSION in app/lib/legal.ts.
 const TOS_VERSION = "2026-05-13";
@@ -28,7 +29,7 @@ export const clerk = createClerkClient({ secretKey: secretKey ?? "" });
 const prisma = new PrismaClient();
 
 /** Delete any existing user + profile for this email, then create fresh. */
-export async function seedPersona(persona: Persona) {
+export async function seedPersona(persona: SeedUser) {
   const existing = await clerk.users.getUserList({ emailAddress: [persona.email] });
   for (const u of existing.data) {
     await prisma.userProfile.deleteMany({ where: { clerkUserId: u.id } });
@@ -57,7 +58,7 @@ export async function seedPersona(persona: Persona) {
 }
 
 /** Remove the seeded user + profile (run by the teardown project). */
-export async function deletePersona(persona: Persona) {
+export async function deletePersona(persona: SeedUser) {
   const existing = await clerk.users.getUserList({ emailAddress: [persona.email] });
   for (const u of existing.data) {
     await prisma.userProfile.deleteMany({ where: { clerkUserId: u.id } });

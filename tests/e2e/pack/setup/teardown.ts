@@ -4,11 +4,14 @@
  * teardown) in playwright.tests.config.ts.
  */
 import { test as teardown } from "@playwright/test";
-import { CANDIDATE_PERSONAS } from "../fixtures/personas";
+import { CANDIDATE_PERSONAS, CORPORATE_ADMIN } from "../fixtures/personas";
 import { deletePersona } from "../fixtures/seedClerkUser";
+import { deleteCompany } from "../fixtures/seedCompany";
 
 teardown("delete seeded personas", async () => {
   for (const persona of CANDIDATE_PERSONAS) {
     await deletePersona(persona);
   }
+  await deleteCompany();
+  await deletePersona(CORPORATE_ADMIN);
 });
