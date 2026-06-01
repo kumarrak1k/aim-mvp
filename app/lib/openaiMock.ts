@@ -43,6 +43,33 @@ const MOCK_QUESTIONS = [
   "Tell me about a time you led a piece of work or a team.",
 ];
 
+// Assessment-centre: the case-study scenario (start-ac) and the scoring (submit).
+const MOCK_AC_SCENARIO = {
+  company: "Northwind Retail",
+  industry: "Retail",
+  overview:
+    "Northwind Retail is a mid-sized UK retailer founded in 1998, with revenue of £420m, ~3,200 staff and 140 stores. It holds roughly 6% share of a competitive non-food segment and has historically competed on store experience and own-brand ranges.",
+  challenge:
+    "Like-for-like store sales have fallen 4% year on year as online-first competitors take share. The board must decide whether to accelerate the e-commerce build-out or defend and modernise the store estate, with limited capital for both.",
+  exhibits: [
+    { title: "3-year financial summary", content: "| Metric | FY23 | FY24 | FY25 |\n| Revenue (£m) | 445 | 432 | 420 |\n| EBITDA (£m) | 38 | 31 | 26 |" },
+    { title: "Channel mix", content: "| Channel | Share | YoY |\n| Stores | 78% | -6% |\n| Online | 22% | +18% |" },
+    { title: "Customer NPS", content: "| Segment | NPS |\n| In-store | 24 |\n| Online | 41 |" },
+  ],
+  task: "Acting as an analyst advising the board, write a 12-minute recommendation on where Northwind should invest in FY26.",
+  question: "Should Northwind prioritise its e-commerce build-out or its store estate, and why?",
+  guidance: ["Structure with an issue tree", "Lead with the recommendation", "Quantify using two exhibits", "Name the biggest risk", "Commit to a position"],
+};
+
+const MOCK_AC_SCORE = {
+  scores: { structure: 8, analysis: 8, recommendations: 7, commercialAwareness: 8, communication: 8 },
+  overall: 8,
+  commentary: "A well-structured response with clear analysis and a defensible, evidence-backed recommendation.",
+  strengths: ["Clear structure", "Used the exhibits", "Quantified the recommendation"],
+  improvements: ["Tie back to commercial impact", "Address one more risk", "Sharpen the executive summary"],
+  modelAnswer: "An excellent response opens with a one-line recommendation, supports it with two exhibits, quantifies the upside, and names the key risk and mitigation.",
+};
+
 function systemContent(request: ChatCompletionRequest): string {
   return request.messages.find((m) => m.role === "system")?.content ?? "";
 }
@@ -54,6 +81,17 @@ function allContent(request: ChatCompletionRequest): string {
 export function mockChatCompletion(request: ChatCompletionRequest): string {
   const sys = systemContent(request);
   const all = allContent(request);
+
+  // Assessment-centre case-study SCORING (submit-case-study) — distinctive
+  // "commercialAwareness" score key. Checked before the scenario case because the
+  // scoring prompt embeds the scenario (which also contains "exhibits").
+  if (all.includes("commercialAwareness")) {
+    return JSON.stringify(MOCK_AC_SCORE);
+  }
+  // Assessment-centre case-study SCENARIO (start-ac) — distinctive "exhibits".
+  if (all.includes('"exhibits"') || all.includes("assessment centre designer")) {
+    return JSON.stringify(MOCK_AC_SCENARIO);
+  }
 
   // /feedback — its system prompt defines the category_scores schema.
   if (sys.includes("category_scores") || all.includes('"category_scores"')) {

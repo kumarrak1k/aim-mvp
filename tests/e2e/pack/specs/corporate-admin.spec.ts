@@ -14,4 +14,27 @@ test.describe("corporate admin", () => {
     await page.goto("/company/dashboard");
     await expect(page.getByText("AIM Test Co").first()).toBeVisible({ timeout: 20_000 });
   });
+
+  test("invites a recruiter (Team seat check allows it)", async ({ page }) => {
+    const email = "newrecruiter+aimtest@aimtest.dev";
+    const res = await page.request.post("/api/company/members", { data: { email, role: "recruiter" } });
+    expect(res.status(), await res.text()).toBe(201);
+
+    const list = await (await page.request.get("/api/company/members")).json();
+    expect(list.invites.some((i: { email: string }) => i.email === email)).toBeTruthy();
+  });
+
+  test("assigns an assessment and sees it in the assignment list", async ({ page }) => {
+    const templates = await (await page.request.get("/api/company/templates")).json();
+    const templateId = templates.templates[0].id;
+    const candidateEmail = "assigned-candidate+aimtest@aimtest.dev";
+
+    const res = await page.request.post("/api/company/assignments", {
+      data: { candidateEmail, templateId, expiryDays: 30 },
+    });
+    expect(res.status(), await res.text()).toBe(201);
+
+    const list = await (await page.request.get("/api/company/assignments")).json();
+    expect(list.assignments.some((a: { candidateEmail: string }) => a.candidateEmail === candidateEmail)).toBeTruthy();
+  });
 });

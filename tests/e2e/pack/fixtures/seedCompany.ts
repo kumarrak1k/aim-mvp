@@ -11,6 +11,11 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 const SLUG = "aim-test-co";
 
+// Fixed AC invite token + candidate (the "free" persona) so the assessment-
+// centre spec has a ready assignment without depending on the corporate spec.
+export const AC_INVITE_TOKEN = "aimtest-ac-invite-token";
+export const AC_CANDIDATE_EMAIL = "free+aimtest@aimtest.dev";
+
 export async function seedCompany(adminClerkUserId: string) {
   await prisma.company.deleteMany({ where: { slug: SLUG } });
 
@@ -36,6 +41,16 @@ export async function seedCompany(adminClerkUserId: string) {
       templateType: "assessment-centre",
       acStages: ["stage1", "stage2", "stage3"],
       isActive: true,
+    },
+  });
+
+  await prisma.candidateAssignment.create({
+    data: {
+      companyId: company.id,
+      templateId: template.id,
+      candidateEmail: AC_CANDIDATE_EMAIL,
+      inviteToken: AC_INVITE_TOKEN,
+      expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
     },
   });
 
