@@ -76,6 +76,17 @@ export async function callOpenAIChat(
   usage?: { prompt_tokens: number; completion_tokens: number; total_tokens: number };
   model?: string;
 }> {
+  // Test-only deterministic short-circuit. Set ONLY by the test runner via
+  // AIM_TEST_MODE=mock (never in production). Dynamically imported so the canned
+  // fixtures are code-split out of the production bundle. Bypasses the API key
+  // requirement so the mocked suite needs no OpenAI credentials.
+  if (process.env.AIM_TEST_MODE === "mock") {
+    const { mockChatCompletion } = await import("./openaiMock");
+    return {
+      choices: [{ message: { content: mockChatCompletion(request) }, finish_reason: "stop" }],
+    };
+  }
+
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
     throw new OpenAIError(

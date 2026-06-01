@@ -492,6 +492,13 @@ Video analysis ${index + 1}:
 
     const fallbackSummary = buildFallbackSummary(String(role || ""), safeResults, isTypedMode, hasCameraMode);
 
+    // Test-only deterministic short-circuit. The fallback is a complete, valid
+    // summary computed from the per-answer results, so return it without calling
+    // OpenAI. Set ONLY by the test runner via AIM_TEST_MODE=mock; never in prod.
+    if (process.env.AIM_TEST_MODE === "mock") {
+      return Response.json(fallbackSummary);
+    }
+
     const response = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       temperature: 0.35,
