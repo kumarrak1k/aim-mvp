@@ -51,6 +51,74 @@ const TREND = [
   { d: 3, score: 9, signal: "Strong", mode: "voice-camera", cats: { content: 9, clarity: 9, relevance: 8, structure: 9, confidence: 9, pace: 8, voice_delivery: 9, camera_presence: 9 } },
 ];
 
+// A full per-candidate result (summary + per-question feedback + voice/camera),
+// so /company/results and /company/results/[id] render with real, scored content.
+function candidateSession(clerkUserId: string, role: string, score: number, signal: string) {
+  const c = Math.max(1, Math.min(10, score));
+  const lo = Math.max(1, c - 1);
+  const cats = { content: c, clarity: c, relevance: c, structure: lo, confidence: c, pace: lo, voice_delivery: c, camera_presence: c };
+  const q = (question: string, answer: string) => ({
+    question,
+    answer,
+    feedback: {
+      overall_score: c,
+      category_scores: { content: c, clarity: c, relevance: c, structure: lo, confidence: c },
+      strengths: ["Clear STAR structure", "Specific, quantified result"],
+      improvements: ["Lead with the outcome", "Tighten the opening line"],
+      improved_answer: "Situation/Task: I owned X under a tight deadline. Action: I did Y. Result: it delivered Z — a measurable, role-relevant outcome.",
+    },
+    voiceAnalysis: {
+      overallVoiceScore: c, paceScore: c, fillerScore: lo, confidenceScore: c, energyScore: c,
+      metrics: { estimatedWPM: 148, fillerCount: 4, longPauseCount: 1, wordCount: 182 },
+      feedback: { strengths: ["Measured, confident pace"], improvements: ["Trim filler words"] },
+    },
+    videoAnalysis: {
+      overallVideoScore: c, eyeContactScore: c, positionScore: c, bodyLanguageScore: lo, expressionScore: c, engagementScore: c,
+      feedback: { strengths: ["Strong camera eye contact"], improvements: ["Hold a steadier posture"] },
+    },
+  });
+  return {
+    clerkUserId, role,
+    experienceLevel: "Mid-level (3-5 years)",
+    interviewType: "Competency / behavioural",
+    difficulty: "Standard",
+    focusArea: "Balanced",
+    practiceMode: "voice-camera",
+    totalQuestions: 5,
+    overallScore: score,
+    hireSignal: signal,
+    summary: {
+      overall_score: score,
+      readiness_score: score,
+      hire_signal: signal,
+      category_breakdown: cats,
+      top_strengths: ["Clear STAR structure", "Quantified, relevant results", "Confident, well-paced delivery"],
+      priority_improvements: ["Lead with the result", "Reduce filler words"],
+      final_recommendation:
+        signal === "Strong"
+          ? "Strong candidate — recommend progressing to the next stage."
+          : signal === "Moderate"
+            ? "Solid candidate — worth a follow-up to probe depth."
+            : "Below the bar on this brief at this stage.",
+      next_steps: ["Review the per-question feedback", "Compare against the shortlist"],
+    },
+    results: [
+      q(
+        "Tell me about a time you led a project under pressure.",
+        "In my final year I led a five-person team to rebuild our client's reporting pipeline against a three-week deadline. I split the work into owned streams, ran daily stand-ups, and rewrote the validation layer myself. We shipped two days early and cut report turnaround by 40%.",
+      ),
+      q(
+        "Describe a conflict you resolved within a team.",
+        "Two engineers disagreed on the data model. I ran a short spike to test both options, brought the evidence to a 20-minute review, and we aligned on the approach that scaled better — shipping on time with no lingering friction.",
+      ),
+      q(
+        "What is your greatest professional strength?",
+        "Turning ambiguity into a plan. On a stalled migration I mapped the unknowns, sequenced the riskiest work first, and we delivered a quarter early.",
+      ),
+    ],
+  };
+}
+
 export async function seedDemoData(): Promise<{ sessions: number; company: string | null }> {
   // ── Candidate progress — a rising trend of completed practice sessions ──
   const cid = await candidateClerkId();
@@ -108,19 +176,46 @@ export async function seedDemoData(): Promise<{ sessions: number; company: strin
     );
   }
 
-  const names = ["alex.morgan", "priya.shah", "tom.baker", "lucy.chen", "sam.okafor", "mia.rossi", "raj.patel", "ella.nguyen", "jack.ward", "nora.haddad", "leo.martin"];
-  const statuses = ["completed", "completed", "completed", "completed", "completed", "completed", "completed", "started", "started", "pending", "pending"];
-  for (let i = 0; i < names.length; i++) {
-    const st = statuses[i];
+  // Clear any prior demo candidate sessions (keyed by clerkUserId, not cascaded).
+  await prisma.practiceSession.deleteMany({ where: { clerkUserId: { startsWith: "demo-cand-" } } });
+
+  // A realistic, ranked pipeline. Completed candidates get a linked PracticeSession
+  // with a full report so the Results list shows scores/signals and the per-candidate
+  // detail page renders properly.
+  const CANDS: Array<{ name: string; status: string; score?: number; signal?: string }> = [
+    { name: "priya.shah", status: "completed", score: 9, signal: "Strong" },
+    { name: "tom.baker", status: "completed", score: 8, signal: "Strong" },
+    { name: "lucy.chen", status: "completed", score: 7, signal: "Moderate" },
+    { name: "sam.okafor", status: "completed", score: 6, signal: "Moderate" },
+    { name: "mia.rossi", status: "completed", score: 5, signal: "Weak" },
+    { name: "raj.patel", status: "started" },
+    { name: "ella.nguyen", status: "started" },
+    { name: "jack.ward", status: "pending" },
+    { name: "nora.haddad", status: "pending" },
+    { name: "leo.martin", status: "pending" },
+  ];
+  for (let i = 0; i < CANDS.length; i++) {
+    const c = CANDS[i];
+    const template = templates[i % templates.length];
+    let sessionId: string | null = null;
+    if (c.status === "completed") {
+      const sess = await prisma.practiceSession.create({
+        data: candidateSession(`demo-cand-${i}`, template.role, c.score ?? 7, c.signal ?? "Moderate"),
+      });
+      sessionId = sess.id;
+    }
     await prisma.candidateAssignment.create({
       data: {
         companyId: company.id,
-        templateId: templates[i % templates.length].id,
-        candidateEmail: `${names[i]}@example.com`,
-        status: st,
+        templateId: template.id,
+        candidateEmail: `${c.name}@example.com`,
+        status: c.status,
+        sessionId,
         expiresAt: daysFromNow(21),
-        startedAt: st !== "pending" ? daysAgo(i + 1) : null,
-        completedAt: st === "completed" ? daysAgo(i) : null,
+        startedAt: c.status !== "pending" ? daysAgo(i + 1) : null,
+        completedAt: c.status === "completed" ? daysAgo(i) : null,
+        emailSent: true,
+        emailSentAt: daysAgo(i + 2),
       },
     });
   }

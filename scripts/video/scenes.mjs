@@ -38,3 +38,50 @@ export const CANDIDATE_SCENES = [
     vo: "Walk into your next interview ready. Start practising free today, at AI Career Mentor.",
   },
 ];
+
+// Corporate / employer story — follows the recruiter WORKFLOW (purpose →
+// build template → invite → review results → drill into a candidate → decide).
+export const CORPORATE_SCENES = [
+  {
+    id: "b1-hook",
+    image: "corporate-01-dashboard.png",
+    caption: "Hire on evidence, not CVs.",
+    vo: "Screening candidates fairly, at scale, is hard — a CV doesn't show how someone actually thinks or communicates.",
+  },
+  {
+    id: "b2-template",
+    image: "corporate-template.png",
+    caption: "Build a role template once.",
+    vo: "So you build a role template once: choose an interview or a full assessment centre, set the competencies, and it's reusable for every candidate.",
+  },
+  {
+    id: "b3-invite",
+    image: "corporate-invite.png",
+    caption: "Invite candidates with one link.",
+    vo: "Invite candidates with a single link. Everyone gets exactly the same fair, structured assessment — no scheduling, no recruiter time spent.",
+  },
+  {
+    id: "b4-results",
+    image: "corporate-results.png",
+    caption: "Every candidate — scored and ranked.",
+    vo: "As they finish, results land in your dashboard — automatically scored, signalled and ranked, so your shortlist is obvious at a glance.",
+  },
+  {
+    id: "b5-detail",
+    image: "corporate-detail.png",
+    caption: "Open a full AI scorecard.",
+    vo: "Open any candidate for a full AI scorecard: overall score, hire signal, and a competency-by-competency breakdown.",
+  },
+  {
+    id: "b6-cta",
+    image: "corporate-detail-questions.png",
+    caption: "Decide with confidence.",
+    vo: "Right down to every answer, with voice and camera delivery. Hire on evidence, and decide with confidence. AI Career Mentor for Business.",
+  },
+];
+
+/** Select the deck via the DECK env var ("corporate" → corporate, else candidate). */
+export function getDeck() {
+  const name = process.env.DECK === "corporate" ? "corporate" : "candidate";
+  return { name, scenes: name === "corporate" ? CORPORATE_SCENES : CANDIDATE_SCENES };
+}

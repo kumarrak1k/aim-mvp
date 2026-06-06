@@ -6,19 +6,22 @@
 // Run: node scripts/video/build.mjs   →   marketing/video/candidate-demo.mp4
 import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync } from "node:fs";
-import { CANDIDATE_SCENES } from "./scenes.mjs";
+import { getDeck } from "./scenes.mjs";
+
+const { name, scenes: deckScenes } = getDeck();
 
 const FFMPEG =
   process.env.FFMPEG_PATH ||
   "C:/Users/rak1k/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-8.1.1-full_build/bin/ffmpeg.exe";
 const FFPROBE = FFMPEG.replace(/ffmpeg\.exe$/i, "ffprobe.exe");
 
-const SLIDES = "marketing/video/slides";
-const AUDIO = "marketing/video/audio";
-const SEGS = "marketing/video/segments";
-const VID = "marketing/video/_video.mp4";
-const AUD = "marketing/video/_audio.m4a";
-const OUT = "marketing/video/candidate-demo.mp4";
+const BASE = `marketing/video/${name}`;
+const SLIDES = `${BASE}/slides`;
+const AUDIO = `${BASE}/audio`;
+const SEGS = `${BASE}/segments`;
+const VID = `${BASE}/_video.mp4`;
+const AUD = `${BASE}/_audio.m4a`;
+const OUT = `marketing/video/${name}-demo.mp4`;
 const T = 0.5; // video crossfade (s)
 const G = 0.35; // natural breath between narration lines (s)
 mkdirSync(SEGS, { recursive: true });
@@ -28,7 +31,7 @@ const audioFor = (id) => ["mp3", "wav", "m4a"].map((e) => `${AUDIO}/${id}.${e}`)
 const probe = (f) => parseFloat(execFileSync(FFPROBE, ["-v", "error", "-show_entries", "format=duration", "-of", "default=nw=1:nk=1", f]).toString().trim());
 const estimate = (vo) => Math.max(3.5, vo.trim().split(/\s+/).length / 2.6 + 1.0);
 
-const scenes = CANDIDATE_SCENES.filter((s) => existsSync(`${SLIDES}/${s.id}.png`));
+const scenes = deckScenes.filter((s) => existsSync(`${SLIDES}/${s.id}.png`));
 const haveAudio = scenes.length > 0 && scenes.every((s) => audioFor(s.id));
 
 // ── Stage 1: per-scene VIDEO-ONLY clips with smooth Ken-Burns motion ──

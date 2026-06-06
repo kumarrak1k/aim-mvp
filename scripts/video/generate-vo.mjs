@@ -4,9 +4,10 @@
 //   OPENAI_API_KEY      (+ optional OPENAI_TTS_VOICE)       — you already have one
 // Run: npx dotenv-cli -e .env -- node scripts/video/generate-vo.mjs
 import { writeFileSync, mkdirSync } from "node:fs";
-import { CANDIDATE_SCENES } from "./scenes.mjs";
+import { getDeck } from "./scenes.mjs";
 
-const OUT = "marketing/video/audio";
+const { name, scenes } = getDeck();
+const OUT = `marketing/video/${name}/audio`;
 mkdirSync(OUT, { recursive: true });
 
 const EL_KEY = process.env.ELEVENLABS_API_KEY;
@@ -44,10 +45,10 @@ if (!provider) {
   console.error("No TTS key set. Add ELEVENLABS_API_KEY or OPENAI_API_KEY to .env — see scripts/video/README.md.");
   process.exit(1);
 }
-console.log("TTS provider:", provider);
-for (const s of CANDIDATE_SCENES) {
+console.log(`TTS provider: ${provider} | deck: ${name}`);
+for (const s of scenes) {
   const buf = await tts(s.vo);
   writeFileSync(`${OUT}/${s.id}.mp3`, buf);
   console.log("vo", s.id, `${Math.round(buf.length / 1024)}KB`);
 }
-console.log(`done — ${CANDIDATE_SCENES.length} VO clips → ${OUT}. Now run: node scripts/video/build.mjs`);
+console.log(`done — ${scenes.length} VO clips → ${OUT}. Now run: node scripts/video/build.mjs`);
