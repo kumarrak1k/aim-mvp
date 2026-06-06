@@ -176,6 +176,30 @@ export function resolveCandidatePlanFromClaims(
 }
 
 /**
+ * Reliable server gate for cost-bearing routes.
+ *
+ * Resolves from JWT claims first (fast, no network). If the claims do NOT grant
+ * access, it confirms against the authoritative Clerk profile (privateMetadata
+ * via the Backend API) before denying.
+ *
+ * Why: the claims-only path depends on the Clerk session-token template mapping
+ * private_metadata → `metadata`. If that mapping is absent or misconfigured,
+ * claims resolve EVERY user to Free — silently 403-ing paid/trial users out of
+ * voice and other gated features. This helper makes the gate correct regardless
+ * of that template: entitled users with populated claims keep the fast path, and
+ * the extra Clerk call only happens for users who look non-entitled from claims.
+ * Free users are still correctly denied, so cost protection is preserved.
+ */
+export async function resolveCandidatePlanReliable(
+  userId: string,
+  sessionClaims: { metadata?: CandidateBillingMeta } | null | undefined
+): Promise<CandidatePlan> {
+  const fromClaims = resolveCandidatePlanFromClaims(sessionClaims);
+  if (fromClaims.isUnlimited) return fromClaims;
+  return getCandidatePlan(userId);
+}
+
+/**
  * Start the 7-day reverse trial for a candidate, if they are eligible.
  *
  * Idempotent and safe to call repeatedly:
