@@ -106,7 +106,7 @@ export default function HomePage() {
       <DataTrustStrip variant="topbar" />
     <main className="relative z-10 min-h-screen">
 
-      <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col px-4 py-6 sm:px-6 sm:py-8 lg:px-10">
+      <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col px-4 pt-1.5 pb-6 sm:px-6 sm:pt-2 sm:pb-8 lg:px-10">
         {/* Top bar */}
         <header className="relative mb-10 flex items-center sm:mb-14">
           <SiteLogo href="/" size="md" showText className="relative z-10" />
@@ -123,7 +123,7 @@ export default function HomePage() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="whitespace-nowrap rounded-full px-3.5 py-2 text-[12px] font-bold text-gray-400 transition hover:bg-white/[0.07] hover:text-white"
+                  className="whitespace-nowrap rounded-full px-3.5 py-2 text-[13px] font-bold text-gray-400 transition hover:bg-white/[0.07] hover:text-white"
                 >
                   {item.label}
                 </Link>
