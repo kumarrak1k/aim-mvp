@@ -33,10 +33,13 @@ scenes.forEach((s, i) => {
   const dur = audio ? probe(audio) + 0.6 : estimate(s.vo);
   durs.push(dur);
   const frames = Math.round(dur * 30);
-  // gentle zoom in/out, alternating per scene for variety; centre-anchored.
-  const zoomIn = i % 2 === 0;
-  const z = zoomIn ? `min(zoom+0.00045,1.06)` : `if(eq(on,1),1.06,max(zoom-0.00045,1.0))`;
-  const vf = `scale=2304:1296,zoompan=z='${z}':d=${frames}:x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s=1920x1080:fps=30,format=yuv420p`;
+  // Smooth Ken-Burns: LINEAR zoom (not an accumulating/clamped expression) over a
+  // big pre-scaled canvas so the crop math is sub-pixel — eliminates zoompan shake.
+  // Alternate gentle zoom in / out per scene for variety; centre-anchored.
+  const A = 0.05; // total zoom (5%)
+  const denom = Math.max(1, frames - 1);
+  const z = i % 2 === 0 ? `1+${A}*on/${denom}` : `${(1 + A).toFixed(3)}-${A}*on/${denom}`;
+  const vf = `scale=5760:-2,zoompan=z='${z}':d=${frames}:x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s=1920x1080:fps=30,format=yuv420p`;
   const seg = `${SEGS}/${s.id}.mp4`;
   const args = ["-y", "-loop", "1", "-i", slide];
   if (audio) args.push("-i", audio);

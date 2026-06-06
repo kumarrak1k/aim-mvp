@@ -29,7 +29,9 @@ const slide = (b64, caption) => `<!doctype html><html><head><meta charset="utf-8
 </body></html>`;
 
 const browser = await chromium.launch();
-const page = await browser.newPage({ viewport: { width: 1920, height: 1080 }, deviceScaleFactor: 1 });
+// 2x device scale → 3840x2160 slides, so the Ken-Burns zoom has real pixels to
+// work with (smooth, not soft).
+const page = await browser.newPage({ viewport: { width: 1920, height: 1080 }, deviceScaleFactor: 2 });
 let n = 0;
 for (const s of CANDIDATE_SCENES) {
   const src = `${SRC}/${s.image}`;
