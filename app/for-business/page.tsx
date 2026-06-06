@@ -3,6 +3,7 @@ import Link from "next/link";
 import { createPageMetadata } from "@/app/config/seo";
 import { AudienceShell } from "@/app/components/marketing/AudienceShell";
 import { DemoShowcase } from "@/app/components/marketing/DemoShowcase";
+import { DemoVideo } from "@/app/components/marketing/DemoVideo";
 
 export const metadata: Metadata = createPageMetadata({
   path: "/for-business",
@@ -174,6 +175,27 @@ export default function ForBusinessPage() {
             </div>
           ))}
         </div>
+      </section>
+
+      {/* Workflow demo video */}
+      <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 sm:pb-20">
+        <div className="mb-8 text-center">
+          <p className="text-[11px] font-black uppercase tracking-[0.26em] text-fuchsia-300/90">
+            See it work
+          </p>
+          <h2 className="mt-3 text-3xl font-black tracking-[-0.05em] sm:text-4xl">
+            From role template to ranked shortlist.
+          </h2>
+          <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-gray-400">
+            A short walkthrough of the whole hiring workflow — build a role template,
+            invite candidates, and review AI-scored, ranked results in one workspace.
+          </p>
+        </div>
+        <DemoVideo
+          src="/videos/corporate-demo.mp4"
+          title="AI Career Mentor for Business — workflow demo"
+          caption="Build a role template, invite candidates, and review AI-scored results — in one workspace."
+        />
       </section>
 
       {/* Feature grid */}

@@ -21,4 +21,17 @@ test.describe("verify embeds", () => {
       await section.screenshot({ path: `${DIR}/${name}.png` });
     });
   }
+
+  test("renders for-business workflow video", async ({ page }) => {
+    await page.goto("/for-business");
+    await page.getByRole("button", { name: "Got it" }).click({ timeout: 1500 }).catch(() => {});
+    await page
+      .addStyleTag({ content: `button[aria-label="Open Next.js Dev Tools"],nextjs-portal{display:none!important}` })
+      .catch(() => {});
+    const section = page.locator("section").filter({ has: page.getByText("See it work") });
+    await section.scrollIntoViewIfNeeded({ timeout: 10_000 });
+    await page.locator("video").first().waitFor({ state: "visible", timeout: 10_000 }).catch(() => {});
+    await page.waitForTimeout(1500);
+    await section.screenshot({ path: `${DIR}/for-business-video.png` });
+  });
 });
