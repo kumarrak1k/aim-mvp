@@ -39,31 +39,44 @@ export const CANDIDATE_SCENES = [
   },
 ];
 
-// Corporate / employer story (mirrors marketing/SCRIPT.md, Video 2).
+// Corporate / employer story — follows the recruiter WORKFLOW (purpose →
+// build template → invite → review results → drill into a candidate → decide).
 export const CORPORATE_SCENES = [
   {
     id: "b1-hook",
     image: "corporate-01-dashboard.png",
     caption: "Hire on evidence, not CVs.",
-    vo: "Screening candidates fairly, at scale, is hard. A CV doesn't show how someone actually thinks or communicates.",
+    vo: "Screening candidates fairly, at scale, is hard — a CV doesn't show how someone actually thinks or communicates.",
   },
   {
-    id: "b2-ac",
-    image: "ac-01-landing.png",
-    caption: "A full assessment centre, scored automatically.",
-    vo: "AI Career Mentor for teams runs a complete assessment centre — case study, competency interview and presentation — scored into one clear report.",
+    id: "b2-template",
+    image: "corporate-template.png",
+    caption: "Build a role template once.",
+    vo: "So you build a role template once: choose an interview or a full assessment centre, set the competencies, and it's reusable for every candidate.",
   },
   {
-    id: "b3-scored",
-    image: "candidate-03-feedback.png",
-    caption: "Every candidate, scored on the same brief.",
-    vo: "Every candidate is assessed against the same brief, with structured, consistent scoring — and no interviewer bias.",
+    id: "b3-invite",
+    image: "corporate-invite.png",
+    caption: "Invite candidates with one link.",
+    vo: "Invite candidates with a single link. Everyone gets exactly the same fair, structured assessment — no scheduling, no recruiter time spent.",
   },
   {
-    id: "b4-cta",
-    image: "corporate-02-manage.png",
-    caption: "Compare candidates. Decide with confidence.",
-    vo: "Compare candidates on real performance, and make confident hiring decisions, faster. AI Career Mentor for Business.",
+    id: "b4-results",
+    image: "corporate-results.png",
+    caption: "Every candidate — scored and ranked.",
+    vo: "As they finish, results land in your dashboard — automatically scored, signalled and ranked, so your shortlist is obvious at a glance.",
+  },
+  {
+    id: "b5-detail",
+    image: "corporate-detail.png",
+    caption: "Open a full AI scorecard.",
+    vo: "Open any candidate for a full AI scorecard: overall score, hire signal, and a competency-by-competency breakdown.",
+  },
+  {
+    id: "b6-cta",
+    image: "corporate-detail-questions.png",
+    caption: "Decide with confidence.",
+    vo: "Right down to every answer, with voice and camera delivery. Hire on evidence, and decide with confidence. AI Career Mentor for Business.",
   },
 ];
 
