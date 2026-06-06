@@ -19,6 +19,10 @@
 /playwright/.cache/
 /tests/e2e/pack/.auth/
 
+# marketing capture (raw retina screenshots/clips — large binaries, generated)
+/marketing/screenshots/
+/marketing/clips/
+
 # next.js
 /.next/
 /out/
