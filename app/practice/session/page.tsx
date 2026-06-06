@@ -130,8 +130,6 @@ export default function PracticeSessionPage() {
   const [videoAnalysisLoading, setVideoAnalysisLoading] = useState(false);
   const [cleaningTranscript, setCleaningTranscript] = useState(false);
   const [whisperEnhancing, setWhisperEnhancing] = useState(false);
-  /** Running per-filler counts detected by live Whisper polling during recording. */
-  const [liveFillerCounts, setLiveFillerCounts] = useState<Record<string, number>>({});
 
   const [interviewStarted, setInterviewStarted] = useState(false);
   const [interviewFinished, setInterviewFinished] = useState(false);
@@ -161,15 +159,6 @@ export default function PracticeSessionPage() {
   const startVoiceInputRef = useRef<(() => Promise<void>) | null>(null);
   const stopVoiceInputRef = useRef<(() => Promise<void>) | null>(null);
   const sessionBootedRef = useRef(false);
-
-  /** setInterval handle for live Whisper filler polling during recording. */
-  const whisperPollIntervalRef = useRef<number | null>(null);
-  /** Index into audioChunksRef of the last chunk sent to Whisper. */
-  const whisperChunkIndexRef = useRef(0);
-  /** Most recent Whisper transcript chunk — passed as context to the next call. */
-  const whisperContextRef = useRef("");
-  /** Accumulated per-filler counts across all live polls (used to update state). */
-  const liveFillerCountsRef = useRef<Record<string, number>>({});
 
   const awaitingAutoRecordQuestionRef = useRef<string | null>(null);
   const questionPlaybackStartedRef = useRef(false);
@@ -220,8 +209,6 @@ export default function PracticeSessionPage() {
     clearAudioSamples,
     clearAudioRecording,
     getRecordedAudioBlob,
-    getAudioChunkCount,
-    getAudioChunksSince,
     calculateCurrentAudioMetrics,
   } = useAudioMonitoring();
 
@@ -749,67 +736,11 @@ export default function PracticeSessionPage() {
     []
   );
 
-  // ── Live Whisper filler polling ─────────────────────────────────────────────
-
-  const stopLiveWhisperPolling = useCallback(() => {
-    if (whisperPollIntervalRef.current !== null) {
-      window.clearInterval(whisperPollIntervalRef.current);
-      whisperPollIntervalRef.current = null;
-    }
-  }, []);
-
-  const startLiveWhisperPolling = useCallback(() => {
-    stopLiveWhisperPolling();
-    liveFillerCountsRef.current = {};
-    setLiveFillerCounts({});
-    whisperChunkIndexRef.current = 0;
-    whisperContextRef.current = "";
-
-    whisperPollIntervalRef.current = window.setInterval(() => {
-      const currentChunkCount = getAudioChunkCount();
-      const newChunkCount = currentChunkCount - whisperChunkIndexRef.current;
-
-      // Require at least 4 new 1-second chunks (~4 seconds of new audio) before
-      // firing a Whisper API call to avoid excessive requests.
-      if (newChunkCount < 4) return;
-
-      const fromIndex = whisperChunkIndexRef.current;
-      const newChunksBlob = getAudioChunksSince(fromIndex);
-      if (!newChunksBlob || newChunksBlob.size < 1500) return;
-
-      // Advance the chunk pointer before the async call so a slow response
-      // doesn't cause the same chunks to be sent again.
-      whisperChunkIndexRef.current = currentChunkCount;
-      const capturedContext = whisperContextRef.current;
-
-      fetchWhisperFillerAnalysis(newChunksBlob, capturedContext)
-        .then((result) => {
-          if (!result) return;
-          // Update context for the next incremental poll.
-          if (result.transcript) whisperContextRef.current = result.transcript;
-          // Accumulate per-filler counts across all polls.
-          for (const [filler, count] of Object.entries(result.fillerCounts)) {
-            liveFillerCountsRef.current[filler] =
-              (liveFillerCountsRef.current[filler] ?? 0) + count;
-          }
-          if (Object.keys(liveFillerCountsRef.current).length > 0) {
-            setLiveFillerCounts({ ...liveFillerCountsRef.current });
-          }
-        })
-        .catch(() => {
-          // Non-fatal — live filler display degrades gracefully.
-        });
-    }, 5000); // poll every 5 seconds
-  }, [getAudioChunkCount, getAudioChunksSince, stopLiveWhisperPolling]);
-
-  // ────────────────────────────────────────────────────────────────────────────
-
   const clearCurrentAnswerCapture = useCallback(() => {
     if (recognitionRef.current && isListening) {
       stopRecognitionOnly();
     }
 
-    stopLiveWhisperPolling();
     cleanupAudioMonitoring();
     resetTranscript();
     clearAudioSamples();
@@ -819,7 +750,6 @@ export default function PracticeSessionPage() {
     rawAnswerTranscriptRef.current = "";
     latestVoiceAnalysisRef.current = null;
     latestVideoAnalysisRef.current = null;
-    liveFillerCountsRef.current = {};
     awaitingAutoRecordQuestionRef.current = null;
     questionPlaybackStartedRef.current = false;
 
@@ -828,7 +758,6 @@ export default function PracticeSessionPage() {
     setVoiceAnalysis(null);
     setVideoAnalysis(null);
     setWhisperEnhancing(false);
-    setLiveFillerCounts({});
     resetVideoFrames();
   }, [
     cleanupAudioMonitoring,
@@ -839,7 +768,6 @@ export default function PracticeSessionPage() {
     resetTranscript,
     resetVideoFrames,
     setIsListening,
-    stopLiveWhisperPolling,
     stopRecognitionOnly,
   ]);
 
@@ -872,7 +800,6 @@ export default function PracticeSessionPage() {
       }
 
       await startAudioMonitoring();
-      startLiveWhisperPolling();
 
       setGuidedAnswerActive(false);
       setQuestionAudioMessage("Listening now. Speak naturally.");
@@ -911,7 +838,6 @@ export default function PracticeSessionPage() {
     setQuestionAudioMessage,
     startAudioMonitoring,
     startCamera,
-    startLiveWhisperPolling,
     startRecognitionOnly,
   ]);
 
@@ -922,7 +848,6 @@ export default function PracticeSessionPage() {
   const stopVoiceInput = useCallback(async () => {
     if (!recognitionRef.current) return;
 
-    stopLiveWhisperPolling();
     stopRecognitionOnly();
     setGuidedAnswerActive(false);
 
@@ -1044,7 +969,6 @@ export default function PracticeSessionPage() {
     runVoiceAnalysis,
     setGuidedAnswerActive,
     setTranscript,
-    stopLiveWhisperPolling,
     stopRecognitionOnly,
   ]);
 
@@ -1072,14 +996,12 @@ export default function PracticeSessionPage() {
         cleanupPreparedQuestionAudio();
         latestVoiceAnalysisRef.current = null;
         latestVideoAnalysisRef.current = null;
-        liveFillerCountsRef.current = {};
         rawAnswerTranscriptRef.current = "";
         resetTranscript();
         recordingStartRef.current = null;
         answerDurationSecondsRef.current = null;
         clearAudioSamples();
         resetVideoFrames();
-        setLiveFillerCounts({});
         awaitingAutoRecordQuestionRef.current = null;
         questionPlaybackStartedRef.current = false;
 
@@ -1714,7 +1636,6 @@ export default function PracticeSessionPage() {
               questionLoading={questionLoading}
               questionAudioLoading={questionAudioLoading}
               cleaningTranscript={cleaningTranscript || whisperEnhancing}
-              liveFillerCounts={liveFillerCounts}
               feedbackLoading={feedbackLoading}
               voiceAnalysisLoading={voiceAnalysisLoading}
               videoAnalysisLoading={videoAnalysisLoading}
