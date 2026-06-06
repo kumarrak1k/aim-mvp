@@ -300,8 +300,17 @@ export default function CompanyResultsPage() {
                     return (
                       <tr
                         key={r.id}
-                        className="cursor-pointer transition hover:bg-white/[0.03]"
+                        tabIndex={0}
+                        role="button"
+                        aria-label={`View results for ${r.candidateEmail}`}
+                        className="cursor-pointer transition hover:bg-white/[0.03] focus:outline-none focus-visible:bg-white/[0.06] focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-cyan-400/60"
                         onClick={() => router.push(`/company/results/${r.id}`)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            router.push(`/company/results/${r.id}`);
+                          }
+                        }}
                       >
                         <td className="px-4 py-3 font-semibold text-white">
                           {r.candidateEmail}
@@ -405,15 +414,26 @@ function SortHeader({
 }) {
   return (
     <th
-      className="cursor-pointer select-none px-4 py-3 text-left font-black transition hover:text-white"
+      scope="col"
+      role="button"
+      tabIndex={0}
+      aria-sort={active ? (dir === "asc" ? "ascending" : "descending") : "none"}
+      aria-label={`Sort by ${label}`}
       onClick={onClick}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onClick();
+        }
+      }}
+      className="cursor-pointer select-none px-4 py-3 text-left font-black transition hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-cyan-400/60"
     >
       <span
         className={`inline-flex items-center gap-1 ${active ? "text-white" : "text-gray-400"}`}
       >
         {label}
         {active && (
-          <span className="text-xs">{dir === "asc" ? "↑" : "↓"}</span>
+          <span className="text-xs" aria-hidden="true">{dir === "asc" ? "↑" : "↓"}</span>
         )}
       </span>
     </th>

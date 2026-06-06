@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { CorporateAppShell } from "@/app/components/marketing/CorporateAppShell";
+import { getPlan, isPlanActive, CORPORATE_TRIAL_INVITE_CAP } from "@/app/lib/corporatePlan";
 import { Suspense } from "react";
 
 type Template = { id: string; name: string; role: string };
@@ -19,6 +20,12 @@ type Assignment = {
   emailError?: string | null;
   emailSendCount?: number;
 };
+type Company = {
+  planId?: string | null;
+  planStatus: string;
+  trialEndsAt: string | null;
+  trialInvitesUsed?: number;
+};
 
 const STATUS_COLORS: Record<string, string> = {
   pending: "bg-yellow-400/15 text-yellow-200 border-yellow-400/25",
@@ -34,6 +41,7 @@ function CandidatesContent() {
   const [templates, setTemplates] = useState<Template[]>([]);
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [memberRole, setMemberRole] = useState<string | null>(null);
+  const [company, setCompany] = useState<Company | null>(null);
   const [loading, setLoading] = useState(true);
 
   const [email, setEmail] = useState("");
@@ -66,6 +74,7 @@ function CandidatesContent() {
         const companyData = await companyRes.json();
         if (!companyData.company) { router.push("/company/setup"); return; }
         setMemberRole(companyData.member?.role || null);
+        setCompany(companyData.company || null);
         const aData = await assignmentsRes.json();
         setAssignments(aData.assignments || []);
         const tData = await templatesRes.json();
@@ -155,7 +164,8 @@ function CandidatesContent() {
     setTimeout(() => setCopiedToken(null), 2000);
   }
 
-  async function deleteAssignment(id: string) {
+  async function deleteAssignment(id: string, candidateEmail: string) {
+    if (!window.confirm(`Delete the assessment invite for ${candidateEmail}? This can't be undone.`)) return;
     const res = await fetch(`/api/company/assignments/${id}`, { method: "DELETE" });
     if (res.ok) setAssignments((prev) => prev.filter((a) => a.id !== id));
   }
@@ -171,6 +181,20 @@ function CandidatesContent() {
   }
 
   const canInvite = memberRole === "admin" || memberRole === "recruiter";
+  const plan = getPlan(company?.planId);
+  const planActive = company ? isPlanActive(company) : false;
+  const onTrial = company?.planStatus === "trial";
+  const monthNow = new Date();
+  const invitesThisMonth = assignments.filter((a) => {
+    const d = new Date(a.createdAt);
+    return d.getMonth() === monthNow.getMonth() && d.getFullYear() === monthNow.getFullYear();
+  }).length;
+  const invitesLeft = onTrial
+    ? Math.max(0, CORPORATE_TRIAL_INVITE_CAP - (company?.trialInvitesUsed ?? 0))
+    : plan
+      ? Math.max(0, plan.invitesPerMonth - invitesThisMonth)
+      : 0;
+  const atInviteCap = planActive && invitesLeft <= 0;
 
   return (
     <CorporateAppShell currentPath="/company/candidates">
@@ -186,6 +210,19 @@ function CandidatesContent() {
           {canInvite && (
             <div className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-7 shadow-xl shadow-black/10">
               <h2 className="mb-5 text-lg font-black">Send invite</h2>
+              {!planActive ? (
+                <p className="mb-5 rounded-xl border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm text-amber-200">
+                  Your workspace needs an active plan to send invites.{" "}
+                  <a href="/company/dashboard" className="font-black underline">Choose a plan →</a>
+                </p>
+              ) : (
+                <p className={`mb-5 text-sm font-semibold ${invitesLeft <= 2 ? "text-amber-300" : "text-gray-400"}`}>
+                  {invitesLeft} invite{invitesLeft === 1 ? "" : "s"} remaining {onTrial ? "in your trial" : "this month"}.
+                  {atInviteCap && (
+                    <>{" "}<a href="/company/dashboard" className="font-black text-fuchsia-300 underline">Upgrade to send more →</a></>
+                  )}
+                </p>
+              )}
               <form onSubmit={handleInvite} className="space-y-5">
                 <div>
                   <label className="mb-2 block text-sm font-black text-white">Candidate email *</label>
@@ -267,10 +304,10 @@ function CandidatesContent() {
 
                 <button
                   type="submit"
-                  disabled={sending || templates.length === 0}
+                  disabled={sending || templates.length === 0 || !planActive || atInviteCap}
                   className="w-full rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 py-3.5 text-sm font-black text-white shadow-xl shadow-purple-950/35 transition hover:scale-[1.02] disabled:opacity-60"
                 >
-                  {sending ? "Creating invite…" : "Create invite link →"}
+                  {sending ? "Creating invite…" : atInviteCap ? "Invite limit reached" : "Create invite link →"}
                 </button>
               </form>
             </div>
@@ -359,7 +396,7 @@ function CandidatesContent() {
                                 )}
                                 {canInvite && a.status !== "completed" && (
                                   <button
-                                    onClick={() => deleteAssignment(a.id)}
+                                    onClick={() => deleteAssignment(a.id, a.candidateEmail)}
                                     className="rounded-lg border border-red-400/20 bg-red-400/10 px-2.5 py-1.5 text-xs font-black text-red-300 transition hover:bg-red-400/15"
                                   >
                                     Delete

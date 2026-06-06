@@ -427,6 +427,12 @@ function DashboardContent() {
                 </button>
               )}
             </div>
+            {planActive && plan && members.length >= plan.seats && (
+              <p className="mb-4 rounded-xl border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm text-amber-200">
+                You've reached your {plan.seats}-seat limit. Remove a member, or{" "}
+                <a href="/company/plan" className="font-black underline">upgrade your plan</a> to add more recruiters.
+              </p>
+            )}
             <div className="divide-y divide-white/[0.06]">
               {members.map((m) => {
                 // Find the current user's own member record to detect "you"
