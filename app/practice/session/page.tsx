@@ -258,6 +258,7 @@ export default function PracticeSessionPage() {
     resetTranscript,
     setTranscript,
     getCombinedTranscript,
+    speakQuestion,
     stopQuestionSpeech: stopBrowserQuestionSpeech,
     startRecognitionOnly,
     stopRecognitionOnly,
@@ -279,7 +280,15 @@ export default function PracticeSessionPage() {
       );
     },
     onQuestionSpeechEnd: () => {
-      // Natural audio handles the auto-record handoff.
+      // The device-voice fallback (used when the premium OpenAI voice is
+      // unavailable) has finished reading the question aloud. Open the mic
+      // after a short buffer so any draining TTS audio isn't captured as the
+      // first words of the answer. The premium path never calls speakQuestion,
+      // so this only fires for the fallback and never affects paid playback.
+      void (async () => {
+        await wait(600);
+        await startVoiceInputRef.current?.();
+      })();
     },
   });
 
@@ -453,21 +462,40 @@ export default function PracticeSessionPage() {
 
       setQuestionAudioMessage("Preparing natural question audio...");
 
+      let fellBackToDeviceVoice = false;
+
       try {
         const played = await playPreparedQuestionAudio({
           text: safeText,
           speakerPreference,
           startRecordingAfterPlayback: false,
           fallbackToBrowserSpeech: () => {
+            // The premium (OpenAI) interviewer voice could not be prepared or
+            // played — for ANY reason (not entitled, key/quota error, rate
+            // limit, network, or playback did not start). Fall back to the
+            // device's built-in voice so the candidate still hears the question
+            // read aloud. Recording auto-starts via onQuestionSpeechEnd once the
+            // device voice finishes (when autoStartListening is set).
             awaitingAutoRecordQuestionRef.current = null;
             questionPlaybackStartedRef.current = false;
-            setQuestionAudioMessage(
-              "Natural question audio is unavailable. Read the question below and answer when ready."
-            );
+
+            if (speakerSupported) {
+              fellBackToDeviceVoice = true;
+              setQuestionAudioMessage(
+                "Reading the question with your device's voice…"
+              );
+              speakQuestion(safeText, autoStartListening);
+            } else {
+              setQuestionAudioMessage(
+                "Question audio is unavailable on this device. Read the question below and answer when ready."
+              );
+            }
           },
         });
 
-        return played;
+        // A successful device-voice fallback still counts as "the question was
+        // read", so the caller doesn't overwrite the message or re-trigger it.
+        return played || fellBackToDeviceVoice;
       } catch {
         awaitingAutoRecordQuestionRef.current = null;
         questionPlaybackStartedRef.current = false;
@@ -477,7 +505,13 @@ export default function PracticeSessionPage() {
         return false;
       }
     },
-    [playPreparedQuestionAudio, setQuestionAudioMessage, speakerPreference]
+    [
+      playPreparedQuestionAudio,
+      setQuestionAudioMessage,
+      speakerPreference,
+      speakQuestion,
+      speakerSupported,
+    ]
   );
 
   useEffect(() => {
