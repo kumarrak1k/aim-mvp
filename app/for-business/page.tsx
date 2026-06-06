@@ -193,6 +193,7 @@ export default function ForBusinessPage() {
         </div>
         <DemoVideo
           src="/videos/corporate-demo.mp4"
+          poster="/videos/corporate-poster.jpg"
           title="AI Career Mentor for Business — workflow demo"
           caption="Build a role template, invite candidates, and review AI-scored results — in one workspace."
         />

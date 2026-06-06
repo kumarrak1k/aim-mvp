@@ -51,20 +51,35 @@ scenes.forEach((s, i) => {
   console.log("seg", s.id, dur.toFixed(1) + "s");
 });
 
-// ── Stage 2: crossfade the video clips (video only) ──
-const n = scenes.length;
-if (n === 1) {
-  ff(["-y", "-i", `${SEGS}/${scenes[0].id}.mp4`, "-c", "copy", VID]);
+// ── Intro title card (optional) — premium opener that matches the poster ──
+const INTRO = 1.8; // seconds
+const hasIntro = existsSync(`${BASE}/intro.png`);
+const segFiles = scenes.map((s) => `${SEGS}/${s.id}.mp4`);
+const segDurs = [...durs];
+if (hasIntro) {
+  const frames = Math.round(INTRO * 30);
+  const z = `1+0.03*on/${Math.max(1, frames - 1)}`; // very gentle zoom
+  const vf = `scale=5760:-2,zoompan=z='${z}':d=${frames}:x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s=1920x1080:fps=30,fade=t=in:st=0:d=0.5,format=yuv420p`;
+  ff(["-y", "-loop", "1", "-i", `${BASE}/intro.png`, "-t", INTRO.toFixed(2), "-r", "30", "-vf", vf, "-an", "-c:v", "libx264", "-preset", "medium", "-crf", "20", "-pix_fmt", "yuv420p", `${SEGS}/_intro.mp4`]);
+  segFiles.unshift(`${SEGS}/_intro.mp4`);
+  segDurs.unshift(INTRO);
+  console.log("seg _intro", INTRO.toFixed(1) + "s");
+}
+
+// ── Stage 2: crossfade the clips (intro + scenes), video only ──
+const m = segFiles.length;
+if (m === 1) {
+  ff(["-y", "-i", segFiles[0], "-c", "copy", VID]);
 } else {
   const inputs = [];
-  scenes.forEach((s) => inputs.push("-i", `${SEGS}/${s.id}.mp4`));
+  segFiles.forEach((f) => inputs.push("-i", f));
   let fc = "";
   let vlab = "[0:v]";
-  let acc = durs[0];
-  for (let i = 1; i < n; i++) {
+  let acc = segDurs[0];
+  for (let i = 1; i < m; i++) {
     fc += `${vlab}[${i}:v]xfade=transition=fade:duration=${T}:offset=${(acc - T).toFixed(3)}[v${i}];`;
     vlab = `[v${i}]`;
-    acc = acc + durs[i] - T;
+    acc = acc + segDurs[i] - T;
   }
   ff(["-y", ...inputs, "-filter_complex", fc.replace(/;$/, ""), "-map", vlab, "-c:v", "libx264", "-preset", "medium", "-crf", "20", "-pix_fmt", "yuv420p", VID]);
 }
@@ -79,8 +94,11 @@ if (haveAudio) {
     fc += `[${i}:a]aresample=48000,apad=pad_dur=${G}[p${i}];`;
     labs.push(`[p${i}]`);
   });
-  fc += `${labs.join("")}concat=n=${n}:v=0:a=1[a]`;
-  ff(["-y", ...inputs, "-filter_complex", fc, "-map", "[a]", "-c:a", "aac", "-b:a", "192k", "-ar", "48000", AUD]);
+  fc += `${labs.join("")}concat=n=${scenes.length}:v=0:a=1[ac]`;
+  // If there's an intro card, delay the whole narration so the first line lands
+  // exactly as the intro dissolves into scene 1 (voice never plays over the card).
+  if (hasIntro) fc += `;[ac]adelay=${Math.round((INTRO - T) * 1000)}:all=1[a]`;
+  ff(["-y", ...inputs, "-filter_complex", fc, "-map", hasIntro ? "[a]" : "[ac]", "-c:a", "aac", "-b:a", "192k", "-ar", "48000", AUD]);
   ff(["-y", "-i", VID, "-i", AUD, "-map", "0:v", "-map", "1:a", "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", OUT]);
 } else {
   ff(["-y", "-i", VID, "-c", "copy", OUT]);

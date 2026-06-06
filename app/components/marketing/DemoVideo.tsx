@@ -2,12 +2,14 @@ type DemoVideoProps = {
   src?: string;
   title?: string;
   caption?: string;
+  poster?: string;
 };
 
 export function DemoVideo({
   src,
   title = "AI Career Mentor — Product demo",
   caption = "A quick overview of AI Career Mentor — interview coaching for candidates and hiring teams.",
+  poster,
 }: DemoVideoProps) {
   if (src) {
     return (
@@ -15,6 +17,7 @@ export function DemoVideo({
         <div className="relative aspect-video bg-black">
           <video
             src={src}
+            poster={poster}
             title={title}
             controls
             playsInline
