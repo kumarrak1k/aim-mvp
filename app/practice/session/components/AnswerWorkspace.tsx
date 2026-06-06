@@ -15,11 +15,6 @@ type AnswerWorkspaceProps = {
   feedbackLoading: boolean;
   voiceAnalysisLoading: boolean;
   videoAnalysisLoading: boolean;
-  /**
-   * Live per-filler counts from Whisper polling during recording.
-   * Empty object = no fillers detected yet.  Null/undefined = not applicable.
-   */
-  liveFillerCounts?: Record<string, number>;
   onAnswerChange: (value: string) => void;
   onStartVoice: () => void;
   onStopVoice: () => void;
@@ -48,7 +43,6 @@ export function AnswerWorkspace({
   feedbackLoading,
   voiceAnalysisLoading,
   videoAnalysisLoading,
-  liveFillerCounts = {},
   onAnswerChange,
   onStartVoice,
   onStopVoice,
@@ -58,11 +52,6 @@ export function AnswerWorkspace({
   assessmentMode = false,
   freePlan = false,
 }: AnswerWorkspaceProps) {
-  // Build the filler badge label from live counts.
-  const liveFillerEntries = Object.entries(liveFillerCounts).filter(
-    ([, count]) => count > 0
-  );
-  const showLiveFillerBadge = isListening && liveFillerEntries.length > 0;
   const analysing = feedbackLoading || voiceAnalysisLoading || videoAnalysisLoading;
 
   const submitDesktopLabel = feedbackLoading
@@ -105,14 +94,6 @@ export function AnswerWorkspace({
                 </span>
               )}
 
-              {showLiveFillerBadge && (
-                <span className="rounded-full border border-amber-400/30 bg-amber-400/15 px-3 py-1 text-[11px] font-black text-amber-200">
-                  ⚠ Fillers detected:{" "}
-                  {liveFillerEntries
-                    .map(([f, n]) => (n > 1 ? `${f} ×${n}` : f))
-                    .join(", ")}
-                </span>
-              )}
             </div>
 
             <h2 className="mt-1 text-xl font-black tracking-[-0.035em] text-white sm:text-2xl xl:text-xl 2xl:text-2xl">
