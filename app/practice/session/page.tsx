@@ -621,6 +621,15 @@ export default function PracticeSessionPage() {
     speakerPreference,
   ]);
 
+  // When advancing to a new question (or to the summary at the end), bring the
+  // viewport back to the top so the candidate lands on the question — not where
+  // they left off (the previous answer/feedback). Matters most on phone/tablet
+  // where the question, answer and feedback panels stack vertically.
+  useEffect(() => {
+    if (!interviewStarted || typeof window === "undefined") return;
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [currentQuestionNumber, interviewStarted]);
+
   const addLocalSavedSession = useCallback(
     (sessionSummary: InterviewSummary) => {
       const newSession = createSavedSession({
