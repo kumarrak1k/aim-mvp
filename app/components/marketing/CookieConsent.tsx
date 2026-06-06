@@ -49,6 +49,7 @@ export function CookieConsent() {
       <div className="mt-3 flex items-center gap-3">
         <button
           onClick={dismiss}
+          aria-label="Accept and dismiss cookie notice"
           className="rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-2 text-[13px] font-black text-white shadow-lg transition hover:scale-[1.03]"
         >
           Got it
