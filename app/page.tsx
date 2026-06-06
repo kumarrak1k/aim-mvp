@@ -111,8 +111,10 @@ export default function HomePage() {
         <header className="relative mb-10 flex items-center sm:mb-14">
           <SiteLogo href="/" size="md" showText className="relative z-10" />
 
-          {/* Universal nav — absolutely centred so it never drifts */}
-          <nav aria-label="Primary" className="pointer-events-none absolute inset-x-0 hidden justify-center lg:flex">
+          {/* Universal nav — absolutely centred so it never drifts. Shown only
+              at xl+: below that the row can't fit logo + pill + audience buttons
+              without the (absolute) pill overlapping the buttons on tablets. */}
+          <nav aria-label="Primary" className="pointer-events-none absolute inset-x-0 hidden justify-center xl:flex">
             <div className="pointer-events-auto flex items-center gap-0.5 rounded-full border border-white/[0.09] bg-white/[0.04] p-1">
               {[
                 { href: "/about", label: "About us" },
@@ -154,8 +156,8 @@ export default function HomePage() {
           </div>
         </header>
 
-        {/* Mobile resource links — desktop shows these in the centred nav above */}
-        <div className="mb-8 -mt-4 lg:hidden">
+        {/* Tablet/mobile resource links — xl+ shows these in the centred nav above */}
+        <div className="mb-8 -mt-4 xl:hidden">
           <ResourceLinksRow scroll className="px-0.5" />
         </div>
 
