@@ -26,6 +26,32 @@ type StripePlanId =
   | "professional_monthly"
   | "professional_annual";
 
+// Side-by-side feature comparison (makes the Free → Plus → Professional cliff clear).
+const COMPARE: Array<{ feature: string; free: string | boolean; plus: string | boolean; pro: string | boolean }> = [
+  { feature: "Practice sessions", free: "3 (after trial)", plus: "Unlimited", pro: "Unlimited" },
+  { feature: "Typed interviews", free: true, plus: true, pro: true },
+  { feature: "Voice interviews", free: false, plus: true, pro: true },
+  { feature: "Voice + camera delivery analysis", free: false, plus: true, pro: true },
+  { feature: "Structured AI feedback per answer", free: "Written", plus: "Full", pro: "Full" },
+  { feature: "Model answers", free: false, plus: true, pro: true },
+  { feature: "Progress tracking & history", free: false, plus: true, pro: true },
+  { feature: "Custom session builder (3–10 questions)", free: false, plus: false, pro: true },
+  { feature: "Hybrid question mix", free: false, plus: false, pro: true },
+  { feature: "Mock assessment centre", free: false, plus: false, pro: true },
+  { feature: "Advanced analytics & gap tracking", free: false, plus: false, pro: true },
+];
+
+function renderCell(v: string | boolean) {
+  if (typeof v === "boolean") {
+    return v ? (
+      <span className="text-emerald-400" aria-label="Included">✓</span>
+    ) : (
+      <span className="text-gray-600" aria-label="Not included">—</span>
+    );
+  }
+  return <span className="text-gray-200">{v}</span>;
+}
+
 type PlanFeature = { text: string; isNew?: boolean };
 
 export function CandidatePricingPlans({ currency = "GBP" }: { currency?: PricingCurrency }) {
@@ -240,6 +266,33 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
             </div>
           );
         })}
+      </div>
+
+      {/* Plan comparison matrix */}
+      <div className="mx-auto mt-14 max-w-4xl">
+        <h3 className="mb-6 text-center text-2xl font-black tracking-[-0.04em]">Compare plans</h3>
+        <div className="overflow-x-auto rounded-2xl border border-white/10">
+          <table className="w-full min-w-[34rem] text-sm">
+            <thead>
+              <tr className="border-b border-white/10 bg-white/[0.03]">
+                <th scope="col" className="px-4 py-3 text-left font-black text-gray-300">Feature</th>
+                <th scope="col" className="px-4 py-3 text-center font-black text-gray-300">Free</th>
+                <th scope="col" className="px-4 py-3 text-center font-black text-purple-200">Plus</th>
+                <th scope="col" className="px-4 py-3 text-center font-black text-gray-300">Professional</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-white/[0.06]">
+              {COMPARE.map((row) => (
+                <tr key={row.feature}>
+                  <td className="px-4 py-3 text-left text-gray-300">{row.feature}</td>
+                  <td className="px-4 py-3 text-center">{renderCell(row.free)}</td>
+                  <td className="bg-purple-300/[0.04] px-4 py-3 text-center">{renderCell(row.plus)}</td>
+                  <td className="px-4 py-3 text-center">{renderCell(row.pro)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Auto-renewal disclosure — required for recurring UK/EU subscriptions */}

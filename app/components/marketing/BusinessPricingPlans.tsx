@@ -22,6 +22,31 @@ const BUSINESS: Record<PricingCurrency, PriceSet> = {
 
 type PlanKey = "team" | "business" | "enterprise";
 
+// Side-by-side feature comparison for hiring teams.
+const COMPARE: Array<{ feature: string; team: string | boolean; business: string | boolean; enterprise: string | boolean }> = [
+  { feature: "Recruiter seats", team: "3", business: "10", enterprise: "Unlimited" },
+  { feature: "Candidate invites / month", team: "100", business: "500", enterprise: "Unlimited" },
+  { feature: "Assessment templates", team: "Unlimited", business: "Unlimited", enterprise: "Unlimited" },
+  { feature: "Results dashboard", team: true, business: true, enterprise: true },
+  { feature: "Advanced result analytics", team: false, business: true, enterprise: true },
+  { feature: "Custom branding", team: "Email", business: "Logo + colour", enterprise: "Full" },
+  { feature: "Custom competency frameworks", team: false, business: false, enterprise: true },
+  { feature: "Single sign-on (SSO)", team: false, business: false, enterprise: true },
+  { feature: "DPA + SLA", team: false, business: false, enterprise: true },
+  { feature: "Support", team: "Email", business: "Priority email", enterprise: "Dedicated CSM" },
+];
+
+function renderCell(v: string | boolean) {
+  if (typeof v === "boolean") {
+    return v ? (
+      <span className="text-emerald-400" aria-label="Included">✓</span>
+    ) : (
+      <span className="text-gray-600" aria-label="Not included">—</span>
+    );
+  }
+  return <span className="text-gray-200">{v}</span>;
+}
+
 export function BusinessPricingPlans({ currency = "GBP" }: { currency?: PricingCurrency }) {
   const [annual, setAnnual] = useState(false);
   const [loading, setLoading] = useState<PlanKey | null>(null);
@@ -232,6 +257,33 @@ export function BusinessPricingPlans({ currency = "GBP" }: { currency?: PricingC
             </div>
           );
         })}
+      </div>
+
+      {/* Plan comparison matrix */}
+      <div className="mx-auto mt-14 max-w-5xl">
+        <h3 className="mb-6 text-center text-2xl font-black tracking-[-0.04em]">Compare plans</h3>
+        <div className="overflow-x-auto rounded-2xl border border-white/10">
+          <table className="w-full min-w-[40rem] text-sm">
+            <thead>
+              <tr className="border-b border-white/10 bg-white/[0.03]">
+                <th scope="col" className="px-4 py-3 text-left font-black text-gray-300">Feature</th>
+                <th scope="col" className="px-4 py-3 text-center font-black text-gray-300">Team</th>
+                <th scope="col" className="px-4 py-3 text-center font-black text-fuchsia-200">Business</th>
+                <th scope="col" className="px-4 py-3 text-center font-black text-gray-300">Enterprise</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-white/[0.06]">
+              {COMPARE.map((row) => (
+                <tr key={row.feature}>
+                  <td className="px-4 py-3 text-left text-gray-300">{row.feature}</td>
+                  <td className="px-4 py-3 text-center">{renderCell(row.team)}</td>
+                  <td className="bg-fuchsia-300/[0.04] px-4 py-3 text-center">{renderCell(row.business)}</td>
+                  <td className="px-4 py-3 text-center">{renderCell(row.enterprise)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </>
   );

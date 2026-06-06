@@ -35,6 +35,18 @@ test.describe("verify embeds", () => {
     await section.screenshot({ path: `${DIR}/for-business-video.png` });
   });
 
+  test("renders candidate pricing comparison", async ({ page }) => {
+    await page.goto("/for-candidates/pricing");
+    await page.getByRole("button", { name: "Got it" }).click({ timeout: 1500 }).catch(() => {});
+    await page
+      .addStyleTag({ content: `button[aria-label="Open Next.js Dev Tools"],nextjs-portal{display:none!important}` })
+      .catch(() => {});
+    const section = page.locator("div").filter({ has: page.getByRole("heading", { name: "Compare plans" }) }).last();
+    await section.scrollIntoViewIfNeeded({ timeout: 10_000 }).catch(() => {});
+    await page.waitForTimeout(800);
+    await section.screenshot({ path: `${DIR}/pricing-compare.png` }).catch(() => {});
+  });
+
   for (const [path, label] of [["/", "header-home"], ["/for-candidates", "header-candidates"]] as const) {
     test(`header ${label}`, async ({ page }) => {
       await page.goto(path);
