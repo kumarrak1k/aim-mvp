@@ -52,7 +52,7 @@ export function CameraWorkspace({
       </div>
 
       <div className="grid gap-3 sm:grid-cols-[minmax(180px,240px)_minmax(0,1fr)] xl:block">
-        <div className="relative mx-auto h-[260px] w-full max-w-[240px] overflow-hidden rounded-[1.15rem] border border-white/10 bg-black shadow-xl shadow-black/20 sm:h-[220px] sm:max-w-none xl:h-[132px]">
+        <div className="relative mx-auto h-[260px] w-full max-w-[240px] overflow-hidden rounded-[1.15rem] border border-white/10 bg-black shadow-xl shadow-black/20 xl:h-[132px]">
           <video
             ref={videoRef}
             autoPlay

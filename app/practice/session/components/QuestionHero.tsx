@@ -33,6 +33,11 @@ type QuestionHeroProps = {
   assessmentMode?: boolean;
   /** When true the session is keyboard-only — hide all voice controls. */
   freePlan?: boolean;
+  /** Tablet only: show the one-time "automate the rest?" prompt after the first
+   *  question has played. */
+  showAutoFlowPrompt?: boolean;
+  /** Called with the candidate's choice from the auto-flow prompt. */
+  onAutoFlowDecision?: (enable: boolean) => void;
 };
 
 export function QuestionHero(props: QuestionHeroProps) {
@@ -62,6 +67,8 @@ export function QuestionHero(props: QuestionHeroProps) {
     onBackToSetup,
     assessmentMode,
     freePlan,
+    showAutoFlowPrompt,
+    onAutoFlowDecision,
   } = props;
 
   const progressPercent = Math.min(
@@ -178,6 +185,34 @@ export function QuestionHero(props: QuestionHeroProps) {
                 Stop audio
               </button>
             )}
+          </div>
+        )}
+
+        {showAutoFlowPrompt && (
+          <div className="mb-3 rounded-2xl border border-fuchsia-300/30 bg-fuchsia-300/10 px-4 py-3">
+            <p className="text-sm font-black text-white">
+              Play each question and start recording automatically?
+            </p>
+            <p className="mt-0.5 text-[12px] leading-5 text-gray-300">
+              So you don&apos;t have to tap for every question — we&apos;ll remember
+              your choice.
+            </p>
+            <div className="mt-2.5 flex gap-2">
+              <button
+                type="button"
+                onClick={() => onAutoFlowDecision?.(true)}
+                className="rounded-xl bg-white px-4 py-2 text-xs font-black text-black transition hover:bg-fuchsia-100"
+              >
+                Yes, automate
+              </button>
+              <button
+                type="button"
+                onClick={() => onAutoFlowDecision?.(false)}
+                className="rounded-xl border border-white/15 bg-white/[0.06] px-4 py-2 text-xs font-black text-white transition hover:bg-white/[0.1]"
+              >
+                No, I&apos;ll tap
+              </button>
+            </div>
           </div>
         )}
 

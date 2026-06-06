@@ -131,6 +131,18 @@ export default function PracticeSessionPage() {
   const [cleaningTranscript, setCleaningTranscript] = useState(false);
   const [whisperEnhancing, setWhisperEnhancing] = useState(false);
 
+  /** Tablet auto-advance preference: "ask" (default) prompts once after the
+   *  first question; "on"/"off" are remembered in localStorage. When "on" a
+   *  tablet auto-plays each question + auto-starts recording (like desktop),
+   *  so the candidate doesn't tap "Play question + record" every time. */
+  const [tabletAutoAdvance, setTabletAutoAdvance] = useState<"ask" | "on" | "off">("ask");
+  /** True once the first question's audio has played this interview — the user
+   *  gesture that unlocks iOS audio + grants mic. Tablet auto-flow only engages
+   *  after this, so the first question always establishes the gesture. */
+  const [firstQuestionPlayed, setFirstQuestionPlayed] = useState(false);
+  /** Drives the one-time "automate the rest?" prompt shown on tablets. */
+  const [showAutoFlowPrompt, setShowAutoFlowPrompt] = useState(false);
+
   const [interviewStarted, setInterviewStarted] = useState(false);
   const [interviewFinished, setInterviewFinished] = useState(false);
 
@@ -162,10 +174,23 @@ export default function PracticeSessionPage() {
 
   const awaitingAutoRecordQuestionRef = useRef<string | null>(null);
   const questionPlaybackStartedRef = useRef(false);
+  /** Mirror of tabletAutoAdvance so stable playback callbacks read the latest. */
+  const tabletAutoAdvanceRef = useRef<"ask" | "on" | "off">("ask");
+  /** Guards the one-time first-play handling (arm / prompt) per interview. */
+  const firstPlayHandledRef = useRef(false);
 
   // Camera requires a manual tap on any touch device (iOS needs a user gesture
   // for the camera permission prompt regardless of screen size).
   const requiresManualCameraStart = manualDeviceMode || isTablet;
+
+  // Should the question auto-play + recording auto-start without a per-question
+  // tap? Desktop: always. Phone: never (manual — no reliable gesture chain).
+  // Tablet: only after the first question has played AND the user opted in
+  // (choice remembered in localStorage). The first question stays manual so its
+  // tap unlocks iOS audio + grants mic before any automated playback.
+  const autoFlowActive =
+    !manualDeviceMode &&
+    (!isTablet || (tabletAutoAdvance === "on" && firstQuestionPlayed));
 
   const practiceMode = useMemo<PracticeMode>(() => {
     if (speakerEnabled && cameraEnabled) return "voice-camera";
@@ -321,6 +346,20 @@ export default function PracticeSessionPage() {
       questionPlaybackStartedRef.current = true;
       isSpeakingQuestionRef.current = true;
       setIsSpeakingQuestion(true);
+
+      // First question audio of the interview just started on a tablet — this
+      // tap is the gesture that unlocks iOS audio + mic. Either arm auto-flow
+      // (user already opted in) or surface the one-time prompt. Recording the
+      // current question as "last spoken" stops the auto-play effect from
+      // replaying it the moment auto-flow turns on.
+      if (isTablet && !firstPlayHandledRef.current) {
+        firstPlayHandledRef.current = true;
+        lastSpokenQuestionRef.current = activeQuestionRef.current;
+        setFirstQuestionPlayed(true);
+        if (tabletAutoAdvanceRef.current === "ask") {
+          setShowAutoFlowPrompt(true);
+        }
+      }
     },
     onPlaybackEnd: () => {
       // isSpeakingQuestionRef.current is intentionally NOT cleared here.
@@ -340,6 +379,34 @@ export default function PracticeSessionPage() {
       setGuidedAnswerActive(false);
     },
   });
+
+  // Load the remembered tablet auto-advance choice once on mount.
+  useEffect(() => {
+    try {
+      const saved = window.localStorage.getItem("aim_tablet_autoflow");
+      if (saved === "on" || saved === "off") setTabletAutoAdvance(saved);
+    } catch {
+      // localStorage unavailable — keep the default "ask".
+    }
+  }, []);
+
+  // Mirror the choice into a ref so the stable playback callbacks read the latest.
+  useEffect(() => {
+    tabletAutoAdvanceRef.current = tabletAutoAdvance;
+  }, [tabletAutoAdvance]);
+
+  // Tablet one-time prompt handler: remember the choice; on "yes" the auto-play
+  // effect takes over from the next question (autoFlowActive flips true).
+  const decideAutoFlow = useCallback((enable: boolean) => {
+    const value = enable ? "on" : "off";
+    setTabletAutoAdvance(value);
+    try {
+      window.localStorage.setItem("aim_tablet_autoflow", value);
+    } catch {
+      // Non-fatal — the choice just won't persist across sessions.
+    }
+    setShowAutoFlowPrompt(false);
+  }, []);
 
   useEffect(() => {
     if (
@@ -502,7 +569,7 @@ export default function PracticeSessionPage() {
   );
 
   useEffect(() => {
-    if (!question || !speakerEnabled || manualDeviceMode || isTablet) return;
+    if (!question || !speakerEnabled || !autoFlowActive) return;
     if (!hasUserInteracted) return;
     if (question === lastSpokenQuestionRef.current) return;
 
@@ -532,10 +599,9 @@ export default function PracticeSessionPage() {
       cancelled = true;
     };
   }, [
+    autoFlowActive,
     hasUserInteracted,
-    isTablet,
     lastSpokenQuestionRef,
-    manualDeviceMode,
     playQuestionWithNaturalAudio,
     question,
     setQuestionAudioMessage,
@@ -543,12 +609,11 @@ export default function PracticeSessionPage() {
   ]);
 
   useEffect(() => {
-    if (!question || !interviewStarted || (!manualDeviceMode && !isTablet)) return;
+    if (!question || !interviewStarted || autoFlowActive) return;
     void prepareQuestionAudio(question, speakerPreference);
   }, [
+    autoFlowActive,
     interviewStarted,
-    isTablet,
-    manualDeviceMode,
     prepareQuestionAudio,
     question,
     speakerPreference,
@@ -1026,8 +1091,9 @@ export default function PracticeSessionPage() {
         setActiveQuestion(nextQuestion);
         setQuestion(nextQuestion);
 
-        if (manualDeviceMode || isTablet) {
-          // Phone/tablet: user must tap — pre-fetch audio so it's ready when they do.
+        if (!autoFlowActive) {
+          // Manual mode (phone, or a tablet not yet opted into auto-flow): the
+          // user taps to play — pre-fetch audio so it's instant when they do.
           setQuestionAudioMessage("Preparing natural question audio...");
           void prepareQuestionAudio(nextQuestion, speakerPreference);
         } else if (speakerEnabled) {
@@ -1050,11 +1116,10 @@ export default function PracticeSessionPage() {
       }
     },
     [
+      autoFlowActive,
       candidateProfile,
       cleanupPreparedQuestionAudio,
       clearAudioSamples,
-      isTablet,
-      manualDeviceMode,
       prepareQuestionAudio,
       resetTranscript,
       resetVideoFrames,
@@ -1089,8 +1154,16 @@ export default function PracticeSessionPage() {
     resetVideoFrames();
     awaitingAutoRecordQuestionRef.current = null;
     questionPlaybackStartedRef.current = false;
+    firstPlayHandledRef.current = false;
+    setFirstQuestionPlayed(false);
+    setShowAutoFlowPrompt(false);
 
-    if (speakerEnabled && !manualDeviceMode && !isTablet && voiceSupported) {
+    // Desktop primes the mic up-front (within the Start gesture). Phones and
+    // first-time tablets stay manual; a tablet with auto-flow remembered ("on")
+    // resolves autoFlowActive=false here (firstQuestionPlayed is false until the
+    // first manual play), so it primes on that first play instead — never before
+    // a gesture.
+    if (speakerEnabled && autoFlowActive && voiceSupported) {
       try {
         setQuestionAudioMessage("Preparing microphone access...");
         await primeAudioInput();
@@ -1110,10 +1183,10 @@ export default function PracticeSessionPage() {
       void startCamera();
     }
   }, [
+    autoFlowActive,
     cameraEnabled,
     fetchQuestion,
     lastSpokenQuestionRef,
-    manualDeviceMode,
     primeAudioInput,
     requiresManualCameraStart,
     resetVideoFrames,
@@ -1621,6 +1694,8 @@ export default function PracticeSessionPage() {
             onBackToSetup={resetInterview}
             assessmentMode={assessmentMode}
             freePlan={isKeyboardOnly}
+            showAutoFlowPrompt={showAutoFlowPrompt}
+            onAutoFlowDecision={decideAutoFlow}
           />
 
           {/* Camera column only appears when camera is actively enabled
