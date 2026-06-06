@@ -80,8 +80,18 @@ export const CORPORATE_SCENES = [
   },
 ];
 
+// Title-card copy per deck (premium opener + poster shown before play).
+const INTRO = {
+  candidate: { title: "The AI interview coach", subtitle: "Practise to your role. Get scored on your answers, your voice, and your camera presence." },
+  corporate: { title: "AI Career Mentor for Business", subtitle: "Hire on evidence, not CVs — assess every candidate fairly, at scale." },
+};
+
 /** Select the deck via the DECK env var ("corporate" → corporate, else candidate). */
 export function getDeck() {
   const name = process.env.DECK === "corporate" ? "corporate" : "candidate";
-  return { name, scenes: name === "corporate" ? CORPORATE_SCENES : CANDIDATE_SCENES };
+  return {
+    name,
+    scenes: name === "corporate" ? CORPORATE_SCENES : CANDIDATE_SCENES,
+    intro: INTRO[name],
+  };
 }

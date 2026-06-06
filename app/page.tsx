@@ -232,7 +232,7 @@ export default function HomePage() {
 
         {/* Demo video */}
         <section className="mb-10 sm:mb-14">
-          <DemoVideo src="/videos/product-demo.mp4" />
+          <DemoVideo src="/videos/product-demo.mp4" poster="/videos/candidate-poster.jpg" />
         </section>
 
         {/* Two-path cards */}
