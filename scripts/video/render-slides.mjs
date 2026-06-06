@@ -3,10 +3,11 @@
 // Run: node scripts/video/render-slides.mjs
 import { chromium } from "@playwright/test";
 import { readFileSync, mkdirSync, existsSync } from "node:fs";
-import { CANDIDATE_SCENES } from "./scenes.mjs";
+import { getDeck } from "./scenes.mjs";
 
+const { name, scenes } = getDeck();
 const SRC = "marketing/screenshots"; // raw retina captures (2880x1800), no frame
-const OUT = "marketing/video/slides";
+const OUT = `marketing/video/${name}/slides`;
 mkdirSync(OUT, { recursive: true });
 
 const slide = (b64, caption) => `<!doctype html><html><head><meta charset="utf-8"><style>
@@ -33,7 +34,7 @@ const browser = await chromium.launch();
 // work with (smooth, not soft).
 const page = await browser.newPage({ viewport: { width: 1920, height: 1080 }, deviceScaleFactor: 2 });
 let n = 0;
-for (const s of CANDIDATE_SCENES) {
+for (const s of scenes) {
   const src = `${SRC}/${s.image}`;
   if (!existsSync(src)) { console.log("skip (missing screenshot)", s.image); continue; }
   const b64 = readFileSync(src).toString("base64");
@@ -45,4 +46,4 @@ for (const s of CANDIDATE_SCENES) {
   n++;
 }
 await browser.close();
-console.log(`done — ${n} full-bleed slides → ${OUT}`);
+console.log(`done — ${name}: ${n} full-bleed slides → ${OUT}`);

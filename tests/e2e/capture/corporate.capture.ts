@@ -31,6 +31,11 @@ test.describe("marketing capture — corporate", () => {
     await clean(page);
     await page.screenshot({ path: `${DIR}/corporate-01-dashboard.png` });
     await page.screenshot({ path: `${DIR}/corporate-01-dashboard-full.png`, fullPage: true });
+    // Scrolled "manage" view (quick-actions + team) for a second distinct shot.
+    await page.mouse.wheel(0, 720);
+    await page.waitForTimeout(600);
+    await clean(page);
+    await page.screenshot({ path: `${DIR}/corporate-02-manage.png` });
   });
 });
 
