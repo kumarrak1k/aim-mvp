@@ -47,8 +47,32 @@ export function DemoShowcase({
         </figcaption>
       </figure>
 
-      {rest.length > 0 && (
-        <div className="grid gap-6 sm:grid-cols-2">
+      {/* A single supporting shot centres on its own; 3 sit balanced in a row;
+          2 or 4 fall into an even 2-column grid. Everything stays centred. */}
+      {rest.length === 1 && (
+        <figure className="mx-auto max-w-3xl">
+          <div className="overflow-hidden rounded-2xl ring-1 ring-white/10">
+            <Image
+              src={rest[0].src}
+              alt={rest[0].alt}
+              width={2000}
+              height={1370}
+              sizes="(min-width: 768px) 48rem, 100vw"
+              className="h-auto w-full"
+            />
+          </div>
+          <figcaption className="mt-3 text-center text-sm leading-6 text-gray-400">
+            {rest[0].caption}
+          </figcaption>
+        </figure>
+      )}
+
+      {rest.length > 1 && (
+        <div
+          className={`mx-auto grid max-w-6xl gap-6 ${
+            rest.length === 3 ? "sm:grid-cols-3" : "sm:grid-cols-2"
+          }`}
+        >
           {rest.map((s) => (
             <figure key={s.src}>
               <div className="overflow-hidden rounded-2xl ring-1 ring-white/10">
@@ -57,11 +81,13 @@ export function DemoShowcase({
                   alt={s.alt}
                   width={2000}
                   height={1370}
-                  sizes="(min-width: 640px) 32rem, 100vw"
+                  sizes="(min-width: 640px) 22rem, 100vw"
                   className="h-auto w-full"
                 />
               </div>
-              <figcaption className="mt-3 text-sm leading-6 text-gray-400">{s.caption}</figcaption>
+              <figcaption className="mt-3 text-center text-sm leading-6 text-gray-400">
+                {s.caption}
+              </figcaption>
             </figure>
           ))}
         </div>

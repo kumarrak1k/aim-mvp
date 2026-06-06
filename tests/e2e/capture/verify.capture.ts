@@ -11,11 +11,14 @@ test.describe("verify embeds", () => {
     test(`renders ${name}`, async ({ page }) => {
       await page.goto(path);
       await page.getByRole("button", { name: "Got it" }).click({ timeout: 1500 }).catch(() => {});
-      const heading = page.getByText("See it in action").first();
-      await heading.scrollIntoViewIfNeeded({ timeout: 10_000 });
+      await page
+        .addStyleTag({ content: `button[aria-label="Open Next.js Dev Tools"],nextjs-portal{display:none!important}` })
+        .catch(() => {});
+      const section = page.locator("section").filter({ has: page.getByText("See it in action") });
+      await section.scrollIntoViewIfNeeded({ timeout: 10_000 });
       await page.waitForLoadState("networkidle").catch(() => {});
       await page.waitForTimeout(1000);
-      await page.screenshot({ path: `${DIR}/${name}.png` });
+      await section.screenshot({ path: `${DIR}/${name}.png` });
     });
   }
 });
