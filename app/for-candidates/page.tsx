@@ -5,6 +5,7 @@ import { auth } from "@clerk/nextjs/server";
 import { createPageMetadata } from "@/app/config/seo";
 import { AudienceShell } from "@/app/components/marketing/AudienceShell";
 import { CandidateAppShell } from "@/app/components/marketing/CandidateAppShell";
+import { DemoShowcase } from "@/app/components/marketing/DemoShowcase";
 
 export const metadata: Metadata = createPageMetadata({
   path: "/for-candidates",
@@ -352,6 +353,35 @@ export default async function ForCandidatesPage() {
           ))}
         </div>
       </section>
+
+      {/* See it in action */}
+      <DemoShowcase
+        eyebrow="See it in action"
+        title="The actual product — not a mockup."
+        subtitle="This is exactly what you'll use: tailored questions, scored feedback on every answer, and a readiness verdict that improves with every session."
+        shots={[
+          {
+            src: "/marketing/candidate-03-feedback.webp",
+            alt: "AI feedback scoring an interview answer on content, clarity, structure and confidence",
+            caption: "Every answer is scored — with a stronger model answer to learn from.",
+          },
+          {
+            src: "/marketing/candidate-01-setup.webp",
+            alt: "Tailored mock-interview setup screen",
+            caption: "Build a mock interview tailored to your exact role, level and focus.",
+          },
+          {
+            src: "/marketing/candidate-04-summary.webp",
+            alt: "End-of-session readiness report with an overall score and hire signal",
+            caption: "A readiness verdict and hire signal at the end of every session.",
+          },
+          {
+            src: "/marketing/candidate-05-progress.webp",
+            alt: "Progress dashboard showing an improving score trend across sessions",
+            caption: "Every session is saved — so you can see yourself improve.",
+          },
+        ]}
+      />
 
       {/* Trust pillars */}
       <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6">
