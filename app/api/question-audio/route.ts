@@ -2,7 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { checkRateLimit } from "@/app/lib/rateLimit";
 import {
-  resolveCandidatePlanFromClaims,
+  resolveCandidatePlanReliable,
   type CandidateBillingMeta,
 } from "@/app/lib/candidatePlan";
 
@@ -171,7 +171,8 @@ export async function GET(request: NextRequest) {
     }
 
     // Spoken questions (TTS) are a paid feature — gate from JWT claims.
-    const plan = resolveCandidatePlanFromClaims(
+    const plan = await resolveCandidatePlanReliable(
+      userId,
       sessionClaims as { metadata?: CandidateBillingMeta } | null
     );
     if (!plan.isUnlimited) {
@@ -241,7 +242,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Spoken questions (TTS) are a paid feature — gate from JWT claims.
-    const plan = resolveCandidatePlanFromClaims(
+    const plan = await resolveCandidatePlanReliable(
+      userId,
       sessionClaims as { metadata?: CandidateBillingMeta } | null
     );
     if (!plan.isUnlimited) {

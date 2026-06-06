@@ -3,7 +3,7 @@ import OpenAI from "openai";
 import { NextRequest, NextResponse } from "next/server";
 import { checkRateLimit } from "@/app/lib/rateLimit";
 import {
-  resolveCandidatePlanFromClaims,
+  resolveCandidatePlanReliable,
   type CandidateBillingMeta,
 } from "@/app/lib/candidatePlan";
 
@@ -61,8 +61,11 @@ export async function POST(req: NextRequest) {
     }
 
     // Voice transcription (Whisper) is a paid feature — Free users are
-    // keyboard-only. Gate from JWT claims (no extra Clerk API call).
-    const plan = resolveCandidatePlanFromClaims(
+    // keyboard-only. Resolve from JWT claims, falling back to the authoritative
+    // Clerk profile so entitled users aren't denied when the session-token
+    // template doesn't surface metadata.
+    const plan = await resolveCandidatePlanReliable(
+      userId,
       sessionClaims as { metadata?: CandidateBillingMeta } | null
     );
     if (!plan.isUnlimited) {
