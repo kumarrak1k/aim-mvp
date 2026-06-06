@@ -58,7 +58,12 @@ export function CameraWorkspace({
             autoPlay
             muted
             playsInline
-            className="h-full w-full object-cover object-center"
+            // Tablet front cameras have a wider field of view than phones, so the
+            // candidate looks further away at the same box size. Zoom the preview
+            // in on tablet widths only (sm–lg); mobile (base) and the xl desktop
+            // sidebar stay at 1×. Display-only — camera-presence analysis reads
+            // the raw, unscaled video frames, so scoring is unaffected.
+            className="h-full w-full object-cover object-center sm:scale-[1.3] xl:scale-100"
           />
 
           {cameraEnabled && cameraRequiresTap && (
