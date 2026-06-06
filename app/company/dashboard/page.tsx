@@ -542,13 +542,32 @@ function DashboardContent() {
           </div>
 
           {recentAssignments.length === 0 ? (
-            <div className="py-12 text-center">
-              <p className="text-gray-400">No assessments yet.</p>
-              <Link href="/company/candidates">
-                <button className="mt-4 rounded-full bg-fuchsia-500/20 px-5 py-2.5 text-sm font-black text-fuchsia-200 transition hover:bg-fuchsia-500/30">
-                  Send your first invite →
-                </button>
-              </Link>
+            <div className="py-10">
+              <p className="text-center text-gray-300">
+                {templates.length === 0
+                  ? "Welcome! Here's how to start assessing candidates:"
+                  : "No assessments yet — invite your first candidate to get started."}
+              </p>
+              <div className="mx-auto mt-6 grid max-w-2xl gap-3 sm:grid-cols-3">
+                {[
+                  { n: "1", t: "Build a template", d: "Pick the role, type and stages once." },
+                  { n: "2", t: "Invite candidates", d: "Share a link — they complete it at their own pace." },
+                  { n: "3", t: "Review results", d: "Compare AI-scored, ranked candidates." },
+                ].map((s) => (
+                  <div key={s.n} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-center">
+                    <p className="text-2xl font-black text-fuchsia-300">{s.n}</p>
+                    <p className="mt-1 text-sm font-bold">{s.t}</p>
+                    <p className="mt-1 text-xs leading-5 text-gray-500">{s.d}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-6 flex justify-center">
+                <Link href={templates.length === 0 ? "/company/templates/new" : "/company/candidates"}>
+                  <button className="rounded-full bg-fuchsia-500/20 px-5 py-2.5 text-sm font-black text-fuchsia-200 transition hover:bg-fuchsia-500/30">
+                    {templates.length === 0 ? "Create your first template →" : "Send your first invite →"}
+                  </button>
+                </Link>
+              </div>
             </div>
           ) : (
             <div className="overflow-x-auto">
