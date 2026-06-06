@@ -168,7 +168,7 @@ export function CorporateAppShell({
               <Link
                 key={item.href}
                 href={item.href}
-                className="text-[11px] font-semibold text-gray-500 transition hover:text-gray-300"
+                className="text-[12px] font-semibold text-gray-500 transition hover:text-gray-300"
               >
                 {item.label}
               </Link>

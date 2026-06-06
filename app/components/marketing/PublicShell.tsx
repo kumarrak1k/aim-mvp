@@ -43,7 +43,7 @@ export function PublicShell({ children, currentPath }: PublicShellProps) {
 
       {/* ── Header ── */}
       <header className="relative z-50">
-        <div className="relative mx-auto flex w-full max-w-7xl items-center px-4 py-6 sm:px-6 sm:py-8 lg:px-10">
+        <div className="relative mx-auto flex w-full max-w-7xl items-center px-4 pt-1.5 pb-6 sm:px-6 sm:pt-2 sm:pb-8 lg:px-10">
           {/* Logo */}
           <div className="relative z-10">
             <SiteLogo href="/" size="md" showText />
@@ -58,7 +58,7 @@ export function PublicShell({ children, currentPath }: PublicShellProps) {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`whitespace-nowrap rounded-full px-3.5 py-2 text-[12px] font-bold transition ${
+                    className={`whitespace-nowrap rounded-full px-3.5 py-2 text-[13px] font-bold transition ${
                       active
                         ? "bg-white/[0.12] text-white"
                         : "text-gray-400 hover:bg-white/[0.07] hover:text-white"

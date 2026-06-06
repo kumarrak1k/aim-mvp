@@ -34,4 +34,16 @@ test.describe("verify embeds", () => {
     await page.waitForTimeout(1500);
     await section.screenshot({ path: `${DIR}/for-business-video.png` });
   });
+
+  for (const [path, label] of [["/", "header-home"], ["/for-candidates", "header-candidates"]] as const) {
+    test(`header ${label}`, async ({ page }) => {
+      await page.goto(path);
+      await page.getByRole("button", { name: "Got it" }).click({ timeout: 1500 }).catch(() => {});
+      await page
+        .addStyleTag({ content: `button[aria-label="Open Next.js Dev Tools"],nextjs-portal{display:none!important}` })
+        .catch(() => {});
+      await page.waitForTimeout(900);
+      await page.screenshot({ path: `${DIR}/${label}.png`, clip: { x: 0, y: 0, width: 1440, height: 340 } });
+    });
+  }
 });

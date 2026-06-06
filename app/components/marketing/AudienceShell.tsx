@@ -135,7 +135,7 @@ export function AudienceShell({
 
       {/* Header */}
       <header className="relative z-50">
-        <div className="relative mx-auto flex w-full max-w-7xl items-center px-4 py-6 sm:px-6 sm:py-8 lg:px-10">
+        <div className="relative mx-auto flex w-full max-w-7xl items-center px-4 pt-1.5 pb-6 sm:px-6 sm:pt-2 sm:pb-8 lg:px-10">
           {/* Logo + audience badge */}
           <Link
             href={audience === "candidate" ? "/for-candidates" : "/for-business"}
@@ -157,7 +157,7 @@ export function AudienceShell({
                 return (
                   <Link key={item.href} href={item.href}>
                     <span
-                      className={`block whitespace-nowrap rounded-full px-3 py-2 text-[12.5px] font-bold transition xl:px-4 xl:text-[13px] ${
+                      className={`block whitespace-nowrap rounded-full px-3 py-2 text-[13px] font-bold transition xl:px-4 xl:text-[13.5px] ${
                         active
                           ? "bg-white/[0.12] text-white shadow-sm"
                           : "text-gray-400 hover:bg-white/[0.07] hover:text-white"
@@ -233,7 +233,7 @@ export function AudienceShell({
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="text-[11px] font-semibold text-gray-500 transition hover:text-gray-300"
+                  className="text-[12px] font-semibold text-gray-500 transition hover:text-gray-300"
                 >
                   {item.label}
                 </Link>
