@@ -49,8 +49,9 @@ export function PublicShell({ children, currentPath }: PublicShellProps) {
             <SiteLogo href="/" size="md" showText />
           </div>
 
-          {/* Desktop nav — absolutely centred pill */}
-          <nav aria-label="Primary" className="pointer-events-none absolute inset-x-0 hidden justify-center lg:flex">
+          {/* Desktop nav — absolutely centred pill. xl+ only: below that the
+              absolute pill would overlap the audience buttons on tablets. */}
+          <nav aria-label="Primary" className="pointer-events-none absolute inset-x-0 hidden justify-center xl:flex">
             <div className="pointer-events-auto flex items-center gap-0.5 rounded-full border border-white/[0.09] bg-white/[0.04] p-1">
               {NAV_LINKS.map((item) => {
                 const active = currentPath === item.href;
@@ -94,8 +95,8 @@ export function PublicShell({ children, currentPath }: PublicShellProps) {
           </div>
         </div>
 
-        {/* Mobile / tablet scrollable nav strip */}
-        <div className="px-4 py-2 sm:px-6 lg:hidden">
+        {/* Mobile / tablet scrollable nav strip (shown below xl) */}
+        <div className="px-4 py-2 sm:px-6 xl:hidden">
           <nav className="mx-auto flex max-w-7xl gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {NAV_LINKS.map((item) => {
               const active = currentPath === item.href;

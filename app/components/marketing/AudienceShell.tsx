@@ -143,14 +143,15 @@ export function AudienceShell({
           >
             <SiteLogo href="" size="md" showText />
             <span
-              className={`hidden rounded-full border px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] sm:inline-block lg:hidden ${theme.accentBorder} bg-white/[0.04] ${theme.accentTextStrong}`}
+              className={`hidden rounded-full border px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] sm:inline-block xl:hidden ${theme.accentBorder} bg-white/[0.04] ${theme.accentTextStrong}`}
             >
               {theme.eyebrow}
             </span>
           </Link>
 
-          {/* Desktop nav — absolutely centred so it never drifts */}
-          <nav aria-label="Primary" className="pointer-events-none absolute inset-x-0 hidden justify-center lg:flex">
+          {/* Desktop nav — absolutely centred so it never drifts. xl+ only: on
+              tablets the absolute pill would overlap the sign-in / CTA buttons. */}
+          <nav aria-label="Primary" className="pointer-events-none absolute inset-x-0 hidden justify-center xl:flex">
             <div className="pointer-events-auto flex items-center gap-0.5 rounded-full border border-white/[0.09] bg-white/[0.04] p-1.5">
               {theme.navItems.map((item) => {
                 const active = currentPath === item.href;
@@ -191,8 +192,8 @@ export function AudienceShell({
           </div>
         </div>
 
-        {/* Tablet/mobile compact nav row — audience-only */}
-        <div className="px-4 py-2 sm:px-6 lg:hidden">
+        {/* Tablet/mobile compact nav row — audience-only (shown below xl) */}
+        <div className="px-4 py-2 sm:px-6 xl:hidden">
           <nav className="mx-auto flex max-w-7xl gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {theme.navItems.map((item) => {
               const active = currentPath === item.href;
@@ -225,9 +226,9 @@ export function AudienceShell({
           </nav>
         </div>
 
-        {/* Desktop resource links — secondary strip for both audiences */}
+        {/* Desktop resource links — secondary strip for both audiences (xl+) */}
         {(audience === "candidate" || audience === "business") && (
-          <div className="hidden px-4 py-1.5 lg:block">
+          <div className="hidden px-4 py-1.5 xl:block">
             <nav className="mx-auto flex max-w-7xl items-center justify-center gap-6">
               {(audience === "candidate" ? CANDIDATE_RESOURCE_LINKS : BUSINESS_RESOURCE_LINKS).map((item) => (
                 <Link
