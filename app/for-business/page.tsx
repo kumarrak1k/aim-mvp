@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { createPageMetadata } from "@/app/config/seo";
 import { AudienceShell } from "@/app/components/marketing/AudienceShell";
+import { DemoShowcase } from "@/app/components/marketing/DemoShowcase";
 
 export const metadata: Metadata = createPageMetadata({
   path: "/for-business",
@@ -227,6 +228,25 @@ export default function ForBusinessPage() {
           ))}
         </div>
       </section>
+
+      {/* See it in action */}
+      <DemoShowcase
+        eyebrow="See it in action"
+        title="One workspace. Every candidate, assessed fairly."
+        subtitle="A real look at the recruiter dashboard and the AI assessment centre — structured, comparable, and scored automatically."
+        shots={[
+          {
+            src: "/marketing/corporate-01-dashboard.webp",
+            alt: "Recruiter dashboard showing candidates, templates and completed assessments",
+            caption: "Track candidates, templates and completed assessments at a glance.",
+          },
+          {
+            src: "/marketing/ac-01-landing.webp",
+            alt: "AI assessment centre — case study, competency interview and presentation stages",
+            caption: "Run a full assessment centre — case study, interview and presentation — scored into one report.",
+          },
+        ]}
+      />
 
       {/* Final CTA */}
       <section className="mx-auto max-w-7xl px-4 pb-20 sm:px-6 sm:pb-28">
