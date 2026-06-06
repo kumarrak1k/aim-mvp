@@ -44,14 +44,14 @@ describe("resolveCandidatePlan — persona matrix", () => {
     expect(p.isTrial).toBe(false);
   });
 
-  it("Trial: active 7-day reverse trial → Professional access, isTrial", () => {
+  it("Trial: active 7-day reverse trial → Plus access (not Professional), isTrial", () => {
     const p = resolveCandidatePlan(PERSONAS.trial);
-    expect(p.planName).toBe("Professional");
-    expect(p.effectivePlan).toBe("professional");
+    expect(p.planName).toBe("Plus");
+    expect(p.effectivePlan).toBe("plus");
     expect(p.isTrial).toBe(true);
     expect(p.isPaid).toBe(false);
     expect(p.isUnlimited).toBe(true);
-    expect(p.isProfessional).toBe(true);
+    expect(p.isProfessional).toBe(false);
     expect(p.trialDaysRemaining).toBe(7);
   });
 

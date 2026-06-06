@@ -8,17 +8,19 @@ import { PLAN_CONFIG } from "@/app/lib/corporatePlan";
 
 export default function CompanyPlanPage() {
   const router = useRouter();
-  const [selecting, setSelecting] = useState<string | null>(null);
+  const [starting, setStarting] = useState(false);
   const [error, setError] = useState("");
 
-  async function choosePlan(planId: "team" | "business") {
-    setSelecting(planId);
+  // Free trials run on the Team plan only (Business is a paid upgrade), so the
+  // trial always starts on Team regardless of which card is clicked.
+  async function startTeamTrial() {
+    setStarting(true);
     setError("");
     try {
       const res = await fetch("/api/company/plan", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ planId }),
+        body: JSON.stringify({ planId: "team" }),
       });
       const data = await res.json();
       if (!res.ok) { setError(data.error || "Failed to start trial."); return; }
@@ -26,14 +28,14 @@ export default function CompanyPlanPage() {
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {
-      setSelecting(null);
+      setStarting(false);
     }
   }
 
   const plans = [
     {
       ...PLAN_CONFIG.team,
-      highlight: false,
+      highlight: true,
       features: [
         `${PLAN_CONFIG.team.seats} recruiter seats`,
         `${PLAN_CONFIG.team.invitesPerMonth} candidate invites / month`,
@@ -45,7 +47,7 @@ export default function CompanyPlanPage() {
     },
     {
       ...PLAN_CONFIG.business,
-      highlight: true,
+      highlight: false,
       features: [
         `${PLAN_CONFIG.business.seats} recruiter seats`,
         `${PLAN_CONFIG.business.invitesPerMonth} candidate invites / month`,
@@ -69,8 +71,8 @@ export default function CompanyPlanPage() {
             Start your free trial
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-gray-400">
-            14 days free — no credit card required. Full access to all features
-            on your chosen plan. Cancel or change at any time.
+            14 days free on the Team plan — no credit card required. Upgrade to
+            Business anytime. Cancel or change whenever you like.
           </p>
         </div>
 
@@ -98,7 +100,9 @@ export default function CompanyPlanPage() {
                 <span className="text-5xl font-black leading-none tracking-[-0.07em]">
                   £{plan.priceGBP}
                 </span>
-                <span className="mb-1.5 text-sm text-gray-500">/month after trial</span>
+                <span className="mb-1.5 text-sm text-gray-500">
+                  {plan.id === "team" ? "/month after trial" : "/month"}
+                </span>
               </div>
 
               <ul className="mt-6 flex-1 space-y-3">
@@ -117,18 +121,26 @@ export default function CompanyPlanPage() {
               </ul>
 
               <button
-                onClick={() => choosePlan(plan.id)}
-                disabled={selecting !== null}
+                onClick={() => void startTeamTrial()}
+                disabled={starting}
                 className={`mt-8 w-full rounded-2xl px-5 py-4 text-sm font-black transition disabled:opacity-60 ${
                   plan.highlight
                     ? "bg-gradient-to-r from-fuchsia-500 to-purple-500 text-white shadow-xl shadow-fuchsia-950/35 hover:scale-[1.02]"
                     : "border border-white/10 bg-white/[0.06] text-white hover:bg-white/[0.1]"
                 }`}
               >
-                {selecting === plan.id
+                {starting
                   ? "Starting trial…"
-                  : `Start ${plan.trialDays}-day free trial`}
+                  : plan.id === "team"
+                    ? `Start ${PLAN_CONFIG.team.trialDays}-day free trial`
+                    : "Start free trial on Team"}
               </button>
+              {plan.id === "business" && (
+                <p className="mt-2 text-center text-[11px] text-gray-500">
+                  Trials run on the Team plan — upgrade to Business anytime from
+                  your dashboard.
+                </p>
+              )}
             </div>
           ))}
         </div>

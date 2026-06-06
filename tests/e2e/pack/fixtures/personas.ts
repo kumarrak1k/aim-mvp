@@ -39,7 +39,7 @@ export const CANDIDATE_PERSONAS: Persona[] = [
       trialEndsAt: iso(NOW + 6.5 * DAY),
       trialConsumed: true,
     },
-    planName: "Professional",
+    planName: "Plus",
     voiceLocked: false,
   },
   {

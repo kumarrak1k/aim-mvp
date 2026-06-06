@@ -68,9 +68,9 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
       annualPrice: null as string | null,
       annualMonthly: null as string | null,
       period: null as string | null,
-      description: "Start with a 7-day full-access trial — voice, camera and assessment centres, no card. Then continue free with 3 keyboard-only practice sessions.",
+      description: "Start with a 7-day Plus trial — unlimited practice with voice and camera coaching, no card. Then continue free with 3 keyboard-only practice sessions.",
       features: [
-        { text: "7-day full-access trial included — no card", isNew: true },
+        { text: "7-day Plus trial included — no card", isNew: true },
         { text: "Then 3 keyboard-only practice sessions" },
         { text: "AI-generated tailored interview questions" },
         { text: "Written answer feedback per question" },

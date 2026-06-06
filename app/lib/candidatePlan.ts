@@ -7,10 +7,12 @@
  * so the 7-day reverse trial is honoured everywhere consistently.
  *
  * ── The reverse trial ──────────────────────────────────────────────────────
- * New candidates auto-start a 7-day full-access trial at sign-up (no card).
- * During the trial the effective plan is "professional". When the trial ends
- * the user silently drops to the Free tier (3 saved sessions, keyboard only).
- * A paid subscription always takes precedence over the trial.
+ * New candidates auto-start a 7-day trial at sign-up (no card). During the
+ * trial the effective plan is "plus" — unlimited practice with voice + camera
+ * coaching, but NOT the Professional-only features (assessment centres, career
+ * docs, advanced analytics). When the trial ends the user silently drops to the
+ * Free tier (3 saved sessions, keyboard only). A paid subscription always takes
+ * precedence over the trial.
  *
  * Trial state lives in Clerk privateMetadata:
  *   trialStartedAt?: string   (ISO)
@@ -28,17 +30,19 @@ import { clerkClient } from "@clerk/nextjs/server";
 export const TRIAL_DURATION_DAYS = 7;
 
 /**
- * Fair-usage caps that apply ONLY during an active free trial. Real paid
- * Plus/Professional subscriptions are genuinely unlimited — these caps exist
- * purely to keep trial OpenAI costs economical. Counts are measured from
- * trialStartedAt.
+ * Fair-usage caps that apply ONLY during an active free trial. The trial grants
+ * Plus, so practiceSessions is the cap that actually bites. assessmentCentres
+ * and careerDocs are Professional-only features the Plus trial can't reach —
+ * their caps are kept purely as a backstop (and in case the trial tier ever
+ * changes). Counts are measured from trialStartedAt; real paid subscriptions
+ * are genuinely unlimited.
  */
 export const TRIAL_USAGE_CAPS = {
   /** Practice interviews that can be saved during the trial. */
   practiceSessions: 15,
-  /** Full mock assessment-centre runs during the trial. */
+  /** Backstop only — assessment centres are Professional-only (trial = Plus). */
   assessmentCentres: 2,
-  /** Career-doc generations (CV / personal statement / cover letter) during the trial. */
+  /** Backstop only — career docs are Professional-only (trial = Plus). */
   careerDocs: 5,
 } as const;
 
@@ -124,7 +128,9 @@ export function resolveCandidatePlan(
   } else if (paidPlanName === "Plus") {
     effectivePlan = "plus";
   } else if (trialActive) {
-    effectivePlan = "professional";
+    // The reverse trial grants Plus (voice + camera + unlimited practice), NOT
+    // Professional — assessment centres and career docs stay paid-only.
+    effectivePlan = "plus";
     isTrial = true;
   }
 
