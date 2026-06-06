@@ -478,22 +478,23 @@ function renderNurtureHtml(type: NurtureType, unsubUrl: string): string {
 
     trial_midway: `
       <h2 style="margin:0 0 16px;font-size:22px;font-weight:800;color:#1a1426;">
-        A few days left on your Professional trial.
+        A few days left on your Plus trial.
       </h2>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#2a2238;">
-        You're partway through your 7-day full-access trial — make the most of
-        everything that unlocks before it ends:
+        You're partway through your 7-day Plus trial — make the most of it before
+        it ends:
       </p>
       <div style="background:#f7f5fb;border-left:3px solid #8c5cff;border-radius:0 12px 12px 0;padding:18px 22px;margin:0 0 24px;">
         <p style="margin:0;font-size:15px;line-height:1.7;color:#2a2238;">
           <strong>Voice &amp; camera coaching</strong> — see your delivery scored.<br/>
-          <strong>Mock assessment centre</strong> — case study, interview &amp; presentation.<br/>
-          <strong>Career docs</strong> — CV enhancer, personal statement &amp; cover letter.
+          <strong>Unlimited practice</strong> — interview as many times as you need.<br/>
+          <strong>Tailored questions</strong> — for your exact role and level.
         </p>
       </div>
       <p style="margin:0 0 28px;font-size:15px;line-height:1.7;color:#2a2238;">
-        When the trial ends you'll move to the Free plan. Upgrade any time to keep
-        full access — no card needed until you decide.
+        When the trial ends you'll move to the Free plan. Upgrade to Plus to keep
+        unlimited voice &amp; camera practice — or Professional for mock assessment
+        centres and career docs. No card needed until you decide.
       </p>
       <table role="presentation" cellpadding="0" cellspacing="0" style="margin-bottom:12px;">
         <tr><td style="border-radius:12px;background:#8c5cff;">
@@ -513,13 +514,14 @@ function renderNurtureHtml(type: NurtureType, unsubUrl: string): string {
         Your free trial has ended.
       </h2>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#2a2238;">
-        Your 7-day Professional trial is now over and your account has moved to
+        Your 7-day Plus trial is now over and your account has moved to
         the <strong>Free plan</strong> — that's 3 keyboard-only practice sessions.
       </p>
       <div style="background:#f7f5fb;border-left:3px solid #8c5cff;border-radius:0 12px 12px 0;padding:18px 22px;margin:0 0 24px;">
         <p style="margin:0;font-size:15px;line-height:1.7;color:#2a2238;">
-          Upgrade to keep <strong>unlimited practice</strong>, voice &amp; camera
-          coaching, mock assessment centres and career docs.
+          Upgrade to <strong>Plus</strong> to keep unlimited voice &amp; camera
+          practice — or <strong>Professional</strong> for mock assessment centres
+          and career docs.
         </p>
       </div>
       <table role="presentation" cellpadding="0" cellspacing="0">
@@ -572,8 +574,8 @@ function renderNurturePlainText(type: NurtureType): string {
     day14_reengage: `Got an interview coming up? Run a 10-day sprint: competency, strength, and motivation questions, then a full mock on day 10.\n\nStart here: ${practiceUrl}`,
     day21_nudge:    `Still here — one 15-minute session will move you forward. Pick your role, answer 5 questions, get scored.\n\n${practiceUrl}`,
     day30_winback:  `Your practice sessions are still here. Come back whenever you're ready.\n\n${practiceUrl}`,
-    trial_midway:   `A few days left on your Professional trial. Make the most of voice & camera coaching, the mock assessment centre, and career docs before it ends.\n\nJump back in: ${practiceUrl}\nKeep full access: ${upgradeUrl}`,
-    trial_ended:    `Your 7-day Professional trial has ended — your account is now on the Free plan (3 keyboard-only sessions).\n\nUpgrade to keep unlimited practice, voice & camera coaching and assessment centres: ${upgradeUrl}`,
+    trial_midway:   `A few days left on your Plus trial. Make the most of unlimited voice & camera practice before it ends.\n\nJump back in: ${practiceUrl}\nSee plans: ${upgradeUrl}`,
+    trial_ended:    `Your 7-day Plus trial has ended — your account is now on the Free plan (3 keyboard-only sessions).\n\nUpgrade to Plus to keep unlimited voice & camera practice, or Professional for assessment centres and career docs: ${upgradeUrl}`,
   };
   return texts[type] + `\n\n— AI Career Mentor\n${siteConfig.url}`;
 }

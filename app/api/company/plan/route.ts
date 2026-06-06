@@ -57,6 +57,17 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ company, trialStarted: false });
     }
 
+    // Free trials run on the Team plan only — Business is a paid upgrade.
+    if (planId !== "team") {
+      return NextResponse.json(
+        {
+          error:
+            "Free trials run on the Team plan. Start a Team trial — you can upgrade to Business anytime.",
+        },
+        { status: 400 }
+      );
+    }
+
     const now = new Date();
     const trialEndsAt = new Date(now.getTime() + plan.trialDays * 24 * 60 * 60 * 1000);
 

@@ -13,7 +13,7 @@ export const metadata: Metadata = createPageMetadata({
   path: "/for-candidates/pricing",
   title: "Candidate Pricing",
   description:
-    "Transparent candidate pricing for AI interview practice and assessment centre coaching. Every account starts with a 7-day full-access trial — no card required. Annual plans save up to 28%.",
+    "Transparent candidate pricing for AI interview practice and assessment centre coaching. Every account starts with a 7-day Plus trial — no card required. Annual plans save up to 28%.",
   keywords: [
     "AI interview coach pricing",
     "assessment centre pricing",
@@ -39,7 +39,7 @@ const faqs = [
   {
     question: "Is there a free trial?",
     answer:
-      "Yes. Every new account starts with a 7-day free trial of full Professional features — unlimited practice, voice and camera coaching, and mock assessment centres — with no credit card required. When the trial ends you move to the Free plan automatically (no charge), and can upgrade any time to keep full access.",
+      "Yes. Every new account starts with a 7-day free trial of Plus — unlimited practice with voice and camera coaching — no credit card required. (Mock assessment centres and career documents are on the Professional plan.) When the trial ends you move to the Free plan automatically (no charge), and can upgrade any time.",
   },
   {
     question: "Can I switch between monthly and annual billing?",
@@ -98,7 +98,7 @@ export default async function CandidatePricingPage() {
         </p>
         <p className="mx-auto mt-6 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-2.5 text-sm font-black text-white shadow-lg shadow-purple-900/40">
           <span aria-hidden>✨</span>
-          Every new account starts with a 7-day full-access trial — no card
+          Every new account starts with a 7-day Plus trial — no card
         </p>
       </section>
 

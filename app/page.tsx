@@ -193,9 +193,9 @@ export default function HomePage() {
           </div>
           <p className="mt-4 text-xs text-gray-500">
             Every new account starts with a{" "}
-            <span className="font-bold text-gray-300">7-day full-access trial</span> —
-            voice, camera &amp; assessment centres. No credit card required. After it ends,
-            keep practising on the free tier (3 sessions) or upgrade anytime.
+            <span className="font-bold text-gray-300">7-day Plus trial</span> —
+            unlimited practice with voice &amp; camera coaching. No credit card required.
+            After it ends, keep practising on the free tier (3 sessions) or upgrade anytime.
           </p>
         </section>
 

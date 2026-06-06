@@ -366,7 +366,7 @@ export function CorporatePlanPage() {
         {isTrial && (
           <div style={{ marginTop: "1rem" }}>
             <p style={{ color: "rgba(255,255,255,0.5)" }}>
-              Full access during trial — no usage limits.
+              Full Team access during your trial — up to 10 candidate invites.
             </p>
             {sub?.trialEndsAt && (
               <p style={{ marginTop: "0.35rem", fontSize: "0.8rem", color: "rgba(251,191,36,0.7)" }}>
