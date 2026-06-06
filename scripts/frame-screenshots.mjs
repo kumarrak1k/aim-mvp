@@ -9,7 +9,6 @@ const SHOTS = [
   { in: "candidate-03-feedback.png", path: "/practice" },
   { in: "candidate-04-summary.png", path: "/practice" },
   { in: "candidate-05-progress.png", path: "/progress" },
-  { in: "candidate-06-voice-camera.png", path: "/practice" },
   { in: "corporate-01-dashboard.png", path: "/company/dashboard" },
   { in: "ac-01-landing.png", path: "/assessment-centre" },
 ];

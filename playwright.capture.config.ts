@@ -26,11 +26,24 @@ export default defineConfig({
       dependencies: ["setup"],
     },
     {
+      name: "demo",
+      testDir: "./tests/e2e/capture",
+      testMatch: /demo\.setup\.ts$/,
+      dependencies: ["auth"],
+    },
+    {
       name: "capture",
       testDir: "./tests/e2e/capture",
       testMatch: /\.capture\.ts$/,
-      use: { ...devices["Desktop Chrome"], ...shot },
-      dependencies: ["auth"],
+      use: {
+        ...devices["Desktop Chrome"],
+        ...shot,
+        // Synthetic mic/camera so the voice+camera capture runs without hardware.
+        launchOptions: {
+          args: ["--use-fake-device-for-media-stream", "--use-fake-ui-for-media-stream"],
+        },
+      },
+      dependencies: ["demo"],
     },
   ],
   ...(useLocalServer

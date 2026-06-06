@@ -7,6 +7,7 @@ import { test, type Page } from "@playwright/test";
 import { statePath } from "../pack/fixtures/env";
 import { answerFor } from "../pack/fixtures/answerBank";
 import { runTypedInterview } from "../pack/fixtures/candidateBot";
+import { stubBrowserSpeech } from "../pack/fixtures/voiceStub";
 
 const DIR = "marketing/screenshots";
 
@@ -71,5 +72,41 @@ test.describe("marketing capture — candidate", () => {
     await clean(page);
     await page.screenshot({ path: `${DIR}/candidate-05-progress.png` });
     await page.screenshot({ path: `${DIR}/candidate-05-progress-full.png`, fullPage: true });
+  });
+});
+
+// The differentiator: voice + camera mode. Speech-to-text is stubbed and a
+// synthetic camera device is used (so the delivery scores reflect a faceless
+// test stream, not a real candidate) — best-effort; a real recording makes the
+// strongest version of this shot.
+test.describe("marketing capture — voice + camera", () => {
+  test.use({ storageState: statePath("professional"), permissions: ["microphone", "camera"] });
+
+  test("voice+camera interview + feedback", async ({ page }) => {
+    await stubBrowserSpeech(page);
+    await page.goto("/practice");
+    await page.getByPlaceholder(/Example:|saved profile context/i).first().fill("Product Manager at a fintech scale-up");
+    await clean(page);
+    await page.getByRole("button", { name: "Voice + camera interview" }).click();
+    await Promise.all([
+      page.waitForResponse((r) => r.url().includes("/api/interview") && r.ok(), { timeout: 30_000 }).catch(() => null),
+      page.getByRole("button", { name: /Start Tailored .*Interview/ }).click(),
+    ]);
+    const textarea = page.getByPlaceholder(/Type your answer here|transcript will appear/i);
+    await textarea.waitFor({ state: "visible", timeout: 30_000 });
+    await clean(page);
+    await page.screenshot({ path: `${DIR}/candidate-06-voice-camera-interview.png` });
+
+    const q = await page.getByTestId("question-text").innerText({ timeout: 5_000 }).catch(() => "");
+    await textarea.fill(answerFor(q));
+    await Promise.all([
+      page.waitForResponse((r) => r.url().includes("/api/feedback"), { timeout: 30_000 }).catch(() => null),
+      page.getByRole("button", { name: "Get AI feedback" }).click(),
+    ]);
+    await page.getByText("AI feedback is ready").waitFor({ timeout: 30_000 }).catch(() => {});
+    await page.waitForTimeout(1000);
+    await clean(page);
+    await page.screenshot({ path: `${DIR}/candidate-06-voice-camera.png` });
+    await page.screenshot({ path: `${DIR}/candidate-06-voice-camera-full.png`, fullPage: true });
   });
 });
