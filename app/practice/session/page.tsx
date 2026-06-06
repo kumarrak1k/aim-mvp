@@ -183,14 +183,16 @@ export default function PracticeSessionPage() {
   // for the camera permission prompt regardless of screen size).
   const requiresManualCameraStart = manualDeviceMode || isTablet;
 
+  // Computer = desktop pointer device — auto-flow is always on (as before).
+  const isComputer = !manualDeviceMode && !isTablet;
+
   // Should the question auto-play + recording auto-start without a per-question
-  // tap? Desktop: always. Phone: never (manual — no reliable gesture chain).
-  // Tablet: only after the first question has played AND the user opted in
-  // (choice remembered in localStorage). The first question stays manual so its
-  // tap unlocks iOS audio + grants mic before any automated playback.
+  // tap? Computer: always. Touch devices (phone + tablet): only after the first
+  // question has played AND the user opted in via the one-time prompt (choice
+  // remembered in localStorage). The first question always stays a manual tap so
+  // it can unlock iOS audio + grant mic before any automated playback.
   const autoFlowActive =
-    !manualDeviceMode &&
-    (!isTablet || (tabletAutoAdvance === "on" && firstQuestionPlayed));
+    isComputer || (tabletAutoAdvance === "on" && firstQuestionPlayed);
 
   const practiceMode = useMemo<PracticeMode>(() => {
     if (speakerEnabled && cameraEnabled) return "voice-camera";
@@ -352,7 +354,7 @@ export default function PracticeSessionPage() {
       // (user already opted in) or surface the one-time prompt. Recording the
       // current question as "last spoken" stops the auto-play effect from
       // replaying it the moment auto-flow turns on.
-      if (isTablet && !firstPlayHandledRef.current) {
+      if (!isComputer && !firstPlayHandledRef.current) {
         firstPlayHandledRef.current = true;
         lastSpokenQuestionRef.current = activeQuestionRef.current;
         setFirstQuestionPlayed(true);
