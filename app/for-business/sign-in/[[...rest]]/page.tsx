@@ -72,7 +72,7 @@ export default function BusinessSignInPage() {
             fallbackRedirectUrl="/auth/redirect"
             appearance={{
               elements: {
-                rootBox: "w-full",
+                rootBox: "mx-auto w-full",
                 card: "w-full bg-white/[0.04] border border-white/[0.08] shadow-2xl shadow-purple-950/30 backdrop-blur-2xl rounded-[1.75rem]",
                 headerTitle: "hidden",
                 headerSubtitle: "hidden",
