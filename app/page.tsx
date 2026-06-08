@@ -65,29 +65,69 @@ const siteSchema = {
 };
 
 const stats = [
-  { value: "6", label: "dimensions scored per answer" },
-  { value: "360°", label: "answer, voice & camera coaching" },
-  { value: "8+", label: "interview types covered" },
-  { value: "7-day", label: "personalised improvement plan" },
+  { value: "6", label: "dimensions scored per answer", grad: "from-purple-300 to-fuchsia-300", glow: "bg-purple-500/25" },
+  { value: "360°", label: "answer, voice & camera coaching", grad: "from-fuchsia-300 to-pink-300", glow: "bg-fuchsia-500/25" },
+  { value: "8+", label: "interview types covered", grad: "from-cyan-300 to-blue-300", glow: "bg-cyan-500/25" },
+  { value: "7-day", label: "personalised improvement plan", grad: "from-amber-200 to-orange-300", glow: "bg-amber-500/25" },
 ];
 
 const capabilities = [
   {
     title: "Tailored to you",
     body: "Questions generated for your exact role, level, and interview type — not a generic bank.",
-    color: "purple",
+    icon: "target",
+    border: "border-purple-500/25",
+    glow: "bg-purple-500/30",
+    iconGrad: "from-purple-400 to-fuchsia-500",
+    titleGrad: "from-purple-200 to-fuchsia-200",
   },
   {
     title: "360° coaching",
     body: "Answer quality, voice delivery, filler words, and camera presence all scored in one session.",
-    color: "fuchsia",
+    icon: "mic",
+    border: "border-fuchsia-500/25",
+    glow: "bg-fuchsia-500/30",
+    iconGrad: "from-fuchsia-400 to-pink-500",
+    titleGrad: "from-fuchsia-200 to-pink-200",
   },
   {
     title: "Structured improvement",
     body: "Model answers, specific feedback, and a 7-day plan after every practice session.",
-    color: "cyan",
+    icon: "trending",
+    border: "border-cyan-500/25",
+    glow: "bg-cyan-500/30",
+    iconGrad: "from-cyan-400 to-blue-500",
+    titleGrad: "from-cyan-200 to-blue-200",
   },
 ];
+
+/** Small inline icons for the capability cards (rendered in a gradient badge). */
+function CapabilityIcon({ name }: { name: string }) {
+  if (name === "target") {
+    return (
+      <svg className="h-5 w-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+        <circle cx="12" cy="12" r="9" />
+        <circle cx="12" cy="12" r="4.5" />
+        <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none" />
+      </svg>
+    );
+  }
+  if (name === "mic") {
+    return (
+      <svg className="h-5 w-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+        <rect x="9" y="3" width="6" height="11" rx="3" />
+        <path d="M5 11a7 7 0 0 0 14 0" />
+        <path d="M12 18v3" />
+      </svg>
+    );
+  }
+  return (
+    <svg className="h-5 w-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M3 17l6-6 4 4 8-8" />
+      <path d="M17 7h4v4" />
+    </svg>
+  );
+}
 
 export default function HomePage() {
   return (
@@ -326,16 +366,21 @@ export default function HomePage() {
         </section>
 
         {/* Stats */}
-        <section className="mb-10 grid grid-cols-2 gap-3 sm:mb-14 lg:grid-cols-4">
+        <section className="mb-10 grid grid-cols-2 gap-3 sm:mb-14 sm:gap-4 lg:grid-cols-4">
           {stats.map((s) => (
             <div
               key={s.label}
-              className="rounded-2xl border border-white/[0.07] bg-white/[0.03] px-5 py-5 text-center"
+              className="group relative overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.03] px-5 py-6 text-center transition duration-300 hover:-translate-y-1 hover:border-white/[0.18] hover:bg-white/[0.05]"
             >
-              <p className="text-3xl font-black tracking-[-0.06em] text-white">
+              <div
+                className={`pointer-events-none absolute -top-8 left-1/2 h-20 w-20 -translate-x-1/2 rounded-full ${s.glow} opacity-50 blur-2xl transition duration-300 group-hover:opacity-100`}
+              />
+              <p
+                className={`relative bg-gradient-to-r ${s.grad} bg-clip-text text-4xl font-black tracking-[-0.06em] text-transparent`}
+              >
                 {s.value}
               </p>
-              <p className="mt-1 text-xs leading-5 text-gray-400">{s.label}</p>
+              <p className="relative mt-1.5 text-xs leading-5 text-gray-400">{s.label}</p>
             </div>
           ))}
         </section>
@@ -345,16 +390,20 @@ export default function HomePage() {
           {capabilities.map((c) => (
             <div
               key={c.title}
-              className={`rounded-[1.75rem] border p-6 ${
-                c.color === "purple"
-                  ? "border-purple-500/[0.18] bg-purple-500/[0.05]"
-                  : c.color === "fuchsia"
-                    ? "border-fuchsia-500/[0.18] bg-fuchsia-500/[0.05]"
-                    : "border-cyan-500/[0.18] bg-cyan-500/[0.05]"
-              }`}
+              className={`group relative overflow-hidden rounded-[1.75rem] border ${c.border} bg-white/[0.03] p-6 transition duration-300 hover:-translate-y-1.5 hover:bg-white/[0.05]`}
             >
-              <p className="font-black">{c.title}</p>
-              <p className="mt-2 text-sm leading-6 text-gray-400">{c.body}</p>
+              <div
+                className={`pointer-events-none absolute -right-10 -top-10 h-36 w-36 rounded-full ${c.glow} opacity-40 blur-3xl transition duration-300 group-hover:opacity-80`}
+              />
+              <div
+                className={`relative mb-4 inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br ${c.iconGrad} shadow-lg shadow-black/30`}
+              >
+                <CapabilityIcon name={c.icon} />
+              </div>
+              <p className={`relative bg-gradient-to-r ${c.titleGrad} bg-clip-text font-black text-transparent`}>
+                {c.title}
+              </p>
+              <p className="relative mt-2 text-sm leading-6 text-gray-400">{c.body}</p>
             </div>
           ))}
         </section>
