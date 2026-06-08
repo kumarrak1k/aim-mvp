@@ -28,7 +28,7 @@ type StripePlanId =
 
 // Side-by-side feature comparison (makes the Free → Plus → Professional cliff clear).
 const COMPARE: Array<{ feature: string; free: string | boolean; plus: string | boolean; pro: string | boolean }> = [
-  { feature: "Practice sessions", free: "3 (after trial)", plus: "Unlimited", pro: "Unlimited" },
+  { feature: "Practice sessions", free: "3 sessions", plus: "Unlimited", pro: "Unlimited" },
   { feature: "Typed interviews", free: true, plus: true, pro: true },
   { feature: "Voice interviews", free: false, plus: true, pro: true },
   { feature: "Voice + camera delivery analysis", free: false, plus: true, pro: true },
@@ -68,10 +68,10 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
       annualPrice: null as string | null,
       annualMonthly: null as string | null,
       period: null as string | null,
-      description: "Start with a 7-day free trial — unlimited practice with voice and camera coaching, no payment details required. Then continue free with 3 keyboard-only practice sessions.",
+      description: "Always free — no payment details, no time limit. Keyboard-based interview practice with AI-tailored questions and written feedback, up to 3 saved practice sessions.",
       features: [
-        { text: "7-day free trial included — no payment details", isNew: true },
-        { text: "Then 3 keyboard-only practice sessions" },
+        { text: "Always free — no payment details required" },
+        { text: "3 keyboard-only practice sessions" },
         { text: "AI-generated tailored interview questions" },
         { text: "Written answer feedback per question" },
         { text: "Session transcript review" },
