@@ -119,10 +119,10 @@ const useCases = [
 ];
 
 const stats = [
-  { value: "1×", label: "Same brief for every candidate" },
-  { value: "0", label: "Recruiter time on weak applicants" },
-  { value: "100%", label: "Audit trail per candidate" },
-  { value: "GDPR", label: "UK-ready by default" },
+  { value: "1×", label: "Same brief for every candidate", grad: "from-fuchsia-300 to-pink-300", glow: "bg-fuchsia-500/25" },
+  { value: "0", label: "Recruiter time on weak applicants", grad: "from-purple-300 to-fuchsia-300", glow: "bg-purple-500/25" },
+  { value: "100%", label: "Audit trail per candidate", grad: "from-cyan-300 to-blue-300", glow: "bg-cyan-500/25" },
+  { value: "GDPR", label: "UK-ready by default", grad: "from-emerald-300 to-teal-300", glow: "bg-emerald-500/25" },
 ];
 
 export default function ForBusinessPage() {
@@ -164,12 +164,15 @@ export default function ForBusinessPage() {
           {stats.map((s) => (
             <div
               key={s.label}
-              className="rounded-2xl border border-white/[0.09] bg-white/[0.04] px-2 py-3 text-center"
+              className="group relative overflow-hidden rounded-2xl border border-white/[0.09] bg-white/[0.04] px-2 py-4 text-center transition duration-300 hover:-translate-y-1 hover:border-white/[0.2] hover:bg-white/[0.06]"
             >
-              <p className="text-xl font-black tracking-[-0.04em] sm:text-2xl">
+              <div
+                className={`pointer-events-none absolute -top-6 left-1/2 h-16 w-16 -translate-x-1/2 rounded-full ${s.glow} opacity-50 blur-2xl transition duration-300 group-hover:opacity-100`}
+              />
+              <p className={`relative bg-gradient-to-r ${s.grad} bg-clip-text text-xl font-black tracking-[-0.04em] text-transparent sm:text-2xl`}>
                 {s.value}
               </p>
-              <p className="mt-1 text-[9px] leading-4 text-gray-500 sm:text-[10px]">
+              <p className="relative mt-1 text-[9px] leading-4 text-gray-400 sm:text-[10px]">
                 {s.label}
               </p>
             </div>
