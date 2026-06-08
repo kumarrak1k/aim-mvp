@@ -17,9 +17,11 @@ import Link from "next/link";
 type SubscriptionState = {
   isTrial: boolean;
   isPaid: boolean;
+  isPastDue: boolean;
   trialConsumed: boolean;
   trialDaysRemaining: number;
   planName: string;
+  paidPlanName: string;
 };
 
 const EXPIRED_DISMISS_KEY = "aim_trial_expired_dismissed";
@@ -28,6 +30,7 @@ export function TrialBanner() {
   const [sub, setSub] = useState<SubscriptionState | null>(null);
   const [starting, setStarting] = useState(false);
   const [startError, setStartError] = useState("");
+  const [portalLoading, setPortalLoading] = useState(false);
   const [expiredDismissed, setExpiredDismissed] = useState(true);
 
   useEffect(() => {
@@ -71,6 +74,21 @@ export function TrialBanner() {
     }
   }
 
+  async function openBillingPortal() {
+    setPortalLoading(true);
+    try {
+      const res = await fetch("/api/stripe/portal", { method: "POST" });
+      const data = (await res.json().catch(() => ({}))) as { url?: string };
+      if (res.ok && data.url) {
+        window.location.href = data.url;
+        return;
+      }
+    } catch {
+      /* fall through to re-enable the button */
+    }
+    setPortalLoading(false);
+  }
+
   function dismissExpired() {
     setExpiredDismissed(true);
     try {
@@ -80,7 +98,35 @@ export function TrialBanner() {
     }
   }
 
-  if (!sub || sub.isPaid) return null;
+  if (!sub) return null;
+
+  // ── Payment past due — grace window. Shown even though access is still live
+  //    (isPaid stays true through Stripe's dunning) so the user can fix their
+  //    card before the subscription is cancelled. ─────────────────────────────
+  if (sub.isPastDue) {
+    const planLabel =
+      sub.paidPlanName && sub.paidPlanName !== "Free" ? sub.paidPlanName : "subscription";
+    return (
+      <div className="relative z-40 border-b border-amber-400/30 bg-amber-500/[0.14]">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-3 gap-y-1 px-4 py-2 text-center sm:px-6">
+          <span className="text-[13px] font-semibold text-amber-100">
+            <span aria-hidden>⚠️ </span>
+            Your last payment didn&rsquo;t go through. Update your card to keep your{" "}
+            <strong className="font-black">{planLabel}</strong> access.
+          </span>
+          <button
+            onClick={openBillingPortal}
+            disabled={portalLoading}
+            className="rounded-full bg-amber-400 px-3.5 py-1 text-[12px] font-black text-[#3a2a00] shadow transition hover:scale-[1.03] disabled:opacity-60"
+          >
+            {portalLoading ? "Opening…" : "Update card →"}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (sub.isPaid) return null;
 
   // ── Active trial — countdown ──────────────────────────────────────────────
   if (sub.isTrial) {

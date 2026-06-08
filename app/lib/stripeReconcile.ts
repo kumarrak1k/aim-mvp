@@ -177,8 +177,13 @@ async function reconcileCorporate(
   const customerDrift =
     "stripeCustomerId" in target &&
     company.stripeCustomerId !== target.stripeCustomerId;
+  const planIdDrift =
+    "planId" in target &&
+    target.planId !== undefined &&
+    company.planId !== target.planId;
   const drift =
     company.planStatus !== target.planStatus ||
+    planIdDrift ||
     company.stripeSubscriptionId !== target.stripeSubscriptionId ||
     !sameDate(company.stripeCurrentPeriodEnd, target.stripeCurrentPeriodEnd) ||
     customerDrift;

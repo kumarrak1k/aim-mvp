@@ -63,3 +63,28 @@ export async function claimTrialEligibility(
     return { eligible: false, reason: "email_already_trialed" };
   }
 }
+
+/**
+ * Undo a claim made by claimTrialEligibility when the trial did NOT actually
+ * start (the grant threw, or startCandidateTrialIfEligible returned started=false).
+ * Without this, a transient failure permanently burns the email's one-time
+ * eligibility even though no trial was ever granted.
+ *
+ * Scoped to (emailHash, clerkUserId) so it can only release the row THIS user
+ * just created — never an older grant belonging to a different account.
+ */
+export async function releaseTrialEligibility(
+  clerkUserId: string,
+  email: string
+): Promise<void> {
+  if (!email) return;
+  const emailHash = crypto
+    .createHash("sha256")
+    .update(normalizeEmail(email))
+    .digest("hex");
+  try {
+    await prisma.trialGrant.deleteMany({ where: { emailHash, clerkUserId } });
+  } catch {
+    // Nothing to release (already gone, or never created).
+  }
+}

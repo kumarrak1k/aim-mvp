@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { getAccountType } from "@/app/lib/accountType";
 import { startCandidateTrialIfEligible } from "@/app/lib/candidatePlan";
 import { enqueueTrialEmails } from "@/app/lib/trialEmails";
-import { claimTrialEligibility } from "@/app/lib/trialEligibility";
+import { claimTrialEligibility, releaseTrialEligibility } from "@/app/lib/trialEligibility";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -34,10 +34,11 @@ export async function POST() {
     );
   }
 
+  let email = "";
   try {
     const client = await clerkClient();
     const user = await client.users.getUser(userId);
-    const email = user.emailAddresses[0]?.emailAddress ?? "";
+    email = user.emailAddresses[0]?.emailAddress ?? "";
 
     // Block disposable / already-trialed emails (anti-farming).
     const eligibility = await claimTrialEligibility(userId, email);
@@ -54,6 +55,9 @@ export async function POST() {
 
     const result = await startCandidateTrialIfEligible(userId);
     if (!result.started) {
+      // The eligibility slot was just claimed but no trial was granted — release
+      // it so a transient miss doesn't permanently burn the email's free trial.
+      await releaseTrialEligibility(userId, email);
       const message =
         result.reason === "already_consumed"
           ? "You've already used your free trial."
@@ -81,6 +85,8 @@ export async function POST() {
     });
   } catch (error) {
     console.error("TRIAL START ROUTE ERROR:", error);
+    // If we threw after claiming eligibility, release it so the user can retry.
+    if (email) await releaseTrialEligibility(userId, email);
     return NextResponse.json({ error: "Failed to start trial." }, { status: 500 });
   }
 }

@@ -17,3 +17,17 @@ export async function recordStripeEvent(
     return { firstTime: false };
   }
 }
+
+/**
+ * Undo a recordStripeEvent claim. Called when the handler THROWS after the
+ * event id was recorded, so Stripe's automatic retry of the same event is not
+ * swallowed by the duplicate guard and actually re-runs the handler. (The row
+ * is the dedup lock; if processing failed, the lock must be released.)
+ */
+export async function deleteStripeEvent(eventId: string): Promise<void> {
+  try {
+    await prisma.processedStripeEvent.delete({ where: { id: eventId } });
+  } catch {
+    // Already gone (or never written) — nothing to release.
+  }
+}

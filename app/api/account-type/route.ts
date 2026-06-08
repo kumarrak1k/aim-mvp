@@ -7,7 +7,7 @@ import {
   type AccountType,
 } from "@/app/lib/accountType";
 import { startCandidateTrialIfEligible } from "@/app/lib/candidatePlan";
-import { claimTrialEligibility } from "@/app/lib/trialEligibility";
+import { claimTrialEligibility, releaseTrialEligibility } from "@/app/lib/trialEligibility";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -82,18 +82,25 @@ export async function POST(request: NextRequest) {
     // genuine, not-already-trialed email (blocks disposable + plus-tag farming).
     let trialStarted = false;
     if (result.accountType === "candidate") {
+      let trialEmail = "";
       try {
         const client = await clerkClient();
         const user = await client.users.getUser(userId);
-        const email = user.emailAddresses[0]?.emailAddress ?? "";
-        const eligibility = await claimTrialEligibility(userId, email);
+        trialEmail = user.emailAddresses[0]?.emailAddress ?? "";
+        const eligibility = await claimTrialEligibility(userId, trialEmail);
         if (eligibility.eligible) {
           const trial = await startCandidateTrialIfEligible(userId);
           trialStarted = trial.started;
+          // claimTrialEligibility burns the email's one-time slot up-front. If
+          // the trial didn't actually start, release it so the slot isn't lost.
+          if (!trial.started) await releaseTrialEligibility(userId, trialEmail);
         }
       } catch (err) {
         // Non-fatal: a failed trial grant must not block sign-up completion.
         console.error("TRIAL START ERROR:", err);
+        // The claim may have landed before the throw — release it so a later
+        // retry (e.g. via /api/trial/start) can still succeed.
+        if (trialEmail) await releaseTrialEligibility(userId, trialEmail);
       }
     }
 

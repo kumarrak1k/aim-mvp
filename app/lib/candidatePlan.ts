@@ -60,7 +60,7 @@ export type CandidateBillingMeta = {
 };
 
 export type CandidatePlan = {
-  /** Display name of the EFFECTIVE plan (trial shows as "Professional"). */
+  /** Display name of the EFFECTIVE plan (an active trial shows as "Plus"). */
   planName: CandidatePlanName;
   /** Lowercase effective plan for gating logic. */
   effectivePlan: EffectivePlan;
@@ -78,6 +78,8 @@ export type CandidatePlan = {
   paidPlanName: CandidatePlanName;
   /** True if there is a genuine active paid subscription. */
   isPaid: boolean;
+  /** True while a paid subscription is past_due (Stripe dunning grace window). */
+  isPastDue: boolean;
   /** ISO trial end, or null. */
   trialStartedAt: string | null;
   trialEndsAt: string | null;
@@ -100,10 +102,16 @@ export function resolveCandidatePlan(
   meta: CandidateBillingMeta | null | undefined
 ): CandidatePlan {
   // ── Paid subscription (Stripe "trialing" is a card-on-file Stripe trial and
-  //    is treated as paid/active). ──────────────────────────────────────────
+  //    is treated as paid/active). `past_due` keeps FULL access during Stripe's
+  //    dunning / Smart-Retries grace window — mirroring the corporate side. The
+  //    subscription only really ends when Stripe flips it to canceled/unpaid, at
+  //    which point the webhook drops the user. isPastDue drives an "update your
+  //    card" banner so the user can fix payment before access is lost. ─────────
   const isPaid =
     meta?.subscriptionStatus === "active" ||
-    meta?.subscriptionStatus === "trialing";
+    meta?.subscriptionStatus === "trialing" ||
+    meta?.subscriptionStatus === "past_due";
+  const isPastDue = meta?.subscriptionStatus === "past_due";
   const planId = (meta?.stripePlanId ?? "").toLowerCase();
 
   let paidPlanName: CandidatePlanName = "Free";
@@ -151,6 +159,7 @@ export function resolveCandidatePlan(
     trialConsumed: meta?.trialConsumed === true,
     paidPlanName,
     isPaid: paidPlanName !== "Free",
+    isPastDue,
     trialStartedAt,
     trialEndsAt,
     trialDaysRemaining: daysRemaining(trialEndsAt),

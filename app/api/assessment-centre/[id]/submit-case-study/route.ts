@@ -6,6 +6,7 @@ import { callOpenAIChat } from "@/app/lib/openai-client";
 import { checkRateLimit } from "@/app/lib/rateLimit";
 import { parseJsonBody } from "@/app/lib/validation";
 import { moderateText } from "@/app/lib/moderation";
+import { getCandidatePlan } from "@/app/lib/candidatePlan";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -42,6 +43,22 @@ export async function POST(
   const session = await prisma.assessmentCentreSession.findUnique({ where: { id } });
   if (!session || session.clerkUserId !== userId) {
     return NextResponse.json({ error: "Session not found." }, { status: 404 });
+  }
+
+  // Re-check entitlement on submit (not just at start). SELF-SERVE assessment
+  // centres are Professional-only, so a user who lapsed or downgraded mid-flow
+  // can't keep generating AI scoring. COMPANY-FUNDED sessions (created from a
+  // corporate invite — assignmentToken set) are paid for by the company and are
+  // bounded by the corporate invite caps, so the candidate's own plan doesn't
+  // gate them.
+  if (!session.assignmentToken) {
+    const plan = await getCandidatePlan(userId);
+    if (!plan.isProfessional) {
+      return NextResponse.json(
+        { error: "Assessment centre requires the Professional plan." },
+        { status: 403 }
+      );
+    }
   }
 
   const parsed = await parseJsonBody(request, submitSchema);

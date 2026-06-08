@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { clerkClient } from "@clerk/nextjs/server";
 import { requireStripe } from "@/app/lib/stripe";
-import { recordStripeEvent } from "@/app/lib/stripeEvents";
+import { recordStripeEvent, deleteStripeEvent } from "@/app/lib/stripeEvents";
 import {
   isCorporateSubscription,
   candidateUpsertMeta,
   candidateDeletedMeta,
-  type CandidateSubscriptionMeta,
 } from "@/app/lib/stripeSync";
 import Stripe from "stripe";
 
@@ -15,13 +14,36 @@ export const runtime = "nodejs";
 // Stripe sends raw bodies — Next.js must not parse this route.
 export const dynamic = "force-dynamic";
 
-async function updateUserSubscription(
+/**
+ * Read the user's current metadata, apply the stale/out-of-order guard, then
+ * write. Guard (mirrors the reconcile): a LIVE subscription may CLAIM the record
+ * (catches a brand-new subscriber); any non-live status — and any delete for an
+ * OLD subscription — may only update the record that ALREADY points at this
+ * subscription, so a late/out-of-order event can never clobber a newer plan.
+ */
+async function applyCandidateSubscription(
   clerkUserId: string,
-  data: Partial<CandidateSubscriptionMeta>
+  subscription: Stripe.Subscription,
+  kind: "upsert" | "deleted"
 ) {
   const client = await clerkClient();
   const user = await client.users.getUser(clerkUserId);
   const existing = (user.privateMetadata ?? {}) as Record<string, unknown>;
+
+  const live =
+    subscription.status === "active" || subscription.status === "trialing";
+  if (
+    (!live || kind === "deleted") &&
+    existing.stripeSubscriptionId !== subscription.id
+  ) {
+    return; // stale / not-the-current-subscription — ignore
+  }
+
+  const data =
+    kind === "deleted"
+      ? candidateDeletedMeta(subscription)
+      : candidateUpsertMeta(subscription);
+
   await client.users.updateUserMetadata(clerkUserId, {
     privateMetadata: { ...existing, ...data },
   });
@@ -37,7 +59,7 @@ async function handleSubscriptionUpsert(subscription: Stripe.Subscription) {
     return;
   }
 
-  await updateUserSubscription(clerkUserId, candidateUpsertMeta(subscription));
+  await applyCandidateSubscription(clerkUserId, subscription, "upsert");
 }
 
 /**
@@ -62,7 +84,7 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
   const clerkUserId = subscription.metadata?.clerkUserId;
   if (!clerkUserId) return;
 
-  await updateUserSubscription(clerkUserId, candidateDeletedMeta(subscription));
+  await applyCandidateSubscription(clerkUserId, subscription, "deleted");
 }
 
 export async function POST(req: NextRequest) {
@@ -115,6 +137,9 @@ export async function POST(req: NextRequest) {
     }
   } catch (err) {
     console.error("STRIPE WEBHOOK: handler error", event.type, err);
+    // Release the idempotency claim so Stripe's automatic retry re-runs the
+    // handler instead of being swallowed by the duplicate guard.
+    await deleteStripeEvent(event.id);
     return NextResponse.json({ error: "Webhook handler failed." }, { status: 500 });
   }
 

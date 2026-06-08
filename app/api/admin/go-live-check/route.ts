@@ -72,6 +72,25 @@ export async function GET() {
   // ── Webhook secrets + flags ───────────────────────────────────────────────
   add("STRIPE_WEBHOOK_SECRET", present("STRIPE_WEBHOOK_SECRET") ? "ok" : "fail", present("STRIPE_WEBHOOK_SECRET") ? "set" : "missing (candidate webhook)");
   add("STRIPE_WEBHOOK_SECRET_CORPORATE", present("STRIPE_WEBHOOK_SECRET_CORPORATE") ? "ok" : "fail", present("STRIPE_WEBHOOK_SECRET_CORPORATE") ? "set" : "missing (corporate webhook)");
+
+  // The candidate + corporate webhooks are SEPARATE Stripe endpoints and must
+  // use DIFFERENT signing secrets. If they're identical, each endpoint would
+  // verify the other's events — a silent misconfiguration that breaks routing.
+  const candSecret = process.env.STRIPE_WEBHOOK_SECRET ?? "";
+  const corpSecret = process.env.STRIPE_WEBHOOK_SECRET_CORPORATE ?? "";
+  if (candSecret && corpSecret) {
+    add(
+      "stripe-webhook-secrets-distinct",
+      candSecret === corpSecret ? "fail" : "ok",
+      candSecret === corpSecret
+        ? "candidate and corporate webhook secrets are IDENTICAL — use two separate Stripe endpoints"
+        : "candidate and corporate secrets differ"
+    );
+  }
+
+  // OpenAI powers all scoring, feedback, and voice — a missing key fails the
+  // entire product, not just one route.
+  add("OPENAI_API_KEY", present("OPENAI_API_KEY") ? "ok" : "fail", present("OPENAI_API_KEY") ? "set" : "missing — all AI scoring/voice fails");
   add("NEXT_PUBLIC_PAYMENTS_ENABLED", process.env.NEXT_PUBLIC_PAYMENTS_ENABLED === "true" ? "ok" : "warn", process.env.NEXT_PUBLIC_PAYMENTS_ENABLED === "true" ? "true" : "not 'true' — upgrade/subscribe buttons hidden");
   add("CRON_SECRET", present("CRON_SECRET") ? "ok" : "fail", present("CRON_SECRET") ? "set" : "missing — nurture cron fails closed");
 
