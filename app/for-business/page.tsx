@@ -93,7 +93,7 @@ function FeatureIcon({ iconKey }: { iconKey: string }) {
     ),
   };
   return (
-    <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-2xl border border-fuchsia-400/20 bg-fuchsia-400/[0.08] text-fuchsia-300">
+    <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-2xl border border-purple-400/20 bg-purple-400/[0.08] text-purple-300">
       <div className="h-5 w-5">{icons[iconKey]}</div>
     </div>
   );
@@ -130,13 +130,13 @@ export default function ForBusinessPage() {
     <AudienceShell audience="business" currentPath="/for-business">
       {/* Hero */}
       <section className="mx-auto max-w-6xl px-4 pb-16 pt-6 text-center sm:px-6 sm:pb-20 sm:pt-10">
-        <p className="mx-auto mb-6 inline-flex items-center gap-2.5 rounded-full border border-fuchsia-400/25 bg-fuchsia-400/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-fuchsia-200">
+        <p className="mx-auto mb-6 inline-flex items-center gap-2.5 rounded-full border border-purple-400/25 bg-purple-400/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-purple-200">
           For hiring teams
         </p>
 
         <h1 className="mx-auto max-w-5xl text-[2.7rem] font-black leading-[1.02] tracking-[-0.055em] sm:text-5xl lg:text-[4rem] xl:text-[4.5rem]">
           Run structured AI assessments{" "}
-          <span className="bg-gradient-to-r from-fuchsia-200 via-pink-200 to-orange-200 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-purple-200 via-fuchsia-200 to-cyan-200 bg-clip-text text-transparent">
             at scale.
           </span>
         </h1>
@@ -149,7 +149,7 @@ export default function ForBusinessPage() {
 
         <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link href="/for-business/sign-up">
-            <button className="w-full rounded-2xl bg-gradient-to-r from-fuchsia-500 to-purple-500 px-8 py-4 text-base font-black text-white shadow-2xl shadow-fuchsia-900/40 transition hover:scale-[1.02] sm:w-auto">
+            <button className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-8 py-4 text-base font-black text-white shadow-2xl shadow-purple-900/40 transition hover:scale-[1.02] sm:w-auto">
               Create workspace →
             </button>
           </Link>
@@ -183,7 +183,7 @@ export default function ForBusinessPage() {
       {/* Workflow demo video */}
       <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 sm:pb-20">
         <div className="mb-8 text-center">
-          <p className="text-[11px] font-black uppercase tracking-[0.26em] text-fuchsia-300/90">
+          <p className="text-[11px] font-black uppercase tracking-[0.26em] text-purple-300/90">
             See it work
           </p>
           <h2 className="mt-3 text-3xl font-black tracking-[-0.05em] sm:text-4xl">
@@ -205,7 +205,7 @@ export default function ForBusinessPage() {
       {/* Feature grid */}
       <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 sm:pb-20">
         <div className="mb-10 text-center">
-          <p className="text-[11px] font-black uppercase tracking-[0.26em] text-fuchsia-300/90">
+          <p className="text-[11px] font-black uppercase tracking-[0.26em] text-purple-300/90">
             Platform
           </p>
           <h2 className="mt-3 text-3xl font-black tracking-[-0.05em] sm:text-4xl">
@@ -216,7 +216,7 @@ export default function ForBusinessPage() {
           {features.map((f) => (
             <div
               key={f.title}
-              className="rounded-[1.5rem] border border-white/[0.08] bg-white/[0.03] p-6 transition hover:border-fuchsia-300/20 hover:bg-fuchsia-300/[0.04]"
+              className="rounded-[1.5rem] border border-white/[0.08] bg-white/[0.03] p-6 transition hover:border-purple-300/20 hover:bg-purple-300/[0.04]"
             >
               <FeatureIcon iconKey={f.iconKey} />
               <p className="font-black text-white">{f.title}</p>
@@ -229,7 +229,7 @@ export default function ForBusinessPage() {
       {/* Use cases */}
       <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 sm:pb-20">
         <div className="mb-10 text-center">
-          <p className="text-[11px] font-black uppercase tracking-[0.26em] text-fuchsia-300/90">
+          <p className="text-[11px] font-black uppercase tracking-[0.26em] text-purple-300/90">
             Use cases
           </p>
           <h2 className="mt-3 text-3xl font-black tracking-[-0.05em] sm:text-4xl">
@@ -240,7 +240,7 @@ export default function ForBusinessPage() {
           {useCases.map((uc) => (
             <div
               key={uc.title}
-              className="rounded-[1.75rem] border border-fuchsia-500/[0.15] bg-fuchsia-500/[0.04] p-7"
+              className="rounded-[1.75rem] border border-purple-500/[0.15] bg-purple-500/[0.04] p-7"
             >
               <h3
                 className="text-xl font-black tracking-[-0.035em]"
@@ -276,8 +276,8 @@ export default function ForBusinessPage() {
 
       {/* Final CTA */}
       <section className="mx-auto max-w-7xl px-4 pb-20 sm:px-6 sm:pb-28">
-        <div className="rounded-[2rem] border border-white/[0.1] bg-gradient-to-br from-fuchsia-500/[0.10] via-purple-500/[0.06] to-transparent p-10 text-center sm:p-14">
-          <p className="text-[11px] font-black uppercase tracking-[0.26em] text-fuchsia-300/90">
+        <div className="rounded-[2rem] border border-white/[0.1] bg-gradient-to-br from-purple-500/[0.10] via-fuchsia-500/[0.06] to-transparent p-10 text-center sm:p-14">
+          <p className="text-[11px] font-black uppercase tracking-[0.26em] text-purple-300/90">
             Get started
           </p>
           <h2 className="mx-auto mt-3 max-w-2xl text-3xl font-black tracking-[-0.05em] sm:text-4xl">
@@ -288,7 +288,7 @@ export default function ForBusinessPage() {
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link href="/for-business/sign-up">
-              <button className="w-full rounded-2xl bg-gradient-to-r from-fuchsia-500 to-purple-500 px-8 py-4 text-base font-black text-white shadow-2xl shadow-fuchsia-900/40 transition hover:scale-[1.02] sm:w-auto">
+              <button className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-8 py-4 text-base font-black text-white shadow-2xl shadow-purple-900/40 transition hover:scale-[1.02] sm:w-auto">
                 Create workspace →
               </button>
             </Link>

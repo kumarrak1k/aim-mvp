@@ -3,7 +3,7 @@
  *
  * Used by the post-split marketing pages — /for-candidates/* and
  * /for-business/*. Each audience gets:
- *   - its own colour identity (purple-cyan for candidate, fuchsia for business)
+ *   - a unified purple brand identity across audiences
  *   - its own nav focused on its own product (no cross-pollination)
  *   - its own sign-in / sign-up CTAs
  *
@@ -95,11 +95,11 @@ const THEMES: Record<Audience, AudienceTheme> = {
       },
       { href: "/for-business/pricing", label: "Pricing" },
     ],
-    primaryGradient: "from-fuchsia-500 to-purple-500",
-    primaryShadow: "shadow-fuchsia-900/40",
-    accentBorder: "border-fuchsia-300/20",
-    accentTextSoft: "text-fuchsia-300/90",
-    accentTextStrong: "text-fuchsia-100",
+    primaryGradient: "from-purple-500 via-fuchsia-500 to-blue-500",
+    primaryShadow: "shadow-purple-900/40",
+    accentBorder: "border-purple-300/20",
+    accentTextSoft: "text-purple-300/90",
+    accentTextStrong: "text-purple-100",
     switchAudienceLabel: "I'm a candidate →",
     switchAudienceHref: "/for-candidates",
   },
@@ -120,17 +120,8 @@ export function AudienceShell({
       {/* Background atmosphere — tinted by audience */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_25%_15%,rgba(120,60,255,0.18),transparent),radial-gradient(ellipse_60%_50%_at_75%_85%,rgba(232,80,180,0.12),transparent),linear-gradient(180deg,#0a0614_0%,#100a1f_50%,#0c0816_100%)]" />
-        {audience === "candidate" ? (
-          <>
-            <div className="absolute left-[-160px] top-[-80px] h-[520px] w-[520px] rounded-full bg-purple-500/[0.18] blur-[160px]" />
-            <div className="absolute bottom-[-80px] right-[-160px] h-[520px] w-[520px] rounded-full bg-fuchsia-500/[0.18] blur-[160px]" />
-          </>
-        ) : (
-          <>
-            <div className="absolute left-[-160px] top-[-80px] h-[520px] w-[520px] rounded-full bg-fuchsia-500/[0.18] blur-[160px]" />
-            <div className="absolute bottom-[-80px] right-[-160px] h-[520px] w-[520px] rounded-full bg-purple-500/[0.15] blur-[160px]" />
-          </>
-        )}
+        <div className="absolute left-[-160px] top-[-80px] h-[520px] w-[520px] rounded-full bg-purple-500/[0.18] blur-[160px]" />
+        <div className="absolute bottom-[-80px] right-[-160px] h-[520px] w-[520px] rounded-full bg-fuchsia-500/[0.18] blur-[160px]" />
       </div>
 
       {/* Header */}

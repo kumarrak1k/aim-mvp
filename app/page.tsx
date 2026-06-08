@@ -183,13 +183,13 @@ export default function HomePage() {
             </Link>
             <Link
               href="/for-business"
-              className="rounded-full border border-fuchsia-300/20 bg-fuchsia-300/[0.07] px-4 py-2 text-xs font-black text-fuchsia-100 transition hover:bg-fuchsia-300/[0.12]"
+              className="rounded-full border border-purple-300/20 bg-purple-300/[0.07] px-4 py-2 text-xs font-black text-purple-100 transition hover:bg-purple-300/[0.12]"
             >
               Corporates
             </Link>
             <Link
               href="/universities"
-              className="rounded-full border border-cyan-300/20 bg-cyan-300/[0.07] px-4 py-2 text-xs font-black text-cyan-100 transition hover:bg-cyan-300/[0.12]"
+              className="rounded-full border border-purple-300/20 bg-purple-300/[0.07] px-4 py-2 text-xs font-black text-purple-100 transition hover:bg-purple-300/[0.12]"
             >
               Universities
             </Link>
@@ -297,17 +297,17 @@ export default function HomePage() {
           {/* Hiring team side */}
           <Link
             href="/for-business"
-            className="group relative flex flex-col overflow-hidden rounded-[2rem] border border-fuchsia-500/20 bg-gradient-to-br from-fuchsia-500/[0.08] via-fuchsia-500/[0.04] to-transparent p-7 shadow-2xl shadow-fuchsia-950/30 transition hover:-translate-y-1 hover:border-fuchsia-400/40 hover:from-fuchsia-500/[0.12] sm:p-9 lg:p-10"
+            className="group relative flex flex-col overflow-hidden rounded-[2rem] border border-purple-500/20 bg-gradient-to-br from-purple-500/[0.08] via-purple-500/[0.04] to-transparent p-7 shadow-2xl shadow-purple-950/30 transition hover:-translate-y-1 hover:border-purple-400/40 hover:from-purple-500/[0.12] sm:p-9 lg:p-10"
           >
-            <div className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-fuchsia-500/[0.18] blur-3xl transition group-hover:bg-fuchsia-500/[0.28]" />
-            <div className="pointer-events-none absolute -bottom-16 -left-12 h-56 w-56 rounded-full bg-orange-400/[0.10] blur-3xl" />
+            <div className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-purple-500/[0.18] blur-3xl transition group-hover:bg-purple-500/[0.28]" />
+            <div className="pointer-events-none absolute -bottom-16 -left-12 h-56 w-56 rounded-full bg-cyan-400/[0.10] blur-3xl" />
 
-            <p className="text-[11px] font-black uppercase tracking-[0.26em] text-fuchsia-300/90">
+            <p className="text-[11px] font-black uppercase tracking-[0.26em] text-purple-300/90">
               For hiring teams
             </p>
             <h2 className="mt-3 text-3xl font-black tracking-[-0.05em] sm:text-4xl">
               Run structured AI assessments{" "}
-              <span className="bg-gradient-to-r from-fuchsia-200 via-pink-200 to-orange-200 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-purple-200 via-fuchsia-200 to-cyan-200 bg-clip-text text-transparent">
                 at scale.
               </span>
             </h2>
@@ -325,14 +325,14 @@ export default function HomePage() {
                 "UK GDPR & DPA-ready",
               ].map((item) => (
                 <li key={item} className="flex items-start gap-3">
-                  <span className="mt-[5px] h-1.5 w-1.5 shrink-0 rounded-full bg-fuchsia-400" />
+                  <span className="mt-[5px] h-1.5 w-1.5 shrink-0 rounded-full bg-purple-400" />
                   {item}
                 </li>
               ))}
             </ul>
 
             <div className="mt-auto pt-8">
-              <span className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-fuchsia-500 to-purple-500 px-7 py-4 text-base font-black text-white shadow-2xl shadow-fuchsia-900/40 transition group-hover:scale-[1.02]">
+              <span className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-7 py-4 text-base font-black text-white shadow-2xl shadow-purple-900/40 transition group-hover:scale-[1.02]">
                 We&rsquo;re a hiring team →
               </span>
               <p className="mt-3 text-xs text-gray-500">

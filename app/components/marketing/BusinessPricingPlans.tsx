@@ -153,7 +153,7 @@ export function BusinessPricingPlans({ currency = "GBP" }: { currency?: PricingC
           aria-pressed={annual}
           className={`relative inline-flex h-7 w-12 items-center rounded-full border transition ${
             annual
-              ? "border-fuchsia-400/40 bg-fuchsia-500/30"
+              ? "border-purple-400/40 bg-purple-500/30"
               : "border-white/10 bg-white/[0.07]"
           }`}
         >
@@ -187,7 +187,7 @@ export function BusinessPricingPlans({ currency = "GBP" }: { currency?: PricingC
               key={plan.name}
               className={`relative flex flex-col rounded-[2rem] border p-7 shadow-2xl ${
                 plan.highlight
-                  ? "border-fuchsia-300/30 bg-fuchsia-300/[0.08] shadow-fuchsia-950/20"
+                  ? "border-purple-300/30 bg-purple-300/[0.08] shadow-purple-950/20"
                   : "border-white/10 bg-white/[0.04]"
               }`}
             >
@@ -220,7 +220,7 @@ export function BusinessPricingPlans({ currency = "GBP" }: { currency?: PricingC
                   <div key={f} className="flex items-start gap-2.5 text-sm text-gray-300">
                     <span
                       className={`mt-[3px] h-3.5 w-3.5 shrink-0 ${
-                        plan.highlight ? "text-fuchsia-400" : "text-gray-500"
+                        plan.highlight ? "text-purple-400" : "text-gray-500"
                       }`}
                     >
                       ✓
@@ -236,7 +236,7 @@ export function BusinessPricingPlans({ currency = "GBP" }: { currency?: PricingC
                   disabled={isLoading || loading !== null}
                   className={`mt-8 flex w-full justify-center rounded-2xl px-5 py-3.5 text-sm font-black transition disabled:opacity-60 disabled:cursor-not-allowed ${
                     plan.highlight
-                      ? "bg-gradient-to-r from-fuchsia-500 to-purple-500 text-white shadow-xl shadow-fuchsia-950/35 hover:scale-[1.02]"
+                      ? "bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 text-white shadow-xl shadow-purple-950/35 hover:scale-[1.02]"
                       : "border border-white/10 bg-white/[0.06] text-white hover:bg-white/[0.1]"
                   }`}
                 >
@@ -247,7 +247,7 @@ export function BusinessPricingPlans({ currency = "GBP" }: { currency?: PricingC
                   href={(plan as { ctaHref: string }).ctaHref}
                   className={`mt-8 flex w-full justify-center rounded-2xl px-5 py-3.5 text-sm font-black transition ${
                     plan.highlight
-                      ? "bg-gradient-to-r from-fuchsia-500 to-purple-500 text-white shadow-xl shadow-fuchsia-950/35 hover:scale-[1.02]"
+                      ? "bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 text-white shadow-xl shadow-purple-950/35 hover:scale-[1.02]"
                       : "border border-white/10 bg-white/[0.06] text-white hover:bg-white/[0.1]"
                   }`}
                 >
@@ -268,7 +268,7 @@ export function BusinessPricingPlans({ currency = "GBP" }: { currency?: PricingC
               <tr className="border-b border-white/10 bg-white/[0.03]">
                 <th scope="col" className="px-4 py-3 text-left font-black text-gray-300">Feature</th>
                 <th scope="col" className="px-4 py-3 text-center font-black text-gray-300">Team</th>
-                <th scope="col" className="px-4 py-3 text-center font-black text-fuchsia-200">Business</th>
+                <th scope="col" className="px-4 py-3 text-center font-black text-purple-200">Business</th>
                 <th scope="col" className="px-4 py-3 text-center font-black text-gray-300">Enterprise</th>
               </tr>
             </thead>
@@ -277,7 +277,7 @@ export function BusinessPricingPlans({ currency = "GBP" }: { currency?: PricingC
                 <tr key={row.feature}>
                   <td className="px-4 py-3 text-left text-gray-300">{row.feature}</td>
                   <td className="px-4 py-3 text-center">{renderCell(row.team)}</td>
-                  <td className="bg-fuchsia-300/[0.04] px-4 py-3 text-center">{renderCell(row.business)}</td>
+                  <td className="bg-purple-300/[0.04] px-4 py-3 text-center">{renderCell(row.business)}</td>
                   <td className="px-4 py-3 text-center">{renderCell(row.enterprise)}</td>
                 </tr>
               ))}

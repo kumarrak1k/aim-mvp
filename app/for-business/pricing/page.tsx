@@ -71,7 +71,7 @@ export default async function BusinessPricingPage() {
   return (
     <AudienceShell audience="business" currentPath="/for-business/pricing">
       <section className="mx-auto max-w-4xl px-4 pb-12 pt-6 text-center sm:px-6 sm:pt-10">
-        <p className="mx-auto mb-5 inline-flex items-center gap-2 rounded-full border border-fuchsia-400/25 bg-fuchsia-400/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-fuchsia-200">
+        <p className="mx-auto mb-5 inline-flex items-center gap-2 rounded-full border border-purple-400/25 bg-purple-400/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-purple-200">
           Hiring team pricing
         </p>
         <h1 className="text-[2.5rem] font-black leading-[1.04] tracking-[-0.05em] sm:text-5xl">
@@ -81,7 +81,7 @@ export default async function BusinessPricingPage() {
           Per-seat plans for small teams, custom pricing for enterprise.
           Subscribe monthly or save up to 33% annually.
         </p>
-        <p className="mx-auto mt-6 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 px-5 py-2.5 text-sm font-black text-white shadow-lg shadow-fuchsia-900/40">
+        <p className="mx-auto mt-6 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-2.5 text-sm font-black text-white shadow-lg shadow-purple-900/40">
           <span aria-hidden>✨</span>
           Try the Team plan free for 14 days — no payment details, 10 candidate invites
         </p>
@@ -92,7 +92,7 @@ export default async function BusinessPricingPage() {
       </section>
 
       <div className="border-t border-white/[0.06]">
-        <FAQSection items={faqs} accentColor="fuchsia" />
+        <FAQSection items={faqs} accentColor="purple" />
       </div>
 
       <section className="mx-auto max-w-3xl px-4 pb-20 text-center sm:px-6 sm:pb-28">
