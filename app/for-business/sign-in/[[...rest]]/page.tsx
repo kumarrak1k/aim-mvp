@@ -47,7 +47,7 @@ export default function BusinessSignInPage() {
         </header>
 
         {/* Centring wrapper — pushes form to vertical centre of remaining space */}
-        <div className="flex flex-1 flex-col items-center justify-center py-6">
+        <div className="flex flex-1 flex-col items-center justify-start py-6 sm:pt-10">
         <section className="w-full max-w-md">
           <div className="mb-4 text-center">
             <h1 className="text-2xl font-black tracking-[-0.04em] sm:text-3xl">
