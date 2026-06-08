@@ -21,7 +21,7 @@ const structuredData = {
 
 const stats = [
   { label: "Interview sessions available", value: "Unlimited" },
-  { label: "Feedback dimensions scored", value: "5" },
+  { label: "Feedback dimensions scored", value: "6" },
   { label: "Countries where users practise", value: "Global" },
   { label: "Founded", value: "2025" },
   { label: "Based in", value: "United Kingdom" },

@@ -145,7 +145,7 @@ const faqs = [
   },
   {
     q: "How is this different from practising with a friend?",
-    a: "AI Career Mentor gives structured, consistent feedback across five dimensions: answer quality, STAR structure, voice delivery, filler word frequency, and camera presence. A friend can offer encouragement — the platform gives you specific, actionable feedback every time.",
+    a: "AI Career Mentor scores every answer on six dimensions — content, clarity, relevance, structure, confidence and pace — then layers voice-delivery and camera-presence analysis on top. A friend can offer encouragement — the platform gives you specific, actionable feedback every time.",
   },
   {
     q: "Can I choose how many questions I get and what types?",

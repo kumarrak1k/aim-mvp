@@ -65,7 +65,7 @@ const siteSchema = {
 };
 
 const stats = [
-  { value: "5", label: "dimensions scored per answer" },
+  { value: "6", label: "dimensions scored per answer" },
   { value: "360°", label: "answer, voice & camera coaching" },
   { value: "8+", label: "interview types covered" },
   { value: "7-day", label: "personalised improvement plan" },
