@@ -8,7 +8,7 @@
  * paying user's access — so the mappings are pinned down explicitly.
  */
 
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi, afterEach } from "vitest";
 import type Stripe from "stripe";
 import {
   isCorporateSubscription,
@@ -18,6 +18,8 @@ import {
   corporateUpsertData,
   corporateDeletedData,
   subscriptionPeriodEnd,
+  candidatePlanIdFromSubscription,
+  corporatePlanIdFromSubscription,
 } from "@/app/lib/stripeSync";
 
 type SubOverrides = {
@@ -26,6 +28,7 @@ type SubOverrides = {
   status?: Stripe.Subscription.Status;
   metadata?: Record<string, string>;
   lookupKey?: string | null;
+  priceId?: string;
   periodEnd?: number | null;
 };
 
@@ -39,7 +42,7 @@ function makeSub(o: SubOverrides = {}): Stripe.Subscription {
     items: {
       data: [
         {
-          price: { lookup_key: o.lookupKey ?? null },
+          price: { id: o.priceId, lookup_key: o.lookupKey ?? null },
           current_period_end: o.periodEnd === undefined ? 1_900_000_000 : o.periodEnd,
         },
       ],
@@ -233,5 +236,72 @@ describe("corporateDeletedData", () => {
 
   it("uses a null period end only when Stripe itself has none", () => {
     expect(corporateDeletedData(makeSub({ periodEnd: null })).stripeCurrentPeriodEnd).toBeNull();
+  });
+});
+
+// ─── candidatePlanIdFromSubscription (price-primary tier resolution) ──────────
+// Why this matters: a Customer-Portal switch or a scheduled phase swap changes
+// the live PRICE but never metadata.planId. Deriving the tier from the price
+// keeps the webhook AND the reconcile correct; metadata is only a last resort.
+
+describe("candidatePlanIdFromSubscription", () => {
+  afterEach(() => vi.unstubAllEnvs());
+
+  it("prefers a known price lookup_key", () => {
+    expect(candidatePlanIdFromSubscription(makeSub({ lookupKey: "plus_annual" }))).toBe("plus_annual");
+  });
+
+  it("maps a configured Stripe price id when lookup_key is absent", () => {
+    vi.stubEnv("STRIPE_PRICE_PROFESSIONAL_MONTHLY", "price_pro_m");
+    expect(
+      candidatePlanIdFromSubscription(makeSub({ lookupKey: null, priceId: "price_pro_m" })),
+    ).toBe("professional_monthly");
+  });
+
+  it("ignores an UNKNOWN lookup_key and uses the price-id map instead", () => {
+    vi.stubEnv("STRIPE_PRICE_PLUS_MONTHLY", "price_plus_m");
+    expect(
+      candidatePlanIdFromSubscription(makeSub({ lookupKey: "legacy_key", priceId: "price_plus_m" })),
+    ).toBe("plus_monthly");
+  });
+
+  it("falls back to metadata.planId only as a last resort", () => {
+    expect(
+      candidatePlanIdFromSubscription(makeSub({ lookupKey: null, metadata: { planId: "plus_monthly" } })),
+    ).toBe("plus_monthly");
+  });
+
+  it("returns null when nothing resolves", () => {
+    expect(candidatePlanIdFromSubscription(makeSub({ lookupKey: null }))).toBeNull();
+  });
+});
+
+// ─── corporatePlanIdFromSubscription (closes the downgrade revenue leak) ──────
+
+describe("corporatePlanIdFromSubscription", () => {
+  afterEach(() => vi.unstubAllEnvs());
+
+  it("maps a configured Stripe price id to team / business", () => {
+    vi.stubEnv("STRIPE_PRICE_CORPORATE_BUSINESS_ANNUAL", "price_biz_y");
+    expect(corporatePlanIdFromSubscription(makeSub({ priceId: "price_biz_y" }))).toBe("business");
+  });
+
+  it("derives the tier from a lookup_key substring when no price-id match", () => {
+    expect(corporatePlanIdFromSubscription(makeSub({ lookupKey: "corporate_team_monthly" }))).toBe("team");
+    expect(corporatePlanIdFromSubscription(makeSub({ lookupKey: "acme_business_plan" }))).toBe("business");
+  });
+
+  it("price-id map wins over a conflicting lookup_key", () => {
+    vi.stubEnv("STRIPE_PRICE_CORPORATE_TEAM_MONTHLY", "price_team_m");
+    expect(
+      corporatePlanIdFromSubscription(makeSub({ priceId: "price_team_m", lookupKey: "legacy_business" })),
+    ).toBe("team");
+  });
+
+  it("falls back to metadata.planId, and returns null when unresolvable", () => {
+    expect(
+      corporatePlanIdFromSubscription(makeSub({ lookupKey: null, metadata: { planId: "business" } })),
+    ).toBe("business");
+    expect(corporatePlanIdFromSubscription(makeSub({ lookupKey: null }))).toBeNull();
   });
 });
