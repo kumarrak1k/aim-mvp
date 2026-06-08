@@ -95,10 +95,24 @@ describe("resolveCandidatePlan — persona matrix", () => {
     expect(resolveCandidatePlan({}).planName).toBe("Free");
   });
 
-  it("past_due (not active) does NOT grant paid access", () => {
+  it("past_due grants a grace window (mirrors corporate dunning): keeps paid access, flags isPastDue", () => {
     const p = resolveCandidatePlan({ subscriptionStatus: "past_due", stripePlanId: "plus_monthly" });
-    expect(p.isPaid).toBe(false);
-    expect(p.planName).toBe("Free");
+    expect(p.isPaid).toBe(true);
+    expect(p.planName).toBe("Plus");
+    expect(p.effectivePlan).toBe("plus");
+    expect(p.isUnlimited).toBe(true);
+    expect(p.isPastDue).toBe(true);
+  });
+
+  it("past_due on Professional keeps Professional features during the grace window", () => {
+    const p = resolveCandidatePlan({ subscriptionStatus: "past_due", stripePlanId: "professional_annual" });
+    expect(p.isProfessional).toBe(true);
+    expect(p.isPastDue).toBe(true);
+  });
+
+  it("a healthy active subscription is not flagged past_due", () => {
+    expect(resolveCandidatePlan(PERSONAS.plus).isPastDue).toBe(false);
+    expect(resolveCandidatePlan(PERSONAS.trial).isPastDue).toBe(false);
   });
 
   it("Stripe 'trialing' status counts as paid/active", () => {

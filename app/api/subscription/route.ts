@@ -65,6 +65,7 @@ export async function GET() {
       // ── Reverse-trial state (drives trial UI) ──────────────────────────
       isTrial: plan.isTrial,
       isPaid: plan.isPaid,
+      isPastDue: plan.isPastDue,
       paidPlanName: plan.paidPlanName,
       trialEndsAt: plan.trialEndsAt,
       trialDaysRemaining: plan.trialDaysRemaining,

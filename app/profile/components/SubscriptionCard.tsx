@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 type SubscriptionInfo = {
   planName: string;
   isActive: boolean;
+  isPastDue: boolean;
   planId: string | null;
   currentPeriodEnd: string | null;
   hasCustomer: boolean;
@@ -63,8 +64,13 @@ export function SubscriptionCard() {
             Current plan
           </p>
           <p className="text-xl font-black tracking-[-0.03em]">{info.planName}</p>
-          {renewalDate && (
+          {renewalDate && !info.isPastDue && (
             <p className="mt-1 text-xs opacity-60">Renews {renewalDate}</p>
+          )}
+          {info.isPastDue && (
+            <p className="mt-1 text-xs font-bold text-amber-300">
+              ⚠ Payment failed — update your card to keep access.
+            </p>
           )}
           {!info.isActive && (
             <p className="mt-1 text-xs opacity-60">
@@ -77,9 +83,13 @@ export function SubscriptionCard() {
           <button
             onClick={handleManageBilling}
             disabled={managing}
-            className="shrink-0 rounded-xl border border-white/10 bg-white/[0.06] px-4 py-2 text-sm font-black text-white transition hover:bg-white/[0.1] disabled:opacity-50"
+            className={`shrink-0 rounded-xl px-4 py-2 text-sm font-black text-white transition disabled:opacity-50 ${
+              info.isPastDue
+                ? "bg-amber-400 text-[#3a2a00] hover:scale-[1.02]"
+                : "border border-white/10 bg-white/[0.06] hover:bg-white/[0.1]"
+            }`}
           >
-            {managing ? "Loading…" : "Manage billing"}
+            {managing ? "Loading…" : info.isPastDue ? "Update card" : "Manage billing"}
           </button>
         ) : (
           <Link

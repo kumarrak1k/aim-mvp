@@ -26,6 +26,7 @@ type SubscriptionInfo = {
   // Reverse-trial state
   isTrial?: boolean;
   isPaid?: boolean;
+  isPastDue?: boolean;
   paidPlanName?: string;
   trialEndsAt?: string | null;
   trialDaysRemaining?: number;
@@ -311,6 +312,7 @@ export function PlanPage() {
   // Trial = full access with no paid subscription. isPaid = genuine Stripe plan.
   const isTrial = sub?.isTrial ?? false;
   const isPaid = sub?.isPaid ?? false;
+  const isPastDue = sub?.isPastDue ?? false;
   const trialDays = Math.max(0, sub?.trialDaysRemaining ?? 0);
   // "Free" here means "no upgrade options taken" — covers both the never-paid
   // Free tier and an active trial (both should see upgrade buttons).
@@ -411,6 +413,8 @@ export function PlanPage() {
               marginTop: "0.25rem",
               background: isConfirming
                 ? "rgba(251,191,36,0.15)"
+                : isPastDue
+                ? "rgba(251,191,36,0.15)"
                 : cancelAtPeriodEnd
                 ? "rgba(248,113,113,0.15)"
                 : isTrial
@@ -419,6 +423,8 @@ export function PlanPage() {
                 ? "rgba(255,255,255,0.08)"
                 : "linear-gradient(to right, #a855f7, #ec4899)",
               color: isConfirming
+                ? "#fbbf24"
+                : isPastDue
                 ? "#fbbf24"
                 : cancelAtPeriodEnd
                 ? "#f87171"
@@ -429,6 +435,8 @@ export function PlanPage() {
           >
             {isConfirming
               ? "Activating…"
+              : isPastDue
+              ? "Payment due"
               : cancelAtPeriodEnd
               ? "Cancelling"
               : isTrial
@@ -500,15 +508,24 @@ export function PlanPage() {
         {/* Paid — renewal / cancellation info */}
         {isPaid && !isConfirming && (
           <div style={{ marginTop: "0.75rem" }}>
-            <p style={{ color: "rgba(255,255,255,0.5)" }}>
-              Unlimited sessions · All interview modes
-            </p>
-            {periodEndDate && (
-              <p style={{ marginTop: "0.35rem", fontSize: "0.8rem", color: cancelAtPeriodEnd ? "#f87171" : "rgba(255,255,255,0.4)" }}>
-                {cancelAtPeriodEnd
-                  ? `Access ends ${periodEndDate} — your plan will not renew.`
-                  : `Renews ${periodEndDate}`}
+            {isPastDue ? (
+              <p style={{ color: "#fbbf24", fontSize: "0.8rem", fontWeight: 700, lineHeight: 1.5 }}>
+                Your last payment didn&rsquo;t go through. Update your card below to
+                keep your access — we&rsquo;ll keep retrying in the meantime.
               </p>
+            ) : (
+              <>
+                <p style={{ color: "rgba(255,255,255,0.5)" }}>
+                  Unlimited sessions · All interview modes
+                </p>
+                {periodEndDate && (
+                  <p style={{ marginTop: "0.35rem", fontSize: "0.8rem", color: cancelAtPeriodEnd ? "#f87171" : "rgba(255,255,255,0.4)" }}>
+                    {cancelAtPeriodEnd
+                      ? `Access ends ${periodEndDate} — your plan will not renew.`
+                      : `Renews ${periodEndDate}`}
+                  </p>
+                )}
+              </>
             )}
           </div>
         )}
