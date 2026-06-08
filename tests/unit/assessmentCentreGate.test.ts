@@ -15,6 +15,7 @@ const h = vi.hoisted(() => ({
     openAICalls: 0,
     updated: 0,
     selectedStages: ["stage1"] as string[],
+    assignmentToken: null as string | null,
   },
 }));
 
@@ -55,6 +56,7 @@ vi.mock("@/app/lib/prisma", () => ({
         sector: "Finance",
         experienceLevel: "Graduate",
         selectedStages: h.state.selectedStages,
+        assignmentToken: h.state.assignmentToken,
         caseStudyScenario: { company: "X" },
       }),
       update: async () => {
@@ -84,6 +86,7 @@ beforeEach(() => {
   h.state.openAICalls = 0;
   h.state.updated = 0;
   h.state.selectedStages = ["stage1"];
+  h.state.assignmentToken = null;
 });
 
 describe("AC submit gate (#6) — denies non-Professional before any AI cost", () => {
@@ -107,6 +110,21 @@ describe("AC submit gate (#6) — denies non-Professional before any AI cost", (
 describe("AC submit gate (#6) — lets a Professional through", () => {
   it("submit-case-study (stage 1 only): scores via OpenAI and persists", async () => {
     h.state.isProfessional = true;
+    const res = await submitCaseStudy(req() as never, ctx() as never);
+    expect(res.status).toBe(200);
+    expect(h.state.openAICalls).toBeGreaterThan(0);
+    expect(h.state.updated).toBeGreaterThan(0);
+  });
+});
+
+describe("AC submit gate (#6) — COMPANY-FUNDED sessions bypass the personal plan gate", () => {
+  it("a non-Professional candidate on a company-funded session is allowed", async () => {
+    // A corporate invite created this session (assignmentToken set). The company
+    // pays — the candidate's own Free/Plus plan must NOT block scoring, or the
+    // corporate-funded assessment-centre flow breaks (regression caught by the
+    // Playwright pack).
+    h.state.isProfessional = false;
+    h.state.assignmentToken = "invite_tok_123";
     const res = await submitCaseStudy(req() as never, ctx() as never);
     expect(res.status).toBe(200);
     expect(h.state.openAICalls).toBeGreaterThan(0);

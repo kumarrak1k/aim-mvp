@@ -45,14 +45,20 @@ export async function POST(
     return NextResponse.json({ error: "Session not found." }, { status: 404 });
   }
 
-  // Professional-only — re-check on submit (not just at start) so a user whose
-  // access lapsed or downgraded mid-flow can't keep generating AI scoring.
-  const plan = await getCandidatePlan(userId);
-  if (!plan.isProfessional) {
-    return NextResponse.json(
-      { error: "Assessment centre requires the Professional plan." },
-      { status: 403 }
-    );
+  // Re-check entitlement on submit (not just at start). SELF-SERVE assessment
+  // centres are Professional-only, so a user who lapsed or downgraded mid-flow
+  // can't keep generating AI scoring. COMPANY-FUNDED sessions (created from a
+  // corporate invite — assignmentToken set) are paid for by the company and are
+  // bounded by the corporate invite caps, so the candidate's own plan doesn't
+  // gate them.
+  if (!session.assignmentToken) {
+    const plan = await getCandidatePlan(userId);
+    if (!plan.isProfessional) {
+      return NextResponse.json(
+        { error: "Assessment centre requires the Professional plan." },
+        { status: 403 }
+      );
+    }
   }
 
   const parsed = await parseJsonBody(request, submitSchema);
