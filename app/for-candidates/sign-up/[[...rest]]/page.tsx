@@ -5,7 +5,6 @@ import Link from "next/link";
 import { SignUp } from "@clerk/nextjs";
 import { SiteLogo } from "@/app/components/brand/SiteLogo";
 import { DataTrustStrip } from "@/app/components/DataTrustStrip";
-import { ResourceLinksRow } from "@/app/components/marketing/ResourceLinksRow";
 
 /**
  * Dedicated candidate sign-up page.
@@ -71,9 +70,6 @@ export default function CandidateSignUpPage() {
             </Link>
           </div>
         </header>
-
-        {/* Resource links — pill nav, matches the homepage/marketing header */}
-        <ResourceLinksRow pill className="mb-4" />
 
         <div className="flex flex-1 flex-col items-center justify-center py-6">
         <section className="w-full max-w-md">
