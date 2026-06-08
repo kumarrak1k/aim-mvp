@@ -68,15 +68,15 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
       annualPrice: null as string | null,
       annualMonthly: null as string | null,
       period: null as string | null,
-      description: "Start with a 7-day Plus trial — unlimited practice with voice and camera coaching, no card. Then continue free with 3 keyboard-only practice sessions.",
+      description: "Start with a 7-day free trial — unlimited practice with voice and camera coaching, no payment details required. Then continue free with 3 keyboard-only practice sessions.",
       features: [
-        { text: "7-day Plus trial included — no card", isNew: true },
+        { text: "7-day free trial included — no payment details", isNew: true },
         { text: "Then 3 keyboard-only practice sessions" },
         { text: "AI-generated tailored interview questions" },
         { text: "Written answer feedback per question" },
         { text: "Session transcript review" },
       ] as PlanFeature[],
-      cta: "Start 7-day free trial",
+      cta: "Click to use for free",
       stripePlanMonthly: null as StripePlanId | null,
       stripePlanAnnual: null as StripePlanId | null,
       highlight: false,
@@ -97,7 +97,7 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
         { text: "Model answers per question" },
         { text: "Progress history saved and tracked" },
       ] as PlanFeature[],
-      cta: "Get started",
+      cta: "Click for 7-day free trial · No payment details required",
       stripePlanMonthly: "plus_monthly" as StripePlanId,
       stripePlanAnnual: "plus_annual" as StripePlanId,
       highlight: true,
@@ -186,6 +186,10 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
             annual && plan.annualPrice ? "/year" : plan.period;
           const annualMonthlyEquiv = annual && plan.annualMonthly ? plan.annualMonthly : null;
           const isPaid = plan.stripePlanMonthly !== null;
+          // Free AND Plus enter via the no-payment sign-up (the trial grants
+          // Plus), so their CTA starts the free trial — not a Stripe checkout.
+          // Professional is a direct paid subscription.
+          const startsFreeTrial = !isPaid || plan.name === "Plus";
 
           return (
             <div
@@ -240,7 +244,18 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
                 ))}
               </div>
 
-              {isPaid ? (
+              {startsFreeTrial ? (
+                <Link
+                  href="/for-candidates/sign-up"
+                  className={`mt-8 flex w-full justify-center rounded-2xl px-5 py-3.5 text-center text-sm font-black leading-tight transition ${
+                    plan.highlight
+                      ? "bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 text-white shadow-xl shadow-purple-950/35 hover:scale-[1.02]"
+                      : "border border-white/10 bg-white/[0.06] text-white hover:bg-white/[0.1]"
+                  }`}
+                >
+                  {plan.cta}
+                </Link>
+              ) : (
                 <button
                   onClick={() => handlePaidCta(plan)}
                   className={`mt-8 flex w-full justify-center rounded-2xl px-5 py-3.5 text-sm font-black transition ${
@@ -251,17 +266,6 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
                 >
                   {plan.cta}
                 </button>
-              ) : (
-                <Link
-                  href="/for-candidates/sign-up"
-                  className={`mt-8 flex w-full justify-center rounded-2xl px-5 py-3.5 text-sm font-black transition ${
-                    plan.highlight
-                      ? "bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 text-white shadow-xl shadow-purple-950/35 hover:scale-[1.02]"
-                      : "border border-white/10 bg-white/[0.06] text-white hover:bg-white/[0.1]"
-                  }`}
-                >
-                  {plan.cta}
-                </Link>
               )}
             </div>
           );
@@ -300,7 +304,7 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
         Paid plans are recurring subscriptions that renew automatically
         (monthly or annually) at the price shown until you cancel. You can
         cancel any time from your account — you keep access until the end of the
-        period you&rsquo;ve paid for. The 7-day free trial requires no card and
+        period you&rsquo;ve paid for. The 7-day free trial requires no payment details and
         never auto-charges.
       </p>
     </>
