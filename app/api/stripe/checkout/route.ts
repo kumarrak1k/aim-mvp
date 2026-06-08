@@ -40,8 +40,30 @@ export async function POST(req: NextRequest) {
 
   const stripeClient = requireStripe();
 
+  const meta = user.privateMetadata as {
+    stripeCustomerId?: string;
+    stripeSubscriptionId?: string;
+    subscriptionStatus?: string;
+  };
+
+  // Guard against creating a SECOND subscription (double-billing). A user who
+  // already has a live subscription (active / trialing / past_due in dunning)
+  // must change plans via the billing portal, not a fresh Checkout — otherwise
+  // they'd be charged for two concurrent subscriptions. Cancelled/incomplete
+  // users fall through and can subscribe again.
+  const LIVE_SUB_STATES = new Set(["active", "trialing", "past_due"]);
+  if (meta?.stripeSubscriptionId && LIVE_SUB_STATES.has(meta?.subscriptionStatus ?? "")) {
+    return NextResponse.json(
+      {
+        error:
+          "You already have an active subscription. Manage or change your plan from the billing page.",
+        code: "already_subscribed",
+      },
+      { status: 409 }
+    );
+  }
+
   // Reuse existing Stripe customer if we already created one for this user.
-  const meta = user.privateMetadata as { stripeCustomerId?: string };
   let customerId = meta?.stripeCustomerId;
 
   if (!customerId) {

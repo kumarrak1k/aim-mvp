@@ -94,6 +94,22 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: "Missing targetPlanId" }, { status: 400 });
       }
 
+      // Release any pending downgrade schedule (e.g. Business→Team at period end)
+      // before swapping the item. Stripe refuses direct item updates while a
+      // subscription is driven by an active schedule, and a leftover schedule
+      // would later revert this upgrade. Releasing detaches the schedule but
+      // leaves the live subscription intact.
+      const pendingSchedules = await stripeClient.subscriptionSchedules.list({
+        customer: subscription.customer as string,
+      });
+      const activeSchedule = pendingSchedules.data.find(
+        (s) =>
+          s.subscription === company.stripeSubscriptionId && s.status === "active"
+      );
+      if (activeSchedule) {
+        await stripeClient.subscriptionSchedules.release(activeSchedule.id);
+      }
+
       // targetPlanId is e.g. "business" — derive billing interval from current price
       const currentPrice = firstItem.price as { recurring?: { interval?: string } };
       const billing = currentPrice?.recurring?.interval === "year" ? "annual" : "monthly";

@@ -50,6 +50,18 @@ export async function POST(request: NextRequest) {
       ["active", "expired", "cancelled"].includes(existing.planStatus);
 
     if (trialAlreadyUsed) {
+      // While a Team trial is still LIVE, the plan must not be switched up to
+      // Business here — that would hand a workspace Business seats/invites for
+      // free. Business is a paid upgrade and must go through Stripe checkout.
+      if (existing.planStatus === "trial" && planId !== "team") {
+        return NextResponse.json(
+          {
+            error:
+              "Business isn't part of the free trial. Upgrade to Business from the billing page to unlock its seats and invites.",
+          },
+          { status: 400 }
+        );
+      }
       const company = await prisma.company.update({
         where: { id: admin.companyId },
         data: { planId },

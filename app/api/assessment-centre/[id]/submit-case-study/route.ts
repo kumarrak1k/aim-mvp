@@ -6,6 +6,7 @@ import { callOpenAIChat } from "@/app/lib/openai-client";
 import { checkRateLimit } from "@/app/lib/rateLimit";
 import { parseJsonBody } from "@/app/lib/validation";
 import { moderateText } from "@/app/lib/moderation";
+import { getCandidatePlan } from "@/app/lib/candidatePlan";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -42,6 +43,16 @@ export async function POST(
   const session = await prisma.assessmentCentreSession.findUnique({ where: { id } });
   if (!session || session.clerkUserId !== userId) {
     return NextResponse.json({ error: "Session not found." }, { status: 404 });
+  }
+
+  // Professional-only — re-check on submit (not just at start) so a user whose
+  // access lapsed or downgraded mid-flow can't keep generating AI scoring.
+  const plan = await getCandidatePlan(userId);
+  if (!plan.isProfessional) {
+    return NextResponse.json(
+      { error: "Assessment centre requires the Professional plan." },
+      { status: 403 }
+    );
   }
 
   const parsed = await parseJsonBody(request, submitSchema);

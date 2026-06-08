@@ -67,21 +67,36 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Trial fair-usage cap — limits invites (and therefore OpenAI cost) during
-    // a free trial. Paid plans skip this and use the monthly limit below.
     const onTrial = company.planStatus === "trial";
-    if (onTrial && (company.trialInvitesUsed ?? 0) >= CORPORATE_TRIAL_INVITE_CAP) {
-      return NextResponse.json(
-        {
-          error: `Your free trial includes ${CORPORATE_TRIAL_INVITE_CAP} candidate invites. Upgrade your plan to send more.`,
+
+    // Trial fair-usage cap — claim an invite slot ATOMICALLY so two concurrent
+    // requests can't both pass a read-then-increment check and overrun the cap
+    // (each invite drives candidate-side OpenAI cost). The conditional updateMany
+    // only matches while the counter is still below the cap, so the check and the
+    // increment are a single race-free operation. If a later step throws, one
+    // slot is consumed without an invite — a safe under-count, never an overrun.
+    if (onTrial) {
+      const claim = await prisma.company.updateMany({
+        where: {
+          id: member.companyId,
+          planStatus: "trial",
+          trialInvitesUsed: { lt: CORPORATE_TRIAL_INVITE_CAP },
         },
-        { status: 403 }
-      );
+        data: { trialInvitesUsed: { increment: 1 } },
+      });
+      if (claim.count === 0) {
+        return NextResponse.json(
+          {
+            error: `Your free trial includes ${CORPORATE_TRIAL_INVITE_CAP} candidate invites. Upgrade your plan to send more.`,
+          },
+          { status: 403 }
+        );
+      }
     }
 
-    // Monthly invite limit check
+    // Monthly invite limit (paid plans only — the trial uses the cap above).
     const plan = getPlan(company.planId);
-    if (plan) {
+    if (!onTrial && plan) {
       const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
       const inviteCount = await prisma.candidateAssignment.count({
         where: { companyId: member.companyId, createdAt: { gte: startOfMonth } },
@@ -106,13 +121,7 @@ export async function POST(request: NextRequest) {
       include: { template: { select: { id: true, name: true, role: true } } },
     });
 
-    // Count this invite against the trial fair-usage cap.
-    if (onTrial) {
-      await prisma.company.update({
-        where: { id: member.companyId },
-        data: { trialInvitesUsed: { increment: 1 } },
-      });
-    }
+    // (Trial invite slot was already claimed atomically above — no increment here.)
 
     // Send the invite email. Don't fail the request if email errors —
     // recruiters can still copy the link manually, and we record the
