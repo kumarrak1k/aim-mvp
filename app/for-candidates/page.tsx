@@ -112,21 +112,21 @@ const readinessHighlights = [
 const testimonials = [
   {
     quote:
-      "The voice delivery feedback was unlike anything I had encountered before. I had no idea how many filler words I was using until I saw the analysis.",
-    name: "Software engineering graduate",
-    context: "Preparing for Big Tech interviews",
+      "I wish I'd found this at the start of the process. I lost count of how many interviews and assessment centres I participated in — if I'd had this sooner, it would have helped me sharpen my skills. I found a placement in the end, and I'm sure I'll use the platform again when I graduate.",
+    name: "Second-year university student",
+    context: "Secured a placement role",
   },
   {
     quote:
-      "I used the mock assessment centre the week before my final-round panel. Practising the case study under a timer made the real one feel routine.",
-    name: "Career changer — operations to product",
-    context: "Final-stage panel interview",
+      "I'd never taken an interview before, so I was searching for some help. I was lucky — a friend recommended this site and I gave it a try. I'd never heard of STAR, and what a simple thing to learn. It's given me the structure and confidence to handle interviews.",
+    name: "Software engineer graduate",
+    context: "Preparing for first interviews",
   },
   {
     quote:
-      "The questions matched the actual format of my interview almost exactly. Hearing them spoken aloud made the practice noticeably more realistic.",
-    name: "Experienced professional",
-    context: "Senior management interview",
+      "I hadn't interviewed for over 10 years, so I needed to find a way to practise. I didn't need the assessment centre tool, so I used the Plus membership. Within three months I'd landed my new role — and there's no doubt this helped me fine-tune my CV, practise real interview questions and improve my structure.",
+    name: "Experienced finance professional",
+    context: "Landed a new role in 3 months",
   },
 ];
 
