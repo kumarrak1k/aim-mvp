@@ -242,7 +242,7 @@ export default function HomePage() {
         <section className="mb-10 grid flex-1 gap-5 lg:grid-cols-2 lg:gap-7">
           {/* Candidate side */}
           <Link
-            href="/for-candidates"
+            href="/for-candidates/pricing"
             className="group relative flex flex-col overflow-hidden rounded-[2rem] border border-purple-500/20 bg-gradient-to-br from-purple-500/[0.08] via-purple-500/[0.04] to-transparent p-7 shadow-2xl shadow-purple-950/30 transition hover:-translate-y-1 hover:border-purple-400/40 hover:from-purple-500/[0.12] sm:p-9 lg:p-10"
           >
             <div className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-purple-500/[0.18] blur-3xl transition group-hover:bg-purple-500/[0.28]" />
@@ -279,10 +279,11 @@ export default function HomePage() {
 
             <div className="mt-auto pt-8">
               <span className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-7 py-4 text-base font-black text-white shadow-2xl shadow-purple-900/40 transition group-hover:scale-[1.02]">
-                Start your 7-day free trial →
+                See plans &amp; free trial →
               </span>
               <p className="mt-3 text-xs text-gray-500">
-                Free for 7 days. No payment details required.
+                Free 7-day trial — no payment details required. Assessment centres
+                are on the Professional plan.
               </p>
             </div>
           </Link>
