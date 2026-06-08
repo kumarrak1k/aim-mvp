@@ -13,7 +13,7 @@ import { DataTrustStrip } from "@/app/components/DataTrustStrip";
  */
 export default function BusinessSignInPage() {
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#0a0614] text-white">
+    <main className="relative flex min-h-screen flex-col overflow-hidden bg-[#0a0614] text-white">
       <DataTrustStrip variant="topbar" />
 
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
@@ -22,7 +22,7 @@ export default function BusinessSignInPage() {
         <div className="absolute bottom-[-80px] right-[-160px] h-[520px] w-[520px] rounded-full bg-purple-500/[0.15] blur-[160px]" />
       </div>
 
-      <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col px-4 py-4 sm:px-6 sm:py-6 lg:px-10">
+      <div className="relative z-10 mx-auto flex w-full flex-1 max-w-7xl flex-col px-4 py-4 sm:px-6 sm:py-6 lg:px-10">
         <header className="mb-4 flex items-center justify-between sm:mb-5">
           <Link href="/" className="flex items-center gap-3">
             <SiteLogo href="" size="md" showText />
@@ -51,10 +51,10 @@ export default function BusinessSignInPage() {
         <section className="w-full max-w-md">
           <div className="mb-4 text-center">
             <h1 className="text-2xl font-black tracking-[-0.04em] sm:text-3xl">
-              Welcome back.
+              Sign in.
             </h1>
             <p className="mt-1.5 text-sm leading-5 text-gray-400">
-              Sign in to your hiring team workspace.
+              Continue to your hiring team workspace.
             </p>
             <p className="mt-2 text-[11px] text-gray-600">
               Job applicant?{" "}
@@ -74,8 +74,8 @@ export default function BusinessSignInPage() {
               elements: {
                 rootBox: "w-full",
                 card: "bg-white/[0.04] border border-white/[0.08] shadow-2xl shadow-purple-950/30 backdrop-blur-2xl rounded-[1.75rem]",
-                headerTitle: "text-white",
-                headerSubtitle: "text-gray-400",
+                headerTitle: "hidden",
+                headerSubtitle: "hidden",
                 socialButtonsBlockButton:
                   "border-white/[0.1] bg-white/[0.04] hover:bg-white/[0.08] text-white",
                 formButtonPrimary:
