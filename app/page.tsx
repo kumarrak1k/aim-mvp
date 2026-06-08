@@ -199,40 +199,6 @@ export default function HomePage() {
           </p>
         </section>
 
-        {/* Stats */}
-        <section className="mb-10 grid grid-cols-2 gap-3 sm:mb-14 lg:grid-cols-4">
-          {stats.map((s) => (
-            <div
-              key={s.label}
-              className="rounded-2xl border border-white/[0.07] bg-white/[0.03] px-5 py-5 text-center"
-            >
-              <p className="text-3xl font-black tracking-[-0.06em] text-white">
-                {s.value}
-              </p>
-              <p className="mt-1 text-xs leading-5 text-gray-400">{s.label}</p>
-            </div>
-          ))}
-        </section>
-
-        {/* Capabilities */}
-        <section className="mb-10 grid gap-4 sm:mb-14 sm:grid-cols-3">
-          {capabilities.map((c) => (
-            <div
-              key={c.title}
-              className={`rounded-[1.75rem] border p-6 ${
-                c.color === "purple"
-                  ? "border-purple-500/[0.18] bg-purple-500/[0.05]"
-                  : c.color === "fuchsia"
-                    ? "border-fuchsia-500/[0.18] bg-fuchsia-500/[0.05]"
-                    : "border-cyan-500/[0.18] bg-cyan-500/[0.05]"
-              }`}
-            >
-              <p className="font-black">{c.title}</p>
-              <p className="mt-2 text-sm leading-6 text-gray-400">{c.body}</p>
-            </div>
-          ))}
-        </section>
-
         {/* Demo video */}
         <section className="mb-10 sm:mb-14">
           <DemoVideo src="/videos/product-demo.mp4" poster="/videos/candidate-poster.jpg" />
@@ -357,6 +323,40 @@ export default function HomePage() {
               Free STAR answer scorer →
             </Link>
           </div>
+        </section>
+
+        {/* Stats */}
+        <section className="mb-10 grid grid-cols-2 gap-3 sm:mb-14 lg:grid-cols-4">
+          {stats.map((s) => (
+            <div
+              key={s.label}
+              className="rounded-2xl border border-white/[0.07] bg-white/[0.03] px-5 py-5 text-center"
+            >
+              <p className="text-3xl font-black tracking-[-0.06em] text-white">
+                {s.value}
+              </p>
+              <p className="mt-1 text-xs leading-5 text-gray-400">{s.label}</p>
+            </div>
+          ))}
+        </section>
+
+        {/* Capabilities */}
+        <section className="mb-10 grid gap-4 sm:mb-14 sm:grid-cols-3">
+          {capabilities.map((c) => (
+            <div
+              key={c.title}
+              className={`rounded-[1.75rem] border p-6 ${
+                c.color === "purple"
+                  ? "border-purple-500/[0.18] bg-purple-500/[0.05]"
+                  : c.color === "fuchsia"
+                    ? "border-fuchsia-500/[0.18] bg-fuchsia-500/[0.05]"
+                    : "border-cyan-500/[0.18] bg-cyan-500/[0.05]"
+              }`}
+            >
+              <p className="font-black">{c.title}</p>
+              <p className="mt-2 text-sm leading-6 text-gray-400">{c.body}</p>
+            </div>
+          ))}
         </section>
 
       </div>
