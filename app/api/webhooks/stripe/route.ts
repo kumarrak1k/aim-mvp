@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireStripe } from "@/app/lib/stripe";
 import { prisma } from "@/app/lib/prisma";
-import { recordStripeEvent } from "@/app/lib/stripeEvents";
+import { recordStripeEvent, deleteStripeEvent } from "@/app/lib/stripeEvents";
 import {
   corporateUpsertData,
   corporateDeletedData,
@@ -44,6 +44,16 @@ async function handleSubscriptionUpsert(subscription: Stripe.Subscription) {
     return;
   }
 
+  const company = await prisma.company.findUnique({ where: { id: companyId } });
+  if (!company) return;
+
+  // Stale/out-of-order guard (mirrors the reconcile): a live sub may CLAIM the
+  // company; any non-live status may only update the company that already points
+  // at this subscription — so a late/old event can never clobber newer state.
+  const live =
+    subscription.status === "active" || subscription.status === "trialing";
+  if (!live && company.stripeSubscriptionId !== subscription.id) return;
+
   await prisma.company.update({
     where: { id: companyId },
     data: corporateUpsertData(subscription),
@@ -53,6 +63,11 @@ async function handleSubscriptionUpsert(subscription: Stripe.Subscription) {
 async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
   const companyId = await getCompanyId(subscription);
   if (!companyId) return;
+
+  // Only let a delete cancel the company that actually points at this
+  // subscription — a delete for an old/replaced sub must not cancel a newer one.
+  const company = await prisma.company.findUnique({ where: { id: companyId } });
+  if (!company || company.stripeSubscriptionId !== subscription.id) return;
 
   await prisma.company.update({
     where: { id: companyId },
@@ -167,6 +182,9 @@ export async function POST(req: NextRequest) {
     }
   } catch (err) {
     console.error("CORPORATE WEBHOOK: handler error", event.type, err);
+    // Release the idempotency claim so Stripe's automatic retry re-runs the
+    // handler instead of being swallowed by the duplicate guard.
+    await deleteStripeEvent(event.id);
     return NextResponse.json(
       { error: "Webhook handler failed." },
       { status: 500 }

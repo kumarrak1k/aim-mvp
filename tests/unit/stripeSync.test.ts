@@ -109,9 +109,21 @@ describe("candidateUpsertMeta", () => {
     expect(meta.stripePlanId).toBe("professional_annual");
   });
 
-  it("uses null planId when neither planId nor lookup_key exists", () => {
+  it("prefers the live price lookup_key over a stale metadata.planId", () => {
+    // A Customer-Portal plan switch changes the price's lookup_key but NOT
+    // metadata.planId — the live price must win or the portal upgrade is lost.
+    const meta = candidateUpsertMeta(
+      makeSub({
+        metadata: { clerkUserId: "user_1", planId: "plus_monthly" },
+        lookupKey: "professional_monthly",
+      }),
+    );
+    expect(meta.stripePlanId).toBe("professional_monthly");
+  });
+
+  it("leaves stripePlanId undefined when neither planId nor lookup_key exists", () => {
     const meta = candidateUpsertMeta(makeSub({ metadata: { clerkUserId: "user_1" }, lookupKey: null }));
-    expect(meta.stripePlanId).toBeNull();
+    expect(meta.stripePlanId).toBeUndefined();
   });
 
   it("carries the raw Stripe status through (e.g. past_due)", () => {
@@ -123,12 +135,15 @@ describe("candidateUpsertMeta", () => {
 // ─── candidateDeletedMeta ─────────────────────────────────────────────────────
 
 describe("candidateDeletedMeta", () => {
-  it("marks the subscription cancelled and clears plan + period end", () => {
+  it("marks cancelled, clears plan + period end, and expires any reverse trial", () => {
+    // trialEndsAt is forced to the epoch so a mid-trial cancellation drops the
+    // user to Free instead of falling back to the (still-future) Plus trial.
     expect(candidateDeletedMeta(makeSub({ id: "sub_y" }))).toEqual({
       stripeSubscriptionId: "sub_y",
       stripePlanId: undefined,
       subscriptionStatus: "cancelled",
       subscriptionCurrentPeriodEnd: undefined,
+      trialEndsAt: new Date(0).toISOString(),
     });
   });
 
@@ -185,16 +200,38 @@ describe("corporateUpsertData", () => {
   it("downgrades planStatus to expired for a non-live status", () => {
     expect(corporateUpsertData(makeSub({ status: "unpaid" })).planStatus).toBe("expired");
   });
+
+  it("derives planId from metadata.planId when present", () => {
+    const data = corporateUpsertData(makeSub({ metadata: { companyId: "co_1", planId: "team" } }));
+    expect(data.planId).toBe("team");
+  });
+
+  it("derives planId from the price lookup_key (a plan change swaps the price, not metadata)", () => {
+    // Business↔Team via a Stripe schedule changes the live price's lookup_key but
+    // never touches metadata.planId — deriving from the price closes the revenue
+    // leak where a downgraded company kept Business seats/invites.
+    const data = corporateUpsertData(makeSub({ lookupKey: "corporate_business_monthly" }));
+    expect(data.planId).toBe("business");
+  });
+
+  it("omits planId when the price can't be mapped (never clobbers Company.planId with a guess)", () => {
+    const data = corporateUpsertData(makeSub({ lookupKey: null }));
+    expect(data).not.toHaveProperty("planId");
+  });
 });
 
 // ─── corporateDeletedData ─────────────────────────────────────────────────────
 
 describe("corporateDeletedData", () => {
-  it("cancels the company plan and clears the period end", () => {
-    expect(corporateDeletedData(makeSub({ id: "sub_d" }))).toEqual({
+  it("cancels the plan but PRESERVES the period end so the UI can show 'access until X'", () => {
+    expect(corporateDeletedData(makeSub({ id: "sub_d", periodEnd: 1_900_000_000 }))).toEqual({
       planStatus: "cancelled",
       stripeSubscriptionId: "sub_d",
-      stripeCurrentPeriodEnd: null,
+      stripeCurrentPeriodEnd: new Date(1_900_000_000 * 1000),
     });
+  });
+
+  it("uses a null period end only when Stripe itself has none", () => {
+    expect(corporateDeletedData(makeSub({ periodEnd: null })).stripeCurrentPeriodEnd).toBeNull();
   });
 });
