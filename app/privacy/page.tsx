@@ -120,7 +120,7 @@ export default function PrivacyPage() {
             who we share it with, and how to delete it.
           </p>
           <p className="mx-auto mt-5 max-w-xl rounded-2xl border border-amber-300/15 bg-amber-300/[0.08] px-5 py-3 text-sm leading-6 text-amber-100">
-            Last updated: May 2026. For questions contact{" "}
+            For questions contact{" "}
             <span className="font-bold text-amber-50">
               privacy@aicareermentor.co.uk
             </span>
