@@ -98,7 +98,7 @@ const faqs = [
   },
   {
     q: "Is it free?",
-    a: "Free to start. You can run one mock assessment centre session at no cost. Unlimited repeats with new scenarios are available on paid plans from £19 per month.",
+    a: "The mock assessment centre is part of the Professional plan (£29/month), with unlimited runs and fresh scenarios. Interview practice itself is free to start, and Plus (£19/month) adds unlimited voice and camera practice.",
   },
 ];
 
@@ -270,7 +270,7 @@ export default async function AssessmentCentrePage() {
             Walk into your assessment centre fully prepared.
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-gray-400">
-            Free to start. Repeat with new scenarios as often as you need.
+            Included in the Professional plan — repeat with new scenarios as often as you need.
           </p>
           <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link href="/for-candidates/sign-up">

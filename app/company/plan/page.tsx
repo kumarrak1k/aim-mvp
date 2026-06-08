@@ -71,7 +71,7 @@ export default function CompanyPlanPage() {
             Start your free trial
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-gray-400">
-            14 days free on the Team plan — no credit card required. Upgrade to
+            14 days free on the Team plan — no payment details required. Upgrade to
             Business anytime. Cancel or change whenever you like.
           </p>
         </div>

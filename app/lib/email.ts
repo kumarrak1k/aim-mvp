@@ -243,7 +243,7 @@ const NURTURE_SUBJECTS: Record<NurtureType, string> = {
   day14_reengage: "Got an interview coming up?",
   day21_nudge:    "Still here — want to run a quick session?",
   day30_winback:  "Last chance — your free practice sessions are waiting",
-  trial_midway:   "A few days left on your Professional trial",
+  trial_midway:   "A few days left on your Plus trial",
   trial_ended:    "Your free trial has ended",
 };
 
@@ -368,11 +368,11 @@ function renderNurtureHtml(type: NurtureType, unsubUrl: string): string {
       </p>
       <div style="background:#f7f5fb;border-left:3px solid #8c5cff;border-radius:0 12px 12px 0;padding:18px 22px;margin:0 0 24px;">
         <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#7c6a99;">
-          Plus plan — from £14.08/month
+          Plus plan — from £14.08/month, billed annually
         </p>
         <p style="margin:0;font-size:15px;line-height:1.7;color:#2a2238;">
           Unlimited AI mock interviews · Voice &amp; camera delivery coaching ·
-          Interview Readiness Certificate · Priority support
+          Full feedback &amp; model answers · Progress saved and tracked
         </p>
       </div>
       <p style="margin:0 0 28px;font-size:15px;line-height:1.7;color:#2a2238;">

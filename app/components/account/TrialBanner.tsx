@@ -98,7 +98,7 @@ export function TrialBanner() {
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-3 gap-y-1 px-4 py-2 text-center sm:px-6">
           <span className="text-[13px] font-semibold text-gray-100">
             <span aria-hidden>✨ </span>
-            You&rsquo;re on the <strong className="font-black">Professional</strong>{" "}
+            You&rsquo;re on the <strong className="font-black">Plus</strong>{" "}
             free trial —{" "}
             <span className={urgent ? "text-amber-200" : "text-purple-200"}>
               {dayLabel} left
@@ -109,7 +109,7 @@ export function TrialBanner() {
             href="/for-candidates/pricing"
             className="rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-3.5 py-1 text-[12px] font-black text-white shadow transition hover:scale-[1.03]"
           >
-            Upgrade to keep full access →
+            Upgrade to keep access →
           </Link>
         </div>
       </div>
@@ -123,8 +123,8 @@ export function TrialBanner() {
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-3 gap-y-1 px-4 py-2 text-center sm:px-6">
           <span className="text-[13px] font-semibold text-gray-100">
             <span aria-hidden>🎁 </span>
-            Unlock voice &amp; camera coaching, mock assessment centres and more —{" "}
-            <strong className="font-black">free for 7 days, no card</strong>.
+            Unlock voice &amp; camera coaching and unlimited practice —{" "}
+            <strong className="font-black">free for 7 days, no payment details</strong>.
           </span>
           <button
             onClick={startTrial}

@@ -314,7 +314,7 @@ function DashboardContent() {
                   disabled={billingLoading}
                   className="rounded-full border border-fuchsia-400/30 bg-fuchsia-500/10 px-5 py-2.5 text-sm font-black text-fuchsia-100 transition hover:bg-fuchsia-500/20 disabled:opacity-60"
                 >
-                  Annual · save 2 months
+                  Annual · save 33%
                 </button>
               </div>
             )}
