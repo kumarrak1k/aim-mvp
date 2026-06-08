@@ -4,7 +4,6 @@ import Link from "next/link";
 import { SignIn } from "@clerk/nextjs";
 import { SiteLogo } from "@/app/components/brand/SiteLogo";
 import { DataTrustStrip } from "@/app/components/DataTrustStrip";
-import { ResourceLinksRow } from "@/app/components/marketing/ResourceLinksRow";
 
 /**
  * Dedicated candidate sign-in page.
@@ -52,9 +51,6 @@ export default function CandidateSignInPage() {
             </Link>
           </div>
         </header>
-
-        {/* Resource links — pill nav, matches the homepage/marketing header */}
-        <ResourceLinksRow pill className="mb-4" />
 
         {/* Centring wrapper — pushes form to vertical centre of remaining space */}
         <div className="flex flex-1 flex-col items-center justify-center py-6">
