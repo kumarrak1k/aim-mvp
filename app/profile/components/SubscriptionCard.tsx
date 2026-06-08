@@ -68,7 +68,7 @@ export function SubscriptionCard() {
           )}
           {!info.isActive && (
             <p className="mt-1 text-xs opacity-60">
-              3 practice sessions per day · No credit card required
+              3 keyboard-only practice sessions · No payment details required
             </p>
           )}
         </div>

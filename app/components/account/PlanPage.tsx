@@ -487,12 +487,12 @@ export function PlanPage() {
         {isTrial && !isConfirming && (
           <div style={{ marginTop: "0.75rem" }}>
             <p style={{ color: "rgba(255,255,255,0.6)" }}>
-              Full Professional access · voice, camera &amp; assessment centres
+              Plus trial · voice, camera &amp; unlimited practice
             </p>
             <p style={{ marginTop: "0.35rem", fontSize: "0.8rem", color: trialDays <= 2 ? "#fbbf24" : "rgba(255,255,255,0.45)" }}>
               {trialDays === 0
-                ? "Your trial ends today — upgrade to keep full access."
-                : `${trialDays} day${trialDays === 1 ? "" : "s"} left · no card on file · upgrade any time to keep access`}
+                ? "Your trial ends today — upgrade to keep your access."
+                : `${trialDays} day${trialDays === 1 ? "" : "s"} left · no payment details on file · upgrade any time to keep access`}
             </p>
           </div>
         )}

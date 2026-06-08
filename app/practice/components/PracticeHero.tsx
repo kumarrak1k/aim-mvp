@@ -70,7 +70,7 @@ export function PracticeHero({
             {usageLimitReached && planName === "Free" ? (
               <div className="w-full rounded-[1.35rem] border border-purple-300/20 bg-purple-300/[0.08] p-4">
                 <p className="text-xs font-black uppercase tracking-[0.18em] text-purple-200">
-                  Free plan · Daily limit reached
+                  Free plan · All 3 sessions used
                 </p>
                 <p className="mt-2 max-w-full break-words text-sm font-semibold leading-6 text-gray-200">
                   {usageSummary}

@@ -23,6 +23,7 @@ import {
 
 type PracticeUsage = {
   planName: string;
+  isTrial: boolean;
   dailyLimit: number | null;
   usedToday: number;
   remainingToday: number | null;
@@ -38,6 +39,7 @@ const practiceModeLabels: Record<PracticeMode, string> = {
 
 const defaultPracticeUsage: PracticeUsage = {
   planName: "Free",
+  isTrial: false,
   dailyLimit: 3,
   usedToday: 0,
   remainingToday: 3,
@@ -231,25 +233,29 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
   const canStartInterview = Boolean(role.trim()) && !signedInLimitReached;
 
   const usageSummary = useMemo(() => {
-    if (!isLoaded) return "Checking beta usage...";
+    if (!isLoaded) return "Checking your usage...";
 
     if (!isSignedIn) {
-      return "Sign in to save progress. Beta users can save 3 completed sessions per day.";
+      return "Sign in to save your progress and start your 7-day free trial.";
     }
 
     if (!usageLoaded) {
-      return "Checking your daily beta session limit...";
-    }
-
-    if (practiceUsage.limitReached) {
-      return `You have used all 3 free trial sessions. Upgrade to Plus for unlimited sessions and all interview modes.`;
+      return "Checking your session limit...";
     }
 
     if (practiceUsage.dailyLimit === null) {
       return `${practiceUsage.planName} plan · Unlimited sessions.`;
     }
 
-    return `${practiceUsage.remainingToday} of ${practiceUsage.dailyLimit} free trial sessions remaining · keyboard mode only.`;
+    if (practiceUsage.limitReached) {
+      return practiceUsage.isTrial
+        ? `You've used all ${practiceUsage.dailyLimit} trial sessions. Upgrade to Plus for unlimited practice.`
+        : `You've used all ${practiceUsage.dailyLimit} free sessions. Upgrade to Plus for unlimited practice with voice and camera.`;
+    }
+
+    return practiceUsage.isTrial
+      ? `${practiceUsage.remainingToday} of ${practiceUsage.dailyLimit} trial sessions left · voice & camera unlocked.`
+      : `${practiceUsage.remainingToday} of ${practiceUsage.dailyLimit} free sessions left · keyboard mode only.`;
   }, [isLoaded, isSignedIn, practiceUsage, usageLoaded]);
 
   useEffect(() => {

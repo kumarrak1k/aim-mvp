@@ -311,7 +311,7 @@ function UpgradeNudge() {
       <div className="pointer-events-none absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-fuchsia-500/15 blur-3xl" />
       <div className="relative">
         <p className="mb-2 text-[11px] font-black uppercase tracking-[0.2em] text-purple-300/70">
-          Free plan · Daily limit reached
+          Free plan · All 3 sessions used
         </p>
         <h2 className="text-2xl font-black tracking-[-0.04em]">
           Ready to practise more?
