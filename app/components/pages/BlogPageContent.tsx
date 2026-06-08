@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { getAllPosts } from "@/app/lib/content";
+import { BlogClient } from "@/app/blog/components/BlogClient";
 
 const faqs = [
   {
@@ -59,47 +60,7 @@ export function BlogPageContent({
         {posts.length === 0 ? (
           <p className="text-gray-500">Articles coming soon.</p>
         ) : (
-          <div className="divide-y divide-white/[0.07]">
-            {posts.map((post) => (
-              <article key={post.slug} className="group py-8 first:pt-0">
-                <Link href={`/blog/${post.slug}`}>
-                  <div className="flex items-start justify-between gap-6">
-                    <div className="flex-1">
-                      {post.category && (
-                        <p className="mb-2 text-[11px] font-black uppercase tracking-[0.18em] text-purple-300/70">
-                          {post.category}
-                        </p>
-                      )}
-                      <h2 className="text-xl font-black leading-tight tracking-[-0.03em] transition group-hover:text-purple-200">
-                        {post.title}
-                      </h2>
-                      <p className="mt-2 text-sm leading-6 text-gray-400">
-                        {post.description}
-                      </p>
-                      <div className="mt-3 flex items-center gap-3 text-xs text-gray-600">
-                        <time dateTime={post.date}>
-                          {new Date(post.date).toLocaleDateString("en-GB", {
-                            day: "numeric",
-                            month: "long",
-                            year: "numeric",
-                          })}
-                        </time>
-                        {post.readingTime && (
-                          <>
-                            <span>·</span>
-                            <span>{post.readingTime} read</span>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                    <span className="mt-1 shrink-0 text-gray-600 transition group-hover:text-purple-300">
-                      →
-                    </span>
-                  </div>
-                </Link>
-              </article>
-            ))}
-          </div>
+          <BlogClient posts={posts} />
         )}
 
         <div className="mt-14 border-t border-white/[0.07] pt-10">
