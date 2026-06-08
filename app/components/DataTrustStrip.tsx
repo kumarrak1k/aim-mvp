@@ -13,12 +13,66 @@ import { Fragment } from "react";
  *   OpenAI (API + Whisper) — does not train on API inputs/outputs by default.
  *   Neon / AWS eu-west-2   — data stored in London, UK.
  *   No vendor sells user data to third parties.
+ *
+ * Icons are inline SVGs (not emoji) so they render crisply and on-brand on every
+ * platform — Windows in particular shows flag emoji as plain letters and the
+ * robot emoji as a toy. The shared brand tint keeps the row looking premium.
  */
 
+type IconProps = { className?: string };
+
+/** Shield + tick — "your data is never sold". */
+function ShieldIcon({ className }: IconProps) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.7}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <path d="M12 3l7 2.5v5.2c0 4.4-3 7.6-7 9.3-4-1.7-7-4.9-7-9.3V5.5L12 3z" />
+      <path d="M9 12l2 2 4-4.5" />
+    </svg>
+  );
+}
+
+/** AI spark — the modern "AI" mark: a four-point star with a small companion. */
+function AiSparkIcon({ className }: IconProps) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <path d="M12 2.4l1.75 4.85L18.6 9l-4.85 1.75L12 15.6l-1.75-4.85L5.4 9l4.85-1.75z" />
+      <path d="M18.4 13.6l.78 2.17 2.17.78-2.17.78-.78 2.17-.78-2.17-2.17-.78 2.17-.78z" />
+    </svg>
+  );
+}
+
+/** Location pin — "stored in the UK". */
+function PinIcon({ className }: IconProps) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.7}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <path d="M12 21s6.5-4.7 6.5-10.5A6.5 6.5 0 1 0 5.5 10.5C5.5 16.3 12 21 12 21z" />
+      <circle cx="12" cy="10.5" r="2.4" />
+    </svg>
+  );
+}
+
 const items = [
-  { icon: "🔒", text: "Your data is never sold" },
-  { icon: "🤖", text: "Not used to train AI" },
-  { icon: "🇬🇧", text: "Stored in the UK" },
+  { Icon: ShieldIcon, text: "Your data is never sold" },
+  { Icon: AiSparkIcon, text: "Not used to train AI" },
+  { Icon: PinIcon, text: "Stored in the UK" },
 ] as const;
 
 type Variant = "topbar" | "compact" | "footer";
@@ -38,7 +92,7 @@ export function DataTrustStrip({
     return (
       <div className="relative z-50 border-b border-purple-600/25 bg-[#170c2e]">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-5 gap-y-1 px-4 py-2.5 sm:px-6">
-          {items.map(({ icon, text }, i) => (
+          {items.map(({ Icon, text }, i) => (
             <Fragment key={text}>
               {i > 0 && (
                 <span className="hidden text-purple-400/25 sm:inline" aria-hidden>
@@ -46,7 +100,7 @@ export function DataTrustStrip({
                 </span>
               )}
               <span className="flex items-center gap-1.5">
-                <span className="text-[13px]">{icon}</span>
+                <Icon className="h-3.5 w-3.5 text-purple-300" />
                 <span className="text-[12px] font-semibold text-gray-100">
                   {text}
                 </span>
@@ -69,9 +123,9 @@ export function DataTrustStrip({
   if (v === "compact") {
     return (
       <p className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[11px] text-gray-500">
-        {items.map(({ icon, text }) => (
+        {items.map(({ Icon, text }) => (
           <span key={text} className="flex items-center gap-1">
-            <span>{icon}</span>
+            <Icon className="h-3 w-3 text-purple-400" />
             <span>{text}</span>
           </span>
         ))}
@@ -89,12 +143,12 @@ export function DataTrustStrip({
   /* ── Footer (default) ─────────────────────────────────────────────────── */
   return (
     <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
-      {items.map(({ icon, text }) => (
+      {items.map(({ Icon, text }) => (
         <span
           key={text}
           className="flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.04] px-3 py-1 text-[11px] font-semibold text-gray-400"
         >
-          <span>{icon}</span>
+          <Icon className="h-3 w-3 text-purple-300" />
           <span>{text}</span>
         </span>
       ))}
