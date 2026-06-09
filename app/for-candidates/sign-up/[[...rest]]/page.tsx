@@ -71,7 +71,7 @@ export default function CandidateSignUpPage() {
           </div>
         </header>
 
-        <div className="flex flex-1 flex-col items-center justify-start py-6 sm:pt-10">
+        <div className="flex flex-col items-center pt-4 sm:pt-6 pb-8">
         <section className="w-full max-w-md">
           {/* Compact heading */}
           <div className="mb-4 text-center">
