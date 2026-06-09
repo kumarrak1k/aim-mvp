@@ -198,10 +198,11 @@ export default function AssessmentLandingPage() {
               : "Invalid invite link"}
         </h1>
         <p className="mb-8 text-gray-400">{error.message}</p>
-        <Link href="/">
-          <button className="rounded-full border border-white/15 bg-white/[0.06] px-6 py-3 text-sm font-black text-white transition hover:bg-white/[0.10]">
-            Go to AI Career Mentor →
-          </button>
+        <Link
+          href="/"
+          className="rounded-full border border-white/15 bg-white/[0.06] px-6 py-3 text-sm font-black text-white transition hover:bg-white/[0.10]"
+        >
+          Go to AI Career Mentor →
         </Link>
       </div>
     );

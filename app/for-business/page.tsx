@@ -148,15 +148,17 @@ export default function ForBusinessPage() {
         </p>
 
         <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
-          <Link href="/for-business/sign-up">
-            <button className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-8 py-4 text-base font-black text-white shadow-2xl shadow-purple-900/40 transition hover:scale-[1.02] sm:w-auto">
-              Create workspace →
-            </button>
+          <Link
+            href="/for-business/sign-up"
+            className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-8 py-4 text-center text-base font-black text-white shadow-2xl shadow-purple-900/40 transition hover:scale-[1.02] sm:w-auto"
+          >
+            Create workspace →
           </Link>
-          <Link href="/for-business/assessment-platform">
-            <button className="w-full rounded-2xl border border-white/[0.1] bg-white/[0.04] px-8 py-4 text-base font-black text-white transition hover:bg-white/[0.08] sm:w-auto">
-              See how it works
-            </button>
+          <Link
+            href="/for-business/assessment-platform"
+            className="w-full rounded-2xl border border-white/[0.1] bg-white/[0.04] px-8 py-4 text-center text-base font-black text-white transition hover:bg-white/[0.08] sm:w-auto"
+          >
+            See how it works
           </Link>
         </div>
 

@@ -468,13 +468,11 @@ export function PracticeStartScreen({
                     Use saved profile
                   </button>
 
-                  <Link href="/profile">
-                    <button
-                      type="button"
-                      className="rounded-full border border-white/10 bg-white/[0.06] px-4 py-2 text-xs font-black text-gray-200 transition hover:bg-white/[0.1]"
-                    >
-                      Edit profile
-                    </button>
+                  <Link
+                    href="/profile"
+                    className="rounded-full border border-white/10 bg-white/[0.06] px-4 py-2 text-xs font-black text-gray-200 transition hover:bg-white/[0.1]"
+                  >
+                    Edit profile
                   </Link>
                 </div>
               </div>
@@ -489,13 +487,11 @@ export function PracticeStartScreen({
                   profile to personalise future interviews.
                 </p>
 
-                <Link href="/profile">
-                  <button
-                    type="button"
-                    className="rounded-full border border-purple-300/20 bg-purple-300/10 px-4 py-2 text-xs font-black text-purple-100 transition hover:bg-purple-300/15"
-                  >
-                    Create profile
-                  </button>
+                <Link
+                  href="/profile"
+                  className="rounded-full border border-purple-300/20 bg-purple-300/10 px-4 py-2 text-xs font-black text-purple-100 transition hover:bg-purple-300/15"
+                >
+                  Create profile
                 </Link>
               </div>
             )}
@@ -793,13 +789,11 @@ export function PracticeStartScreen({
                 <span className="font-black text-purple-200">Voice &amp; camera modes</span> are
                 available on Plus and Professional plans.
               </p>
-              <Link href="/for-candidates/pricing" className="shrink-0">
-                <button
-                  type="button"
-                  className="rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-4 py-2 text-xs font-black text-white shadow-lg shadow-purple-950/35 transition hover:scale-[1.03]"
-                >
-                  Upgrade →
-                </button>
+              <Link
+                href="/for-candidates/pricing"
+                className="shrink-0 rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-4 py-2 text-xs font-black text-white shadow-lg shadow-purple-950/35 transition hover:scale-[1.03]"
+              >
+                Upgrade →
               </Link>
             </div>
           )}
@@ -952,10 +946,11 @@ export function PracticeStartScreen({
                 <UserButton />
               </div>
 
-              <Link href="/profile">
-                <button className="w-full rounded-2xl border border-purple-300/20 bg-purple-300/10 px-4 py-3 text-sm font-black text-purple-100 transition hover:bg-purple-300/15">
-                  Manage Candidate Profile
-                </button>
+              <Link
+                href="/profile"
+                className="block w-full rounded-2xl border border-purple-300/20 bg-purple-300/10 px-4 py-3 text-center text-sm font-black text-purple-100 transition hover:bg-purple-300/15"
+              >
+                Manage Candidate Profile
               </Link>
             </div>
           )}

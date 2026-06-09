@@ -117,10 +117,11 @@ export function CandidateAppShell({
             {/* Start Practising shortcut — hidden when already on practice */}
             {currentPath !== "/practice" &&
               currentPath !== "/practice/session" && (
-                <Link href="/practice" className="hidden sm:block">
-                  <button className="whitespace-nowrap rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-4 py-2.5 text-[13px] font-black text-white shadow-lg shadow-purple-950/40 transition hover:scale-[1.03] sm:px-5 xl:px-6">
-                    Start Practising
-                  </button>
+                <Link
+                  href="/practice"
+                  className="hidden whitespace-nowrap rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-4 py-2.5 text-[13px] font-black text-white shadow-lg shadow-purple-950/40 transition hover:scale-[1.03] sm:flex sm:px-5 xl:px-6"
+                >
+                  Start Practising
                 </Link>
               )}
 

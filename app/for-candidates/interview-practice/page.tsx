@@ -143,15 +143,17 @@ export default async function InterviewPracticePage() {
           users can configure up to 10 questions in a custom type mix.
         </p>
         <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
-          <Link href="/for-candidates/sign-up">
-            <button className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-8 py-4 text-base font-black text-white shadow-2xl shadow-purple-900/40 transition hover:scale-[1.02] sm:w-auto">
-              Start free →
-            </button>
+          <Link
+            href="/for-candidates/sign-up"
+            className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-8 py-4 text-center text-base font-black text-white shadow-2xl shadow-purple-900/40 transition hover:scale-[1.02] sm:w-auto"
+          >
+            Start free →
           </Link>
-          <Link href="/for-candidates/assessment-centre">
-            <button className="w-full rounded-2xl border border-white/[0.1] bg-white/[0.04] px-8 py-4 text-base font-black text-white transition hover:bg-white/[0.08] sm:w-auto">
-              Looking for assessment centre?
-            </button>
+          <Link
+            href="/for-candidates/assessment-centre"
+            className="w-full rounded-2xl border border-white/[0.1] bg-white/[0.04] px-8 py-4 text-center text-base font-black text-white transition hover:bg-white/[0.08] sm:w-auto"
+          >
+            Looking for assessment centre?
           </Link>
         </div>
       </section>
@@ -239,15 +241,17 @@ export default async function InterviewPracticePage() {
             Stop hoping. Start preparing.
           </h2>
           <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Link href="/for-candidates/sign-up">
-              <button className="rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-7 py-4 text-base font-black text-white shadow-2xl shadow-purple-900/40 transition hover:scale-[1.02]">
-                Start free →
-              </button>
+            <Link
+              href="/for-candidates/sign-up"
+              className="rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-7 py-4 text-center text-base font-black text-white shadow-2xl shadow-purple-900/40 transition hover:scale-[1.02]"
+            >
+              Start free →
             </Link>
-            <Link href="/for-candidates/pricing">
-              <button className="rounded-2xl border border-white/[0.1] bg-white/[0.04] px-7 py-4 text-base font-black text-white transition hover:bg-white/[0.08]">
-                See pricing
-              </button>
+            <Link
+              href="/for-candidates/pricing"
+              className="rounded-2xl border border-white/[0.1] bg-white/[0.04] px-7 py-4 text-center text-base font-black text-white transition hover:bg-white/[0.08]"
+            >
+              See pricing
             </Link>
           </div>
         </div>

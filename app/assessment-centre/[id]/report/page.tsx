@@ -316,15 +316,17 @@ export default function ReportPage() {
 
         {/* ─── 7. CTAs ─── */}
         <section className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-          <Link href="/assessment-centre/setup">
-            <button className="rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-8 py-4 text-sm font-black text-white shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.02]">
-              Retake assessment centre →
-            </button>
+          <Link
+            href="/assessment-centre/setup"
+            className="rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-8 py-4 text-center text-sm font-black text-white shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.02]"
+          >
+            Retake assessment centre →
           </Link>
-          <Link href="/practice">
-            <button className="rounded-2xl border border-white/[0.1] bg-white/[0.04] px-8 py-4 text-sm font-black text-white transition hover:bg-white/[0.07]">
-              Return to interview practice
-            </button>
+          <Link
+            href="/practice"
+            className="rounded-2xl border border-white/[0.1] bg-white/[0.04] px-8 py-4 text-center text-sm font-black text-white transition hover:bg-white/[0.07]"
+          >
+            Return to interview practice
           </Link>
         </section>
       </div>

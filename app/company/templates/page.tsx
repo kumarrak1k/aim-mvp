@@ -86,10 +86,11 @@ export default function TemplatesPage() {
             <p className="mt-2 text-gray-400">Reusable interview configurations for different roles.</p>
           </div>
           {canEdit && (
-            <Link href="/company/templates/new">
-              <button className="rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 px-5 py-2.5 text-sm font-black text-white shadow-lg transition hover:scale-[1.02]">
-                + New template
-              </button>
+            <Link
+              href="/company/templates/new"
+              className="rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 px-5 py-2.5 text-sm font-black text-white shadow-lg transition hover:scale-[1.02]"
+            >
+              + New template
             </Link>
           )}
         </div>
@@ -99,10 +100,11 @@ export default function TemplatesPage() {
             <p className="text-lg font-black text-gray-300">No templates yet</p>
             <p className="mt-2 text-gray-400">Create your first template to start sending assessments.</p>
             {canEdit && (
-              <Link href="/company/templates/new">
-                <button className="mt-6 rounded-full bg-fuchsia-500/20 px-6 py-3 text-sm font-black text-fuchsia-200 transition hover:bg-fuchsia-500/30">
-                  Create template →
-                </button>
+              <Link
+                href="/company/templates/new"
+                className="mt-6 inline-block rounded-full bg-fuchsia-500/20 px-6 py-3 text-sm font-black text-fuchsia-200 transition hover:bg-fuchsia-500/30"
+              >
+                Create template →
               </Link>
             )}
           </div>
@@ -153,10 +155,11 @@ export default function TemplatesPage() {
 
                 {canEdit && (
                   <div className="mt-5 flex gap-2">
-                    <Link href={`/company/templates/${t.id}`} className="flex-1">
-                      <button className="w-full rounded-xl border border-white/15 bg-white/[0.05] px-3 py-2 text-xs font-black text-white transition hover:bg-white/[0.09]">
-                        Edit
-                      </button>
+                    <Link
+                      href={`/company/templates/${t.id}`}
+                      className="flex-1 rounded-xl border border-white/15 bg-white/[0.05] px-3 py-2 text-center text-xs font-black text-white transition hover:bg-white/[0.09]"
+                    >
+                      Edit
                     </Link>
                     <button
                       onClick={() => toggleActive(t)}
@@ -164,10 +167,11 @@ export default function TemplatesPage() {
                     >
                       {t.isActive ? "Deactivate" : "Activate"}
                     </button>
-                    <Link href={`/company/candidates?templateId=${t.id}`}>
-                      <button className="rounded-xl border border-fuchsia-400/25 bg-fuchsia-400/10 px-3 py-2 text-xs font-black text-fuchsia-200 transition hover:bg-fuchsia-400/15">
-                        Invite
-                      </button>
+                    <Link
+                      href={`/company/candidates?templateId=${t.id}`}
+                      className="rounded-xl border border-fuchsia-400/25 bg-fuchsia-400/10 px-3 py-2 text-xs font-black text-fuchsia-200 transition hover:bg-fuchsia-400/15"
+                    >
+                      Invite
                     </Link>
                   </div>
                 )}

@@ -128,15 +128,17 @@ export default function AssessmentCompletePage() {
             apply for.
           </p>
           <div className="mt-5 flex flex-col items-stretch gap-2 sm:flex-row sm:justify-center">
-            <Link href="/for-candidates">
-              <button className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-3 text-sm font-black text-white shadow-lg shadow-purple-900/30 transition hover:scale-[1.02] sm:w-auto">
-                Explore AI Career Mentor →
-              </button>
+            <Link
+              href="/for-candidates"
+              className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-3 text-center text-sm font-black text-white shadow-lg shadow-purple-900/30 transition hover:scale-[1.02] sm:w-auto"
+            >
+              Explore AI Career Mentor →
             </Link>
-            <Link href="/for-candidates/sign-up">
-              <button className="w-full rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-3 text-sm font-black text-white transition hover:bg-white/[0.08] sm:w-auto">
-                Start free
-              </button>
+            <Link
+              href="/for-candidates/sign-up"
+              className="w-full rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-3 text-center text-sm font-black text-white transition hover:bg-white/[0.08] sm:w-auto"
+            >
+              Start free
             </Link>
           </div>
         </div>

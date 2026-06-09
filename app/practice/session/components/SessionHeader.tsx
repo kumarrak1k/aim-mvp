@@ -145,10 +145,11 @@ function PersonalPracticeHeader() {
 
         {/* Right actions */}
         <div className="ml-auto flex shrink-0 items-center gap-2">
-          <Link href="/practice" className="hidden sm:block">
-            <button className="rounded-full border border-white/[0.1] bg-white/[0.04] px-4 py-2 text-xs font-bold text-gray-300 transition hover:bg-white/[0.08] hover:text-white">
-              Exit to practice setup
-            </button>
+          <Link
+            href="/practice"
+            className="hidden rounded-full border border-white/[0.1] bg-white/[0.04] px-4 py-2 text-xs font-bold text-gray-300 transition hover:bg-white/[0.08] hover:text-white sm:block"
+          >
+            Exit to practice setup
           </Link>
 
           <Show when="signed-in">

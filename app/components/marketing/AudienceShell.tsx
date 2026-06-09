@@ -167,18 +167,18 @@ export function AudienceShell({
               header. Switching audiences is intentionally a deliberate action,
               done via "/" or the small footer link. */}
           <div className="relative z-10 ml-auto flex shrink-0 items-center gap-2">
-            <Link href={theme.signInPath}>
-              <button className="hidden whitespace-nowrap rounded-full border border-white/[0.1] bg-white/[0.04] px-4 py-2.5 text-[13px] font-bold text-white/80 transition hover:bg-white/[0.08] hover:text-white sm:block">
-                Sign in
-              </button>
+            <Link
+              href={theme.signInPath}
+              className="hidden whitespace-nowrap rounded-full border border-white/[0.1] bg-white/[0.04] px-4 py-2.5 text-[13px] font-bold text-white/80 transition hover:bg-white/[0.08] hover:text-white sm:block"
+            >
+              Sign in
             </Link>
 
-            <Link href={theme.signUpPath}>
-              <button
-                className={`whitespace-nowrap rounded-full bg-gradient-to-r ${theme.primaryGradient} px-4 py-2.5 text-[13px] font-black text-white shadow-lg ${theme.primaryShadow} transition hover:scale-[1.03] sm:px-5 xl:px-6`}
-              >
-                {audience === "candidate" ? "Start free" : "Get started"}
-              </button>
+            <Link
+              href={theme.signUpPath}
+              className={`whitespace-nowrap rounded-full bg-gradient-to-r ${theme.primaryGradient} px-4 py-2.5 text-[13px] font-black text-white shadow-lg ${theme.primaryShadow} transition hover:scale-[1.03] sm:px-5 xl:px-6`}
+            >
+              {audience === "candidate" ? "Start free" : "Get started"}
             </Link>
           </div>
         </div>

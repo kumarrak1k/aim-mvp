@@ -122,15 +122,17 @@ function UpgradeGate({ planName }: { planName: string }) {
           with new scenarios each time.
         </p>
         <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
-          <Link href="/for-candidates/pricing">
-            <button className="rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-8 py-4 text-sm font-black text-white shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.02]">
-              Upgrade to Professional →
-            </button>
+          <Link
+            href="/for-candidates/pricing"
+            className="rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-8 py-4 text-center text-sm font-black text-white shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.02]"
+          >
+            Upgrade to Professional →
           </Link>
-          <Link href="/for-candidates/assessment-centre">
-            <button className="rounded-2xl border border-white/[0.1] bg-white/[0.04] px-8 py-4 text-sm font-black text-white transition hover:bg-white/[0.07]">
-              See what&apos;s included
-            </button>
+          <Link
+            href="/for-candidates/assessment-centre"
+            className="rounded-2xl border border-white/[0.1] bg-white/[0.04] px-8 py-4 text-center text-sm font-black text-white transition hover:bg-white/[0.07]"
+          >
+            See what&apos;s included
           </Link>
         </div>
         <p className="mt-4 text-xs text-gray-500">
@@ -164,10 +166,11 @@ function SignInGate() {
             scored the way a real assessor would.
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Link href="/for-candidates/sign-up">
-              <button className="rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-8 py-4 text-sm font-black text-white shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.02]">
-                Get started →
-              </button>
+            <Link
+              href="/for-candidates/sign-up"
+              className="rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-8 py-4 text-center text-sm font-black text-white shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.02]"
+            >
+              Get started →
             </Link>
             <SignInButton mode="modal">
               <button className="rounded-2xl border border-white/[0.1] bg-white/[0.04] px-8 py-4 text-sm font-black text-white transition hover:bg-white/[0.07]">
@@ -206,10 +209,11 @@ function AssessmentCentreAccess() {
             presentation. One structured report at the end.
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Link href="/assessment-centre/setup">
-              <button className="rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-8 py-4 text-base font-black text-white shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.02]">
-                Start assessment centre →
-              </button>
+            <Link
+              href="/assessment-centre/setup"
+              className="rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-8 py-4 text-center text-base font-black text-white shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.02]"
+            >
+              Start assessment centre →
             </Link>
           </div>
           <p className="mt-4 text-xs text-gray-500">

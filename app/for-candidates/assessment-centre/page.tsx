@@ -146,15 +146,17 @@ export default async function AssessmentCentrePage() {
           assessor would.
         </p>
         <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
-          <Link href="/for-candidates/sign-up">
-            <button className="w-full rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-8 py-4 text-base font-black text-white shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.02] sm:w-auto">
-              Try the assessment centre →
-            </button>
+          <Link
+            href="/for-candidates/sign-up"
+            className="w-full rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-8 py-4 text-center text-base font-black text-white shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.02] sm:w-auto"
+          >
+            Try the assessment centre →
           </Link>
-          <Link href="/for-candidates/interview-practice">
-            <button className="w-full rounded-2xl border border-white/[0.1] bg-white/[0.04] px-8 py-4 text-base font-black text-white transition hover:bg-white/[0.08] sm:w-auto">
-              Just want interview practice?
-            </button>
+          <Link
+            href="/for-candidates/interview-practice"
+            className="w-full rounded-2xl border border-white/[0.1] bg-white/[0.04] px-8 py-4 text-center text-base font-black text-white transition hover:bg-white/[0.08] sm:w-auto"
+          >
+            Just want interview practice?
           </Link>
         </div>
       </section>

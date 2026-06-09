@@ -208,15 +208,17 @@ export default async function ForCandidatesPage() {
         </p>
 
         <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
-          <Link href="/for-candidates/sign-up">
-            <button className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-8 py-4 text-base font-black text-white shadow-2xl shadow-purple-900/40 transition hover:scale-[1.02] sm:w-auto">
-              Start free →
-            </button>
+          <Link
+            href="/for-candidates/sign-up"
+            className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-8 py-4 text-center text-base font-black text-white shadow-2xl shadow-purple-900/40 transition hover:scale-[1.02] sm:w-auto"
+          >
+            Start free →
           </Link>
-          <Link href="/for-candidates/interview-practice">
-            <button className="w-full rounded-2xl border border-white/[0.1] bg-white/[0.04] px-8 py-4 text-base font-black text-white transition hover:bg-white/[0.08] sm:w-auto">
-              How it works
-            </button>
+          <Link
+            href="/for-candidates/interview-practice"
+            className="w-full rounded-2xl border border-white/[0.1] bg-white/[0.04] px-8 py-4 text-center text-base font-black text-white transition hover:bg-white/[0.08] sm:w-auto"
+          >
+            How it works
           </Link>
         </div>
 

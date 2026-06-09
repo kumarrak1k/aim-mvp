@@ -134,15 +134,17 @@ export default function CVEnhancerPage() {
             cover letters, and personal statement generation.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
-            <Link href="/for-candidates/pricing">
-              <button className="rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-6 py-3.5 text-sm font-black text-white shadow-lg">
-                See plans →
-              </button>
+            <Link
+              href="/for-candidates/pricing"
+              className="rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-6 py-3.5 text-center text-sm font-black text-white shadow-lg"
+            >
+              See plans →
             </Link>
-            <Link href="/career-docs">
-              <button className="rounded-2xl border border-white/10 bg-white/[0.06] px-6 py-3.5 text-sm font-black text-white">
-                Back to Career Docs
-              </button>
+            <Link
+              href="/career-docs"
+              className="rounded-2xl border border-white/10 bg-white/[0.06] px-6 py-3.5 text-center text-sm font-black text-white"
+            >
+              Back to Career Docs
             </Link>
           </div>
         </div>
