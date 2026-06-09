@@ -19,7 +19,7 @@ import { DataTrustStrip } from "@/app/components/DataTrustStrip";
  */
 export default function CandidateSignInPage() {
   return (
-    <main className="relative flex min-h-screen flex-col overflow-hidden bg-[#0a0614] text-white">
+    <main className="relative min-h-screen overflow-hidden bg-[#0a0614] text-white">
       <DataTrustStrip variant="topbar" />
 
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
@@ -28,8 +28,8 @@ export default function CandidateSignInPage() {
         <div className="absolute bottom-[-80px] right-[-160px] h-[520px] w-[520px] rounded-full bg-fuchsia-500/[0.18] blur-[160px]" />
       </div>
 
-      <div className="relative z-10 mx-auto flex w-full flex-1 max-w-7xl flex-col px-4 py-4 sm:px-6 sm:py-6 lg:px-10">
-        <header className="mb-4 flex items-center justify-between sm:mb-5">
+      <div className="relative z-10 mx-auto w-full max-w-7xl px-4 pt-3 pb-8 sm:px-6 lg:px-10">
+        <header className="mb-3 flex items-center justify-between sm:mb-4">
           <Link href="/" className="flex items-center gap-3">
             <SiteLogo href="" size="md" showText />
             <span className="hidden rounded-full border border-purple-300/20 bg-white/[0.04] px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-purple-100 sm:inline-block">
@@ -53,7 +53,7 @@ export default function CandidateSignInPage() {
         </header>
 
         {/* Centring wrapper — pushes form to vertical centre of remaining space */}
-        <div className="flex flex-col items-center pt-4 sm:pt-6 pb-8">
+        <div className="mx-auto w-full max-w-md mt-2">
         <section className="w-full max-w-md">
           <div className="mb-4 text-center">
             <h1 className="text-2xl font-black tracking-[-0.04em] sm:text-3xl">
@@ -118,7 +118,7 @@ export default function CandidateSignInPage() {
         </section>
         </div>
 
-        <footer className="mt-auto border-t border-white/[0.06] pt-4 text-center text-xs text-gray-600">
+        <footer className="mt-12 border-t border-white/[0.06] pt-4 text-center text-xs text-gray-600">
           © {new Date().getFullYear()} AI Career Mentor ·{" "}
           <Link href="/privacy" className="hover:text-gray-400">Privacy</Link> ·{" "}
           <Link href="/terms" className="hover:text-gray-400">Terms</Link> ·{" "}
