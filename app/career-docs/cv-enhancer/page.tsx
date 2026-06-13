@@ -276,13 +276,17 @@ export default function CVEnhancerPage() {
               </button>
 
               {showJd && (
-                <textarea
-                  value={jobDescription}
-                  onChange={(e) => setJobDescription(e.target.value)}
-                  placeholder="Paste the job description here for targeted ATS keyword analysis…"
-                  rows={6}
-                  className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-600 outline-none focus:border-purple-400/40 focus:ring-1 focus:ring-purple-400/20 resize-y"
-                />
+                <div>
+                  <textarea
+                    value={jobDescription}
+                    onChange={(e) => setJobDescription(e.target.value)}
+                    placeholder="Paste the job description here for targeted ATS keyword analysis…"
+                    rows={6}
+                    maxLength={8000}
+                    className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-600 outline-none focus:border-purple-400/40 focus:ring-1 focus:ring-purple-400/20 resize-y"
+                  />
+                  <p className="mt-1 text-right text-[10px] text-gray-600">{jobDescription.length} / 8000 chars</p>
+                </div>
               )}
             </div>
 

@@ -275,15 +275,17 @@ export default async function AssessmentCentrePage() {
             Included in the Professional plan — repeat with new scenarios as often as you need.
           </p>
           <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Link href="/for-candidates/sign-up">
-              <button className="rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-7 py-4 text-base font-black text-white shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.02]">
-                Start free →
-              </button>
+            <Link
+              href="/for-candidates/sign-up"
+              className="rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-7 py-4 text-center text-base font-black text-white shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.02]"
+            >
+              Start free →
             </Link>
-            <Link href="/for-candidates/pricing">
-              <button className="rounded-2xl border border-white/[0.1] bg-white/[0.04] px-7 py-4 text-base font-black text-white transition hover:bg-white/[0.08]">
-                See pricing
-              </button>
+            <Link
+              href="/for-candidates/pricing"
+              className="rounded-2xl border border-white/[0.1] bg-white/[0.04] px-7 py-4 text-center text-base font-black text-white transition hover:bg-white/[0.08]"
+            >
+              See pricing
             </Link>
           </div>
           <p className="mt-5 text-xs text-gray-500">
