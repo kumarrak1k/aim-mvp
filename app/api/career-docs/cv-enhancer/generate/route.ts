@@ -31,6 +31,7 @@ const schema = z.object({
     biggestGap: z.string(),
     topStrength: z.string(),
   }),
+  userGapAnswers: z.array(z.object({ id: z.string(), answer: z.string() })).default([]),
 });
 
 function stripFences(text: string): string {
@@ -59,9 +60,9 @@ export async function POST(request: NextRequest) {
 
   const parsed = await parseJsonBody(request, schema);
   if ("response" in parsed) return parsed.response;
-  const { targetRole, industry, cvText, jobDescription, analysis } = parsed.data;
+  const { targetRole, industry, cvText, jobDescription, analysis, userGapAnswers } = parsed.data;
 
-  const systemPrompt = `You are a senior professional CV writer. Rewrite the candidate's CV applying the given recommendations exactly. Preserve all facts — never invent metrics, dates, employer names, or roles. Return only valid JSON, no markdown, no commentary.`;
+  const systemPrompt = `You are a senior professional CV writer. Rewrite the candidate's CV applying all given recommendations. Preserve all facts — never invent metrics, dates, employer names, or roles. Return only valid JSON, no markdown, no commentary.`;
 
   const bulletRewrites = analysis.enhancedBullets
     .map((b) => `  - "${b.original}" → "${b.enhanced}"`)
@@ -70,6 +71,10 @@ export async function POST(request: NextRequest) {
   const sectionSuggestions = analysis.sections
     .map((s) => `  - ${s.name}: ${s.suggestion}`)
     .join("\n");
+
+  const gapAnswerBlock = userGapAnswers.length > 0
+    ? `\nCANDIDATE-SUPPLIED DETAILS — use these verbatim to fill the relevant sections:\n${userGapAnswers.map((a) => `  - ${a.answer}`).join("\n")}\n`
+    : "";
 
   const userPrompt = `Rewrite this CV for "${targetRole}"${industry ? ` in ${industry}` : ""}.
 
@@ -84,14 +89,15 @@ Keywords to weave in naturally: ${analysis.missingKeywords.join(", ")}
 Section improvements:
 ${sectionSuggestions}
 Biggest gap to address: ${analysis.biggestGap}
-
+${gapAnswerBlock}
 RULES:
-1. Apply every recommendation you can without inventing facts.
-2. Use stronger action verbs; add scope/impact only where already implied in the original.
-3. Preserve all dates, employer names, job titles, education details exactly.
-4. Where specific data is missing (e.g. exact team size, budget, percentage), insert a [NEEDS INPUT: what's needed] placeholder rather than guessing.
-5. The "original" in each change entry must be an EXACT substring of the original CV text above.
-6. The "replacement" in each change entry must appear verbatim in fullEnhancedCV.
+1. Apply every recommendation you can.
+2. Use stronger action verbs; add scope/impact where it is already implied in the original.
+3. Preserve all dates, employer names, job titles, education facts exactly.
+4. If the candidate supplied additional details above, weave them naturally into the relevant sections.
+5. For remaining gaps: look hard at the existing CV content and construct something from what is there before giving up. Only insert [NEEDS INPUT: description] if there is truly nothing in the CV to work from.
+6. The "original" in each change entry must be an EXACT substring of the original CV text above.
+7. The "replacement" in each change entry must appear verbatim in fullEnhancedCV.
 
 Return JSON:
 {
@@ -108,7 +114,7 @@ Return JSON:
   "flagged": [
     {
       "section": "<CV section name>",
-      "note": "<what the candidate needs to supply — be specific>"
+      "note": "<what the candidate needs to supply — be specific, only include if genuinely unresolvable>"
     }
   ]
 }`;

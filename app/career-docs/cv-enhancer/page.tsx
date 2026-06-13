@@ -23,6 +23,7 @@ type CVResult = {
 type Change = { id: string; section: string; original: string; replacement: string; reason: string };
 type Flagged = { section: string; note: string };
 type EnhancedResult = { fullEnhancedCV: string; changes: Change[]; flagged: Flagged[] };
+type Gap = { id: string; section: string; question: string; hint: string };
 
 function ScoreRing({ score }: { score: number }) {
   const r = 42;
@@ -74,6 +75,11 @@ export default function CVEnhancerPage() {
   const [enhancedError, setEnhancedError] = useState("");
   const [rejectedIds, setRejectedIds] = useState<Set<string>>(new Set());
 
+  const [gaps, setGaps] = useState<Gap[] | null>(null);
+  const [checkingGaps, setCheckingGaps] = useState(false);
+  const [gapAnswers, setGapAnswers] = useState<Record<string, string>>({});
+  const [skippedGaps, setSkippedGaps] = useState<Set<string>>(new Set());
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const savedCV = useSavedCV();
 
@@ -108,6 +114,9 @@ export default function CVEnhancerPage() {
     setEnhancedResult(null);
     setRejectedIds(new Set());
     setEnhancedError("");
+    setGaps(null);
+    setGapAnswers({});
+    setSkippedGaps(new Set());
     try {
       const res = await fetch("/api/career-docs/cv-enhancer", {
         method: "POST",
@@ -135,7 +144,46 @@ export default function CVEnhancerPage() {
     });
   }
 
-  async function handleGenerateEnhanced() {
+  async function handleCheckGaps() {
+    if (!result) return;
+    setCheckingGaps(true);
+    setGaps(null);
+    setGapAnswers({});
+    setSkippedGaps(new Set());
+    setEnhancedResult(null);
+    setRejectedIds(new Set());
+    setEnhancedError("");
+    try {
+      const res = await fetch("/api/career-docs/cv-enhancer/gaps", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          targetRole, industry, cvText, jobDescription,
+          analysis: {
+            quickWins: result.quickWins,
+            enhancedBullets: result.enhancedBullets,
+            missingKeywords: result.missingKeywords,
+            sections: result.sections,
+            biggestGap: result.biggestGap,
+            topStrength: result.topStrength,
+          },
+        }),
+      });
+      const data = await res.json() as { gaps?: Gap[] };
+      const fetchedGaps = data.gaps ?? [];
+      setGaps(fetchedGaps);
+      if (fetchedGaps.length === 0) {
+        void handleGenerateEnhanced([]);
+      }
+    } catch {
+      setGaps([]);
+      void handleGenerateEnhanced([]);
+    } finally {
+      setCheckingGaps(false);
+    }
+  }
+
+  async function handleGenerateEnhanced(userGapAnswers: { id: string; answer: string }[]) {
     if (!result) return;
     setGeneratingEnhanced(true);
     setEnhancedError("");
@@ -150,6 +198,7 @@ export default function CVEnhancerPage() {
           industry,
           cvText,
           jobDescription,
+          userGapAnswers,
           analysis: {
             quickWins: result.quickWins,
             enhancedBullets: result.enhancedBullets,
@@ -520,19 +569,19 @@ export default function CVEnhancerPage() {
         {/* ── Enhanced CV generator (full-width, below analysis grid) ── */}
         {result && (
           <div className="mt-6 space-y-4">
-            {/* CTA — shown before generation starts */}
-            {!enhancedResult && !generatingEnhanced && (
+            {/* Phase 0: Initial CTA */}
+            {!checkingGaps && gaps === null && !generatingEnhanced && !enhancedResult && (
               <div className="rounded-[1.75rem] border border-purple-400/25 bg-gradient-to-br from-purple-500/[0.09] to-fuchsia-500/[0.04] p-6">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                   <div>
                     <p className="mb-1 text-[10px] font-black uppercase tracking-[0.22em] text-purple-400">Pro feature</p>
                     <h2 className="text-lg font-black tracking-[-0.03em] text-white">Generate Enhanced CV</h2>
                     <p className="mt-1 text-sm leading-6 text-gray-400">
-                      Apply all recommendations automatically. Review each change, accept or reject it, then copy your polished final CV.
+                      We'll ask for any missing details first, apply all recommendations, then let you accept or reject each change.
                     </p>
                   </div>
                   <button
-                    onClick={() => void handleGenerateEnhanced()}
+                    onClick={() => void handleCheckGaps()}
                     className="shrink-0 rounded-2xl bg-gradient-to-r from-purple-500 to-fuchsia-500 px-6 py-3.5 text-sm font-black text-white shadow-lg shadow-purple-900/30 transition hover:scale-[1.02]"
                   >
                     Generate Enhanced CV →
@@ -541,7 +590,90 @@ export default function CVEnhancerPage() {
               </div>
             )}
 
-            {/* Loading */}
+            {/* Phase 1: Checking gaps */}
+            {checkingGaps && (
+              <div className="flex min-h-[140px] flex-col items-center justify-center gap-3 rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04]">
+                <svg className="h-6 w-6 animate-spin text-purple-400" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+                <p className="text-sm text-gray-400">Checking what we need from you…</p>
+              </div>
+            )}
+
+            {/* Phase 2: Gap form */}
+            {gaps !== null && gaps.length > 0 && !generatingEnhanced && !enhancedResult && (
+              <div className="rounded-[1.75rem] border border-purple-400/20 bg-white/[0.03] p-6">
+                <div className="mb-5">
+                  <p className="text-[11px] font-black uppercase tracking-[0.22em] text-purple-300">Before we generate</p>
+                  <p className="mt-1 text-sm leading-6 text-gray-400">
+                    The AI found {gaps.length} area{gaps.length !== 1 ? "s" : ""} where extra detail would strengthen your CV.
+                    Answer what you can — skip anything you prefer to leave as-is.
+                  </p>
+                </div>
+                <div className="space-y-4">
+                  {gaps.map((gap) => {
+                    const skipped = skippedGaps.has(gap.id);
+                    return (
+                      <div
+                        key={gap.id}
+                        className={`rounded-xl border p-4 transition ${skipped ? "border-white/[0.05] opacity-40" : "border-white/[0.1]"}`}
+                      >
+                        <div className="flex items-start gap-3">
+                          <div className="min-w-0 flex-1">
+                            <p className="mb-0.5 text-[10px] font-black uppercase tracking-[0.16em] text-purple-400">{gap.section}</p>
+                            <p className="text-sm font-semibold text-white">{gap.question}</p>
+                            {!skipped && (
+                              <textarea
+                                value={gapAnswers[gap.id] ?? ""}
+                                onChange={(e) => setGapAnswers((prev) => ({ ...prev, [gap.id]: e.target.value }))}
+                                placeholder={gap.hint}
+                                rows={2}
+                                className="mt-2 w-full resize-none rounded-lg border border-white/[0.08] bg-black/30 px-3 py-2 text-xs text-white placeholder-gray-600 outline-none focus:border-purple-400/40 focus:ring-1 focus:ring-purple-400/20"
+                              />
+                            )}
+                          </div>
+                          <button
+                            onClick={() =>
+                              setSkippedGaps((prev) => {
+                                const next = new Set(prev);
+                                if (next.has(gap.id)) next.delete(gap.id);
+                                else next.add(gap.id);
+                                return next;
+                              })
+                            }
+                            className="mt-0.5 shrink-0 rounded-lg border border-white/10 bg-white/[0.04] px-3 py-1.5 text-[10px] font-black text-gray-500 transition hover:text-gray-300"
+                          >
+                            {skipped ? "Restore" : "Skip"}
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+                <div className="mt-5 flex flex-col gap-2 sm:flex-row sm:justify-end">
+                  <button
+                    onClick={() => { setGaps(null); setGapAnswers({}); setSkippedGaps(new Set()); }}
+                    className="rounded-xl border border-white/10 bg-white/[0.04] px-5 py-2.5 text-sm font-black text-gray-400 transition hover:text-white"
+                  >
+                    ← Back
+                  </button>
+                  <button
+                    onClick={() => {
+                      const answers = gaps
+                        .filter((g) => !skippedGaps.has(g.id) && (gapAnswers[g.id] ?? "").trim())
+                        .map((g) => ({ id: g.id, answer: gapAnswers[g.id] }));
+                      void handleGenerateEnhanced(answers);
+                    }}
+                    className="rounded-2xl bg-gradient-to-r from-purple-500 to-fuchsia-500 px-6 py-2.5 text-sm font-black text-white shadow-lg shadow-purple-900/30 transition hover:scale-[1.01]"
+                  >
+                    Generate Enhanced CV →
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Phase 3: Generating */}
             {generatingEnhanced && (
               <div className="flex min-h-[200px] flex-col items-center justify-center gap-4 rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04]">
                 <svg className="h-8 w-8 animate-spin text-purple-400" fill="none" viewBox="0 0 24 24">
@@ -671,6 +803,8 @@ export default function CVEnhancerPage() {
                         onClick={() => {
                           setEnhancedResult(null);
                           setRejectedIds(new Set());
+                          // Return to gap form if there were questions, else back to CTA
+                          if (!gaps || gaps.length === 0) setGaps(null);
                         }}
                         className="rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2 text-[11px] font-black text-gray-400 transition hover:text-white"
                       >
