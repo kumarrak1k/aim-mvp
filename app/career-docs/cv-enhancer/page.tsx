@@ -20,6 +20,10 @@ type CVResult = {
   biggestGap: string;
 };
 
+type Change = { id: string; section: string; original: string; replacement: string; reason: string };
+type Flagged = { section: string; note: string };
+type EnhancedResult = { fullEnhancedCV: string; changes: Change[]; flagged: Flagged[] };
+
 function ScoreRing({ score }: { score: number }) {
   const r = 42;
   const circ = 2 * Math.PI * r;
@@ -65,6 +69,11 @@ export default function CVEnhancerPage() {
   const [result, setResult] = useState<CVResult | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
 
+  const [enhancedResult, setEnhancedResult] = useState<EnhancedResult | null>(null);
+  const [generatingEnhanced, setGeneratingEnhanced] = useState(false);
+  const [enhancedError, setEnhancedError] = useState("");
+  const [rejectedIds, setRejectedIds] = useState<Set<string>>(new Set());
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const savedCV = useSavedCV();
 
@@ -96,6 +105,9 @@ export default function CVEnhancerPage() {
     setLoading(true);
     setError("");
     setResult(null);
+    setEnhancedResult(null);
+    setRejectedIds(new Set());
+    setEnhancedError("");
     try {
       const res = await fetch("/api/career-docs/cv-enhancer", {
         method: "POST",
@@ -121,6 +133,64 @@ export default function CVEnhancerPage() {
       setCopied(key);
       setTimeout(() => setCopied(null), 2000);
     });
+  }
+
+  async function handleGenerateEnhanced() {
+    if (!result) return;
+    setGeneratingEnhanced(true);
+    setEnhancedError("");
+    setEnhancedResult(null);
+    setRejectedIds(new Set());
+    try {
+      const res = await fetch("/api/career-docs/cv-enhancer/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          targetRole,
+          industry,
+          cvText,
+          jobDescription,
+          analysis: {
+            quickWins: result.quickWins,
+            enhancedBullets: result.enhancedBullets,
+            missingKeywords: result.missingKeywords,
+            sections: result.sections,
+            biggestGap: result.biggestGap,
+            topStrength: result.topStrength,
+          },
+        }),
+      });
+      const data = await res.json() as { result?: EnhancedResult; error?: string; upgrade?: boolean };
+      if (!res.ok) {
+        if (data.upgrade) { setUpgrade(true); return; }
+        setEnhancedError(data.error ?? "Something went wrong.");
+        return;
+      }
+      setEnhancedResult(data.result!);
+    } catch {
+      setEnhancedError("Could not reach the server. Please try again.");
+    } finally {
+      setGeneratingEnhanced(false);
+    }
+  }
+
+  function toggleRejection(id: string) {
+    setRejectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
+  function assembleFinalCV(fullCV: string, changes: Change[], rejected: Set<string>): string {
+    let cv = fullCV;
+    for (const change of changes) {
+      if (rejected.has(change.id)) {
+        cv = cv.replace(change.replacement, change.original);
+      }
+    }
+    return cv;
   }
 
   if (upgrade) {
@@ -446,6 +516,180 @@ export default function CVEnhancerPage() {
             )}
           </div>
         </div>
+
+        {/* ── Enhanced CV generator (full-width, below analysis grid) ── */}
+        {result && (
+          <div className="mt-6 space-y-4">
+            {/* CTA — shown before generation starts */}
+            {!enhancedResult && !generatingEnhanced && (
+              <div className="rounded-[1.75rem] border border-purple-400/25 bg-gradient-to-br from-purple-500/[0.09] to-fuchsia-500/[0.04] p-6">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <p className="mb-1 text-[10px] font-black uppercase tracking-[0.22em] text-purple-400">Pro feature</p>
+                    <h2 className="text-lg font-black tracking-[-0.03em] text-white">Generate Enhanced CV</h2>
+                    <p className="mt-1 text-sm leading-6 text-gray-400">
+                      Apply all recommendations automatically. Review each change, accept or reject it, then copy your polished final CV.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => void handleGenerateEnhanced()}
+                    className="shrink-0 rounded-2xl bg-gradient-to-r from-purple-500 to-fuchsia-500 px-6 py-3.5 text-sm font-black text-white shadow-lg shadow-purple-900/30 transition hover:scale-[1.02]"
+                  >
+                    Generate Enhanced CV →
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Loading */}
+            {generatingEnhanced && (
+              <div className="flex min-h-[200px] flex-col items-center justify-center gap-4 rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04]">
+                <svg className="h-8 w-8 animate-spin text-purple-400" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+                <p className="text-sm text-gray-400">Rewriting your CV and tracking changes…</p>
+                <p className="text-xs text-gray-600">This takes around 30–45 seconds</p>
+              </div>
+            )}
+
+            {enhancedError && (
+              <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">{enhancedError}</div>
+            )}
+
+            {/* Results */}
+            {enhancedResult && (
+              <div className="space-y-4">
+                {/* Change review cards */}
+                <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-6">
+                  <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+                    <p className="text-[11px] font-black uppercase tracking-[0.22em] text-purple-300">
+                      {enhancedResult.changes.length} changes — accept or reject each
+                    </p>
+                    <div className="flex gap-2">
+                      <span className="rounded-full bg-emerald-500/20 px-2.5 py-1 text-[10px] font-black text-emerald-300">
+                        {enhancedResult.changes.length - rejectedIds.size} accepted
+                      </span>
+                      <span className="rounded-full bg-red-500/20 px-2.5 py-1 text-[10px] font-black text-red-300">
+                        {rejectedIds.size} rejected
+                      </span>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    {enhancedResult.changes.map((change) => {
+                      const rejected = rejectedIds.has(change.id);
+                      return (
+                        <div
+                          key={change.id}
+                          className={`rounded-xl border p-4 transition ${
+                            rejected
+                              ? "border-red-500/25 bg-red-500/[0.05]"
+                              : "border-emerald-400/20 bg-emerald-400/[0.04]"
+                          }`}
+                        >
+                          <div className="flex items-start gap-3">
+                            <div className="min-w-0 flex-1">
+                              <p className="mb-2 text-[10px] font-black uppercase tracking-[0.16em] text-gray-500">
+                                {change.section}
+                              </p>
+                              <div className="space-y-2">
+                                <div className="rounded-lg bg-black/20 px-3 py-2">
+                                  <p className="mb-0.5 text-[9px] font-black uppercase tracking-[0.14em] text-gray-600">Before</p>
+                                  <p className="text-xs leading-5 text-gray-500 line-through">{change.original}</p>
+                                </div>
+                                <div className="rounded-lg bg-black/20 px-3 py-2">
+                                  <p className="mb-0.5 text-[9px] font-black uppercase tracking-[0.14em] text-emerald-500">After</p>
+                                  <p className="text-xs leading-5 text-gray-200">{change.replacement}</p>
+                                </div>
+                              </div>
+                              <p className="mt-2 text-[10px] leading-4 text-gray-500">→ {change.reason}</p>
+                            </div>
+                            <button
+                              onClick={() => toggleRejection(change.id)}
+                              className={`shrink-0 rounded-lg border px-3 py-1.5 text-[10px] font-black transition ${
+                                rejected
+                                  ? "border-red-400/40 bg-red-400/10 text-red-300 hover:bg-red-400/20"
+                                  : "border-emerald-400/40 bg-emerald-400/10 text-emerald-300 hover:bg-emerald-400/20"
+                              }`}
+                            >
+                              {rejected ? "Rejected" : "Accepted"}
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Flagged — needs user input */}
+                {enhancedResult.flagged.length > 0 && (
+                  <div className="rounded-[1.75rem] border border-amber-400/20 bg-amber-400/[0.04] p-6">
+                    <p className="mb-3 text-[11px] font-black uppercase tracking-[0.22em] text-amber-300">
+                      Needs your input — couldn't auto-apply
+                    </p>
+                    <div className="space-y-2.5">
+                      {enhancedResult.flagged.map((f, i) => (
+                        <div key={i} className="flex items-start gap-2.5 text-sm text-gray-300">
+                          <span className="mt-0.5 shrink-0 text-amber-400">!</span>
+                          <span>
+                            <span className="font-bold text-amber-200">{f.section}:</span>{" "}
+                            {f.note}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Final CV preview + copy */}
+                <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-6">
+                  <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                      <p className="text-[11px] font-black uppercase tracking-[0.22em] text-cyan-300">Your enhanced CV</p>
+                      <p className="mt-0.5 text-xs text-gray-500">
+                        {enhancedResult.changes.length - rejectedIds.size} of {enhancedResult.changes.length} changes applied
+                      </p>
+                    </div>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => {
+                          const finalCV = assembleFinalCV(
+                            enhancedResult.fullEnhancedCV,
+                            enhancedResult.changes,
+                            rejectedIds
+                          );
+                          void navigator.clipboard.writeText(finalCV).then(() => {
+                            setCopied("final-cv");
+                            setTimeout(() => setCopied(null), 2000);
+                          });
+                        }}
+                        className="rounded-xl border border-cyan-400/30 bg-cyan-400/10 px-4 py-2 text-[11px] font-black text-cyan-300 transition hover:bg-cyan-400/20"
+                      >
+                        {copied === "final-cv" ? "Copied!" : "Copy final CV"}
+                      </button>
+                      <button
+                        onClick={() => {
+                          setEnhancedResult(null);
+                          setRejectedIds(new Set());
+                        }}
+                        className="rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2 text-[11px] font-black text-gray-400 transition hover:text-white"
+                      >
+                        Regenerate
+                      </button>
+                    </div>
+                  </div>
+                  <pre className="max-h-[600px] overflow-y-auto rounded-xl border border-white/[0.06] bg-black/20 p-5 font-sans text-xs leading-6 text-gray-300 whitespace-pre-wrap">
+                    {assembleFinalCV(
+                      enhancedResult.fullEnhancedCV,
+                      enhancedResult.changes,
+                      rejectedIds
+                    )}
+                  </pre>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </CandidateAppShell>
   );
