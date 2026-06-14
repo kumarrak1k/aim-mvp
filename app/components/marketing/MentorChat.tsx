@@ -93,15 +93,31 @@ export function MentorChat() {
               <span className="text-sm font-semibold text-white">AI Mentor</span>
               <span className="text-xs text-gray-400 hidden sm:inline">· here to help</span>
             </div>
-            <button
-              onClick={() => setOpen(false)}
-              className="text-gray-400 hover:text-white transition-colors p-1 rounded"
-              aria-label="Close chat"
-            >
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true">
-                <path d="M11.707 3.707a1 1 0 0 0-1.414-1.414L7 5.586 3.707 2.293a1 1 0 0 0-1.414 1.414L5.586 7l-3.293 3.293a1 1 0 1 0 1.414 1.414L7 8.414l3.293 3.293a1 1 0 0 0 1.414-1.414L8.414 7l3.293-3.293z" />
-              </svg>
-            </button>
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => { setMessages([WELCOME]); setInput(""); }}
+                disabled={messages.length <= 1}
+                className="text-gray-400 hover:text-white transition-colors p-1 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+                aria-label="Clear chat"
+                title="Clear chat"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <polyline points="3 6 5 6 21 6" />
+                  <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                  <path d="M10 11v6M14 11v6" />
+                  <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                </svg>
+              </button>
+              <button
+                onClick={() => setOpen(false)}
+                className="text-gray-400 hover:text-white transition-colors p-1 rounded"
+                aria-label="Close chat"
+              >
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true">
+                  <path d="M11.707 3.707a1 1 0 0 0-1.414-1.414L7 5.586 3.707 2.293a1 1 0 0 0-1.414 1.414L5.586 7l-3.293 3.293a1 1 0 1 0 1.414 1.414L7 8.414l3.293 3.293a1 1 0 0 0 1.414-1.414L8.414 7l3.293-3.293z" />
+                </svg>
+              </button>
+            </div>
           </div>
 
           {/* Messages */}
