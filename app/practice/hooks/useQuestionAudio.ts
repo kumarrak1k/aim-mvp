@@ -290,6 +290,13 @@ export function useQuestionAudio({
     new Map()
   );
 
+  // Background (prefetch) audio: kept in a separate cache that
+  // cleanupPreparedQuestionAudio does NOT clear. Promoted to the
+  // main cache when prepareQuestionAudio is called for the same text.
+  const backgroundAudioCacheRef = useRef<Map<string, PreparedAudioEntry>>(new Map());
+  const backgroundPromiseCacheRef = useRef<Map<string, Promise<void>>>(new Map());
+  const backgroundGenerationRef = useRef(0);
+
   const onPlaybackStartRef = useRef(onPlaybackStart);
   const onPlaybackEndRef = useRef(onPlaybackEnd);
   const onGuidedPlaybackCompleteRef = useRef(onGuidedPlaybackComplete);
@@ -329,6 +336,13 @@ export function useQuestionAudio({
       // Ignore cleanup failures.
     }
   }, []);
+
+  const clearBackgroundAudio = useCallback(() => {
+    backgroundGenerationRef.current += 1;
+    backgroundAudioCacheRef.current.forEach((entry) => cleanupPreparedAudioEntry(entry));
+    backgroundAudioCacheRef.current.clear();
+    backgroundPromiseCacheRef.current.clear();
+  }, [cleanupPreparedAudioEntry]);
 
   const setActivePreparedAudioEntry = useCallback(
     (cacheKey: string, entry: PreparedAudioEntry) => {
@@ -475,6 +489,81 @@ export function useQuestionAudio({
     setQuestionAudioMessage("");
     setIsPreparedQuestionPlaying(false);
   }, [clearMicrophoneStartTimer, cleanupPreparedAudioEntry, setAudioReady]);
+
+  const prepareQuestionAudioBackground = useCallback(
+    async (text: string, speakerPreference?: SpeakerPreference): Promise<void> => {
+      const safeText = cleanQuestionText(text);
+      if (!safeText) return;
+
+      const preferenceKey = speakerPreferenceKey(speakerPreference);
+      const cacheKey = audioCacheKey(safeText, preferenceKey);
+
+      // Already cached or in-flight
+      if (
+        backgroundAudioCacheRef.current.has(cacheKey) ||
+        backgroundPromiseCacheRef.current.has(cacheKey)
+      )
+        return;
+
+      const bgGen = backgroundGenerationRef.current;
+
+      const promise = (async () => {
+        try {
+          let audio: HTMLAudioElement;
+          let url: string;
+          let usedStreaming = false;
+
+          if (supportsMediaSourceStreaming()) {
+            try {
+              ({ audio, url } = await streamQuestionAudioToEntry(safeText, speakerPreference));
+              usedStreaming = true;
+            } catch {
+              const blob = await fetchQuestionAudioBlobWithTimeout(safeText, speakerPreference);
+              url = URL.createObjectURL(blob);
+              audio = new Audio(url);
+            }
+          } else {
+            const blob = await fetchQuestionAudioBlobWithTimeout(safeText, speakerPreference);
+            url = URL.createObjectURL(blob);
+            audio = new Audio(url);
+          }
+
+          if (bgGen !== backgroundGenerationRef.current) {
+            URL.revokeObjectURL(url);
+            return;
+          }
+
+          audio.preload = "auto";
+          // Attach handlers now. All are guarded by `questionAudioRef.current !== audio`
+          // so they're no-ops while the audio is in the background cache.
+          // Once promoted (questionAudioRef set to this element), they become active.
+          attachAudioHandlers(audio);
+
+          if (!usedStreaming) {
+            try {
+              audio.load();
+            } catch {
+              // Ignore.
+            }
+          }
+
+          backgroundAudioCacheRef.current.set(cacheKey, {
+            audio,
+            url,
+            text: safeText,
+            preferenceKey,
+          });
+        } catch {
+          // Silently fail — prepareQuestionAudio will handle it normally.
+        } finally {
+          backgroundPromiseCacheRef.current.delete(cacheKey);
+        }
+      })();
+
+      backgroundPromiseCacheRef.current.set(cacheKey, promise);
+    },
+    [attachAudioHandlers]
+  );
 
   const stopPreparedQuestionPlayback = useCallback(() => {
     clearMicrophoneStartTimer();
@@ -652,6 +741,39 @@ export function useQuestionAudio({
 
       const preferenceKey = speakerPreferenceKey(speakerPreference);
       const cacheKey = audioCacheKey(safeText, preferenceKey);
+
+      // Check if background audio prep already finished
+      const bgEntry = backgroundAudioCacheRef.current.get(cacheKey);
+      if (bgEntry) {
+        backgroundAudioCacheRef.current.delete(cacheKey);
+        preparedAudioCacheRef.current.set(cacheKey, bgEntry);
+        setActivePreparedAudioEntry(cacheKey, bgEntry);
+        setQuestionAudioLoading(false);
+        setQuestionAudioError("");
+        setQuestionAudioMessage("Interviewer voice ready.");
+        return true;
+      }
+
+      // Check if background prep is still in-flight
+      const bgPromise = backgroundPromiseCacheRef.current.get(cacheKey);
+      if (bgPromise) {
+        setQuestionAudioLoading(true);
+        setQuestionAudioError("");
+        setQuestionAudioMessage("Preparing interviewer voice...");
+        await bgPromise;
+        // Promise finished — check if it succeeded
+        const bgEntryAfterWait = backgroundAudioCacheRef.current.get(cacheKey);
+        if (bgEntryAfterWait) {
+          backgroundAudioCacheRef.current.delete(cacheKey);
+          preparedAudioCacheRef.current.set(cacheKey, bgEntryAfterWait);
+          setActivePreparedAudioEntry(cacheKey, bgEntryAfterWait);
+          setQuestionAudioLoading(false);
+          setQuestionAudioMessage("Interviewer voice ready.");
+          return true;
+        }
+        setQuestionAudioLoading(false);
+        // Background failed — fall through to normal preparation below
+      }
 
       if (
         preparedQuestionTextRef.current === safeText &&
@@ -864,8 +986,9 @@ export function useQuestionAudio({
   useEffect(() => {
     return () => {
       cleanupPreparedQuestionAudio();
+      clearBackgroundAudio();
     };
-  }, [cleanupPreparedQuestionAudio]);
+  }, [cleanupPreparedQuestionAudio, clearBackgroundAudio]);
 
   return {
     questionAudioRef,
@@ -877,8 +1000,10 @@ export function useQuestionAudio({
     setQuestionAudioMessage,
     setQuestionAudioError,
     prepareQuestionAudio,
+    prepareQuestionAudioBackground,
     playPreparedQuestionAudio,
     stopPreparedQuestionPlayback,
     cleanupPreparedQuestionAudio,
+    clearBackgroundAudio,
   };
 }

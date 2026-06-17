@@ -179,6 +179,13 @@ export default function PracticeSessionPage() {
   /** Guards the one-time first-play handling (arm / prompt) per interview. */
   const firstPlayHandledRef = useRef(false);
 
+  // Prefetch: next question text is fetched silently while the user reads feedback
+  const prefetchRef = useRef<{
+    questionNumber: number;
+    question: string | null;
+  }>({ questionNumber: 0, question: null });
+  const prefetchAbortRef = useRef<AbortController | null>(null);
+
   // Camera requires a manual tap on any touch device (iOS needs a user gesture
   // for the camera permission prompt regardless of screen size).
   const requiresManualCameraStart = manualDeviceMode || isTablet;
@@ -340,9 +347,11 @@ export default function PracticeSessionPage() {
     questionAudioMessage,
     setQuestionAudioMessage,
     prepareQuestionAudio,
+    prepareQuestionAudioBackground,
     playPreparedQuestionAudio,
     stopPreparedQuestionPlayback,
     cleanupPreparedQuestionAudio,
+    clearBackgroundAudio,
   } = useQuestionAudio({
     onPlaybackStart: () => {
       questionPlaybackStartedRef.current = true;
@@ -1081,23 +1090,30 @@ export default function PracticeSessionPage() {
         awaitingAutoRecordQuestionRef.current = null;
         questionPlaybackStartedRef.current = false;
 
-        // Custom question slots bypass AI generation — use verbatim text.
-        const customIdx = questionMix
-          ? getCustomQuestionIndex(questionMix, questionNumber)
-          : -1;
+        // Use prefetched question if it's ready and matches the requested number
+        const prefetched = prefetchRef.current;
+        let nextQuestion: string;
 
-        const nextQuestion =
-          customIdx >= 0 && customQuestions[customIdx]?.trim()
-            ? customQuestions[customIdx].trim()
-            : await fetchInterviewQuestion({
-                role: candidateProfile,
-                questionNumber,
-                totalQuestions,
-                history,
-                assessmentMode,
-                templateContext,
-                questionMix,
-              });
+        if (prefetched.questionNumber === questionNumber && prefetched.question !== null) {
+          nextQuestion = prefetched.question;
+          prefetchRef.current = { questionNumber: 0, question: null };
+        } else {
+          // Prefetch not ready (or wrong number) — fetch normally
+          const customIdx =
+            questionMix != null ? getCustomQuestionIndex(questionMix, questionNumber) : -1;
+          nextQuestion =
+            customIdx >= 0 && customQuestions[customIdx]?.trim()
+              ? customQuestions[customIdx].trim()
+              : await fetchInterviewQuestion({
+                  role: candidateProfile,
+                  questionNumber,
+                  totalQuestions,
+                  history,
+                  assessmentMode,
+                  templateContext,
+                  questionMix,
+                });
+        }
 
         setActiveQuestion(nextQuestion);
         setQuestion(nextQuestion);
@@ -1148,6 +1164,10 @@ export default function PracticeSessionPage() {
   );
 
   const startInterview = useCallback(async () => {
+    prefetchAbortRef.current?.abort();
+    prefetchRef.current = { questionNumber: 0, question: null };
+    clearBackgroundAudio();
+
     setHasUserInteracted(true);
     setInterviewStarted(true);
     setInterviewFinished(false);
@@ -1196,6 +1216,7 @@ export default function PracticeSessionPage() {
   }, [
     autoFlowActive,
     cameraEnabled,
+    clearBackgroundAudio,
     fetchQuestion,
     lastSpokenQuestionRef,
     primeAudioInput,
@@ -1222,6 +1243,71 @@ export default function PracticeSessionPage() {
     sessionBootedRef.current = true;
     void startInterview();
   }, [missingSessionConfig, sessionConfig, sessionConfigLoaded, startInterview]);
+
+  useEffect(() => {
+    if (!feedback) return;
+
+    const nextQNum = results.length + 2;
+    if (nextQNum > totalQuestions) return;
+
+    // Cancel any stale in-flight prefetch
+    prefetchAbortRef.current?.abort();
+    const abort = new AbortController();
+    prefetchAbortRef.current = abort;
+    prefetchRef.current = { questionNumber: nextQNum, question: null };
+
+    const prefetchHistory: ResultItem[] = [
+      ...results,
+      {
+        question,
+        answer,
+        feedback,
+        voiceAnalysis,
+        videoAnalysis,
+      },
+    ];
+
+    void (async () => {
+      try {
+        const customIdx =
+          questionMix != null
+            ? getCustomQuestionIndex(questionMix, nextQNum)
+            : -1;
+
+        const nextQ =
+          customIdx >= 0 && customQuestions[customIdx]?.trim()
+            ? customQuestions[customIdx].trim()
+            : await fetchInterviewQuestion({
+                role: candidateProfile,
+                questionNumber: nextQNum,
+                totalQuestions,
+                history: prefetchHistory,
+                assessmentMode,
+                templateContext,
+                questionMix,
+              });
+
+        if (abort.signal.aborted) return;
+
+        prefetchRef.current = { questionNumber: nextQNum, question: nextQ };
+
+        // Kick off audio preparation in the background.
+        // Uses the separate background cache so cleanupPreparedQuestionAudio
+        // (called by fetchQuestion) does not discard this in-flight work.
+        if (speakerEnabled) {
+          void prepareQuestionAudioBackground(nextQ, speakerPreference);
+        }
+      } catch {
+        // Prefetch failed silently — fetchQuestion will handle it normally
+      }
+    })();
+
+    return () => {
+      abort.abort();
+    };
+    // We intentionally capture a snapshot of these values when feedback first arrives.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [feedback]);
 
   // Once an assessment-mode session has finished and the summary save has
   // settled, send the candidate straight to their branded completion screen.
@@ -1400,6 +1486,10 @@ export default function PracticeSessionPage() {
   ]);
 
   const resetInterview = useCallback(() => {
+    prefetchAbortRef.current?.abort();
+    prefetchRef.current = { questionNumber: 0, question: null };
+    clearBackgroundAudio();
+
     if (recognitionRef.current && isListening) {
       stopRecognitionOnly();
     }
@@ -1455,6 +1545,7 @@ export default function PracticeSessionPage() {
     cleanupAudioMonitoring,
     cleanupPreparedQuestionAudio,
     clearAudioSamples,
+    clearBackgroundAudio,
     isListening,
     lastSpokenQuestionRef,
     recognitionRef,
