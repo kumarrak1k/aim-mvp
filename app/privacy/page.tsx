@@ -353,6 +353,16 @@ export default function PrivacyPage() {
 
               <div className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-6">
                 <p className="mb-3 text-[11px] font-black uppercase tracking-[0.18em] text-purple-200">
+                  Data controller
+                </p>
+                <p className="mb-1 font-bold text-gray-200">AI Career Mentor Ltd</p>
+                <p className="text-xs text-gray-500">
+                  Registered in England &amp; Wales<br />Company No. 17288119
+                </p>
+              </div>
+
+              <div className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-6">
+                <p className="mb-3 text-[11px] font-black uppercase tracking-[0.18em] text-purple-200">
                   Privacy contact
                 </p>
                 <p className="mb-2 text-sm leading-6 text-gray-400">

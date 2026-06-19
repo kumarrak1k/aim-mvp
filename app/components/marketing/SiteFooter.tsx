@@ -20,7 +20,7 @@ export function SiteFooter() {
               university careers services. Built in the UK.
             </p>
             <p className="mt-5 text-xs text-gray-400">
-              © {new Date().getFullYear()}{" "}AI Career Mentor · England &amp; Wales
+              © {new Date().getFullYear()}{" "}AI Career Mentor Ltd · England &amp; Wales · Company No. 17288119
             </p>
           </div>
 
