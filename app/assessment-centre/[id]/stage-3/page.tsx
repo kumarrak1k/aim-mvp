@@ -31,6 +31,7 @@ type Feedback = {
   commentary: string;
   strengths: string[];
   improvements: string[];
+  exampleAnswer?: string;
 };
 
 type Session = {
@@ -570,6 +571,15 @@ export default function Stage3Page() {
                     </ul>
                   </div>
                 </div>
+
+                {feedback.exampleAnswer && (
+                  <div className="rounded-[1.75rem] border border-purple-400/20 bg-purple-400/[0.06] p-5 backdrop-blur-xl">
+                    <p className="mb-2 text-[11px] font-black uppercase tracking-[0.22em] text-purple-300">
+                      Model Answer Example
+                    </p>
+                    <p className="text-sm leading-7 text-gray-300 whitespace-pre-line">{feedback.exampleAnswer}</p>
+                  </div>
+                )}
               </>
             )}
 

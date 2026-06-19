@@ -96,7 +96,8 @@ Return JSON:
   "overall": <number 1-10>,
   "commentary": "<2-3 sentence overall assessment>",
   "strengths": ["<strength 1>", "<strength 2>", "<strength 3>"],
-  "improvements": ["<improvement 1>", "<improvement 2>", "<improvement 3>"]
+  "improvements": ["<improvement 1>", "<improvement 2>", "<improvement 3>"],
+  "exampleAnswer": "<A model presentation answer written as a spoken script — structured with a clear opening, 2-3 key points with evidence from the brief, and a strong closing recommendation. Around 200-250 words. Write it as actual spoken words the candidate could deliver, not a description of what to include.>"
 }`;
 
   const scoreResponse = await callOpenAIChat({
@@ -106,7 +107,7 @@ Return JSON:
       { role: "user", content: scoreUserPrompt },
     ],
     temperature: 0.3,
-    max_tokens: 1200,
+    max_tokens: 2200,
   }, { timeoutMs: 60000 });
 
   const rawScore = stripMarkdownFences(scoreResponse.choices[0].message.content);
