@@ -149,6 +149,7 @@ export default function Stage3Page() {
     if (timerRef.current) clearInterval(timerRef.current);
     setPhase("presenting");
     setPresentTimeLeft(PRESENT_TIME);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const startRecording = useCallback(() => {
@@ -458,21 +459,11 @@ export default function Stage3Page() {
                 <span className="text-xs text-gray-600">{wordCount} words captured</span>
               </div>
 
-              {/* Live transcript */}
-              {transcript && (
-                <div className="mb-4 rounded-xl border border-white/[0.06] bg-white/[0.03] p-3 max-h-40 overflow-y-auto">
-                  <p className="text-xs leading-6 text-gray-300">{transcript}</p>
-                </div>
-              )}
-
-              <p className="text-xs text-gray-600 mb-3">
-                Or type your presentation script below:
-              </p>
               <textarea
                 value={transcript}
                 onChange={(e) => setTranscript(e.target.value)}
-                placeholder="Type your presentation here…"
-                className="w-full min-h-[160px] resize-y rounded-xl border border-white/[0.06] bg-white/[0.03] p-3 text-sm leading-7 text-gray-300 placeholder-gray-700 outline-none focus:border-cyan-400/40 focus:ring-1 focus:ring-cyan-400/20"
+                placeholder="Your speech will appear here as you speak. You can also type directly or edit what was captured."
+                className="w-full min-h-[200px] resize-y rounded-xl border border-white/[0.06] bg-white/[0.03] p-3 text-sm leading-7 text-gray-300 placeholder-gray-700 outline-none focus:border-cyan-400/40 focus:ring-1 focus:ring-cyan-400/20"
               />
             </div>
 
