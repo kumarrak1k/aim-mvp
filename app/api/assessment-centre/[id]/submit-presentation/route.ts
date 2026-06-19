@@ -134,7 +134,20 @@ Return JSON:
   // Generate final report
   const caseStudyScore = session.caseStudyScore ?? 0;
   const interviewScore = session.interviewScore ?? 0;
-  const overallScore = Math.round((caseStudyScore * 0.3 + interviewScore * 0.4 + presentationScore * 0.3) * 10) / 10;
+  const selectedStages = session.selectedStages as string[];
+  const hasCS = selectedStages.includes("stage1");
+  const hasIV = selectedStages.includes("stage2");
+
+  let overallScore: number;
+  if (hasCS && hasIV) {
+    overallScore = Math.round((caseStudyScore * 0.3 + interviewScore * 0.4 + presentationScore * 0.3) * 10) / 10;
+  } else if (hasCS) {
+    overallScore = Math.round((caseStudyScore * 0.5 + presentationScore * 0.5) * 10) / 10;
+  } else if (hasIV) {
+    overallScore = Math.round((interviewScore * 0.6 + presentationScore * 0.4) * 10) / 10;
+  } else {
+    overallScore = presentationScore;
+  }
 
   const csFeedback = session.caseStudyFeedback ? JSON.stringify(session.caseStudyFeedback) : "No feedback";
   const ivSummary = session.interviewSummary ? JSON.stringify(session.interviewSummary) : "No summary";

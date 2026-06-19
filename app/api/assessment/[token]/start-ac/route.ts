@@ -90,6 +90,7 @@ export async function POST(_req: NextRequest, { params }: Params) {
 
     const hasStage1 = selectedStages.includes("stage1");
     const hasStage2 = selectedStages.includes("stage2");
+    const hasStage3 = selectedStages.includes("stage3");
     const initialStatus = hasStage1 ? "stage1" : hasStage2 ? "stage2" : "stage3";
     const initialStageNum = hasStage1 ? 1 : hasStage2 ? 2 : 3;
 
@@ -107,6 +108,35 @@ export async function POST(_req: NextRequest, { params }: Params) {
 
     // Generate case study scenario if stage1 is included
     let scenario: unknown = null;
+    let presentationBrief: unknown = null;
+
+    // When stage3 is the only selected stage, generate the brief now — there is
+    // no submit-case-study or submit-interview call to generate it later.
+    if (!hasStage1 && !hasStage2 && hasStage3) {
+      const briefSystemPrompt = `You are a senior assessment centre designer. Generate a realistic presentation brief appropriate for a ${template.role} candidate in the ${assignment.company.name} sector. JSON only.`;
+      const briefUserPrompt = `Generate a presentation brief for a ${template.role} in ${assignment.company.name}. Return JSON: { "topic": "<topic string>", "audience": "<audience string>", "context": "<2-3 sentences of background>", "format": "3-minute spoken presentation", "objectives": ["<objective 1>", "<objective 2>", "<objective 3>"], "timeMinutes": 3 }`;
+
+      const briefResponse = await callOpenAIChat(
+        {
+          model: "gpt-4o",
+          messages: [
+            { role: "system", content: briefSystemPrompt },
+            { role: "user", content: briefUserPrompt },
+          ],
+          temperature: 0.8,
+          max_tokens: 800,
+        },
+        { timeoutMs: 45000 }
+      );
+
+      const rawBrief = stripMarkdownFences(briefResponse.choices[0].message.content);
+      try {
+        presentationBrief = JSON.parse(rawBrief);
+      } catch {
+        presentationBrief = { topic: "Strategic market expansion", audience: "Senior leadership team", context: "The company is evaluating growth opportunities.", format: "3-minute spoken presentation", objectives: ["Present a clear recommendation", "Back it with evidence", "Outline key risks"], timeMinutes: 3 };
+      }
+    }
+
     if (hasStage1) {
       const systemPrompt = `You are a senior assessment centre designer at a top-tier consultancy. You create rigorous, realistic business case studies for graduate and professional assessment centres — equivalent in depth to those used by McKinsey, Deloitte, KPMG, and large corporates. Output must be valid JSON only — no markdown fences, no commentary.`;
 
@@ -167,6 +197,7 @@ Return valid JSON matching this schema exactly:
         status: initialStatus,
         currentStage: initialStageNum,
         ...(scenario ? { caseStudyScenario: scenario as object } : {}),
+        ...(presentationBrief ? { presentationBrief: presentationBrief as object } : {}),
       },
     });
 
