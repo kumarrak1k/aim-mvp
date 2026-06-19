@@ -114,9 +114,10 @@ export function CandidateAppShell({
 
           {/* Right actions */}
           <div className="relative z-10 ml-auto flex shrink-0 items-center gap-2">
-            {/* Start Practising shortcut — hidden when already on practice */}
+            {/* Start Practising shortcut — hidden when already on practice or assessment centre */}
             {currentPath !== "/practice" &&
-              currentPath !== "/practice/session" && (
+              currentPath !== "/practice/session" &&
+              currentPath !== "/assessment-centre" && (
                 <Link
                   href="/practice"
                   className="hidden whitespace-nowrap rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-4 py-2.5 text-[13px] font-black text-white shadow-lg shadow-purple-950/40 transition hover:scale-[1.03] sm:flex sm:px-5 xl:px-6"
