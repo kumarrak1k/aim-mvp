@@ -99,7 +99,8 @@ Score the response and return JSON with this exact structure:
   "commentary": "<2-3 sentence overall assessment>",
   "strengths": ["<strength 1>", "<strength 2>", "<strength 3>"],
   "improvements": ["<improvement 1>", "<improvement 2>", "<improvement 3>"],
-  "modelAnswer": "<A brief example of what an excellent response would include>"
+  "modelAnswer": "<2-3 sentences describing what an excellent response would include>",
+  "exampleAnswer": "<A full model answer written as if by an ideal candidate — 250-350 words, structured and specific to this scenario and question, using data from the exhibits where relevant. Write it as a direct response, not a description of one.>"
 }`;
 
   const aiResponse = await callOpenAIChat({
@@ -109,7 +110,7 @@ Score the response and return JSON with this exact structure:
       { role: "user", content: userPrompt },
     ],
     temperature: 0.3,
-    max_tokens: 1500,
+    max_tokens: 2500,
   }, { timeoutMs: 60000 });
 
   const raw = stripMarkdownFences(aiResponse.choices[0].message.content);
