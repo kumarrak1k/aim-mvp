@@ -5,6 +5,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { absoluteUrl, siteConfig } from "@/app/config/site";
 import { CookieConsent } from "@/app/components/marketing/CookieConsent";
 import { MentorChat } from "@/app/components/marketing/MentorChat";
+import { BetaBanner } from "@/app/components/BetaBanner";
 import "./globals.css";
 
 const siteUrl = siteConfig.url;
@@ -227,6 +228,7 @@ export default function RootLayout({
               __html: JSON.stringify(structuredData),
             }}
           />
+          <BetaBanner />
           {children}
           <MentorChat />
           <CookieConsent />
