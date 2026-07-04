@@ -41,6 +41,8 @@ const securityHeaders = [
       "font-src 'self' data:",
       "connect-src 'self' https://*.clerk.accounts.dev https://*.clerk.com https://clerk.shared.net https://clerk.aicareermentor.co.uk https://accounts.aicareermentor.co.uk https://api.stripe.com https://*.ingest.sentry.io https://*.ingest.de.sentry.io https://*.upstash.io https://vitals.vercel-insights.com",
       "frame-src 'self' https://js.stripe.com https://*.clerk.com https://*.clerk.accounts.dev https://clerk.shared.net https://clerk.aicareermentor.co.uk https://accounts.aicareermentor.co.uk https://challenges.cloudflare.com",
+      "object-src 'none'",
+      "frame-ancestors 'self'",
       "worker-src 'self' blob:",
       "base-uri 'self'",
       "form-action 'self'",

@@ -1,5 +1,6 @@
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { type NextRequest, NextResponse } from "next/server";
+import { siteConfig } from "@/app/config/site";
 
 /**
  * GET /api/admin/reject
@@ -23,6 +24,6 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  const target = new URL("/admin/sign-in?error=unauthorized", req.url);
+  const target = new URL("/admin/sign-in?error=unauthorized", siteConfig.url);
   return NextResponse.redirect(target);
 }

@@ -1,3 +1,4 @@
+import crypto from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { runStripeReconcile } from "@/app/lib/stripeReconcile";
 
@@ -19,7 +20,11 @@ export async function GET(req: NextRequest) {
   // Fail CLOSED: without CRON_SECRET this state-mutating endpoint must not be
   // publicly triggerable. Vercel Cron injects this header automatically.
   const secret = process.env.CRON_SECRET;
-  if (!secret || req.headers.get("authorization") !== `Bearer ${secret}`) {
+  const authHeader = req.headers.get("authorization") ?? "";
+  const expected = `Bearer ${secret ?? ""}`;
+  const a = Buffer.from(authHeader);
+  const b = Buffer.from(expected);
+  if (!secret || a.length !== b.length || !crypto.timingSafeEqual(a, b)) {
     return NextResponse.json({ error: "Unauthorised" }, { status: 401 });
   }
 

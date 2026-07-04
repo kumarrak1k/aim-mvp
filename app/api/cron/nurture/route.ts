@@ -1,3 +1,4 @@
+import crypto from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/app/lib/prisma";
 import {
@@ -17,7 +18,11 @@ export async function GET(req: NextRequest) {
   // endpoint publicly triggerable. Vercel Cron injects this Authorization
   // header automatically when CRON_SECRET is set in the project env.
   const secret = process.env.CRON_SECRET;
-  if (!secret || req.headers.get("authorization") !== `Bearer ${secret}`) {
+  const authHeader = req.headers.get("authorization") ?? "";
+  const expected = `Bearer ${secret ?? ""}`;
+  const a = Buffer.from(authHeader);
+  const b = Buffer.from(expected);
+  if (!secret || a.length !== b.length || !crypto.timingSafeEqual(a, b)) {
     return NextResponse.json({ error: "Unauthorised" }, { status: 401 });
   }
 

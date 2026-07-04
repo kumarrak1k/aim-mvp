@@ -44,6 +44,19 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    // Verify the target user exists and their email matches the supplied address.
+    // This prevents a superadmin from sending user A's magic link to user B's email.
+    const targetUser = await admin.client.users.getUser(body.userId);
+    const targetEmail = targetUser.emailAddresses.find(
+      (e) => e.emailAddress.toLowerCase() === body.email!.toLowerCase()
+    );
+    if (!targetEmail) {
+      return NextResponse.json(
+        { error: "Email does not match the supplied user account." },
+        { status: 400 }
+      );
+    }
+
     // Generate a fresh sign-in token — safe to call multiple times (each is independent)
     const tokenResponse = await admin.client.signInTokens.createSignInToken({
       userId: body.userId,
