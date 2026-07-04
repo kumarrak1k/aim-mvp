@@ -34,7 +34,7 @@ html {
 
 body {
   min-height: 100vh;
-  overflow-x: hidden;
+  overflow-x: clip;
   background:
     radial-gradient(circle at 50% -10%, rgba(168, 85, 247, 0.18), transparent 36rem),
     radial-gradient(circle at 100% 10%, rgba(103, 232, 249, 0.08), transparent 28rem),
