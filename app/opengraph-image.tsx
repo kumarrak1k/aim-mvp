@@ -1,6 +1,5 @@
 import { ImageResponse } from "next/og";
 
-export const runtime = "edge";
 export const alt =
   "AI Career Mentor — AI Interview Coaching for Answers, Voice & Camera Presence";
 export const size = { width: 1200, height: 630 };
