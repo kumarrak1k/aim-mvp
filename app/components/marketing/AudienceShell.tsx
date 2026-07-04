@@ -234,8 +234,9 @@ export function AudienceShell({
           </div>
         )}
 
-        {/* Site-wide free-trial CTA (pricing pages already show a richer one) */}
-        {!currentPath.endsWith("/pricing") && (
+        {/* Site-wide free-trial CTA (pricing and assessment-centre pages suppress it —
+            assessment centre is Professional-only so the trial badge is misleading there) */}
+        {!currentPath.endsWith("/pricing") && !currentPath.endsWith("/assessment-centre") && (
           <div className="flex justify-center px-4 pb-3 pt-1">
             <TrialBadge audience={audience} />
           </div>
