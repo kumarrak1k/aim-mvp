@@ -43,16 +43,15 @@ export function PublicShell({ children, currentPath }: PublicShellProps) {
 
       {/* ── Header ── */}
       <header className="relative z-50">
-        <div className="relative mx-auto flex w-full max-w-7xl items-center px-4 pt-1.5 pb-6 sm:px-6 sm:pt-2 sm:pb-8 lg:px-10">
+        <div className="relative mx-auto grid w-full max-w-7xl grid-cols-[auto_minmax(0,1fr)_auto] items-center px-4 pt-1.5 pb-6 sm:px-6 sm:pt-2 sm:pb-8 lg:px-10">
           {/* Logo */}
           <div className="relative z-10">
             <SiteLogo href="/" size="md" showText />
           </div>
 
-          {/* Desktop nav — absolutely centred pill. xl+ only: below that the
-              absolute pill would overlap the audience buttons on tablets. */}
-          <nav aria-label="Primary" className="pointer-events-none absolute inset-x-0 hidden justify-center xl:flex">
-            <div className="pointer-events-auto flex items-center gap-0.5 rounded-full border border-white/[0.09] bg-white/[0.04] p-1">
+          {/* Desktop nav — centred in grid column; lg+ only (grid prevents overlap). */}
+          <nav aria-label="Primary" className="hidden min-w-0 justify-center lg:flex">
+            <div className="flex items-center gap-0.5 rounded-full border border-white/[0.09] bg-white/[0.04] p-1">
               {NAV_LINKS.map((item) => {
                 const active = currentPath === item.href;
                 return (
@@ -73,7 +72,7 @@ export function PublicShell({ children, currentPath }: PublicShellProps) {
           </nav>
 
           {/* Audience buttons — matches homepage */}
-          <div className="relative z-10 ml-auto hidden shrink-0 items-center gap-2 sm:flex">
+          <div className="col-start-3 relative z-10 hidden shrink-0 items-center gap-2 sm:flex">
             <Link
               href="/for-candidates"
               className="rounded-full border border-purple-300/20 bg-purple-300/[0.07] px-4 py-2 text-xs font-black text-purple-100 transition hover:bg-purple-300/[0.12]"
@@ -95,8 +94,8 @@ export function PublicShell({ children, currentPath }: PublicShellProps) {
           </div>
         </div>
 
-        {/* Mobile / tablet scrollable nav strip (shown below xl) */}
-        <div className="px-4 py-2 sm:px-6 xl:hidden">
+        {/* Mobile / tablet scrollable nav strip (shown below lg) */}
+        <div className="px-4 py-2 sm:px-6 lg:hidden">
           <nav className="mx-auto flex max-w-7xl gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {NAV_LINKS.map((item) => {
               const active = currentPath === item.href;
