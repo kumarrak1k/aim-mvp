@@ -35,7 +35,7 @@ const securityHeaders = [
     key: "Content-Security-Policy",
     value: [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://*.clerk.accounts.dev https://*.clerk.com https://clerk.shared.net https://clerk.aicareermentor.co.uk https://accounts.aicareermentor.co.uk https://challenges.cloudflare.com https://js.stripe.com https://*.vercel-scripts.com https://va.vercel-scripts.com",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.clerk.accounts.dev https://*.clerk.com https://clerk.shared.net https://clerk.aicareermentor.co.uk https://accounts.aicareermentor.co.uk https://challenges.cloudflare.com https://js.stripe.com https://*.vercel-scripts.com https://va.vercel-scripts.com https://cdn.jsdelivr.net",
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: blob: https:",
       "font-src 'self' data:",
@@ -43,7 +43,7 @@ const securityHeaders = [
       "frame-src 'self' https://js.stripe.com https://*.clerk.com https://*.clerk.accounts.dev https://clerk.shared.net https://clerk.aicareermentor.co.uk https://accounts.aicareermentor.co.uk https://challenges.cloudflare.com",
       "object-src 'none'",
       "frame-ancestors 'self'",
-      "media-src 'self' blob:",
+      "media-src 'self' blob: data:",
       "worker-src 'self' blob:",
       "base-uri 'self'",
       "form-action 'self'",
