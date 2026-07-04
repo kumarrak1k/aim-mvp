@@ -146,7 +146,7 @@ export async function POST(req: NextRequest) {
         ?.errors?.[0]?.longMessage ??
       (error as { errors?: Array<{ message?: string }> })
         ?.errors?.[0]?.message ??
-      (error instanceof Error ? error.message : "Failed to create user.");
+      "Failed to create user.";
     return NextResponse.json({ error: msg }, { status: 500 });
   }
 }

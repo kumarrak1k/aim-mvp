@@ -115,10 +115,7 @@ export default function CandidateSignUpPage() {
               },
               variables: {
                 colorPrimary: "#a855f7",
-                colorText: "#ffffff",
                 colorBackground: "transparent",
-                colorInputBackground: "rgba(0,0,0,0.3)",
-                colorInputText: "#ffffff",
               },
             }}
           />

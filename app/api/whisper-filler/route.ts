@@ -101,6 +101,11 @@ export async function POST(req: NextRequest) {
     const ext = getFileExtension(mimeType);
     const namedFile = new File([audioFile], `answer.${ext}`, { type: mimeType });
 
+    // Hard cap at 25 MB — the Whisper API limit; prevents runaway API costs.
+    if (namedFile.size > 25 * 1024 * 1024) {
+      return NextResponse.json({ error: "Audio file too large (max 25 MB)." }, { status: 413 });
+    }
+
     // If the recording is suspiciously small it's likely silence or a
     // recording error — skip the API call and return an empty result.
     if (namedFile.size < 1500) {

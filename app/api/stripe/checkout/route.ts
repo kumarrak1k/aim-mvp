@@ -2,6 +2,7 @@ import { auth, clerkClient } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { requireStripe, getStripePriceId, StripePlanId } from "@/app/lib/stripe";
 import { absoluteUrl } from "@/app/config/site";
+import { checkRateLimit } from "@/app/lib/rateLimit";
 
 const VALID_PLAN_IDS: StripePlanId[] = [
   "plus_monthly",
@@ -14,6 +15,11 @@ export async function POST(req: NextRequest) {
   const { userId } = await auth();
   if (!userId) {
     return NextResponse.json({ error: "Sign in to subscribe." }, { status: 401 });
+  }
+
+  const rl = await checkRateLimit(userId, "stripe-checkout", 20, 60);
+  if (!rl.allowed) {
+    return NextResponse.json({ error: "Too many requests. Please wait." }, { status: 429 });
   }
 
   let planId: string;

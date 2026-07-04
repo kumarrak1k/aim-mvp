@@ -1,5 +1,6 @@
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
+import { checkRateLimit } from "@/app/lib/rateLimit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -21,6 +22,11 @@ export async function POST(req: NextRequest) {
   const { userId } = await auth();
   if (!userId) {
     return NextResponse.json({ error: "Unauthorised." }, { status: 401 });
+  }
+
+  const rl = await checkRateLimit(userId, "change-password", 5, 60);
+  if (!rl.allowed) {
+    return NextResponse.json({ error: "Too many attempts. Please wait before trying again." }, { status: 429 });
   }
 
   const body = await req.json().catch(() => ({})) as { newPassword?: string };
@@ -68,7 +74,7 @@ export async function POST(req: NextRequest) {
     const msg =
       (error as { errors?: Array<{ longMessage?: string; message?: string }> })
         ?.errors?.[0]?.longMessage ??
-      (error instanceof Error ? error.message : "Failed to update password.");
+      "Failed to update password.";
     return NextResponse.json({ error: msg }, { status: 500 });
   }
 }

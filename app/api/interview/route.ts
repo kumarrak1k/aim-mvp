@@ -328,7 +328,7 @@ Generate the next best UK English interview question.
     } catch (error) {
       if (error instanceof OpenAIError) {
         console.error("INTERVIEW OPENAI ERROR:", error.status, error.detail);
-        return NextResponse.json({ error: error.message }, { status: error.status >= 500 ? 503 : error.status });
+        return NextResponse.json({ error: "AI service temporarily unavailable. Please try again." }, { status: error.status >= 500 ? 503 : error.status });
       }
       throw error;
     }

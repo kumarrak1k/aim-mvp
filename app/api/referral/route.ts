@@ -14,7 +14,7 @@ function generateCode(): string {
   return code;
 }
 
-export async function GET() {
+export async function POST() {
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "Unauthorised" }, { status: 401 });
 

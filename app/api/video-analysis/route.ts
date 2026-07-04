@@ -205,10 +205,7 @@ export async function POST(req: Request) {
   } catch (error) {
     return NextResponse.json(
       {
-        error:
-          error instanceof Error
-            ? error.message
-            : "Video analysis failed unexpectedly.",
+        error: "Video analysis failed unexpectedly.",
       },
       { status: 500 }
     );

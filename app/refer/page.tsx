@@ -19,7 +19,7 @@ export default function ReferPage() {
     if (!isLoaded) return;
     if (!isSignedIn) { router.replace("/for-candidates/sign-in"); return; }
 
-    fetch("/api/referral")
+    fetch("/api/referral", { method: "POST" })
       .then((r) => r.json())
       .then((d) => { setCode(d.code ?? ""); setUsedCount(d.usedCount ?? 0); })
       .finally(() => setLoading(false));

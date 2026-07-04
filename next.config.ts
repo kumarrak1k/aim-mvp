@@ -32,9 +32,7 @@ const securityHeaders = [
     value: "0",
   },
   {
-    // Report-only first so it can't break Clerk/Stripe/Sentry — review reports,
-    // then promote to an enforcing Content-Security-Policy.
-    key: "Content-Security-Policy-Report-Only",
+    key: "Content-Security-Policy",
     value: [
       "default-src 'self'",
       "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.clerk.accounts.dev https://*.clerk.com https://challenges.cloudflare.com https://js.stripe.com https://*.vercel-scripts.com https://va.vercel-scripts.com",

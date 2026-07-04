@@ -220,12 +220,7 @@ export async function GET(request: NextRequest) {
     console.error("QUESTION AUDIO GET ERROR:", error);
 
     return NextResponse.json(
-      {
-        error:
-          error instanceof Error
-            ? error.message
-            : "Something went wrong while generating interviewer voice.",
-      },
+      { error: "Something went wrong while generating interviewer voice." },
       { status: 500 }
     );
   }
@@ -288,12 +283,7 @@ export async function POST(request: NextRequest) {
     console.error("QUESTION AUDIO POST ERROR:", error);
 
     return NextResponse.json(
-      {
-        error:
-          error instanceof Error
-            ? error.message
-            : "Something went wrong while generating interviewer voice.",
-      },
+      { error: "Something went wrong while generating interviewer voice." },
       { status: 500 }
     );
   }

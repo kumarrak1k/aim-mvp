@@ -2,6 +2,7 @@ import { auth, clerkClient } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { requireStripe } from "@/app/lib/stripe";
 import { absoluteUrl } from "@/app/config/site";
+import { checkRateLimit } from "@/app/lib/rateLimit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -18,6 +19,11 @@ export async function POST() {
   const { userId } = await auth();
   if (!userId) {
     return NextResponse.json({ error: "Sign in required." }, { status: 401 });
+  }
+
+  const rl = await checkRateLimit(userId, "stripe-portal", 20, 60);
+  if (!rl.allowed) {
+    return NextResponse.json({ error: "Too many requests. Please wait." }, { status: 429 });
   }
 
   try {

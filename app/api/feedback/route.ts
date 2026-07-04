@@ -468,7 +468,7 @@ ${isTypedMode
     } catch (error) {
       if (error instanceof OpenAIError) {
         console.error("FEEDBACK OPENAI ERROR:", error.status, error.detail);
-        return NextResponse.json({ error: error.message }, { status: error.status >= 500 ? 503 : error.status });
+        return NextResponse.json({ error: "AI service temporarily unavailable. Please try again." }, { status: error.status >= 500 ? 503 : error.status });
       }
       throw error;
     }
