@@ -116,10 +116,12 @@ export function PublicShell({ children, currentPath }: PublicShellProps) {
           </nav>
         </div>
 
-        {/* Site-wide free-trial CTA */}
-        <div className="flex justify-center px-4 pb-3 pt-1">
-          <TrialBadge audience="candidate" />
-        </div>
+        {/* Site-wide free-trial CTA — suppressed on the universities page (B2B enquiry, not self-serve trial) */}
+        {currentPath !== "/universities" && (
+          <div className="flex justify-center px-4 pb-3 pt-1">
+            <TrialBadge audience="candidate" />
+          </div>
+        )}
       </header>
 
       {/* ── Content ── */}
