@@ -2,7 +2,7 @@ import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 /**
- * Global middleware (served as proxy.ts on Vercel — do not rename to middleware.ts).
+ * Next.js edge middleware — must be named middleware.ts at the project root.
  *
  * Superadmin accounts (privateMetadata.role === "superadmin") must NEVER
  * access candidate or corporate areas. They are redirected to /admin.
@@ -25,18 +25,14 @@ const isProtected = createRouteMatcher([
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
-  // ── Canonical host ──────────────────────────────────────────────────────
-  // Canonicalisation is handled at the Vercel platform level (www → apex 307),
-  // and siteConfig.url / NEXT_PUBLIC_SITE_URL are the bare apex. We deliberately
-  // do NOT add an apex → www redirect here: it would fight Vercel's www → apex
-  // and create an infinite redirect loop. Leave host canonicalisation to Vercel.
+  // Canonicalisation is handled at the Vercel platform level (www → apex 307).
+  // Do NOT add an apex → www redirect here — it fights Vercel's redirect and
+  // creates an infinite loop.
 
   const { userId, sessionClaims } = await auth();
 
   // ── Superadmin guard ────────────────────────────────────────────────────
-  // Superadmin accounts must ONLY access /admin pages. Any signed-in
-  // superadmin hitting any other page is redirected to /admin.
-  // Requires Clerk session token customisation — see comment at top of file.
+  // Superadmin accounts must ONLY access /admin pages.
   if (userId && !isAdminArea(req) && !isApiRoute(req)) {
     const role = (sessionClaims as { metadata?: { role?: string } } | null)
       ?.metadata?.role;
@@ -45,12 +41,12 @@ export default clerkMiddleware(async (auth, req) => {
     }
   }
 
-  // ── Admin area: require auth (but not from sign-in page itself) ─────────
+  // ── Admin area: require auth ────────────────────────────────────────────
   if (isAdminArea(req) && !isAdminSignIn(req)) {
     await auth.protect();
   }
 
-  // ── Candidate / corporate areas: require auth ───────────────────────────
+  // ── Protected candidate / corporate areas ───────────────────────────────
   if (isProtected(req)) {
     await auth.protect();
   }
