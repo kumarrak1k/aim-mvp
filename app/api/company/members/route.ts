@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../../lib/prisma";
 import { cleanStr } from "../../../lib/company";
 import { getPlan, isPlanActive } from "../../../lib/corporatePlan";
+import { checkRateLimit } from "../../../lib/rateLimit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -37,6 +38,11 @@ export async function POST(request: NextRequest) {
   try {
     const { userId } = await auth();
     if (!userId) return NextResponse.json({ error: "Unauthorised." }, { status: 401 });
+
+    const rl = await checkRateLimit(userId, "company-members-invite", 20, 3600);
+    if (!rl.allowed) {
+      return NextResponse.json({ error: "Too many requests. Please wait." }, { status: 429 });
+    }
 
     const admin = await prisma.companyMember.findFirst({
       where: { clerkUserId: userId, role: "admin" },

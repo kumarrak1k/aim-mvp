@@ -2,6 +2,7 @@ import { auth, clerkClient } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { siteConfig } from "@/app/config/site";
 import { sendAdminWelcomeEmail } from "@/app/lib/email";
+import { checkRateLimit } from "@/app/lib/rateLimit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -63,6 +64,11 @@ export async function POST(req: NextRequest) {
   const admin = await requireSuperadmin();
   if (!admin) {
     return NextResponse.json({ error: "Unauthorised." }, { status: 403 });
+  }
+
+  const rl = await checkRateLimit(admin.callerId, "admin-create-user", 20, 3600);
+  if (!rl.allowed) {
+    return NextResponse.json({ error: "Too many requests. Please wait." }, { status: 429 });
   }
 
   const body = await req.json().catch(() => ({})) as {

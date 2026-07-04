@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../../lib/prisma";
 import { assessmentCompleteSchema, parseJsonBody } from "../../../lib/validation";
+import { checkRateLimit, getClientIp } from "../../../lib/rateLimit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -28,8 +29,14 @@ function isValidTokenFormat(token: string): boolean {
   return uuidV4.test(token) || legacy.test(token);
 }
 
-export async function GET(_req: NextRequest, { params }: Params) {
+export async function GET(req: NextRequest, { params }: Params) {
   try {
+    const ip = getClientIp(req);
+    const rl = await checkRateLimit(ip, "assessment-token-get", 60, 60);
+    if (!rl.allowed) {
+      return NextResponse.json({ error: "Too many requests." }, { status: 429 });
+    }
+
     const { token } = await params;
 
     if (!isValidTokenFormat(token)) {

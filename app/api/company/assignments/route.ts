@@ -8,6 +8,7 @@ import {
   isPlanActive,
   CORPORATE_TRIAL_INVITE_CAP,
 } from "../../../lib/corporatePlan";
+import { checkRateLimit } from "../../../lib/rateLimit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -40,6 +41,11 @@ export async function POST(request: NextRequest) {
   try {
     const { userId } = await auth();
     if (!userId) return NextResponse.json({ error: "Unauthorised." }, { status: 401 });
+
+    const rl = await checkRateLimit(userId, "company-assignments", 30, 3600);
+    if (!rl.allowed) {
+      return NextResponse.json({ error: "Too many requests. Please wait." }, { status: 429 });
+    }
 
     const member = await prisma.companyMember.findFirst({
       where: { clerkUserId: userId, role: { in: ["admin", "recruiter"] } },
