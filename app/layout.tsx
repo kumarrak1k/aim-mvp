@@ -221,7 +221,7 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en-GB">
-        <body>
+        <body className="pt-8">
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{
