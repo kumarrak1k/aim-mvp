@@ -126,7 +126,7 @@ export function AudienceShell({
 
       {/* Header */}
       <header className="relative z-50">
-        <div className="relative mx-auto flex w-full max-w-7xl items-center px-4 pt-1.5 pb-6 sm:px-6 sm:pt-2 sm:pb-8 lg:px-10">
+        <div className="relative mx-auto grid w-full max-w-7xl grid-cols-[auto_minmax(0,1fr)_auto] items-center px-4 pt-1.5 pb-6 sm:px-6 sm:pt-2 sm:pb-8 lg:px-10">
           {/* Logo + audience badge */}
           <Link
             href={audience === "candidate" ? "/for-candidates" : "/for-business"}
@@ -134,22 +134,21 @@ export function AudienceShell({
           >
             <SiteLogo href="" size="md" showText />
             <span
-              className={`hidden rounded-full border px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] sm:inline-block xl:hidden ${theme.accentBorder} bg-white/[0.04] ${theme.accentTextStrong}`}
+              className={`hidden rounded-full border px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] sm:inline-block lg:hidden ${theme.accentBorder} bg-white/[0.04] ${theme.accentTextStrong}`}
             >
               {theme.eyebrow}
             </span>
           </Link>
 
-          {/* Desktop nav — absolutely centred so it never drifts. xl+ only: on
-              tablets the absolute pill would overlap the sign-in / CTA buttons. */}
-          <nav aria-label="Primary" className="pointer-events-none absolute inset-x-0 hidden justify-center xl:flex">
-            <div className="pointer-events-auto flex items-center gap-0.5 rounded-full border border-white/[0.09] bg-white/[0.04] p-1.5">
+          {/* Desktop nav — centred in the grid column, lg+ (grid prevents overlap). */}
+          <nav aria-label="Primary" className="hidden min-w-0 justify-center lg:flex">
+            <div className="flex items-center gap-0.5 rounded-full border border-white/[0.09] bg-white/[0.04] p-1.5">
               {theme.navItems.map((item) => {
                 const active = currentPath === item.href;
                 return (
                   <Link key={item.href} href={item.href}>
                     <span
-                      className={`block whitespace-nowrap rounded-full px-3 py-2 text-[13px] font-bold transition xl:px-4 xl:text-[13.5px] ${
+                      className={`block whitespace-nowrap rounded-full px-3 py-2 text-[13px] font-bold transition lg:px-4 lg:text-[13.5px] ${
                         active
                           ? "bg-white/[0.12] text-white shadow-sm"
                           : "text-gray-400 hover:bg-white/[0.07] hover:text-white"
@@ -166,7 +165,7 @@ export function AudienceShell({
           {/* Right actions — audience-only, no cross-audience switch in the
               header. Switching audiences is intentionally a deliberate action,
               done via "/" or the small footer link. */}
-          <div className="relative z-10 ml-auto flex shrink-0 items-center gap-2">
+          <div className="relative z-10 flex shrink-0 items-center gap-2">
             <Link
               href={theme.signInPath}
               className="hidden whitespace-nowrap rounded-full border border-white/[0.1] bg-white/[0.04] px-4 py-2.5 text-[13px] font-bold text-white/80 transition hover:bg-white/[0.08] hover:text-white sm:block"
@@ -176,15 +175,15 @@ export function AudienceShell({
 
             <Link
               href={theme.signUpPath}
-              className={`whitespace-nowrap rounded-full bg-gradient-to-r ${theme.primaryGradient} px-4 py-2.5 text-[13px] font-black text-white shadow-lg ${theme.primaryShadow} transition hover:scale-[1.03] sm:px-5 xl:px-6`}
+              className={`whitespace-nowrap rounded-full bg-gradient-to-r ${theme.primaryGradient} px-4 py-2.5 text-[13px] font-black text-white shadow-lg ${theme.primaryShadow} transition hover:scale-[1.03] sm:px-5 lg:px-6`}
             >
               {audience === "candidate" ? "Start free" : "Get started"}
             </Link>
           </div>
         </div>
 
-        {/* Tablet/mobile compact nav row — audience-only (shown below xl) */}
-        <div className="px-4 py-2 sm:px-6 xl:hidden">
+        {/* Mobile compact nav row — audience-only (shown below lg) */}
+        <div className="px-4 py-2 sm:px-6 lg:hidden">
           <nav className="mx-auto flex max-w-7xl gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {theme.navItems.map((item) => {
               const active = currentPath === item.href;
@@ -217,9 +216,9 @@ export function AudienceShell({
           </nav>
         </div>
 
-        {/* Desktop resource links — secondary strip for both audiences (xl+) */}
+        {/* Desktop resource links — secondary strip for both audiences (lg+) */}
         {(audience === "candidate" || audience === "business") && (
-          <div className="hidden px-4 py-1.5 xl:block">
+          <div className="hidden px-4 py-1.5 lg:block">
             <nav className="mx-auto flex max-w-7xl items-center justify-center gap-6">
               {(audience === "candidate" ? CANDIDATE_RESOURCE_LINKS : BUSINESS_RESOURCE_LINKS).map((item) => (
                 <Link
