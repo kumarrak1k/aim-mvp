@@ -983,8 +983,13 @@ export default function PracticeSessionPage() {
         setTranscript(cleaned || rawTranscript);
         setAnswer(cleaned || rawTranscript);
         rawAnswerTranscriptRef.current = cleaned || rawTranscript;
-      } catch {
+      } catch (err) {
+        const isModerated =
+          err instanceof Error && err.message.includes("can't be processed");
         setAnswer(rawTranscript);
+        // On moderation failure clear the ref so getFeedback won't re-send
+        // the flagged content; the user can edit the visible transcript first.
+        rawAnswerTranscriptRef.current = isModerated ? "" : rawTranscript;
       } finally {
         setCleaningTranscript(false);
       }
@@ -999,7 +1004,7 @@ export default function PracticeSessionPage() {
         setWhisperEnhancing(true);
 
         fetchWhisperFillerAnalysis(audioBlob)
-          .then((whisperResult) => {
+          .then(async (whisperResult) => {
             if (!whisperResult || !whisperResult.transcript) return;
 
             // Guard: if the user has moved on to the next question (or cleared
@@ -1016,20 +1021,32 @@ export default function PracticeSessionPage() {
             }, 0);
 
             if (whisperResult.fillerCount > 0 && whisperResult.fillerCount > currentFillerCount) {
-              // Whisper found more fillers than the current transcript.
-              // Use Whisper's transcript as the new displayed answer so users
-              // can see their actual filler usage inline.
-              const whisperTranscript = whisperResult.transcript;
-              setTranscript(whisperTranscript);
-              setAnswer(whisperTranscript);
-              rawAnswerTranscriptRef.current = whisperTranscript;
-
-              // Re-score with the Whisper transcript so filler score is accurate.
-              void runVoiceAnalysis(
-                whisperTranscript,
-                durationSeconds,
-                audioMetrics
+              // Strip any question audio that Whisper may have picked up from
+              // the speaker before using the transcript as the answer.
+              const strippedWhisper = stripQuestionLeakageFromTranscript(
+                whisperResult.transcript,
+                activeQuestionRef.current
               );
+              if (!strippedWhisper) return;
+
+              // Run through the same moderation + cleaning pipeline as the
+              // Web Speech transcript so hallucinated content can't bypass it.
+              try {
+                const cleanedWhisper = await cleanTranscriptApi(strippedWhisper);
+                const whisperTranscript = cleanedWhisper || strippedWhisper;
+                setTranscript(whisperTranscript);
+                setAnswer(whisperTranscript);
+                rawAnswerTranscriptRef.current = whisperTranscript;
+
+                // Re-score with the Whisper transcript so filler score is accurate.
+                void runVoiceAnalysis(
+                  whisperTranscript,
+                  durationSeconds,
+                  audioMetrics
+                );
+              } catch {
+                // Whisper transcript failed moderation — keep existing answer.
+              }
             }
           })
           .catch(() => {
