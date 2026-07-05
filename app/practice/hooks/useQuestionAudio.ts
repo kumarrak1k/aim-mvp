@@ -29,6 +29,8 @@ const defaultSpeakerPreference: SpeakerPreference = {
 // was tight enough to race with longer questions on a loaded OpenAI endpoint.
 const AUDIO_FETCH_TIMEOUT_MS = 25000;
 const PLAYBACK_START_TIMEOUT_MS = 5000;
+// Brief pause before playback so pre-fetched questions don't fire the instant the user clicks.
+const PLAYBACK_PRE_DELAY_MS = 800;
 
 const cleanQuestionText = (text: string) => text.replace(/\s+/g, " ").trim();
 
@@ -940,6 +942,10 @@ export function useQuestionAudio({
         } catch {
           // Some browsers do not allow seeking before metadata loads.
         }
+
+        await new Promise<void>((resolve) =>
+          window.setTimeout(resolve, PLAYBACK_PRE_DELAY_MS)
+        );
 
         const playPromise = audio.play();
         const started = await waitForPlaybackStart(audio, playPromise);

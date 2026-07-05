@@ -45,9 +45,9 @@ export default clerkMiddleware(async (auth, req) => {
     }
   }
 
-  // ── Admin area: require auth ────────────────────────────────────────────
+  // ── Admin area: require auth + MFA step-up ─────────────────────────────
   if (isAdminArea(req) && !isAdminSignIn(req)) {
-    await auth.protect();
+    await auth.protect({ reverification: { level: "second_factor", afterMinutes: 10 } });
   }
 
   // ── Protected candidate / corporate areas ───────────────────────────────
