@@ -65,20 +65,25 @@ export async function POST(req: Request) {
 
     const body = await req.json() as Partial<CandidateProfile>;
 
-    const validationError = validateTotalLength(body);
-    if (validationError) {
-      return Response.json({ error: validationError }, { status: 400 });
-    }
-
+    // Trim individual fields first so the total-length check operates on the
+    // values that will actually be stored, not the raw (potentially longer) input.
     const trimWarnings: string[] = [];
     if (typeof body.cvText === "string" && body.cvText.length > MAX_CV_CHARS) {
+      body.cvText = body.cvText.slice(0, MAX_CV_CHARS);
       trimWarnings.push(`CV was automatically trimmed to ${MAX_CV_CHARS.toLocaleString()} characters.`);
     }
     if (typeof body.roleSpec === "string" && body.roleSpec.length > MAX_ROLE_SPEC_CHARS) {
+      body.roleSpec = body.roleSpec.slice(0, MAX_ROLE_SPEC_CHARS);
       trimWarnings.push(`Role spec was automatically trimmed to ${MAX_ROLE_SPEC_CHARS.toLocaleString()} characters.`);
     }
     if (typeof body.interviewGoals === "string" && body.interviewGoals.length > MAX_GOALS_CHARS) {
+      body.interviewGoals = body.interviewGoals.slice(0, MAX_GOALS_CHARS);
       trimWarnings.push(`Interview goals were automatically trimmed to ${MAX_GOALS_CHARS.toLocaleString()} characters.`);
+    }
+
+    const validationError = validateTotalLength(body);
+    if (validationError) {
+      return Response.json({ error: validationError }, { status: 400 });
     }
 
     const profile = await upsertCandidateProfile(userId, body);
