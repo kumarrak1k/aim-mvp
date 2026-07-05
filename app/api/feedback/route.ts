@@ -1,8 +1,9 @@
-import { auth, clerkClient } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { checkRateLimit } from "@/app/lib/rateLimit";
 import { callOpenAIChat, OpenAIError } from "@/app/lib/openai-client";
 import { moderateText } from "@/app/lib/moderation";
+import { getCandidateProfile, type CandidateProfile } from "@/app/lib/candidateProfile";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -17,49 +18,6 @@ type VoiceAnalysisLike = {
   };
 };
 
-type CandidateProfile = {
-  cvText: string;
-  roleSpec: string;
-  interviewGoals: string;
-  cvFileName: string;
-  roleSpecFileName: string;
-  updatedAt: string;
-};
-
-const EMPTY_PROFILE: CandidateProfile = {
-  cvText: "",
-  roleSpec: "",
-  interviewGoals: "",
-  cvFileName: "",
-  roleSpecFileName: "",
-  updatedAt: "",
-};
-
-function cleanText(value: unknown) {
-  if (typeof value !== "string") return "";
-  return value.replace(/\r\n/g, "\n").trim();
-}
-
-function extractCandidateProfile(metadata: unknown): CandidateProfile {
-  const data = metadata as {
-    candidateProfile?: Partial<CandidateProfile>;
-  };
-
-  const candidateProfile = data?.candidateProfile;
-
-  if (!candidateProfile || typeof candidateProfile !== "object") {
-    return EMPTY_PROFILE;
-  }
-
-  return {
-    cvText: cleanText(candidateProfile.cvText),
-    roleSpec: cleanText(candidateProfile.roleSpec),
-    interviewGoals: cleanText(candidateProfile.interviewGoals),
-    cvFileName: cleanText(candidateProfile.cvFileName),
-    roleSpecFileName: cleanText(candidateProfile.roleSpecFileName),
-    updatedAt: cleanText(candidateProfile.updatedAt),
-  };
-}
 
 type FeedbackTemplateContext = {
   customInstructions?: string;
@@ -129,23 +87,6 @@ ${profile.updatedAt || "Unknown."}
 `.trim();
 }
 
-async function getSignedInCandidateProfile() {
-  try {
-    const { userId } = await auth();
-
-    if (!userId) {
-      return EMPTY_PROFILE;
-    }
-
-    const client = await clerkClient();
-    const user = await client.users.getUser(userId);
-
-    return extractCandidateProfile(user.privateMetadata);
-  } catch (error) {
-    console.error("FEEDBACK PROFILE LOAD WARNING:", error);
-    return EMPTY_PROFILE;
-  }
-}
 
 function getWords(text: string) {
   return text
@@ -264,7 +205,7 @@ export async function POST(req: NextRequest) {
     const isAssessment = Boolean(assessmentMode);
     const savedProfileContext = isAssessment
       ? buildAssessmentContextBlock(templateContext)
-      : buildSavedProfileContext(await getSignedInCandidateProfile());
+      : buildSavedProfileContext(await getCandidateProfile(userId));
 
     const suppliedVoiceAnalysis = voiceAnalysis as VoiceAnalysisLike | null;
 
