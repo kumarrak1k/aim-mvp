@@ -232,7 +232,7 @@ export default function HomePage() {
           </div>
           <p className="mt-4 text-xs text-gray-500">
             Every new account starts with a{" "}
-            <span className="font-bold text-gray-300">7-day free trial</span> —
+            <span className="font-bold text-gray-300">3-day free trial</span> —
             unlimited practice with voice &amp; camera coaching. No payment details required.
             After it ends, keep practising on the free tier (3 sessions) or upgrade anytime.
           </p>
@@ -287,7 +287,7 @@ export default function HomePage() {
                 See plans &amp; free trial →
               </span>
               <p className="mt-3 text-xs text-gray-500">
-                Free 7-day trial — no payment details required. Assessment centres
+                Free 3-day trial — no payment details required. Assessment centres
                 are on the Professional plan.
               </p>
             </div>

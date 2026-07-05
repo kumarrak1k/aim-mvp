@@ -39,7 +39,8 @@ CANDIDATE PLANS (individual candidates):
 - Free: 5 practice sessions, typed answers only, no voice/camera, no TTS audio, no career docs, no assessment centre.
 - Plus: £19/month or £169/year — unlimited sessions, voice + camera, TTS audio, 7-day improvement plans, session history.
 - Professional: £29/month or £249/year — everything in Plus, plus Assessment Centre and all Career Docs (CV Enhancer, Personal Statement, Cover Letter).
-- 7-day Plus trial on sign-up — no card required. Gives full Plus features to try. Trial grants Plus, NOT Professional; assessment centre and career docs remain behind Professional.
+- 3-day Plus trial on sign-up — no card required. Gives full Plus features to try. Trial grants Plus, NOT Professional; assessment centre and career docs remain behind Professional.
+- Paid plans carry a 14-day money-back guarantee — email support via /contact to request a refund, no questions asked.
 
 CORPORATE FEATURES (for employers / HR teams):
 - Build custom interview or assessment centre templates.
@@ -67,7 +68,7 @@ COMMON ISSUES:
 - "I can't access the Assessment Centre" — this requires a Professional plan. Upgrade at /pricing.
 - "I can't access CV Enhancer or Career Docs" — these require a Professional plan. Upgrade at /pricing.
 - "I can't sign in / forgot password" — use the "Forgot password" link on the sign-in page, or check you're using the email you registered with.
-- "My trial has expired or my plan changed" — trials are 7 days (candidates) or 14 days (corporate). Upgrade or renew at /account/plan.
+- "My trial has expired or my plan changed" — trials are 3 days (candidates) or 14 days (corporate). Upgrade or renew at /account/plan.
 - "I'm a business / employer and want to assess candidates" — go to /for-business for corporate plans and trials.
 
 TONE: Friendly, concise, plain English. Never invent features or prices not listed above. If unsure, direct the user to /contact.`;

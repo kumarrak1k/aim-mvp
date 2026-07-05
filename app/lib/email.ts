@@ -243,7 +243,7 @@ const NURTURE_SUBJECTS: Record<NurtureType, string> = {
   day14_reengage: "Got an interview coming up?",
   day21_nudge:    "Still here — want to run a quick session?",
   day30_winback:  "Last chance — your free practice sessions are waiting",
-  trial_midway:   "A few days left on your Plus trial",
+  trial_midway:   "Your Plus trial ends soon",
   trial_ended:    "Your free trial has ended",
 };
 
@@ -478,10 +478,10 @@ function renderNurtureHtml(type: NurtureType, unsubUrl: string): string {
 
     trial_midway: `
       <h2 style="margin:0 0 16px;font-size:22px;font-weight:800;color:#1a1426;">
-        A few days left on your Plus trial.
+        Your Plus trial ends soon.
       </h2>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#2a2238;">
-        You're partway through your 7-day Plus trial — make the most of it before
+        You're partway through your 3-day Plus trial — make the most of it before
         it ends:
       </p>
       <div style="background:#f7f5fb;border-left:3px solid #8c5cff;border-radius:0 12px 12px 0;padding:18px 22px;margin:0 0 24px;">
@@ -514,7 +514,7 @@ function renderNurtureHtml(type: NurtureType, unsubUrl: string): string {
         Your free trial has ended.
       </h2>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#2a2238;">
-        Your 7-day Plus trial is now over and your account has moved to
+        Your 3-day Plus trial is now over and your account has moved to
         the <strong>Free plan</strong> — that's 3 keyboard-only practice sessions.
       </p>
       <div style="background:#f7f5fb;border-left:3px solid #8c5cff;border-radius:0 12px 12px 0;padding:18px 22px;margin:0 0 24px;">
@@ -574,8 +574,8 @@ function renderNurturePlainText(type: NurtureType): string {
     day14_reengage: `Got an interview coming up? Run a 10-day sprint: competency, strength, and motivation questions, then a full mock on day 10.\n\nStart here: ${practiceUrl}`,
     day21_nudge:    `Still here — one 15-minute session will move you forward. Pick your role, answer 5 questions, get scored.\n\n${practiceUrl}`,
     day30_winback:  `Your practice sessions are still here. Come back whenever you're ready.\n\n${practiceUrl}`,
-    trial_midway:   `A few days left on your Plus trial. Make the most of unlimited voice & camera practice before it ends.\n\nJump back in: ${practiceUrl}\nSee plans: ${upgradeUrl}`,
-    trial_ended:    `Your 7-day Plus trial has ended — your account is now on the Free plan (3 keyboard-only sessions).\n\nUpgrade to Plus to keep unlimited voice & camera practice, or Professional for assessment centres and career docs: ${upgradeUrl}`,
+    trial_midway:   `Your Plus trial ends soon. Make the most of unlimited voice & camera practice before it ends.\n\nJump back in: ${practiceUrl}\nSee plans: ${upgradeUrl}`,
+    trial_ended:    `Your 3-day Plus trial has ended — your account is now on the Free plan (3 keyboard-only sessions).\n\nUpgrade to Plus to keep unlimited voice & camera practice, or Professional for assessment centres and career docs: ${upgradeUrl}`,
   };
   return texts[type] + `\n\n— AI Career Mentor\n${siteConfig.url}`;
 }

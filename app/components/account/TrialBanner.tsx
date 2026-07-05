@@ -7,7 +7,7 @@
  * Four states, driven by GET /api/subscription:
  *   - paid              → render nothing
  *   - active trial      → countdown + "upgrade to keep access"
- *   - eligible (free, never trialed) → "start your free 7-day trial"
+ *   - eligible (free, never trialed) → "start your free 3-day trial"
  *   - trial used (free) → gentle, dismissible "upgrade" nudge
  */
 
@@ -170,7 +170,7 @@ export function TrialBanner() {
           <span className="text-[13px] font-semibold text-gray-100">
             <span aria-hidden>🎁 </span>
             Unlock voice &amp; camera coaching and unlimited practice —{" "}
-            <strong className="font-black">free for 7 days, no payment details</strong>.
+            <strong className="font-black">free for 3 days, no payment details</strong>.
           </span>
           <button
             onClick={startTrial}

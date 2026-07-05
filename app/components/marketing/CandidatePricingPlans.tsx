@@ -6,18 +6,18 @@ import { useRouter } from "next/navigation";
 
 export type PricingCurrency = "GBP" | "USD" | "EUR";
 
-type PriceSet = { monthly: string; annual: string; annualMonthly: string };
+type PriceSet = { monthly: string; annual: string; annualMonthly: string; saving: string };
 
 const PLUS: Record<PricingCurrency, PriceSet> = {
-  GBP: { monthly: "£19",  annual: "£169",  annualMonthly: "£14.08" },
-  USD: { monthly: "$25",  annual: "$209",  annualMonthly: "$17.42" },
-  EUR: { monthly: "€22",  annual: "€189",  annualMonthly: "€15.75" },
+  GBP: { monthly: "£19",  annual: "£169",  annualMonthly: "£14.08", saving: "26%" },
+  USD: { monthly: "$25",  annual: "$209",  annualMonthly: "$17.42", saving: "30%" },
+  EUR: { monthly: "€22",  annual: "€189",  annualMonthly: "€15.75", saving: "28%" },
 };
 
 const PROFESSIONAL: Record<PricingCurrency, PriceSet> = {
-  GBP: { monthly: "£29",  annual: "£249",  annualMonthly: "£20.75" },
-  USD: { monthly: "$37",  annual: "$299",  annualMonthly: "$24.92" },
-  EUR: { monthly: "€32",  annual: "€279",  annualMonthly: "€23.25" },
+  GBP: { monthly: "£29",  annual: "£249",  annualMonthly: "£20.75", saving: "28%" },
+  USD: { monthly: "$37",  annual: "$299",  annualMonthly: "$24.92", saving: "33%" },
+  EUR: { monthly: "€32",  annual: "€279",  annualMonthly: "€23.25", saving: "27%" },
 };
 
 type StripePlanId =
@@ -67,6 +67,7 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
       monthlyPrice: "Free",
       annualPrice: null as string | null,
       annualMonthly: null as string | null,
+      annualSaving: null as string | null,
       period: null as string | null,
       description: "Always free — no payment details, no time limit. Keyboard-based interview practice with AI-tailored questions and written feedback, up to 3 saved practice sessions.",
       features: [
@@ -86,6 +87,7 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
       monthlyPrice: pro.monthly,
       annualPrice: pro.annual,
       annualMonthly: pro.annualMonthly,
+      annualSaving: pro.saving,
       period: "/month",
       description:
         "For candidates actively preparing — unlimited practice with full feedback, voice interview and camera analysis.",
@@ -97,7 +99,7 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
         { text: "Model answers per question" },
         { text: "Progress history saved and tracked" },
       ] as PlanFeature[],
-      cta: "Click for 7-day free trial · No payment details required",
+      cta: "Click for 3-day free trial · No payment details required",
       stripePlanMonthly: "plus_monthly" as StripePlanId,
       stripePlanAnnual: "plus_annual" as StripePlanId,
       highlight: true,
@@ -107,6 +109,7 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
       monthlyPrice: adv.monthly,
       annualPrice: adv.annual,
       annualMonthly: adv.annualMonthly,
+      annualSaving: adv.saving,
       period: "/month",
       description:
         "For intensive preparation — build fully custom sessions, run mock assessment centres, and track performance with advanced analytics.",
@@ -221,6 +224,15 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
                   {annualMonthlyEquiv}/month — charged as a single annual payment
                 </p>
               )}
+              {!annual && plan.annualPrice && (
+                <p className="mt-1 text-xs text-gray-500">
+                  or{" "}
+                  <span className="font-bold text-gray-300">{plan.annualPrice}/year</span>
+                  {plan.annualSaving && (
+                    <span className="text-emerald-300"> — save {plan.annualSaving}</span>
+                  )}
+                </p>
+              )}
               <p className="mt-4 min-h-[60px] text-sm leading-6 text-gray-400">
                 {plan.description}
               </p>
@@ -267,6 +279,11 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
                   {plan.cta}
                 </button>
               )}
+              {isPaid && (
+                <p className="mt-3 text-center text-[11px] font-semibold text-emerald-300/90">
+                  14-day money-back guarantee — no questions asked
+                </p>
+              )}
             </div>
           );
         })}
@@ -304,7 +321,8 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
         Paid plans are recurring subscriptions that renew automatically
         (monthly or annually) at the price shown until you cancel. You can
         cancel any time from your account — you keep access until the end of the
-        period you&rsquo;ve paid for. The 7-day free trial requires no payment details and
+        period you&rsquo;ve paid for. Every paid plan comes with a 14-day
+        money-back guarantee. The 3-day free trial requires no payment details and
         never auto-charges.
       </p>
     </>

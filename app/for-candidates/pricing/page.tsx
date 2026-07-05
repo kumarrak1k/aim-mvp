@@ -13,7 +13,7 @@ export const metadata: Metadata = createPageMetadata({
   path: "/for-candidates/pricing",
   title: "Candidate Pricing",
   description:
-    "Transparent candidate pricing for AI interview practice and assessment centre coaching. Every account starts with a 7-day free trial — no payment details required. Annual plans save up to 28%.",
+    "Transparent candidate pricing for AI interview practice and assessment centre coaching. Every account starts with a 3-day free trial — no payment details required. Annual plans save up to 28%.",
   keywords: [
     "AI interview coach pricing",
     "assessment centre pricing",
@@ -39,7 +39,7 @@ const faqs = [
   {
     question: "Is there a free trial?",
     answer:
-      "Yes. Every new account starts with a 7-day free trial — unlimited practice with voice and camera coaching, no payment details required. (Mock assessment centres and career documents are on the Professional plan.) When the trial ends you move to the Free plan automatically (no charge), and you can upgrade any time.",
+      "Yes. Every new account starts with a 3-day free trial — unlimited practice with voice and camera coaching, no payment details required. (Mock assessment centres and career documents are on the Professional plan.) When the trial ends you move to the Free plan automatically (no charge), and you can upgrade any time.",
   },
   {
     question: "Can I switch between monthly and annual billing?",
@@ -49,7 +49,7 @@ const faqs = [
   {
     question: "What happens when my trial ends, or I reach the free limit?",
     answer:
-      "After your 7-day trial you move to the Free plan, which includes 3 keyboard-only practice sessions. Once those are used you can upgrade to Plus for unlimited practice with voice and camera, or Professional to add mock assessment centres.",
+      "After your 3-day trial you move to the Free plan, which includes 3 keyboard-only practice sessions. Once those are used you can upgrade to Plus for unlimited practice with voice and camera, or Professional to add mock assessment centres.",
   },
   {
     question: "Does the Professional plan include assessment centre practice?",
@@ -64,7 +64,7 @@ const faqs = [
   {
     question: "Can I cancel at any time?",
     answer:
-      "Yes. Monthly plans can be cancelled at any time with no penalty. Annual plans are charged for the full year upfront — contact support if you need to discuss early cancellation.",
+      "Yes. Monthly plans can be cancelled at any time with no penalty. Annual plans are charged for the full year upfront — contact support if you need to discuss early cancellation. Every paid plan also comes with a 14-day money-back guarantee, no questions asked.",
   },
   {
     question: "Is my data deleted when I cancel?",
@@ -98,7 +98,7 @@ export default async function CandidatePricingPage() {
         </p>
         <p className="mx-auto mt-6 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-2.5 text-sm font-black text-white shadow-lg shadow-purple-900/40">
           <span aria-hidden>✨</span>
-          Every new account starts with a 7-day free trial — no payment details required
+          Every new account starts with a 3-day free trial — no payment details required
         </p>
       </section>
 

@@ -3,18 +3,23 @@ import { NextResponse } from "next/server";
 import { getAccountType } from "@/app/lib/accountType";
 import { startCandidateTrialIfEligible } from "@/app/lib/candidatePlan";
 import { enqueueTrialEmails } from "@/app/lib/trialEmails";
-import { claimTrialEligibility, releaseTrialEligibility } from "@/app/lib/trialEligibility";
+import {
+  checkTrialIpAllowance,
+  claimTrialEligibility,
+  clientIpFromHeaders,
+  releaseTrialEligibility,
+} from "@/app/lib/trialEligibility";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 /**
  * POST /api/trial/start — lets an existing free candidate begin their one-time
- * 7-day full-access trial (the auto-start at sign-up only fires for brand-new
- * accounts). Idempotent: returns started=false if a trial was already used or
- * the user is already paying.
+ * free trial (the auto-start at sign-up only fires for brand-new accounts).
+ * Idempotent: returns started=false if a trial was already used or the user is
+ * already paying.
  */
-export async function POST() {
+export async function POST(req: Request) {
   const { userId } = await auth();
   if (!userId) {
     return NextResponse.json({ error: "Authentication required." }, { status: 401 });
@@ -50,6 +55,20 @@ export async function POST() {
       return NextResponse.json(
         { started: false, reason: eligibility.reason, message },
         { status: 409 }
+      );
+    }
+
+    // Cap trial starts per source IP (stops cycling brand-new mailboxes).
+    const ipAllowed = await checkTrialIpAllowance(clientIpFromHeaders(req.headers));
+    if (!ipAllowed) {
+      await releaseTrialEligibility(userId, email);
+      return NextResponse.json(
+        {
+          started: false,
+          reason: "ip_limited",
+          message: "Too many free trials have been started from your network today. Please try again tomorrow.",
+        },
+        { status: 429 }
       );
     }
 

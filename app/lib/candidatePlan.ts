@@ -4,10 +4,10 @@
  *
  * Every feature gate (unlimited sessions, voice/camera, assessment centres,
  * career docs, advanced analytics) MUST route through resolveCandidatePlan()
- * so the 7-day reverse trial is honoured everywhere consistently.
+ * so the reverse trial is honoured everywhere consistently.
  *
  * ── The reverse trial ──────────────────────────────────────────────────────
- * New candidates auto-start a 7-day trial at sign-up (no card). During the
+ * New candidates auto-start a 3-day trial at sign-up (no card). During the
  * trial the effective plan is "plus" — unlimited practice with voice + camera
  * coaching, but NOT the Professional-only features (assessment centres, career
  * docs, advanced analytics). When the trial ends the user silently drops to the
@@ -27,7 +27,7 @@
 import { clerkClient } from "@clerk/nextjs/server";
 
 /** Length of the candidate reverse trial, in days. */
-export const TRIAL_DURATION_DAYS = 7;
+export const TRIAL_DURATION_DAYS = 3;
 
 /**
  * Fair-usage caps that apply ONLY during an active free trial. The trial grants
@@ -215,7 +215,7 @@ export async function resolveCandidatePlanReliable(
 }
 
 /**
- * Start the 7-day reverse trial for a candidate, if they are eligible.
+ * Start the reverse trial for a candidate, if they are eligible.
  *
  * Idempotent and safe to call repeatedly:
  *   - never for superadmin accounts

@@ -236,7 +236,7 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
     if (!isLoaded) return "Checking your usage...";
 
     if (!isSignedIn) {
-      return "Sign in to save your progress and start your 7-day free trial.";
+      return "Sign in to save your progress and start your 3-day free trial.";
     }
 
     if (!usageLoaded) {

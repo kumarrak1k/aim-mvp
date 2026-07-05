@@ -7,7 +7,12 @@ import {
   type AccountType,
 } from "@/app/lib/accountType";
 import { startCandidateTrialIfEligible } from "@/app/lib/candidatePlan";
-import { claimTrialEligibility, releaseTrialEligibility } from "@/app/lib/trialEligibility";
+import {
+  checkTrialIpAllowance,
+  claimTrialEligibility,
+  clientIpFromHeaders,
+  releaseTrialEligibility,
+} from "@/app/lib/trialEligibility";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -78,8 +83,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ accountType: "superadmin" });
     }
 
-    // Auto-start the 7-day reverse trial for new candidates — but only for a
-    // genuine, not-already-trialed email (blocks disposable + plus-tag farming).
+    // Auto-start the reverse trial for new candidates — but only for a
+    // genuine, not-already-trialed email (blocks disposable + plus-tag farming)
+    // and within the per-IP daily cap (blocks cycling brand-new mailboxes).
     let trialStarted = false;
     if (result.accountType === "candidate") {
       let trialEmail = "";
@@ -89,11 +95,20 @@ export async function POST(request: NextRequest) {
         trialEmail = user.emailAddresses[0]?.emailAddress ?? "";
         const eligibility = await claimTrialEligibility(userId, trialEmail);
         if (eligibility.eligible) {
-          const trial = await startCandidateTrialIfEligible(userId);
-          trialStarted = trial.started;
-          // claimTrialEligibility burns the email's one-time slot up-front. If
-          // the trial didn't actually start, release it so the slot isn't lost.
-          if (!trial.started) await releaseTrialEligibility(userId, trialEmail);
+          const ipAllowed = await checkTrialIpAllowance(
+            clientIpFromHeaders(request.headers)
+          );
+          if (!ipAllowed) {
+            // Too many trials from this network today — sign-up continues on
+            // the Free plan; the one-time email slot is released for later.
+            await releaseTrialEligibility(userId, trialEmail);
+          } else {
+            const trial = await startCandidateTrialIfEligible(userId);
+            trialStarted = trial.started;
+            // claimTrialEligibility burns the email's one-time slot up-front. If
+            // the trial didn't actually start, release it so the slot isn't lost.
+            if (!trial.started) await releaseTrialEligibility(userId, trialEmail);
+          }
         }
       } catch (err) {
         // Non-fatal: a failed trial grant must not block sign-up completion.
