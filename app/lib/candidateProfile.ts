@@ -156,9 +156,9 @@ async function migrateFromClerk(clerkUserId: string): Promise<CandidateProfile> 
     if (!cp || typeof cp !== "object") return EMPTY_PROFILE;
 
     return {
-      cvText: cleanText(cp.cvText).slice(0, 3500),
-      roleSpec: cleanText(cp.roleSpec).slice(0, 2500),
-      interviewGoals: cleanText(cp.interviewGoals).slice(0, 900),
+      cvText: cleanText(cp.cvText).slice(0, 15000),
+      roleSpec: cleanText(cp.roleSpec).slice(0, 8000),
+      interviewGoals: cleanText(cp.interviewGoals).slice(0, 2000),
       cvFileName: cleanText(cp.cvFileName).slice(0, 180),
       roleSpecFileName: cleanText(cp.roleSpecFileName).slice(0, 180),
       preferredPracticeMode: cleanMode(cp.preferredPracticeMode, "typed"),
@@ -228,9 +228,9 @@ export async function upsertCandidateProfile(
   const current = await getCandidateProfile(clerkUserId);
 
   const next = {
-    cvText: typeof updates.cvText === "string" ? cleanText(updates.cvText).slice(0, 3500) : current.cvText,
-    roleSpec: typeof updates.roleSpec === "string" ? cleanText(updates.roleSpec).slice(0, 2500) : current.roleSpec,
-    interviewGoals: typeof updates.interviewGoals === "string" ? cleanText(updates.interviewGoals).slice(0, 900) : current.interviewGoals,
+    cvText: typeof updates.cvText === "string" ? cleanText(updates.cvText).slice(0, 15000) : current.cvText,
+    roleSpec: typeof updates.roleSpec === "string" ? cleanText(updates.roleSpec).slice(0, 8000) : current.roleSpec,
+    interviewGoals: typeof updates.interviewGoals === "string" ? cleanText(updates.interviewGoals).slice(0, 2000) : current.interviewGoals,
     cvFileName: typeof updates.cvFileName === "string" ? cleanText(updates.cvFileName).slice(0, 180) : current.cvFileName,
     roleSpecFileName: typeof updates.roleSpecFileName === "string" ? cleanText(updates.roleSpecFileName).slice(0, 180) : current.roleSpecFileName,
     preferredPracticeMode: updates.preferredPracticeMode !== undefined ? cleanMode(updates.preferredPracticeMode, current.preferredPracticeMode) : current.preferredPracticeMode,

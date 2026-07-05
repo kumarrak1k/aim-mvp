@@ -10,10 +10,10 @@ import {
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const MAX_CV_CHARS = 3500;
-const MAX_ROLE_SPEC_CHARS = 2500;
-const MAX_GOALS_CHARS = 900;
-const MAX_TOTAL_CHARS = 7000;
+const MAX_CV_CHARS = 15000;
+const MAX_ROLE_SPEC_CHARS = 8000;
+const MAX_GOALS_CHARS = 2000;
+const MAX_TOTAL_CHARS = 25000;
 
 function validateTotalLength(profile: Partial<CandidateProfile>): string {
   const total =
