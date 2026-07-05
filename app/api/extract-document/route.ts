@@ -4,7 +4,7 @@ import { inflateSync, inflateRawSync } from "zlib";
 export const runtime = "nodejs";
 
 const MAX_UPLOAD_BYTES = 5 * 1024 * 1024;
-const MAX_EXTRACTED_CHARS = 3500;
+const MAX_EXTRACTED_CHARS = 15000;
 
 const SUPPORTED_EXTENSIONS = [".txt", ".md", ".docx", ".pdf"];
 
