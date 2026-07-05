@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, FormEvent } from "react";
 import Link from "next/link";
+import { useAuth } from "@clerk/nextjs";
 
 interface Message {
   role: "user" | "assistant";
@@ -14,13 +15,87 @@ const WELCOME: Message = {
     "Hi! I'm your AI Mentor assistant. Ask me anything about the platform — getting started, what's included in each plan, or how a feature works. If I can't help, I'll point you to the right place.",
 };
 
+// Chat history survives navigation and reloads for the current browser tab,
+// and is wiped when the user signs out (or a different user signs in).
+const STORAGE_KEY = "aim_mentor_chat";
+
+type StoredChat = { owner: string; messages: Message[] };
+
+function loadStoredMessages(): Message[] {
+  if (typeof window === "undefined") return [WELCOME];
+  try {
+    const raw = sessionStorage.getItem(STORAGE_KEY);
+    if (!raw) return [WELCOME];
+    const parsed = JSON.parse(raw) as StoredChat;
+    if (Array.isArray(parsed.messages) && parsed.messages.length > 1) {
+      return parsed.messages;
+    }
+  } catch {
+    // Corrupt storage — start fresh.
+  }
+  return [WELCOME];
+}
+
 export function MentorChat() {
+  const { isLoaded, isSignedIn, userId } = useAuth();
   const [open, setOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([WELCOME]);
+  const [messages, setMessages] = useState<Message[]>(loadStoredMessages);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const prevSignedInRef = useRef<boolean | null>(null);
+
+  // Persist the conversation for this tab; drop the entry once cleared.
+  useEffect(() => {
+    try {
+      if (messages.length > 1) {
+        const stored: StoredChat = { owner: userId ?? "anon", messages };
+        sessionStorage.setItem(STORAGE_KEY, JSON.stringify(stored));
+      } else {
+        sessionStorage.removeItem(STORAGE_KEY);
+      }
+    } catch {
+      // Storage unavailable (private mode) — chat still works in-memory.
+    }
+  }, [messages, userId]);
+
+  // Wipe history on sign-out, and when a stored conversation belongs to a
+  // different (or no-longer-present) signed-in user.
+  useEffect(() => {
+    if (!isLoaded) return;
+
+    const wasSignedIn = prevSignedInRef.current;
+    prevSignedInRef.current = isSignedIn;
+
+    const clear = () => {
+      try {
+        sessionStorage.removeItem(STORAGE_KEY);
+      } catch {
+        // Ignore.
+      }
+      setMessages([WELCOME]);
+    };
+
+    // Live sign-out in this tab.
+    if (wasSignedIn === true && !isSignedIn) {
+      clear();
+      return;
+    }
+
+    // Full-reload case: stored history owned by a signed-in user who is gone.
+    try {
+      const raw = sessionStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw) as StoredChat;
+        if (parsed.owner !== "anon" && parsed.owner !== (userId ?? "anon")) {
+          clear();
+        }
+      }
+    } catch {
+      // Ignore.
+    }
+  }, [isLoaded, isSignedIn, userId]);
 
   useEffect(() => {
     if (open) {

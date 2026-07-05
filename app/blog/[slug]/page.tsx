@@ -116,6 +116,14 @@ const mdxComponents = {
       {...props}
     />
   ),
+  // Template / example blocks: wrap long lines inside the content column
+  // instead of overflowing to the right of the page.
+  pre: (props: React.HTMLAttributes<HTMLPreElement>) => (
+    <pre
+      className="my-6 max-w-full overflow-x-auto whitespace-pre-wrap break-words rounded-2xl border border-white/[0.08] bg-white/[0.04] p-5 text-sm leading-6 text-gray-300 [&>code]:block [&>code]:whitespace-pre-wrap [&>code]:break-words [&>code]:bg-transparent [&>code]:p-0"
+      {...props}
+    />
+  ),
 };
 
 export default async function BlogPostPage({ params }: Props) {

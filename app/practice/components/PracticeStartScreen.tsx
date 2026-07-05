@@ -534,6 +534,7 @@ export function PracticeStartScreen({
             value={interviewType}
             onChange={setInterviewType}
             options={interviewTypes}
+            defaultOption="Competency / behavioural"
           />
 
           <SelectField

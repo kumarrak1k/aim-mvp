@@ -99,12 +99,14 @@ export default function CandidateSignUpCompletePage() {
             }
           }
         } catch {
-          // Checkout failed — fall through to /practice
+          // Checkout failed — fall through to the profile page
         }
       }
 
+      // New candidates land on My Profile first to add their CV / role details,
+      // then move on to interview practice or the assessment centre from there.
       if (!cancelled) {
-        router.replace("/practice");
+        router.replace("/profile");
       }
     })();
 
@@ -124,7 +126,7 @@ export default function CandidateSignUpCompletePage() {
           Setting up your account…
         </h1>
         <p className="mt-2 text-sm leading-6 text-gray-400">
-          Almost there. Taking you to your practice dashboard.
+          Almost there. Taking you to your profile so you can add your details.
         </p>
         {error && (
           <p className="mt-4 text-xs text-red-300">{error}</p>

@@ -25,11 +25,14 @@ export function SelectField({
   value,
   onChange,
   options,
+  defaultOption,
 }: {
   label: string;
   value: string;
   onChange: (value: string) => void;
   options: string[];
+  /** Option whose display label gets a "(default)" suffix. Value is unchanged. */
+  defaultOption?: string;
 }) {
   return (
     <div>
@@ -43,7 +46,7 @@ export function SelectField({
       >
         {options.map((option) => (
           <option key={option} value={option} className="bg-[#0b0712]">
-            {option}
+            {option === defaultOption ? `${option} (default)` : option}
           </option>
         ))}
       </select>

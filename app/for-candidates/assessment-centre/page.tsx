@@ -82,7 +82,7 @@ const why = [
 const faqs = [
   {
     q: "What is a mock assessment centre?",
-    a: "A structured simulation of the full assessment centre format: a timed case study, a competency interview, and a presentation exercise — all scored in one session. It mirrors the format used by major employers including Big 4 firms, investment banks, and the Civil Service Fast Stream.",
+    a: "A structured simulation of the full assessment centre format: a timed case study, a competency interview, and a presentation exercise, all scored in one session. It follows the multi-stage structure commonly found in graduate and professional assessment centres across consulting, finance, law, and the public sector.",
   },
   {
     q: "How long does a session take?",
@@ -90,7 +90,7 @@ const faqs = [
   },
   {
     q: "Who uses assessment centres?",
-    a: "Major employers across consulting, finance, law, the public sector, and graduate programmes. If you are applying to any FTSE 100 company, Big 4 firm, investment bank, law firm, or Civil Service role, there is a high probability you will face an assessment centre.",
+    a: "Assessment centres are widely used across consulting, finance, law, the public sector, and competitive graduate programmes. If you are applying to a large employer or a structured graduate scheme, there is a high probability you will face one.",
   },
   {
     q: "What competencies does it score?",

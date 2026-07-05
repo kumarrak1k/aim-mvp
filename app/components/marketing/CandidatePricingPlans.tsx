@@ -27,7 +27,8 @@ type StripePlanId =
   | "professional_annual";
 
 // Side-by-side feature comparison (makes the Free → Plus → Professional cliff clear).
-const COMPARE: Array<{ feature: string; free: string | boolean; plus: string | boolean; pro: string | boolean }> = [
+// `info` renders a hover/focus tooltip with a plain-English explanation.
+const COMPARE: Array<{ feature: string; free: string | boolean; plus: string | boolean; pro: string | boolean; info?: string }> = [
   { feature: "Practice sessions", free: "3 sessions", plus: "Unlimited", pro: "Unlimited" },
   { feature: "Typed interviews", free: true, plus: true, pro: true },
   { feature: "Voice interviews", free: false, plus: true, pro: true },
@@ -36,10 +37,39 @@ const COMPARE: Array<{ feature: string; free: string | boolean; plus: string | b
   { feature: "Model answers", free: false, plus: true, pro: true },
   { feature: "Progress tracking & history", free: false, plus: true, pro: true },
   { feature: "Custom session builder (3–10 questions)", free: false, plus: false, pro: true },
-  { feature: "Hybrid question mix", free: false, plus: false, pro: true },
+  {
+    feature: "Hybrid question mix",
+    free: false, plus: false, pro: true,
+    info: "Blend different question types in a single session. For example: 3 competency, 3 technical and 2 leadership questions, matching the exact interview you are preparing for.",
+  },
   { feature: "Mock assessment centre", free: false, plus: false, pro: true },
-  { feature: "Advanced analytics & gap tracking", free: false, plus: false, pro: true },
+  {
+    feature: "Advanced analytics & gap tracking",
+    free: false, plus: false, pro: true,
+    info: "Charts of your scores over time, plus a view of which skills keep scoring lowest across sessions, so you know exactly what to practise next.",
+  },
 ];
+
+/** Small "i" icon that reveals a plain-English explanation on hover or focus. */
+function InfoTip({ text }: { text: string }) {
+  return (
+    <span className="group relative inline-flex">
+      <button
+        type="button"
+        aria-label={text}
+        className="flex h-4 w-4 shrink-0 cursor-help items-center justify-center rounded-full border border-white/25 text-[10px] font-bold leading-none text-gray-400 transition hover:border-purple-300/60 hover:text-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-400/40"
+      >
+        i
+      </button>
+      <span
+        role="tooltip"
+        className="pointer-events-none invisible absolute bottom-full left-0 z-20 mb-2 w-64 rounded-xl border border-white/10 bg-[#1a1030] px-3.5 py-2.5 text-left text-xs font-normal leading-5 text-gray-200 opacity-0 shadow-2xl transition group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100"
+      >
+        {text}
+      </span>
+    </span>
+  );
+}
 
 function renderCell(v: string | boolean) {
   if (typeof v === "boolean") {
@@ -305,7 +335,12 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
             <tbody className="divide-y divide-white/[0.06]">
               {COMPARE.map((row) => (
                 <tr key={row.feature}>
-                  <td className="px-4 py-3 text-left text-gray-300">{row.feature}</td>
+                  <td className="px-4 py-3 text-left text-gray-300">
+                    <span className="inline-flex items-center gap-1.5">
+                      {row.feature}
+                      {row.info && <InfoTip text={row.info} />}
+                    </span>
+                  </td>
                   <td className="px-4 py-3 text-center">{renderCell(row.free)}</td>
                   <td className="bg-purple-300/[0.04] px-4 py-3 text-center">{renderCell(row.plus)}</td>
                   <td className="px-4 py-3 text-center">{renderCell(row.pro)}</td>

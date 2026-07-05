@@ -748,8 +748,8 @@ function EmptyProgressState({ isAdvancedPlan }: { isAdvancedPlan: boolean }) {
           Going for a role with an assessment centre?
         </h3>
         <p className="mt-2 text-sm leading-7 text-gray-300">
-          Simulate the full format — case study, interview, and presentation — in one
-          session. Used by Big 4, investment banks, Civil Service, and most graduate employers.
+          Simulate the full format (case study, interview, and presentation) in one
+          session. Assessment centres are a standard stage at most large graduate employers.
         </p>
         {isAdvancedPlan ? (
           <Link href="/assessment-centre">
