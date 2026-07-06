@@ -6,6 +6,7 @@ export function useDeviceProfile() {
   const [isTouchDevice, setIsTouchDevice] = useState(false);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const [isAppleMobileDevice, setIsAppleMobileDevice] = useState(false);
+  const [hasFinePointer, setHasFinePointer] = useState(true);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -24,6 +25,10 @@ export function useDeviceProfile() {
       );
       setIsSmallScreen(window.matchMedia("(max-width: 767px)").matches);
       setIsAppleMobileDevice(isAppleTouch);
+      // Primary pointer is a mouse/trackpad — a touchscreen Windows laptop
+      // must count as a computer, not a tablet, or it wrongly gets the
+      // tablet's manual camera-tap flow.
+      setHasFinePointer(window.matchMedia("(pointer: fine)").matches);
     };
 
     updateDeviceProfile();
@@ -37,12 +42,17 @@ export function useDeviceProfile() {
   // Phone: small screen (≤767px) — full manual mode, no auto-play
   const isPhone = useMemo(() => isSmallScreen, [isSmallScreen]);
 
-  // Tablet: large touch screen (iPad, Android tablet, Surface)
+  // Tablet: large touch screen whose PRIMARY input is touch (iPad, Android
+  // tablet, Surface in tablet mode). Touchscreen laptops report a fine
+  // primary pointer and are treated as computers. Apple mobile devices are
+  // always tablets here regardless of pointer reporting.
   // Auto-play is allowed (user gesture on "Start interview" unlocks iOS audio)
   // but camera still requires a manual tap for the permission prompt.
   const isTablet = useMemo(
-    () => !isSmallScreen && (isAppleMobileDevice || isTouchDevice),
-    [isAppleMobileDevice, isSmallScreen, isTouchDevice]
+    () =>
+      !isSmallScreen &&
+      (isAppleMobileDevice || (isTouchDevice && !hasFinePointer)),
+    [hasFinePointer, isAppleMobileDevice, isSmallScreen, isTouchDevice]
   );
 
   // manualDeviceMode = phones only. Disables auto-play entirely and skips

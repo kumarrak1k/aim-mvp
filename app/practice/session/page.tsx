@@ -44,6 +44,11 @@ import {
 } from "../lib/interviewApi";
 import { buildCandidateProfilePrompt } from "../lib/profileHelpers";
 import {
+  markMediaGranted,
+  queryCameraGranted,
+  wasMediaGranted,
+} from "../lib/audioDevices";
+import {
   buildFallbackInterviewSummary,
   calculateAverageQuestionScore,
   createSavedSession,
@@ -186,9 +191,29 @@ export default function PracticeSessionPage() {
   }>({ questionNumber: 0, question: null });
   const prefetchAbortRef = useRef<AbortController | null>(null);
 
+  // Zoom-style permission memory: once camera access has been granted (this
+  // or any earlier session), touch devices auto-start too instead of waiting
+  // for the manual tap. First-ever session on a touch device keeps the tap
+  // (iOS pairs the permission prompt with a user gesture most reliably).
+  const [mediaPreviouslyGranted, setMediaPreviouslyGranted] = useState(false);
+  useEffect(() => {
+    if (wasMediaGranted()) {
+      setMediaPreviouslyGranted(true);
+      return;
+    }
+    void queryCameraGranted().then((granted) => {
+      if (granted) {
+        markMediaGranted();
+        setMediaPreviouslyGranted(true);
+      }
+    });
+  }, []);
+
   // Camera requires a manual tap on any touch device (iOS needs a user gesture
-  // for the camera permission prompt regardless of screen size).
-  const requiresManualCameraStart = manualDeviceMode || isTablet;
+  // for the camera permission prompt regardless of screen size) — but only
+  // until the first successful grant; after that it starts automatically.
+  const requiresManualCameraStart =
+    (manualDeviceMode || isTablet) && !mediaPreviouslyGranted;
 
   // Computer = desktop pointer device — auto-flow is always on (as before).
   const isComputer = !manualDeviceMode && !isTablet;

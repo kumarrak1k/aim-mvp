@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { clearMediaGranted, markMediaGranted } from "../lib/audioDevices";
 import type {
   FaceLandmarkerInstance,
   FaceTrackerModule,
@@ -239,12 +240,18 @@ export function useCameraTracking({
 
       resetVideoFrames();
       setCameraReady(true);
+      // Remember the grant so later sessions auto-start Zoom-style instead
+      // of waiting for a manual tap.
+      markMediaGranted();
 
       if (!cameraAnalysisDisabledRef.current) {
         startCameraLoop();
       }
     } catch {
       setCameraReady(false);
+      // Permission refused or revoked — forget the auto-start memory so the
+      // next session goes back to the explicit tap + browser prompt.
+      clearMediaGranted();
       setCameraError("Unable to access camera. Check browser permissions.");
     } finally {
       cameraStartInFlightRef.current = false;

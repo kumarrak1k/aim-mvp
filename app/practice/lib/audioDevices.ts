@@ -38,6 +38,33 @@ export const setStoredAudioInput = (id: string) => write(AUDIO_INPUT_KEY, id);
 export const getStoredAudioOutput = () => read(AUDIO_OUTPUT_KEY);
 export const setStoredAudioOutput = (id: string) => write(AUDIO_OUTPUT_KEY, id);
 
+// ── Media permission memory ─────────────────────────────────────────────────
+// Zoom-style behaviour: the first session asks for camera/mic via the browser
+// prompt; once granted we remember it so tablets skip the manual "tap to
+// start camera" step on every later session. The browser itself persists the
+// underlying permission per origin — this flag only tells our UI it can
+// auto-start without waiting for a gesture.
+
+const MEDIA_GRANTED_KEY = "aim_media_granted";
+
+export const wasMediaGranted = () => read(MEDIA_GRANTED_KEY) === "1";
+export const markMediaGranted = () => write(MEDIA_GRANTED_KEY, "1");
+export const clearMediaGranted = () => write(MEDIA_GRANTED_KEY, "");
+
+/** True when the browser's Permissions API reports camera access granted. */
+export async function queryCameraGranted(): Promise<boolean> {
+  try {
+    if (!navigator.permissions?.query) return false;
+    const status = await navigator.permissions.query({
+      name: "camera" as PermissionName,
+    });
+    return status.state === "granted";
+  } catch {
+    // Permissions API missing or "camera" unsupported (Firefox/Safari).
+    return false;
+  }
+}
+
 export function outputSelectionSupported(): boolean {
   return (
     typeof HTMLMediaElement !== "undefined" &&
