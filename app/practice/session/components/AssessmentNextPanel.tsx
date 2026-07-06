@@ -50,7 +50,7 @@ export function AssessmentNextPanel({
             <p className="mt-2 max-w-2xl text-sm leading-6 text-gray-300">
               {isFinalQuestion
                 ? "Your full set of answers will now be sent to the hiring team for review. They will assess your responses and follow up directly."
-                : "Your answer has been captured. The hiring team will review it later — for now, continue when you are ready."}
+                : "Your answer has been captured. The hiring team will review it later, so continue when you are ready."}
             </p>
           </div>
         </div>
@@ -67,7 +67,7 @@ export function AssessmentNextPanel({
 
       {!isFinalQuestion && (
         <p className="mt-6 border-t border-white/[0.06] pt-4 text-xs leading-5 text-gray-500">
-          You will not see scores or feedback during this assessment — your
+          You will not see scores or feedback during this assessment. Your
           answers are reviewed by the hiring team, not by you.
         </p>
       )}

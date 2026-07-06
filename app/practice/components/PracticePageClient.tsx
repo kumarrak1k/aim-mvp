@@ -619,8 +619,8 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
                 </p>
                 <p className="text-xs text-emerald-300/70">
                   {paymentActivating
-                    ? "Confirming your plan with Stripe — this takes just a moment."
-                    : "Your plan is now active. Unlimited sessions are unlocked — start practising below."}
+                    ? "Confirming your plan with Stripe. This takes just a moment."
+                    : "Your plan is now active. Unlimited sessions are unlocked, so start practising below."}
                 </p>
               </div>
             </div>
@@ -660,7 +660,7 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
                   Ready to simulate the full assessment centre?
                 </h2>
                 <p className="mt-3 text-sm leading-7 text-gray-300">
-                  Most graduate and professional roles now include an assessment centre —
+                  Most graduate and professional roles now include an assessment centre:
                   case study, competency interview, and presentation, all in one session.
                   Practice the full format before the real thing.
                 </p>

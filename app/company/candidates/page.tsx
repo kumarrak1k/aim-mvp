@@ -248,7 +248,7 @@ function CandidatesContent() {
                       className="w-full rounded-xl border border-white/15 bg-[#1a1328] px-4 py-3 text-white outline-none focus:border-fuchsia-400/60 focus:ring-2 focus:ring-fuchsia-400/20"
                     >
                       {templates.map((t) => (
-                        <option key={t.id} value={t.id}>{t.name} — {t.role}</option>
+                        <option key={t.id} value={t.id}>{t.name} ({t.role})</option>
                       ))}
                     </select>
                   )}
@@ -281,7 +281,7 @@ function CandidatesContent() {
                       {newInviteEmailStatus?.state === "sent"
                         ? `Invite emailed to ${newInviteEmailStatus.recipient}.`
                         : newInviteEmailStatus?.state === "failed"
-                          ? "Invite created — but email send failed."
+                          ? "Invite created, but the email failed to send."
                           : "Invite created!"}
                     </p>
                     {newInviteEmailStatus?.state === "failed" && (

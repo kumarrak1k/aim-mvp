@@ -162,7 +162,7 @@ export default function SessionPrintPage() {
       {/* Screen-only toolbar */}
       <div className="no-print mb-8 flex flex-col gap-3 rounded-lg border border-gray-200 bg-gray-50 p-4 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm text-gray-600">
-          Your interview report is ready — choose <strong>Save as PDF</strong> in the print dialog.
+          Your interview report is ready. Choose <strong>Save as PDF</strong> in the print dialog.
         </p>
         <div className="flex gap-2">
           <button
@@ -260,8 +260,8 @@ export default function SessionPrintPage() {
                     <FieldBlock title="Model answer" text={item.feedback?.improved_answer} />
 
                     <div className="mt-3 grid grid-cols-2 gap-6">
-                      <Bullets title="Strengths" items={item.feedback?.strengths} empty="—" small />
-                      <Bullets title="Improvements" items={item.feedback?.improvements} empty="—" small />
+                      <Bullets title="Strengths" items={item.feedback?.strengths} empty="–" small />
+                      <Bullets title="Improvements" items={item.feedback?.improvements} empty="–" small />
                     </div>
 
                     {cs && (
@@ -280,7 +280,7 @@ export default function SessionPrintPage() {
                         <span className="font-semibold text-gray-700">
                           Voice {score(item.voiceAnalysis.overallVoiceScore)}
                         </span>{" "}
-                        — Pace {score(item.voiceAnalysis.paceScore)} · Fillers{" "}
+                        · Pace {score(item.voiceAnalysis.paceScore)} · Fillers{" "}
                         {score(item.voiceAnalysis.fillerScore)} · Confidence{" "}
                         {score(item.voiceAnalysis.confidenceScore)} · Energy{" "}
                         {score(item.voiceAnalysis.energyScore)} · ~
@@ -292,7 +292,7 @@ export default function SessionPrintPage() {
                         <span className="font-semibold text-gray-700">
                           Camera {score(item.videoAnalysis.overallVideoScore)}
                         </span>{" "}
-                        — Eye contact {score(item.videoAnalysis.eyeContactScore)} · Position{" "}
+                        · Eye contact {score(item.videoAnalysis.eyeContactScore)} · Position{" "}
                         {score(item.videoAnalysis.positionScore)} · Body language{" "}
                         {score(item.videoAnalysis.bodyLanguageScore)} · Engagement{" "}
                         {score(item.videoAnalysis.engagementScore)}
@@ -337,7 +337,7 @@ export default function SessionPrintPage() {
 }
 
 function score(value?: number): string {
-  return typeof value === "number" ? `${value}/10` : "—";
+  return typeof value === "number" ? `${value}/10` : "–";
 }
 
 function categoryRows(b: CategoryBreakdown, mode?: string) {
@@ -409,7 +409,7 @@ function Bar({ label, value }: { label: string; value: number }) {
 function Bullets({
   title,
   items,
-  empty = "—",
+  empty = "–",
   small,
 }: {
   title?: string;
@@ -438,7 +438,7 @@ function FieldBlock({ title, text }: { title: string; text?: string }) {
   return (
     <div className="mt-3">
       <p className="mb-1 text-xs font-bold uppercase tracking-wider text-gray-500">{title}</p>
-      <p className="whitespace-pre-wrap text-sm leading-6 text-gray-700">{text || "—"}</p>
+      <p className="whitespace-pre-wrap text-sm leading-6 text-gray-700">{text || "–"}</p>
     </div>
   );
 }

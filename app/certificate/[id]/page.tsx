@@ -13,10 +13,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const cert = await prisma.certificate.findUnique({ where: { id } });
   if (!cert) return {};
   return {
-    title: { absolute: `${cert.name} — Interview Readiness Certificate | AI Career Mentor` },
+    title: { absolute: `${cert.name}: Interview Readiness Certificate | AI Career Mentor` },
     description: `${cert.name} has demonstrated interview readiness for ${cert.role} with an overall score of ${cert.score}/10.`,
     openGraph: {
-      title: `${cert.name} — Interview Readiness Certificate`,
+      title: `${cert.name}: Interview Readiness Certificate`,
       description: `Overall score ${cert.score}/10 for ${cert.role}. Awarded by AI Career Mentor.`,
       type: "website",
     },

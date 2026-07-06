@@ -11,7 +11,7 @@ export const metadata: Metadata = createPageMetadata({
   path: "/for-candidates",
   title: "Interview Practice & Assessment Centre Coaching for Candidates",
   description:
-    "AI Career Mentor helps candidates prepare for interviews and assessment centres. Tailored questions, mock case studies, presentation practice, voice and camera analysis — all in one place.",
+    "AI Career Mentor helps candidates prepare for interviews and assessment centres. Tailored questions, mock case studies, presentation practice, voice and camera analysis, all in one place.",
   keywords: [
     "interview practice",
     "assessment centre practice",
@@ -28,7 +28,7 @@ const products = [
     eyebrow: "Product 1",
     title: "Interview practice",
     description:
-      "Tailored questions for your exact role and level — 5 by default, up to 10 on Professional. Honest feedback on every answer. Voice delivery scored. Camera presence reviewed. Model answers included.",
+      "Tailored questions for your exact role and level: 5 by default, up to 10 on Professional. Honest feedback on every answer. Voice delivery scored. Camera presence reviewed. Model answers included.",
     bullets: [
       "Tailored to your role, level and interview type",
       "Custom session: 3–10 questions in your own type mix (Professional)",
@@ -43,7 +43,7 @@ const products = [
     eyebrow: "Product 2 · NEW",
     title: "Mock assessment centre",
     description:
-      "The only platform that runs a realistic AI assessment centre experience. Case study analysis, competency interview, presentation simulation — all scored across competencies in one structured session.",
+      "The only platform that runs a realistic AI assessment centre experience. Case study analysis, competency interview, presentation simulation, all scored across competencies in one structured session.",
     bullets: [
       "Case study with timed structured response",
       "5-question competency interview",
@@ -98,7 +98,7 @@ const trustPillars = [
   },
   {
     title: "Realistic delivery scoring",
-    text: "Voice delivery, camera presence, eye contact and pace are all scored — not just the words you said.",
+    text: "Voice delivery, camera presence, eye contact and pace are all scored, not just the words you said.",
   },
 ];
 
@@ -112,19 +112,19 @@ const readinessHighlights = [
 const testimonials = [
   {
     quote:
-      "I wish I'd found this at the start of the process. I lost count of how many interviews and assessment centres I participated in — if I'd had this sooner, it would have helped me sharpen my skills. I found a placement in the end, and I'm sure I'll use the platform again when I graduate.",
+      "I wish I'd found this at the start of the process. I lost count of how many interviews and assessment centres I participated in. If I'd had this sooner, it would have helped me sharpen my skills. I found a placement in the end, and I'm sure I'll use the platform again when I graduate.",
     name: "Second-year university student",
     context: "Secured a placement role",
   },
   {
     quote:
-      "I'd never taken an interview before, so I was searching for some help. I was lucky — a friend recommended this site and I gave it a try. I'd never heard of STAR, and what a simple thing to learn. It's given me the structure and confidence to handle interviews.",
+      "I'd never taken an interview before, so I was searching for some help. I was lucky: a friend recommended this site and I gave it a try. I'd never heard of STAR, and what a simple thing to learn. It's given me the structure and confidence to handle interviews.",
     name: "Software engineer graduate",
     context: "Preparing for first interviews",
   },
   {
     quote:
-      "I hadn't interviewed for over 10 years, so I needed to find a way to practise. I didn't need the assessment centre tool, so I used the Plus membership. Within three months I'd landed my new role — and there's no doubt this helped me fine-tune my CV, practise real interview questions and improve my structure.",
+      "I hadn't interviewed for over 10 years, so I needed to find a way to practise. I didn't need the assessment centre tool, so I used the Plus membership. Within three months I'd landed my new role, and there's no doubt this helped me fine-tune my CV, practise real interview questions and improve my structure.",
     name: "Experienced finance professional",
     context: "Landed a new role in 3 months",
   },
@@ -133,11 +133,11 @@ const testimonials = [
 const faqs = [
   {
     q: "Is AI Career Mentor free?",
-    a: "Free to start — no payment details required. You can run a complete interview session and receive feedback at no cost. Unlimited sessions with voice and camera are on Plus (from £19/month); mock assessment centres and career documents are on Professional (£29/month).",
+    a: "Free to start, no payment details required. You can run a complete interview session and receive feedback at no cost. Unlimited sessions with voice and camera are on Plus (from £19/month); mock assessment centres and career documents are on Professional (£29/month).",
   },
   {
     q: "What interview types does it cover?",
-    a: "Competency, behavioural, technical, presentation, case study, strength-based, and situational interviews — all tailored to your specific role and level. You select the format at the start of every session.",
+    a: "Competency, behavioural, technical, presentation, case study, strength-based, and situational interviews, all tailored to your specific role and level. You select the format at the start of every session.",
   },
   {
     q: "Does AI Career Mentor record my video?",
@@ -145,19 +145,19 @@ const faqs = [
   },
   {
     q: "How is this different from practising with a friend?",
-    a: "AI Career Mentor scores every answer on six dimensions — content, clarity, relevance, structure, confidence and pace — then layers voice-delivery and camera-presence analysis on top. A friend can offer encouragement — the platform gives you specific, actionable feedback every time.",
+    a: "AI Career Mentor scores every answer on six dimensions (content, clarity, relevance, structure, confidence and pace), then layers voice-delivery and camera-presence analysis on top. A friend can offer encouragement; the platform gives you specific, actionable feedback every time.",
   },
   {
     q: "Can I choose how many questions I get and what types?",
-    a: "Yes, on the Professional plan. You can set your session length anywhere from 3 to 10 questions and build a custom type mix — for example 3 competency, 3 technical, 2 leadership and 1 motivation question. On Free and Plus plans, sessions use 5 questions of the type you select at setup.",
+    a: "Yes, on the Professional plan. You can set your session length anywhere from 3 to 10 questions and build a custom type mix: for example 3 competency, 3 technical, 2 leadership and 1 motivation question. On Free and Plus plans, sessions use 5 questions of the type you select at setup.",
   },
   {
     q: "What roles and levels does it support?",
-    a: "Any role, any level — from graduate and entry-level to director and executive. You enter your exact job title and seniority, and the AI generates questions matched to the competencies and difficulty expected for that level.",
+    a: "Any role, any level, from graduate and entry-level to director and executive. You enter your exact job title and seniority, and the AI generates questions matched to the competencies and difficulty expected for that level.",
   },
   {
     q: "Can I choose how many questions I get and what types?",
-    a: "Yes, on the Professional plan. You can set your session length anywhere from 3 to 10 questions and build a custom type mix — for example 3 competency, 3 technical, 2 leadership and 1 motivation question. On Free and Plus plans, sessions use 5 questions of the type you select at setup.",
+    a: "Yes, on the Professional plan. You can set your session length anywhere from 3 to 10 questions and build a custom type mix: for example 3 competency, 3 technical, 2 leadership and 1 motivation question. On Free and Plus plans, sessions use 5 questions of the type you select at setup.",
   },
 ];
 
@@ -203,8 +203,8 @@ export default async function ForCandidatesPage() {
 
         <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-gray-400 sm:text-lg sm:leading-9">
           Two complete products in one. Run mock interviews tailored to your
-          role, or step through a full assessment centre experience —
-          case study, competency interview and presentation — all scored.
+          role, or step through a full assessment centre experience:
+          case study, competency interview and presentation, all scored.
         </p>
 
         <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
@@ -314,8 +314,8 @@ export default async function ForCandidatesPage() {
             From setup to measurable improvement in one session.
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-gray-400">
-            A focused loop — configure, answer, receive coaching, review
-            progress — that compounds with every practice session.
+            A focused loop (configure, answer, receive coaching, review
+            progress) that compounds with every practice session.
           </p>
         </div>
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -359,13 +359,13 @@ export default async function ForCandidatesPage() {
       {/* See it in action */}
       <DemoShowcase
         eyebrow="See it in action"
-        title="The actual product — not a mockup."
+        title="The actual product, not a mockup."
         subtitle="This is exactly what you'll use: tailored questions, scored feedback on every answer, and a readiness verdict that improves with every session."
         shots={[
           {
             src: "/marketing/candidate-03-feedback.webp",
             alt: "AI feedback scoring an interview answer on content, clarity, structure and confidence",
-            caption: "Every answer is scored — with a stronger model answer to learn from.",
+            caption: "Every answer is scored, with a stronger model answer to learn from.",
           },
           {
             src: "/marketing/candidate-01-setup.webp",
@@ -380,7 +380,7 @@ export default async function ForCandidatesPage() {
           {
             src: "/marketing/candidate-05-progress.webp",
             alt: "Progress dashboard showing an improving score trend across sessions",
-            caption: "Every session is saved — so you can see yourself improve.",
+            caption: "Every session is saved, so you can see yourself improve.",
           },
         ]}
       />

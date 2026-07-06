@@ -85,7 +85,7 @@ export default function AssessmentCompletePage() {
         </p>
 
         <h1 className="mt-3 max-w-xl text-center text-3xl font-black tracking-[-0.05em] sm:text-4xl">
-          {confirmed ? "Thanks — your assessment is in." : "Thanks for completing the assessment."}
+          {confirmed ? "Thanks, your assessment is in." : "Thanks for completing the assessment."}
         </h1>
 
         <p className="mt-4 max-w-xl text-center text-base leading-7 text-gray-300">

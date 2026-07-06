@@ -145,7 +145,7 @@ export function TrialBanner() {
           <span className="text-[13px] font-semibold text-gray-100">
             <span aria-hidden>✨ </span>
             You&rsquo;re on the <strong className="font-black">Plus</strong>{" "}
-            free trial —{" "}
+            free trial, with{" "}
             <span className={urgent ? "text-amber-200" : "text-purple-200"}>
               {dayLabel} left
             </span>
@@ -169,7 +169,7 @@ export function TrialBanner() {
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-3 gap-y-1 px-4 py-2 text-center sm:px-6">
           <span className="text-[13px] font-semibold text-gray-100">
             <span aria-hidden>🎁 </span>
-            Unlock voice &amp; camera coaching and unlimited practice —{" "}
+            Unlock voice &amp; camera coaching and unlimited practice,{" "}
             <strong className="font-black">free for 3 days, no payment details</strong>.
           </span>
           <button
@@ -195,7 +195,7 @@ export function TrialBanner() {
       <div className="relative z-40 border-b border-white/[0.08] bg-white/[0.03]">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-3 gap-y-1 px-4 py-2 text-center sm:px-6">
           <span className="text-[13px] font-semibold text-gray-300">
-            Your free trial has ended — you&rsquo;re on the Free plan.
+            Your free trial has ended. You&rsquo;re on the Free plan.
           </span>
           <Link
             href="/for-candidates/pricing"

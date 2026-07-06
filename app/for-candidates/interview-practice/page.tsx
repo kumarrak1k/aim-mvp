@@ -23,7 +23,7 @@ export const metadata: Metadata = createPageMetadata({
 const features = [
   {
     title: "Tailored to your role",
-    text: "Choose role, level and interview type. Every question is generated for your exact situation — not recycled from a generic bank.",
+    text: "Choose role, level and interview type. Every question is generated for your exact situation, not recycled from a generic bank.",
     badge: null,
   },
   {
@@ -33,17 +33,17 @@ const features = [
   },
   {
     title: "Honest, structured feedback",
-    text: "Each answer is scored on content, clarity, structure, confidence and pace — paired with a model answer for direct comparison.",
+    text: "Each answer is scored on content, clarity, structure, confidence and pace, then paired with a model answer for direct comparison.",
     badge: null,
   },
   {
     title: "Custom session builder",
-    text: "On the Professional plan, choose between 3 and 10 questions per session and set your own question type mix — any blend of competency, technical, leadership, motivation and situational questions.",
+    text: "On the Professional plan, choose between 3 and 10 questions per session and set your own question type mix: any blend of competency, technical, leadership, motivation and situational questions.",
     badge: "Professional",
   },
   {
     title: "Voice and camera presence",
-    text: "Pace, filler words, eye contact, posture — all measured. The full picture an interviewer evaluates.",
+    text: "Pace, filler words, eye contact, posture: all measured. The full picture an interviewer evaluates.",
     badge: null,
   },
   {
@@ -62,7 +62,7 @@ const steps = [
   {
     number: "02",
     title: "Answer",
-    text: "Type or speak — questions play in natural audio so the practice feels real.",
+    text: "Type or speak. Questions play in natural audio so the practice feels real.",
   },
   {
     number: "03",
@@ -79,7 +79,7 @@ const steps = [
 const faqs = [
   {
     q: "What interview formats does it support?",
-    a: "Competency, behavioural, technical, presentation, strength-based, and situational — selected at session setup. Questions are generated for your specific role and interview type, not taken from a generic bank.",
+    a: "Competency, behavioural, technical, presentation, strength-based, and situational, all selected at session setup. Questions are generated for your specific role and interview type, not taken from a generic bank.",
   },
   {
     q: "How are questions tailored to my role?",
@@ -87,11 +87,11 @@ const faqs = [
   },
   {
     q: "Does it score voice delivery as well as answers?",
-    a: "Yes. Every session scores tone, pace, filler words (um, uh, like, you know), clarity, and energy — alongside the content of your answer.",
+    a: "Yes. Every session scores tone, pace, filler words (um, uh, like, you know), clarity, and energy alongside the content of your answer.",
   },
   {
     q: "What does a session look like?",
-    a: "You receive tailored questions read aloud in natural audio — 5 by default, or 3–10 on the Professional plan. Answer by speaking or typing. After each answer you get structured feedback, then a full session report including model answers, scores, and a next-step action plan.",
+    a: "You receive tailored questions read aloud in natural audio: 5 by default, or 3–10 on the Professional plan. Answer by speaking or typing. After each answer you get structured feedback, then a full session report including model answers, scores, and a next-step action plan.",
   },
   {
     q: "Can I compare my answer to a model answer?",

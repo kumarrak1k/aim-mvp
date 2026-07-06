@@ -5,7 +5,7 @@ import { AudienceShell } from "@/app/components/marketing/AudienceShell";
 
 export const metadata: Metadata = createPageMetadata({
   path: "/for-business/assessment-platform",
-  title: "AI Assessment Platform — How It Works",
+  title: "AI Assessment Platform: How It Works",
   description:
     "How AI Career Mentor's hiring platform works. Build assessment templates, send invites, score candidates fairly. End-to-end recruiter workflow.",
   keywords: [
@@ -30,7 +30,7 @@ const workflow = [
   {
     number: "03",
     title: "Send branded invites",
-    text: "Add a candidate email and click invite. They receive a branded email with a unique link. They take the assessment when they're ready — no scheduling, no recruiter time.",
+    text: "Add a candidate email and click invite. They receive a branded email with a unique link. They take the assessment when they're ready, with no scheduling and no recruiter time.",
   },
   {
     number: "04",
@@ -42,7 +42,7 @@ const workflow = [
 const guarantees = [
   {
     title: "Same brief, every candidate",
-    text: "The AI generates questions strictly from your template — never from the candidate's CV. Comparable scoring across every applicant.",
+    text: "The AI generates questions strictly from your template, never from the candidate's CV. Comparable scoring across every applicant.",
   },
   {
     title: "Full audit trail",
@@ -50,7 +50,7 @@ const guarantees = [
   },
   {
     title: "Candidate experience that respects them",
-    text: "Branded with your company. Take it on their own time. Voice or typed answers. Results private to your team — never shown to the candidate.",
+    text: "Branded with your company. Take it on their own time. Voice or typed answers. Results private to your team and never shown to the candidate.",
   },
   {
     title: "UK GDPR & DPA-ready",
@@ -75,7 +75,7 @@ export default function BusinessPlatformPage() {
           </span>
         </h1>
         <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-gray-400 sm:text-lg sm:leading-9">
-          A complete recruiter workflow — from designing your assessment to
+          A complete recruiter workflow, from designing your assessment to
           comparing candidates side-by-side.
         </p>
         <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">

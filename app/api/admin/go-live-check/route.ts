@@ -83,16 +83,16 @@ export async function GET() {
       "stripe-webhook-secrets-distinct",
       candSecret === corpSecret ? "fail" : "ok",
       candSecret === corpSecret
-        ? "candidate and corporate webhook secrets are IDENTICAL — use two separate Stripe endpoints"
+        ? "candidate and corporate webhook secrets are IDENTICAL (use two separate Stripe endpoints)"
         : "candidate and corporate secrets differ"
     );
   }
 
   // OpenAI powers all scoring, feedback, and voice — a missing key fails the
   // entire product, not just one route.
-  add("OPENAI_API_KEY", present("OPENAI_API_KEY") ? "ok" : "fail", present("OPENAI_API_KEY") ? "set" : "missing — all AI scoring/voice fails");
-  add("NEXT_PUBLIC_PAYMENTS_ENABLED", process.env.NEXT_PUBLIC_PAYMENTS_ENABLED === "true" ? "ok" : "warn", process.env.NEXT_PUBLIC_PAYMENTS_ENABLED === "true" ? "true" : "not 'true' — upgrade/subscribe buttons hidden");
-  add("CRON_SECRET", present("CRON_SECRET") ? "ok" : "fail", present("CRON_SECRET") ? "set" : "missing — nurture cron fails closed");
+  add("OPENAI_API_KEY", present("OPENAI_API_KEY") ? "ok" : "fail", present("OPENAI_API_KEY") ? "set" : "missing (all AI scoring/voice fails)");
+  add("NEXT_PUBLIC_PAYMENTS_ENABLED", process.env.NEXT_PUBLIC_PAYMENTS_ENABLED === "true" ? "ok" : "warn", process.env.NEXT_PUBLIC_PAYMENTS_ENABLED === "true" ? "true" : "not 'true' (upgrade/subscribe buttons hidden)");
+  add("CRON_SECRET", present("CRON_SECRET") ? "ok" : "fail", present("CRON_SECRET") ? "set" : "missing (nurture cron fails closed)");
 
   // ── DB connection (serverless scale) ──────────────────────────────────────
   // Neon's connection pooler natively supports prepared statements, so the
@@ -105,10 +105,10 @@ export async function GET() {
     "DATABASE_URL connection",
     isNeonPooler || hasPgbouncer ? "ok" : "warn",
     isNeonPooler
-      ? "Neon pooled host (prepared statements supported natively — pgbouncer not required)"
+      ? "Neon pooled host (prepared statements supported natively, pgbouncer not required)"
       : hasPgbouncer
       ? "pgbouncer=true set"
-      : "not on a Neon pooler host and no pgbouncer=true — check the connection string"
+      : "not on a Neon pooler host and no pgbouncer=true, check the connection string"
   );
 
   // ── Price IDs — present AND resolvable in the current Stripe mode ──────────
@@ -128,7 +128,7 @@ export async function GET() {
       add(
         k,
         price.active && modeMatch ? "ok" : "warn",
-        `${price.livemode ? "live" : "test"} price, active=${price.active}${modeMatch ? "" : " — MODE MISMATCH vs secret key"}`
+        `${price.livemode ? "live" : "test"} price, active=${price.active}${modeMatch ? "" : " (MODE MISMATCH vs secret key)"}`
       );
     } catch {
       add(k, "fail", "does NOT resolve in Stripe (wrong/stale ID for this mode)");

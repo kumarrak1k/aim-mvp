@@ -160,7 +160,7 @@ export default function Stage3Page() {
           (window as unknown as Record<string, unknown>).webkitSpeechRecognition)) as (new () => unknown) | undefined;
 
     if (!SpeechRecognition) {
-      setTranscript((t) => t + " [Voice not supported in this browser — please type your presentation below]");
+      setTranscript((t) => t + " [Voice not supported in this browser. Please type your presentation below]");
       return;
     }
 
@@ -427,7 +427,7 @@ export default function Stage3Page() {
                 {formatTime(presentTimeLeft)}
               </div>
               {presentTimeLeft === 0 && (
-                <p className="mt-2 text-xs font-black text-red-400">Time is up — submit your presentation</p>
+                <p className="mt-2 text-xs font-black text-red-400">Time is up. Submit your presentation</p>
               )}
             </div>
 

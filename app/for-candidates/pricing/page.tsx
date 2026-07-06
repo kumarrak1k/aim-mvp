@@ -13,7 +13,7 @@ export const metadata: Metadata = createPageMetadata({
   path: "/for-candidates/pricing",
   title: "Candidate Pricing",
   description:
-    "Transparent candidate pricing for AI interview practice and assessment centre coaching. Every account starts with a 3-day free trial — no payment details required. Annual plans save up to 28%.",
+    "Transparent candidate pricing for AI interview practice and assessment centre coaching. Every account starts with a 3-day free trial, no payment details required. Annual plans save up to 28%.",
   keywords: [
     "AI interview coach pricing",
     "assessment centre pricing",
@@ -39,7 +39,7 @@ const faqs = [
   {
     question: "Is there a free trial?",
     answer:
-      "Yes. Every new account starts with a 3-day free trial — unlimited practice with voice and camera coaching, no payment details required. (Mock assessment centres and career documents are on the Professional plan.) When the trial ends you move to the Free plan automatically (no charge), and you can upgrade any time.",
+      "Yes. Every new account starts with a 3-day free trial: unlimited practice with voice and camera coaching, no payment details required. (Mock assessment centres and career documents are on the Professional plan.) When the trial ends you move to the Free plan automatically (no charge), and you can upgrade any time.",
   },
   {
     question: "Can I switch between monthly and annual billing?",
@@ -54,17 +54,17 @@ const faqs = [
   {
     question: "Does the Professional plan include assessment centre practice?",
     answer:
-      "Interview practice (competency, technical, and behavioural) is included on Plus. The full mock assessment centre — case study, interview, and presentation — is a Professional plan feature.",
+      "Interview practice (competency, technical, and behavioural) is included on Plus. The full mock assessment centre (case study, interview, and presentation) is a Professional plan feature.",
   },
   {
     question: "Can I customise how many questions I get and what types?",
     answer:
-      "Yes, on the Professional plan. You can set your session length from 3 to 10 questions and build a hybrid question mix — for example, 3 competency, 3 technical, 2 leadership and 1 motivation question in a single session. This lets you replicate the exact interview format you are preparing for. Free and Plus sessions use 5 questions of the type selected at setup.",
+      "Yes, on the Professional plan. You can set your session length from 3 to 10 questions and build a hybrid question mix: for example, 3 competency, 3 technical, 2 leadership and 1 motivation question in a single session. This lets you replicate the exact interview format you are preparing for. Free and Plus sessions use 5 questions of the type selected at setup.",
   },
   {
     question: "Can I cancel at any time?",
     answer:
-      "Yes. Monthly plans can be cancelled at any time with no penalty. Annual plans are charged for the full year upfront — contact support if you need to discuss early cancellation. Every paid plan also comes with a 14-day money-back guarantee, no questions asked.",
+      "Yes. Monthly plans can be cancelled at any time with no penalty. Annual plans are charged for the full year upfront. Contact support if you need to discuss early cancellation. Every paid plan also comes with a 14-day money-back guarantee, no questions asked.",
   },
   {
     question: "Is my data deleted when I cancel?",
@@ -93,12 +93,12 @@ export default async function CandidatePricingPage() {
           Start free. Upgrade when the interview matters.
         </h1>
         <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-gray-400 sm:text-lg sm:leading-9">
-          Plans are built around how seriously you&rsquo;re preparing — from
+          Plans are built around how seriously you&rsquo;re preparing, from
           first-time practice to full assessment centre prep.
         </p>
         <p className="mx-auto mt-6 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-2.5 text-sm font-black text-white shadow-lg shadow-purple-900/40">
           <span aria-hidden>✨</span>
-          Every new account starts with a 3-day free trial — no payment details required
+          Every new account starts with a 3-day free trial, no payment details required
         </p>
       </section>
 

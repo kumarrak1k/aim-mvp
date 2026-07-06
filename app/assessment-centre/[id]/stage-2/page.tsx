@@ -167,7 +167,7 @@ export default function Stage2Page() {
           <ul className="space-y-2.5">
             {[
               `${session.templateConfig?.questionCount ?? 5} competency questions generated for your specific role and level`,
-              "Full AI feedback on every answer — content, structure and delivery",
+              "Full AI feedback on every answer: content, structure and delivery",
               "Your overall interview score feeds into your final assessment centre report",
             ].map((item, i) => (
               <li key={i} className="flex items-start gap-2.5 text-sm text-gray-300">

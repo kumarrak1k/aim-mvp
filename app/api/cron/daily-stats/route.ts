@@ -75,13 +75,13 @@ function buildEmail(
 
     <div style="margin-bottom:24px;">
       <p style="margin:0 0 4px;font-size:11px;font-weight:900;letter-spacing:0.18em;text-transform:uppercase;color:#a78bfa;">AI Career Mentor</p>
-      <h1 style="margin:0;font-size:22px;font-weight:900;color:#f9fafb;">Daily Stats — ${dateStr}</h1>
+      <h1 style="margin:0;font-size:22px;font-weight:900;color:#f9fafb;">Daily Stats: ${dateStr}</h1>
     </div>
 
     ${siteBlock("aicareermentor.co.uk", "United Kingdom", ukStats)}
     ${comStats ? siteBlock("aicareermentor.com", "International", comStats) : `
     <div style="background:#111827;border:1px solid #374151;border-radius:12px;padding:16px;margin-bottom:16px;">
-      <p style="margin:0;font-size:13px;color:#6b7280;">⚠️ .com stats unavailable — check /api/internal/stats</p>
+      <p style="margin:0;font-size:13px;color:#6b7280;">⚠️ .com stats unavailable. Check /api/internal/stats</p>
     </div>`}
 
     ${comStats ? `
@@ -159,7 +159,7 @@ export async function GET(req: NextRequest) {
   await resend.emails.send({
     from: process.env.EMAIL_FROM ?? "AI Career Mentor <noreply@aicareermentor.co.uk>",
     to: "rakesh@aicareermentor.co.uk",
-    subject: `📊 Daily Stats — ${dateStr}`,
+    subject: `📊 Daily Stats: ${dateStr}`,
     html: buildEmail(ukStats, comStats, dateStr),
   });
 

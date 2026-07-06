@@ -565,7 +565,7 @@ export function PracticeStartScreen({
                 </h3>
                 <p className="mt-1 text-sm leading-6 text-gray-400">
                   Choose how many questions (3–{MAX_TOTAL_QUESTIONS}) and optionally split them by
-                  type — e.g. 3 competency, 3 technical, 2 leadership, 2 motivation.
+                  type, e.g. 3 competency, 3 technical, 2 leadership, 2 motivation.
                 </p>
               </div>
             </div>
@@ -707,7 +707,7 @@ export function PracticeStartScreen({
                                   );
                                   setCustomQuestions(updated);
                                 }}
-                                placeholder={`Question ${i + 1} — type it exactly as you want it asked`}
+                                placeholder={`Question ${i + 1}: type it exactly as you want it asked`}
                                 maxLength={MAX_CUSTOM_QUESTION_LENGTH}
                                 rows={2}
                                 className="w-full rounded-xl border border-white/10 bg-white/[0.06] px-3 py-2 text-xs text-white placeholder-gray-600 focus:border-purple-400/50 focus:outline-none resize-none"

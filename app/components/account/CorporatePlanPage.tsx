@@ -200,7 +200,7 @@ export function CorporatePlanPage() {
         const date = data.effectiveDate ? fmtDate(data.effectiveDate) : "your billing date";
         setSuccessMsg(`Your plan will cancel on ${date}. Full access continues until then.`);
       } else if (action === "undo_cancel") {
-        setSuccessMsg("Cancellation reversed — your plan will continue as normal.");
+        setSuccessMsg("Cancellation reversed. Your plan will continue as normal.");
       } else if (action === "upgrade") {
         setSuccessMsg("Plan upgraded! Your workspace now has Business-tier access.");
       } else if (action === "downgrade") {
@@ -366,11 +366,11 @@ export function CorporatePlanPage() {
         {isTrial && (
           <div style={{ marginTop: "1rem" }}>
             <p style={{ color: "rgba(255,255,255,0.5)" }}>
-              Full Team access during your trial — up to 10 candidate invites.
+              Full Team access during your trial, up to 10 candidate invites.
             </p>
             {sub?.trialEndsAt && (
               <p style={{ marginTop: "0.35rem", fontSize: "0.8rem", color: "rgba(251,191,36,0.7)" }}>
-                Trial ends {fmtDate(sub.trialEndsAt)} — add a payment method to avoid interruption.
+                Trial ends {fmtDate(sub.trialEndsAt)}; add a payment method to avoid interruption.
               </p>
             )}
           </div>
@@ -392,7 +392,7 @@ export function CorporatePlanPage() {
             {periodEndDate && (
               <p style={{ marginTop: "0.35rem", fontSize: "0.8rem", color: cancelAtPeriodEnd ? "#f87171" : "rgba(255,255,255,0.4)" }}>
                 {cancelAtPeriodEnd
-                  ? `Access ends ${periodEndDate} — your plan will not renew.`
+                  ? `Access ends ${periodEndDate}. Your plan will not renew.`
                   : `Renews ${periodEndDate}`}
               </p>
             )}
@@ -406,7 +406,7 @@ export function CorporatePlanPage() {
               ? "Your subscription has been cancelled."
               : planStatus === "expired"
               ? "Your trial or plan has expired."
-              : "No active plan — add a payment method to send invites."}
+              : "No active plan. Add a payment method to send invites."}
           </p>
         )}
       </div>
@@ -507,7 +507,7 @@ export function CorporatePlanPage() {
             busy,
             checkoutLoading,
             "Activate subscription",
-            "Continue with your current plan — no interruption to your trial",
+            "Continue with your current plan, no interruption to your trial",
             "Add payment →",
             "fuchsia"
           )}
@@ -570,7 +570,7 @@ export function CorporatePlanPage() {
                 }),
               busy,
               false,
-              "Upgrade to Business — £399 / month",
+              "Upgrade to Business (£399 / month)",
               "10 seats · 500 invites / month · Custom branding",
               "Switch →",
               "fuchsia"
@@ -588,7 +588,7 @@ export function CorporatePlanPage() {
                 busy,
                 actionLoading,
                 "Undo cancellation",
-                `Your plan is set to cancel on ${periodEndDate} — click to reverse this`,
+                `Your plan is set to cancel on ${periodEndDate}; click to reverse this`,
                 "Undo →",
                 "fuchsia"
               )
@@ -604,7 +604,7 @@ export function CorporatePlanPage() {
                 busy,
                 actionLoading,
                 "Cancel plan",
-                `Cancels on ${periodEndDate} — you keep access until then`,
+                `Cancels on ${periodEndDate}; you keep access until then`,
                 "Cancel →",
                 "danger"
               )}
@@ -639,8 +639,8 @@ export function CorporatePlanPage() {
                 }),
               busy,
               actionLoading,
-              "Switch to Team — £149 / month",
-              `Takes effect ${periodEndDate} — keeps Business until then`,
+              "Switch to Team (£149 / month)",
+              `Takes effect ${periodEndDate}; keeps Business until then`,
               "Downgrade →",
               "neutral"
             )
@@ -658,7 +658,7 @@ export function CorporatePlanPage() {
                 busy,
                 actionLoading,
                 "Undo cancellation",
-                `Your plan is set to cancel on ${periodEndDate} — click to reverse this`,
+                `Your plan is set to cancel on ${periodEndDate}; click to reverse this`,
                 "Undo →",
                 "fuchsia"
               )
@@ -674,7 +674,7 @@ export function CorporatePlanPage() {
                 busy,
                 actionLoading,
                 "Cancel plan",
-                `Cancels on ${periodEndDate} — you keep access until then`,
+                `Cancels on ${periodEndDate}; you keep access until then`,
                 "Cancel →",
                 "danger"
               )}
@@ -709,7 +709,7 @@ export function CorporatePlanPage() {
                 busy,
                 actionLoading,
                 "Undo cancellation",
-                `Scheduled to cancel on ${periodEndDate} — click to reverse`,
+                `Scheduled to cancel on ${periodEndDate}; click to reverse`,
                 "Undo →",
                 "fuchsia"
               )

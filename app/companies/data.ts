@@ -21,7 +21,7 @@ export const COMPANY_GUIDES: CompanyGuide[] = [
     sector: "Management Consulting",
     logoInitials: "McKinsey",
     brandColor: "#0061A0",
-    tagline: "Pass the McKinsey interview — structure, cases, and PEI prep.",
+    tagline: "Pass the McKinsey interview: structure, cases, and PEI prep.",
     overview:
       "McKinsey's interview process is among the most rigorous in the world. It combines case interviews testing structured problem-solving with the Personal Experience Interview (PEI), which assesses leadership, personal impact, and entrepreneurial drive. Candidates typically face two rounds, each with two interviewers.",
     processSteps: [
@@ -33,7 +33,7 @@ export const COMPANY_GUIDES: CompanyGuide[] = [
       {
         title: "McKinsey Solve (Imbellus assessment)",
         description:
-          "A gamified problem-solving assessment lasting around 60–70 minutes. Tests systems thinking, data analysis, and decision-making under uncertainty — not domain knowledge.",
+          "A gamified problem-solving assessment lasting around 60–70 minutes. Tests systems thinking, data analysis, and decision-making under uncertainty, not domain knowledge.",
       },
       {
         title: "First round interviews (2 interviews)",
@@ -73,15 +73,15 @@ export const COMPANY_GUIDES: CompanyGuide[] = [
       {
         question:
           "How many piano tuners are there in London?",
-        tip: "A classic estimation/Fermi question. Structure your approach: population → households → piano ownership rate → tuning frequency → time per tuning → tuners per hour. Show your reasoning clearly — the number matters less than the method.",
+        tip: "A classic estimation/Fermi question. Structure your approach: population → households → piano ownership rate → tuning frequency → time per tuning → tuners per hour. Show your reasoning clearly. The number matters less than the method.",
       },
     ],
     insiderTips: [
-      "Structure before content — always pause to lay out your framework before answering. Interviewers assess how you think, not just what you conclude.",
-      "Lead with a hypothesis — McKinsey's culture is hypothesis-led. Say 'I think the issue is X, and here's why I'd test that first.'",
-      "Be specific in PEI stories — avoid 'we did X'. Every sentence should have 'I'. McKinsey is assessing your personal leadership, not your team's performance.",
-      "Ask for data — in case interviews, good candidates ask for specific data to validate or challenge their hypothesis. Passively accepting all information is a red flag.",
-      "Practise mental maths — expect to work with numbers in your head. Practice multiplying and dividing large numbers quickly and confidently.",
+      "Structure before content: always pause to lay out your framework before answering. Interviewers assess how you think, not just what you conclude.",
+      "Lead with a hypothesis: McKinsey's culture is hypothesis-led. Say 'I think the issue is X, and here's why I'd test that first.'",
+      "Be specific in PEI stories: avoid 'we did X'. Every sentence should have 'I'. McKinsey is assessing your personal leadership, not your team's performance.",
+      "Ask for data: in case interviews, good candidates ask for specific data to validate or challenge their hypothesis. Passively accepting all information is a red flag.",
+      "Practise mental maths: expect to work with numbers in your head. Practice multiplying and dividing large numbers quickly and confidently.",
     ],
     practiceRole: "Management Consultant",
     metaDescription:
@@ -94,7 +94,7 @@ export const COMPANY_GUIDES: CompanyGuide[] = [
     sector: "Professional Services",
     logoInitials: "Deloitte",
     brandColor: "#86BC25",
-    tagline: "Pass the Deloitte interview — competency, strengths, and digital assessment prep.",
+    tagline: "Pass the Deloitte interview: competency, strengths, and digital assessment prep.",
     overview:
       "Deloitte's graduate and experienced hire process typically involves online tests, a strengths-based video interview, and an assessment centre or partner interview. The focus is on Deloitte's values: integrity, outstanding value to clients, commitment to each other, and strength from diversity.",
     processSteps: [
@@ -106,12 +106,12 @@ export const COMPANY_GUIDES: CompanyGuide[] = [
       {
         title: "Online tests (numerical, situational judgement)",
         description:
-          "Numerical reasoning test and a situational judgement test. The SJT presents workplace scenarios and asks how you'd respond — it measures values alignment as much as analytical ability.",
+          "Numerical reasoning test and a situational judgement test. The SJT presents workplace scenarios and asks how you'd respond. It measures values alignment as much as analytical ability.",
       },
       {
         title: "Strengths-based video interview",
         description:
-          "A pre-recorded video interview with 5–8 strengths-based questions. You'll have a few seconds to read each question and typically 2–3 minutes to answer. These questions have no 'right' answer — Deloitte is assessing what energises you.",
+          "A pre-recorded video interview with 5–8 strengths-based questions. You'll have a few seconds to read each question and typically 2–3 minutes to answer. These questions have no 'right' answer. Deloitte is assessing what energises you.",
       },
       {
         title: "Assessment centre or partner interview",
@@ -131,7 +131,7 @@ export const COMPANY_GUIDES: CompanyGuide[] = [
       {
         question:
           "Tell me about something you've done that you're really proud of.",
-        tip: "A classic strengths question. Pick something that genuinely energised you — Deloitte can tell if you're performing vs. reflecting. Connect it to skills relevant to the role and articulate what you specifically did and why it mattered.",
+        tip: "A classic strengths question. Pick something that genuinely energised you. Deloitte can tell if you're performing vs. reflecting. Connect it to skills relevant to the role and articulate what you specifically did and why it mattered.",
       },
       {
         question:
@@ -150,11 +150,11 @@ export const COMPANY_GUIDES: CompanyGuide[] = [
       },
     ],
     insiderTips: [
-      "Strengths questions have no wrong answer — but vague answers are weak. Be specific and be authentic. Interviewers are trained to detect what energises vs. drains you.",
-      "Research the specific service line — Deloitte has Audit, Tax, Consulting, Risk, and Financial Advisory. Know which you're applying to and understand their current challenges.",
-      "Prepare 3–4 core stories — competency questions will ask for examples. Prepare stories on leadership, teamwork, overcoming failure, and commercial impact.",
-      "The group exercise is assessed on quality of contribution, not dominance — listening and building on others' points is scored as positively as introducing ideas.",
-      "Show genuine curiosity about clients — Deloitte values people who are interested in how businesses work. Come with questions about their clients' industries.",
+      "Strengths questions have no wrong answer, but vague answers are weak. Be specific and be authentic. Interviewers are trained to detect what energises vs. drains you.",
+      "Research the specific service line: Deloitte has Audit, Tax, Consulting, Risk, and Financial Advisory. Know which you're applying to and understand their current challenges.",
+      "Prepare 3–4 core stories: competency questions will ask for examples. Prepare stories on leadership, teamwork, overcoming failure, and commercial impact.",
+      "The group exercise is assessed on quality of contribution, not dominance. Listening and building on others' points is scored as positively as introducing ideas.",
+      "Show genuine curiosity about clients: Deloitte values people who are interested in how businesses work. Come with questions about their clients' industries.",
     ],
     practiceRole: "Consultant",
     metaDescription:
@@ -167,7 +167,7 @@ export const COMPANY_GUIDES: CompanyGuide[] = [
     sector: "Investment Banking & Financial Services",
     logoInitials: "GS",
     brandColor: "#0061A0",
-    tagline: "Pass the Goldman Sachs interview — technical, fit, and markets prep.",
+    tagline: "Pass the Goldman Sachs interview: technical, fit, and markets prep.",
     overview:
       "Goldman Sachs is one of the most competitive employers globally. Their process combines rigorous technical assessment with fit interviews that probe motivation, resilience, and commercial judgement. For front-office roles (IBD, Sales & Trading, Asset Management), expect both technical and behavioural rounds.",
     processSteps: [
@@ -208,7 +208,7 @@ export const COMPANY_GUIDES: CompanyGuide[] = [
       },
       {
         question:
-          "Why Goldman Sachs specifically — why not JP Morgan or Morgan Stanley?",
+          "Why Goldman Sachs specifically, and why not JP Morgan or Morgan Stanley?",
         tip: "Generic answers fail. Reference specific Goldman businesses (e.g. the dominance of GS in M&A advisory), culture of partnership ownership, or specific transactions they've advised on. Show you've done the research.",
       },
       {
@@ -219,15 +219,15 @@ export const COMPANY_GUIDES: CompanyGuide[] = [
       {
         question:
           "Describe a time you failed and what you learned.",
-        tip: "Goldman values resilience. Pick a genuine failure — not a humble-brag. Show intellectual honesty about what went wrong and clear evidence of what you changed as a result.",
+        tip: "Goldman values resilience. Pick a genuine failure, not a humble-brag. Show intellectual honesty about what went wrong and clear evidence of what you changed as a result.",
       },
     ],
     insiderTips: [
-      "Technical preparation is non-negotiable — for IBD, know DCF, LBO, and M&A deal structures cold. For markets roles, have a view on equities, rates, and FX.",
-      "'Why Goldman' is asked by every interviewer — give a different, specific answer each time. Interviewers talk to each other.",
-      "Read the GS earnings call and annual report — at least one interviewer will test whether you understand the firm's current business mix and challenges.",
-      "Demonstrate intellectual curiosity — Goldman values people who are interested in markets, not just employed by them. Come with genuine opinions on economic trends.",
-      "The Superday is a marathon — pace yourself, maintain energy, and treat each conversation as the most important of the day. Fatigue shows.",
+      "Technical preparation is non-negotiable: for IBD, know DCF, LBO, and M&A deal structures cold. For markets roles, have a view on equities, rates, and FX.",
+      "'Why Goldman' is asked by every interviewer, so give a different, specific answer each time. Interviewers talk to each other.",
+      "Read the GS earnings call and annual report: at least one interviewer will test whether you understand the firm's current business mix and challenges.",
+      "Demonstrate intellectual curiosity: Goldman values people who are interested in markets, not just employed by them. Come with genuine opinions on economic trends.",
+      "The Superday is a marathon: pace yourself, maintain energy, and treat each conversation as the most important of the day. Fatigue shows.",
     ],
     practiceRole: "Investment Banking Analyst",
     metaDescription:
@@ -240,9 +240,9 @@ export const COMPANY_GUIDES: CompanyGuide[] = [
     sector: "Professional Services",
     logoInitials: "KPMG",
     brandColor: "#00338D",
-    tagline: "Pass the KPMG interview — values, competencies, and case study prep.",
+    tagline: "Pass the KPMG interview: values, competencies, and case study prep.",
     overview:
-      "KPMG's process for graduates and experienced hires is structured around their values: integrity, excellence, courage, together, and for better. Their assessment centre is thorough — expect a written case study, group exercise, and competency interview, all assessed against KPMG's competency framework.",
+      "KPMG's process for graduates and experienced hires is structured around their values: integrity, excellence, courage, together, and for better. Their assessment centre is thorough: expect a written case study, group exercise, and competency interview, all assessed against KPMG's competency framework.",
     processSteps: [
       {
         title: "Online application",
@@ -252,7 +252,7 @@ export const COMPANY_GUIDES: CompanyGuide[] = [
       {
         title: "Online assessments (situational judgement + numerical)",
         description:
-          "A situational judgement test presenting workplace scenarios, and a numerical reasoning test. The SJT is values-based — scenarios test integrity, collaboration, and professional judgement.",
+          "A situational judgement test presenting workplace scenarios, and a numerical reasoning test. The SJT is values-based: scenarios test integrity, collaboration, and professional judgement.",
       },
       {
         title: "Job simulation / digital interview",
@@ -287,7 +287,7 @@ export const COMPANY_GUIDES: CompanyGuide[] = [
       {
         question:
           "Describe a time you worked in a team where conflict arose. How did you resolve it?",
-        tip: "KPMG values the 'together' principle. Show that you addressed conflict constructively — not avoided it. Focus on the outcome for the team, not just the resolution of the conflict itself.",
+        tip: "KPMG values the 'together' principle. Show that you addressed conflict constructively, not avoided it. Focus on the outcome for the team, not just the resolution of the conflict itself.",
       },
       {
         question:
@@ -296,11 +296,11 @@ export const COMPANY_GUIDES: CompanyGuide[] = [
       },
     ],
     insiderTips: [
-      "KPMG's values are not a formality — interviewers are specifically trained to assess them. Know all five values and have a story that demonstrates each.",
-      "The written case study is timed — practise reading fast and structuring recommendations concisely. Use bullet points and clear headers.",
-      "Group exercises reward listening — KPMG assessors score active listening and building on others as much as idea generation. Don't just talk; synthesise.",
-      "Demonstrate awareness of KPMG's specific clients and sectors — they serve FTSE 100 companies and major public sector bodies. Show you understand those industries.",
-      "Prepare your 'Why Audit/Advisory/Tax?' answer carefully — interviewers want to understand your genuine motivation for the service line, not just the firm.",
+      "KPMG's values are not a formality: interviewers are specifically trained to assess them. Know all five values and have a story that demonstrates each.",
+      "The written case study is timed: practise reading fast and structuring recommendations concisely. Use bullet points and clear headers.",
+      "Group exercises reward listening: KPMG assessors score active listening and building on others as much as idea generation. Don't just talk; synthesise.",
+      "Demonstrate awareness of KPMG's specific clients and sectors: they serve FTSE 100 companies and major public sector bodies. Show you understand those industries.",
+      "Prepare your 'Why Audit/Advisory/Tax?' answer carefully: interviewers want to understand your genuine motivation for the service line, not just the firm.",
     ],
     practiceRole: "Graduate Consultant",
     metaDescription:
@@ -313,19 +313,19 @@ export const COMPANY_GUIDES: CompanyGuide[] = [
     sector: "Government & Public Sector",
     logoInitials: "CS",
     brandColor: "#00703C",
-    tagline: "Pass the Civil Service Fast Stream — behaviours, strengths, and online test prep.",
+    tagline: "Pass the Civil Service Fast Stream: behaviours, strengths, and online test prep.",
     overview:
       "The Civil Service Fast Stream is the UK government's graduate leadership programme. It is one of the most competitive graduate schemes in the UK, with an acceptance rate below 5%. The process is structured around the Civil Service Success Profiles framework: Behaviours, Strengths, Ability, Experience, and Technical skills.",
     processSteps: [
       {
         title: "Online application and eligibility check",
         description:
-          "Basic eligibility check (degree classification, right to work). All eligible candidates are invited to the online tests — unlike many schemes, the Fast Stream does not CV-screen at this stage.",
+          "Basic eligibility check (degree classification, right to work). All eligible candidates are invited to the online tests. Unlike many schemes, the Fast Stream does not CV-screen at this stage.",
       },
       {
         title: "Online tests (Situational Judgement + Work Strengths)",
         description:
-          "A situational judgement test based on Civil Service values and a strengths questionnaire assessing your natural working style. These are used for sift, not ranking — they assess fit rather than ability.",
+          "A situational judgement test based on Civil Service values and a strengths questionnaire assessing your natural working style. These are used for sift, not ranking. They assess fit rather than ability.",
       },
       {
         title: "E-Tray exercise",
@@ -350,30 +350,30 @@ export const COMPANY_GUIDES: CompanyGuide[] = [
       {
         question:
           "Tell me about a time you led a project or initiative that delivered lasting change.",
-        tip: "Use the STAR method. The Fast Stream specifically assesses 'Changing and Improving' — show that you identified a problem, designed a solution, and the change persisted after your involvement ended.",
+        tip: "Use the STAR method. The Fast Stream specifically assesses 'Changing and Improving': show that you identified a problem, designed a solution, and the change persisted after your involvement ended.",
       },
       {
         question:
           "Describe a situation where you had to communicate a complex idea to a non-specialist audience.",
-        tip: "Communicating and influencing is a core behaviour. Show you adapted your style — simplified language, used analogies, checked for understanding. Give a specific example with a clear outcome.",
+        tip: "Communicating and influencing is a core behaviour. Show you adapted your style: simplified language, used analogies, checked for understanding. Give a specific example with a clear outcome.",
       },
       {
         question:
           "Tell me about a time when you had to make a decision with incomplete information under time pressure.",
-        tip: "This tests 'Making Effective Decisions'. Show your decision-making process: what information you gathered, what you decided, why, and what you would do differently. Acknowledge ambiguity — don't pretend you had all the answers.",
+        tip: "This tests 'Making Effective Decisions'. Show your decision-making process: what information you gathered, what you decided, why, and what you would do differently. Acknowledge ambiguity. Don't pretend you had all the answers.",
       },
       {
         question:
           "What do you understand by the Civil Service value of 'impartiality', and can you give an example of when you demonstrated it?",
-        tip: "The Civil Service has four core values: integrity, honesty, objectivity, and impartiality. Know them all. Impartiality means providing balanced advice regardless of personal views — give an example where you put aside personal preference to serve others.",
+        tip: "The Civil Service has four core values: integrity, honesty, objectivity, and impartiality. Know them all. Impartiality means providing balanced advice regardless of personal views. Give an example where you put aside personal preference to serve others.",
       },
     ],
     insiderTips: [
-      "Read the Success Profiles framework before applying — it is the definitive guide to how every part of the process is assessed. Download it from gov.uk.",
-      "Behaviour questions require STAR — the Fast Stream panel uses structured scoring rubrics. Vague answers score zero. Use first-person, be specific, quantify where possible.",
-      "The written exercise is not about the 'right answer' — assessors want to see structured analysis, clear recommendations, and balanced consideration of trade-offs.",
-      "Research the specific stream — Generalist Fast Stream, Digital, Data and Technology, Finance, Policy Profession. Each has different assessment criteria and day-to-day realities.",
-      "The group exercise tests collaboration, not dominance — Civil Service culture values consensus and listening. Being the loudest voice often scores lower than building the group to a better conclusion.",
+      "Read the Success Profiles framework before applying: it is the definitive guide to how every part of the process is assessed. Download it from gov.uk.",
+      "Behaviour questions require STAR: the Fast Stream panel uses structured scoring rubrics. Vague answers score zero. Use first-person, be specific, quantify where possible.",
+      "The written exercise is not about the 'right answer': assessors want to see structured analysis, clear recommendations, and balanced consideration of trade-offs.",
+      "Research the specific stream: Generalist Fast Stream, Digital, Data and Technology, Finance, Policy Profession. Each has different assessment criteria and day-to-day realities.",
+      "The group exercise tests collaboration, not dominance. Civil Service culture values consensus and listening. Being the loudest voice often scores lower than building the group to a better conclusion.",
     ],
     practiceRole: "Policy Advisor",
     metaDescription:

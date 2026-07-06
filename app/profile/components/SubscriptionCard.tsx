@@ -69,7 +69,7 @@ export function SubscriptionCard() {
           )}
           {info.isPastDue && (
             <p className="mt-1 text-xs font-bold text-amber-300">
-              ⚠ Payment failed — update your card to keep access.
+              ⚠ Payment failed. Update your card to keep access.
             </p>
           )}
           {!info.isActive && (

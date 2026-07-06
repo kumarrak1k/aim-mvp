@@ -14,15 +14,15 @@ const faqs = [
   },
   {
     q: "How does the scoring work?",
-    a: "AI evaluates each of the four components — Situation, Task, Action, Result — separately, scoring each out of 10 with specific improvement feedback, plus an overall score and a top improvement suggestion.",
+    a: "AI evaluates each of the four components (Situation, Task, Action, Result) separately, scoring each out of 10 with specific improvement feedback, plus an overall score and a top improvement suggestion.",
   },
   {
     q: "What types of answers work best?",
-    a: "The scorer is designed for competency interview answers — 'tell me about a time when...' questions. Write out your full answer as you would speak it, aiming for the equivalent of 2–4 minutes of spoken content.",
+    a: "The scorer is designed for competency interview answers, such as 'tell me about a time when...' questions. Write out your full answer as you would speak it, aiming for the equivalent of 2–4 minutes of spoken content.",
   },
   {
     q: "Can I paste any interview answer?",
-    a: "Yes — the scorer works with any behavioural or competency answer. Simply paste your answer and the AI will assess how well it fits the STAR structure.",
+    a: "Yes. The scorer works with any behavioural or competency answer. Simply paste your answer and the AI will assess how well it fits the STAR structure.",
   },
 ];
 
@@ -101,14 +101,14 @@ export function STARScorerClient() {
         {/* Hero */}
         <section className="mb-10 text-center">
           <p className="mx-auto mb-5 inline-flex items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-400/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-emerald-300">
-            Free — no sign-in required
+            Free, no sign-in required
           </p>
           <h1 className="text-[2.2rem] font-black leading-[1.04] tracking-[-0.055em] sm:text-4xl">
             Free STAR Answer Scorer
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-gray-400">
             Paste your interview answer. Get an instant score on each STAR
-            component — Situation, Task, Action, Result — with specific feedback.
+            component (Situation, Task, Action, Result) with specific feedback.
             No account required.
           </p>
         </section>
@@ -230,14 +230,14 @@ export function STARScorerClient() {
               <p className="font-black">Get full AI coaching on every answer</p>
               <p className="mt-2 text-sm text-gray-400">
                 AI Career Mentor generates tailored questions, plays them as audio,
-                and scores your voice delivery and camera presence too — not just
+                and scores your voice delivery and camera presence too, not just
                 answer content.
               </p>
               <Link
                 href="/for-candidates/sign-up"
                 className="mt-5 inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-7 py-3.5 text-sm font-black text-white shadow-xl transition hover:scale-[1.02]"
               >
-                Start free — no credit card →
+                Start free, no credit card →
               </Link>
             </div>
           </div>

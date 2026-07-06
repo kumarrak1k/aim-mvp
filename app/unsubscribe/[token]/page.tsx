@@ -6,7 +6,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Unsubscribe — AI Career Mentor",
+  title: "Unsubscribe | AI Career Mentor",
   robots: { index: false, follow: false },
 };
 

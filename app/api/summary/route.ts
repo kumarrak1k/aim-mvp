@@ -337,7 +337,7 @@ const buildFallbackSummary = (
         ? {
             day: "Day 5",
             focus: "Confidence",
-            task: "Rewrite three answers to sound more assertive — remove hedging phrases like 'I think' and 'maybe'.",
+            task: "Rewrite three answers to sound more assertive by removing hedging phrases like 'I think' and 'maybe'.",
           }
         : hasCamera
         ? {

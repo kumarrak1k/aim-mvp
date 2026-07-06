@@ -55,7 +55,7 @@ export const metadata: Metadata = {
         url: "/opengraph-image",
         width: 1200,
         height: 630,
-        alt: "AI Career Mentor — AI Interview Coaching",
+        alt: "AI Career Mentor · AI Interview Coaching",
       },
     ],
     locale: "en_GB",
@@ -194,7 +194,7 @@ const structuredData = {
           "@type": "HowToStep",
           position: 3,
           name: "Answer AI-generated questions",
-          text: "Listen to each question delivered as natural audio. Answer as you would in a real interview — speaking aloud or typing. Take your time.",
+          text: "Listen to each question delivered as natural audio. Answer as you would in a real interview, speaking aloud or typing. Take your time.",
         },
         {
           "@type": "HowToStep",

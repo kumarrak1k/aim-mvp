@@ -68,7 +68,7 @@ export default function ApiDocsPage() {
           </span>
           <h1 className="mt-4 text-4xl font-black tracking-[-0.04em]">ATS API Reference</h1>
           <p className="mt-3 max-w-2xl text-gray-400">
-            Pull candidate assessment results directly into your ATS or HRIS. Invite candidates programmatically, track completion status, and retrieve scored results — all via a simple REST API.
+            Pull candidate assessment results directly into your ATS or HRIS. Invite candidates programmatically, track completion status, and retrieve scored results, all via a simple REST API.
           </p>
           <div className="mt-4 flex flex-wrap gap-3 text-sm">
             <a
@@ -264,10 +264,10 @@ export default function ApiDocsPage() {
               <tbody className="divide-y divide-white/[0.04] text-gray-300">
                 <tr><td className="px-4 py-3"><Code>200</Code></td><td className="px-4 py-3">OK</td></tr>
                 <tr><td className="px-4 py-3"><Code>201</Code></td><td className="px-4 py-3">Created</td></tr>
-                <tr><td className="px-4 py-3"><Code>400</Code></td><td className="px-4 py-3">Bad request — check required fields</td></tr>
+                <tr><td className="px-4 py-3"><Code>400</Code></td><td className="px-4 py-3">Bad request: check required fields</td></tr>
                 <tr><td className="px-4 py-3"><Code>401</Code></td><td className="px-4 py-3">Invalid or missing API key</td></tr>
                 <tr><td className="px-4 py-3"><Code>404</Code></td><td className="px-4 py-3">Resource not found</td></tr>
-                <tr><td className="px-4 py-3"><Code>500</Code></td><td className="px-4 py-3">Internal server error — contact support</td></tr>
+                <tr><td className="px-4 py-3"><Code>500</Code></td><td className="px-4 py-3">Internal server error: contact support</td></tr>
               </tbody>
             </table>
           </div>

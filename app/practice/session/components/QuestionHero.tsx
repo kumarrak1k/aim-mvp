@@ -194,7 +194,7 @@ export function QuestionHero(props: QuestionHeroProps) {
               Play each question and start recording automatically?
             </p>
             <p className="mt-0.5 text-[12px] leading-5 text-gray-300">
-              So you don&apos;t have to tap for every question — we&apos;ll remember
+              So you don&apos;t have to tap for every question. We&apos;ll remember
               your choice.
             </p>
             <div className="mt-2.5 flex gap-2">

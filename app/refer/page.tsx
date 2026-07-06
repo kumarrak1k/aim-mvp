@@ -34,7 +34,7 @@ export default function ReferPage() {
     });
   }
 
-  const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(`I've been using AI Career Mentor to practice interviews — AI feedback on your answers, voice, and camera presence. Try it free:`)}&url=${encodeURIComponent(referralUrl)}`;
+  const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(`I've been using AI Career Mentor to practice interviews. AI feedback on your answers, voice, and camera presence. Try it free:`)}&url=${encodeURIComponent(referralUrl)}`;
   const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(`I've been using AI Career Mentor for interview prep. Try it free: ${referralUrl}`)}`;
   const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(referralUrl)}`;
 
@@ -60,7 +60,7 @@ export default function ReferPage() {
           </h1>
           <p className="mx-auto mt-4 max-w-md text-sm leading-6 text-gray-400">
             Share your personal link. Every person who signs up gets instant
-            access to free AI interview coaching — voice feedback, camera
+            access to free AI interview coaching: voice feedback, camera
             presence scoring, and model answers.
           </p>
         </div>

@@ -211,7 +211,7 @@ export default function PersonalStatementPage() {
                         ? savedCV.cvFileName
                           ? `CV: ${savedCV.cvFileName}`
                           : "Pre-filled from saved profile CV"
-                        : "No saved CV — upload one to use across Career Docs"}
+                        : "No saved CV. Upload one to use across Career Docs"}
                     </span>
                     <div className="flex shrink-0 items-center gap-1.5">
                       <button
@@ -260,7 +260,7 @@ export default function PersonalStatementPage() {
               <div>
                 <label className="mb-1.5 block text-xs font-black uppercase tracking-[0.18em] text-gray-400">Key achievements *</label>
                 <textarea value={achievements} onChange={(e) => setAchievements(e.target.value)}
-                  placeholder="Awards, projects, leadership roles, results you're proud of — include numbers where possible…"
+                  placeholder="Awards, projects, leadership roles, results you're proud of. Include numbers where possible…"
                   rows={3}
                   className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-600 outline-none focus:border-emerald-400/40 focus:ring-1 focus:ring-emerald-400/20 resize-y" required />
               </div>

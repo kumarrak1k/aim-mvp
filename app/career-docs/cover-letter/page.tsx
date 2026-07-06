@@ -167,7 +167,7 @@ export default function CoverLetterPage() {
               <div>
                 <label className="mb-1.5 block text-xs font-black uppercase tracking-[0.18em] text-gray-400">Job description *</label>
                 <textarea value={jobDescription} onChange={(e) => setJobDescription(e.target.value)}
-                  placeholder="Paste the job posting here — the more detail the better for tailoring…"
+                  placeholder="Paste the job posting here. The more detail, the better for tailoring…"
                   rows={6}
                   className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-600 outline-none focus:border-cyan-400/40 focus:ring-1 focus:ring-cyan-400/20 resize-y" required />
               </div>
@@ -187,7 +187,7 @@ export default function CoverLetterPage() {
                         ? savedCV.cvFileName
                           ? `CV: ${savedCV.cvFileName}`
                           : "Pre-filled from saved profile CV"
-                        : "No saved CV — upload one to use across Career Docs"}
+                        : "No saved CV. Upload one to use across Career Docs"}
                     </span>
                     <div className="flex shrink-0 items-center gap-1.5">
                       <button
@@ -225,7 +225,7 @@ export default function CoverLetterPage() {
                 )}
 
                 <textarea value={experience} onChange={(e) => setExperience(e.target.value)}
-                  placeholder="Summarise your relevant experience — roles, key achievements, skills. Include numbers and specifics where possible…"
+                  placeholder="Summarise your relevant experience: roles, key achievements, skills. Include numbers and specifics where possible…"
                   rows={5}
                   className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-600 outline-none focus:border-cyan-400/40 focus:ring-1 focus:ring-cyan-400/20 resize-y" required />
                 <p className={`mt-1 text-right text-[10px] ${experience.length > 8000 ? "text-red-400" : "text-gray-600"}`}>
@@ -339,7 +339,7 @@ export default function CoverLetterPage() {
 
                 {/* Customisation tips */}
                 <div className="rounded-[1.75rem] border border-amber-400/[0.18] bg-amber-400/[0.05] p-5 backdrop-blur-xl">
-                  <p className="mb-3 text-[11px] font-black uppercase tracking-[0.22em] text-amber-300">Before you send — personalise it</p>
+                  <p className="mb-3 text-[11px] font-black uppercase tracking-[0.22em] text-amber-300">Before you send, personalise it</p>
                   <ul className="space-y-2">
                     {result.customisationTips.map((tip, i) => (
                       <li key={i} className="flex items-start gap-2 text-sm text-gray-300">

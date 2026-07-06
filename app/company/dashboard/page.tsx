@@ -261,7 +261,7 @@ function DashboardContent() {
           <div className="mb-8 flex items-center gap-3 rounded-2xl border border-emerald-400/25 bg-emerald-400/[0.07] px-5 py-4">
             <span className="text-xl">🎉</span>
             <div>
-              <p className="text-sm font-black text-emerald-200">Payment confirmed — welcome to {plan?.name ?? "your plan"}!</p>
+              <p className="text-sm font-black text-emerald-200">Payment confirmed. Welcome to {plan?.name ?? "your plan"}!</p>
               <p className="mt-0.5 text-xs text-emerald-200/70">Your workspace is fully activated. Start sending candidate invites.</p>
             </div>
           </div>
@@ -292,7 +292,7 @@ function DashboardContent() {
           <div className="mb-8 flex flex-col gap-3 rounded-2xl border border-fuchsia-400/20 bg-fuchsia-400/[0.06] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="text-sm font-black text-fuchsia-200">
-                {plan?.name} plan — free trial · {daysLeft} day{daysLeft !== 1 ? "s" : ""} remaining
+                {plan?.name} plan (free trial) · {daysLeft} day{daysLeft !== 1 ? "s" : ""} remaining
               </p>
               <p className="mt-0.5 text-xs text-fuchsia-200/70">
                 Full access until your trial ends ·{" "}
@@ -307,7 +307,7 @@ function DashboardContent() {
                   disabled={billingLoading}
                   className="rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 px-5 py-2.5 text-sm font-black text-white shadow-lg transition hover:scale-[1.02] disabled:opacity-60"
                 >
-                  {billingLoading ? "Loading…" : "Upgrade — monthly"}
+                  {billingLoading ? "Loading…" : "Upgrade · monthly"}
                 </button>
                 <button
                   onClick={() => void startCheckout("annual")}
@@ -343,7 +343,7 @@ function DashboardContent() {
           <div className="mb-8 flex flex-col gap-3 rounded-2xl border border-emerald-400/20 bg-emerald-400/[0.05] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="text-sm font-black text-emerald-200">
-                {plan?.name ?? "Active"} plan — paid
+                {plan?.name ?? "Active"} plan (paid)
               </p>
               <p className="mt-0.5 text-xs text-emerald-200/70">Your workspace is fully active. Manage invoices, payment method or cancel in the billing portal.</p>
             </div>
@@ -546,12 +546,12 @@ function DashboardContent() {
               <p className="text-center text-gray-300">
                 {templates.length === 0
                   ? "Welcome! Here's how to start assessing candidates:"
-                  : "No assessments yet — invite your first candidate to get started."}
+                  : "No assessments yet. Invite your first candidate to get started."}
               </p>
               <div className="mx-auto mt-6 grid max-w-2xl gap-3 sm:grid-cols-3">
                 {[
                   { n: "1", t: "Build a template", d: "Pick the role, type and stages once." },
-                  { n: "2", t: "Invite candidates", d: "Share a link — they complete it at their own pace." },
+                  { n: "2", t: "Invite candidates", d: "Share a link; they complete it at their own pace." },
                   { n: "3", t: "Review results", d: "Compare AI-scored, ranked candidates." },
                 ].map((s) => (
                   <div key={s.n} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-center">
@@ -667,9 +667,9 @@ function DashboardContent() {
                     disabled={memberInviteLoading}
                     className="mt-2 w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm font-semibold text-white focus:border-fuchsia-400/40 focus:outline-none"
                   >
-                    <option value="recruiter">Recruiter — can create templates &amp; invite candidates</option>
-                    <option value="admin">Admin — full access including billing</option>
-                    <option value="viewer">Viewer — read-only access</option>
+                    <option value="recruiter">Recruiter: can create templates &amp; invite candidates</option>
+                    <option value="admin">Admin: full access including billing</option>
+                    <option value="viewer">Viewer: read-only access</option>
                   </select>
                 </div>
 

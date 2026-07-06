@@ -519,7 +519,7 @@ export function TemplateForm({ initial, onSave, onCancel, saving }: TemplateForm
                 </div>
               </div>
               <p className="mt-1 text-[10px] text-gray-600">
-                Accepts PDF, DOCX, TXT, MD — text is extracted and pasted above.
+                Accepts PDF, DOCX, TXT, MD. Text is extracted and pasted above.
               </p>
 
               {uploadError && (
@@ -878,7 +878,7 @@ function CustomQuestionsSection({
         Custom question{count > 1 ? "s" : ""}
       </p>
       <p className="mb-4 text-xs text-gray-400">
-        These questions are asked verbatim — the AI skips generation and plays
+        These questions are asked verbatim: the AI skips generation and plays
         your exact text.
       </p>
       <div className="space-y-3">
@@ -1014,7 +1014,7 @@ function QuestionMixSection({
           </div>
           {remaining < 0 && (
             <p className="mt-3 text-xs text-red-300">
-              Mix total exceeds question count — reduce some types.
+              Mix total exceeds question count. Reduce some types.
             </p>
           )}
         </div>

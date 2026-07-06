@@ -19,7 +19,7 @@ export default function CompaniesIndexPage() {
           </h1>
           <p className="mx-auto mt-4 max-w-2xl text-lg leading-8 text-gray-400">
             Process breakdowns, sample questions, insider tips, and AI-powered mock
-            interview practice — tailored to each employer.
+            interview practice, tailored to each employer.
           </p>
         </div>
 

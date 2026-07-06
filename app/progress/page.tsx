@@ -267,7 +267,7 @@ export default function ProgressPage() {
             </h1>
             <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-gray-300 sm:text-lg">
               Every completed session is saved and turned into a clear
-              improvement dashboard — score trends, readiness signals, category
+              improvement dashboard: score trends, readiness signals, category
               strengths and your personalised focus areas.
             </p>
           </div>
@@ -503,10 +503,10 @@ function ProgressDashboard({ stats, isAdvancedPlan }: { stats: ProgressStats; is
               Interview practice is just the start.
             </h2>
             <p className="mt-3 text-sm leading-7 text-gray-300">
-              Most employers now follow interviews with a full assessment centre —
-              case study, presentation, and more.{" "}
+              Most employers now follow interviews with a full assessment centre,
+              including a case study, presentation, and more.{" "}
               {isAdvancedPlan
-                ? "Simulate the complete format before the real thing — it's included in your plan."
+                ? "Simulate the complete format before the real thing. It's included in your plan."
                 : "Upgrade to Professional and simulate the complete format before the real thing."}
             </p>
           </div>
@@ -801,8 +801,8 @@ function EmptyACState() {
           Complete your first Assessment Centre.
         </h2>
         <p className="mt-3 max-w-2xl text-sm leading-7 text-gray-300">
-          Once you finish a full mock assessment centre session — case study,
-          interview, and presentation — your scores and AI-generated report
+          Once you finish a full mock assessment centre session (case study,
+          interview, and presentation), your scores and AI-generated report
           will appear here.
         </p>
         <div className="mt-6 flex flex-col gap-3 sm:flex-row">
@@ -883,7 +883,7 @@ function ACSessionRow({ session }: { session: ACSession }) {
         </div>
         <div className="rounded-2xl border border-white/10 bg-white/[0.05] p-3 text-center">
           <p className={`text-2xl font-black tracking-[-0.04em] ${scoreCol}`}>
-            {score !== null ? score.toFixed(1) : "—"}
+            {score !== null ? score.toFixed(1) : "–"}
           </p>
           <p className="text-[10px] font-black uppercase tracking-[0.16em] text-gray-500">/10</p>
         </div>
@@ -914,28 +914,28 @@ function ACDashboard({ sessions }: { sessions: ACSession[] }) {
         <div className="rounded-[1.55rem] border border-cyan-300/20 bg-cyan-300/10 p-5 shadow-2xl backdrop-blur-2xl">
           <p className="text-xs font-black uppercase tracking-[0.18em] text-gray-400">Latest score</p>
           <p className="mt-3 text-3xl font-black tracking-[-0.045em] text-white">
-            {latest.overallScore !== null ? `${latest.overallScore.toFixed(1)}/10` : "—"}
+            {latest.overallScore !== null ? `${latest.overallScore.toFixed(1)}/10` : "–"}
           </p>
           <p className="mt-2 text-xs font-semibold text-gray-500">{formatSessionDate(latest.createdAt)}</p>
         </div>
         <div className="rounded-[1.55rem] border border-white/10 bg-white/[0.055] p-5 shadow-2xl backdrop-blur-2xl">
           <p className="text-xs font-black uppercase tracking-[0.18em] text-gray-400">Average</p>
           <p className="mt-3 text-3xl font-black tracking-[-0.045em] text-white">
-            {avg !== null ? `${avg}/10` : "—"}
+            {avg !== null ? `${avg}/10` : "–"}
           </p>
           <p className="mt-2 text-xs font-semibold text-gray-500">{sessions.length} completed session{sessions.length !== 1 ? "s" : ""}</p>
         </div>
         <div className="rounded-[1.55rem] border border-white/10 bg-white/[0.055] p-5 shadow-2xl backdrop-blur-2xl">
           <p className="text-xs font-black uppercase tracking-[0.18em] text-gray-400">Best score</p>
           <p className="mt-3 text-3xl font-black tracking-[-0.045em] text-white">
-            {best !== null ? `${best.toFixed(1)}/10` : "—"}
+            {best !== null ? `${best.toFixed(1)}/10` : "–"}
           </p>
           <p className="mt-2 text-xs font-semibold text-gray-500">Highest session</p>
         </div>
         <div className="rounded-[1.55rem] border border-white/10 bg-white/[0.055] p-5 shadow-2xl backdrop-blur-2xl">
           <p className="text-xs font-black uppercase tracking-[0.18em] text-gray-400">Readiness</p>
           <p className="mt-3 text-xl font-black tracking-[-0.03em] text-white">
-            {report?.readinessLevel ?? "—"}
+            {report?.readinessLevel ?? "–"}
           </p>
           <p className="mt-2 text-xs font-semibold text-gray-500">From latest report</p>
         </div>

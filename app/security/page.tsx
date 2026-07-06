@@ -13,9 +13,9 @@ const structuredData = {
   "@context": "https://schema.org",
   "@type": "WebPage",
   url: absoluteUrl("/security"),
-  name: "Security & Data Protection — AI Career Mentor",
+  name: "Security & Data Protection | AI Career Mentor",
   description:
-    "How AI Career Mentor protects your data — encryption, access controls, subprocessors, and GDPR compliance.",
+    "How AI Career Mentor protects your data: encryption, access controls, subprocessors, and GDPR compliance.",
   publisher: { "@id": `${siteConfig.url}/#organization` },
 };
 
@@ -63,7 +63,7 @@ const controls = [
   },
   {
     area: "Authentication",
-    detail: "Managed by Clerk — industry-standard OAuth2/OIDC flows, brute-force protection, and session expiry. We never handle raw passwords.",
+    detail: "Managed by Clerk, with industry-standard OAuth2/OIDC flows, brute-force protection, and session expiry. We never handle raw passwords.",
   },
   {
     area: "Camera data",
@@ -71,7 +71,7 @@ const controls = [
   },
   {
     area: "Voice/audio",
-    detail: "Live transcription uses your browser's built-in speech recognition. For filler-word and delivery analysis a short audio clip is sent to OpenAI's Whisper API, transcribed, and then discarded — it is not stored on our servers. Voice mode is optional.",
+    detail: "Live transcription uses your browser's built-in speech recognition. For filler-word and delivery analysis a short audio clip is sent to OpenAI's Whisper API, transcribed, and then discarded. It is not stored on our servers. Voice mode is optional.",
   },
   {
     area: "Access controls *",
@@ -104,7 +104,7 @@ export default function SecurityPage() {
             Security & data protection
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-gray-400">
-            How we protect your data — from the moment you start a practice
+            How we protect your data, from the moment you start a practice
             session to long after you&rsquo;ve landed the job.
           </p>
         </section>

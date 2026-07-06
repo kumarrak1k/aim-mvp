@@ -7,7 +7,7 @@ const structuredData = {
   url: absoluteUrl("/about"),
   name: "About AI Career Mentor",
   description:
-    "The mission and story behind AI Career Mentor — a UK-built AI coaching platform for candidates and hiring teams.",
+    "The mission and story behind AI Career Mentor, a UK-built AI coaching platform for candidates and hiring teams.",
   mainEntity: {
     "@id": `${siteConfig.url}/#organization`,
   },
@@ -20,11 +20,11 @@ const values = [
   },
   {
     title: "Honest feedback, not flattery",
-    body: "Real improvement comes from knowing exactly where you fell short. Our AI gives you the truth — constructively and specifically — not the encouragement you wanted to hear.",
+    body: "Real improvement comes from knowing exactly where you fell short. Our AI gives you the truth (constructively and specifically), not the encouragement you wanted to hear.",
   },
   {
     title: "Reducing bias, not reinforcing it",
-    body: "Unstructured interviews disadvantage candidates who aren't familiar with the unwritten rules. We teach those rules explicitly — STAR structure, competency frameworks, delivery — so that every candidate can be judged on their genuine capability.",
+    body: "Unstructured interviews disadvantage candidates who aren't familiar with the unwritten rules. We teach those rules explicitly, from STAR structure and competency frameworks to delivery, so that every candidate can be judged on their genuine capability.",
   },
   {
     title: "Privacy by design",
@@ -54,7 +54,7 @@ export function AboutPageContent() {
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-gray-400 sm:text-lg sm:leading-9">
             AI Career Mentor is a UK-built platform that gives candidates the kind
-            of preparation that used to cost hundreds of pounds per hour — and
+            of preparation that used to cost hundreds of pounds per hour, and
             gives hiring teams a structured, fair way to assess candidates at scale.
           </p>
         </section>
@@ -75,7 +75,7 @@ export function AboutPageContent() {
           <h2 className="mb-6 text-2xl font-black tracking-[-0.04em]">Why this matters</h2>
           <div className="space-y-5 text-base leading-8 text-gray-400">
             <p>
-              The interview process has a diversity problem — and it starts long before
+              The interview process has a diversity problem, and it starts long before
               the interview room. Candidates from underrepresented backgrounds,
               first-generation graduates, career changers, and those without access to
               professional networks face a structural disadvantage that has nothing to
@@ -85,8 +85,8 @@ export function AboutPageContent() {
               Access to quality interview coaching has historically been a privilege.
               Private coaches charge £150–£300 per hour. Elite universities run
               dedicated careers programmes unavailable to everyone else. Professional
-              networks give some candidates insider knowledge — the unwritten rules of
-              interviews — that others never learn.
+              networks give some candidates insider knowledge (the unwritten rules of
+              interviews) that others never learn.
             </p>
             <p>
               The result is that hiring decisions are influenced not just by capability,
@@ -95,8 +95,8 @@ export function AboutPageContent() {
               people who simply didn&rsquo;t know how to present themselves.
             </p>
             <p className="font-black text-white">
-              AI Career Mentor exists to close that gap. We give every candidate —
-              regardless of background, institution, or budget — access to the same
+              AI Career Mentor exists to close that gap. We give every candidate,
+              regardless of background, institution, or budget, access to the same
               quality of structured, honest, personalised coaching that used to be
               reserved for the few.
             </p>
@@ -109,18 +109,18 @@ export function AboutPageContent() {
           <div className="space-y-5 text-base leading-8 text-gray-400">
             <p>
               AI Career Mentor was built around one observation: preparation makes a
-              meaningful difference to interview outcomes — and access to that
+              meaningful difference to interview outcomes, yet access to that
               preparation is anything but equal. Candidates who practise with
               structured feedback perform measurably better. The coaching works. The
               problem is access.
             </p>
             <p>
               The platform started with one question: what would it look like if every
-              candidate — first-generation graduate, career changer, returner to work,
-              candidate from a non-traditional background — could access the same
+              candidate, whether a first-generation graduate, career changer, returner
+              to work, or candidate from a non-traditional background, could access the same
               calibre of coaching as someone with a top-tier careers service and a
               private coach? Not generic questions, but coaching tailored to their
-              exact role, level, and interview format — with honest feedback on answers,
+              exact role, level, and interview format, with honest feedback on answers,
               voice delivery, and camera presence.
             </p>
             <p>

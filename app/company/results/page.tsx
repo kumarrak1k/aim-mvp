@@ -185,7 +185,7 @@ export default function CompanyResultsPage() {
             <StatTile label="Pending" value={String(stats.pending)} color="text-yellow-300" />
             <StatTile
               label="Average score"
-              value={stats.averageScore !== null ? `${stats.averageScore}/10` : "—"}
+              value={stats.averageScore !== null ? `${stats.averageScore}/10` : "–"}
               color="text-cyan-300"
             />
             <StatTile
@@ -248,7 +248,7 @@ export default function CompanyResultsPage() {
             <div className="px-6 py-16 text-center">
               <p className="text-gray-400">
                 {rows.length === 0
-                  ? "No assessments sent yet — invite a candidate from the Candidates page."
+                  ? "No assessments sent yet. Invite a candidate from the Candidates page."
                   : "No results match your filters."}
               </p>
             </div>
@@ -332,7 +332,7 @@ export default function CompanyResultsPage() {
                           {r.session ? (
                             <ScoreCell score={r.session.overallScore} />
                           ) : (
-                            <span className="text-xs text-gray-600">—</span>
+                            <span className="text-xs text-gray-600">–</span>
                           )}
                         </td>
                         <td className="px-4 py-3">
@@ -346,7 +346,7 @@ export default function CompanyResultsPage() {
                               {r.session.hireSignal}
                             </span>
                           ) : (
-                            <span className="text-xs text-gray-600">—</span>
+                            <span className="text-xs text-gray-600">–</span>
                           )}
                         </td>
                         <td className="px-4 py-3 text-xs text-gray-400">
@@ -356,7 +356,7 @@ export default function CompanyResultsPage() {
                                 month: "short",
                                 year: "numeric",
                               })
-                            : "—"}
+                            : "–"}
                         </td>
                         <td className="px-4 py-3 text-right">
                           {r.session ? (

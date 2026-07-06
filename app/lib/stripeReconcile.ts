@@ -132,8 +132,8 @@ async function reconcileCandidate(
     kind: "candidate",
     id: clerkUserId,
     subscription: subscription.id,
-    from: String(existing.subscriptionStatus ?? "—"),
-    to: String(target.subscriptionStatus ?? "—"),
+    from: String(existing.subscriptionStatus ?? "–"),
+    to: String(target.subscriptionStatus ?? "–"),
   });
 }
 

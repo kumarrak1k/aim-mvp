@@ -31,7 +31,7 @@ const tools = [
     label: "Cover Letter Generator",
     eyebrow: "Tailored to the job",
     description:
-      "Paste the job description and your key experience. Choose your tone — professional, enthusiastic, or concise — and get a tailored letter that mirrors the employer's language.",
+      "Paste the job description and your key experience. Choose your tone (professional, enthusiastic, or concise) and get a tailored letter that mirrors the employer's language.",
     cta: "Generate cover letter →",
     gradient: "from-cyan-500/20 to-blue-500/20",
     border: "border-cyan-400/25",
@@ -50,7 +50,7 @@ const tools = [
     label: "Personal Statement",
     eyebrow: "University · Graduate · MBA",
     description:
-      "From undergraduate UCAS statements to MBA essays and graduate scheme applications — tell your story compellingly, with a strong hook, coherent narrative, and the right word count.",
+      "From undergraduate UCAS statements to MBA essays and graduate scheme applications: tell your story compellingly, with a strong hook, coherent narrative, and the right word count.",
     cta: "Write my statement →",
     gradient: "from-emerald-500/20 to-teal-500/20",
     border: "border-emerald-400/25",
@@ -84,7 +84,7 @@ export default function CareerDocsPage() {
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-gray-300 sm:text-lg">
             Stop starting from scratch. Paste your content, pick your target,
-            and get a polished, tailored document in seconds — scored, improved,
+            and get a polished, tailored document in seconds: scored, improved,
             and ready to send.
           </p>
         </div>

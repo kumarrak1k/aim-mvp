@@ -319,7 +319,7 @@ function UpgradeNudge() {
         <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-gray-400">
           You&apos;ve used all 3 free sessions today. Upgrade to Plus for
           unlimited daily sessions, plus voice coaching, camera analysis and
-          model answers — all included.
+          model answers, all included.
         </p>
         <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
           <Link

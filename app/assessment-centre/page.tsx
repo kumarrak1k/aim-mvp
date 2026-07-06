@@ -22,7 +22,7 @@ const stages = [
     label: "Stage 2",
     title: "Competency interview",
     duration: "~15 min",
-    description: "Five tailored questions with voice and camera scoring — same engine as interview practice.",
+    description: "Five tailored questions with voice and camera scoring, using the same engine as interview practice.",
     color: "fuchsia",
   },
   {
@@ -88,7 +88,7 @@ function UpgradeGate({ planName }: { planName: string }) {
             Simulate the full assessment centre experience.
           </h1>
           <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-gray-300">
-            Case study, competency interview, and presentation — three stages, one session,
+            Case study, competency interview, and presentation: three stages, one session,
             scored the way a real assessor would score you.
           </p>
 
@@ -162,7 +162,7 @@ function SignInGate() {
             The full mock assessment centre experience.
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-gray-300">
-            Case study, competency interview, and presentation — all in one session,
+            Case study, competency interview, and presentation, all in one session,
             scored the way a real assessor would.
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
@@ -205,7 +205,7 @@ function AssessmentCentreAccess() {
             Mock assessment centre
           </h1>
           <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-gray-300">
-            Run a full three-stage session — case study, competency interview, and
+            Run a full three-stage session: case study, competency interview, and
             presentation. One structured report at the end.
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">

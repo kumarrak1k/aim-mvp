@@ -265,7 +265,7 @@ export function PlanPage() {
         const date = data.effectiveDate ? fmtDate(data.effectiveDate) : "your billing date";
         setSuccessMsg(`Your plan will cancel on ${date}. You keep full access until then.`);
       } else if (action === "undo_cancel") {
-        setSuccessMsg("Cancellation reversed — your plan will continue as normal.");
+        setSuccessMsg("Cancellation reversed. Your plan will continue as normal.");
       } else if (action === "upgrade") {
         setSuccessMsg("Plan upgraded! Your new features are active now.");
       } else if (action === "downgrade") {
@@ -450,7 +450,7 @@ export function PlanPage() {
         {/* Confirming state */}
         {isConfirming && (
           <p style={{ marginTop: "1rem", color: "rgba(251,191,36,0.8)", fontSize: "0.8rem" }}>
-            Confirming your subscription with Stripe — this usually takes a few seconds.
+            Confirming your subscription with Stripe. This usually takes a few seconds.
           </p>
         )}
 
@@ -485,7 +485,7 @@ export function PlanPage() {
             </div>
             <p style={{ marginTop: "0.4rem", fontSize: "0.72rem", color: "rgba(255,255,255,0.4)" }}>
               {limitReached
-                ? "All trial sessions used — upgrade to continue."
+                ? "All trial sessions used. Upgrade to continue."
                 : `${remaining} session${remaining === 1 ? "" : "s"} remaining · keyboard mode only`}
             </p>
           </div>
@@ -499,7 +499,7 @@ export function PlanPage() {
             </p>
             <p style={{ marginTop: "0.35rem", fontSize: "0.8rem", color: trialDays <= 2 ? "#fbbf24" : "rgba(255,255,255,0.45)" }}>
               {trialDays === 0
-                ? "Your trial ends today — upgrade to keep your access."
+                ? "Your trial ends today. Upgrade to keep your access."
                 : `${trialDays} day${trialDays === 1 ? "" : "s"} left · no payment details on file · upgrade any time to keep access`}
             </p>
           </div>
@@ -511,7 +511,7 @@ export function PlanPage() {
             {isPastDue ? (
               <p style={{ color: "#fbbf24", fontSize: "0.8rem", fontWeight: 700, lineHeight: 1.5 }}>
                 Your last payment didn&rsquo;t go through. Update your card below to
-                keep your access — we&rsquo;ll keep retrying in the meantime.
+                keep your access. We&rsquo;ll keep retrying in the meantime.
               </p>
             ) : (
               <>
@@ -521,7 +521,7 @@ export function PlanPage() {
                 {periodEndDate && (
                   <p style={{ marginTop: "0.35rem", fontSize: "0.8rem", color: cancelAtPeriodEnd ? "#f87171" : "rgba(255,255,255,0.4)" }}>
                     {cancelAtPeriodEnd
-                      ? `Access ends ${periodEndDate} — your plan will not renew.`
+                      ? `Access ends ${periodEndDate}. Your plan will not renew.`
                       : `Renews ${periodEndDate}`}
                   </p>
                 )}
@@ -620,14 +620,14 @@ export function PlanPage() {
               marginBottom: "0.75rem",
             }}
           >
-            {isTrial ? "Keep your access — choose a plan" : "Upgrade your plan"}
+            {isTrial ? "Keep your access: choose a plan" : "Upgrade your plan"}
           </p>
 
           {planRow(
             () => void startCheckout("plus_monthly"),
             busy,
             checkoutLoading === "plus_monthly",
-            "Plus — £19 / month",
+            "Plus · £19 / month",
             "Unlimited sessions · Voice · Camera · Model answers",
             "Upgrade →",
             "purple"
@@ -637,7 +637,7 @@ export function PlanPage() {
             () => void startCheckout("professional_monthly"),
             busy,
             checkoutLoading === "professional_monthly",
-            "Professional — £29 / month",
+            "Professional · £29 / month",
             "Everything in Plus · Assessment Centre · Analytics",
             "Upgrade →",
             "neutral"
@@ -687,7 +687,7 @@ export function PlanPage() {
                 }),
               busy,
               false,
-              "Upgrade to Professional — £29 / month",
+              "Upgrade to Professional (£29 / month)",
               "Adds Assessment Centre · Analytics · Custom question mix",
               "Switch →",
               "purple"
@@ -706,7 +706,7 @@ export function PlanPage() {
                 busy,
                 actionLoading,
                 "Undo cancellation",
-                `Your plan is set to cancel on ${periodEndDate} — click to reverse this`,
+                `Your plan is set to cancel on ${periodEndDate}; click to reverse this`,
                 "Undo →",
                 "purple"
               )
@@ -722,7 +722,7 @@ export function PlanPage() {
                 busy,
                 actionLoading,
                 "Cancel plan",
-                `Cancels on ${periodEndDate} — you keep access until then`,
+                `Cancels on ${periodEndDate}; you keep access until then`,
                 "Cancel →",
                 "danger"
               )}
@@ -758,8 +758,8 @@ export function PlanPage() {
                   }),
                 busy,
                 actionLoading,
-                "Switch to Plus — £19 / month",
-                `Takes effect ${periodEndDate} — keeps Professional until then`,
+                "Switch to Plus (£19 / month)",
+                `Takes effect ${periodEndDate}; keeps Professional until then`,
                 "Downgrade →",
                 "neutral"
               )}
@@ -779,7 +779,7 @@ export function PlanPage() {
                 busy,
                 actionLoading,
                 "Undo cancellation",
-                `Your plan is set to cancel on ${periodEndDate} — click to reverse this`,
+                `Your plan is set to cancel on ${periodEndDate}; click to reverse this`,
                 "Undo →",
                 "purple"
               )
@@ -795,7 +795,7 @@ export function PlanPage() {
                 busy,
                 actionLoading,
                 "Cancel plan",
-                `Cancels on ${periodEndDate} — you keep access until then`,
+                `Cancels on ${periodEndDate}; you keep access until then`,
                 "Cancel →",
                 "danger"
               )}
@@ -831,7 +831,7 @@ export function PlanPage() {
                 busy,
                 actionLoading,
                 "Undo cancellation",
-                `Scheduled to cancel on ${periodEndDate} — click to reverse`,
+                `Scheduled to cancel on ${periodEndDate}; click to reverse`,
                 "Undo →",
                 "purple"
               )

@@ -214,7 +214,7 @@ export function PracticeHero({
                 Go beyond interview practice
               </p>
               <p className="mt-1 text-xs leading-5 text-gray-400">
-                Case study · Competency interview · Presentation — three stages, one full report.
+                Case study · Competency interview · Presentation: three stages, one full report.
               </p>
               <p className="mt-2.5 text-xs font-black text-cyan-300">
                 {planName === "Professional" ? "Go to assessment centre →" : "See assessment centre →"}

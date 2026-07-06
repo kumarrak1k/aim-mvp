@@ -5,7 +5,7 @@ import { PublicShell } from "@/app/components/marketing/PublicShell";
 
 export const metadata: Metadata = createPageMetadata({
   path: "/contact",
-  title: "Contact Us — AI Career Mentor",
+  title: "Contact Us",
   description:
     "Get in touch with the AI Career Mentor team. Support for candidates, universities, and corporate clients.",
 });

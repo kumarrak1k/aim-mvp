@@ -26,7 +26,7 @@ const faqSchema = {
       name: "How does the scoring work?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "AI evaluates each of the four components separately — Situation, Task, Action, Result — scoring each out of 10 with specific improvement feedback, plus an overall score and a top improvement suggestion.",
+        text: "AI evaluates each of the four components (Situation, Task, Action, Result) separately, scoring each out of 10 with specific improvement feedback, plus an overall score and a top improvement suggestion.",
       },
     },
     {
@@ -34,7 +34,7 @@ const faqSchema = {
       name: "What types of answers work best?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "The scorer is designed for competency interview answers — 'tell me about a time when...' questions. Write out your full answer as you would speak it, aiming for the equivalent of 2–4 minutes of spoken content.",
+        text: "The scorer is designed for competency interview answers: 'tell me about a time when...' questions. Write out your full answer as you would speak it, aiming for the equivalent of 2–4 minutes of spoken content.",
       },
     },
     {

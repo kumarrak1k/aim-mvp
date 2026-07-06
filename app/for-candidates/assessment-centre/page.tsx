@@ -8,7 +8,7 @@ import { CandidateAppShell } from "@/app/components/marketing/CandidateAppShell"
 
 export const metadata: Metadata = createPageMetadata({
   path: "/for-candidates/assessment-centre",
-  title: "Mock Assessment Centre — AI-Powered Practice for Candidates",
+  title: "Mock Assessment Centre: AI-Powered Practice for Candidates",
   description:
     "Practise the full assessment centre experience: case study analysis, competency interview, presentation simulation. AI scoring across every competency.",
   keywords: [
@@ -38,7 +38,7 @@ const stages = [
     label: "Stage 2",
     title: "Competency interview",
     duration: "~15 minutes",
-    text: "Five tailored competency questions with natural audio. Voice delivery, camera presence and answer quality all scored — same engine as the interview practice product.",
+    text: "Five tailored competency questions with natural audio. Voice delivery, camera presence and answer quality all scored. Same engine as the interview practice product.",
     bullets: [
       "Tailored to your role and level",
       "Voice and camera presence reviewed",
@@ -50,7 +50,7 @@ const stages = [
     label: "Stage 3",
     title: "Presentation simulation",
     duration: "~5 minutes",
-    text: "Given a brief, record a 3-minute spoken presentation. The AI assesses structure, persuasion, pace and presence — the same things a real assessor watches for.",
+    text: "Given a brief, record a 3-minute spoken presentation. The AI assesses structure, persuasion, pace and presence, the same things a real assessor watches for.",
     bullets: [
       "Realistic 3-minute time pressure",
       "Spoken delivery scored",
@@ -67,7 +67,7 @@ const why = [
   },
   {
     title: "Multi-axis scoring report",
-    text: "Get a single rolled-up readiness score plus a per-stage and per-competency breakdown — exactly what an assessor produces.",
+    text: "Get a single rolled-up readiness score plus a per-stage and per-competency breakdown, exactly what an assessor produces.",
   },
   {
     title: "Run it before the real one",
@@ -94,7 +94,7 @@ const faqs = [
   },
   {
     q: "What competencies does it score?",
-    a: "Your performance is scored across multiple competencies including leadership, analytical thinking, communication, teamwork, and commercial awareness — with specific scores and improvement steps for each.",
+    a: "Your performance is scored across multiple competencies including leadership, analytical thinking, communication, teamwork, and commercial awareness, with specific scores and improvement steps for each.",
   },
   {
     q: "Is it free?",
@@ -272,7 +272,7 @@ export default async function AssessmentCentrePage() {
             Walk into your assessment centre fully prepared.
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-gray-400">
-            Included in the Professional plan — repeat with new scenarios as often as you need.
+            Included in the Professional plan. Repeat with new scenarios as often as you need.
           </p>
           <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link

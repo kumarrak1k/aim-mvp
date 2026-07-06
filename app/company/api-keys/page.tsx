@@ -109,7 +109,7 @@ export default function ApiKeysPage() {
         {createdKey && (
           <div className="mb-6 rounded-2xl border border-green-400/30 bg-green-500/10 p-5">
             <p className="mb-2 text-sm font-black text-green-300">
-              Key created — copy it now. You won&apos;t see it again.
+              Key created. Copy it now, as you won&apos;t see it again.
             </p>
             <div className="flex items-center gap-3">
               <code className="flex-1 overflow-x-auto rounded-lg bg-black/40 px-4 py-3 text-sm text-green-200">

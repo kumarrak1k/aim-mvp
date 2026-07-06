@@ -11,7 +11,7 @@ import { TrialBadge } from "@/app/components/marketing/TrialBadge";
 
 export const metadata: Metadata = createPageMetadata({
   path: "/",
-  title: "AI Career Mentor — Interview Practice & AI Assessment Platform",
+  title: "AI Career Mentor · Interview Practice & AI Assessment Platform",
   description:
     "Two products in one. AI Career Mentor helps candidates prepare for interviews and assessment centres, and gives hiring teams a structured AI assessment platform.",
   keywords: [
@@ -57,7 +57,7 @@ const siteSchema = {
         "@type": "Offer",
         price: "0",
         priceCurrency: "GBP",
-        description: "Free to start — no credit card required",
+        description: "Free to start (no credit card required)",
       },
       provider: { "@id": `${absoluteUrl("/")}#organization` },
     },
@@ -74,7 +74,7 @@ const stats = [
 const capabilities = [
   {
     title: "Tailored to you",
-    body: "Questions generated for your exact role, level, and interview type — not a generic bank.",
+    body: "Questions generated for your exact role, level, and interview type, not a generic bank.",
     icon: "target",
     border: "border-purple-500/25",
     glow: "bg-purple-500/30",
@@ -221,7 +221,7 @@ export default function HomePage() {
               href="/for-candidates/sign-up"
               className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-8 py-4 text-base font-black text-white shadow-2xl shadow-purple-900/40 transition hover:scale-[1.02] sm:w-auto"
             >
-              Start free — for candidates →
+              Start free for candidates →
             </Link>
             <Link
               href="/tools/star-scorer"
@@ -232,7 +232,7 @@ export default function HomePage() {
           </div>
           <p className="mt-4 text-xs text-gray-500">
             Every new account starts with a{" "}
-            <span className="font-bold text-gray-300">3-day free trial</span> —
+            <span className="font-bold text-gray-300">3-day free trial</span>:
             unlimited practice with voice &amp; camera coaching. No payment details required.
             After it ends, keep practising on the free tier (3 sessions) or upgrade anytime.
           </p>
@@ -271,7 +271,7 @@ export default function HomePage() {
             <ul className="mt-6 space-y-2.5 text-sm text-gray-300">
               {[
                 "Tailored interview practice for your exact role and level",
-                "Mock assessment centre — case study, interview, presentation",
+                "Mock assessment centre: case study, interview, presentation",
                 "Voice delivery, camera presence and answer quality scored",
                 "Progress saved across every session",
               ].map((item) => (
@@ -287,7 +287,7 @@ export default function HomePage() {
                 See plans &amp; free trial →
               </span>
               <p className="mt-3 text-xs text-gray-500">
-                Free 3-day trial — no payment details required. Assessment centres
+                Free 3-day trial, no payment details required. Assessment centres
                 are on the Professional plan.
               </p>
             </div>
@@ -319,7 +319,7 @@ export default function HomePage() {
             <ul className="mt-6 space-y-2.5 text-sm text-gray-300">
               {[
                 "Custom assessment templates for any role",
-                "Email invites — candidates take it on their own time",
+                "Email invites: candidates take it on their own time",
                 "Recruiter dashboard with full scoring + transcripts",
                 "UK GDPR & DPA-ready",
               ].map((item) => (
@@ -346,7 +346,7 @@ export default function HomePage() {
           <div className="flex flex-col items-start justify-between gap-5 sm:flex-row sm:items-center">
             <div>
               <p className="text-[11px] font-black uppercase tracking-[0.2em] text-purple-300/70">
-                Free tools — no sign-in required
+                Free tools, no sign-in required
               </p>
               <p className="mt-1.5 text-base font-black">
                 Try before you commit

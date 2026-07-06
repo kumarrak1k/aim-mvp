@@ -18,7 +18,7 @@ const structuredData = {
   "@context": "https://schema.org",
   "@type": "WebPage",
   url: absoluteUrl("/universities"),
-  name: "University & Campus Licensing — AI Career Mentor",
+  name: "University & Campus Licensing | AI Career Mentor",
   description:
     "Campus licensing for universities and careers services. Give every student unlimited access to AI interview coaching.",
   publisher: { "@id": `${siteConfig.url}/#organization` },
@@ -27,7 +27,7 @@ const structuredData = {
 const benefits = [
   {
     title: "Unlimited student access",
-    body: "Every enrolled student gets full platform access — unlimited practice sessions, voice coaching, camera presence feedback, and assessment centre preparation. No per-seat counting.",
+    body: "Every enrolled student gets full platform access: unlimited practice sessions, voice coaching, camera presence feedback, and assessment centre preparation. No per-seat counting.",
   },
   {
     title: "Employability metrics dashboard",
@@ -39,7 +39,7 @@ const benefits = [
   },
   {
     title: "Covers every interview type",
-    body: "Competency, technical, case study, presentation, and assessment centre — students preparing for any employer can practise the exact format they'll face.",
+    body: "Competency, technical, case study, presentation, and assessment centre. Students preparing for any employer can practise the exact format they'll face.",
   },
   {
     title: "GDPR & DPA compliant",
@@ -154,7 +154,7 @@ export default function UniversitiesPage() {
             </div>
             <h2 className="mb-4 text-2xl font-black tracking-[-0.04em]">Pricing tailored to your institution</h2>
             <p className="mb-6 text-base leading-7 text-gray-400">
-              Every university is different — in size, structure, and what they need from
+              Every university is different in size, structure, and what they need from
               a careers platform. We don&rsquo;t publish fixed price lists because the right
               deal depends on your student numbers, modules required, contract length, and
               existing procurement arrangements. Get in touch and we&rsquo;ll put together a
@@ -162,8 +162,8 @@ export default function UniversitiesPage() {
             </p>
             <div className="mb-8 grid gap-4 sm:grid-cols-3">
               {[
-                { icon: "🎓", label: "Institution size", desc: "Priced per campus, not per student — your whole cohort is covered." },
-                { icon: "📋", label: "Modules & features", desc: "Interview coaching, assessment centre prep, career docs — mix as needed." },
+                { icon: "🎓", label: "Institution size", desc: "Priced per campus, not per student, so your whole cohort is covered." },
+                { icon: "📋", label: "Modules & features", desc: "Interview coaching, assessment centre prep, career docs. Mix as needed." },
                 { icon: "📄", label: "Procurement ready", desc: "DPA, GDPR documentation and institutional paperwork provided as standard." },
               ].map((item) => (
                 <div key={item.label} className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-5">

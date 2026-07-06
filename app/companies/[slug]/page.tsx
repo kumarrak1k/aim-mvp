@@ -30,7 +30,7 @@ export default async function CompanyGuidePage({ params }: Props) {
   const schema = {
     "@context": "https://schema.org",
     "@type": "Article",
-    headline: `${guide.name} Interview Guide — How to Pass in ${new Date().getFullYear()}`,
+    headline: `${guide.name} Interview Guide: How to Pass in ${new Date().getFullYear()}`,
     description: guide.metaDescription,
     url: absoluteUrl(`/companies/${slug}`),
     publisher: {
@@ -165,7 +165,7 @@ export default async function CompanyGuidePage({ params }: Props) {
           <p className="mt-3 text-sm leading-7 text-gray-400">
             Run a tailored AI mock interview for{" "}
             <strong className="text-white">{guide.practiceRole}</strong> roles. Get
-            scored on content, voice delivery, and competency alignment — then refine
+            scored on content, voice delivery, and competency alignment, then refine
             before the real thing.
           </p>
           <Link

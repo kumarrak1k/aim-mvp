@@ -9,12 +9,12 @@ const _ogImage = absoluteUrl("/brand/logo.jpg");
 export const metadata: Metadata = {
   title: { absolute: "Interview Guides & Career Advice | AI Career Mentor" },
   description:
-    "In-depth guides on interview technique, competency frameworks, assessment centres, and career preparation — written by the AI Career Mentor team.",
+    "In-depth guides on interview technique, competency frameworks, assessment centres, and career preparation, written by the AI Career Mentor team.",
   alternates: { canonical: absoluteUrl("/blog") },
   openGraph: {
     title: "Interview Guides & Career Advice | AI Career Mentor",
     description:
-      "In-depth guides on interview technique, competency frameworks, assessment centres, and career preparation — written by the AI Career Mentor team.",
+      "In-depth guides on interview technique, competency frameworks, assessment centres, and career preparation, written by the AI Career Mentor team.",
     url: absoluteUrl("/blog"),
     siteName: "AI Career Mentor",
     type: "website",
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Interview Guides & Career Advice | AI Career Mentor",
     description:
-      "In-depth guides on interview technique, competency frameworks, assessment centres, and career preparation — written by the AI Career Mentor team.",
+      "In-depth guides on interview technique, competency frameworks, assessment centres, and career preparation, written by the AI Career Mentor team.",
     images: [_ogImage],
   },
 };

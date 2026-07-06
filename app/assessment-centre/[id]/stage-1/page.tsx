@@ -385,7 +385,7 @@ export default function Stage1Page() {
                 <svg className="h-3 w-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
                 </svg>
-                Copying is disabled — complete this exercise using only the information provided.
+                Copying is disabled. Complete this exercise using only the information provided.
               </p>
             </div>
 
@@ -615,9 +615,9 @@ export default function Stage1Page() {
                     ? `/assessment-centre/${id}/stage-3`
                     : `/assessment-centre/${id}/report`;
                   const nextLabel = stages.includes("stage2")
-                    ? "Continue to Stage 2 — Interview →"
+                    ? "Continue to Stage 2: Interview →"
                     : stages.includes("stage3")
-                    ? "Continue to Stage 3 — Presentation →"
+                    ? "Continue to Stage 3: Presentation →"
                     : "View your report →";
                   return (
                     <button

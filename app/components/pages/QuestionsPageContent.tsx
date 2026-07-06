@@ -18,7 +18,7 @@ export function QuestionsPageContent({
         </h1>
         <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-gray-400">
           {sets.length}+ question sets covering competency, behavioural, technical, and
-          case study formats — with model answers and scoring guidance.
+          case study formats, with model answers and scoring guidance.
         </p>
       </header>
 

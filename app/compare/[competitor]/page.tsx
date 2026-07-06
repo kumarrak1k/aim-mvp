@@ -88,7 +88,7 @@ export default async function ComparisonPage({ params }: Props) {
                     f.aim ? (
                       <span className="font-black text-emerald-400">✓</span>
                     ) : (
-                      <span className="text-gray-700">—</span>
+                      <span className="text-gray-700">–</span>
                     )
                   ) : (
                     <span className="text-xs text-gray-300">{f.aim}</span>
@@ -99,7 +99,7 @@ export default async function ComparisonPage({ params }: Props) {
                     f.competitor ? (
                       <span className="font-black text-emerald-400">✓</span>
                     ) : (
-                      <span className="text-gray-700">—</span>
+                      <span className="text-gray-700">–</span>
                     )
                   ) : (
                     <span className="text-xs text-gray-500">{f.competitor}</span>
@@ -162,7 +162,7 @@ export default async function ComparisonPage({ params }: Props) {
           <p className="mt-6 text-xs text-gray-700">
             Comparison data accurate as of{" "}
             {new Date().toLocaleDateString("en-GB", { month: "long", year: "numeric" })}.
-            We aim to be fair and factual —{" "}
+            We aim to be fair and factual, so{" "}
             <a
               href="mailto:press@aicareermentor.co.uk"
               className="text-gray-600 hover:text-gray-400"

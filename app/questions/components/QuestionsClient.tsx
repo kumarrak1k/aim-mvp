@@ -64,7 +64,7 @@ export function QuestionsClient({ sets }: Props) {
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search by role, skill, or keyword — e.g. product manager, STAR, leadership…"
+          placeholder="Search by role, skill, or keyword, e.g. product manager, STAR, leadership…"
           className="w-full rounded-2xl border border-white/[0.1] bg-white/[0.04] py-4 pl-11 pr-12 text-sm text-white placeholder:text-gray-500 focus:border-purple-400/40 focus:bg-white/[0.06] focus:outline-none"
         />
         {search && (

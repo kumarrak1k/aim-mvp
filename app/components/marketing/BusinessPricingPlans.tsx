@@ -41,7 +41,7 @@ function renderCell(v: string | boolean) {
     return v ? (
       <span className="text-emerald-400" aria-label="Included">✓</span>
     ) : (
-      <span className="text-gray-600" aria-label="Not included">—</span>
+      <span className="text-gray-600" aria-label="Not included">–</span>
     );
   }
   return <span className="text-gray-200">{v}</span>;
@@ -81,9 +81,9 @@ export function BusinessPricingPlans({ currency = "GBP" }: { currency?: PricingC
       annualMonthly: team.annualMonthly,
       period: "/month",
       description:
-        "For small hiring teams running structured assessments — up to 3 recruiters, 100 candidate invites per month. Start with a 14-day free trial, no payment details required.",
+        "For small hiring teams running structured assessments: up to 3 recruiters, 100 candidate invites per month. Start with a 14-day free trial, no payment details required.",
       features: [
-        "14-day free trial — no payment details, 10 invites to evaluate",
+        "14-day free trial: no payment details, 10 invites to evaluate",
         "Up to 3 recruiter seats",
         "100 candidate invites / month",
         "Unlimited assessment templates",
@@ -209,7 +209,7 @@ export function BusinessPricingPlans({ currency = "GBP" }: { currency?: PricingC
               </div>
               {annualMonthlyEquiv && (
                 <p className="mt-1 text-xs text-gray-500">
-                  {plan.annualMonthly}/month — charged as a single annual payment
+                  {plan.annualMonthly}/month, charged as a single annual payment
                 </p>
               )}
               <p className="mt-4 min-h-[60px] text-sm leading-6 text-gray-400">

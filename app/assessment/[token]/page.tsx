@@ -533,7 +533,7 @@ function SetupStep({
         {
           id: "voice-camera" as const,
           title: "Voice + camera",
-          subtitle: "Most realistic — voice plus camera presence review.",
+          subtitle: "Most realistic: voice plus camera presence review.",
           requirements: "Microphone and camera access required.",
         },
       ],

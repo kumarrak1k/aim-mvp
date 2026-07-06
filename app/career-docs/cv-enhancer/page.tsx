@@ -337,7 +337,7 @@ export default function CVEnhancerPage() {
                         ? savedCV.cvFileName
                           ? `Saved CV: ${savedCV.cvFileName}`
                           : "Loaded from saved profile CV"
-                        : "No saved CV — upload one to save it to your profile"}
+                        : "No saved CV. Upload one to save it to your profile"}
                     </span>
                     <div className="flex shrink-0 items-center gap-1.5">
                       <button
@@ -378,7 +378,7 @@ export default function CVEnhancerPage() {
                 <textarea
                   value={cvText}
                   onChange={(e) => setCvText(e.target.value)}
-                  placeholder="Paste your full CV here — include all sections: summary, experience, education, skills…"
+                  placeholder="Paste your full CV here, including all sections: summary, experience, education, skills…"
                   rows={12}
                   className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-600 outline-none focus:border-purple-400/40 focus:ring-1 focus:ring-purple-400/20 resize-y"
                   required
@@ -391,7 +391,7 @@ export default function CVEnhancerPage() {
                 onClick={() => setShowJd((v) => !v)}
                 className="text-xs font-black text-purple-400 hover:text-purple-300 transition"
               >
-                {showJd ? "▲ Hide" : "▼ Add"} job description (optional — improves ATS matching)
+                {showJd ? "▲ Hide" : "▼ Add"} job description (optional, improves ATS matching)
               </button>
 
               {showJd && (
@@ -483,7 +483,7 @@ export default function CVEnhancerPage() {
 
                 {/* Quick wins */}
                 <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-6 backdrop-blur-xl">
-                  <p className="mb-4 text-[11px] font-black uppercase tracking-[0.22em] text-purple-300">Quick wins — do these first</p>
+                  <p className="mb-4 text-[11px] font-black uppercase tracking-[0.22em] text-purple-300">Quick wins: do these first</p>
                   <ol className="space-y-2.5">
                     {result.quickWins.map((w, i) => (
                       <li key={i} className="flex items-start gap-3 text-sm text-gray-300">
@@ -608,7 +608,7 @@ export default function CVEnhancerPage() {
                   <p className="text-[11px] font-black uppercase tracking-[0.22em] text-purple-300">Before we generate</p>
                   <p className="mt-1 text-sm leading-6 text-gray-400">
                     The AI found {gaps.length} area{gaps.length !== 1 ? "s" : ""} where extra detail would strengthen your CV.
-                    Answer what you can — skip anything you prefer to leave as-is.
+                    Answer what you can, and skip anything you prefer to leave as-is.
                   </p>
                 </div>
                 <div className="space-y-4">
@@ -696,7 +696,7 @@ export default function CVEnhancerPage() {
                 <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-6">
                   <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
                     <p className="text-[11px] font-black uppercase tracking-[0.22em] text-purple-300">
-                      {enhancedResult.changes.length} changes — accept or reject each
+                      {enhancedResult.changes.length} changes: accept or reject each
                     </p>
                     <div className="flex gap-2">
                       <span className="rounded-full bg-emerald-500/20 px-2.5 py-1 text-[10px] font-black text-emerald-300">
@@ -757,7 +757,7 @@ export default function CVEnhancerPage() {
                 {enhancedResult.flagged.length > 0 && (
                   <div className="rounded-[1.75rem] border border-amber-400/20 bg-amber-400/[0.04] p-6">
                     <p className="mb-3 text-[11px] font-black uppercase tracking-[0.22em] text-amber-300">
-                      Needs your input — couldn't auto-apply
+                      Needs your input (couldn't auto-apply)
                     </p>
                     <div className="space-y-2.5">
                       {enhancedResult.flagged.map((f, i) => (

@@ -33,7 +33,7 @@ export const siteConfig = {
       path: "/",
       label: "Home",
       description:
-        "Two products in one — interview practice for candidates and an AI assessment platform for hiring teams.",
+        "Two products in one: interview practice for candidates and an AI assessment platform for hiring teams.",
       priority: 1,
     },
 
@@ -56,7 +56,7 @@ export const siteConfig = {
       path: "/for-candidates/assessment-centre",
       label: "Assessment centre",
       description:
-        "Mock assessment centre — case study, competency interview, and presentation simulation, scored across competencies.",
+        "Mock assessment centre with case study, competency interview, and presentation simulation, scored across competencies.",
       priority: 0.9,
     },
     {
@@ -79,7 +79,7 @@ export const siteConfig = {
       path: "/for-business/assessment-platform",
       label: "Assessment platform",
       description:
-        "How the AI assessment platform works — workspace, templates, invites, results dashboard.",
+        "How the AI assessment platform works: workspace, templates, invites, results dashboard.",
       priority: 0.9,
     },
     {
@@ -109,7 +109,7 @@ export const siteConfig = {
       path: "/questions",
       label: "Interview Question Library",
       description:
-        "Thousands of categorised interview questions by role, industry, and interview type — with model answers and scoring guidance.",
+        "Thousands of categorised interview questions by role, industry, and interview type, with model answers and scoring guidance.",
       priority: 0.8,
     },
 
@@ -125,14 +125,14 @@ export const siteConfig = {
       path: "/compare/big-interview",
       label: "AI Career Mentor vs Big Interview",
       description:
-        "Compare AI Career Mentor and Big Interview — real-time AI scoring, delivery analysis, and role-tailored practice.",
+        "Compare AI Career Mentor and Big Interview on real-time AI scoring, delivery analysis, and role-tailored practice.",
       priority: 0.65,
     },
     {
       path: "/compare/yoodli",
       label: "AI Career Mentor vs Yoodli",
       description:
-        "Compare AI Career Mentor and Yoodli — interview-specific coaching versus general speech analytics.",
+        "Compare AI Career Mentor and Yoodli: interview-specific coaching versus general speech analytics.",
       priority: 0.65,
     },
 
@@ -141,7 +141,7 @@ export const siteConfig = {
       path: "/about",
       label: "About",
       description:
-        "The mission and story behind AI Career Mentor — a UK-built AI coaching platform for candidates and hiring teams.",
+        "The mission and story behind AI Career Mentor, a UK-built AI coaching platform for candidates and hiring teams.",
       priority: 0.7,
     },
     {
@@ -155,7 +155,7 @@ export const siteConfig = {
       path: "/security",
       label: "Security",
       description:
-        "How AI Career Mentor protects your data — encryption, access controls, subprocessors, and GDPR compliance.",
+        "How AI Career Mentor protects your data: encryption, access controls, subprocessors, and GDPR compliance.",
       priority: 0.6,
     },
     {

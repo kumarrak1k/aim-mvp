@@ -40,15 +40,15 @@ export const competitors: Record<string, CompetitorData> = {
       { feature: "Pricing", aim: "Free + from £19/mo", competitor: "Free + $20/mo ChatGPT Plus" },
     ],
     aimStrengths: [
-      "Structured scoring across 6 dimensions — not a chat conversation",
+      "Structured scoring across 6 dimensions, not a chat conversation",
       "Voice and camera presence assessed automatically, not just answer text",
       "Questions tailored to your exact role, level, interview type and focus area",
       "7-day improvement plan and progress tracking after every session",
       "Repeatable practice loop with consistent, comparable scoring",
-      "Built for interview prep — not a general-purpose tool you have to prompt carefully",
+      "Built for interview prep, not a general-purpose tool you have to prompt carefully",
     ],
     competitorStrengths: [
-      "Free and extremely flexible — can discuss any topic",
+      "Free and extremely flexible: can discuss any topic",
       "Useful for brainstorming example answers and getting informal feedback",
       "No account required for basic use",
       "Broad general knowledge across industries and roles",
@@ -62,7 +62,7 @@ export const competitors: Record<string, CompetitorData> = {
     name: "LinkedIn Interview Prep",
     tagline: "AI Career Mentor vs LinkedIn Interview Prep",
     description:
-      "LinkedIn Interview Prep offers basic practice questions with AI feedback on recorded video answers. AI Career Mentor goes further — scoring answer content, voice delivery, and camera presence with a full coaching loop and improvement plan.",
+      "LinkedIn Interview Prep offers basic practice questions with AI feedback on recorded video answers. AI Career Mentor goes further, scoring answer content, voice delivery, and camera presence with a full coaching loop and improvement plan.",
     url: "https://www.linkedin.com/interview-prep/",
     features: [
       { feature: "Role-tailored questions (your exact spec)", aim: true, competitor: "Category-based" },
@@ -79,21 +79,21 @@ export const competitors: Record<string, CompetitorData> = {
       { feature: "Pricing", aim: "Free + from £19/mo", competitor: "Free (LinkedIn Premium required for some features)" },
     ],
     aimStrengths: [
-      "Scores the substance of your answers — not just delivery confidence",
-      "Questions tailored to your role, level and interview format — not generic category lists",
+      "Scores the substance of your answers, not just delivery confidence",
+      "Questions tailored to your role, level and interview format, not generic category lists",
       "STAR structure scoring and model answers for every question",
       "7-day improvement plan after every session with specific targets",
       "Separate recruiter platform for company-issued assessments",
       "UK-hosted, GDPR-first",
     ],
     competitorStrengths: [
-      "Integrated with your LinkedIn profile — no separate account needed",
-      "Huge brand trust — most candidates already have a LinkedIn account",
+      "Integrated with your LinkedIn profile (no separate account needed)",
+      "Huge brand trust: most candidates already have a LinkedIn account",
       "Free for core features without a separate subscription",
       "Question bank drawn from real recruiter data",
     ],
     verdict:
-      "LinkedIn Interview Prep is convenient for quick warm-up practice using your existing account. AI Career Mentor is for serious preparation — it scores answer quality and structure, analyses voice and camera presence, and gives you a targeted improvement plan after every session.",
+      "LinkedIn Interview Prep is convenient for quick warm-up practice using your existing account. AI Career Mentor is for serious preparation: it scores answer quality and structure, analyses voice and camera presence, and gives you a targeted improvement plan after every session.",
     ctaLabel: "Try AI Career Mentor free →",
   },
   "interview-warmup": {
@@ -117,7 +117,7 @@ export const competitors: Record<string, CompetitorData> = {
       { feature: "Pricing", aim: "Free + paid plans", competitor: "Free" },
     ],
     aimStrengths: [
-      "Fully tailored to your role, level and interview type — not generic questions",
+      "Fully tailored to your role, level and interview type, not generic questions",
       "Voice delivery and camera presence scored, not just answer text",
       "Model answers for every question to benchmark against",
       "Structured 7-day improvement plan after each session",
@@ -126,11 +126,11 @@ export const competitors: Record<string, CompetitorData> = {
     ],
     competitorStrengths: [
       "Completely free with no sign-up required",
-      "Backed by Google — high brand recognition",
+      "Backed by Google, with high brand recognition",
       "Good for first-time practice with no commitment",
     ],
     verdict:
-      "Interview Warmup is a good free entry point for occasional practice. AI Career Mentor is built for candidates who are actively preparing for a specific role and need honest, specific coaching — not just a place to speak into a microphone.",
+      "Interview Warmup is a good free entry point for occasional practice. AI Career Mentor is built for candidates who are actively preparing for a specific role and need honest, specific coaching, not just a place to speak into a microphone.",
     ctaLabel: "Try AI Career Mentor free →",
   },
   "big-interview": {
@@ -155,9 +155,9 @@ export const competitors: Record<string, CompetitorData> = {
     ],
     aimStrengths: [
       "Questions generated specifically for your role, level, and interview format",
-      "Camera presence and eye contact scored — not just what you say",
-      "Much shorter practice loop — designed for intensive daily practice",
-      "Built and hosted in the UK — GDPR-first",
+      "Camera presence and eye contact scored, not just what you say",
+      "Much shorter practice loop, designed for intensive daily practice",
+      "Built and hosted in the UK, GDPR-first",
       "Mock assessment centre included for graduate roles",
     ],
     competitorStrengths: [
@@ -167,7 +167,7 @@ export const competitors: Record<string, CompetitorData> = {
       "Better for learning interview theory from scratch",
     ],
     verdict:
-      "Big Interview is strong for candidates who want structured learning with human coaching content. AI Career Mentor is better for candidates who want fast, high-repetition practice with specific feedback on every answer they give — not general advice.",
+      "Big Interview is strong for candidates who want structured learning with human coaching content. AI Career Mentor is better for candidates who want fast, high-repetition practice with specific feedback on every answer they give, rather than general advice.",
     ctaLabel: "Try AI Career Mentor free →",
   },
   yoodli: {
@@ -175,7 +175,7 @@ export const competitors: Record<string, CompetitorData> = {
     name: "Yoodli",
     tagline: "AI Career Mentor vs Yoodli",
     description:
-      "Yoodli is an AI speech and communication coaching tool that focuses on delivery — filler words, pace, eye contact. AI Career Mentor covers delivery but also scores answer quality, structure, and provides model answers for interview-specific preparation.",
+      "Yoodli is an AI speech and communication coaching tool that focuses on delivery: filler words, pace, eye contact. AI Career Mentor covers delivery but also scores answer quality, structure, and provides model answers for interview-specific preparation.",
     url: "https://yoodli.ai",
     features: [
       { feature: "Interview-specific question tailoring", aim: true, competitor: "Limited" },
@@ -191,7 +191,7 @@ export const competitors: Record<string, CompetitorData> = {
       { feature: "Pricing", aim: "From £19/month", competitor: "Free + paid plans" },
     ],
     aimStrengths: [
-      "Scores the substance of your answers — not just how you sound",
+      "Scores the substance of your answers, not just how you sound",
       "STAR structure analysis and model answers for every question",
       "Questions tailored to your specific role and interview type",
       "Mock assessment centre included",
@@ -204,7 +204,7 @@ export const competitors: Record<string, CompetitorData> = {
       "Free tier available",
     ],
     verdict:
-      "Yoodli excels at delivery coaching for general communication. AI Career Mentor is purpose-built for interview preparation — it scores both what you say and how you say it, generates tailored questions, and gives you a model answer to benchmark against.",
+      "Yoodli excels at delivery coaching for general communication. AI Career Mentor is purpose-built for interview preparation: it scores both what you say and how you say it, generates tailored questions, and gives you a model answer to benchmark against.",
     ctaLabel: "Try AI Career Mentor free →",
   },
 };

@@ -12,7 +12,7 @@ interface Message {
 const WELCOME: Message = {
   role: "assistant",
   content:
-    "Hi! I'm your AI Mentor assistant. Ask me anything about the platform — getting started, what's included in each plan, or how a feature works. If I can't help, I'll point you to the right place.",
+    "Hi! I'm your AI Mentor assistant. Ask me anything about the platform: getting started, what's included in each plan, or how a feature works. If I can't help, I'll point you to the right place.",
 };
 
 // Chat history survives navigation and reloads for the current browser tab,

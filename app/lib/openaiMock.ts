@@ -137,7 +137,7 @@ const MOCK_COVER_LETTER = {
   letter:
     "Dear Hiring Manager,\n\nWhen I saw how your team rebuilt the analytics stack last year, I recognised the kind of problem I want to work on.\n\nI would welcome the chance to discuss how I can help.",
   wordCount: 320,
-  subject: "Application for Data Analyst — retail analytics experience",
+  subject: "Application for Data Analyst: retail analytics experience",
   keyThemes: ["Commercial impact", "Technical fluency", "Genuine fit"],
   customisationTips: ["Name a specific recent initiative", "Mirror two phrases from the advert", "Add one quantified win"],
 };
@@ -158,7 +158,7 @@ const MOCK_CV_ENHANCER = {
   missingKeywords: ["A/B testing", "stakeholder management", "roadmapping", "SQL", "experimentation"],
   atsTips: ["Use a single-column layout", "Match the advert's exact job title", "Avoid tables and text boxes"],
   topStrength: "Genuine end-to-end product ownership across the lifecycle.",
-  biggestGap: "No quantified outcomes — impact is invisible to a skim-reader.",
+  biggestGap: "No quantified outcomes: impact is invisible to a skim-reader.",
 };
 
 function systemContent(request: ChatCompletionRequest): string {

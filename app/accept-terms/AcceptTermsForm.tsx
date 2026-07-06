@@ -141,7 +141,7 @@ export function AcceptTermsForm({ version, nextPath }: AcceptTermsFormProps) {
                 >
                   Terms of Use
                 </Link>{" "}
-                — including the limitation of liability and that AI Career
+                , including the limitation of liability and that AI Career
                 Mentor does not guarantee any job, offer, or interview outcome.
               </span>
             </label>

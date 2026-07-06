@@ -279,8 +279,8 @@ export default function CandidateResultDetailPage() {
         {!session ? (
           <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-8 text-center">
             <p className="text-gray-400">
-              No results to show — the candidate has not completed this
-              assessment yet.
+              No results to show yet, as the candidate has not completed this
+              assessment.
             </p>
           </div>
         ) : (

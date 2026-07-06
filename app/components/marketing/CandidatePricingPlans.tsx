@@ -76,7 +76,7 @@ function renderCell(v: string | boolean) {
     return v ? (
       <span className="text-emerald-400" aria-label="Included">✓</span>
     ) : (
-      <span className="text-gray-600" aria-label="Not included">—</span>
+      <span className="text-gray-600" aria-label="Not included">–</span>
     );
   }
   return <span className="text-gray-200">{v}</span>;
@@ -99,9 +99,9 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
       annualMonthly: null as string | null,
       annualSaving: null as string | null,
       period: null as string | null,
-      description: "Always free — no payment details, no time limit. Keyboard-based interview practice with AI-tailored questions and written feedback, up to 3 saved practice sessions.",
+      description: "Always free, with no payment details and no time limit. Keyboard-based interview practice with AI-tailored questions and written feedback, up to 3 saved practice sessions.",
       features: [
-        { text: "Always free — no payment details required" },
+        { text: "Always free, no payment details required" },
         { text: "3 keyboard-only practice sessions" },
         { text: "AI-generated tailored interview questions" },
         { text: "Written answer feedback per question" },
@@ -120,7 +120,7 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
       annualSaving: pro.saving,
       period: "/month",
       description:
-        "For candidates actively preparing — unlimited practice with full feedback, voice interview and camera analysis.",
+        "For candidates actively preparing: unlimited practice with full feedback, voice interview and camera analysis.",
       features: [
         { text: "Unlimited interview practice sessions" },
         { text: "All 3 interview modes: typed, voice and voice + camera" },
@@ -142,11 +142,11 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
       annualSaving: adv.saving,
       period: "/month",
       description:
-        "For intensive preparation — build fully custom sessions, run mock assessment centres, and track performance with advanced analytics.",
+        "For intensive preparation: build fully custom sessions, run mock assessment centres, and track performance with advanced analytics.",
       features: [
         { text: "Everything in Plus" },
         { text: "Custom session builder: 3–10 questions per session", isNew: true },
-        { text: "Hybrid question mix — set your own blend of competency, technical, leadership, motivation and situational", isNew: true },
+        { text: "Hybrid question mix: set your own blend of competency, technical, leadership, motivation and situational", isNew: true },
         { text: "Mock assessment centre (case study + interview + presentation)" },
         { text: "Advanced session analytics" },
         { text: "Competency gap tracking across sessions" },
@@ -251,7 +251,7 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
               </div>
               {annualMonthlyEquiv && (
                 <p className="mt-1 text-xs text-gray-500">
-                  {annualMonthlyEquiv}/month — charged as a single annual payment
+                  {annualMonthlyEquiv}/month, charged as a single annual payment
                 </p>
               )}
               {!annual && plan.annualPrice && (
@@ -259,7 +259,7 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
                   or{" "}
                   <span className="font-bold text-gray-300">{plan.annualPrice}/year</span>
                   {plan.annualSaving && (
-                    <span className="text-emerald-300"> — save {plan.annualSaving}</span>
+                    <span className="text-emerald-300"> and save {plan.annualSaving}</span>
                   )}
                 </p>
               )}
@@ -311,7 +311,7 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
               )}
               {isPaid && (
                 <p className="mt-3 text-center text-[11px] font-semibold text-emerald-300/90">
-                  14-day money-back guarantee — no questions asked
+                  14-day money-back guarantee, no questions asked
                 </p>
               )}
             </div>
@@ -355,7 +355,7 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
       <p className="mx-auto mt-8 max-w-2xl text-center text-xs leading-5 text-gray-500">
         Paid plans are recurring subscriptions that renew automatically
         (monthly or annually) at the price shown until you cancel. You can
-        cancel any time from your account — you keep access until the end of the
+        cancel any time from your account, and you keep access until the end of the
         period you&rsquo;ve paid for. Every paid plan comes with a 14-day
         money-back guarantee. The 3-day free trial requires no payment details and
         never auto-charges.

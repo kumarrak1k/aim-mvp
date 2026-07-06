@@ -150,7 +150,7 @@ export default function NotificationSettingsPage() {
           </p>
           <h2 className="mt-2 text-lg font-black">Delete your account</h2>
           <p className="mt-1 text-sm leading-6 text-gray-400">
-            Permanently deletes your account and all personal data — profile, saved
+            Permanently deletes your account and all personal data: profile, saved
             practice sessions, career docs and email preferences. Assessment results
             you completed for an employer are retained by that employer. This cannot
             be undone.

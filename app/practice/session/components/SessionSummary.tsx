@@ -377,7 +377,7 @@ export function SessionSummary({
         <h1 className="mt-2 text-3xl font-black tracking-[-0.04em] text-white sm:text-4xl">
           {firstName
             ? `Well done, ${firstName}!`
-            : "Well done — interview complete!"}
+            : "Well done, interview complete!"}
         </h1>
 
         <p className="mt-2 text-sm text-gray-400">
@@ -434,10 +434,10 @@ export function SessionSummary({
                   {summary.overall_score >= 8
                     ? "You are interview-ready for this role."
                     : summary.overall_score >= 6
-                      ? "Solid foundation — targeted practice will sharpen your edge."
+                      ? "Solid foundation: targeted practice will sharpen your edge."
                       : summary.overall_score >= 4
-                        ? "You have the basics — structured practice will accelerate your progress."
-                        : "Focus on the improvements below — consistent practice makes a significant difference."}
+                        ? "You have the basics. Structured practice will accelerate your progress."
+                        : "Focus on the improvements below; consistent practice makes a significant difference."}
                 </p>
               </div>
             </div>
@@ -496,7 +496,7 @@ export function SessionSummary({
               {summary.strongest_answer && (
                 <div className="rounded-[1.7rem] border border-emerald-400/20 bg-emerald-400/[0.06] p-5">
                   <p className="mb-2 text-xs font-black uppercase tracking-[0.18em] text-emerald-300">
-                    ★ Strongest answer — Q{summary.strongest_answer.question_number}
+                    ★ Strongest answer: Q{summary.strongest_answer.question_number}
                   </p>
                   <p className="mb-3 text-sm font-semibold text-white line-clamp-2">
                     {summary.strongest_answer.question}
@@ -514,7 +514,7 @@ export function SessionSummary({
               {summary.weakest_answer && (
                 <div className="rounded-[1.7rem] border border-amber-400/20 bg-amber-400/[0.06] p-5">
                   <p className="mb-2 text-xs font-black uppercase tracking-[0.18em] text-amber-300">
-                    ↗ Biggest opportunity — Q{summary.weakest_answer.question_number}
+                    ↗ Biggest opportunity: Q{summary.weakest_answer.question_number}
                   </p>
                   <p className="mb-3 text-sm font-semibold text-white line-clamp-2">
                     {summary.weakest_answer.question}
@@ -645,7 +645,7 @@ export function SessionSummary({
                       )}
                     </div>
                     <div className="pb-4">
-                      <p className="text-xs font-black text-purple-200">{item.day} — {item.focus}</p>
+                      <p className="text-xs font-black text-purple-200">{item.day}: {item.focus}</p>
                       <p className="mt-1 text-sm leading-6 text-gray-300">{item.task}</p>
                     </div>
                   </div>
@@ -717,7 +717,7 @@ export function SessionSummary({
                     🏆 Interview Readiness Certificate
                   </p>
                   <p className="mt-1 text-xs text-gray-400">
-                    You scored {summary.overall_score}/10 — you&apos;ve earned a
+                    You scored {summary.overall_score}/10, so you&apos;ve earned a
                     shareable certificate for {role || "this role"}.
                   </p>
                 </div>

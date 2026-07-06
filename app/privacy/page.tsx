@@ -18,7 +18,7 @@ const dataWeCollect = [
   },
   {
     title: "Microphone input",
-    text: "When you use voice mode, live transcription uses your browser's built-in speech recognition (Chrome/Chromium use Google, Edge uses Microsoft, Safari uses Apple; Firefox is unsupported). Separately, for filler-word and voice-delivery analysis, a short audio clip is sent to OpenAI's Whisper API, transcribed, and then discarded — it is not stored on our servers. Voice mode is entirely optional; typed answers receive identical feedback and send no audio anywhere.",
+    text: "When you use voice mode, live transcription uses your browser's built-in speech recognition (Chrome/Chromium use Google, Edge uses Microsoft, Safari uses Apple; Firefox is unsupported). Separately, for filler-word and voice-delivery analysis, a short audio clip is sent to OpenAI's Whisper API, transcribed, and then discarded; it is not stored on our servers. Voice mode is entirely optional; typed answers receive identical feedback and send no audio anywhere.",
   },
   {
     title: "Camera input",
@@ -29,7 +29,7 @@ const dataWeCollect = [
 const dataProcessors = [
   {
     name: "OpenAI",
-    purpose: "Generates interview questions, feedback, scores, model answers, and audio question prompts (TTS). Also used for content moderation. Your CV text, role details, and practice answers are sent to OpenAI's API to deliver these features. We have disabled all data-sharing and model-training settings in our OpenAI account — OpenAI's API terms prohibit using API inputs to train models. Data is processed under a Data Processing Agreement.",
+    purpose: "Generates interview questions, feedback, scores, model answers, and audio question prompts (TTS). Also used for content moderation. Your CV text, role details, and practice answers are sent to OpenAI's API to deliver these features. We have disabled all data-sharing and model-training settings in our OpenAI account. OpenAI's API terms prohibit using API inputs to train models. Data is processed under a Data Processing Agreement.",
     link: "https://openai.com/policies/privacy-policy",
   },
   {
@@ -49,12 +49,12 @@ const dataProcessors = [
   },
   {
     name: "Resend",
-    purpose: "Sends transactional emails such as assessment invite links, account notifications, and result emails. Receives your email address only — no CV content, interview answers, or assessment scores are included in any email.",
+    purpose: "Sends transactional emails such as assessment invite links, account notifications, and result emails. Receives your email address only. No CV content, interview answers, or assessment scores are included in any email.",
     link: "https://resend.com/legal/privacy-policy",
   },
   {
     name: "Upstash Redis",
-    purpose: "Provides in-memory rate limiting across API endpoints to protect the platform from abuse. Receives anonymised request identifiers (a hash of your IP address or user ID) only — no personal content, CV data, or interview answers are stored.",
+    purpose: "Provides in-memory rate limiting across API endpoints to protect the platform from abuse. Receives anonymised request identifiers (a hash of your IP address or user ID) only. No personal content, CV data, or interview answers are stored.",
     link: "https://upstash.com/trust/privacy.pdf",
   },
   {
@@ -64,7 +64,7 @@ const dataProcessors = [
   },
   {
     name: "Vercel",
-    purpose: "Hosts and serves all pages and API routes for the AI Career Mentor platform. Collects anonymous page-view analytics and Core Web Vitals via Vercel Analytics and Speed Insights — no personal identity data is captured by these tools.",
+    purpose: "Hosts and serves all pages and API routes for the AI Career Mentor platform. Collects anonymous page-view analytics and Core Web Vitals via Vercel Analytics and Speed Insights. No personal identity data is captured by these tools.",
     link: "https://vercel.com/legal/privacy-policy",
   },
 ];
@@ -92,9 +92,9 @@ const commitments = [
   "We do not sell your personal information.",
   "We do not use your interview answers or CV to make hiring decisions.",
   "We do not share your data with employers.",
-  "Raw uploaded files are not stored — only extracted text you choose to save.",
-  "Camera video stays in your browser and is never uploaded — analysis runs locally.",
-  "Voice audio for delivery analysis is sent to OpenAI Whisper, transcribed, then discarded — never stored on our servers.",
+  "Raw uploaded files are not stored: only extracted text you choose to save.",
+  "Camera video stays in your browser and is never uploaded: analysis runs locally.",
+  "Voice audio for delivery analysis is sent to OpenAI Whisper, transcribed, then discarded, never stored on our servers.",
   "Error monitoring uses PII scrubbing to keep interview content out of logs.",
   "You control deletion of all your practice data from your profile.",
 ];
@@ -190,7 +190,7 @@ export default function PrivacyPage() {
                   </p>
                   <p>
                     Rate limiting uses Upstash Redis to store anonymised request
-                    identifiers only — no personal data or content is stored there.
+                    identifiers only. No personal data or content is stored there.
                     Error monitoring via Sentry receives crash reports with PII
                     scrubbing applied to prevent interview or CV content from
                     appearing in logs.
@@ -240,23 +240,23 @@ export default function PrivacyPage() {
                 </h2>
                 <div className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-7 space-y-4 text-sm leading-7 text-gray-300">
                   <p>
-                    <span className="font-black text-white">Profile context</span>{" "}
-                    — Stored until you delete it from your profile or delete your
+                    <span className="font-black text-white">Profile context</span>:{" "}
+                    Stored until you delete it from your profile or delete your
                     account. You can clear CV text, role context or goals
                     individually.
                   </p>
                   <p>
-                    <span className="font-black text-white">Saved practice sessions</span>{" "}
-                    — Stored until you delete them individually or bulk-delete all
+                    <span className="font-black text-white">Saved practice sessions</span>:{" "}
+                    Stored until you delete them individually or bulk-delete all
                     sessions from your profile page.
                   </p>
                   <p>
-                    <span className="font-black text-white">Voice and camera data</span>{" "}
-                    — Processed in your browser only. Never stored on our servers.
+                    <span className="font-black text-white">Voice and camera data</span>:{" "}
+                    Processed in your browser only. Never stored on our servers.
                   </p>
                   <p>
-                    <span className="font-black text-white">Account data</span>{" "}
-                    — Managed by Clerk. Deleting your Clerk account removes
+                    <span className="font-black text-white">Account data</span>:{" "}
+                    Managed by Clerk. Deleting your Clerk account removes
                     authentication access. Contact us to request full data
                     deletion.
                   </p>
@@ -305,7 +305,7 @@ export default function PrivacyPage() {
                   </p>
                   <p>
                     We collect anonymous page-view data and Core Web Vitals via
-                    Vercel Analytics — no personal identity is captured.
+                    Vercel Analytics. No personal identity is captured.
                   </p>
                   <p>
                     If we introduce additional analytics in the future, this page
@@ -387,7 +387,7 @@ export default function PrivacyPage() {
                     these permissions at any time in your browser settings.
                   </p>
                   <p>
-                    You can practise without a microphone or camera — typed
+                    You can practise without a microphone or camera. Typed
                     answers receive the same written feedback.
                   </p>
                 </div>

@@ -2,7 +2,7 @@
   {
     "slug": "data-scientist-interview-questions",
     "title": "Data Scientist Interview Questions",
-    "description": "50 interview questions for data scientist roles covering statistics, machine learning, SQL, Python, and behavioural competencies — with model answer guidance.",
+    "description": "50 interview questions for data scientist roles covering statistics, machine learning, SQL, Python, and behavioural competencies, plus model answer guidance.",
     "keywords": ["data scientist interview questions", "data science interview", "machine learning interview questions"],
     "category": "By role",
     "role": "Data Scientist",
@@ -164,7 +164,7 @@
   {
     "slug": "graduate-trainee-interview-questions",
     "title": "Graduate Trainee Interview Questions",
-    "description": "40 interview questions for graduate trainee and graduate scheme roles — covering motivation, academic achievements, work experience, competencies, and career ambitions.",
+    "description": "40 interview questions for graduate trainee and graduate scheme roles, covering motivation, academic achievements, work experience, competencies, and career ambitions.",
     "keywords": ["graduate interview questions", "graduate scheme interview questions", "graduate trainee interview"],
     "category": "By candidate type",
     "role": "Graduate Trainee",
@@ -173,7 +173,7 @@
   {
     "slug": "leadership-competency-interview-questions",
     "title": "Leadership Competency Interview Questions",
-    "description": "50 competency-based interview questions specifically testing leadership — from leading teams and driving change to managing conflict and developing others.",
+    "description": "50 competency-based interview questions specifically testing leadership, from leading teams and driving change to managing conflict and developing others.",
     "keywords": ["leadership interview questions", "leadership competency questions", "management interview questions"],
     "category": "By competency",
     "role": "Any (leadership competency focus)",
@@ -182,7 +182,7 @@
   {
     "slug": "teamwork-competency-interview-questions",
     "title": "Teamwork and Collaboration Interview Questions",
-    "description": "40 competency interview questions on teamwork, collaboration, and working with others — with guidance on showing individual contribution while demonstrating team effectiveness.",
+    "description": "40 competency interview questions on teamwork, collaboration, and working with others, with guidance on showing individual contribution while demonstrating team effectiveness.",
     "keywords": ["teamwork interview questions", "collaboration interview questions", "working in a team interview"],
     "category": "By competency",
     "role": "Any (teamwork competency focus)",
@@ -191,7 +191,7 @@
   {
     "slug": "communication-competency-interview-questions",
     "title": "Communication and Influence Interview Questions",
-    "description": "40 competency interview questions on communication, stakeholder management, influencing, and presenting — at every level from graduate to senior manager.",
+    "description": "40 competency interview questions on communication, stakeholder management, influencing, and presenting, at every level from graduate to senior manager.",
     "keywords": ["communication interview questions", "influencing interview questions", "stakeholder management interview"],
     "category": "By competency",
     "role": "Any (communication competency focus)",
@@ -200,7 +200,7 @@
   {
     "slug": "problem-solving-competency-interview-questions",
     "title": "Problem-Solving and Analytical Thinking Interview Questions",
-    "description": "40 competency interview questions testing problem-solving, analytical thinking, decision-making, and structured reasoning — with examples of what good answers look like.",
+    "description": "40 competency interview questions testing problem-solving, analytical thinking, decision-making, and structured reasoning, plus examples of what good answers look like.",
     "keywords": ["problem solving interview questions", "analytical interview questions", "decision making interview questions"],
     "category": "By competency",
     "role": "Any (problem-solving competency focus)",
@@ -209,7 +209,7 @@
   {
     "slug": "resilience-competency-interview-questions",
     "title": "Resilience and Adaptability Interview Questions",
-    "description": "35 competency interview questions on resilience, managing pressure, adapting to change, and recovering from setbacks — with guidance on choosing examples that show growth.",
+    "description": "35 competency interview questions on resilience, managing pressure, adapting to change, and recovering from setbacks, with guidance on choosing examples that show growth.",
     "keywords": ["resilience interview questions", "adaptability interview questions", "managing pressure interview questions"],
     "category": "By competency",
     "role": "Any (resilience competency focus)",
@@ -227,7 +227,7 @@
   {
     "slug": "commercial-awareness-interview-questions",
     "title": "Commercial Awareness Interview Questions",
-    "description": "40 interview questions testing commercial awareness — from market trends and competitive landscape to financial literacy and customer value creation.",
+    "description": "40 interview questions testing commercial awareness, from market trends and competitive landscape to financial literacy and customer value creation.",
     "keywords": ["commercial awareness interview questions", "commercial awareness examples", "business acumen interview questions"],
     "category": "By competency",
     "role": "Any (commercial focus)",
@@ -281,7 +281,7 @@
   {
     "slug": "law-training-contract-interview-questions",
     "title": "Law Training Contract Interview Questions",
-    "description": "40 interview questions for training contract and vacation scheme applications at UK law firms — covering commercial awareness, motivation, competencies, and current affairs.",
+    "description": "40 interview questions for training contract and vacation scheme applications at UK law firms, covering commercial awareness, motivation, competencies, and current affairs.",
     "keywords": ["training contract interview questions", "law interview questions", "vacation scheme interview questions", "solicitor interview"],
     "category": "By industry",
     "role": "Trainee Solicitor",
@@ -290,7 +290,7 @@
   {
     "slug": "strengths-based-interview-questions",
     "title": "Strengths-Based Interview Questions (All Roles)",
-    "description": "50 strengths-based interview questions used by employers like Barclays, HSBC, Unilever, and the Civil Service — with guidance on what authentic, energised answers look like.",
+    "description": "50 strengths-based interview questions used by employers like Barclays, HSBC, Unilever, and the Civil Service, with guidance on what authentic, energised answers look like.",
     "keywords": ["strengths based interview questions", "strengths interview examples", "CEB strengths based interview"],
     "category": "By interview type",
     "role": "Any",
@@ -299,7 +299,7 @@
   {
     "slug": "situational-judgement-interview-questions",
     "title": "Situational Judgement Interview Questions",
-    "description": "40 situational interview questions (hypothetical scenarios) testing judgement, prioritisation, and decision-making — with frameworks for structuring your answers.",
+    "description": "40 situational interview questions (hypothetical scenarios) testing judgement, prioritisation, and decision-making, with frameworks for structuring your answers.",
     "keywords": ["situational interview questions", "situational judgement questions", "hypothetical interview questions"],
     "category": "By interview type",
     "role": "Any",
@@ -317,7 +317,7 @@
   {
     "slug": "tech-startup-interview-questions",
     "title": "Tech Startup Interview Questions",
-    "description": "35 interview questions for startup roles across functions — covering growth mindset, ambiguity tolerance, ownership, speed, and cross-functional collaboration.",
+    "description": "35 interview questions for startup roles across functions, covering growth mindset, ambiguity tolerance, ownership, speed, and cross-functional collaboration.",
     "keywords": ["tech startup interview questions", "startup interview questions", "early stage company interview"],
     "category": "By industry",
     "role": "Various (startup context)",
@@ -344,7 +344,7 @@
   {
     "slug": "nursing-interview-questions",
     "title": "General Nursing Interview Questions",
-    "description": "40 interview questions for registered nurse roles in NHS and private settings — covering patient care, clinical decision-making, values-based practice, and teamwork.",
+    "description": "40 interview questions for registered nurse roles in NHS and private settings, covering patient care, clinical decision-making, values-based practice, and teamwork.",
     "keywords": ["nursing interview questions", "nurse interview questions", "RN interview questions UK"],
     "category": "By role",
     "role": "Registered Nurse",
@@ -353,7 +353,7 @@
   {
     "slug": "human-resources-interview-questions",
     "title": "Human Resources Interview Questions",
-    "description": "40 interview questions for HR roles from HR Advisor to HR Business Partner — covering employee relations, TUPE, employment law, performance management, and culture.",
+    "description": "40 interview questions for HR roles from HR Advisor to HR Business Partner, covering employee relations, TUPE, employment law, performance management, and culture.",
     "keywords": ["HR interview questions", "human resources interview questions", "HRBP interview questions"],
     "category": "By role",
     "role": "HR Professional",

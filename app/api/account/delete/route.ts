@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
   const body = (await request.json().catch(() => ({}))) as { confirm?: string };
   if (body.confirm !== "DELETE") {
     return NextResponse.json(
-      { error: 'Confirmation required — send { "confirm": "DELETE" }.' },
+      { error: 'Confirmation required: send { "confirm": "DELETE" }.' },
       { status: 400 }
     );
   }

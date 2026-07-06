@@ -152,7 +152,7 @@ export function PracticeFeedbackPanel({
             <div className="mb-4 flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
               <div>
                 <h3 className="text-lg font-black text-purple-200">
-                  Model answer — 8+/10 standard
+                  Model answer (8+/10 standard)
                 </h3>
                 <p className="mt-1 text-sm leading-6 text-gray-400">
                   Compare this with your own response. Notice the structure,

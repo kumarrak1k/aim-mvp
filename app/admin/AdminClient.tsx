@@ -96,9 +96,9 @@ function getMembershipLabel(u: AdminUser): string {
     const p = (u.companyPlanId ?? "").toLowerCase();
     if (!s || s === "none") return "No plan";
     const tierName = p === "business" ? "Business" : p === "custom" ? "Custom" : "Team";
-    if (s === "trial")     return `${tierName} — Trial`;
+    if (s === "trial")     return `${tierName} (Trial)`;
     if (s === "active")    return tierName;
-    if (s === "expired")   return `${tierName} — Expired`;
+    if (s === "expired")   return `${tierName} (Expired)`;
     if (s === "cancelled") return "Cancelled";
     return tierName;
   }
@@ -107,8 +107,8 @@ function getMembershipLabel(u: AdminUser): string {
   const plan   = (u.candidatePlanId ?? "").toLowerCase();
   const tier   = plan.includes("professional") ? "Professional" : plan.includes("plus") ? "Plus" : null;
   if (!tier || (!["active","trialing","past_due"].includes(status))) return "Free";
-  if (status === "trialing") return `${tier} — Trial`;
-  if (status === "past_due") return `${tier} — Past due`;
+  if (status === "trialing") return `${tier} (Trial)`;
+  if (status === "past_due") return `${tier} (Past due)`;
   return tier;
 }
 
@@ -177,7 +177,7 @@ function fmtDate(iso: string | null) {
   if (!iso) return "Never";
   return new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 }
-function fullName(u: AdminUser) { return [u.firstName, u.lastName].filter(Boolean).join(" ") || "—"; }
+function fullName(u: AdminUser) { return [u.firstName, u.lastName].filter(Boolean).join(" ") || "–"; }
 function initials(u: AdminUser) { return [u.firstName?.[0], u.lastName?.[0]].filter(Boolean).join("").toUpperCase() || u.email[0].toUpperCase(); }
 
 const PAGE_SIZE = 50;
@@ -615,10 +615,10 @@ export function AdminClient({ users: initialUsers, adminEmail }: { users: AdminU
                 <td className="py-3.5 pr-4"><TypeBadge type={u.accountType} /></td>
                 <td className="py-3.5 pr-4"><MembershipBadge user={u} /></td>
                 <td className="whitespace-nowrap py-3.5 pr-4 text-gray-400">
-                  {u.companyName ?? "—"}
+                  {u.companyName ?? "–"}
                   {u.companyRole && <span className="ml-1 text-[10px] capitalize text-gray-600">({u.companyRole})</span>}
                 </td>
-                <td className="whitespace-nowrap py-3.5 pr-4 text-[12px] text-gray-400">{getPeriodEnd(u) ? fmtDate(getPeriodEnd(u)) : "—"}</td>
+                <td className="whitespace-nowrap py-3.5 pr-4 text-[12px] text-gray-400">{getPeriodEnd(u) ? fmtDate(getPeriodEnd(u)) : "–"}</td>
                 <td className="whitespace-nowrap py-3.5 pr-4 text-[12px] text-gray-400">{fmtDate(u.createdAt)}</td>
                 <td className="whitespace-nowrap py-3.5 pr-4 text-[12px] text-gray-400">{fmtDate(u.lastSignInAt)}</td>
                 {/* Actions */}
@@ -703,7 +703,7 @@ export function AdminClient({ users: initialUsers, adminEmail }: { users: AdminU
                 {!createdResult.emailSent && !resendSent && (
                   <div className="rounded-2xl border border-red-400/30 bg-red-500/[0.08] px-4 py-3">
                     <p className="text-sm font-black text-red-300">⚠ Email could not be sent</p>
-                    <p className="mt-0.5 text-[12px] text-red-200/70">{createdResult.emailError ?? "Unknown error — check Vercel logs."}</p>
+                    <p className="mt-0.5 text-[12px] text-red-200/70">{createdResult.emailError ?? "Unknown error. Check Vercel logs."}</p>
                   </div>
                 )}
 
@@ -817,9 +817,9 @@ export function AdminClient({ users: initialUsers, adminEmail }: { users: AdminU
                     {createForm.accountType === "corporate" ? (
                       <>
                         <option value="none">No plan</option>
-                        <option value="team_trial">Team — Trial</option>
+                        <option value="team_trial">Team (Trial)</option>
                         <option value="team">Team</option>
-                        <option value="business_trial">Business — Trial</option>
+                        <option value="business_trial">Business (Trial)</option>
                         <option value="business">Business</option>
                         <option value="custom">Custom</option>
                       </>
@@ -909,9 +909,9 @@ export function AdminClient({ users: initialUsers, adminEmail }: { users: AdminU
                   {editForm.accountType === "corporate" ? (
                     <>
                       <option value="none">No plan</option>
-                      <option value="team_trial">Team — Trial</option>
+                      <option value="team_trial">Team (Trial)</option>
                       <option value="team">Team</option>
-                      <option value="business_trial">Business — Trial</option>
+                      <option value="business_trial">Business (Trial)</option>
                       <option value="business">Business</option>
                       <option value="custom">Custom</option>
                       <option value="expired">Expired</option>

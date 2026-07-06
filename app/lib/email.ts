@@ -209,7 +209,7 @@ function renderPlainText({
     ``,
     `If you weren't expecting this email, you can safely ignore it.`,
     ``,
-    `— AI Career Mentor (sent on behalf of ${companyName})`,
+    `AI Career Mentor (sent on behalf of ${companyName})`,
   ].join("\n");
 }
 
@@ -236,13 +236,13 @@ export const TRANSACTIONAL_NURTURE_TYPES: ReadonlySet<NurtureType> = new Set([
 ]);
 
 const NURTURE_SUBJECTS: Record<NurtureType, string> = {
-  welcome:        "Welcome to AI Career Mentor — your first interview tip",
+  welcome:        "Welcome to AI Career Mentor: your first interview tip",
   day2_tip:       "Most candidates never practise this (but should)",
   day4_social:    "How one user went from nervous to offer in 2 weeks",
-  day7_upgrade:   "Unlock unlimited practice sessions — limited offer",
+  day7_upgrade:   "Unlock unlimited practice sessions (limited offer)",
   day14_reengage: "Got an interview coming up?",
-  day21_nudge:    "Still here — want to run a quick session?",
-  day30_winback:  "Last chance — your free practice sessions are waiting",
+  day21_nudge:    "Still here? Want to run a quick session?",
+  day30_winback:  "Last chance: your free practice sessions are waiting",
   trial_midway:   "Your Plus trial ends soon",
   trial_ended:    "Your free trial has ended",
 };
@@ -258,7 +258,7 @@ function renderNurtureHtml(type: NurtureType, unsubUrl: string): string {
   const bodies: Record<NurtureType, string> = {
     welcome: `
       <h2 style="margin:0 0 16px;font-size:22px;font-weight:800;color:#1a1426;">
-        Welcome — let's get you interview-ready.
+        Welcome. Let's get you interview-ready.
       </h2>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#2a2238;">
         You're now set up on AI Career Mentor. Here's the single most
@@ -266,7 +266,7 @@ function renderNurtureHtml(type: NurtureType, unsubUrl: string): string {
       </p>
       <div style="background:#f7f5fb;border-left:3px solid #8c5cff;border-radius:0 12px 12px 0;padding:18px 22px;margin:0 0 24px;">
         <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#7c6a99;">
-          Tip #1 — The STAR method
+          Tip #1: The STAR method
         </p>
         <p style="margin:0;font-size:15px;line-height:1.7;color:#2a2238;">
           Every behavioural interview question is best answered with
@@ -276,7 +276,7 @@ function renderNurtureHtml(type: NurtureType, unsubUrl: string): string {
         </p>
       </div>
       <p style="margin:0 0 28px;font-size:15px;line-height:1.7;color:#2a2238;">
-        Run your first practice session now — pick your role, choose an
+        Run your first practice session now: pick your role, choose an
         interview type, and AI Career Mentor will generate tailored questions
         and score your answers in real time.
       </p>
@@ -293,7 +293,7 @@ function renderNurtureHtml(type: NurtureType, unsubUrl: string): string {
         The delivery habit most candidates never practise.
       </h2>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#2a2238;">
-        Your answer content can be perfect — and you can still lose the offer
+        Your answer content can be perfect, and you can still lose the offer
         because of <em>how</em> you say it. Voice delivery is the hidden
         differentiator at every level.
       </p>
@@ -302,13 +302,13 @@ function renderNurtureHtml(type: NurtureType, unsubUrl: string): string {
           Three things to fix today
         </p>
         <p style="margin:0;font-size:15px;line-height:1.7;color:#2a2238;">
-          <strong>1. Pace</strong> — slow down by 20%. Most candidates rush.<br/>
-          <strong>2. Filler words</strong> — count your "ums" and "so yeahs". One session will tell you.<br/>
-          <strong>3. Endings</strong> — finish sentences firmly, don't trail off with rising intonation.
+          <strong>1. Pace</strong>: slow down by 20%. Most candidates rush.<br/>
+          <strong>2. Filler words</strong>: count your "ums" and "so yeahs". One session will tell you.<br/>
+          <strong>3. Endings</strong>: finish sentences firmly, don't trail off with rising intonation.
         </p>
       </div>
       <p style="margin:0 0 28px;font-size:15px;line-height:1.7;color:#2a2238;">
-        AI Career Mentor scores your voice delivery in every session —
+        AI Career Mentor scores your voice delivery in every session:
         pace, filler words, and confidence signal. Run a session to see yours.
       </p>
       <table role="presentation" cellpadding="0" cellspacing="0">
@@ -329,19 +329,19 @@ function renderNurtureHtml(type: NurtureType, unsubUrl: string): string {
       <div style="background:#f7f5fb;border-left:3px solid #8c5cff;border-radius:0 12px 12px 0;padding:18px 22px;margin:0 0 24px;">
         <p style="margin:0 0 12px;font-size:15px;line-height:1.7;color:#2a2238;font-style:italic;">
           "I'd failed two final-round interviews in a row. I practised every
-          evening for 10 days — each session showed me exactly where I was
+          evening for 10 days. Each session showed me exactly where I was
           losing marks. The third final round, I got the offer."
         </p>
         <p style="margin:0;font-size:13px;color:#7c6a99;font-weight:700;">
-          — Graduate candidate, Financial Services
+          Graduate candidate, Financial Services
         </p>
       </div>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#2a2238;">
-        The difference isn't talent — it's having honest, specific feedback
+        The difference isn't talent: it's having honest, specific feedback
         on every answer, every session. That's what AI Career Mentor gives you.
       </p>
       <p style="margin:0 0 28px;font-size:15px;line-height:1.7;color:#2a2238;">
-        And if you know someone else who's preparing — share your referral link
+        And if you know someone else who's preparing, share your referral link
         and they get a head start too.
       </p>
       <table role="presentation" cellpadding="0" cellspacing="0" style="margin-bottom:12px;">
@@ -359,7 +359,7 @@ function renderNurtureHtml(type: NurtureType, unsubUrl: string): string {
 
     day7_upgrade: `
       <h2 style="margin:0 0 16px;font-size:22px;font-weight:800;color:#1a1426;">
-        Unlock unlimited sessions — special offer for new users.
+        Unlock unlimited sessions: special offer for new users.
       </h2>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#2a2238;">
         You've been on the platform for a week. If you've run even one session,
@@ -368,7 +368,7 @@ function renderNurtureHtml(type: NurtureType, unsubUrl: string): string {
       </p>
       <div style="background:#f7f5fb;border-left:3px solid #8c5cff;border-radius:0 12px 12px 0;padding:18px 22px;margin:0 0 24px;">
         <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#7c6a99;">
-          Plus plan — from £14.08/month, billed annually
+          Plus plan: from £14.08/month, billed annually
         </p>
         <p style="margin:0;font-size:15px;line-height:1.7;color:#2a2238;">
           Unlimited AI mock interviews · Voice &amp; camera delivery coaching ·
@@ -391,7 +391,7 @@ function renderNurtureHtml(type: NurtureType, unsubUrl: string): string {
         Got an interview coming up?
       </h2>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#2a2238;">
-        Two weeks in — if you've got an interview on the horizon, now is the
+        Two weeks in. If you've got an interview on the horizon, now is the
         time to shift into serious prep mode.
       </p>
       <div style="background:#f7f5fb;border-left:3px solid #8c5cff;border-radius:0 12px 12px 0;padding:18px 22px;margin:0 0 24px;">
@@ -406,7 +406,7 @@ function renderNurtureHtml(type: NurtureType, unsubUrl: string): string {
         </p>
       </div>
       <p style="margin:0 0 28px;font-size:15px;line-height:1.7;color:#2a2238;">
-        AI Career Mentor handles all of this — just set your role and start.
+        AI Career Mentor handles all of this: just set your role and start.
       </p>
       <table role="presentation" cellpadding="0" cellspacing="0">
         <tr><td style="border-radius:12px;background:#8c5cff;">
@@ -418,7 +418,7 @@ function renderNurtureHtml(type: NurtureType, unsubUrl: string): string {
 
     day21_nudge: `
       <h2 style="margin:0 0 16px;font-size:22px;font-weight:800;color:#1a1426;">
-        Still here — one quick session?
+        Still here? One quick session?
       </h2>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#2a2238;">
         Three weeks since you signed up. Whether you've been practising daily or
@@ -451,8 +451,8 @@ function renderNurtureHtml(type: NurtureType, unsubUrl: string): string {
         Your practice sessions are still here.
       </h2>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#2a2238;">
-        It's been 30 days. Whenever your next interview comes up —
-        whether that's tomorrow or in three months — AI Career Mentor
+        It's been 30 days. Whenever your next interview comes up,
+        whether that's tomorrow or in three months, AI Career Mentor
         will be ready for you.
       </p>
       <div style="background:#f7f5fb;border-left:3px solid #8c5cff;border-radius:0 12px 12px 0;padding:18px 22px;margin:0 0 24px;">
@@ -461,12 +461,12 @@ function renderNurtureHtml(type: NurtureType, unsubUrl: string): string {
         </p>
         <p style="margin:0;font-size:15px;line-height:1.7;color:#2a2238;">
           No subscription needed to start. Log in, pick your role,
-          and run a session — your account and progress are all saved.
+          and run a session. Your account and progress are all saved.
         </p>
       </div>
       <p style="margin:0 0 28px;font-size:15px;line-height:1.7;color:#2a2238;">
         When you're ready to go unlimited, the Plus plan is £14.08/month.
-        But there's no pressure — come back whenever you need us.
+        But there's no pressure. Come back whenever you need us.
       </p>
       <table role="presentation" cellpadding="0" cellspacing="0">
         <tr><td style="border-radius:12px;background:#8c5cff;">
@@ -481,19 +481,19 @@ function renderNurtureHtml(type: NurtureType, unsubUrl: string): string {
         Your Plus trial ends soon.
       </h2>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#2a2238;">
-        You're partway through your 3-day Plus trial — make the most of it before
+        You're partway through your 3-day Plus trial. Make the most of it before
         it ends:
       </p>
       <div style="background:#f7f5fb;border-left:3px solid #8c5cff;border-radius:0 12px 12px 0;padding:18px 22px;margin:0 0 24px;">
         <p style="margin:0;font-size:15px;line-height:1.7;color:#2a2238;">
-          <strong>Voice &amp; camera coaching</strong> — see your delivery scored.<br/>
-          <strong>Unlimited practice</strong> — interview as many times as you need.<br/>
-          <strong>Tailored questions</strong> — for your exact role and level.
+          <strong>Voice &amp; camera coaching</strong>: see your delivery scored.<br/>
+          <strong>Unlimited practice</strong>: interview as many times as you need.<br/>
+          <strong>Tailored questions</strong>: for your exact role and level.
         </p>
       </div>
       <p style="margin:0 0 28px;font-size:15px;line-height:1.7;color:#2a2238;">
         When the trial ends you'll move to the Free plan. Upgrade to Plus to keep
-        unlimited voice &amp; camera practice — or Professional for mock assessment
+        unlimited voice &amp; camera practice, or Professional for mock assessment
         centres and career docs. No card needed until you decide.
       </p>
       <table role="presentation" cellpadding="0" cellspacing="0" style="margin-bottom:12px;">
@@ -505,7 +505,7 @@ function renderNurtureHtml(type: NurtureType, unsubUrl: string): string {
       </table>
       <p style="margin:0 0 28px;">
         <a href="${upgradeUrl}" style="font-size:14px;color:#8c5cff;text-decoration:none;font-weight:700;">
-          Keep full access — see plans →
+          Keep full access: see plans →
         </a>
       </p>`,
 
@@ -515,12 +515,12 @@ function renderNurtureHtml(type: NurtureType, unsubUrl: string): string {
       </h2>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#2a2238;">
         Your 3-day Plus trial is now over and your account has moved to
-        the <strong>Free plan</strong> — that's 3 keyboard-only practice sessions.
+        the <strong>Free plan</strong>: that's 3 keyboard-only practice sessions.
       </p>
       <div style="background:#f7f5fb;border-left:3px solid #8c5cff;border-radius:0 12px 12px 0;padding:18px 22px;margin:0 0 24px;">
         <p style="margin:0;font-size:15px;line-height:1.7;color:#2a2238;">
           Upgrade to <strong>Plus</strong> to keep unlimited voice &amp; camera
-          practice — or <strong>Professional</strong> for mock assessment centres
+          practice, or <strong>Professional</strong> for mock assessment centres
           and career docs.
         </p>
       </div>
@@ -567,17 +567,17 @@ function renderNurturePlainText(type: NurtureType): string {
   const upgradeUrl = `${siteConfig.url}/for-candidates/pricing`;
   const referUrl   = `${siteConfig.url}/refer`;
   const texts: Record<NurtureType, string> = {
-    welcome:        `Welcome to AI Career Mentor!\n\nTip #1 — The STAR method.\nEvery behavioural question is best answered with Situation → Task → Action → Result.\n\nRun your first session: ${practiceUrl}`,
-    day2_tip:       `Most candidates never practise voice delivery — but it's scored in every session.\n\nFix: slow down, cut filler words, finish sentences firmly.\n\nRun a session and check your delivery: ${practiceUrl}`,
-    day4_social:    `From nervous to offer in two weeks — real story from a Financial Services graduate.\n\nConsistent, specific feedback makes the difference.\n\nContinue practising: ${practiceUrl}\nShare your referral link: ${referUrl}`,
-    day7_upgrade:   `One week in. Unlock unlimited sessions and interview as many times as you need.\n\nPlus plan from £14.08/month — see pricing: ${upgradeUrl}`,
+    welcome:        `Welcome to AI Career Mentor!\n\nTip #1: The STAR method.\nEvery behavioural question is best answered with Situation → Task → Action → Result.\n\nRun your first session: ${practiceUrl}`,
+    day2_tip:       `Most candidates never practise voice delivery, but it's scored in every session.\n\nFix: slow down, cut filler words, finish sentences firmly.\n\nRun a session and check your delivery: ${practiceUrl}`,
+    day4_social:    `From nervous to offer in two weeks: real story from a Financial Services graduate.\n\nConsistent, specific feedback makes the difference.\n\nContinue practising: ${practiceUrl}\nShare your referral link: ${referUrl}`,
+    day7_upgrade:   `One week in. Unlock unlimited sessions and interview as many times as you need.\n\nPlus plan from £14.08/month. See pricing: ${upgradeUrl}`,
     day14_reengage: `Got an interview coming up? Run a 10-day sprint: competency, strength, and motivation questions, then a full mock on day 10.\n\nStart here: ${practiceUrl}`,
-    day21_nudge:    `Still here — one 15-minute session will move you forward. Pick your role, answer 5 questions, get scored.\n\n${practiceUrl}`,
+    day21_nudge:    `Still here? One 15-minute session will move you forward. Pick your role, answer 5 questions, get scored.\n\n${practiceUrl}`,
     day30_winback:  `Your practice sessions are still here. Come back whenever you're ready.\n\n${practiceUrl}`,
     trial_midway:   `Your Plus trial ends soon. Make the most of unlimited voice & camera practice before it ends.\n\nJump back in: ${practiceUrl}\nSee plans: ${upgradeUrl}`,
-    trial_ended:    `Your 3-day Plus trial has ended — your account is now on the Free plan (3 keyboard-only sessions).\n\nUpgrade to Plus to keep unlimited voice & camera practice, or Professional for assessment centres and career docs: ${upgradeUrl}`,
+    trial_ended:    `Your 3-day Plus trial has ended. Your account is now on the Free plan (3 keyboard-only sessions).\n\nUpgrade to Plus to keep unlimited voice & camera practice, or Professional for assessment centres and career docs: ${upgradeUrl}`,
   };
-  return texts[type] + `\n\n— AI Career Mentor\n${siteConfig.url}`;
+  return texts[type] + `\n\nAI Career Mentor\n${siteConfig.url}`;
 }
 
 export async function sendNurtureEmail(
@@ -655,7 +655,7 @@ function renderAdminWelcomeHtml({ to, firstName, signInUrl }: SendAdminWelcomePa
         <tr><td style="padding:36px;">
           <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#2a2238;">${greeting}</p>
           <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#2a2238;">
-            An account has been created for you on AI Career Mentor —
+            An account has been created for you on AI Career Mentor,
             an AI-powered platform for interview practice and assessment preparation.
           </p>
           <p style="margin:0 0 28px;font-size:15px;line-height:1.7;color:#2a2238;">
@@ -716,7 +716,7 @@ function renderAdminWelcomePlainText({ to, firstName, signInUrl }: SendAdminWelc
     "This link works once and expires in 7 days.",
     "If you weren't expecting this email, you can safely ignore it.",
     "",
-    "— AI Career Mentor",
+    "AI Career Mentor",
     siteConfig.url,
   ].join("\n");
 }

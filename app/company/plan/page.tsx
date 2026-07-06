@@ -71,7 +71,7 @@ export default function CompanyPlanPage() {
             Start your free trial
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-gray-400">
-            14 days free on the Team plan — no payment details required. Upgrade to
+            14 days free on the Team plan, with no payment details required. Upgrade to
             Business anytime. Cancel or change whenever you like.
           </p>
         </div>
@@ -137,7 +137,7 @@ export default function CompanyPlanPage() {
               </button>
               {plan.id === "business" && (
                 <p className="mt-2 text-center text-[11px] text-gray-500">
-                  Trials run on the Team plan — upgrade to Business anytime from
+                  Trials run on the Team plan. Upgrade to Business anytime from
                   your dashboard.
                 </p>
               )}

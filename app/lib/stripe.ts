@@ -39,7 +39,7 @@ function createStripeClient(): Stripe | null {
 export const stripe = createStripeClient();
 
 export function requireStripe(): Stripe {
-  if (!stripe) throw new Error("Stripe is not configured — set STRIPE_SECRET_KEY");
+  if (!stripe) throw new Error("Stripe is not configured (set STRIPE_SECRET_KEY)");
   return stripe;
 }
 

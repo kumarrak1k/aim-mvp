@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           error:
-            "Free trials run on the Team plan. Start a Team trial — you can upgrade to Business anytime.",
+            "Free trials run on the Team plan. Start a Team trial. You can upgrade to Business at any time.",
         },
         { status: 400 }
       );

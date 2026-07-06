@@ -139,7 +139,7 @@ export default function BusinessSignUpCompletePage() {
             onClick={() => setPhase("processing")}
             className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-6 py-3.5 text-sm font-black text-white shadow-lg shadow-purple-900/30 transition hover:scale-[1.02]"
           >
-            Yes, I&rsquo;m a hiring manager — continue
+            Yes, I&rsquo;m a hiring manager. Continue
           </button>
 
           {/* Secondary — escape to candidate flow */}
@@ -147,12 +147,12 @@ export default function BusinessSignUpCompletePage() {
             href="/for-candidates/sign-up"
             className="mt-3 block w-full rounded-2xl border border-white/[0.1] bg-white/[0.04] px-6 py-3.5 text-center text-sm font-black text-white transition hover:bg-white/[0.08]"
           >
-            I&rsquo;m actually a job applicant — candidate sign-up →
+            I&rsquo;m actually a job applicant. Take me to candidate sign-up →
           </Link>
 
           <p className="mt-5 text-center text-xs leading-5 text-gray-600">
             If you&rsquo;re a freelance recruiter or work from a personal
-            email, you can still use a hiring team account — just confirm
+            email, you can still use a hiring team account. Just confirm
             above.
           </p>
         </div>

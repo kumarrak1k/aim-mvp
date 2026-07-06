@@ -24,12 +24,12 @@ const features = [
   {
     iconKey: "template",
     title: "Custom assessment templates",
-    text: "Build a structured AI interview for any role — competency, technical, situational, behavioural. Reusable across every candidate for that role.",
+    text: "Build a structured AI interview for any role: competency, technical, situational, behavioural. Reusable across every candidate for that role.",
   },
   {
     iconKey: "invite",
     title: "Email invite links",
-    text: "One click sends a candidate a branded invite. They take the assessment on their own time — no scheduling needed, no recruiter time spent.",
+    text: "One click sends a candidate a branded invite. They take the assessment on their own time, with no scheduling needed and no recruiter time spent.",
   },
   {
     iconKey: "dashboard",
@@ -39,7 +39,7 @@ const features = [
   {
     iconKey: "scoring",
     title: "Fair, comparable scoring",
-    text: "The same brief is used for every candidate. AI feedback is generated from your template — not the candidate's CV — so scoring is consistent.",
+    text: "The same brief is used for every candidate. AI feedback is generated from your template (not the candidate's CV), so scoring is consistent.",
   },
   {
     iconKey: "branding",
@@ -106,11 +106,11 @@ const useCases = [
   },
   {
     title: "Graduate &amp; entry-level",
-    text: "Run early-careers assessment exercises at scale. Every applicant gets a fair shot at the same brief — no batching, no rota juggling.",
+    text: "Run early-careers assessment exercises at scale. Every applicant gets a fair shot at the same brief. No batching, no rota juggling.",
   },
   {
     title: "Specialist roles",
-    text: "Build a competency framework specific to the role — leadership, technical depth, stakeholder management — and the AI scores against it consistently.",
+    text: "Build a competency framework specific to the role, such as leadership, technical depth and stakeholder management, and the AI scores against it consistently.",
   },
   {
     title: "Internal mobility",
@@ -144,7 +144,7 @@ export default function ForBusinessPage() {
         <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-gray-400 sm:text-lg sm:leading-9">
           The recruiter platform candidates trust. Build your own assessment
           templates, send invite links, review structured scoring across every
-          applicant — all in one workspace.
+          applicant. All in one workspace.
         </p>
 
         <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
@@ -192,15 +192,15 @@ export default function ForBusinessPage() {
             From role template to ranked shortlist.
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-gray-400">
-            A short walkthrough of the whole hiring workflow — build a role template,
+            A short walkthrough of the whole hiring workflow: build a role template,
             invite candidates, and review AI-scored, ranked results in one workspace.
           </p>
         </div>
         <DemoVideo
           src="/videos/corporate-demo.mp4"
           poster="/videos/corporate-poster.jpg"
-          title="AI Career Mentor for Business — workflow demo"
-          caption="Build a role template, invite candidates, and review AI-scored results — in one workspace."
+          title="AI Career Mentor for Business: workflow demo"
+          caption="Build a role template, invite candidates, and review AI-scored results, all in one workspace."
         />
       </section>
 
@@ -261,7 +261,7 @@ export default function ForBusinessPage() {
       <DemoShowcase
         eyebrow="See it in action"
         title="One workspace. Every candidate, assessed fairly."
-        subtitle="A real look at the recruiter dashboard and the AI assessment centre — structured, comparable, and scored automatically."
+        subtitle="A real look at the recruiter dashboard and the AI assessment centre: structured, comparable, and scored automatically."
         shots={[
           {
             src: "/marketing/corporate-01-dashboard.webp",
@@ -270,8 +270,8 @@ export default function ForBusinessPage() {
           },
           {
             src: "/marketing/ac-01-landing.webp",
-            alt: "AI assessment centre — case study, competency interview and presentation stages",
-            caption: "Run a full assessment centre — case study, interview and presentation — scored into one report.",
+            alt: "AI assessment centre with case study, competency interview and presentation stages",
+            caption: "Run a full assessment centre (case study, interview and presentation) scored into one report.",
           },
         ]}
       />

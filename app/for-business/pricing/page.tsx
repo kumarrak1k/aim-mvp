@@ -8,9 +8,9 @@ import { FAQSection } from "@/app/components/marketing/FAQSection";
 
 export const metadata: Metadata = createPageMetadata({
   path: "/for-business/pricing",
-  title: "Hiring Team Pricing — AI Career Mentor for Business",
+  title: "Hiring Team Pricing | AI Career Mentor for Business",
   description:
-    "Pricing for the AI assessment platform. Per-seat plans for small teams, custom enterprise pricing for high-volume hiring. Start the Team plan with a 14-day free trial — no payment details required. Annual plans save up to 33%.",
+    "Pricing for the AI assessment platform. Per-seat plans for small teams, custom enterprise pricing for high-volume hiring. Start the Team plan with a 14-day free trial, no payment details required. Annual plans save up to 33%.",
   keywords: [
     "AI assessment platform pricing",
     "talent assessment pricing",
@@ -36,7 +36,7 @@ const faqs = [
   {
     question: "Is there a free trial?",
     answer:
-      "Yes — the Team plan includes a 14-day free trial with no payment details required, giving you 10 candidate invites to evaluate the platform with real candidates. Business and Enterprise include a structured pilot before commitment. All plans are pay-as-you-subscribe with no lock-in, cancel any time.",
+      "Yes. The Team plan includes a 14-day free trial with no payment details required, giving you 10 candidate invites to evaluate the platform with real candidates. Business and Enterprise include a structured pilot before commitment. All plans are pay-as-you-subscribe with no lock-in, cancel any time.",
   },
   {
     question: "What counts as a candidate invite?",
@@ -83,7 +83,7 @@ export default async function BusinessPricingPage() {
         </p>
         <p className="mx-auto mt-6 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-2.5 text-sm font-black text-white shadow-lg shadow-purple-900/40">
           <span aria-hidden>✨</span>
-          Try the Team plan free for 14 days — no payment details, 10 candidate invites
+          Try the Team plan free for 14 days: no payment details, 10 candidate invites
         </p>
       </section>
 
