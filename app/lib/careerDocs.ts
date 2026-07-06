@@ -3,7 +3,7 @@
  *
  * Career-doc tools (CV enhancer, personal statement, cover letter) are a
  * Professional-only feature. During the no-card free trial they are available
- * but subject to a fair-usage cap to keep OpenAI (gpt-4o) costs economical.
+ * but subject to a fair-usage cap to keep OpenAI costs economical.
  * Every successful generation is logged in CareerDocGeneration, which both
  * powers the trial cap (counted since trial start) and serves as a history.
  */

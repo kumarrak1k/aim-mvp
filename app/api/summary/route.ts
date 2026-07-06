@@ -367,7 +367,7 @@ const buildFallbackSummary = (
 
 export async function POST(req: Request) {
   try {
-    // AuthN + throttle — this endpoint drives a gpt-4o-mini completion and must
+    // AuthN + throttle — this endpoint drives an OpenAI completion and must
     // never be reachable anonymously.
     const { userId } = await auth();
     if (!userId) {
