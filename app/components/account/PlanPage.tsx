@@ -225,10 +225,17 @@ export function PlanPage() {
     setCheckoutLoading(planId);
     setError("");
     try {
+      // Promotion code captured from a ?promo= marketing link, if any.
+      let promoCode: string | undefined;
+      try {
+        promoCode = sessionStorage.getItem("aim_promo") || undefined;
+      } catch {
+        // sessionStorage unavailable; user can type the code at checkout.
+      }
       const res = await fetch("/api/stripe/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ planId }),
+        body: JSON.stringify({ planId, promoCode }),
       });
       const data = (await res.json()) as { url?: string; error?: string };
       if (data.url) window.location.href = data.url;

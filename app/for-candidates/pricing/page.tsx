@@ -8,6 +8,7 @@ import { AudienceShell } from "@/app/components/marketing/AudienceShell";
 import { CandidateAppShell } from "@/app/components/marketing/CandidateAppShell";
 import { CandidatePricingPlans, type PricingCurrency } from "@/app/components/marketing/CandidatePricingPlans";
 import { FAQSection } from "@/app/components/marketing/FAQSection";
+import { LaunchPromoBanner } from "@/app/components/marketing/LaunchPromoBanner";
 
 export const metadata: Metadata = createPageMetadata({
   path: "/for-candidates/pricing",
@@ -103,6 +104,7 @@ export default async function CandidatePricingPage() {
       </section>
 
       <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 sm:pb-20">
+        <LaunchPromoBanner />
         <CandidatePricingPlans currency={currency} />
       </section>
 

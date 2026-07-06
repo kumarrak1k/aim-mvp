@@ -23,8 +23,14 @@ export async function POST(req: NextRequest) {
   }
 
   let planId: string;
+  let promoCode: string | undefined;
   try {
-    ({ planId } = await req.json());
+    const body = await req.json();
+    planId = body.planId;
+    // Optional promotion code captured from a ?promo= marketing link.
+    if (typeof body.promoCode === "string") {
+      promoCode = body.promoCode.trim().slice(0, 50).toUpperCase() || undefined;
+    }
   } catch {
     return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
   }
@@ -85,13 +91,33 @@ export async function POST(req: NextRequest) {
     });
   }
 
+  // Pre-apply a promotion code from a marketing link so the discount shows on
+  // the checkout page without typing. Stripe forbids combining `discounts`
+  // with `allow_promotion_codes`, so fall back to the manual code field when
+  // the code is missing, inactive or fully redeemed.
+  let promotionCodeId: string | undefined;
+  if (promoCode) {
+    try {
+      const codes = await stripeClient.promotionCodes.list({
+        code: promoCode,
+        active: true,
+        limit: 1,
+      });
+      promotionCodeId = codes.data[0]?.id;
+    } catch {
+      // Lookup failure is non-fatal; the user can still type the code.
+    }
+  }
+
   const session = await stripeClient.checkout.sessions.create({
     customer: customerId,
     mode: "subscription",
     line_items: [{ price: priceId, quantity: 1 }],
     success_url: absoluteUrl("/practice?payment=success"),
     cancel_url: absoluteUrl("/for-candidates/pricing?payment=cancelled"),
-    allow_promotion_codes: true,
+    ...(promotionCodeId
+      ? { discounts: [{ promotion_code: promotionCodeId }] }
+      : { allow_promotion_codes: true }),
     subscription_data: {
       metadata: { clerkUserId: userId, planId },
     },

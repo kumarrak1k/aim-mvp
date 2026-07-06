@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -87,6 +87,17 @@ type PlanFeature = { text: string; isNew?: boolean };
 export function CandidatePricingPlans({ currency = "GBP" }: { currency?: PricingCurrency }) {
   const [annual, setAnnual] = useState(false);
   const router = useRouter();
+
+  // Capture a promotion code from marketing links (…/pricing?promo=CODE) so
+  // checkout can pre-apply it after sign-up without the user typing anything.
+  useEffect(() => {
+    try {
+      const promo = new URLSearchParams(window.location.search).get("promo");
+      if (promo) sessionStorage.setItem("aim_promo", promo.trim().toUpperCase());
+    } catch {
+      // sessionStorage unavailable; the user can still type the code at checkout.
+    }
+  }, []);
 
   const pro = PLUS[currency];
   const adv = PROFESSIONAL[currency];

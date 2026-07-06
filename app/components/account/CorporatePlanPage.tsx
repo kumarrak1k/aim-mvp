@@ -25,6 +25,7 @@ type CorpSubInfo = {
   isAdmin: boolean;
   billingInterval: "monthly" | "annual" | null;
   cancelAtPeriodEnd: boolean;
+  isPastDue?: boolean;
   currentPeriodEnd: string | null;
   trialEndsAt: string | null;
   trialDaysRemaining: number | null;
@@ -241,6 +242,7 @@ export function CorporatePlanPage() {
 
   // Derived state
   const planStatus = sub?.planStatus ?? "none";
+  const isPastDue = sub?.isPastDue ?? false;
   const isTrial = planStatus === "trial" && Boolean(sub?.trialDaysRemaining);
   const isNoneOrExpired = ["none", "expired", "cancelled"].includes(planStatus) || (!isTrial && !sub?.isActive);
   const isPaidActive = sub?.isActive && sub?.hasStripeSubscription;
@@ -336,14 +338,18 @@ export function CorporatePlanPage() {
               textTransform: "uppercase",
               flexShrink: 0,
               marginTop: "0.25rem",
-              background: cancelAtPeriodEnd
+              background: isPastDue
+                ? "rgba(251,191,36,0.15)"
+                : cancelAtPeriodEnd
                 ? "rgba(248,113,113,0.15)"
                 : isPaidActive
                 ? "linear-gradient(to right, #c026d3, #a855f7)"
                 : isTrial
                 ? "rgba(251,191,36,0.15)"
                 : "rgba(255,255,255,0.08)",
-              color: cancelAtPeriodEnd
+              color: isPastDue
+                ? "#fbbf24"
+                : cancelAtPeriodEnd
                 ? "#f87171"
                 : isPaidActive
                 ? "white"
@@ -352,7 +358,9 @@ export function CorporatePlanPage() {
                 : "rgba(255,255,255,0.5)",
             }}
           >
-            {cancelAtPeriodEnd
+            {isPastDue
+              ? "Payment due"
+              : cancelAtPeriodEnd
               ? "Cancelling"
               : isPaidActive
               ? "Active"
@@ -379,6 +387,13 @@ export function CorporatePlanPage() {
         {/* Paid info */}
         {isPaidActive && !isTrial && (
           <div style={{ marginTop: "0.75rem" }}>
+            {isPastDue && (
+              <p style={{ color: "#fbbf24", fontSize: "0.8rem", fontWeight: 700, lineHeight: 1.5, marginBottom: "0.5rem" }}>
+                Your last payment didn&rsquo;t go through. Update your card via
+                Manage billing below to keep your workspace access. We&rsquo;ll
+                keep retrying in the meantime.
+              </p>
+            )}
             {isTeam && (
               <p style={{ color: "rgba(255,255,255,0.5)" }}>
                 3 recruiter seats · 100 candidate invites / month

@@ -85,11 +85,13 @@ export default function CandidateSignUpCompletePage() {
       const pendingPlan = sessionStorage.getItem("aim_pending_plan");
       if (pendingPlan) {
         sessionStorage.removeItem("aim_pending_plan");
+        // Promotion code captured from a ?promo= marketing link, if any.
+        const promoCode = sessionStorage.getItem("aim_promo") || undefined;
         try {
           const res = await fetch("/api/stripe/checkout", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ planId: pendingPlan }),
+            body: JSON.stringify({ planId: pendingPlan, promoCode }),
           });
           if (res.ok) {
             const { url } = (await res.json()) as { url?: string };

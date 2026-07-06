@@ -57,6 +57,7 @@ export async function GET() {
     // Fetch live data from Stripe when a paid subscription exists
     let billingInterval: "monthly" | "annual" | null = null;
     let cancelAtPeriodEnd = false;
+    let isPastDue = false;
 
     if (company.stripeSubscriptionId && stripe) {
       try {
@@ -65,6 +66,9 @@ export async function GET() {
           { expand: ["items.data.price"] }
         );
         cancelAtPeriodEnd = stripeSub.cancel_at_period_end;
+        // planStatus folds past_due into "active" (Stripe is still retrying),
+        // so surface the dunning state separately for the UI banner.
+        isPastDue = stripeSub.status === "past_due";
 
         // Determine billing interval from the price's recurring interval
         const price = stripeSub.items.data[0]?.price as {
@@ -88,6 +92,7 @@ export async function GET() {
       isAdmin,
       billingInterval,
       cancelAtPeriodEnd,
+      isPastDue,
       currentPeriodEnd: periodEndIso,
       trialEndsAt,
       trialDaysRemaining,
