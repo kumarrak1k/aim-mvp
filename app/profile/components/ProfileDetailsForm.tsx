@@ -236,6 +236,24 @@ export function ProfileDetailsForm({
                 />
               </ProfileField>
 
+              <div className="flex flex-col gap-4 sm:flex-row">
+                <button
+                  type="button"
+                  onClick={() => void handleSave()}
+                  disabled={saving || destructiveActionRunning}
+                  className="rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-7 py-4 text-sm font-black text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {saving ? "Saving..." : "Save Candidate Profile"}
+                </button>
+
+                <Link
+                  href="/practice"
+                  className="rounded-2xl border border-white/10 bg-white/[0.07] px-7 py-4 text-center text-sm font-black text-white transition hover:bg-white/[0.12]"
+                >
+                  Go to practice
+                </Link>
+              </div>
+
               {hasAnyProfileContext && (
                 <div className="rounded-[1.5rem] border border-rose-300/15 bg-rose-300/10 p-5">
                   <p className="text-sm font-black text-rose-100">
@@ -275,24 +293,6 @@ export function ProfileDetailsForm({
                 onDeleteAllAimData={deleteAllAimData}
                 onExportAccountData={exportAccountData}
               />
-
-              <div className="flex flex-col gap-4 sm:flex-row">
-                <button
-                  type="button"
-                  onClick={() => void handleSave()}
-                  disabled={saving || destructiveActionRunning}
-                  className="rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-7 py-4 text-sm font-black text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  {saving ? "Saving..." : "Save Candidate Profile"}
-                </button>
-
-                <Link
-                  href="/practice"
-                  className="rounded-2xl border border-white/10 bg-white/[0.07] px-7 py-4 text-center text-sm font-black text-white transition hover:bg-white/[0.12]"
-                >
-                  Go to practice
-                </Link>
-              </div>
             </div>
           )}
         </GlassCard>

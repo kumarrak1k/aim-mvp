@@ -6,14 +6,22 @@ import {
   calculateAudioMetrics,
   calculateScaledVolumeSample,
 } from "../lib/audioMetrics";
+import { getStoredAudioInput, setStoredAudioInput } from "../lib/audioDevices";
 
-const audioConstraints: MediaStreamConstraints = {
-  audio: {
-    echoCancellation: true,
-    noiseSuppression: true,
-    autoGainControl: true,
-  },
+const BASE_AUDIO_CONSTRAINTS = {
+  echoCancellation: true,
+  noiseSuppression: true,
+  autoGainControl: true,
 };
+
+/** Constraints honouring the user's saved microphone choice (if any). */
+function buildAudioConstraints(deviceId: string): MediaStreamConstraints {
+  return {
+    audio: deviceId
+      ? { ...BASE_AUDIO_CONSTRAINTS, deviceId: { exact: deviceId } }
+      : BASE_AUDIO_CONSTRAINTS,
+  };
+}
 
 /** Returns the best supported MIME type for MediaRecorder audio capture. */
 function getSupportedRecordingMimeType(): string {
@@ -112,7 +120,22 @@ export function useAudioMonitoring() {
       throw new Error("Microphone access is not supported in this browser.");
     }
 
-    const stream = await navigator.mediaDevices.getUserMedia(audioConstraints);
+    const preferredDevice = getStoredAudioInput();
+    let stream: MediaStream;
+    try {
+      stream = await navigator.mediaDevices.getUserMedia(
+        buildAudioConstraints(preferredDevice)
+      );
+    } catch (err) {
+      // The chosen microphone may have been unplugged since it was saved —
+      // clear the stale preference and fall back to the system default
+      // rather than failing the whole recording.
+      if (!preferredDevice) throw err;
+      setStoredAudioInput("");
+      stream = await navigator.mediaDevices.getUserMedia(
+        buildAudioConstraints("")
+      );
+    }
     audioStreamRef.current = stream;
     return stream;
   }, [hasLiveAudioStream]);

@@ -16,6 +16,7 @@ import {
 } from "../lib/interviewOptions";
 import { hasCandidateProfileContext } from "../lib/profileHelpers";
 import { CheckItem, GlassCard, SelectField } from "./PracticeUi";
+import { AudioDeviceSelectors } from "./AudioDeviceSelectors";
 import { DataTrustStrip } from "@/app/components/DataTrustStrip";
 import {
   MAX_TOTAL_QUESTIONS,
@@ -856,6 +857,8 @@ export function PracticeStartScreen({
                 }
               />
             </div>
+
+            <AudioDeviceSelectors />
           </div>
 
           <div className="mt-5 rounded-2xl border border-white/10 bg-white/[0.04] p-4">

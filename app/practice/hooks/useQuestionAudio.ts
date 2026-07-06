@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { SpeakerPreference } from "../types";
 import { unlockAudioOutput } from "../lib/iosAudioUnlock";
+import { applyPreferredSink } from "../lib/audioDevices";
 
 type PlayPreparedQuestionAudioOptions = {
   text: string;
@@ -153,6 +154,7 @@ const streamQuestionAudioToEntry = async (
   const url = URL.createObjectURL(ms);
   const audio = new Audio(url);
   audio.preload = "auto";
+  applyPreferredSink(audio);
 
   await new Promise<void>((resolve, reject) => {
     let settled = false;
@@ -536,6 +538,7 @@ export function useQuestionAudio({
           }
 
           audio.preload = "auto";
+          applyPreferredSink(audio);
           // Attach handlers now. All are guarded by `questionAudioRef.current !== audio`
           // so they're no-ops while the audio is in the background cache.
           // Once promoted (questionAudioRef set to this element), they become active.
@@ -705,6 +708,7 @@ export function useQuestionAudio({
       }
 
       audio.preload = "auto";
+      applyPreferredSink(audio);
       attachAudioHandlers(audio);
 
       const entry: PreparedAudioEntry = {

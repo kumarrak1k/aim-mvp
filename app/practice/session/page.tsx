@@ -1342,6 +1342,27 @@ export default function PracticeSessionPage() {
     }
   }, [assessmentMode, assignmentToken, interviewFinished, router, summaryLoading]);
 
+  // The summary screen keeps this page mounted, so without this the browser
+  // keeps the camera/microphone indicators on while the candidate reads their
+  // results. Release every capture device the moment the interview finishes.
+  useEffect(() => {
+    if (!interviewFinished) return;
+    cleanupAudioMonitoring();
+    stopCamera();
+    stopRecognitionOnly();
+    stopBrowserQuestionSpeech();
+    stopPreparedQuestionPlayback();
+    clearBackgroundAudio();
+  }, [
+    interviewFinished,
+    cleanupAudioMonitoring,
+    stopCamera,
+    stopRecognitionOnly,
+    stopBrowserQuestionSpeech,
+    stopPreparedQuestionPlayback,
+    clearBackgroundAudio,
+  ]);
+
   const playQuestionManually = useCallback(() => {
     if (!question.trim()) return;
     // Keyboard-only mode — speaker must never be enabled during the session.
