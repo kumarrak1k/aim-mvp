@@ -13,6 +13,7 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { StarAnswer } from "@/app/components/StarAnswer";
 
 type CategoryScores = {
   content?: number;
@@ -29,6 +30,12 @@ type Feedback = {
   strengths?: string[];
   improvements?: string[];
   improved_answer?: string;
+  improved_answer_star?: {
+    situation: string;
+    task: string;
+    action: string;
+    result: string;
+  } | null;
 };
 
 type VoiceAnalysis = {
@@ -257,7 +264,16 @@ export default function SessionPrintPage() {
                     </div>
 
                     <FieldBlock title="Your answer" text={item.answer} />
-                    <FieldBlock title="Model answer" text={item.feedback?.improved_answer} />
+                    <div className="mt-3">
+                      <p className="mb-1 text-xs font-bold uppercase tracking-wider text-gray-500">
+                        Model answer (STAR)
+                      </p>
+                      <StarAnswer
+                        star={item.feedback?.improved_answer_star}
+                        fallbackText={item.feedback?.improved_answer || "–"}
+                        tone="print"
+                      />
+                    </div>
 
                     <div className="mt-3 grid grid-cols-2 gap-6">
                       <Bullets title="Strengths" items={item.feedback?.strengths} empty="–" small />

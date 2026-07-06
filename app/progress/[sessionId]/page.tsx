@@ -5,6 +5,7 @@ import { SignInButton, useUser } from "@clerk/nextjs";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { CandidateAppShell } from "@/app/components/marketing/CandidateAppShell";
+import { StarAnswer } from "@/app/components/StarAnswer";
 
 type CategoryScores = {
   content?: number;
@@ -35,6 +36,12 @@ type Feedback = {
   strengths?: string[];
   improvements?: string[];
   improved_answer?: string;
+  improved_answer_star?: {
+    situation: string;
+    task: string;
+    action: string;
+    result: string;
+  } | null;
   error?: string;
 };
 
@@ -613,10 +620,15 @@ function QuestionCard({
             title="Candidate answer"
             text={item.answer || "No answer saved."}
           />
-          <TextBlock
-            title="Improved answer"
-            text={feedback?.improved_answer || "No improved answer was saved."}
-          />
+          <div className="rounded-[1.35rem] border border-white/10 bg-white/[0.04] p-4">
+            <p className="mb-3 text-xs font-black uppercase tracking-[0.18em] text-cyan-300">
+              Model answer (STAR)
+            </p>
+            <StarAnswer
+              star={feedback?.improved_answer_star}
+              fallbackText={feedback?.improved_answer || "No improved answer was saved."}
+            />
+          </div>
         </div>
 
         <div className="mt-4 grid gap-4 lg:grid-cols-2">

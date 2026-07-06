@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { CorporateAppShell } from "@/app/components/marketing/CorporateAppShell";
+import { StarAnswer } from "@/app/components/StarAnswer";
 
 type Feedback = {
   overall_score?: number;
@@ -16,6 +17,12 @@ type Feedback = {
   strengths?: string[];
   improvements?: string[];
   improved_answer?: string;
+  improved_answer_star?: {
+    situation: string;
+    task: string;
+    action: string;
+    result: string;
+  } | null;
 };
 
 type VoiceAnalysis = {
@@ -588,9 +595,12 @@ function QuestionCard({
               <summary className="cursor-pointer text-xs font-black text-cyan-300">
                 Show AI model answer
               </summary>
-              <p className="mt-3 text-sm leading-6 text-gray-300 whitespace-pre-wrap">
-                {fb.improved_answer}
-              </p>
+              <div className="mt-3">
+                <StarAnswer
+                  star={fb.improved_answer_star}
+                  fallbackText={fb.improved_answer}
+                />
+              </div>
             </details>
           )}
         </div>

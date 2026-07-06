@@ -39,6 +39,12 @@ export type Feedback = {
   strengths: string[];
   improvements: string[];
   improved_answer: string;
+  improved_answer_star?: {
+    situation: string;
+    task: string;
+    action: string;
+    result: string;
+  } | null;
   error?: string;
 };
 

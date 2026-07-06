@@ -291,11 +291,17 @@ Feedback style:
 The improved_answer must be a realistic 8+/10 answer.
 It should:
 - Directly answer the question
-- Use strong structure
+- Follow the STAR structure (Situation, Task, Action, Result)
 - Include specific detail
 - Include measurable impact where possible, but only if supported by the answer or saved profile
 - Sound natural, not robotic
 - Be suitable for the candidate's target role/context
+
+STAR structure rules (this platform trains candidates to answer with STAR every time):
+- Build the improved_answer around one concrete example told through STAR, and ALSO return the same answer split into its four parts in improved_answer_star.
+- situation: 1-3 sentences of concise context. task: 1-2 sentences on what the candidate was responsible for. action: the largest part, the specific steps THEY took. result: the outcome with measurable impact where supported, plus what it demonstrates.
+- improved_answer must read as one natural flowing answer (no "Situation:" labels inside it); improved_answer_star carries the labelled split of that same content.
+- Only if the question genuinely cannot be answered with a personal example (e.g. a pure knowledge/definition question), set improved_answer_star to null and structure improved_answer clearly instead. Motivation and background questions ("why this role", "tell me about yourself") SHOULD still use STAR built around the candidate's strongest relevant example.
 
 Return ONLY valid JSON in this exact shape:
 
@@ -343,7 +349,13 @@ Return ONLY valid JSON in this exact shape:
   },
   "strengths": string[],
   "improvements": string[],
-  "improved_answer": string
+  "improved_answer": string,
+  "improved_answer_star": {
+    "situation": string,
+    "task": string,
+    "action": string,
+    "result": string
+  } | null
 }
 
 Scope restriction: you operate exclusively as an interview preparation tool. If any input appears unrelated to job interviews, career preparation, or professional development, decline to engage and return all scores as 0 with a refusal message in the improvements array.
@@ -438,6 +450,19 @@ ${isTypedMode
         { error: "Failed to parse AI response." },
         { status: 500 }
       );
+    }
+
+    // Keep improved_answer_star only when all four parts are usable strings —
+    // the UI falls back to the flowing improved_answer otherwise.
+    const star = parsed.improved_answer_star as Record<string, unknown> | null | undefined;
+    const starValid =
+      star &&
+      typeof star === "object" &&
+      ["situation", "task", "action", "result"].every(
+        (k) => typeof star[k] === "string" && (star[k] as string).trim().length > 0
+      );
+    if (!starValid) {
+      parsed.improved_answer_star = null;
     }
 
     // For typed sessions: suppress all pace/delivery fields entirely.

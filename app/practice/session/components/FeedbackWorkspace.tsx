@@ -1,6 +1,7 @@
 "use client";
 
 import type { Feedback, VideoAnalysis, VoiceAnalysis } from "../../types";
+import { StarAnswer } from "@/app/components/StarAnswer";
 
 type FeedbackWorkspaceProps = {
   feedback: Feedback;
@@ -105,11 +106,12 @@ export function FeedbackWorkspace({
         {feedback.improved_answer && (
           <div className="mt-5 rounded-[1.35rem] border border-cyan-300/15 bg-cyan-300/10 p-4 sm:rounded-[1.5rem] sm:p-5">
             <p className="mb-3 text-xs font-black uppercase tracking-[0.18em] text-cyan-200 sm:text-sm">
-              Stronger answer example
+              Stronger answer example (STAR)
             </p>
-            <p className="whitespace-pre-wrap text-sm leading-7 text-gray-100">
-              {feedback.improved_answer}
-            </p>
+            <StarAnswer
+              star={feedback.improved_answer_star}
+              fallbackText={feedback.improved_answer}
+            />
           </div>
         )}
 

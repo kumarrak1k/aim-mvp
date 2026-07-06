@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import type { InterviewSummary, ResultItem, SavedSession } from "../../types";
+import { StarAnswer } from "@/app/components/StarAnswer";
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
@@ -241,11 +242,12 @@ function QuestionCard({
             {result.feedback.improved_answer && (
               <div className="rounded-[1.35rem] border border-white/10 bg-white/[0.04] p-4">
                 <p className="mb-3 text-xs font-black uppercase tracking-[0.18em] text-cyan-300">
-                  Model answer
+                  Model answer (STAR)
                 </p>
-                <p className="whitespace-pre-wrap text-sm leading-7 text-gray-300">
-                  {result.feedback.improved_answer}
-                </p>
+                <StarAnswer
+                  star={result.feedback.improved_answer_star}
+                  fallbackText={result.feedback.improved_answer}
+                />
               </div>
             )}
           </div>

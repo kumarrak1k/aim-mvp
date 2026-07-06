@@ -1,6 +1,7 @@
 "use client";
 
 import type { Feedback } from "../types";
+import { StarAnswer } from "@/app/components/StarAnswer";
 import {
   FeedbackList,
   GlassCard,
@@ -164,8 +165,11 @@ export function PracticeFeedbackPanel({
               </span>
             </div>
 
-            <div className="rounded-2xl border border-white/10 bg-black/35 p-5 leading-8 text-gray-100">
-              {feedback.improved_answer}
+            <div className="rounded-2xl border border-white/10 bg-black/35 p-5">
+              <StarAnswer
+                star={feedback.improved_answer_star}
+                fallbackText={feedback.improved_answer}
+              />
             </div>
           </div>
 

@@ -31,7 +31,13 @@ const MOCK_FEEDBACK = {
   strengths: ["Clear STAR structure", "Quantified result", "Directly relevant to the role"],
   improvements: ["Add a second measurable outcome", "Lead with the result"],
   improved_answer:
-    "In my final-year project (Situation) I was tasked with cutting report turnaround (Task). I redesigned the data pipeline and automated the validation checks (Action), which cut turnaround by 40% and was adopted across the team (Result).",
+    "In my final-year project I noticed our weekly reports took two days to produce. I was tasked with cutting the turnaround without adding headcount. I redesigned the data pipeline and automated the validation checks, which cut turnaround by 40% and was adopted across the team.",
+  improved_answer_star: {
+    situation: "In my final-year project, our weekly reports took two days to produce and the delay was holding up decisions.",
+    task: "I was tasked with cutting the report turnaround without adding headcount.",
+    action: "I redesigned the data pipeline, automated the validation checks, and documented the new process so the whole team could run it.",
+    result: "Turnaround fell by 40% and the approach was adopted across the team, demonstrating I can deliver measurable process improvements.",
+  },
 };
 
 const MOCK_QUESTIONS = [
