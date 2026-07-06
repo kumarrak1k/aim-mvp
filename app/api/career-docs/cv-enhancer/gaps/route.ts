@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { callOpenAIChat } from "@/app/lib/openai-client";
+import { MODEL_QUALITY } from "@/app/lib/aiModels";
 import { parseJsonBody } from "@/app/lib/validation";
 import { checkCareerDocAccess } from "@/app/lib/careerDocs";
 
@@ -83,7 +84,7 @@ Return JSON:
 
   const aiResponse = await callOpenAIChat(
     {
-      model: "gpt-4o-mini",
+      model: MODEL_QUALITY,
       messages: [{ role: "user", content: prompt }],
       temperature: 0.2,
       max_tokens: 600,

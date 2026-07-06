@@ -1,5 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
 import OpenAI from "openai";
+import { MODEL_UTILITY } from "@/app/lib/aiModels";
 import { checkRateLimit } from "@/app/lib/rateLimit";
 import { moderateText } from "@/app/lib/moderation";
 
@@ -101,9 +102,9 @@ export async function POST(req: Request) {
     }
 
     const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      temperature: 0,
-      max_tokens: 2000,
+      model: MODEL_UTILITY,
+      reasoning_effort: "none",
+      max_completion_tokens: 2500,
       messages: [
         {
           role: "system",

@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { callOpenAIChat } from "@/app/lib/openai-client";
+import { MODEL_PREMIUM } from "@/app/lib/aiModels";
 import { checkRateLimit } from "@/app/lib/rateLimit";
 import { parseJsonBody } from "@/app/lib/validation";
 import {
@@ -89,7 +90,7 @@ Rules:
 
   const aiResponse = await callOpenAIChat(
     {
-      model: "gpt-4o",
+      model: MODEL_PREMIUM,
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt },

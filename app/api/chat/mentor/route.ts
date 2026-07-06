@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { callOpenAIChat } from "@/app/lib/openai-client";
+import { MODEL_UTILITY } from "@/app/lib/aiModels";
 import { parseJsonBody } from "@/app/lib/validation";
 import { checkRateLimit, getClientIp } from "@/app/lib/rateLimit";
 
@@ -107,7 +108,7 @@ export async function POST(request: NextRequest) {
 
   const aiResponse = await callOpenAIChat(
     {
-      model: "gpt-4o-mini",
+      model: MODEL_UTILITY,
       // The scope reminder goes AFTER the user's message so it is the most
       // recent instruction — hardens against "ignore previous instructions".
       messages: [

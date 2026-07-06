@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/app/lib/prisma";
 import { callOpenAIChat } from "@/app/lib/openai-client";
+import { MODEL_PREMIUM } from "@/app/lib/aiModels";
 import { checkRateLimit } from "@/app/lib/rateLimit";
 import { parseJsonBody } from "@/app/lib/validation";
 import { moderateText } from "@/app/lib/moderation";
@@ -104,7 +105,7 @@ Score the response and return JSON with this exact structure:
 }`;
 
   const aiResponse = await callOpenAIChat({
-    model: "gpt-4o",
+    model: MODEL_PREMIUM,
     messages: [
       { role: "system", content: systemPrompt },
       { role: "user", content: userPrompt },
@@ -150,7 +151,7 @@ Score the response and return JSON with this exact structure:
     const briefUserPrompt = `Generate a presentation brief for a ${session.role} in ${session.sector}. Return JSON: { "topic": "<topic string>", "audience": "<audience string>", "context": "<2-3 sentences of background>", "format": "3-minute spoken presentation", "objectives": ["<objective 1>", "<objective 2>", "<objective 3>"], "timeMinutes": 3 }`;
 
     const briefResponse = await callOpenAIChat({
-      model: "gpt-4o",
+      model: MODEL_PREMIUM,
       messages: [
         { role: "system", content: briefSystemPrompt },
         { role: "user", content: briefUserPrompt },
@@ -205,7 +206,7 @@ Return JSON:
 }`;
 
   const reportResponse = await callOpenAIChat({
-    model: "gpt-4o",
+    model: MODEL_PREMIUM,
     messages: [
       { role: "system", content: reportSystemPrompt },
       { role: "user", content: reportUserPrompt },

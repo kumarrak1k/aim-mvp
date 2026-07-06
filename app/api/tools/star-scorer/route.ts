@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { callOpenAIChat } from "@/app/lib/openai-client";
+import { MODEL_UTILITY } from "@/app/lib/aiModels";
 import { checkRateLimit, getClientIp } from "@/app/lib/rateLimit";
 import { moderateText } from "@/app/lib/moderation";
 
@@ -83,7 +84,7 @@ Score this answer on each STAR component (1-10) and respond ONLY with valid JSON
 
   try {
     const completion = await callOpenAIChat({
-      model: "gpt-4o-mini",
+      model: MODEL_UTILITY,
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt },

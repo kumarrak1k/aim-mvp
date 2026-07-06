@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { checkRateLimit } from "@/app/lib/rateLimit";
 import { callOpenAIChat, OpenAIError } from "@/app/lib/openai-client";
+import { MODEL_QUALITY } from "@/app/lib/aiModels";
 import {
   getQuestionTypeAtPosition,
   type QuestionMix,
@@ -317,7 +318,7 @@ Generate the next best UK English interview question.
     let data;
     try {
       data = await callOpenAIChat({
-        model: "gpt-4o-mini",
+        model: MODEL_QUALITY,
         temperature: 0.65,
         max_tokens: 300,
         messages: [

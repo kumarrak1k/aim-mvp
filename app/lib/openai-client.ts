@@ -12,6 +12,8 @@
  * actually need this wrapper.
  */
 
+import { defaultReasoningEffort } from "./aiModels";
+
 const OPENAI_CHAT_URL = "https://api.openai.com/v1/chat/completions";
 const DEFAULT_TIMEOUT_MS = 30_000;
 const DEFAULT_MAX_ATTEMPTS = 3;
@@ -27,10 +29,35 @@ export type ChatCompletionRequest = {
   messages: ChatCompletionMessage[];
   temperature?: number;
   max_tokens?: number;
+  reasoning_effort?: "none" | "low" | "medium" | "high" | "xhigh";
   response_format?: { type: "json_object" } | { type: "text" };
   // Allow passing additional fields without making the type generic.
   [key: string]: unknown;
 };
+
+/**
+ * GPT-5.x (and o-series) chat completions changed the request surface:
+ * `max_tokens` became `max_completion_tokens`, custom `temperature`/`top_p`
+ * are rejected, and `reasoning_effort` controls hidden thinking depth.
+ * Translate legacy-style requests so call sites stay model-agnostic.
+ */
+export function adaptRequestForModel(request: ChatCompletionRequest): ChatCompletionRequest {
+  const isReasoningModel = /^(gpt-5|o\d)/.test(request.model);
+  if (!isReasoningModel) return request;
+
+  const { temperature: _temperature, top_p: _topP, max_tokens, ...rest } = request;
+  const adapted: ChatCompletionRequest = { ...rest };
+
+  if (typeof max_tokens === "number" && adapted.max_completion_tokens === undefined) {
+    // Reasoning tokens count against this budget, so give headroom beyond the
+    // old visible-output cap.
+    adapted.max_completion_tokens = max_tokens + 1000;
+  }
+  if (adapted.reasoning_effort === undefined) {
+    adapted.reasoning_effort = defaultReasoningEffort(request.model);
+  }
+  return adapted;
+}
 
 export type ChatCompletionOptions = {
   /** Override the default 30s timeout. */
@@ -99,6 +126,7 @@ export async function callOpenAIChat(
 
   const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
   const maxAttempts = options.maxAttempts ?? DEFAULT_MAX_ATTEMPTS;
+  const payload = adaptRequestForModel(request);
 
   let lastError: OpenAIError | null = null;
 
@@ -113,7 +141,7 @@ export async function callOpenAIChat(
           "Content-Type": "application/json",
           Authorization: `Bearer ${apiKey}`,
         },
-        body: JSON.stringify(request),
+        body: JSON.stringify(payload),
         signal: controller.signal,
       });
 

@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/app/lib/prisma";
 import { callOpenAIChat } from "@/app/lib/openai-client";
+import { MODEL_PREMIUM } from "@/app/lib/aiModels";
 import { checkRateLimit } from "@/app/lib/rateLimit";
 import { parseJsonBody } from "@/app/lib/validation";
 import { getCandidatePlan } from "@/app/lib/candidatePlan";
@@ -76,7 +77,7 @@ export async function POST(
     const userPrompt = `Generate a presentation brief for a ${session.role} in ${session.sector}. Return JSON: { "topic": "<topic string>", "audience": "<audience string>", "context": "<2-3 sentences of background>", "format": "3-minute spoken presentation", "objectives": ["<objective 1>", "<objective 2>", "<objective 3>"], "timeMinutes": 3 }`;
 
     const aiResponse = await callOpenAIChat({
-      model: "gpt-4o",
+      model: MODEL_PREMIUM,
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt },
@@ -147,7 +148,7 @@ Return JSON:
 }`;
 
   const reportResponse = await callOpenAIChat({
-    model: "gpt-4o",
+    model: MODEL_PREMIUM,
     messages: [
       { role: "system", content: reportSystemPrompt },
       { role: "user", content: reportUserPrompt },

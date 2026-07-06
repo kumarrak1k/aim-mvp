@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { checkRateLimit } from "@/app/lib/rateLimit";
 import { callOpenAIChat, OpenAIError } from "@/app/lib/openai-client";
+import { MODEL_QUALITY } from "@/app/lib/aiModels";
 import { moderateText } from "@/app/lib/moderation";
 import { getCandidateProfile, type CandidateProfile } from "@/app/lib/candidateProfile";
 
@@ -410,7 +411,7 @@ ${isTypedMode
     let data;
     try {
       data = await callOpenAIChat({
-        model: "gpt-4o-mini",
+        model: MODEL_QUALITY,
         temperature: 0.2,
         max_tokens: 1500,
         messages: [

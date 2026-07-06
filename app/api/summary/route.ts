@@ -1,4 +1,5 @@
 import OpenAI from "openai";
+import { MODEL_QUALITY } from "@/app/lib/aiModels";
 import { auth } from "@clerk/nextjs/server";
 import { checkRateLimit } from "@/app/lib/rateLimit";
 
@@ -500,9 +501,9 @@ Video analysis ${index + 1}:
     }
 
     const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      temperature: 0.35,
-      max_tokens: 2500,
+      model: MODEL_QUALITY,
+      reasoning_effort: "low",
+      max_completion_tokens: 3500,
       messages: [
         {
           role: "system",

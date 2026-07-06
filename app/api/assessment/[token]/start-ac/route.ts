@@ -13,6 +13,7 @@ import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/app/lib/prisma";
 import { callOpenAIChat } from "@/app/lib/openai-client";
+import { MODEL_PREMIUM } from "@/app/lib/aiModels";
 import { checkRateLimit } from "@/app/lib/rateLimit";
 
 export const runtime = "nodejs";
@@ -118,7 +119,7 @@ export async function POST(_req: NextRequest, { params }: Params) {
 
       const briefResponse = await callOpenAIChat(
         {
-          model: "gpt-4o",
+          model: MODEL_PREMIUM,
           messages: [
             { role: "system", content: briefSystemPrompt },
             { role: "user", content: briefUserPrompt },
@@ -165,7 +166,7 @@ Return valid JSON matching this schema exactly:
 
       const aiResponse = await callOpenAIChat(
         {
-          model: "gpt-4o",
+          model: MODEL_PREMIUM,
           messages: [
             { role: "system", content: systemPrompt },
             { role: "user", content: userPrompt },

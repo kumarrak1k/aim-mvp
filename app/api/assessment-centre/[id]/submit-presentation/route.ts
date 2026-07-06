@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/app/lib/prisma";
 import { callOpenAIChat } from "@/app/lib/openai-client";
+import { MODEL_PREMIUM } from "@/app/lib/aiModels";
 import { checkRateLimit } from "@/app/lib/rateLimit";
 import { parseJsonBody } from "@/app/lib/validation";
 import { moderateText } from "@/app/lib/moderation";
@@ -101,7 +102,7 @@ Return JSON:
 }`;
 
   const scoreResponse = await callOpenAIChat({
-    model: "gpt-4o",
+    model: MODEL_PREMIUM,
     messages: [
       { role: "system", content: scoreSystemPrompt },
       { role: "user", content: scoreUserPrompt },
@@ -198,7 +199,7 @@ Return JSON:
 }`;
 
   const reportResponse = await callOpenAIChat({
-    model: "gpt-4o",
+    model: MODEL_PREMIUM,
     messages: [
       { role: "system", content: reportSystemPrompt },
       { role: "user", content: reportUserPrompt },
