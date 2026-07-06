@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import OpenAI from "openai";
 import { MODEL_UTILITY } from "@/app/lib/aiModels";
+import { adaptRequestForModel } from "@/app/lib/openai-client";
 import { checkRateLimit } from "@/app/lib/rateLimit";
 import { moderateText } from "@/app/lib/moderation";
 
@@ -101,10 +102,13 @@ export async function POST(req: Request) {
       return Response.json({ cleanedTranscript: ukTranscript });
     }
 
-    const response = await openai.chat.completions.create({
+    // Legacy-style params: adaptRequestForModel converts them for GPT-5.x
+    // models and passes them through untouched for older fallback models,
+    // so the AI_MODEL_UTILITY env rollback works without code changes.
+    const response = await openai.chat.completions.create(adaptRequestForModel({
       model: MODEL_UTILITY,
-      reasoning_effort: "none",
-      max_completion_tokens: 2500,
+      temperature: 0,
+      max_tokens: 2000,
       messages: [
         {
           role: "system",
@@ -147,7 +151,7 @@ Return only the cleaned UK English transcript text.
           content: ukTranscript,
         },
       ],
-    });
+    }) as OpenAI.Chat.Completions.ChatCompletionCreateParamsNonStreaming);
 
     const cleanedTranscript =
       response.choices[0].message.content?.trim() || ukTranscript;

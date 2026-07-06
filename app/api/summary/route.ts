@@ -1,5 +1,6 @@
 import OpenAI from "openai";
 import { MODEL_QUALITY } from "@/app/lib/aiModels";
+import { adaptRequestForModel } from "@/app/lib/openai-client";
 import { auth } from "@clerk/nextjs/server";
 import { checkRateLimit } from "@/app/lib/rateLimit";
 
@@ -500,10 +501,13 @@ Video analysis ${index + 1}:
       return Response.json(fallbackSummary);
     }
 
-    const response = await openai.chat.completions.create({
+    // Legacy-style params: adaptRequestForModel converts them for GPT-5.x
+    // models and passes them through untouched for older fallback models,
+    // so the AI_MODEL_QUALITY env rollback works without code changes.
+    const response = await openai.chat.completions.create(adaptRequestForModel({
       model: MODEL_QUALITY,
-      reasoning_effort: "low",
-      max_completion_tokens: 3500,
+      temperature: 0.35,
+      max_tokens: 2500,
       messages: [
         {
           role: "system",
@@ -616,7 +620,7 @@ ${formattedResults}
           `.trim(),
         },
       ],
-    });
+    }) as OpenAI.Chat.Completions.ChatCompletionCreateParamsNonStreaming);
 
     const text = response.choices[0].message.content?.trim();
 

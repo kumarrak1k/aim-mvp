@@ -13,9 +13,17 @@
  * not part of this map.
  */
 
-export const MODEL_QUALITY = "gpt-5.4-mini";
-export const MODEL_PREMIUM = "gpt-5.2";
-export const MODEL_UTILITY = "gpt-5.4-nano";
+/**
+ * COST ROLLBACK: each tier can be overridden per environment without a code
+ * change — set AI_MODEL_QUALITY / AI_MODEL_PREMIUM / AI_MODEL_UTILITY in
+ * Vercel and redeploy. Known-good cheap fallbacks: gpt-4o-mini (quality +
+ * utility) and gpt-4o (premium). The request adapter in openai-client.ts
+ * handles the parameter differences between model generations, so any mix
+ * of old and new models works.
+ */
+export const MODEL_QUALITY = process.env.AI_MODEL_QUALITY || "gpt-5.4-mini";
+export const MODEL_PREMIUM = process.env.AI_MODEL_PREMIUM || "gpt-5.2";
+export const MODEL_UTILITY = process.env.AI_MODEL_UTILITY || "gpt-5.4-nano";
 
 export type ReasoningEffort = "none" | "low" | "medium" | "high" | "xhigh";
 
