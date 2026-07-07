@@ -65,7 +65,7 @@ export default function PersonalStatementPage() {
     targetProgramOrRole.trim() &&
     whyThis.trim().length >= 20 &&
     background.trim().length >= 20 &&
-    background.length <= 8000 &&
+    background.length <= 15000 &&
     achievements.trim().length >= 10;
 
   async function handleSubmit(e: React.FormEvent) {
@@ -252,8 +252,8 @@ export default function PersonalStatementPage() {
                   placeholder="Academic qualifications, relevant work experience, courses, extracurriculars, skills…"
                   rows={4}
                   className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-600 outline-none focus:border-emerald-400/40 focus:ring-1 focus:ring-emerald-400/20 resize-y" required />
-                <p className={`mt-1 text-right text-[10px] ${background.length > 8000 ? "text-red-400" : "text-gray-600"}`}>
-                  {background.length.toLocaleString()} / 8,000 characters
+                <p className={`mt-1 text-right text-[10px] ${background.length > 15000 ? "text-red-400" : "text-gray-600"}`}>
+                  {background.length.toLocaleString()} / 15,000 characters
                 </p>
               </div>
 

@@ -380,10 +380,11 @@ export default function CVEnhancerPage() {
                   onChange={(e) => setCvText(e.target.value)}
                   placeholder="Paste your full CV here, including all sections: summary, experience, education, skills…"
                   rows={12}
+                  maxLength={15000}
                   className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-600 outline-none focus:border-purple-400/40 focus:ring-1 focus:ring-purple-400/20 resize-y"
                   required
                 />
-                <p className="mt-1 text-right text-[10px] text-gray-600">{cvText.length} / 8000 chars</p>
+                <p className="mt-1 text-right text-[10px] text-gray-600">{cvText.length.toLocaleString()} / 15,000 chars</p>
               </div>
 
               <button

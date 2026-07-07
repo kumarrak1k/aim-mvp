@@ -1,5 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
 import { inflateSync, inflateRawSync } from "zlib";
+import { cleanDocumentText } from "@/app/lib/textSanitize";
 
 export const runtime = "nodejs";
 
@@ -13,41 +14,9 @@ function getExtension(fileName: string) {
   return SUPPORTED_EXTENSIONS.find((extension) => lower.endsWith(extension)) || "";
 }
 
-// PDF text is usually WinAnsiEncoding (Windows-1252) but we decode bytes as
-// latin1, which is identical EXCEPT 0x80-0x9F: Win-1252 puts smart quotes,
-// dashes, bullets and the euro sign there, latin1 has invisible control
-// characters. Those controls render as symbol boxes in the textarea. Map them
-// to their intended characters, expand ligature glyphs, then strip anything
-// unprintable that remains.
-const WIN1252_C1: Record<number, string> = {
-  0x80: "€", 0x82: ",", 0x84: '"', 0x85: "...", 0x8a: "S", 0x8c: "OE",
-  0x91: "'", 0x92: "'", 0x93: '"', 0x94: '"', 0x95: "•", 0x96: "-",
-  0x97: "-", 0x99: "(TM)", 0x9a: "s", 0x9c: "oe", 0x9f: "Y",
-};
-
-const LIGATURES: Record<string, string> = {
-  "ﬀ": "ff",
-  "ﬁ": "fi",
-  "ﬂ": "fl",
-  "ﬃ": "ffi",
-  "ﬄ": "ffl",
-};
-
-function normalizeExtractionArtifacts(text: string): string {
-  return text
-    .replace(/[\x80-\x9F]/g, (ch) => WIN1252_C1[ch.charCodeAt(0)] ?? "")
-    .replace(/[ﬀ-ﬄ]/g, (ch) => LIGATURES[ch] ?? ch)
-    .replace(/�/g, "")
-    .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "");
-}
-
-function cleanExtractedText(text: string) {
-  return normalizeExtractionArtifacts(text)
-    .replace(/[ \t]+\n/g, "\n")
-    .replace(/\n{4,}/g, "\n\n\n")
-    .replace(/[ \t]{2,}/g, " ")
-    .trim();
-}
+// Encoding fixes (WinAnsi C1 range, ligatures, symbol-font glyphs) live in
+// the shared sanitizer so the profile save path applies the same rules.
+const cleanExtractedText = cleanDocumentText;
 
 function truncateExtractedText(text: string) {
   if (text.length <= MAX_EXTRACTED_CHARS) {

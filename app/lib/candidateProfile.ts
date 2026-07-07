@@ -10,6 +10,7 @@
 
 import { clerkClient } from "@clerk/nextjs/server";
 import { prisma } from "./prisma";
+import { sanitizeDocumentText } from "./textSanitize";
 import {
   cleanQuestionMix,
   MAX_TOTAL_QUESTIONS,
@@ -85,7 +86,10 @@ const SPEAKER_PACES: SpeakerPace[] = ["slow", "natural", "energetic"];
 
 function cleanText(value: unknown): string {
   if (typeof value !== "string") return "";
-  return value.replace(/\r\n/g, "\n").trim();
+  // Sanitize on save so PDF-extraction artifacts (symbol-font glyphs, WinAnsi
+  // control bytes) never persist — covers uploads, pastes, and re-saves of
+  // previously garbled data.
+  return sanitizeDocumentText(value.replace(/\r\n/g, "\n")).trim();
 }
 
 function cleanMode(value: unknown, fallback: PracticeMode): PracticeMode {

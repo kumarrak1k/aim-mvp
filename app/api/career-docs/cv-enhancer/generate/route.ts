@@ -17,7 +17,7 @@ export const dynamic = "force-dynamic";
 const schema = z.object({
   targetRole: z.string().trim().min(1).max(200),
   industry: z.string().trim().max(100).default(""),
-  cvText: z.string().trim().min(50).max(8000),
+  cvText: z.string().trim().min(50).max(15000),
   jobDescription: z.string().trim().max(8000).default(""),
   analysis: z.object({
     quickWins: z.array(z.string()),

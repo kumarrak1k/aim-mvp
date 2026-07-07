@@ -58,7 +58,7 @@ export default function CoverLetterPage() {
     e.target.value = "";
   }
 
-  const canSubmit = companyName.trim() && jobTitle.trim() && jobDescription.trim().length >= 20 && experience.trim().length >= 20 && experience.length <= 8000;
+  const canSubmit = companyName.trim() && jobTitle.trim() && jobDescription.trim().length >= 20 && experience.trim().length >= 20 && experience.length <= 15000;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -228,8 +228,8 @@ export default function CoverLetterPage() {
                   placeholder="Summarise your relevant experience: roles, key achievements, skills. Include numbers and specifics where possible…"
                   rows={5}
                   className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-600 outline-none focus:border-cyan-400/40 focus:ring-1 focus:ring-cyan-400/20 resize-y" required />
-                <p className={`mt-1 text-right text-[10px] ${experience.length > 8000 ? "text-red-400" : "text-gray-600"}`}>
-                  {experience.length.toLocaleString()} / 8,000 characters
+                <p className={`mt-1 text-right text-[10px] ${experience.length > 15000 ? "text-red-400" : "text-gray-600"}`}>
+                  {experience.length.toLocaleString()} / 15,000 characters
                 </p>
               </div>
 
