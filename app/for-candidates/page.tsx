@@ -156,8 +156,8 @@ const faqs = [
     a: "Any role, any level, from graduate and entry-level to director and executive. You enter your exact job title and seniority, and the AI generates questions matched to the competencies and difficulty expected for that level.",
   },
   {
-    q: "Can I choose how many questions I get and what types?",
-    a: "Yes, on the Professional plan. You can set your session length anywhere from 3 to 10 questions and build a custom type mix: for example 3 competency, 3 technical, 2 leadership and 1 motivation question. On Free and Plus plans, sessions use 5 questions of the type you select at setup.",
+    q: "Is there a free trial?",
+    a: "Yes. Every new account starts with a 3-day free trial of the Plus plan, with no payment details required. When it ends you move to the Free plan automatically, and every paid plan comes with a 14-day money-back guarantee.",
   },
 ];
 

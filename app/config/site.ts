@@ -115,6 +115,13 @@ export const siteConfig = {
 
     // ── Comparison pages ─────────────────────────────────────────────
     {
+      path: "/compare",
+      label: "Best AI interview practice tools 2026",
+      description:
+        "An honest editorial comparison of the best AI interview practice tools in 2026, covering feedback depth, voice and camera analysis, assessment centres, and price.",
+      priority: 0.7,
+    },
+    {
       path: "/compare/interview-warmup",
       label: "AI Career Mentor vs Interview Warmup",
       description:
@@ -133,6 +140,20 @@ export const siteConfig = {
       label: "AI Career Mentor vs Yoodli",
       description:
         "Compare AI Career Mentor and Yoodli: interview-specific coaching versus general speech analytics.",
+      priority: 0.65,
+    },
+    {
+      path: "/compare/chatgpt",
+      label: "AI Career Mentor vs ChatGPT",
+      description:
+        "Compare AI Career Mentor and ChatGPT for interview practice: structured scoring, voice and camera analysis versus free-form chat.",
+      priority: 0.65,
+    },
+    {
+      path: "/compare/linkedin-interview-prep",
+      label: "AI Career Mentor vs LinkedIn Interview Prep",
+      description:
+        "Compare AI Career Mentor and LinkedIn Interview Prep on AI feedback depth, delivery coaching, and tailored questions.",
       priority: 0.65,
     },
 

@@ -4,7 +4,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { absoluteUrl, siteConfig } from "@/app/config/site";
 import { CookieConsent } from "@/app/components/marketing/CookieConsent";
-import { MentorChat } from "@/app/components/marketing/MentorChat";
+import { DeferredMentorChat } from "@/app/components/marketing/DeferredMentorChat";
 import { BetaBanner } from "@/app/components/BetaBanner";
 import "./globals.css";
 
@@ -230,7 +230,7 @@ export default function RootLayout({
           />
           <BetaBanner />
           {children}
-          <MentorChat />
+          <DeferredMentorChat />
           <CookieConsent />
           <Analytics />
           <SpeedInsights />

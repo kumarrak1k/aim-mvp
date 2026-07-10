@@ -2,9 +2,18 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
-import { getAllPosts, getPost } from "@/app/lib/content";
+import {
+  getAllPosts,
+  getPost,
+  getRelatedPosts,
+  getRelatedQuestionSet,
+} from "@/app/lib/content";
 import { absoluteUrl } from "@/app/config/site";
 import { PublicShell } from "@/app/components/marketing/PublicShell";
+import {
+  RelatedContent,
+  type RelatedContentItem,
+} from "@/app/components/marketing/RelatedContent";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -17,9 +26,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const post = getPost(slug);
   if (!post) return {};
 
-  // Use a per-post image if the MDX frontmatter defines one; otherwise fall
-  // back to the site brand image so shares always have a visual.
-  const ogImageUrl = absoluteUrl(post.image ?? "/brand/logo.jpg");
+  // Use a per-post image if the MDX frontmatter defines one. Otherwise omit
+  // the images fields entirely so Next's opengraph-image.tsx file convention
+  // supplies a generated per-post image automatically.
+  const explicitImage = post.image ? absoluteUrl(post.image) : undefined;
 
   return {
     // { absolute } bypasses the layout template so the suffix never doubles.
@@ -34,20 +44,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       siteName: "AI Career Mentor",
       type: "article",
       publishedTime: post.date,
-      images: [
-        {
-          url: ogImageUrl,
-          width: 1200,
-          height: 1200,
-          alt: post.title,
-        },
-      ],
+      ...(explicitImage
+        ? {
+            images: [
+              { url: explicitImage, width: 1200, height: 1200, alt: post.title },
+            ],
+          }
+        : {}),
     },
     twitter: {
       card: "summary_large_image",
       title: post.title,
       description: post.description,
-      images: [ogImageUrl],
+      ...(explicitImage ? { images: [explicitImage] } : {}),
     },
   };
 }
@@ -131,6 +140,35 @@ export default async function BlogPostPage({ params }: Props) {
   const post = getPost(slug);
   if (!post) notFound();
 
+  // Internal-linking cards: 2 related guides, 1 matching question-bank page
+  // (when a title keyword matches), and always the free STAR scorer.
+  const relatedQuestionSet = getRelatedQuestionSet(post);
+  const relatedItems: RelatedContentItem[] = [
+    ...getRelatedPosts(post, 2).map((p) => ({
+      href: `/blog/${p.slug}`,
+      eyebrow: "Guide",
+      title: p.title,
+      description: p.description,
+    })),
+    ...(relatedQuestionSet
+      ? [
+          {
+            href: `/questions/${relatedQuestionSet.slug}`,
+            eyebrow: "Question bank",
+            title: relatedQuestionSet.title,
+            description: relatedQuestionSet.description,
+          },
+        ]
+      : []),
+    {
+      href: "/tools/star-scorer",
+      eyebrow: "Free tool",
+      title: "Score your own answer free",
+      description:
+        "Paste a STAR answer into the free scorer and get instant AI feedback. No sign-in required.",
+    },
+  ];
+
   const articleSchema = {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -213,6 +251,8 @@ export default async function BlogPostPage({ params }: Props) {
             Start practising free →
           </Link>
         </div>
+
+        <RelatedContent items={relatedItems} />
 
         <div className="mt-8 text-center">
           <Link

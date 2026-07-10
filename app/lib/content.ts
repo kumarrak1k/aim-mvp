@@ -67,3 +67,121 @@ export function getQuestionSet(slug: string): ContentItem | null {
   const { data, content } = matter(raw);
   return { slug, ...(data as Omit<ContentMeta, "slug">), source: content };
 }
+
+// ── Related-content selection ─────────────────────────────────────────
+// Deterministic helpers used by the "Keep preparing" internal-linking
+// sections on blog posts and question-bank pages. Matching is based on
+// significant-word overlap between titles/keywords (generic interview
+// vocabulary is excluded so shared words actually signal a shared topic),
+// with ties broken by date then slug so output never changes between builds.
+
+const RELATED_STOP_WORDS = new Set([
+  "and",
+  "answer",
+  "answers",
+  "are",
+  "ask",
+  "best",
+  "common",
+  "for",
+  "from",
+  "guide",
+  "how",
+  "interview",
+  "interviews",
+  "job",
+  "model",
+  "most",
+  "not",
+  "questions",
+  "the",
+  "tips",
+  "top",
+  "what",
+  "when",
+  "where",
+  "why",
+  "with",
+  "you",
+  "your",
+]);
+
+function significantWords(...sources: Array<string | string[] | undefined>): Set<string> {
+  const words = new Set<string>();
+  for (const source of sources) {
+    if (!source) continue;
+    const text = Array.isArray(source) ? source.join(" ") : source;
+    for (const word of text.toLowerCase().split(/[^a-z0-9]+/)) {
+      if (word.length >= 3 && !RELATED_STOP_WORDS.has(word)) words.add(word);
+    }
+  }
+  return words;
+}
+
+function overlapCount(a: Set<string>, b: Set<string>): number {
+  let count = 0;
+  for (const word of a) if (b.has(word)) count++;
+  return count;
+}
+
+/**
+ * Up to `limit` blog posts related to the given post or question set,
+ * scored by keyword/title overlap plus a same-category bonus. When fewer
+ * than `limit` posts share a topic, the list is topped up with the most
+ * recent posts so callers always get `limit` results.
+ */
+export function getRelatedPosts(meta: ContentMeta, limit = 2): ContentMeta[] {
+  const candidates = getAllPosts().filter((p) => p.slug !== meta.slug);
+  const target = significantWords(meta.title, meta.keywords);
+
+  const scored = candidates
+    .map((post) => ({
+      post,
+      score:
+        overlapCount(target, significantWords(post.title, post.keywords)) +
+        (meta.category && post.category === meta.category ? 2 : 0),
+    }))
+    .sort(
+      (a, b) =>
+        b.score - a.score ||
+        new Date(b.post.date).getTime() - new Date(a.post.date).getTime() ||
+        a.post.slug.localeCompare(b.post.slug)
+    );
+
+  const related = scored
+    .filter((entry) => entry.score > 0)
+    .slice(0, limit)
+    .map((entry) => entry.post);
+
+  // Top up with the most recent posts (candidates are already date-sorted).
+  for (const post of candidates) {
+    if (related.length >= limit) break;
+    if (!related.some((p) => p.slug === post.slug)) related.push(post);
+  }
+
+  return related;
+}
+
+/**
+ * The single question-bank page most related to a blog post: matched when
+ * any significant word from the post title appears in a question set's
+ * slug or title. Returns null when nothing genuinely matches.
+ */
+export function getRelatedQuestionSet(post: ContentMeta): ContentMeta | null {
+  const target = significantWords(post.title);
+
+  const scored = getAllQuestionSets()
+    .map((set) => ({
+      set,
+      score: overlapCount(
+        target,
+        significantWords(set.title, set.slug.replace(/-/g, " "))
+      ),
+    }))
+    .filter((entry) => entry.score > 0)
+    .sort(
+      (a, b) => b.score - a.score || a.set.slug.localeCompare(b.set.slug)
+    );
+
+  return scored[0]?.set ?? null;
+}

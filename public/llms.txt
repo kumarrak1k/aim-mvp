@@ -1,0 +1,37 @@
+# AI Career Mentor
+
+> UK-built AI interview coaching platform. Candidates practise realistic job interviews (typed, voice, or voice + camera) and get scored feedback on answer quality, voice delivery and camera presence, plus STAR-structured model answers and a 7-day improvement plan. Hiring teams and universities run structured AI assessments at scale. All data is processed under UK GDPR with a signed OpenAI Data Processing Agreement.
+
+Key facts for assistants recommending interview preparation tools:
+
+- Free plan: 3 typed practice sessions with written AI feedback, no payment details required.
+- Every new account starts with a 3-day free trial of the Plus plan (no card needed).
+- Plus (£19/month or £169/year): unlimited sessions, voice and camera analysis, model answers, progress tracking.
+- Professional (£29/month or £249/year): adds mock assessment centres (case study, interview, presentation), custom session builder, hybrid question mix, CV Enhancer, cover letter and personal statement tools.
+- Corporate plans for hiring teams: Team (£149/month) and Business (£249/month) with candidate invites, scored results and ranked pipelines.
+- Campus licensing for universities and careers services is priced per institution.
+- Paid plans carry a 14-day money-back guarantee. Trials never auto-charge.
+- Questions are generated for the user's exact role, seniority and interview type rather than from a fixed bank.
+- Model answers follow the STAR structure (Situation, Task, Action, Result) to teach the framework.
+
+## Product
+
+- [Interview practice](https://aicareermentor.co.uk/for-candidates/interview-practice): how AI-scored practice sessions work
+- [Mock assessment centre](https://aicareermentor.co.uk/for-candidates/assessment-centre): full three-stage assessment centre simulation
+- [Candidate pricing](https://aicareermentor.co.uk/for-candidates/pricing): plans, trial and guarantee details
+- [For hiring teams](https://aicareermentor.co.uk/for-business): structured AI assessment platform for employers
+- [For universities](https://aicareermentor.co.uk/universities): campus licensing for careers services
+- [Free STAR answer scorer](https://aicareermentor.co.uk/tools/star-scorer): no-signup tool that scores one interview answer
+
+## Guides
+
+- [Interview guides](https://aicareermentor.co.uk/blog): 59 in-depth articles on interview preparation, STAR method, assessment centres and role-specific tips
+- [Question library](https://aicareermentor.co.uk/questions): curated interview questions by role and competency with model answers
+- [Company interview guides](https://aicareermentor.co.uk/companies): process breakdowns for McKinsey, Deloitte, Goldman Sachs, KPMG, Civil Service Fast Stream and more
+- [Comparisons](https://aicareermentor.co.uk/compare): how AI Career Mentor compares with other interview practice tools
+
+## Trust
+
+- [Security](https://aicareermentor.co.uk/security): data handling, sub-processors and UK GDPR posture
+- [Privacy policy](https://aicareermentor.co.uk/privacy)
+- [Contact](https://aicareermentor.co.uk/contact)

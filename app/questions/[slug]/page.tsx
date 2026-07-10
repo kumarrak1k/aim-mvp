@@ -2,9 +2,17 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
-import { getAllQuestionSets, getQuestionSet } from "@/app/lib/content";
+import {
+  getAllQuestionSets,
+  getQuestionSet,
+  getRelatedPosts,
+} from "@/app/lib/content";
 import { absoluteUrl } from "@/app/config/site";
 import { PublicShell } from "@/app/components/marketing/PublicShell";
+import {
+  RelatedContent,
+  type RelatedContentItem,
+} from "@/app/components/marketing/RelatedContent";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -17,7 +25,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const set = getQuestionSet(slug);
   if (!set) return {};
 
-  const ogImageUrl = absoluteUrl("/brand/logo.jpg");
+  // Use a bespoke image if the MDX frontmatter defines one. Otherwise omit
+  // the images fields entirely so Next's opengraph-image.tsx file convention
+  // supplies a generated per-set image automatically.
+  const explicitImage = set.image ? absoluteUrl(set.image) : undefined;
 
   return {
     title: set.title,
@@ -30,13 +41,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       url: absoluteUrl(`/questions/${slug}`),
       siteName: "AI Career Mentor",
       type: "website",
-      images: [{ url: ogImageUrl, width: 1200, height: 1200, alt: set.title }],
+      ...(explicitImage
+        ? {
+            images: [
+              { url: explicitImage, width: 1200, height: 1200, alt: set.title },
+            ],
+          }
+        : {}),
     },
     twitter: {
       card: "summary_large_image",
       title: set.title,
       description: set.description,
-      images: [ogImageUrl],
+      ...(explicitImage ? { images: [explicitImage] } : {}),
     },
   };
 }
@@ -137,6 +154,31 @@ export default async function QuestionSetPage({ params }: Props) {
 
   const faqPairs = extractFAQPairs(set.source, 10);
 
+  // Internal-linking cards: 2 related guides by keyword overlap, plus fixed
+  // cards for AI practice and the free STAR scorer.
+  const relatedItems: RelatedContentItem[] = [
+    ...getRelatedPosts(set, 2).map((p) => ({
+      href: `/blog/${p.slug}`,
+      eyebrow: "Guide",
+      title: p.title,
+      description: p.description,
+    })),
+    {
+      href: "/practice",
+      eyebrow: "Practice",
+      title: "Practise these questions with AI",
+      description:
+        "Answer questions like these in a tailored mock interview and get scored feedback on every answer.",
+    },
+    {
+      href: "/tools/star-scorer",
+      eyebrow: "Free tool",
+      title: "Score your own answer free",
+      description:
+        "Paste a STAR answer into the free scorer and get instant AI feedback. No sign-in required.",
+    },
+  ];
+
   const schema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -229,6 +271,8 @@ export default async function QuestionSetPage({ params }: Props) {
             Start practising free →
           </Link>
         </div>
+
+        <RelatedContent items={relatedItems} />
       </div>
     </PublicShell>
   );
