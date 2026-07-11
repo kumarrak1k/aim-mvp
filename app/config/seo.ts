@@ -36,6 +36,23 @@ function buildTitle(title?: string) {
   return `${stripped} | ${siteConfig.name}`;
 }
 
+// The sister site serves international English plus FR/DE/ES. Declaring the
+// cross-domain language alternates stops Google treating the two sites'
+// near-identical English content as duplicates and picking one winner —
+// .co.uk is the UK edition, .com the international one.
+const INTERNATIONAL_URL = "https://aicareermentor.com";
+
+function buildLanguageAlternates(path: string): Record<string, string> {
+  return {
+    "en-GB": `${siteConfig.url}${path === "/" ? "" : path}`,
+    en: `${INTERNATIONAL_URL}${path === "/" ? "" : path}`,
+    fr: `${INTERNATIONAL_URL}/fr${path === "/" ? "" : path}`,
+    de: `${INTERNATIONAL_URL}/de${path === "/" ? "" : path}`,
+    es: `${INTERNATIONAL_URL}/es${path === "/" ? "" : path}`,
+    "x-default": `${INTERNATIONAL_URL}${path === "/" ? "" : path}`,
+  };
+}
+
 export function createPageMetadata({
   path,
   title,
@@ -58,6 +75,7 @@ export function createPageMetadata({
     keywords: [...siteConfig.keywords, ...keywords],
     alternates: {
       canonical: canonicalUrl,
+      languages: noIndex ? undefined : buildLanguageAlternates(path),
     },
     openGraph: {
       type: "website",

@@ -1,4 +1,8 @@
 import type { Metadata } from "next";
+
+// Revalidate hourly so scheduled (future-dated) posts publish themselves.
+export const revalidate = 3600;
+
 import { getAllPosts } from "@/app/lib/content";
 import { absoluteUrl } from "@/app/config/site";
 import { PublicShell } from "@/app/components/marketing/PublicShell";

@@ -4,6 +4,10 @@ import { absoluteUrl, siteConfig } from "@/app/config/site";
 import { getAllPosts, getAllQuestionSets } from "@/app/lib/content";
 import { COMPANY_GUIDES } from "@/app/companies/data";
 
+// Revalidate hourly so scheduled (future-dated) posts publish themselves.
+export const revalidate = 3600;
+
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
 

@@ -1,4 +1,8 @@
 import type { Metadata } from "next";
+
+// Revalidate hourly so scheduled (future-dated) posts publish themselves.
+export const revalidate = 3600;
+
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";

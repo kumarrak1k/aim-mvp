@@ -36,9 +36,20 @@ function parseFile(subdir: string, filename: string): ContentMeta {
   return { slug, ...(data as Omit<ContentMeta, "slug">) };
 }
 
+/**
+ * Posts dated in the future are scheduled, not published: they stay out of
+ * every listing, the sitemap and static params until their date arrives.
+ * Combined with ISR revalidation on the blog pages, this lets a queue of
+ * pre-written posts go live automatically, one per week, with no redeploy.
+ */
+function isPublished(meta: Pick<ContentMeta, "date">): boolean {
+  return new Date(meta.date).getTime() <= Date.now();
+}
+
 export function getAllPosts(): ContentMeta[] {
   return readDir("blog")
     .map((f) => parseFile("blog", f))
+    .filter(isPublished)
     .sort(
       (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
     );
@@ -49,7 +60,10 @@ export function getPost(slug: string): ContentItem | null {
   if (!fs.existsSync(filePath)) return null;
   const raw = fs.readFileSync(filePath, "utf8");
   const { data, content } = matter(raw);
-  return { slug, ...(data as Omit<ContentMeta, "slug">), source: content };
+  const item = { slug, ...(data as Omit<ContentMeta, "slug">), source: content };
+  // A scheduled post is a 404 until its publish date arrives.
+  if (!isPublished(item)) return null;
+  return item;
 }
 
 export function getAllQuestionSets(): ContentMeta[] {

@@ -8,9 +8,9 @@ import { CandidateAppShell } from "@/app/components/marketing/CandidateAppShell"
 
 export const metadata: Metadata = createPageMetadata({
   path: "/for-candidates/interview-practice",
-  title: "AI Interview Practice for Candidates",
+  title: "AI Interview Practice: Mock Interviews Online with Instant Feedback",
   description:
-    "Tailored AI interview practice with answer scoring, voice delivery analysis, camera presence review and model answers. Built for the moments that matter.",
+    "Practise interviews online with AI: tailored mock interview questions, answer scoring, voice delivery analysis, camera presence review and model answers. Free to start.",
   keywords: [
     "AI interview practice",
     "mock interview",

@@ -462,5 +462,125 @@
     "keywords": ["LinkedIn for job seekers", "LinkedIn profile tips", "LinkedIn job search", "how to use LinkedIn to find a job"],
     "category": "Career",
     "wordCount": 1800
+  },
+  {
+    "slug": "how-to-explain-a-cv-gap",
+    "title": "How to Explain a CV Gap in an Interview",
+    "description": "Career gaps are normal, but the question still needs a confident answer. A simple three-part structure for explaining redundancy, caring responsibilities, health, travel, or retraining without apologising.",
+    "keywords": ["how to explain a CV gap", "employment gap interview", "career gap interview answer", "CV gap examples"],
+    "category": "Interview technique",
+    "wordCount": 1400
+  },
+  {
+    "slug": "why-are-you-leaving-your-current-job",
+    "title": "How to Answer \"Why Are You Leaving Your Current Job?\"",
+    "description": "One of the most loaded questions in any interview. How to explain your reasons for moving on without criticising your employer, sounding desperate, or raising red flags.",
+    "keywords": ["why are you leaving your current job", "reasons for leaving a job interview answer", "how to explain leaving a job", "interview questions"],
+    "category": "Interview technique",
+    "wordCount": 1400
+  },
+  {
+    "slug": "internal-promotion-interview-tips",
+    "title": "Internal Promotion Interviews: How to Prepare When They Already Know You",
+    "description": "Interviewing for a promotion at your own company is harder than it looks. How to handle familiarity, prove you can operate at the next level, and avoid the classic internal candidate traps.",
+    "keywords": ["internal promotion interview", "internal interview tips", "how to prepare for an internal interview", "promotion interview questions"],
+    "category": "By candidate type",
+    "wordCount": 1300
+  },
+  {
+    "slug": "competency-interview-story-bank",
+    "title": "How to Build a Story Bank for Competency Interviews",
+    "description": "Stop preparing answers question by question. How to build a bank of 6 to 8 reusable stories that covers almost any competency question an interviewer can ask.",
+    "keywords": ["story bank interview", "competency interview preparation", "STAR stories", "behavioural interview examples", "interview story bank"],
+    "category": "Interview preparation",
+    "wordCount": 1300
+  },
+  {
+    "slug": "how-to-use-ai-to-prepare-for-an-interview",
+    "title": "How to Use AI to Prepare for a Job Interview (Properly)",
+    "description": "A practical, honest guide to interview preparation with AI: what general chatbots like ChatGPT do well, where dedicated practice tools add value, and the prompts and workflows that actually improve your answers.",
+    "keywords": ["how to use AI to prepare for an interview", "ChatGPT interview preparation", "AI mock interview", "AI interview practice", "interview preparation tools"],
+    "category": "Interview preparation",
+    "wordCount": 1300
+  },
+  {
+    "slug": "strengths-based-interview-tips",
+    "title": "Strengths-Based Interviews: How to Prepare",
+    "description": "Strengths-based interviews cannot be prepared for like competency interviews, but they can absolutely be prepared for. A practical preparation plan: mapping your strengths, gathering evidence, and handling the rapid question format.",
+    "keywords": ["strengths based interview preparation", "how to prepare for a strengths based interview", "strengths interview tips", "strengths based interview format"],
+    "category": "Interview preparation",
+    "wordCount": 1200
+  },
+  {
+    "slug": "executive-interview-tips",
+    "title": "Executive and Director-Level Interviews: How to Prepare",
+    "description": "Senior interviews are a different game: fewer questions about what you did, more about how you think. How to prepare for executive interviews, from strategic narrative to board-level stakeholder questions.",
+    "keywords": ["executive interview tips", "director level interview preparation", "senior leadership interview", "C-suite interview questions", "how to prepare for an executive interview"],
+    "category": "By candidate type",
+    "wordCount": 1300
+  },
+  {
+    "slug": "references-and-offer-stage",
+    "title": "References and Offer Stage: What Happens After the Interview",
+    "description": "The interview went well. Now what? A walkthrough of the offer stage: references, verbal and written offers, background checks, negotiating, resigning, and handling counter-offers.",
+    "keywords": ["job references explained", "job offer process", "what happens after an interview", "background checks UK", "how to resign", "counter offer"],
+    "category": "Career",
+    "wordCount": 1300
+  },
+  {
+    "slug": "psychometric-test-tips",
+    "title": "Psychometric and Aptitude Tests: How to Prepare",
+    "description": "Numerical, verbal, and logical reasoning tests trip up strong candidates who walk in cold. What each test type actually measures, how scoring works, and a practice strategy that raises your score in a week.",
+    "keywords": ["psychometric test tips", "aptitude test preparation", "numerical reasoning test", "verbal reasoning test", "situational judgement test", "how to pass psychometric tests"],
+    "category": "Assessment centres",
+    "wordCount": 1400
+  },
+  {
+    "slug": "how-to-answer-what-motivates-you",
+    "title": "How to Answer \"What Motivates You?\"",
+    "description": "The motivation question is an honesty test with a structure. How to work out what genuinely drives you, connect it to the role, and avoid the generic answers interviewers hear ten times a day.",
+    "keywords": ["what motivates you interview question", "how to answer what motivates you", "motivation interview answer", "interview questions and answers"],
+    "category": "Interview technique",
+    "wordCount": 1400
+  },
+  {
+    "slug": "how-to-introduce-yourself-in-an-interview",
+    "title": "How to Introduce Yourself in an Interview (With Examples)",
+    "description": "The first minute of an interview sets the tone for everything after it. How to handle the greeting, the small talk, and the opening pitch, with example introductions for graduates, professionals, and career changers.",
+    "keywords": ["how to introduce yourself in an interview", "interview introduction examples", "elevator pitch interview", "first impression interview"],
+    "category": "Interview technique",
+    "wordCount": 1400
+  },
+  {
+    "slug": "what-to-wear-to-an-interview",
+    "title": "What to Wear to an Interview (In Person and on Video)",
+    "description": "Interview dress codes have fractured: suits in one office, hoodies in the next. How to research the real dress code, dress one notch above it, and handle the extra considerations that video interviews add.",
+    "keywords": ["what to wear to an interview", "interview dress code", "interview outfit", "what to wear video interview", "smart casual interview"],
+    "category": "Interview preparation",
+    "wordCount": 1300
+  },
+  {
+    "slug": "final-round-interview-tips",
+    "title": "Final-Round Interviews: How to Prepare When It Really Matters",
+    "description": "By the final round, they already believe you can do the job. What changes at the last stage: senior stakeholders, culture and judgement questions, deeper scrutiny of motivation, and how to close strong.",
+    "keywords": ["final round interview tips", "final interview preparation", "final stage interview", "interview with senior leadership", "how to close an interview"],
+    "category": "Interview preparation",
+    "wordCount": 1400
+  },
+  {
+    "slug": "how-to-recover-from-a-bad-interview",
+    "title": "Had a Bad Interview? How to Recover and Learn From It",
+    "description": "A bad interview feels worse than it is. How to judge what actually happened, whether and how to follow up, extract the lessons worth keeping, and walk into the next one sharper rather than more scared.",
+    "keywords": ["bad interview", "how to recover from a bad interview", "interview went badly", "interview mistakes", "learn from failed interview"],
+    "category": "Interview preparation",
+    "wordCount": 1300
+  },
+  {
+    "slug": "night-before-interview-checklist",
+    "title": "The Night-Before Interview Checklist",
+    "description": "The night before an interview is for consolidation, not cramming. A practical checklist covering logistics, materials, one final review pass, tech checks for video calls, and actually getting to sleep.",
+    "keywords": ["night before interview checklist", "interview checklist", "how to prepare the night before an interview", "interview day preparation"],
+    "category": "Interview preparation",
+    "wordCount": 1300
   }
 ]

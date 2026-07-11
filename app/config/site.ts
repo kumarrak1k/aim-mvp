@@ -13,7 +13,7 @@ export const siteConfig = {
   // tag, sitemap entry, Stripe return URL and email link points at the origin
   // Vercel actually serves (no extra hop, no www↔apex canonical split).
   url: "https://aicareermentor.co.uk",
-  title: "AI Career Mentor | AI Interview Coach for Answers, Voice and Camera Presence",
+  title: "AI Interview Practice Online: Answers, Voice & Camera Scored | AI Career Mentor",
   description:
     "Premium AI interview coaching for sharper answers, stronger voice delivery and more confident camera presence.",
   keywords: [
