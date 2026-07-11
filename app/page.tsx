@@ -11,7 +11,7 @@ import { TrialBadge } from "@/app/components/marketing/TrialBadge";
 
 export const metadata: Metadata = createPageMetadata({
   path: "/",
-  title: "AI Career Mentor · Interview Practice & AI Assessment Platform",
+  title: "AI Interview Practice Online & AI Assessment Platform | AI Career Mentor",
   description:
     "Two products in one. AI Career Mentor helps candidates prepare for interviews and assessment centres, and gives hiring teams a structured AI assessment platform.",
   keywords: [
