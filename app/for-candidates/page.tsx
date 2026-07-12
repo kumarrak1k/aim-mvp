@@ -109,27 +109,6 @@ const readinessHighlights = [
   "Saved progress history",
 ];
 
-const testimonials = [
-  {
-    quote:
-      "I wish I'd found this at the start of the process. I lost count of how many interviews and assessment centres I participated in. If I'd had this sooner, it would have helped me sharpen my skills. I found a placement in the end, and I'm sure I'll use the platform again when I graduate.",
-    name: "Second-year university student",
-    context: "Secured a placement role",
-  },
-  {
-    quote:
-      "I'd never taken an interview before, so I was searching for some help. I was lucky: a friend recommended this site and I gave it a try. I'd never heard of STAR, and what a simple thing to learn. It's given me the structure and confidence to handle interviews.",
-    name: "Software engineer graduate",
-    context: "Preparing for first interviews",
-  },
-  {
-    quote:
-      "I hadn't interviewed for over 10 years, so I needed to find a way to practise. I didn't need the assessment centre tool, so I used the Plus membership. Within three months I'd landed my new role, and there's no doubt this helped me fine-tune my CV, practise real interview questions and improve my structure.",
-    name: "Experienced finance professional",
-    context: "Landed a new role in 3 months",
-  },
-];
-
 const faqs = [
   {
     q: "Is AI Career Mentor free?",
@@ -464,35 +443,6 @@ export default async function ForCandidatesPage() {
               className="h-full min-h-[360px] w-full object-cover"
             />
           </div>
-        </div>
-      </section>
-
-      {/* Testimonials */}
-      <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 sm:pb-20">
-        <div className="mb-10 text-center">
-          <p className="text-[11px] font-black uppercase tracking-[0.26em] text-purple-300/90">
-            Candidate feedback
-          </p>
-          <h2 className="mt-3 text-3xl font-black tracking-[-0.05em] sm:text-4xl">
-            Used by candidates preparing for interviews that matter.
-          </h2>
-        </div>
-        <div className="grid gap-5 md:grid-cols-3">
-          {testimonials.map((t) => (
-            <div
-              key={t.name}
-              className="rounded-[1.75rem] border border-white/[0.08] bg-white/[0.04] p-7"
-            >
-              <p className="text-3xl font-black leading-none text-purple-400/40">
-                &ldquo;
-              </p>
-              <p className="mt-3 text-sm leading-7 text-gray-300">{t.quote}</p>
-              <div className="mt-6 border-t border-white/[0.08] pt-5">
-                <p className="text-sm font-black text-white">{t.name}</p>
-                <p className="mt-1 text-xs text-gray-600">{t.context}</p>
-              </div>
-            </div>
-          ))}
         </div>
       </section>
 

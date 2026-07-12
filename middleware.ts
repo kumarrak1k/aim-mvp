@@ -45,7 +45,26 @@ export default clerkMiddleware(async (auth, req) => {
     }
   }
 
-  // ── Admin area: require auth + MFA step-up ─────────────────────────────
+  // ── Admin area: IP allowlist, then auth + MFA step-up ──────────────────
+  // ADMIN_ALLOWED_IPS (comma-separated) gates the ENTIRE admin area incl.
+  // the sign-in page. Unset = allowlist off (safe rollout; set it in Vercel
+  // to arm). If locked out after an ISP IP change, clear the env var in the
+  // Vercel dashboard and redeploy — the dashboard is not behind this gate.
+  if (isAdminArea(req)) {
+    const allowlist = (process.env.ADMIN_ALLOWED_IPS ?? "")
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
+    if (allowlist.length > 0) {
+      const clientIp = (req.headers.get("x-forwarded-for") ?? "")
+        .split(",")[0]
+        .trim();
+      if (!allowlist.includes(clientIp)) {
+        return new NextResponse("Not found", { status: 404 });
+      }
+    }
+  }
+
   if (isAdminArea(req) && !isAdminSignIn(req)) {
     await auth.protect({ reverification: { level: "second_factor", afterMinutes: 10 } });
   }
