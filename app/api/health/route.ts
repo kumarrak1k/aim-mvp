@@ -34,6 +34,11 @@ export async function GET() {
     timestamp: new Date().toISOString(),
     responseTimeMs: Date.now() - startedAt,
     database: databaseUp ? "up" : "down",
+    // Presence-only flag (never the value) so we can confirm from outside
+    // that the deployment actually received ADMIN_ALLOWED_IPS.
+    adminIpAllowlist: (process.env.ADMIN_ALLOWED_IPS ?? "").trim()
+      ? "armed"
+      : "off",
   };
 
   return NextResponse.json(body, { status: databaseUp ? 200 : 503 });
