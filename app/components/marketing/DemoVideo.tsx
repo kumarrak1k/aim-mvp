@@ -21,7 +21,10 @@ export function DemoVideo({
             title={title}
             controls
             playsInline
-            preload="metadata"
+            // "none": the poster is the pre-play visual, so no video bytes are
+            // fetched until the user presses play. With the files on Vercel
+            // Blob, preloading was silently burning data transfer per visit.
+            preload="none"
             className="h-full w-full"
           />
         </div>
