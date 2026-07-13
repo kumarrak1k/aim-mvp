@@ -29,6 +29,28 @@ function buildPrismaClient() {
 
 export const prisma = globalForPrisma.prisma ?? buildPrismaClient();
 
+/**
+ * Wake the database before a scheduled job touches it.
+ *
+ * Neon suspends idle compute; the first connection after a suspend can
+ * exceed Prisma's connect timeout and throw PrismaClientInitializationError
+ * ("Can't reach database server"). Crons fire at quiet hours, so they hit
+ * this cold path far more often than user traffic does. Retrying a trivial
+ * query with backoff gives the compute time to resume; if the database is
+ * genuinely down, the final attempt still throws.
+ */
+export async function warmDb(attempts = 3): Promise<void> {
+  for (let attempt = 1; attempt <= attempts; attempt++) {
+    try {
+      await prisma.$queryRaw`SELECT 1`;
+      return;
+    } catch (err) {
+      if (attempt === attempts) throw err;
+      await new Promise((resolve) => setTimeout(resolve, attempt * 2000));
+    }
+  }
+}
+
 // Preserve the singleton across hot reloads in development.
 // In production (Vercel), each function instance creates its own client,
 // which is why DATABASE_URL must point to a connection pooler.

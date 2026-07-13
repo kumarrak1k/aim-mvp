@@ -1,6 +1,6 @@
 import crypto from "crypto";
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/app/lib/prisma";
+import { prisma, warmDb } from "@/app/lib/prisma";
 import {
   sendNurtureEmail,
   TRANSACTIONAL_NURTURE_TYPES,
@@ -25,6 +25,9 @@ export async function GET(req: NextRequest) {
   if (!secret || a.length !== b.length || !crypto.timingSafeEqual(a, b)) {
     return NextResponse.json({ error: "Unauthorised" }, { status: 401 });
   }
+
+  // Absorb Neon cold starts — this cron fires at quiet hours.
+  await warmDb();
 
   const due = await prisma.emailJob.findMany({
     where: {

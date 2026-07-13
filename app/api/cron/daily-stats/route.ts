@@ -1,12 +1,13 @@
 import crypto from "crypto";
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/app/lib/prisma";
+import { prisma, warmDb } from "@/app/lib/prisma";
 import { clerkClient } from "@clerk/nextjs/server";
 import { Resend } from "resend";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-export const maxDuration = 30;
+// Worst case: DB warm-up retries plus two 15s .com fetch attempts.
+export const maxDuration = 60;
 
 interface SiteStats {
   newSignups24h: number;
@@ -19,16 +20,21 @@ interface SiteStats {
 }
 
 async function getComStats(secret: string): Promise<SiteStats | null> {
-  try {
-    const res = await fetch("https://aicareermentor.com/api/internal/stats", {
-      headers: { authorization: `Bearer ${secret}` },
-      signal: AbortSignal.timeout(15_000),
-    });
-    if (!res.ok) return null;
-    return res.json();
-  } catch {
-    return null;
+  // Two attempts: the first can land while the .com side's Neon compute is
+  // still resuming from idle suspend (crons run at quiet hours).
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    try {
+      const res = await fetch("https://aicareermentor.com/api/internal/stats", {
+        headers: { authorization: `Bearer ${secret}` },
+        signal: AbortSignal.timeout(15_000),
+      });
+      if (res.ok) return res.json();
+    } catch {
+      // fall through to retry
+    }
+    if (attempt === 1) await new Promise((resolve) => setTimeout(resolve, 3000));
   }
+  return null;
 }
 
 function row(label: string, value: string | number) {
@@ -111,6 +117,9 @@ export async function GET(req: NextRequest) {
   if (!secret || a.length !== b.length || !crypto.timingSafeEqual(a, b)) {
     return NextResponse.json({ error: "Unauthorised" }, { status: 401 });
   }
+
+  // Absorb Neon cold starts before the parallel queries below fan out.
+  await warmDb();
 
   const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
   const sinceMs = since.getTime();

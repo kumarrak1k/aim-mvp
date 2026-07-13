@@ -1,6 +1,7 @@
 import crypto from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { runStripeReconcile } from "@/app/lib/stripeReconcile";
+import { warmDb } from "@/app/lib/prisma";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -36,6 +37,8 @@ export async function GET(req: NextRequest) {
   }
 
   try {
+    // Absorb Neon cold starts — this cron fires at 03:00 UTC, always cold.
+    await warmDb();
     const summary = await runStripeReconcile();
     if (summary.candidateFixed > 0 || summary.corporateFixed > 0 || summary.errors > 0) {
       console.warn("RECONCILE CRON: drift repaired", JSON.stringify(summary));
