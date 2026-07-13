@@ -19,6 +19,14 @@
  *   trialEndsAt?: string      (ISO)
  *   trialConsumed?: boolean    (true once a trial has ever been granted)
  *
+ * ── Complimentary access ───────────────────────────────────────────────────
+ * Admin-granted guest access (no card, no Stripe, expires automatically):
+ *   compPlan?: "plus" | "professional"
+ *   compUntil?: string        (ISO; access ends when this passes)
+ * Granted/revoked from the /admin user editor. A paid plan of the same or
+ * higher tier always takes precedence; when compUntil passes the user drops
+ * to whatever they would otherwise be (usually Free) with nothing to cancel.
+ *
  * Because the Clerk JWT session token maps the whole private_metadata object
  * to `metadata`, the same fields are available from sessionClaims.metadata for
  * fast SSR — resolveCandidatePlanFromClaims() reads those.
@@ -57,6 +65,8 @@ export type CandidateBillingMeta = {
   trialStartedAt?: string;
   trialEndsAt?: string;
   trialConsumed?: boolean;
+  compPlan?: string;
+  compUntil?: string;
 };
 
 export type CandidatePlan = {
@@ -72,6 +82,10 @@ export type CandidatePlan = {
   isProfessional: boolean;
   /** True if the access is coming from the free trial (not a paid plan). */
   isTrial: boolean;
+  /** True if the access is coming from admin-granted complimentary access. */
+  isComp: boolean;
+  /** ISO end of complimentary access, or null. */
+  compUntil: string | null;
   /** Whether a trial has ever been granted to this user. */
   trialConsumed: boolean;
   /** The actual PAID plan name (for billing UI; "Free" if none). */
@@ -126,15 +140,32 @@ export function resolveCandidatePlan(
   const trialActive =
     !!trialEndsAt && new Date(trialEndsAt).getTime() > Date.now();
 
-  // ── Effective plan: a real paid plan always wins; otherwise an active trial
-  //    grants Professional; otherwise Free. ───────────────────────────────────
+  // ── Complimentary access (admin-granted; no card, no Stripe). ─────────────
+  const compPlanRaw = (meta?.compPlan ?? "").toString().toLowerCase();
+  const compUntil = meta?.compUntil ?? null;
+  const compActive =
+    (compPlanRaw === "plus" || compPlanRaw === "professional") &&
+    !!compUntil &&
+    new Date(compUntil).getTime() > Date.now();
+
+  // ── Effective plan: highest tier wins. Paid outranks comp at the same tier
+  //    (so a comp guest who subscribes is billed and treated as paid), comp
+  //    outranks the trial, and the trial outranks Free. Comp deliberately does
+  //    NOT set isTrial, so trial usage caps never apply to guests. ───────────
   let effectivePlan: EffectivePlan = "free";
   let isTrial = false;
+  let isComp = false;
 
   if (paidPlanName === "Professional") {
     effectivePlan = "professional";
+  } else if (compActive && compPlanRaw === "professional") {
+    effectivePlan = "professional";
+    isComp = true;
   } else if (paidPlanName === "Plus") {
     effectivePlan = "plus";
+  } else if (compActive && compPlanRaw === "plus") {
+    effectivePlan = "plus";
+    isComp = true;
   } else if (trialActive) {
     // The reverse trial grants Plus (voice + camera + unlimited practice), NOT
     // Professional — assessment centres and career docs stay paid-only.
@@ -156,6 +187,8 @@ export function resolveCandidatePlan(
     isUnlimited: effectivePlan !== "free",
     isProfessional: effectivePlan === "professional",
     isTrial,
+    isComp,
+    compUntil: compActive ? compUntil : null,
     trialConsumed: meta?.trialConsumed === true,
     paidPlanName,
     isPaid: paidPlanName !== "Free",

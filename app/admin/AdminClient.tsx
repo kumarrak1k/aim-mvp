@@ -15,6 +15,8 @@ export type AdminUser = {
   candidatePlanId: string | null;
   candidateStatus: string | null;
   candidatePeriodEnd: string | null;
+  compPlan: string | null;
+  compUntil: string | null;
   companyName: string | null;
   companyRole: string | null;
   companyPlanId: string | null;
@@ -89,6 +91,16 @@ function fromMembershipKey(accountType: string, key: MembershipKey): {
   }
 }
 
+/** True when the user has an unexpired admin-granted complimentary plan. */
+function hasActiveComp(u: AdminUser): boolean {
+  const plan = (u.compPlan ?? "").toLowerCase();
+  return (
+    (plan === "plus" || plan === "professional") &&
+    !!u.compUntil &&
+    new Date(u.compUntil).getTime() > Date.now()
+  );
+}
+
 /** Human-readable membership label shown in the table. */
 function getMembershipLabel(u: AdminUser): string {
   if (u.accountType === "corporate") {
@@ -106,7 +118,12 @@ function getMembershipLabel(u: AdminUser): string {
   const status = u.candidateStatus ?? "";
   const plan   = (u.candidatePlanId ?? "").toLowerCase();
   const tier   = plan.includes("professional") ? "Professional" : plan.includes("plus") ? "Plus" : null;
-  if (!tier || (!["active","trialing","past_due"].includes(status))) return "Free";
+  if (!tier || (!["active","trialing","past_due"].includes(status))) {
+    if (hasActiveComp(u)) {
+      return `${u.compPlan!.toLowerCase() === "professional" ? "Professional" : "Plus"} (Comp)`;
+    }
+    return "Free";
+  }
   if (status === "trialing") return `${tier} (Trial)`;
   if (status === "past_due") return `${tier} (Past due)`;
   return tier;
@@ -124,6 +141,7 @@ function getStatusGroup(u: AdminUser): "paid" | "trial" | "free" | "expired" {
   if (s === "active" || s === "past_due") return "paid";
   if (s === "trialing") return "trial";
   if (s === "canceled" || s === "cancelled") return "expired";
+  if (hasActiveComp(u)) return "trial"; // comp guests share the cyan badge
   return "free";
 }
 
@@ -211,6 +229,8 @@ export function AdminClient({ users: initialUsers, adminEmail }: { users: AdminU
     membership: "free" as MembershipKey,
     companyName: "",
     periodEnd: "", // YYYY-MM-DD
+    compPlan: "",  // "" | "plus" | "professional"
+    compUntil: "", // YYYY-MM-DD
   });
   const [editLoading, setEditLoading] = useState(false);
   const [editError, setEditError]     = useState("");
@@ -253,6 +273,8 @@ export function AdminClient({ users: initialUsers, adminEmail }: { users: AdminU
       membership: toMembershipKey(u),
       companyName: u.companyName ?? "",
       periodEnd: pe ? pe.slice(0, 10) : "",
+      compPlan: (u.compPlan ?? "").toLowerCase(),
+      compUntil: u.compUntil ? u.compUntil.slice(0, 10) : "",
     });
     setEditError("");
   }
@@ -266,11 +288,17 @@ export function AdminClient({ users: initialUsers, adminEmail }: { users: AdminU
 
   async function saveEdit() {
     if (!editingUser) return;
+    if (editForm.compPlan && !editForm.compUntil) {
+      setEditError("Set an end date for the complimentary access.");
+      return;
+    }
     setEditLoading(true);
     setEditError("");
     try {
       const billing = fromMembershipKey(editForm.accountType, editForm.membership);
       const isCorp = editForm.accountType === "corporate";
+      const compPlan = !isCorp && editForm.compPlan ? editForm.compPlan : null;
+      const compUntil = compPlan ? editForm.compUntil : null;
       const res = await fetch(`/api/admin/users/${editingUser.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -288,6 +316,9 @@ export function AdminClient({ users: initialUsers, adminEmail }: { users: AdminU
           ...(isCorp
             ? { companyPeriodEnd: editForm.periodEnd || null }
             : { candidatePeriodEnd: editForm.periodEnd || null }),
+          // Complimentary access (candidates only; null revokes)
+          compPlan,
+          compUntil,
         }),
       });
       const json = await res.json();
@@ -305,6 +336,8 @@ export function AdminClient({ users: initialUsers, adminEmail }: { users: AdminU
               candidateStatus: billing.subscriptionStatus,
               candidatePlanId: billing.stripePlanId,
               candidatePeriodEnd: editForm.accountType !== "corporate" ? periodIso : u.candidatePeriodEnd,
+              compPlan,
+              compUntil: compUntil ? new Date(compUntil).toISOString() : null,
               companyPlanStatus: billing.companyPlanStatus,
               companyPlanId: billing.companyPlanId ?? u.companyPlanId,
               companyName: editForm.accountType === "corporate" ? (editForm.companyName.trim() || u.companyName) : u.companyName,
@@ -410,6 +443,7 @@ export function AdminClient({ users: initialUsers, adminEmail }: { users: AdminU
         candidatePlanId: billing.stripePlanId,
         candidateStatus: billing.subscriptionStatus,
         candidatePeriodEnd: null,
+        compPlan: null, compUntil: null,
         companyName: null, companyRole: null, companyPlanId: null,
         companyPlanStatus: null, companyPeriodEnd: null, companyTrialEndsAt: null,
         createdAt: new Date().toISOString(),
@@ -957,6 +991,41 @@ export function AdminClient({ users: initialUsers, adminEmail }: { users: AdminU
                   className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2.5 text-sm text-white focus:border-fuchsia-400/40 focus:outline-none [color-scheme:dark]"
                 />
               </div>
+
+              {/* Complimentary access — candidates only */}
+              {editForm.accountType === "candidate" && (
+                <div className="rounded-2xl border border-cyan-400/15 bg-cyan-400/[0.04] p-3.5">
+                  <label className="block text-[11px] font-black uppercase tracking-[0.16em] text-cyan-300">Complimentary access</label>
+                  <p className="mt-1 text-[11px] leading-4 text-gray-500">
+                    Guest access with no card and no Stripe. It expires automatically on the end date, then the user returns to Free with nothing to cancel. A paid subscription always takes precedence.
+                  </p>
+                  <div className="mt-2.5 grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-[11px] font-black uppercase tracking-[0.16em] text-gray-400">Plan</label>
+                      <select
+                        value={editForm.compPlan}
+                        onChange={(e) => setEditForm((f) => ({ ...f, compPlan: e.target.value }))}
+                        disabled={editLoading}
+                        className="mt-1.5 w-full rounded-xl border border-white/10 bg-[#0b0918] px-3 py-2.5 text-sm text-white focus:border-cyan-400/40 focus:outline-none"
+                      >
+                        <option value="">None</option>
+                        <option value="plus">Plus</option>
+                        <option value="professional">Professional</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-black uppercase tracking-[0.16em] text-gray-400">Until</label>
+                      <input
+                        type="date"
+                        value={editForm.compUntil}
+                        onChange={(e) => setEditForm((f) => ({ ...f, compUntil: e.target.value }))}
+                        disabled={editLoading || !editForm.compPlan}
+                        className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2.5 text-sm text-white focus:border-cyan-400/40 focus:outline-none [color-scheme:dark] disabled:opacity-40"
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Joined — read-only */}
               {editingUser && (

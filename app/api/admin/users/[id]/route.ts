@@ -38,6 +38,9 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     subscriptionStatus?: string | null;
     stripePlanId?: string | null;
     candidatePeriodEnd?: string | null; // ISO date → unix seconds in metadata
+    // Complimentary access (admin-granted guest access; no card, no Stripe)
+    compPlan?: string | null;           // "plus" | "professional" | null to revoke
+    compUntil?: string | null;          // ISO date → access ends automatically
     // Corporate billing (stored in Prisma Company)
     companyPlanStatus?: string | null;
     companyPlanId?: string | null;
@@ -62,6 +65,16 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     if (body.candidatePeriodEnd !== undefined) {
       metaUpdates.subscriptionCurrentPeriodEnd = body.candidatePeriodEnd
         ? Math.floor(new Date(body.candidatePeriodEnd).getTime() / 1000)
+        : null;
+    }
+    if (body.compPlan !== undefined) {
+      const plan = (body.compPlan ?? "").toLowerCase();
+      metaUpdates.compPlan =
+        plan === "plus" || plan === "professional" ? plan : null;
+    }
+    if (body.compUntil !== undefined) {
+      metaUpdates.compUntil = body.compUntil
+        ? new Date(body.compUntil).toISOString()
         : null;
     }
 

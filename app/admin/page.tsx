@@ -134,6 +134,8 @@ export default async function AdminPage() {
       subscriptionStatus?: string;
       subscriptionCurrentPeriodEnd?: number;
       role?: string;
+      compPlan?: string;
+      compUntil?: string;
     };
     const meta = (u.privateMetadata ?? {}) as UserMeta;
 
@@ -157,6 +159,8 @@ export default async function AdminPage() {
         typeof meta.subscriptionCurrentPeriodEnd === "number"
           ? new Date(meta.subscriptionCurrentPeriodEnd * 1000).toISOString()
           : null,
+      compPlan: meta.compPlan ?? null,
+      compUntil: meta.compUntil ?? null,
       // Corporate workspace
       companyName: company?.name ?? null,
       companyRole: membership?.role ?? null,
