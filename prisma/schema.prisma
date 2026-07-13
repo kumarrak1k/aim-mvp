@@ -112,9 +112,10 @@ model Company {
 
   // Subscription / plan
   planId                 String?   // "team" | "business" | "enterprise"
-  planStatus             String    @default("none") // "none" | "trial" | "active" | "expired" | "cancelled"
+  planStatus             String    @default("none") // "none" | "trial" | "comp" | "active" | "expired" | "cancelled"
   trialStartedAt         DateTime?
   trialEndsAt            DateTime?
+  compUntil              DateTime? // admin-granted complimentary access ends (planStatus "comp")
   trialInvitesUsed       Int       @default(0) // candidate invites consumed during a self-serve trial
   stripeCustomerId       String?
   stripeSubscriptionId   String?

@@ -100,10 +100,19 @@ export async function PATCH(req: NextRequest, { params }: Params) {
       });
       if (member) {
         const companyData: Record<string, unknown> = {};
-        if (body.companyPlanStatus !== undefined) companyData.planStatus = body.companyPlanStatus ?? "trial";
+        if (body.companyPlanStatus !== undefined) {
+          companyData.planStatus = body.companyPlanStatus ?? "trial";
+          // Complimentary corporate access: the single date field carries the
+          // comp end. Clear compUntil on any non-comp status so stale dates
+          // can't linger.
+          companyData.compUntil =
+            body.companyPlanStatus === "comp" && body.companyPeriodEnd
+              ? new Date(body.companyPeriodEnd)
+              : null;
+        }
         if (body.companyPlanId !== undefined && body.companyPlanId !== null) companyData.planId = body.companyPlanId;
         if (body.companyName !== undefined) companyData.name = body.companyName ?? "";
-        if (body.companyPeriodEnd !== undefined) {
+        if (body.companyPeriodEnd !== undefined && body.companyPlanStatus !== "comp") {
           companyData.stripeCurrentPeriodEnd = body.companyPeriodEnd
             ? new Date(body.companyPeriodEnd)
             : null;

@@ -23,6 +23,7 @@ export type AdminUser = {
   companyPlanStatus: string | null;
   companyPeriodEnd: string | null;
   companyTrialEndsAt: string | null;
+  companyCompUntil: string | null;
   createdAt: string;
   lastSignInAt: string | null;
 };
@@ -38,6 +39,7 @@ type MembershipKey =
   | "free" | "plus" | "professional"
   // Corporate tiers + states
   | "none" | "team_trial" | "team" | "business_trial" | "business" | "custom"
+  | "team_comp" | "business_comp"
   | "expired" | "cancelled";
 
 /** Derive a MembershipKey from an AdminUser's current stored values. */
@@ -49,6 +51,7 @@ function toMembershipKey(u: AdminUser): MembershipKey {
     if (s === "expired")   return "expired";
     if (s === "cancelled") return "cancelled";
     if (s === "trial")     return p === "business" ? "business_trial" : "team_trial";
+    if (s === "comp")      return p === "business" ? "business_comp" : "team_comp";
     // active
     if (p === "business") return "business";
     if (p === "custom")   return "custom";
@@ -77,6 +80,8 @@ function fromMembershipKey(accountType: string, key: MembershipKey): {
       case "team":          return { subscriptionStatus: null, stripePlanId: null, companyPlanStatus: "active",    companyPlanId: "team" };
       case "business_trial":return { subscriptionStatus: null, stripePlanId: null, companyPlanStatus: "trial",     companyPlanId: "business" };
       case "business":      return { subscriptionStatus: null, stripePlanId: null, companyPlanStatus: "active",    companyPlanId: "business" };
+      case "team_comp":     return { subscriptionStatus: null, stripePlanId: null, companyPlanStatus: "comp",      companyPlanId: "team" };
+      case "business_comp": return { subscriptionStatus: null, stripePlanId: null, companyPlanStatus: "comp",      companyPlanId: "business" };
       case "custom":        return { subscriptionStatus: null, stripePlanId: null, companyPlanStatus: "active",    companyPlanId: "custom" };
       case "expired":       return { subscriptionStatus: null, stripePlanId: null, companyPlanStatus: "expired",   companyPlanId: null };
       case "cancelled":     return { subscriptionStatus: null, stripePlanId: null, companyPlanStatus: "cancelled", companyPlanId: null };
@@ -109,6 +114,7 @@ function getMembershipLabel(u: AdminUser): string {
     if (!s || s === "none") return "No plan";
     const tierName = p === "business" ? "Business" : p === "custom" ? "Custom" : "Team";
     if (s === "trial")     return `${tierName} (Trial)`;
+    if (s === "comp")      return `${tierName} (Comp)`;
     if (s === "active")    return tierName;
     if (s === "expired")   return `${tierName} (Expired)`;
     if (s === "cancelled") return "Cancelled";
@@ -133,7 +139,7 @@ function getStatusGroup(u: AdminUser): "paid" | "trial" | "free" | "expired" {
   if (u.accountType === "corporate") {
     const s = u.companyPlanStatus ?? "none";
     if (s === "active")   return "paid";
-    if (s === "trial")    return "trial";
+    if (s === "trial" || s === "comp") return "trial";
     if (s === "expired" || s === "cancelled") return "expired";
     return "free";
   }
@@ -146,7 +152,10 @@ function getStatusGroup(u: AdminUser): "paid" | "trial" | "free" | "expired" {
 }
 
 function getPeriodEnd(u: AdminUser) {
-  if (u.accountType === "corporate") return u.companyTrialEndsAt ?? u.companyPeriodEnd ?? null;
+  if (u.accountType === "corporate") {
+    if ((u.companyPlanStatus ?? "") === "comp") return u.companyCompUntil ?? null;
+    return u.companyTrialEndsAt ?? u.companyPeriodEnd ?? null;
+  }
   return u.candidatePeriodEnd ?? null;
 }
 
@@ -251,8 +260,9 @@ export function AdminClient({ users: initialUsers, adminEmail }: { users: AdminU
     email: "", firstName: "", lastName: "",
     accountType: "candidate",
     membership: "free" as MembershipKey,
-    compPlan: "",       // "" | "plus" | "professional"
+    compPlan: "",       // candidate: "plus" | "professional" · corporate: "team" | "business"
     compDuration: "90", // days: 7 | 30 | 90 | 365
+    companyName: "",    // corporate comp only: workspace is pre-created with this name
   });
   const [createLoading, setCreateLoading]   = useState(false);
   const [createError, setCreateError]       = useState("");
@@ -292,6 +302,13 @@ export function AdminClient({ users: initialUsers, adminEmail }: { users: AdminU
     if (!editingUser) return;
     if (editForm.compPlan && !editForm.compUntil) {
       setEditError("Set an end date for the complimentary access.");
+      return;
+    }
+    if (
+      (editForm.membership === "team_comp" || editForm.membership === "business_comp") &&
+      !editForm.periodEnd
+    ) {
+      setEditError("Set the trial / subscription end date: it is the complimentary access end date.");
       return;
     }
     setEditLoading(true);
@@ -344,6 +361,10 @@ export function AdminClient({ users: initialUsers, adminEmail }: { users: AdminU
               companyPlanId: billing.companyPlanId ?? u.companyPlanId,
               companyName: editForm.accountType === "corporate" ? (editForm.companyName.trim() || u.companyName) : u.companyName,
               companyPeriodEnd: editForm.accountType === "corporate" ? periodIso : u.companyPeriodEnd,
+              companyCompUntil:
+                editForm.accountType === "corporate"
+                  ? (billing.companyPlanStatus === "comp" ? periodIso : null)
+                  : u.companyCompUntil,
             }
           : u
       ));
@@ -389,7 +410,7 @@ export function AdminClient({ users: initialUsers, adminEmail }: { users: AdminU
   // ── Create user ──────────────────────────────────────────────────────────────
 
   function openCreate() {
-    setCreateForm({ email: "", firstName: "", lastName: "", accountType: "candidate", membership: "free", compPlan: "", compDuration: "90" });
+    setCreateForm({ email: "", firstName: "", lastName: "", accountType: "candidate", membership: "free", compPlan: "", compDuration: "90", companyName: "" });
     setCreateError("");
     setCreatedResult(null);
     setResendSent(false);
@@ -400,12 +421,17 @@ export function AdminClient({ users: initialUsers, adminEmail }: { users: AdminU
   }
 
   async function submitCreate() {
+    const isCandidate = createForm.accountType === "candidate";
+    const isCorporate = createForm.accountType === "corporate";
+    if (isCorporate && createForm.compPlan && !createForm.companyName.trim()) {
+      setCreateError("Enter a company name: the workspace is created up front for complimentary corporate access.");
+      return;
+    }
     setCreateLoading(true);
     setCreateError("");
     try {
       const billing = fromMembershipKey(createForm.accountType, createForm.membership);
-      const isCandidate = createForm.accountType === "candidate";
-      const compPlan = isCandidate && createForm.compPlan ? createForm.compPlan : null;
+      const compPlan = (isCandidate || isCorporate) && createForm.compPlan ? createForm.compPlan : null;
       const compUntil = compPlan
         ? new Date(Date.now() + Number(createForm.compDuration) * 24 * 60 * 60 * 1000).toISOString()
         : null;
@@ -420,6 +446,7 @@ export function AdminClient({ users: initialUsers, adminEmail }: { users: AdminU
           subscriptionStatus: billing.subscriptionStatus || undefined,
           stripePlanId: billing.stripePlanId || undefined,
           ...(compPlan && { compPlan, compUntil }),
+          ...(isCorporate && compPlan && { companyName: createForm.companyName.trim() }),
         }),
       });
       const json = await res.json() as {
@@ -451,10 +478,15 @@ export function AdminClient({ users: initialUsers, adminEmail }: { users: AdminU
         candidatePlanId: billing.stripePlanId,
         candidateStatus: billing.subscriptionStatus,
         candidatePeriodEnd: null,
-        compPlan,
-        compUntil,
-        companyName: null, companyRole: null, companyPlanId: null,
-        companyPlanStatus: null, companyPeriodEnd: null, companyTrialEndsAt: null,
+        compPlan: isCandidate ? compPlan : null,
+        compUntil: isCandidate ? compUntil : null,
+        companyName: !isCandidate && compPlan ? (createForm.companyName.trim() || null) : null,
+        companyRole: !isCandidate && compPlan ? "admin" : null,
+        companyPlanId: !isCandidate && compPlan ? compPlan : null,
+        companyPlanStatus: !isCandidate && compPlan ? "comp" : null,
+        companyPeriodEnd: null,
+        companyTrialEndsAt: null,
+        companyCompUntil: !isCandidate && compPlan ? compUntil : null,
         createdAt: new Date().toISOString(),
         lastSignInAt: null,
       };
@@ -839,7 +871,7 @@ export function AdminClient({ users: initialUsers, adminEmail }: { users: AdminU
                   <label className="block text-[11px] font-black uppercase tracking-[0.16em] text-gray-400">Account type <span className="text-red-400">*</span></label>
                   <select
                     value={createForm.accountType}
-                    onChange={(e) => setCreateForm((f) => ({ ...f, accountType: e.target.value, membership: "free" }))}
+                    onChange={(e) => setCreateForm((f) => ({ ...f, accountType: e.target.value, membership: (e.target.value === "corporate" ? "none" : "free") as MembershipKey, compPlan: "", companyName: "" }))}
                     disabled={createLoading}
                     className="mt-1.5 w-full rounded-xl border border-white/10 bg-[#0b0918] px-3 py-2.5 text-sm text-white focus:border-fuchsia-400/40 focus:outline-none"
                   >
@@ -883,25 +915,42 @@ export function AdminClient({ users: initialUsers, adminEmail }: { users: AdminU
                   )}
                 </div>
 
-                {/* Complimentary access — candidates only */}
-                {createForm.accountType === "candidate" && (
+                {/* Complimentary access — candidates and corporate */}
+                {(createForm.accountType === "candidate" || createForm.accountType === "corporate") && (
                   <div className="rounded-2xl border border-cyan-400/15 bg-cyan-400/[0.04] p-3.5">
                     <label className="block text-[11px] font-black uppercase tracking-[0.16em] text-cyan-300">Complimentary access</label>
                     <p className="mt-1 text-[11px] leading-4 text-gray-500">
-                      Guest access with no card and no Stripe. Expires automatically, then the account returns to Free with nothing to cancel.
+                      {createForm.accountType === "corporate"
+                        ? "Guest workspace with no card and no Stripe. The company is created up front, expires automatically, and there is nothing to cancel."
+                        : "Guest access with no card and no Stripe. Expires automatically, then the account returns to Free with nothing to cancel."}
                     </p>
                     <div className="mt-2.5 grid grid-cols-2 gap-3">
                       <div>
                         <label className="block text-[11px] font-black uppercase tracking-[0.16em] text-gray-400">Plan</label>
                         <select
                           value={createForm.compPlan}
-                          onChange={(e) => setCreateForm((f) => ({ ...f, compPlan: e.target.value, ...(e.target.value ? { membership: "free" as MembershipKey } : {}) }))}
-                          disabled={createLoading || createForm.membership !== "free"}
+                          onChange={(e) => setCreateForm((f) => ({
+                            ...f,
+                            compPlan: e.target.value,
+                            ...(e.target.value
+                              ? { membership: (f.accountType === "corporate" ? "none" : "free") as MembershipKey }
+                              : {}),
+                          }))}
+                          disabled={createLoading || (createForm.accountType === "candidate" ? createForm.membership !== "free" : createForm.membership !== "none")}
                           className="mt-1.5 w-full rounded-xl border border-white/10 bg-[#0b0918] px-3 py-2.5 text-sm text-white focus:border-cyan-400/40 focus:outline-none disabled:opacity-40"
                         >
                           <option value="">None</option>
-                          <option value="plus">Plus</option>
-                          <option value="professional">Professional</option>
+                          {createForm.accountType === "corporate" ? (
+                            <>
+                              <option value="team">Team</option>
+                              <option value="business">Business</option>
+                            </>
+                          ) : (
+                            <>
+                              <option value="plus">Plus</option>
+                              <option value="professional">Professional</option>
+                            </>
+                          )}
                         </select>
                       </div>
                       <div>
@@ -919,6 +968,19 @@ export function AdminClient({ users: initialUsers, adminEmail }: { users: AdminU
                         </select>
                       </div>
                     </div>
+                    {createForm.accountType === "corporate" && createForm.compPlan && (
+                      <div className="mt-3">
+                        <label className="block text-[11px] font-black uppercase tracking-[0.16em] text-gray-400">Company name <span className="text-red-400">*</span></label>
+                        <input
+                          value={createForm.companyName}
+                          onChange={(e) => setCreateForm((f) => ({ ...f, companyName: e.target.value }))}
+                          disabled={createLoading}
+                          placeholder="Acme Corp"
+                          className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2.5 text-sm text-white placeholder:text-gray-600 focus:border-cyan-400/40 focus:outline-none"
+                        />
+                        <p className="mt-1.5 text-[11px] text-gray-600">The workspace is created immediately with this person as its admin, so they land straight on a ready dashboard.</p>
+                      </div>
+                    )}
                   </div>
                 )}
 
@@ -999,8 +1061,10 @@ export function AdminClient({ users: initialUsers, adminEmail }: { users: AdminU
                     <>
                       <option value="none">No plan</option>
                       <option value="team_trial">Team (Trial)</option>
+                      <option value="team_comp">Team (Complimentary)</option>
                       <option value="team">Team</option>
                       <option value="business_trial">Business (Trial)</option>
+                      <option value="business_comp">Business (Complimentary)</option>
                       <option value="business">Business</option>
                       <option value="custom">Custom</option>
                       <option value="expired">Expired</option>

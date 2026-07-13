@@ -1,7 +1,9 @@
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { siteConfig } from "@/app/config/site";
+import { generateSlug } from "@/app/lib/company";
 import { sendAdminWelcomeEmail } from "@/app/lib/email";
+import { prisma } from "@/app/lib/prisma";
 import { checkRateLimit } from "@/app/lib/rateLimit";
 
 export const runtime = "nodejs";
@@ -79,8 +81,9 @@ export async function POST(req: NextRequest) {
     subscriptionStatus?: string;
     stripePlanId?: string;
     // Complimentary guest access (no card, no Stripe; expires automatically)
-    compPlan?: string;
+    compPlan?: string;   // candidate: plus|professional · corporate: team|business
     compUntil?: string;
+    companyName?: string; // corporate comp: workspace is pre-created with this name
   };
 
   const email = body.email?.trim().toLowerCase() ?? "";
@@ -101,16 +104,32 @@ export async function POST(req: NextRequest) {
     if (body.stripePlanId)        privateMetadata.stripePlanId       = body.stripePlanId;
 
     // Complimentary access at creation: guests arrive with the plan already
-    // active, so no second admin step is needed. Candidates only.
+    // active, so no second admin step is needed.
     const compPlan = (body.compPlan ?? "").toLowerCase();
+    const compUntilValid =
+      Boolean(body.compUntil) && !Number.isNaN(new Date(body.compUntil!).getTime());
     if (
       body.accountType === "candidate" &&
       (compPlan === "plus" || compPlan === "professional") &&
-      body.compUntil &&
-      !Number.isNaN(new Date(body.compUntil).getTime())
+      compUntilValid
     ) {
       privateMetadata.compPlan  = compPlan;
-      privateMetadata.compUntil = new Date(body.compUntil).toISOString();
+      privateMetadata.compUntil = new Date(body.compUntil!).toISOString();
+    }
+    const corporateComp =
+      body.accountType === "corporate" &&
+      (compPlan === "team" || compPlan === "business") &&
+      compUntilValid &&
+      Boolean(body.companyName?.trim());
+    if (
+      body.accountType === "corporate" &&
+      compPlan &&
+      !corporateComp
+    ) {
+      return NextResponse.json(
+        { error: "Corporate complimentary access needs a valid plan (team or business), an end date, and a company name." },
+        { status: 400 }
+      );
     }
 
     const user = await admin.client.users.createUser({
@@ -121,6 +140,32 @@ export async function POST(req: NextRequest) {
       skipPasswordChecks: true,
       privateMetadata,
     });
+
+    // 1b. Corporate comp: pre-create the workspace with this person as its
+    // admin, so their first sign-in lands on a ready dashboard instead of the
+    // setup page. planStatus "comp" self-expires via compUntil (isPlanActive).
+    if (corporateComp) {
+      const name = body.companyName!.trim();
+      const baseSlug = generateSlug(name);
+      let slug = baseSlug;
+      let attempt = 0;
+      while (await prisma.company.findUnique({ where: { slug } })) {
+        attempt++;
+        slug = `${baseSlug}-${attempt}`;
+      }
+      await prisma.company.create({
+        data: {
+          name,
+          slug,
+          planId: compPlan,
+          planStatus: "comp",
+          compUntil: new Date(body.compUntil!),
+          members: {
+            create: { clerkUserId: user.id, role: "admin" },
+          },
+        },
+      });
+    }
 
     // 2. Generate sign-in token (7 days, one-time use, bypasses MFA/factor-two)
     const tokenResponse = await admin.client.signInTokens.createSignInToken({

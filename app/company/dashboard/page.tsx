@@ -44,6 +44,7 @@ type CompanyData = {
     planId: string | null;
     planStatus: string;
     trialEndsAt: string | null;
+    compUntil: string | null;
     trialInvitesUsed: number;
     _count: { members: number; templates: number; assignments: number };
   };
@@ -225,8 +226,9 @@ function DashboardContent() {
 
   // Plan & trial helpers
   const plan = getPlan(company.planId);
-  const planActive = isPlanActive({ planStatus: company.planStatus, trialEndsAt: company.trialEndsAt });
+  const planActive = isPlanActive({ planStatus: company.planStatus, trialEndsAt: company.trialEndsAt, compUntil: company.compUntil });
   const daysLeft = trialDaysRemaining(company.trialEndsAt);
+  const compDaysLeft = trialDaysRemaining(company.compUntil);
   const thisMonthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
   const invitesThisMonth = assignments.filter((a) => new Date(a.createdAt) >= thisMonthStart).length;
 
@@ -320,11 +322,25 @@ function DashboardContent() {
             )}
           </div>
         )}
-        {((company.planStatus === "trial" && !planActive) || company.planStatus === "expired" || company.planStatus === "cancelled") && (
+        {company.planStatus === "comp" && planActive && (
+          <div className="mb-8 rounded-2xl border border-cyan-400/20 bg-cyan-400/[0.06] px-5 py-4">
+            <p className="text-sm font-black text-cyan-200">
+              {plan?.name} plan (complimentary access) · {compDaysLeft} day{compDaysLeft !== 1 ? "s" : ""} remaining
+            </p>
+            <p className="mt-0.5 text-xs text-cyan-200/70">
+              Full {plan?.name} features with our compliments. No payment method needed and nothing to cancel.
+            </p>
+          </div>
+        )}
+        {((company.planStatus === "trial" && !planActive) || (company.planStatus === "comp" && !planActive) || company.planStatus === "expired" || company.planStatus === "cancelled") && (
           <div className="mb-8 flex flex-col gap-3 rounded-2xl border border-red-400/25 bg-red-400/[0.07] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="text-sm font-black text-red-200">
-                {company.planStatus === "cancelled" ? "Subscription cancelled" : "Your trial has ended"}
+                {company.planStatus === "cancelled"
+                  ? "Subscription cancelled"
+                  : company.planStatus === "comp"
+                  ? "Your complimentary access has ended"
+                  : "Your trial has ended"}
               </p>
               <p className="mt-0.5 text-xs text-red-200/70">You can view existing data but cannot send invites or create templates until you upgrade.</p>
             </div>

@@ -106,6 +106,7 @@ export default async function AdminPage() {
         planId: true,
         planStatus: true,
         trialEndsAt: true,
+        compUntil: true,
         stripeCurrentPeriodEnd: true,
       },
     }),
@@ -171,6 +172,9 @@ export default async function AdminPage() {
         : null,
       companyTrialEndsAt: company?.trialEndsAt
         ? company.trialEndsAt.toISOString()
+        : null,
+      companyCompUntil: company?.compUntil
+        ? company.compUntil.toISOString()
         : null,
       // Timestamps
       createdAt: new Date(u.createdAt).toISOString(),

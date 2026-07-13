@@ -29,6 +29,7 @@ type CorpSubInfo = {
   currentPeriodEnd: string | null;
   trialEndsAt: string | null;
   trialDaysRemaining: number | null;
+  compUntil?: string | null;
   hasStripeSubscription: boolean;
   hasStripeCustomer: boolean;
 };
@@ -244,7 +245,11 @@ export function CorporatePlanPage() {
   const planStatus = sub?.planStatus ?? "none";
   const isPastDue = sub?.isPastDue ?? false;
   const isTrial = planStatus === "trial" && Boolean(sub?.trialDaysRemaining);
-  const isNoneOrExpired = ["none", "expired", "cancelled"].includes(planStatus) || (!isTrial && !sub?.isActive);
+  const isComp = planStatus === "comp" && Boolean(sub?.isActive);
+  const compDaysRemaining = sub?.compUntil
+    ? Math.max(0, Math.ceil((new Date(sub.compUntil).getTime() - Date.now()) / 86_400_000))
+    : 0;
+  const isNoneOrExpired = ["none", "expired", "cancelled"].includes(planStatus) || (!isTrial && !isComp && !sub?.isActive);
   const isPaidActive = sub?.isActive && sub?.hasStripeSubscription;
   const isTeam = sub?.planId === "team";
   const isBusiness = sub?.planId === "business";
@@ -260,11 +265,15 @@ export function CorporatePlanPage() {
     ? "rgba(232,72,229,0.3)"
     : isTrial
     ? "rgba(251,191,36,0.25)"
+    : isComp
+    ? "rgba(34,211,238,0.25)"
     : "rgba(255,255,255,0.1)";
   const accentBg = isPaidActive
     ? "rgba(232,72,229,0.06)"
     : isTrial
     ? "rgba(251,191,36,0.06)"
+    : isComp
+    ? "rgba(34,211,238,0.05)"
     : "rgba(255,255,255,0.03)";
 
   return (
@@ -346,6 +355,8 @@ export function CorporatePlanPage() {
                 ? "linear-gradient(to right, #c026d3, #a855f7)"
                 : isTrial
                 ? "rgba(251,191,36,0.15)"
+                : isComp
+                ? "rgba(34,211,238,0.15)"
                 : "rgba(255,255,255,0.08)",
               color: isPastDue
                 ? "#fbbf24"
@@ -355,6 +366,8 @@ export function CorporatePlanPage() {
                 ? "white"
                 : isTrial
                 ? "#fbbf24"
+                : isComp
+                ? "#22d3ee"
                 : "rgba(255,255,255,0.5)",
             }}
           >
@@ -366,6 +379,8 @@ export function CorporatePlanPage() {
               ? "Active"
               : isTrial
               ? `Trial · ${sub?.trialDaysRemaining ?? 0}d left`
+              : isComp
+              ? `Complimentary · ${compDaysRemaining}d left`
               : "Inactive"}
           </span>
         </div>
@@ -379,6 +394,22 @@ export function CorporatePlanPage() {
             {sub?.trialEndsAt && (
               <p style={{ marginTop: "0.35rem", fontSize: "0.8rem", color: "rgba(251,191,36,0.7)" }}>
                 Trial ends {fmtDate(sub.trialEndsAt)}; add a payment method to avoid interruption.
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Complimentary info */}
+        {isComp && (
+          <div style={{ marginTop: "1rem" }}>
+            <p style={{ color: "rgba(255,255,255,0.5)" }}>
+              Full {sub?.planName ?? "plan"} access with our compliments
+              {isTeam && ": 3 recruiter seats, 100 candidate invites / month"}
+              {isBusiness && ": 10 recruiter seats, 500 candidate invites / month"}.
+            </p>
+            {sub?.compUntil && (
+              <p style={{ marginTop: "0.35rem", fontSize: "0.8rem", color: "rgba(255,255,255,0.4)" }}>
+                Complimentary access ends {fmtDate(sub.compUntil)}. No payment method needed and nothing to cancel.
               </p>
             )}
           </div>
@@ -503,7 +534,7 @@ export function CorporatePlanPage() {
       )}
 
       {/* ── Actions — Trial: convert to paid ─────────────────────────────── */}
-      {PAYMENTS_ENABLED && isTrial && isAdmin && !confirm && (
+      {PAYMENTS_ENABLED && (isTrial || isComp) && isAdmin && !confirm && (
         <div>
           <p
             style={{
@@ -522,7 +553,9 @@ export function CorporatePlanPage() {
             busy,
             checkoutLoading,
             "Activate subscription",
-            "Continue with your current plan, no interruption to your trial",
+            isComp
+              ? "Continue with your current plan after your complimentary access ends"
+              : "Continue with your current plan, no interruption to your trial",
             "Add payment →",
             "fuchsia"
           )}

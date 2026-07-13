@@ -1,3 +1,6 @@
+-- CreateSchema
+CREATE SCHEMA IF NOT EXISTS "public";
+
 -- CreateTable
 CREATE TABLE "PracticeSession" (
     "id" TEXT NOT NULL,
@@ -86,6 +89,7 @@ CREATE TABLE "Company" (
     "planStatus" TEXT NOT NULL DEFAULT 'none',
     "trialStartedAt" TIMESTAMP(3),
     "trialEndsAt" TIMESTAMP(3),
+    "compUntil" TIMESTAMP(3),
     "trialInvitesUsed" INTEGER NOT NULL DEFAULT 0,
     "stripeCustomerId" TEXT,
     "stripeSubscriptionId" TEXT,

@@ -54,14 +54,23 @@ export function trialInvitesRemaining(company: {
   return Math.max(0, CORPORATE_TRIAL_INVITE_CAP - (company.trialInvitesUsed ?? 0));
 }
 
-/** True if the workspace is on an active paid subscription or a live trial. */
+/**
+ * True if the workspace is on an active paid subscription, a live trial, or
+ * live admin-granted complimentary access (planStatus "comp": no card, no
+ * Stripe, self-expires when compUntil passes).
+ */
 export function isPlanActive(company: {
   planStatus: string;
   trialEndsAt: Date | null | string | undefined;
+  compUntil?: Date | null | string | undefined;
 }): boolean {
   if (company.planStatus === "active") return true;
   if (company.planStatus === "trial") {
     const ends = company.trialEndsAt ? new Date(company.trialEndsAt) : null;
+    return ends !== null && ends > new Date();
+  }
+  if (company.planStatus === "comp") {
+    const ends = company.compUntil ? new Date(company.compUntil) : null;
     return ends !== null && ends > new Date();
   }
   return false;

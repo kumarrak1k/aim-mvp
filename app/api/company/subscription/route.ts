@@ -38,7 +38,10 @@ export async function GET() {
       company.planStatus === "active" ||
       (company.planStatus === "trial" &&
         Boolean(company.trialEndsAt) &&
-        new Date(company.trialEndsAt!) > new Date());
+        new Date(company.trialEndsAt!) > new Date()) ||
+      (company.planStatus === "comp" &&
+        Boolean(company.compUntil) &&
+        new Date(company.compUntil!) > new Date());
 
     const plan = company.planId ? PLAN_CONFIG[company.planId as keyof typeof PLAN_CONFIG] : null;
     const planName = plan?.name ?? (company.planStatus === "trial" ? "Trial" : "None");
@@ -96,6 +99,7 @@ export async function GET() {
       currentPeriodEnd: periodEndIso,
       trialEndsAt,
       trialDaysRemaining,
+      compUntil: company.compUntil ? company.compUntil.toISOString() : null,
       hasStripeSubscription: Boolean(company.stripeSubscriptionId),
       hasStripeCustomer: Boolean(company.stripeCustomerId),
     });
