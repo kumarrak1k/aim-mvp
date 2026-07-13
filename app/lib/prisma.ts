@@ -39,14 +39,18 @@ export const prisma = globalForPrisma.prisma ?? buildPrismaClient();
  * query with backoff gives the compute time to resume; if the database is
  * genuinely down, the final attempt still throws.
  */
-export async function warmDb(attempts = 3): Promise<void> {
+export async function warmDb(attempts = 6): Promise<void> {
   for (let attempt = 1; attempt <= attempts; attempt++) {
     try {
       await prisma.$queryRaw`SELECT 1`;
       return;
     } catch (err) {
       if (attempt === attempts) throw err;
-      await new Promise((resolve) => setTimeout(resolve, attempt * 2000));
+      // A refused connection fails in milliseconds, so the sleeps dominate
+      // the window: 2+4+6+8+8 = 28s, enough for Neon's slowest resumes
+      // (the 3-attempt/~6s version still failed on the 19:00 UTC 13 Jul run).
+      // Callers need maxDuration >= 60.
+      await new Promise((resolve) => setTimeout(resolve, Math.min(attempt * 2000, 8000)));
     }
   }
 }

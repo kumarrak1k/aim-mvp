@@ -12,6 +12,8 @@ import { getCandidatePlan } from "@/app/lib/candidatePlan";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+// Headroom for warmDb's full retry window (~28s) plus the email batch.
+export const maxDuration = 60;
 
 export async function GET(req: NextRequest) {
   // Fail CLOSED: a missing CRON_SECRET must not leave this email-sending
