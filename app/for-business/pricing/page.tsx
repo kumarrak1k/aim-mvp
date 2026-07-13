@@ -81,10 +81,13 @@ export default async function BusinessPricingPage() {
           Per-seat plans for small teams, custom pricing for enterprise.
           Subscribe monthly or save up to 33% annually.
         </p>
-        <p className="mx-auto mt-6 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-2.5 text-sm font-black text-white shadow-lg shadow-purple-900/40">
+        <Link
+          href="/for-business/sign-up"
+          className="mx-auto mt-6 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-2.5 text-sm font-black text-white shadow-lg shadow-purple-900/40 transition hover:scale-[1.02]"
+        >
           <span aria-hidden>✨</span>
           Try the Team plan free for 14 days: no payment details, 10 candidate invites
-        </p>
+        </Link>
       </section>
 
       <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 sm:pb-20">
