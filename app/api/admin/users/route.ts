@@ -78,6 +78,9 @@ export async function POST(req: NextRequest) {
     accountType?: string;
     subscriptionStatus?: string;
     stripePlanId?: string;
+    // Complimentary guest access (no card, no Stripe; expires automatically)
+    compPlan?: string;
+    compUntil?: string;
   };
 
   const email = body.email?.trim().toLowerCase() ?? "";
@@ -96,6 +99,19 @@ export async function POST(req: NextRequest) {
     };
     if (body.subscriptionStatus) privateMetadata.subscriptionStatus = body.subscriptionStatus;
     if (body.stripePlanId)        privateMetadata.stripePlanId       = body.stripePlanId;
+
+    // Complimentary access at creation: guests arrive with the plan already
+    // active, so no second admin step is needed. Candidates only.
+    const compPlan = (body.compPlan ?? "").toLowerCase();
+    if (
+      body.accountType === "candidate" &&
+      (compPlan === "plus" || compPlan === "professional") &&
+      body.compUntil &&
+      !Number.isNaN(new Date(body.compUntil).getTime())
+    ) {
+      privateMetadata.compPlan  = compPlan;
+      privateMetadata.compUntil = new Date(body.compUntil).toISOString();
+    }
 
     const user = await admin.client.users.createUser({
       emailAddress: [email],

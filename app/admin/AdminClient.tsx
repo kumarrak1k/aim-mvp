@@ -251,6 +251,8 @@ export function AdminClient({ users: initialUsers, adminEmail }: { users: AdminU
     email: "", firstName: "", lastName: "",
     accountType: "candidate",
     membership: "free" as MembershipKey,
+    compPlan: "",       // "" | "plus" | "professional"
+    compDuration: "90", // days: 7 | 30 | 90 | 365
   });
   const [createLoading, setCreateLoading]   = useState(false);
   const [createError, setCreateError]       = useState("");
@@ -387,7 +389,7 @@ export function AdminClient({ users: initialUsers, adminEmail }: { users: AdminU
   // ── Create user ──────────────────────────────────────────────────────────────
 
   function openCreate() {
-    setCreateForm({ email: "", firstName: "", lastName: "", accountType: "candidate", membership: "free" });
+    setCreateForm({ email: "", firstName: "", lastName: "", accountType: "candidate", membership: "free", compPlan: "", compDuration: "90" });
     setCreateError("");
     setCreatedResult(null);
     setResendSent(false);
@@ -402,6 +404,11 @@ export function AdminClient({ users: initialUsers, adminEmail }: { users: AdminU
     setCreateError("");
     try {
       const billing = fromMembershipKey(createForm.accountType, createForm.membership);
+      const isCandidate = createForm.accountType === "candidate";
+      const compPlan = isCandidate && createForm.compPlan ? createForm.compPlan : null;
+      const compUntil = compPlan
+        ? new Date(Date.now() + Number(createForm.compDuration) * 24 * 60 * 60 * 1000).toISOString()
+        : null;
       const res = await fetch("/api/admin/users", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -412,6 +419,7 @@ export function AdminClient({ users: initialUsers, adminEmail }: { users: AdminU
           accountType: createForm.accountType,
           subscriptionStatus: billing.subscriptionStatus || undefined,
           stripePlanId: billing.stripePlanId || undefined,
+          ...(compPlan && { compPlan, compUntil }),
         }),
       });
       const json = await res.json() as {
@@ -443,7 +451,8 @@ export function AdminClient({ users: initialUsers, adminEmail }: { users: AdminU
         candidatePlanId: billing.stripePlanId,
         candidateStatus: billing.subscriptionStatus,
         candidatePeriodEnd: null,
-        compPlan: null, compUntil: null,
+        compPlan,
+        compUntil,
         companyName: null, companyRole: null, companyPlanId: null,
         companyPlanStatus: null, companyPeriodEnd: null, companyTrialEndsAt: null,
         createdAt: new Date().toISOString(),
@@ -865,7 +874,49 @@ export function AdminClient({ users: initialUsers, adminEmail }: { users: AdminU
                       </>
                     )}
                   </select>
+                  {createForm.accountType === "candidate" && (
+                    <p className="mt-1.5 text-[11px] text-gray-600">Membership = a real paid subscription. For invited guests leave this on Free and use complimentary access below.</p>
+                  )}
                 </div>
+
+                {/* Complimentary access — candidates only */}
+                {createForm.accountType === "candidate" && (
+                  <div className="rounded-2xl border border-cyan-400/15 bg-cyan-400/[0.04] p-3.5">
+                    <label className="block text-[11px] font-black uppercase tracking-[0.16em] text-cyan-300">Complimentary access</label>
+                    <p className="mt-1 text-[11px] leading-4 text-gray-500">
+                      Guest access with no card and no Stripe. Expires automatically, then the account returns to Free with nothing to cancel.
+                    </p>
+                    <div className="mt-2.5 grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-[11px] font-black uppercase tracking-[0.16em] text-gray-400">Plan</label>
+                        <select
+                          value={createForm.compPlan}
+                          onChange={(e) => setCreateForm((f) => ({ ...f, compPlan: e.target.value }))}
+                          disabled={createLoading}
+                          className="mt-1.5 w-full rounded-xl border border-white/10 bg-[#0b0918] px-3 py-2.5 text-sm text-white focus:border-cyan-400/40 focus:outline-none"
+                        >
+                          <option value="">None</option>
+                          <option value="plus">Plus</option>
+                          <option value="professional">Professional</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-[11px] font-black uppercase tracking-[0.16em] text-gray-400">Duration</label>
+                        <select
+                          value={createForm.compDuration}
+                          onChange={(e) => setCreateForm((f) => ({ ...f, compDuration: e.target.value }))}
+                          disabled={createLoading || !createForm.compPlan}
+                          className="mt-1.5 w-full rounded-xl border border-white/10 bg-[#0b0918] px-3 py-2.5 text-sm text-white focus:border-cyan-400/40 focus:outline-none disabled:opacity-40"
+                        >
+                          <option value="7">1 week</option>
+                          <option value="30">1 month</option>
+                          <option value="90">3 months</option>
+                          <option value="365">12 months</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 {createError && <p className="text-sm font-semibold text-red-300">{createError}</p>}
 
