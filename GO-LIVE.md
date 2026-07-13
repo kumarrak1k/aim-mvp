@@ -44,9 +44,9 @@ STRIPE_PRICE_CORPORATE_BUSINESS_MONTHLY / _ANNUAL
 ## 2. Stripe — keys, webhooks, retries
 
 - [ ] Set **live** keys in Vercel: `STRIPE_SECRET_KEY=sk_live_…`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_live_…`.
-- [ ] Create **two** live webhook endpoints:
+- [ ] Create **two** live webhook endpoints (BOTH need all four events — the candidate route also handles `checkout.session.completed` for instant first-purchase entitlement):
   - **Candidate** → `https://aicareermentor.co.uk/api/stripe/webhook`
-    events: `customer.subscription.created`, `…updated`, `…deleted`
+    events: `checkout.session.completed`, `customer.subscription.created`, `…updated`, `…deleted`
   - **Corporate** → `https://aicareermentor.co.uk/api/webhooks/stripe`
     events: `checkout.session.completed`, `customer.subscription.created`, `…updated`, `…deleted`
   - Copy each signing secret → `STRIPE_WEBHOOK_SECRET` (candidate) and `STRIPE_WEBHOOK_SECRET_CORPORATE` (corporate).
