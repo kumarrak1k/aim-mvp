@@ -854,8 +854,8 @@ export function AdminClient({ users: initialUsers, adminEmail }: { users: AdminU
                   <select
                     value={createForm.membership}
                     onChange={(e) => setCreateForm((f) => ({ ...f, membership: e.target.value as MembershipKey }))}
-                    disabled={createLoading}
-                    className="mt-1.5 w-full rounded-xl border border-white/10 bg-[#0b0918] px-3 py-2.5 text-sm text-white focus:border-fuchsia-400/40 focus:outline-none"
+                    disabled={createLoading || !!createForm.compPlan}
+                    className="mt-1.5 w-full rounded-xl border border-white/10 bg-[#0b0918] px-3 py-2.5 text-sm text-white focus:border-fuchsia-400/40 focus:outline-none disabled:opacity-40"
                   >
                     {createForm.accountType === "corporate" ? (
                       <>
@@ -875,7 +875,11 @@ export function AdminClient({ users: initialUsers, adminEmail }: { users: AdminU
                     )}
                   </select>
                   {createForm.accountType === "candidate" && (
-                    <p className="mt-1.5 text-[11px] text-gray-600">Membership = a real paid subscription. For invited guests leave this on Free and use complimentary access below.</p>
+                    <p className="mt-1.5 text-[11px] text-gray-600">
+                      {createForm.compPlan
+                        ? "Locked to Free while complimentary access is set. Guests must not look like paying subscribers."
+                        : "Membership = a real paid subscription. For invited guests leave this on Free and use complimentary access below."}
+                    </p>
                   )}
                 </div>
 
@@ -891,9 +895,9 @@ export function AdminClient({ users: initialUsers, adminEmail }: { users: AdminU
                         <label className="block text-[11px] font-black uppercase tracking-[0.16em] text-gray-400">Plan</label>
                         <select
                           value={createForm.compPlan}
-                          onChange={(e) => setCreateForm((f) => ({ ...f, compPlan: e.target.value }))}
-                          disabled={createLoading}
-                          className="mt-1.5 w-full rounded-xl border border-white/10 bg-[#0b0918] px-3 py-2.5 text-sm text-white focus:border-cyan-400/40 focus:outline-none"
+                          onChange={(e) => setCreateForm((f) => ({ ...f, compPlan: e.target.value, ...(e.target.value ? { membership: "free" as MembershipKey } : {}) }))}
+                          disabled={createLoading || createForm.membership !== "free"}
+                          className="mt-1.5 w-full rounded-xl border border-white/10 bg-[#0b0918] px-3 py-2.5 text-sm text-white focus:border-cyan-400/40 focus:outline-none disabled:opacity-40"
                         >
                           <option value="">None</option>
                           <option value="plus">Plus</option>
@@ -988,8 +992,8 @@ export function AdminClient({ users: initialUsers, adminEmail }: { users: AdminU
                 <select
                   value={editForm.membership}
                   onChange={(e) => setEditForm((f) => ({ ...f, membership: e.target.value as MembershipKey }))}
-                  disabled={editLoading}
-                  className="mt-1.5 w-full rounded-xl border border-white/10 bg-[#0b0918] px-3 py-2.5 text-sm text-white focus:border-fuchsia-400/40 focus:outline-none"
+                  disabled={editLoading || (editForm.accountType === "candidate" && !!editForm.compPlan)}
+                  className="mt-1.5 w-full rounded-xl border border-white/10 bg-[#0b0918] px-3 py-2.5 text-sm text-white focus:border-fuchsia-400/40 focus:outline-none disabled:opacity-40"
                 >
                   {editForm.accountType === "corporate" ? (
                     <>
@@ -1012,6 +1016,9 @@ export function AdminClient({ users: initialUsers, adminEmail }: { users: AdminU
                 </select>
                 {editForm.accountType === "corporate" && (
                   <p className="mt-1.5 text-[11px] text-gray-600">Affects all members of this company workspace.</p>
+                )}
+                {editForm.accountType === "candidate" && !!editForm.compPlan && (
+                  <p className="mt-1.5 text-[11px] text-gray-600">Locked to Free while complimentary access is set. Remove the complimentary plan first to set a paid membership manually.</p>
                 )}
               </div>
 
@@ -1055,9 +1062,9 @@ export function AdminClient({ users: initialUsers, adminEmail }: { users: AdminU
                       <label className="block text-[11px] font-black uppercase tracking-[0.16em] text-gray-400">Plan</label>
                       <select
                         value={editForm.compPlan}
-                        onChange={(e) => setEditForm((f) => ({ ...f, compPlan: e.target.value }))}
-                        disabled={editLoading}
-                        className="mt-1.5 w-full rounded-xl border border-white/10 bg-[#0b0918] px-3 py-2.5 text-sm text-white focus:border-cyan-400/40 focus:outline-none"
+                        onChange={(e) => setEditForm((f) => ({ ...f, compPlan: e.target.value, ...(e.target.value ? { membership: "free" as MembershipKey } : {}) }))}
+                        disabled={editLoading || editForm.membership !== "free"}
+                        className="mt-1.5 w-full rounded-xl border border-white/10 bg-[#0b0918] px-3 py-2.5 text-sm text-white focus:border-cyan-400/40 focus:outline-none disabled:opacity-40"
                       >
                         <option value="">None</option>
                         <option value="plus">Plus</option>
