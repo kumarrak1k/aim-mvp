@@ -514,7 +514,7 @@ export function PracticeStartScreen({
         {startDisabled && startDisabledMessage && (
           <div className="mb-5 rounded-2xl border border-amber-300/20 bg-amber-300/10 p-4">
             <p className="text-sm font-black text-amber-100">
-              Daily beta limit reached
+              Daily practice limit reached
             </p>
             <p className="mt-1 text-sm leading-6 text-gray-300">
               {startDisabledMessage}

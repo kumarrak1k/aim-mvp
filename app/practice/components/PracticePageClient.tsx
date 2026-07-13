@@ -539,7 +539,7 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
 
     if (signedInLimitReached) {
       setUsageMessage(
-        `Daily beta limit reached. You can complete more saved sessions after ${formatResetTime(
+        `Daily practice limit reached. You can complete more saved sessions after ${formatResetTime(
           practiceUsage.resetsAt
         )}.`
       );
