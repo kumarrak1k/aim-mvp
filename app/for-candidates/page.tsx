@@ -136,7 +136,7 @@ const faqs = [
   },
   {
     q: "Is there a free trial?",
-    a: "Yes. Every new account starts with a 3-day free trial of the Plus plan, with no payment details required. When it ends you move to the Free plan automatically, and every paid plan comes with a 14-day money-back guarantee.",
+    a: "Yes. Every new account starts with a 3-day free trial of the Plus plan, with no payment details required. When it ends you move to the Free plan automatically, and every paid plan comes with a 7-day money-back guarantee.",
   },
 ];
 

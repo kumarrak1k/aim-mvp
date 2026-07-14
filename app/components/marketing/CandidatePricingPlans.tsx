@@ -322,7 +322,7 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
               )}
               {isPaid && (
                 <p className="mt-3 text-center text-[11px] font-semibold text-emerald-300/90">
-                  14-day money-back guarantee, no questions asked
+                  7-day money-back guarantee, no questions asked
                 </p>
               )}
             </div>
@@ -372,7 +372,7 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
         Paid plans are recurring subscriptions that renew automatically
         (monthly or annually) at the price shown until you cancel. You can
         cancel any time from your account, and you keep access until the end of the
-        period you&rsquo;ve paid for. Every paid plan comes with a 14-day
+        period you&rsquo;ve paid for. Every paid plan comes with a 7-day
         money-back guarantee. The 3-day free trial requires no payment details and
         never auto-charges.
       </p>

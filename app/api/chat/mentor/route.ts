@@ -41,7 +41,7 @@ CANDIDATE PLANS (individual candidates):
 - Plus: £19/month or £169/year — unlimited sessions, voice + camera, TTS audio, 7-day improvement plans, session history.
 - Professional: £29/month or £249/year — everything in Plus, plus Assessment Centre and all Career Docs (CV Enhancer, Personal Statement, Cover Letter).
 - 3-day Plus trial on sign-up — no card required. Gives full Plus features to try. Trial grants Plus, NOT Professional; assessment centre and career docs remain behind Professional.
-- Paid plans carry a 14-day money-back guarantee — email support via /contact to request a refund, no questions asked.
+- Paid plans carry a 7-day money-back guarantee — email support via /contact to request a refund, no questions asked.
 
 CORPORATE FEATURES (for employers / HR teams):
 - Build custom interview or assessment centre templates.

@@ -65,7 +65,7 @@ const faqs = [
   {
     question: "Can I cancel at any time?",
     answer:
-      "Yes. Monthly plans can be cancelled at any time with no penalty. Annual plans are charged for the full year upfront. Contact support if you need to discuss early cancellation. Every paid plan also comes with a 14-day money-back guarantee, no questions asked.",
+      "Yes. Monthly plans can be cancelled at any time with no penalty. Annual plans are charged for the full year upfront. Contact support if you need to discuss early cancellation. Every paid plan also comes with a 7-day money-back guarantee, no questions asked.",
   },
   {
     question: "Is my data deleted when I cancel?",
