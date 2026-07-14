@@ -333,6 +333,11 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
       {/* Plan comparison matrix */}
       <div className="mx-auto mt-14 max-w-4xl">
         <h3 className="mb-6 text-center text-2xl font-black tracking-[-0.04em]">Compare plans</h3>
+        {/* On narrow phones the table scrolls sideways but iOS hides the
+            scrollbar, so Plus/Professional are invisible without this cue. */}
+        <p className="mb-2 text-center text-[11px] font-bold uppercase tracking-wide text-purple-200/80 sm:hidden">
+          Swipe the table sideways to compare all plans →
+        </p>
         <div className="overflow-x-auto rounded-2xl border border-white/10">
           <table className="w-full min-w-[34rem] text-sm">
             <thead>

@@ -71,6 +71,15 @@ export function PublicShell({ children, currentPath }: PublicShellProps) {
             </div>
           </nav>
 
+          {/* Phone-only compact CTA — the audience pills below need sm+, and
+              without this the phone header has no action at all. */}
+          <Link
+            href="/for-candidates"
+            className="col-start-3 relative z-10 rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-4 py-2 text-xs font-black text-white shadow-lg shadow-purple-900/40 sm:hidden"
+          >
+            Start free
+          </Link>
+
           {/* Audience buttons — matches homepage */}
           <div className="col-start-3 relative z-10 hidden shrink-0 items-center gap-2 sm:flex">
             <Link
