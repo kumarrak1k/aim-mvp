@@ -37,7 +37,7 @@ CANDIDATE FEATURES:
 - Mock Assessment Centre — full AC experience with case study, presentation, and group exercise stages (Professional plan only).
 
 CANDIDATE PLANS (individual candidates):
-- Free: 5 practice sessions, typed answers only, no voice/camera, no TTS audio, no career docs, no assessment centre.
+- Free: 3 practice sessions, typed answers only, no voice/camera, no TTS audio, no career docs, no assessment centre.
 - Plus: £19/month or £169/year — unlimited sessions, voice + camera, TTS audio, 7-day improvement plans, session history.
 - Professional: £29/month or £249/year — everything in Plus, plus Assessment Centre and all Career Docs (CV Enhancer, Personal Statement, Cover Letter).
 - 3-day Plus trial on sign-up — no card required. Gives full Plus features to try. Trial grants Plus, NOT Professional; assessment centre and career docs remain behind Professional.
@@ -50,8 +50,8 @@ CORPORATE FEATURES (for employers / HR teams):
 - Company dashboard at /company/dashboard.
 
 CORPORATE PLANS:
-- Team: £149/month — up to 10 candidate invites/month. 14-day free trial, no card required.
-- Business: £249/month — up to 30 candidate invites/month.
+- Team: £149/month — 3 recruiter seats, up to 100 candidate invites/month. 14-day free trial, no card required (trial is capped at 10 invites).
+- Business: £399/month — 10 recruiter seats, up to 500 candidate invites/month.
 - Start a corporate trial at /for-business or /company/plan.
 
 NAVIGATION:
