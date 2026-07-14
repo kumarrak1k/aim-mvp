@@ -175,7 +175,7 @@ export function AudienceShell({
 
             <Link
               href={theme.signUpPath}
-              className={`whitespace-nowrap rounded-full bg-gradient-to-r ${theme.primaryGradient} px-4 py-2.5 text-[13px] font-black text-white shadow-lg ${theme.primaryShadow} transition hover:scale-[1.03] sm:px-5 lg:px-6`}
+              className={`min-w-0 whitespace-normal rounded-full bg-gradient-to-r text-center leading-tight ${theme.primaryGradient} px-4 py-2.5 text-[13px] font-black text-white shadow-lg ${theme.primaryShadow} transition hover:scale-[1.03] sm:whitespace-nowrap sm:px-5 lg:px-6`}
             >
               {audience === "candidate" ? "Start free" : "Get started"}
             </Link>
