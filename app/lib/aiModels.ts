@@ -25,6 +25,15 @@ export const MODEL_QUALITY = process.env.AI_MODEL_QUALITY || "gpt-5.4-mini";
 export const MODEL_PREMIUM = process.env.AI_MODEL_PREMIUM || "gpt-5.2";
 export const MODEL_UTILITY = process.env.AI_MODEL_UTILITY || "gpt-5.4-nano";
 
+/**
+ * Interviewer voice (question audio). gpt-4o-mini-tts supports natural-
+ * language `instructions` (accent, tone, pacing) which makes the speaker
+ * accent preference real; tts-1 ignores accents but supports `speed`.
+ * ROLLBACK: set AI_MODEL_TTS=tts-1 in Vercel and redeploy. The question-audio
+ * route also falls back to tts-1 automatically if this model errors.
+ */
+export const MODEL_TTS = process.env.AI_MODEL_TTS || "gpt-4o-mini-tts";
+
 export type ReasoningEffort = "none" | "low" | "medium" | "high" | "xhigh";
 
 /**

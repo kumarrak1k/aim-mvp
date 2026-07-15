@@ -265,13 +265,17 @@ export function useBrowserSpeech({
       "Zira",
     ];
 
-    for (const name of preferredNames) {
-      const match = voices.find(
-        (voice) =>
-          voice.name.toLowerCase().includes(name.toLowerCase()) &&
-          voice.lang.toLowerCase().startsWith("en")
-      );
-      if (match) return match;
+    // UK site: prefer a British-English voice at every tier, falling back to
+    // any English variant only when the device has no en-GB voice installed.
+    for (const langPrefix of ["en-gb", "en"]) {
+      for (const name of preferredNames) {
+        const match = voices.find(
+          (voice) =>
+            voice.name.toLowerCase().includes(name.toLowerCase()) &&
+            voice.lang.toLowerCase().startsWith(langPrefix)
+        );
+        if (match) return match;
+      }
     }
 
     const englishFemaleHint = voices.find(

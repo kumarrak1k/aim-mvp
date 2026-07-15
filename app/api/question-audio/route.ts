@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { checkRateLimit } from "@/app/lib/rateLimit";
+import { MODEL_TTS } from "@/app/lib/aiModels";
 import {
   resolveCandidatePlanReliable,
   type CandidateBillingMeta,
@@ -45,6 +46,37 @@ const speedMap: Record<SpeakerPace, number> = {
   natural: 1,
   energetic: 1.2,
 };
+
+// gpt-4o-mini-tts takes natural-language delivery instructions instead of a
+// numeric speed. These make the accent preference (long accepted by this API
+// but ignored by tts-1) actually change the voice.
+const accentInstruction: Record<SpeakerAccent, string> = {
+  british: "Speak with a natural British English accent.",
+  american: "Speak with a natural American English accent.",
+  neutral: "",
+};
+
+const paceInstruction: Record<SpeakerPace, string> = {
+  slow: "Speak slowly and deliberately, leaving space between sentences.",
+  natural: "Speak at a calm, natural pace.",
+  energetic: "Speak with brisk, upbeat energy while staying clear.",
+};
+
+function buildInstructions(pref: SpeakerPreference): string {
+  return [
+    "You are a warm, professional job interviewer asking a candidate a question.",
+    accentInstruction[pref.accent],
+    paceInstruction[pref.pace],
+    "Sound engaged and encouraging, never robotic.",
+  ]
+    .filter(Boolean)
+    .join(" ");
+}
+
+/** tts-1 family: numeric speed, no instructions. Newer TTS models: reverse. */
+function isLegacyTts(model: string) {
+  return model.startsWith("tts-1");
+}
 
 function cleanSpeakerPreference(value: unknown): SpeakerPreference {
   const input = value as Partial<SpeakerPreference> | undefined;
@@ -115,6 +147,30 @@ function getMissingTextErrorResponse() {
  * With streaming the Vercel function forwards each chunk as it arrives, so
  * the function never sits idle long enough to be killed.
  */
+async function requestSpeech(
+  apiKey: string,
+  model: string,
+  text: string,
+  pref: SpeakerPreference
+) {
+  return fetch(OPENAI_TTS_ENDPOINT, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model,
+      voice: voiceMap[pref.voice],
+      input: text,
+      response_format: "mp3",
+      ...(isLegacyTts(model)
+        ? { speed: speedMap[pref.pace] }
+        : { instructions: buildInstructions(pref) }),
+    }),
+  });
+}
+
 async function fetchSpeechStream({
   apiKey,
   text,
@@ -124,36 +180,34 @@ async function fetchSpeechStream({
   text: string;
   speakerPreference: SpeakerPreference;
 }) {
-  const response = await fetch(OPENAI_TTS_ENDPOINT, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: "tts-1",
-      voice: voiceMap[speakerPreference.voice],
-      input: text,
-      response_format: "mp3",
-      speed: speedMap[speakerPreference.pace],
-    }),
-  });
+  let model = MODEL_TTS;
+  let response = await requestSpeech(apiKey, model, text, speakerPreference);
+
+  // Safety net: if the configured model fails for any reason (bad override,
+  // deprecation, instructions rejected), fall back to tts-1 so the
+  // interviewer voice keeps working. tts-1 is the pre-July-2026 behaviour.
+  if (!response.ok && !isLegacyTts(model)) {
+    const errorMessage = await getOpenAiErrorMessage(response);
+    console.error(`QUESTION AUDIO: ${model} failed (${errorMessage}); falling back to tts-1`);
+    model = "tts-1";
+    response = await requestSpeech(apiKey, model, text, speakerPreference);
+  }
 
   if (!response.ok) {
     const errorMessage = await getOpenAiErrorMessage(response);
     throw new Error(errorMessage);
   }
 
-  return response;
+  return { response, model };
 }
 
-function streamingAudioResponse(ttsResponse: Response) {
+function streamingAudioResponse(ttsResponse: Response, model: string) {
   return new NextResponse(ttsResponse.body, {
     status: 200,
     headers: {
       "Content-Type": "audio/mpeg",
       "Cache-Control": "no-store, no-cache, must-revalidate",
-      "X-Audio-Mode": "tts-1-streamed",
+      "X-Audio-Mode": `${model}-streamed`,
       // Tell the client the transfer is chunked so it can buffer progressively
       "Transfer-Encoding": "chunked",
     },
@@ -209,13 +263,13 @@ export async function GET(request: NextRequest) {
       return getMissingTextErrorResponse();
     }
 
-    const ttsResponse = await fetchSpeechStream({
+    const { response: ttsResponse, model } = await fetchSpeechStream({
       apiKey,
       text,
       speakerPreference,
     });
 
-    return streamingAudioResponse(ttsResponse);
+    return streamingAudioResponse(ttsResponse, model);
   } catch (error) {
     console.error("QUESTION AUDIO GET ERROR:", error);
 
@@ -272,13 +326,13 @@ export async function POST(request: NextRequest) {
       return getMissingTextErrorResponse();
     }
 
-    const ttsResponse = await fetchSpeechStream({
+    const { response: ttsResponse, model } = await fetchSpeechStream({
       apiKey,
       text,
       speakerPreference,
     });
 
-    return streamingAudioResponse(ttsResponse);
+    return streamingAudioResponse(ttsResponse, model);
   } catch (error) {
     console.error("QUESTION AUDIO POST ERROR:", error);
 
