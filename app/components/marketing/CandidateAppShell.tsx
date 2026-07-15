@@ -15,7 +15,7 @@
 
 import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
-import { type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { SiteLogo } from "@/app/components/brand/SiteLogo";
 import { SiteFooter } from "@/app/components/marketing/SiteFooter";
 import { PlanPage } from "@/app/components/account/PlanPage";
@@ -26,6 +26,7 @@ export type CandidateAppPath =
   | "/practice/session"
   | "/progress"
   | "/profile"
+  | "/guide"
   | "/assessment-centre"
   | "/career-docs"
   | "/career-docs/cv-enhancer"
@@ -66,6 +67,25 @@ export function CandidateAppShell({
   children,
   currentPath,
 }: CandidateAppShellProps) {
+  // New-user guide banner on the practice page. Starts hidden (SSR-safe),
+  // shows after mount unless previously dismissed; dismissal persists.
+  const [showGuideBanner, setShowGuideBanner] = useState(false);
+  useEffect(() => {
+    if (currentPath !== "/practice") return;
+    try {
+      setShowGuideBanner(localStorage.getItem("aim_guide_banner_dismissed") !== "1");
+    } catch {
+      // Storage unavailable — keep the banner hidden rather than nag forever.
+    }
+  }, [currentPath]);
+  function dismissGuideBanner() {
+    setShowGuideBanner(false);
+    try {
+      localStorage.setItem("aim_guide_banner_dismissed", "1");
+    } catch {
+      // Best effort.
+    }
+  }
 
   return (
     <div className="relative min-h-screen bg-[#0a0614] text-white">
@@ -114,6 +134,19 @@ export function CandidateAppShell({
 
           {/* Right actions */}
           <div className="relative z-10 ml-auto flex shrink-0 items-center gap-2">
+            {/* How it works — persistent guide entry point */}
+            {currentPath !== "/guide" && (
+              <Link
+                href="/guide"
+                className="hidden items-center gap-1.5 whitespace-nowrap rounded-full border border-cyan-300/30 bg-cyan-400/10 px-4 py-2.5 text-[13px] font-black text-cyan-200 transition hover:bg-cyan-400/20 sm:flex"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4" aria-hidden>
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                </svg>
+                How it works
+              </Link>
+            )}
             {/* Start Practising shortcut — hidden when already on practice or assessment centre */}
             {currentPath !== "/practice" &&
               currentPath !== "/practice/session" &&
@@ -193,6 +226,34 @@ export function CandidateAppShell({
           </nav>
         </div>
       </header>
+
+      {/* New-user guide banner — practice page only, dismissible */}
+      {showGuideBanner && (
+        <div className="relative z-40 px-4 pt-2 sm:px-6">
+          <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 rounded-2xl border border-cyan-300/25 bg-gradient-to-r from-cyan-500/[0.14] via-purple-500/[0.10] to-fuchsia-500/[0.14] px-4 py-3 backdrop-blur-xl sm:px-5">
+            <p className="text-[13px] font-bold leading-5 text-cyan-50">
+              <span className="mr-1.5" aria-hidden>📘</span>
+              New here? Learn the platform in six quick steps.
+            </p>
+            <div className="flex shrink-0 items-center gap-2">
+              <Link
+                href="/guide"
+                className="whitespace-nowrap rounded-full bg-white px-4 py-1.5 text-[12px] font-black text-black transition hover:bg-cyan-100"
+              >
+                Open the guide →
+              </Link>
+              <button
+                type="button"
+                onClick={dismissGuideBanner}
+                aria-label="Dismiss the guide banner"
+                className="flex h-7 w-7 items-center justify-center rounded-full text-gray-400 transition hover:bg-white/10 hover:text-white"
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Reverse-trial countdown / start / upgrade bar */}
       <TrialBanner />
