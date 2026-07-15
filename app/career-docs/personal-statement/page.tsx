@@ -61,6 +61,17 @@ export default function PersonalStatementPage() {
     e.target.value = "";
   }
 
+  function MinHint({ value, min, label }: { value: string; min: number; label: string }) {
+    const len = value.trim().length;
+    if (len === 0 || len >= min) return null;
+    const more = min - len;
+    return (
+      <p className="mt-1 text-[11px] text-amber-300">
+        {label}: at least {min} characters ({more} more needed).
+      </p>
+    );
+  }
+
   const canSubmit =
     targetProgramOrRole.trim() &&
     whyThis.trim().length >= 20 &&
@@ -194,6 +205,7 @@ export default function PersonalStatementPage() {
                   placeholder="What drew you to this specifically? Any pivotal moments, projects, experiences, or people that shaped your direction…"
                   rows={4}
                   className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-600 outline-none focus:border-emerald-400/40 focus:ring-1 focus:ring-emerald-400/20 resize-y" required />
+                <MinHint value={whyThis} min={20} label="A sentence or two works best" />
               </div>
 
               {/* Background field with CV integration */}
@@ -263,6 +275,7 @@ export default function PersonalStatementPage() {
                   placeholder="Awards, projects, leadership roles, results you're proud of. Include numbers where possible…"
                   rows={3}
                   className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-600 outline-none focus:border-emerald-400/40 focus:ring-1 focus:ring-emerald-400/20 resize-y" required />
+                <MinHint value={achievements} min={10} label="A line per achievement is plenty" />
               </div>
 
               <div>
@@ -290,6 +303,17 @@ export default function PersonalStatementPage() {
                 <><svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>Writing your statement…</>
               ) : "Generate personal statement →"}
             </button>
+            {!loading && !canSubmit && (
+              <p className="text-center text-[11px] leading-5 text-gray-500">
+                To enable the button:{" "}
+                {[
+                  !targetProgramOrRole.trim() && "add the programme or role",
+                  whyThis.trim().length < 20 && "say a little more in “Why this programme” (20+ characters)",
+                  (background.trim().length < 20 || background.length > 15000) && "add your background (20 to 15,000 characters)",
+                  achievements.trim().length < 10 && "add a key achievement (10+ characters)",
+                ].filter(Boolean).join(" · ")}
+              </p>
+            )}
           </form>
 
           {/* Output */}

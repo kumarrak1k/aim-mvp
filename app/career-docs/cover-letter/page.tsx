@@ -58,7 +58,7 @@ export default function CoverLetterPage() {
     e.target.value = "";
   }
 
-  const canSubmit = companyName.trim() && jobTitle.trim() && jobDescription.trim().length >= 20 && experience.trim().length >= 20 && experience.length <= 15000;
+  const canSubmit = companyName.trim() && jobTitle.trim() && jobDescription.trim().length >= 20 && jobDescription.length <= 10000 && experience.trim().length >= 20 && experience.length <= 15000;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -170,6 +170,9 @@ export default function CoverLetterPage() {
                   placeholder="Paste the job posting here. The more detail, the better for tailoring…"
                   rows={6}
                   className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-600 outline-none focus:border-cyan-400/40 focus:ring-1 focus:ring-cyan-400/20 resize-y" required />
+                <p className={`mt-1 text-right text-[10px] ${jobDescription.length > 10000 ? "text-red-400" : "text-gray-600"}`}>
+                  {jobDescription.length.toLocaleString()} / 10,000 characters
+                </p>
               </div>
 
               {/* Experience field with CV integration */}
@@ -278,6 +281,19 @@ export default function CoverLetterPage() {
                 <><svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>Writing your letter…</>
               ) : "Generate cover letter →"}
             </button>
+            {!loading && !canSubmit && (
+              <p className="text-center text-[11px] leading-5 text-gray-500">
+                To enable the button:{" "}
+                {[
+                  !companyName.trim() && "add the company name",
+                  !jobTitle.trim() && "add the job title",
+                  jobDescription.trim().length < 20 && "paste the job description (20+ characters)",
+                  jobDescription.length > 10000 && "shorten the job description to 10,000 characters",
+                  experience.trim().length < 20 && "add your key experience (20+ characters)",
+                  experience.length > 15000 && "shorten your experience to 15,000 characters",
+                ].filter(Boolean).join(" · ")}
+              </p>
+            )}
           </form>
 
           {/* Output */}

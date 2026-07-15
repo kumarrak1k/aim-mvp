@@ -18,7 +18,8 @@ export const dynamic = "force-dynamic";
 const schema = z.object({
   companyName: z.string().trim().min(1).max(200),
   jobTitle: z.string().trim().min(1).max(200),
-  jobDescription: z.string().trim().min(20).max(5000),
+  // 10k: real job adverts pasted from LinkedIn/Indeed regularly exceed 5k.
+  jobDescription: z.string().trim().min(20).max(10000),
   experience: z.string().trim().min(20).max(15000),
   tone: z.enum(["professional", "enthusiastic", "concise"]).default("professional"),
   wordLimit: z.number().int().min(200).max(600).default(350),
