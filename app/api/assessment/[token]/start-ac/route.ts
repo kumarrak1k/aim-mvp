@@ -17,7 +17,7 @@ import { MODEL_PREMIUM } from "@/app/lib/aiModels";
 import { checkRateLimit } from "@/app/lib/rateLimit";
 
 export const runtime = "nodejs";
-export const maxDuration = 60;
+export const maxDuration = 180;
 export const dynamic = "force-dynamic";
 
 type Params = { params: Promise<{ token: string }> };

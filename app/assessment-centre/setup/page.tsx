@@ -105,10 +105,16 @@ export default function AssessmentCentreSetupPage() {
         }),
       });
 
-      const data = await res.json();
+      // A gateway timeout (e.g. Vercel killing a long generation) returns a
+      // non-JSON body — parse defensively so it doesn't masquerade as a
+      // connection failure.
+      const data = await res.json().catch(() => null);
 
-      if (!res.ok) {
-        setError(data.error ?? "Something went wrong. Please try again.");
+      if (!res.ok || !data?.id) {
+        setError(
+          data?.error ??
+            "Generation took too long or the server had a problem. Please try again — your selections are kept."
+        );
         return;
       }
 
@@ -116,7 +122,7 @@ export default function AssessmentCentreSetupPage() {
       const stageUrl = firstStage.replace(/stage(\d)/, "stage-$1");
       router.push(`/assessment-centre/${data.id}/${stageUrl}`);
     } catch {
-      setError("Could not connect to the server. Please try again.");
+      setError("Could not connect to the server. Check your internet connection and try again.");
     } finally {
       setLoading(false);
     }

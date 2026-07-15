@@ -9,7 +9,7 @@ import { parseJsonBody } from "@/app/lib/validation";
 import { getCandidatePlan, TRIAL_USAGE_CAPS } from "@/app/lib/candidatePlan";
 
 export const runtime = "nodejs";
-export const maxDuration = 60;
+export const maxDuration = 180;
 export const dynamic = "force-dynamic";
 
 const startSchema = z.object({

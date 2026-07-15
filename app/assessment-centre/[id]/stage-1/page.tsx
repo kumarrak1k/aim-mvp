@@ -283,9 +283,14 @@ export default function Stage1Page() {
         body: JSON.stringify({ response, timeMs: elapsed }),
       });
 
-      const data = await res.json();
-      if (!res.ok) {
-        setSubmitError(data.error ?? "Submission failed. Please try again.");
+      // Gateway timeouts return non-JSON — parse defensively so they surface
+      // as a retryable error instead of a bogus "could not reach the server".
+      const data = await res.json().catch(() => null);
+      if (!res.ok || !data?.feedback) {
+        setSubmitError(
+          data?.error ??
+            "Marking took too long or the server had a problem. Your answer is kept — please try again."
+        );
         return;
       }
 

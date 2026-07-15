@@ -10,7 +10,7 @@ import { moderateText } from "@/app/lib/moderation";
 import { getCandidatePlan } from "@/app/lib/candidatePlan";
 
 export const runtime = "nodejs";
-export const maxDuration = 60;
+export const maxDuration = 120;
 export const dynamic = "force-dynamic";
 
 const submitSchema = z.object({
