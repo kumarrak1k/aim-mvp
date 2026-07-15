@@ -1,5 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
+import { getAccountType } from "@/app/lib/accountType";
 import { CURRENT_TOS_VERSION, recordTosAcceptance } from "@/app/lib/legal";
+import { autoStartCandidateTrial } from "@/app/lib/trialAutoStart";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -43,6 +45,23 @@ export async function POST(req: Request) {
       ipAddress,
       userAgent: userAgent ? userAgent.slice(0, 600) : null,
     });
+
+    // Backup initialisation: the normal trial + welcome-email auto-start
+    // runs from the sign-up completion page, but that call is client-fired
+    // and can be lost (OAuth redirect variations, tab closed on the splash).
+    // Terms acceptance is the one server round-trip every new user makes,
+    // so re-run the idempotent init here. getAccountType lazily stamps
+    // unset accounts, which covers exactly the lost-completion case.
+    // Non-fatal: acceptance must succeed even if the trial grant fails.
+    try {
+      const accountType = await getAccountType(userId);
+      if (accountType === "candidate") {
+        await autoStartCandidateTrial(userId, req.headers);
+      }
+    } catch {
+      // Superadmin (throws by design) or a transient Clerk error — the
+      // helper itself reports real failures to Sentry.
+    }
 
     return Response.json({ ok: true, version: CURRENT_TOS_VERSION });
   } catch (error) {

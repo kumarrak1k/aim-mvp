@@ -6,13 +6,7 @@ import {
   setAccountTypeIfUnset,
   type AccountType,
 } from "@/app/lib/accountType";
-import { startCandidateTrialIfEligible } from "@/app/lib/candidatePlan";
-import {
-  checkTrialIpAllowance,
-  claimTrialEligibility,
-  clientIpFromHeaders,
-  releaseTrialEligibility,
-} from "@/app/lib/trialEligibility";
+import { autoStartCandidateTrial } from "@/app/lib/trialAutoStart";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -83,40 +77,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ accountType: "superadmin" });
     }
 
-    // Auto-start the reverse trial for new candidates — but only for a
-    // genuine, not-already-trialed email (blocks disposable + plus-tag farming)
-    // and within the per-IP daily cap (blocks cycling brand-new mailboxes).
+    // Auto-start the reverse trial for new candidates. Shared, idempotent
+    // helper (also runs as a backup from /api/accept-terms in case this
+    // client-fired completion call is ever lost).
     let trialStarted = false;
     if (result.accountType === "candidate") {
-      let trialEmail = "";
-      try {
-        const client = await clerkClient();
-        const user = await client.users.getUser(userId);
-        trialEmail = user.emailAddresses[0]?.emailAddress ?? "";
-        const eligibility = await claimTrialEligibility(userId, trialEmail);
-        if (eligibility.eligible) {
-          const ipAllowed = await checkTrialIpAllowance(
-            clientIpFromHeaders(request.headers)
-          );
-          if (!ipAllowed) {
-            // Too many trials from this network today — sign-up continues on
-            // the Free plan; the one-time email slot is released for later.
-            await releaseTrialEligibility(userId, trialEmail);
-          } else {
-            const trial = await startCandidateTrialIfEligible(userId);
-            trialStarted = trial.started;
-            // claimTrialEligibility burns the email's one-time slot up-front. If
-            // the trial didn't actually start, release it so the slot isn't lost.
-            if (!trial.started) await releaseTrialEligibility(userId, trialEmail);
-          }
-        }
-      } catch (err) {
-        // Non-fatal: a failed trial grant must not block sign-up completion.
-        console.error("TRIAL START ERROR:", err);
-        // The claim may have landed before the throw — release it so a later
-        // retry (e.g. via /api/trial/start) can still succeed.
-        if (trialEmail) await releaseTrialEligibility(userId, trialEmail);
-      }
+      const trial = await autoStartCandidateTrial(userId, request.headers);
+      trialStarted = trial.started;
     }
 
     return NextResponse.json({
