@@ -11,6 +11,7 @@
 
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { WhenSignedIn, WhenSignedOut } from "@/app/components/marketing/AuthAwareCta";
 import { SiteLogo } from "@/app/components/brand/SiteLogo";
 import { SiteFooter } from "@/app/components/marketing/SiteFooter";
 import { DataTrustStrip } from "@/app/components/DataTrustStrip";
@@ -73,14 +74,25 @@ export function PublicShell({ children, currentPath }: PublicShellProps) {
 
           {/* Phone-only compact CTA — the audience pills below need sm+, and
               without this the phone header has no action at all. */}
-          <Link
-            href="/for-candidates"
-            className="col-start-3 relative z-10 rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-4 py-2 text-xs font-black text-white shadow-lg shadow-purple-900/40 sm:hidden"
-          >
-            Start free
-          </Link>
+          <WhenSignedOut>
+            <Link
+              href="/for-candidates"
+              className="col-start-3 relative z-10 rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-4 py-2 text-xs font-black text-white shadow-lg shadow-purple-900/40 sm:hidden"
+            >
+              Start free
+            </Link>
+          </WhenSignedOut>
+          <WhenSignedIn>
+            <a
+              href="/api/account/home"
+              className="col-start-3 relative z-10 rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-4 py-2 text-xs font-black text-white shadow-lg shadow-purple-900/40 sm:hidden"
+            >
+              My dashboard
+            </a>
+          </WhenSignedIn>
 
-          {/* Audience buttons — matches homepage; signed-out visitors also get a per-audience Sign in */}
+          {/* Audience buttons — matches homepage; signed-out visitors also get a
+              per-audience Sign in, signed-in users a single "My dashboard". */}
           <div className="col-start-3 relative z-10 hidden shrink-0 items-start gap-2 sm:flex">
             <div className="flex flex-col items-center gap-1.5">
               <Link
@@ -89,12 +101,14 @@ export function PublicShell({ children, currentPath }: PublicShellProps) {
               >
                 Candidates
               </Link>
-              <Link
-                href="/for-candidates/sign-in"
-                className="rounded-full bg-violet-600 px-4 py-1 text-[11px] font-black text-white transition hover:bg-violet-500"
-              >
-                Sign in
-              </Link>
+              <WhenSignedOut>
+                <Link
+                  href="/for-candidates/sign-in"
+                  className="rounded-full bg-violet-600 px-4 py-1 text-[11px] font-black text-white transition hover:bg-violet-500"
+                >
+                  Sign in
+                </Link>
+              </WhenSignedOut>
             </div>
             <div className="flex flex-col items-center gap-1.5">
               <Link
@@ -103,12 +117,14 @@ export function PublicShell({ children, currentPath }: PublicShellProps) {
               >
                 Corporates
               </Link>
-              <Link
-                href="/for-business/sign-in"
-                className="rounded-full bg-fuchsia-600 px-4 py-1 text-[11px] font-black text-white transition hover:bg-fuchsia-500"
-              >
-                Sign in
-              </Link>
+              <WhenSignedOut>
+                <Link
+                  href="/for-business/sign-in"
+                  className="rounded-full bg-fuchsia-600 px-4 py-1 text-[11px] font-black text-white transition hover:bg-fuchsia-500"
+                >
+                  Sign in
+                </Link>
+              </WhenSignedOut>
             </div>
             <Link
               href="/universities"
@@ -116,6 +132,15 @@ export function PublicShell({ children, currentPath }: PublicShellProps) {
             >
               Universities
             </Link>
+            <WhenSignedIn>
+              {/* Plain <a>: Next's Link would prefetch the redirect route */}
+              <a
+                href="/api/account/home"
+                className="rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-600 px-4 py-2 text-xs font-black text-white shadow-lg shadow-purple-900/30 transition hover:opacity-90"
+              >
+                My dashboard
+              </a>
+            </WhenSignedIn>
           </div>
         </div>
 

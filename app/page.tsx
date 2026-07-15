@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { WhenSignedIn, WhenSignedOut } from "@/app/components/marketing/AuthAwareCta";
 import { createPageMetadata } from "@/app/config/seo";
 import { absoluteUrl } from "@/app/config/site";
 import { SiteLogo } from "@/app/components/brand/SiteLogo";
@@ -174,14 +175,27 @@ export default function HomePage() {
 
           {/* Phone-only compact CTA — the audience pills below need sm+, and
               without this the phone header has no action at all. */}
-          <Link
-            href="/for-candidates"
-            className="col-start-3 relative z-10 rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-4 py-2 text-xs font-black text-white shadow-lg shadow-purple-900/40 sm:hidden"
-          >
-            Start free
-          </Link>
+          <WhenSignedOut>
+            <Link
+              href="/for-candidates"
+              className="col-start-3 relative z-10 rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-4 py-2 text-xs font-black text-white shadow-lg shadow-purple-900/40 sm:hidden"
+            >
+              Start free
+            </Link>
+          </WhenSignedOut>
+          <WhenSignedIn>
+            <a
+              href="/api/account/home"
+              className="col-start-3 relative z-10 rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-4 py-2 text-xs font-black text-white shadow-lg shadow-purple-900/40 sm:hidden"
+            >
+              My dashboard
+            </a>
+          </WhenSignedIn>
 
-          {/* Audience buttons — signed-out visitors also get a per-audience Sign in */}
+          {/* Audience buttons — signed-out visitors also get a per-audience Sign in;
+              signed-in users get one "My dashboard" button instead (a signed-in
+              candidate clicking the corporate Sign in was silently bounced to
+              /practice, which read as a bug). */}
           <div className="col-start-3 relative z-10 hidden shrink-0 items-start gap-2 sm:flex">
             <div className="flex flex-col items-center gap-1.5">
               <Link
@@ -190,12 +204,14 @@ export default function HomePage() {
               >
                 Candidates
               </Link>
-              <Link
-                href="/for-candidates/sign-in"
-                className="rounded-full bg-violet-600 px-4 py-1 text-[11px] font-black text-white transition hover:bg-violet-500"
-              >
-                Sign in
-              </Link>
+              <WhenSignedOut>
+                <Link
+                  href="/for-candidates/sign-in"
+                  className="rounded-full bg-violet-600 px-4 py-1 text-[11px] font-black text-white transition hover:bg-violet-500"
+                >
+                  Sign in
+                </Link>
+              </WhenSignedOut>
             </div>
             <div className="flex flex-col items-center gap-1.5">
               <Link
@@ -204,12 +220,14 @@ export default function HomePage() {
               >
                 Corporates
               </Link>
-              <Link
-                href="/for-business/sign-in"
-                className="rounded-full bg-fuchsia-600 px-4 py-1 text-[11px] font-black text-white transition hover:bg-fuchsia-500"
-              >
-                Sign in
-              </Link>
+              <WhenSignedOut>
+                <Link
+                  href="/for-business/sign-in"
+                  className="rounded-full bg-fuchsia-600 px-4 py-1 text-[11px] font-black text-white transition hover:bg-fuchsia-500"
+                >
+                  Sign in
+                </Link>
+              </WhenSignedOut>
             </div>
             <Link
               href="/universities"
@@ -217,6 +235,15 @@ export default function HomePage() {
             >
               Universities
             </Link>
+            <WhenSignedIn>
+              {/* Plain <a>: Next's Link would prefetch the redirect route */}
+              <a
+                href="/api/account/home"
+                className="rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-600 px-4 py-2 text-xs font-black text-white shadow-lg shadow-purple-900/30 transition hover:opacity-90"
+              >
+                My dashboard
+              </a>
+            </WhenSignedIn>
           </div>
         </header>
 
