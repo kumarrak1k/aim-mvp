@@ -577,14 +577,30 @@ export function useBrowserSpeech({
     }
 
     return () => {
+      // Kill the keep-alive loop BEFORE aborting: abort() fires onend, and
+      // onend restarts recognition whenever keepRecognitionAlive is still
+      // true — which re-acquires the microphone AFTER unmount and leaves the
+      // browser's mic indicator on forever (exit-mid-interview leak).
+      keepRecognitionAliveRef.current = false;
+      userStoppedRecognitionRef.current = true;
       clearRestartTimer();
 
-      if (recognitionRef.current) {
+      const activeRecognition = recognitionRef.current;
+      if (activeRecognition) {
+        activeRecognition.onstart = null;
+        activeRecognition.onresult = null;
+        activeRecognition.onend = null;
+        activeRecognition.onerror = null;
         try {
-          recognitionRef.current.abort?.();
+          if (activeRecognition.abort) {
+            activeRecognition.abort();
+          } else {
+            activeRecognition.stop();
+          }
         } catch {
           // Ignore cleanup failures.
         }
+        recognitionRef.current = null;
       }
 
       if (window.speechSynthesis) {
