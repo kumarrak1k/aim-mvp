@@ -66,7 +66,22 @@ export default clerkMiddleware(async (auth, req) => {
   }
 
   if (isAdminArea(req) && !isAdminSignIn(req)) {
-    await auth.protect({ reverification: { level: "second_factor", afterMinutes: 10 } });
+    // Explicit redirect to OUR branded admin sign-in. Without this, a bare
+    // auth.protect() sends signed-out visitors to Clerk's hosted account
+    // portal (and returns 404 to non-browser requests).
+    if (!userId) {
+      return NextResponse.redirect(new URL("/admin/sign-in", req.url));
+    }
+    // MFA step-up ONLY for accounts that actually have a second factor.
+    // Clerk v7's protect() 404s any signed-in user who cannot satisfy the
+    // reverification (v6 waved them through), which locked admins out
+    // entirely on instances where MFA is not enabled. The fva claim is
+    // [firstFactorAge, secondFactorAge] in minutes; -1 = no second factor.
+    const fva = (sessionClaims as { fva?: [number, number] } | null)?.fva;
+    const hasSecondFactor = Array.isArray(fva) && fva[1] !== -1;
+    if (hasSecondFactor) {
+      await auth.protect({ reverification: { level: "second_factor", afterMinutes: 10 } });
+    }
   }
 
   // ── Protected candidate / corporate areas ───────────────────────────────
