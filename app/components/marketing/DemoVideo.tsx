@@ -1,3 +1,7 @@
+"use client";
+
+import { useRef, useState } from "react";
+
 type DemoVideoProps = {
   src?: string;
   title?: string;
@@ -11,22 +15,44 @@ export function DemoVideo({
   caption = "A quick overview of AI Career Mentor, interview coaching for candidates and hiring teams.",
   poster,
 }: DemoVideoProps) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  /**
+   * The poster artwork carries a "Watch the demo" play badge, so before the
+   * first play the whole surface must start the video, not just the native
+   * control bar. A transparent overlay handles that first click and then
+   * unmounts, leaving every later click to the browser's own play/pause
+   * handling (attaching onClick to the video itself double-fires against
+   * Chrome's native click-to-toggle).
+   */
+  const [started, setStarted] = useState(false);
+
   if (src) {
     return (
       <figure className="mx-auto max-w-4xl overflow-hidden rounded-2xl border border-white/10 shadow-2xl shadow-purple-950/30">
         <div className="relative aspect-video bg-black">
           <video
+            ref={videoRef}
             src={src}
             poster={poster}
             title={title}
             controls
             playsInline
+            onPlay={() => setStarted(true)}
             // "none": the poster is the pre-play visual, so no video bytes are
             // fetched until the user presses play. With the files on Vercel
             // Blob, preloading was silently burning data transfer per visit.
             preload="none"
             className="h-full w-full"
           />
+          {!started && (
+            <button
+              type="button"
+              aria-label="Play the demo video"
+              onClick={() => void videoRef.current?.play()}
+              className="absolute inset-0 z-10 cursor-pointer bg-transparent"
+            />
+          )}
         </div>
         {caption && (
           <figcaption className="border-t border-white/[0.07] bg-white/[0.03] px-5 py-3 text-center text-xs text-gray-500">
