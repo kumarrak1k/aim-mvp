@@ -25,10 +25,13 @@ export function useDeviceProfile() {
       );
       setIsSmallScreen(window.matchMedia("(max-width: 767px)").matches);
       setIsAppleMobileDevice(isAppleTouch);
-      // Primary pointer is a mouse/trackpad — a touchscreen Windows laptop
-      // must count as a computer, not a tablet, or it wrongly gets the
-      // tablet's manual camera-tap flow.
-      setHasFinePointer(window.matchMedia("(pointer: fine)").matches);
+      // ANY fine pointer (mouse/trackpad) present means this is a computer,
+      // not a tablet. "(pointer: fine)" checked only the PRIMARY pointer,
+      // and some Windows touch laptops (Edge especially) report the
+      // touchscreen as primary — which wrongly put real laptops into the
+      // tablet guided flow. A genuine iPad/Android tablet with no mouse
+      // attached still fails "(any-pointer: fine)".
+      setHasFinePointer(window.matchMedia("(any-pointer: fine)").matches);
     };
 
     updateDeviceProfile();

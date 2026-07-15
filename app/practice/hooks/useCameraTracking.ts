@@ -247,12 +247,26 @@ export function useCameraTracking({
       if (!cameraAnalysisDisabledRef.current) {
         startCameraLoop();
       }
-    } catch {
+    } catch (err) {
       setCameraReady(false);
-      // Permission refused or revoked — forget the auto-start memory so the
-      // next session goes back to the explicit tap + browser prompt.
-      clearMediaGranted();
-      setCameraError("Unable to access camera. Check browser permissions.");
+      const errName = err instanceof DOMException ? err.name : "";
+      if (errName === "NotReadableError" || errName === "TrackStartError" || errName === "AbortError") {
+        // The camera hardware is held by another app or browser (Windows
+        // allows one at a time). Permission itself is fine, so keep the
+        // auto-start memory for next time.
+        setCameraError(
+          "Your camera is in use by another app or browser window (a video call, or this site open in a different browser). Close it there, then press Try again."
+        );
+      } else if (errName === "NotFoundError" || errName === "OverconstrainedError") {
+        setCameraError("No camera was found on this device. Plug one in or enable it, then press Try again.");
+      } else {
+        // Permission refused or revoked — forget the auto-start memory so the
+        // next session goes back to the explicit tap + browser prompt.
+        clearMediaGranted();
+        setCameraError(
+          "Camera access is blocked. Allow camera access for this site in your browser settings, then press Try again."
+        );
+      }
     } finally {
       cameraStartInFlightRef.current = false;
     }

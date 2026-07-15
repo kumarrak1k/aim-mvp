@@ -120,9 +120,18 @@ export function CameraWorkspace({
           )}
 
           {cameraError && (
-            <p className="mt-2 rounded-2xl border border-amber-300/20 bg-amber-300/10 p-2 text-[10px] leading-4 text-amber-100">
-              {cameraError}
-            </p>
+            <div className="mt-2 rounded-2xl border border-amber-300/20 bg-amber-300/10 p-2">
+              <p className="text-[10px] leading-4 text-amber-100">{cameraError}</p>
+              {!cameraReady && (
+                <button
+                  type="button"
+                  onClick={onStartCameraFromTap}
+                  className="mt-2 w-full rounded-xl bg-white px-3 py-1.5 text-[11px] font-black text-black transition hover:bg-amber-100"
+                >
+                  Try again
+                </button>
+              )}
+            </div>
           )}
         </div>
       </div>

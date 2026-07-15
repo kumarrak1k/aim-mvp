@@ -236,6 +236,15 @@ export function PracticeCoachPanel({
             {cameraError && (
               <div className="rounded-[1.35rem] border border-amber-300/15 bg-amber-300/10 p-4">
                 <p className="text-xs leading-5 text-amber-100">{cameraError}</p>
+                {!cameraReady && (
+                  <button
+                    type="button"
+                    onClick={startCameraFromTap}
+                    className="mt-3 rounded-xl bg-white px-4 py-2 text-xs font-black text-black transition hover:bg-amber-100"
+                  >
+                    Try again
+                  </button>
+                )}
               </div>
             )}
           </div>
