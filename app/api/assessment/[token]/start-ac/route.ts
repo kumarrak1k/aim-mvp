@@ -14,6 +14,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/app/lib/prisma";
 import { callOpenAIChat } from "@/app/lib/openai-client";
 import { MODEL_PREMIUM } from "@/app/lib/aiModels";
+import { buildCaseStudyPrompts } from "@/app/lib/assessmentCentrePrompts";
 import { checkRateLimit } from "@/app/lib/rateLimit";
 
 export const runtime = "nodejs";
@@ -139,30 +140,13 @@ export async function POST(_req: NextRequest, { params }: Params) {
     }
 
     if (hasStage1) {
-      const systemPrompt = `You are a senior assessment centre designer at a top-tier consultancy. You create rigorous, realistic business case studies for graduate and professional assessment centres — equivalent in depth to those used by McKinsey, Deloitte, KPMG, and large corporates. Output must be valid JSON only — no markdown fences, no commentary.`;
-
-      const userPrompt = `Create a comprehensive, realistic assessment centre case study for a ${template.role} candidate (${template.experienceLevel}) in the ${assignment.company.name} sector.
-
-The case study must be substantial and detailed — matching the depth of a real graduate or professional assessment centre pack. Follow these requirements exactly:
-
-OVERVIEW (overview field): Write 3–4 paragraphs covering: (1) the company's history, size, and core business model; (2) its market position, key products/services, and competitive landscape; (3) recent financial performance trajectory and strategic context. Be specific — include realistic revenue figures, headcount, and market share percentages.
-
-CHALLENGE (challenge field): Write 2–3 paragraphs describing a complex, multi-faceted business problem. Include what triggered it, which parts of the business are affected, and what is at stake if not resolved. Make it nuanced — not a single obvious fix.
-
-EXHIBITS (exhibits field): Provide exactly 3–4 exhibits. Each exhibit content MUST be a STRING (not an array). Use newline characters within the string for line breaks. Format tables using markdown pipe syntax (| Col1 | Col2 |). Include:
-- Exhibit 1: A 3-year financial summary table (revenue, gross profit, EBITDA, net income, key cost lines — show YoY trend)
-- Exhibit 2: An operational or market data table (relevant KPIs vs prior year and vs industry benchmark, or market share by segment)
-- Exhibit 3: Customer or stakeholder insight data (satisfaction metrics, NPS, key feedback themes, segment breakdown)
-- Exhibit 4 (optional but recommended): Workforce data, strategic options summary, or risk register — whichever is most relevant to the challenge
-
-TASK (task field): A realistic 12-minute written task instruction framed as if the candidate is a consultant or analyst advising senior leadership. Be specific about the role they are playing and what deliverable is expected.
-
-QUESTION (question field): One substantive, specific question that requires synthesis of at least two exhibits. It should demand a structured recommendation with supporting evidence — not a simple factual answer.
-
-GUIDANCE (guidance field): Provide 5 practical tips for structuring an excellent response — include advice on frameworks (e.g. issue tree, pyramid principle), how to use the data, and common pitfalls to avoid.
-
-Return valid JSON matching this schema exactly:
-{ "company": string, "industry": string, "overview": string, "challenge": string, "exhibits": [{"title": string, "content": string}], "task": string, "question": string, "guidance": string[] }`;
+      const { systemPrompt, userPrompt } = buildCaseStudyPrompts({
+        role: template.role,
+        // Company invites carry no sector — the company name stands in as the
+        // organisational context (same proxy the session record uses below).
+        sector: assignment.company.name,
+        experienceLevel: template.experienceLevel,
+      });
 
       const aiResponse = await callOpenAIChat(
         {
@@ -172,7 +156,7 @@ Return valid JSON matching this schema exactly:
             { role: "user", content: userPrompt },
           ],
           temperature: 0.7,
-          max_tokens: 4000,
+          max_tokens: 2000,
         },
         { timeoutMs: 90000 }
       );
