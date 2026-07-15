@@ -320,6 +320,17 @@ export default function AssessmentCentreSetupPage() {
             )}
           </button>
 
+          {loading && (
+            <div className="mt-3 flex items-start gap-2.5 rounded-xl border border-cyan-300/20 bg-cyan-400/[0.07] px-4 py-3 text-left text-xs leading-5 text-cyan-100">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" className="mt-0.5 h-4 w-4 shrink-0 animate-pulse text-cyan-300" aria-hidden><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
+              <span>
+                <span className="font-black">This takes a minute or two.</span>{" "}
+                We are writing a complete, fresh scenario for your sector: the
+                case study document, exhibits and stage tasks. Keep this page
+                open; you will move straight into Stage 1 when it is ready.
+              </span>
+            </div>
+          )}
           {canSubmit && !loading && (
             <p className="text-center text-xs text-gray-600">
               Each session uses a fresh AI-generated scenario
