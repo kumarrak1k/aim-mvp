@@ -24,8 +24,41 @@ export type AdminUser = {
   companyPeriodEnd: string | null;
   companyTrialEndsAt: string | null;
   companyCompUntil: string | null;
+  trialEndsAt: string | null;
+  trialConsumed: boolean;
+  // Usage aggregates (Prisma)
+  practiceCount: number;
+  lastPracticeAt: string | null;
+  acCount: number;
+  lastAcAt: string | null;
+  docsCount: number;
+  lastDocAt: string | null;
+  profileComplete: boolean;
   createdAt: string;
   lastSignInAt: string | null;
+  lastActiveAt: string | null;
+};
+
+/** Platform-level usage + growth stats computed server-side in page.tsx. */
+export type AdminOverview = {
+  newUsers7d: number;
+  newUsers30d: number;
+  activeUsers7d: number;
+  activeUsers30d: number;
+  trialsActive: number;
+  compActive: number;
+  payingPlus: number;
+  payingProfessional: number;
+  sessionsTotal: number;
+  sessions7d: number;
+  sessions30d: number;
+  acTotal: number;
+  ac7d: number;
+  ac30d: number;
+  docsTotal: number;
+  docs7d: number;
+  docs30d: number;
+  funnel: { signedUp: number; profileDone: number; practised: number; paying: number };
 };
 
 // ── Membership helpers ────────────────────────────────────────────────────────
@@ -185,13 +218,19 @@ function MembershipBadge({ user }: { user: AdminUser }) {
 // ── CSV export ────────────────────────────────────────────────────────────────
 
 function exportCsv(users: AdminUser[]) {
-  const headers = ["ID","First name","Last name","Email","Account type","Membership","Company","Company role","Period / trial end","Joined","Last active"];
+  const headers = ["ID","First name","Last name","Email","Account type","Membership","Company","Company role","Period / trial end","Practice sessions","Last session","Assessment centres","Career docs","Profile built","Joined","Last sign-in","Last active"];
   const rows = users.map((u) => [
     u.id, u.firstName ?? "", u.lastName ?? "", u.email, u.accountType,
     getMembershipLabel(u), u.companyName ?? "", u.companyRole ?? "",
     getPeriodEnd(u) ? new Date(getPeriodEnd(u)!).toLocaleDateString("en-GB") : "",
+    u.practiceCount,
+    u.lastPracticeAt ? new Date(u.lastPracticeAt).toLocaleDateString("en-GB") : "",
+    u.acCount,
+    u.docsCount,
+    u.profileComplete ? "yes" : "no",
     new Date(u.createdAt).toLocaleDateString("en-GB"),
     u.lastSignInAt ? new Date(u.lastSignInAt).toLocaleDateString("en-GB") : "Never",
+    u.lastActiveAt ? new Date(u.lastActiveAt).toLocaleDateString("en-GB") : "Never",
   ]);
   const csv = [headers, ...rows].map((r) => r.map((v) => `"${String(v).replace(/"/g,'""')}"`).join(",")).join("\n");
   const a = Object.assign(document.createElement("a"), { href: URL.createObjectURL(new Blob([csv], { type: "text/csv" })), download: `users-${new Date().toISOString().slice(0,10)}.csv` });
@@ -208,12 +247,19 @@ function fullName(u: AdminUser) { return [u.firstName, u.lastName].filter(Boolea
 function initials(u: AdminUser) { return [u.firstName?.[0], u.lastName?.[0]].filter(Boolean).join("").toUpperCase() || u.email[0].toUpperCase(); }
 
 const PAGE_SIZE = 50;
-type SortKey = "name" | "email" | "type" | "joined" | "lastSeen";
+type SortKey = "name" | "email" | "type" | "joined" | "lastSeen" | "sessions";
 type SortDir = "asc" | "desc";
+
+/** Most recent of Clerk's lastActiveAt / lastSignInAt (either can lag the other). */
+function lastSeen(u: AdminUser): string | null {
+  if (u.lastActiveAt && u.lastSignInAt)
+    return u.lastActiveAt > u.lastSignInAt ? u.lastActiveAt : u.lastSignInAt;
+  return u.lastActiveAt ?? u.lastSignInAt;
+}
 
 // ── Main component ────────────────────────────────────────────────────────────
 
-export function AdminClient({ users: initialUsers, adminEmail }: { users: AdminUser[]; adminEmail: string }) {
+export function AdminClient({ users: initialUsers, adminEmail, overview }: { users: AdminUser[]; adminEmail: string; overview: AdminOverview }) {
   const router = useRouter();
   const { signOut } = useClerk();
 
@@ -487,8 +533,18 @@ export function AdminClient({ users: initialUsers, adminEmail }: { users: AdminU
         companyPeriodEnd: null,
         companyTrialEndsAt: null,
         companyCompUntil: !isCandidate && compPlan ? compUntil : null,
+        trialEndsAt: null,
+        trialConsumed: false,
+        practiceCount: 0,
+        lastPracticeAt: null,
+        acCount: 0,
+        lastAcAt: null,
+        docsCount: 0,
+        lastDocAt: null,
+        profileComplete: false,
         createdAt: new Date().toISOString(),
         lastSignInAt: null,
+        lastActiveAt: null,
       };
       setUsers((prev) => [newUser, ...prev]);
       router.refresh();
@@ -565,8 +621,13 @@ export function AdminClient({ users: initialUsers, adminEmail }: { users: AdminU
 
   const sorted = useMemo(() => {
     return [...filtered].sort((a, b) => {
-      const va = sortKey === "name" ? fullName(a) : sortKey === "email" ? a.email : sortKey === "type" ? a.accountType : sortKey === "joined" ? a.createdAt : (a.lastSignInAt ?? "");
-      const vb = sortKey === "name" ? fullName(b) : sortKey === "email" ? b.email : sortKey === "type" ? b.accountType : sortKey === "joined" ? b.createdAt : (b.lastSignInAt ?? "");
+      if (sortKey === "sessions") {
+        const na = a.practiceCount + a.acCount + a.docsCount;
+        const nb = b.practiceCount + b.acCount + b.docsCount;
+        return sortDir === "asc" ? na - nb : nb - na;
+      }
+      const va = sortKey === "name" ? fullName(a) : sortKey === "email" ? a.email : sortKey === "type" ? a.accountType : sortKey === "joined" ? a.createdAt : (lastSeen(a) ?? "");
+      const vb = sortKey === "name" ? fullName(b) : sortKey === "email" ? b.email : sortKey === "type" ? b.accountType : sortKey === "joined" ? b.createdAt : (lastSeen(b) ?? "");
       return sortDir === "asc" ? va.localeCompare(vb) : vb.localeCompare(va);
     });
   }, [filtered, sortKey, sortDir]);
@@ -631,6 +692,54 @@ export function AdminClient({ users: initialUsers, adminEmail }: { users: AdminU
         ))}
       </div>
 
+      {/* Growth + usage overview */}
+      <div className="mb-4 grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-8">
+        {[
+          { label: "New users",        value: overview.newUsers7d,     sub: `${overview.newUsers30d} in 30d`,          color: "text-white" },
+          { label: "Active users",     value: overview.activeUsers7d,  sub: `${overview.activeUsers30d} in 30d`,       color: "text-emerald-300" },
+          { label: "Trials live",      value: overview.trialsActive,   sub: "3-day, no card",                          color: "text-violet-300" },
+          { label: "Comp access",      value: overview.compActive,     sub: "guest passes",                            color: "text-cyan-300" },
+          { label: "Paying: Plus",     value: overview.payingPlus,     sub: "subscriptions",                           color: "text-emerald-300" },
+          { label: "Paying: Pro",      value: overview.payingProfessional, sub: "subscriptions",                       color: "text-emerald-300" },
+          { label: "Sessions",         value: overview.sessions7d,     sub: `${overview.sessions30d} in 30d · ${overview.sessionsTotal} all time`, color: "text-fuchsia-300" },
+          { label: "AC + career docs", value: overview.ac7d + overview.docs7d, sub: `${overview.acTotal} AC · ${overview.docsTotal} docs all time`, color: "text-amber-300" },
+        ].map(({ label, value, sub, color }) => (
+          <div key={label} className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+            <p className="text-xs font-semibold text-gray-500">{label} <span className="text-gray-600">· 7d</span></p>
+            <p className={`mt-1 text-2xl font-black ${color}`}>{value}</p>
+            <p className="mt-0.5 text-[10px] text-gray-600">{sub}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Candidate activation funnel */}
+      <div className="mb-8 rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-4">
+        <p className="text-xs font-semibold text-gray-500">Candidate activation funnel</p>
+        <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1">
+          {(
+            [
+              ["Signed up", overview.funnel.signedUp],
+              ["Profile built", overview.funnel.profileDone],
+              ["Practised", overview.funnel.practised],
+              ["Paying", overview.funnel.paying],
+            ] as const
+          ).map(([label, n], i, arr) => {
+            const base = overview.funnel.signedUp || 1;
+            const pct = Math.round((n / base) * 100);
+            return (
+              <span key={label} className="flex items-center gap-2">
+                <span className="flex items-baseline gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5">
+                  <span className="text-sm font-black text-white">{n}</span>
+                  <span className="text-[11px] text-gray-500">{label}</span>
+                  {i > 0 && <span className="text-[10px] font-bold text-fuchsia-300">{pct}%</span>}
+                </span>
+                {i < arr.length - 1 && <span className="text-gray-600">→</span>}
+              </span>
+            );
+          })}
+        </div>
+      </div>
+
       {/* Filters */}
       <div className="mb-5 flex flex-col gap-3 sm:flex-row">
         <input
@@ -666,6 +775,7 @@ export function AdminClient({ users: initialUsers, adminEmail }: { users: AdminU
               <th className={thF}>Membership</th>
               <th className={thF}>Company</th>
               <th className={thF}>Period end</th>
+              <th className={thS} onClick={() => toggleSort("sessions")} title="Practice sessions · assessment centres · career docs">Usage <SortIcon k="sessions" /></th>
               <th className={thS} onClick={() => toggleSort("joined")}>Joined <SortIcon k="joined" /></th>
               <th className={thS} onClick={() => toggleSort("lastSeen")}>Last active <SortIcon k="lastSeen" /></th>
               <th className={thF} style={{ paddingRight: "1.5rem" }}>Actions</th>
@@ -673,7 +783,7 @@ export function AdminClient({ users: initialUsers, adminEmail }: { users: AdminU
           </thead>
           <tbody className="divide-y divide-white/[0.05]">
             {pageData.length === 0 && (
-              <tr><td colSpan={8} className="py-16 text-center text-gray-500">No users match your filters.</td></tr>
+              <tr><td colSpan={9} className="py-16 text-center text-gray-500">No users match your filters.</td></tr>
             )}
             {pageData.map((u) => (
               <tr key={u.id} className="group transition hover:bg-white/[0.03]">
@@ -694,8 +804,29 @@ export function AdminClient({ users: initialUsers, adminEmail }: { users: AdminU
                   {u.companyRole && <span className="ml-1 text-[10px] capitalize text-gray-600">({u.companyRole})</span>}
                 </td>
                 <td className="whitespace-nowrap py-3.5 pr-4 text-[12px] text-gray-400">{getPeriodEnd(u) ? fmtDate(getPeriodEnd(u)) : "–"}</td>
+                {/* Usage: sessions · assessment centres · career docs */}
+                <td className="whitespace-nowrap py-3.5 pr-4">
+                  {u.accountType === "candidate" ? (
+                    <span className="inline-flex items-center gap-1 text-[11px] font-bold">
+                      <span className={u.practiceCount > 0 ? "rounded-md bg-fuchsia-500/15 px-1.5 py-0.5 text-fuchsia-300" : "rounded-md bg-white/[0.04] px-1.5 py-0.5 text-gray-600"} title={`${u.practiceCount} practice sessions${u.lastPracticeAt ? ` · last ${fmtDate(u.lastPracticeAt)}` : ""}`}>
+                        {u.practiceCount}S
+                      </span>
+                      <span className={u.acCount > 0 ? "rounded-md bg-amber-500/15 px-1.5 py-0.5 text-amber-300" : "rounded-md bg-white/[0.04] px-1.5 py-0.5 text-gray-600"} title={`${u.acCount} assessment centres${u.lastAcAt ? ` · last ${fmtDate(u.lastAcAt)}` : ""}`}>
+                        {u.acCount}AC
+                      </span>
+                      <span className={u.docsCount > 0 ? "rounded-md bg-cyan-500/15 px-1.5 py-0.5 text-cyan-300" : "rounded-md bg-white/[0.04] px-1.5 py-0.5 text-gray-600"} title={`${u.docsCount} career docs${u.lastDocAt ? ` · last ${fmtDate(u.lastDocAt)}` : ""}`}>
+                        {u.docsCount}D
+                      </span>
+                      {!u.profileComplete && (
+                        <span className="ml-0.5 text-[10px] text-gray-600" title="No candidate profile saved yet">no profile</span>
+                      )}
+                    </span>
+                  ) : (
+                    <span className="text-[11px] text-gray-600">–</span>
+                  )}
+                </td>
                 <td className="whitespace-nowrap py-3.5 pr-4 text-[12px] text-gray-400">{fmtDate(u.createdAt)}</td>
-                <td className="whitespace-nowrap py-3.5 pr-4 text-[12px] text-gray-400">{fmtDate(u.lastSignInAt)}</td>
+                <td className="whitespace-nowrap py-3.5 pr-4 text-[12px] text-gray-400">{fmtDate(lastSeen(u))}</td>
                 {/* Actions */}
                 <td className="py-3.5 pr-6">
                   <div className="flex items-center gap-1.5">
@@ -1009,6 +1140,40 @@ export function AdminClient({ users: initialUsers, adminEmail }: { users: AdminU
             <p className="text-[11px] font-black uppercase tracking-[0.22em] text-fuchsia-300">Edit user</p>
             <h3 className="mt-1 text-xl font-black text-white">{editingUser.email}</h3>
             <p className="mt-0.5 text-[11px] text-gray-600">Clerk ID: {editingUser.id}</p>
+
+            {/* Usage snapshot (read-only) */}
+            <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.03] p-3.5">
+              <p className="text-[10px] font-black uppercase tracking-[0.18em] text-gray-500">Usage</p>
+              <div className="mt-2 grid grid-cols-3 gap-2 text-center">
+                {(
+                  [
+                    ["Sessions", editingUser.practiceCount, editingUser.lastPracticeAt],
+                    ["Assess. centres", editingUser.acCount, editingUser.lastAcAt],
+                    ["Career docs", editingUser.docsCount, editingUser.lastDocAt],
+                  ] as const
+                ).map(([label, n, last]) => (
+                  <div key={label} className="rounded-xl bg-black/30 px-2 py-2">
+                    <p className="text-lg font-black text-white">{n}</p>
+                    <p className="text-[10px] text-gray-500">{label}</p>
+                    <p className="text-[9px] text-gray-600">{last ? `last ${fmtDate(last)}` : "never"}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-2 flex flex-wrap gap-x-4 gap-y-0.5 text-[10px] text-gray-500">
+                <span>Profile: <span className={editingUser.profileComplete ? "text-emerald-300" : "text-gray-400"}>{editingUser.profileComplete ? "built" : "not built"}</span></span>
+                <span>Joined {fmtDate(editingUser.createdAt)}</span>
+                <span>Last sign-in {fmtDate(editingUser.lastSignInAt)}</span>
+                <span>Last active {fmtDate(lastSeen(editingUser))}</span>
+                {editingUser.trialConsumed && (
+                  <span>
+                    Trial{" "}
+                    {editingUser.trialEndsAt && new Date(editingUser.trialEndsAt).getTime() > Date.now()
+                      ? `active until ${fmtDate(editingUser.trialEndsAt)}`
+                      : "used"}
+                  </span>
+                )}
+              </div>
+            </div>
 
             <div className="mt-5 space-y-4">
               <div className="grid grid-cols-2 gap-3">

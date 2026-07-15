@@ -1,7 +1,7 @@
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { prisma } from "@/app/lib/prisma";
-import { AdminClient, type AdminUser } from "./AdminClient";
+import { AdminClient, type AdminUser, type AdminOverview } from "./AdminClient";
 
 export const dynamic = "force-dynamic";
 
@@ -94,8 +94,27 @@ export default async function AdminPage() {
 
   const clerkUsers = getUserListResult.data;
 
-  // ── Fetch Prisma company + member data ───────────────────────────────────
-  const [allMembers, allCompanies] = await Promise.all([
+  // ── Fetch Prisma company + member + usage data ──────────────────────────
+  // Usage aggregates are grouped per user in single queries (not N+1), so
+  // this stays a handful of round-trips regardless of user count.
+  const now = Date.now();
+  const d7 = new Date(now - 7 * 24 * 60 * 60 * 1000);
+  const d30 = new Date(now - 30 * 24 * 60 * 60 * 1000);
+
+  const [
+    allMembers,
+    allCompanies,
+    practiceByUser,
+    acByUser,
+    docsByUser,
+    profiles,
+    sessions7d,
+    sessions30d,
+    ac7d,
+    ac30d,
+    docs7d,
+    docs30d,
+  ] = await Promise.all([
     prisma.companyMember.findMany({
       select: { clerkUserId: true, companyId: true, role: true },
     }),
@@ -110,7 +129,44 @@ export default async function AdminPage() {
         stripeCurrentPeriodEnd: true,
       },
     }),
+    prisma.practiceSession.groupBy({
+      by: ["clerkUserId"],
+      _count: { _all: true },
+      _max: { createdAt: true },
+    }),
+    prisma.assessmentCentreSession.groupBy({
+      by: ["clerkUserId"],
+      _count: { _all: true },
+      _max: { createdAt: true },
+    }),
+    prisma.careerDocGeneration.groupBy({
+      by: ["clerkUserId"],
+      _count: { _all: true },
+      _max: { createdAt: true },
+    }),
+    prisma.userProfile.findMany({ select: { clerkUserId: true } }),
+    prisma.practiceSession.count({ where: { createdAt: { gte: d7 } } }),
+    prisma.practiceSession.count({ where: { createdAt: { gte: d30 } } }),
+    prisma.assessmentCentreSession.count({ where: { createdAt: { gte: d7 } } }),
+    prisma.assessmentCentreSession.count({ where: { createdAt: { gte: d30 } } }),
+    prisma.careerDocGeneration.count({ where: { createdAt: { gte: d7 } } }),
+    prisma.careerDocGeneration.count({ where: { createdAt: { gte: d30 } } }),
   ]);
+
+  type UsageAgg = { count: number; last: string | null };
+  const toUsageMap = (
+    rows: Array<{ clerkUserId: string; _count: { _all: number }; _max: { createdAt: Date | null } }>
+  ) =>
+    new Map<string, UsageAgg>(
+      rows.map((r) => [
+        r.clerkUserId,
+        { count: r._count._all, last: r._max.createdAt?.toISOString() ?? null },
+      ])
+    );
+  const practiceMap = toUsageMap(practiceByUser);
+  const acMap = toUsageMap(acByUser);
+  const docsMap = toUsageMap(docsByUser);
+  const profileSet = new Set(profiles.map((p) => p.clerkUserId));
 
   // Build a map: clerkUserId → { company, role }
   const companyById = new Map(allCompanies.map((c) => [c.id, c]));
@@ -137,8 +193,13 @@ export default async function AdminPage() {
       role?: string;
       compPlan?: string;
       compUntil?: string;
+      trialEndsAt?: string;
+      trialConsumed?: boolean;
     };
     const meta = (u.privateMetadata ?? {}) as UserMeta;
+    const practice = practiceMap.get(u.id);
+    const ac = acMap.get(u.id);
+    const docs = docsMap.get(u.id);
 
     const primaryEmail =
       u.emailAddresses.find((e) => e.id === u.primaryEmailAddressId)
@@ -176,13 +237,83 @@ export default async function AdminPage() {
       companyCompUntil: company?.compUntil
         ? company.compUntil.toISOString()
         : null,
+      // Trial state (drives the overview counts; not shown as a column)
+      trialEndsAt: meta.trialEndsAt ?? null,
+      trialConsumed: meta.trialConsumed === true,
+      // Usage (Prisma aggregates)
+      practiceCount: practice?.count ?? 0,
+      lastPracticeAt: practice?.last ?? null,
+      acCount: ac?.count ?? 0,
+      lastAcAt: ac?.last ?? null,
+      docsCount: docs?.count ?? 0,
+      lastDocAt: docs?.last ?? null,
+      profileComplete: profileSet.has(u.id),
       // Timestamps
       createdAt: new Date(u.createdAt).toISOString(),
       lastSignInAt: u.lastSignInAt
         ? new Date(u.lastSignInAt).toISOString()
         : null,
+      lastActiveAt: u.lastActiveAt
+        ? new Date(u.lastActiveAt).toISOString()
+        : null,
     };
   });
+
+  // ── Platform overview ────────────────────────────────────────────────────
+  const candidates = adminUsers.filter((x) => x.accountType === "candidate");
+  const activeWithin = (days: number) => {
+    const cutoff = now - days * 24 * 60 * 60 * 1000;
+    return adminUsers.filter((x) => {
+      const seen = x.lastActiveAt ?? x.lastSignInAt;
+      return seen !== null && new Date(seen).getTime() >= cutoff;
+    }).length;
+  };
+  const newWithin = (days: number) => {
+    const cutoff = now - days * 24 * 60 * 60 * 1000;
+    return adminUsers.filter((x) => new Date(x.createdAt).getTime() >= cutoff).length;
+  };
+  const isPayingCandidate = (x: AdminUser) =>
+    x.candidateStatus === "active" ||
+    x.candidateStatus === "trialing" ||
+    x.candidateStatus === "past_due";
+  const payingCandidates = candidates.filter(isPayingCandidate);
+  const compActive = candidates.filter(
+    (x) => x.compPlan && x.compUntil && new Date(x.compUntil).getTime() > now
+  ).length;
+  const trialsActive = candidates.filter(
+    (x) =>
+      !isPayingCandidate(x) &&
+      x.trialEndsAt !== null &&
+      new Date(x.trialEndsAt).getTime() > now
+  ).length;
+  const totalOf = (m: Map<string, { count: number }>) =>
+    [...m.values()].reduce((s, v) => s + v.count, 0);
+
+  const overview: AdminOverview = {
+    newUsers7d: newWithin(7),
+    newUsers30d: newWithin(30),
+    activeUsers7d: activeWithin(7),
+    activeUsers30d: activeWithin(30),
+    trialsActive,
+    compActive,
+    payingPlus: payingCandidates.filter((x) => (x.candidatePlanId ?? "").includes("plus")).length,
+    payingProfessional: payingCandidates.filter((x) => (x.candidatePlanId ?? "").includes("professional")).length,
+    sessionsTotal: totalOf(practiceMap),
+    sessions7d,
+    sessions30d,
+    acTotal: totalOf(acMap),
+    ac7d,
+    ac30d,
+    docsTotal: totalOf(docsMap),
+    docs7d,
+    docs30d,
+    funnel: {
+      signedUp: candidates.length,
+      profileDone: candidates.filter((x) => x.profileComplete).length,
+      practised: candidates.filter((x) => x.practiceCount > 0).length,
+      paying: payingCandidates.length,
+    },
+  };
 
   // Derive adminEmail from the getUserList result — avoids a separate getUser() call.
   const meFromList = clerkUsers.find((u) => u.id === userId);
@@ -193,5 +324,5 @@ export default async function AdminPage() {
     meFromList?.emailAddresses[0]?.emailAddress ??
     "";
 
-  return <AdminClient users={adminUsers} adminEmail={adminEmail} />;
+  return <AdminClient users={adminUsers} adminEmail={adminEmail} overview={overview} />;
 }
