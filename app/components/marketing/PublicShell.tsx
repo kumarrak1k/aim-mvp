@@ -94,8 +94,8 @@ export function PublicShell({ children, currentPath }: PublicShellProps) {
           {/* Audience buttons — matches homepage; signed-out visitors also get a
               per-audience Sign in, signed-in users a single "My dashboard". */}
           <WhenSignedOut>
-            <div className="col-start-3 relative z-10 hidden shrink-0 items-start gap-2 sm:flex">
-              <div className="flex flex-col items-center gap-1.5">
+            <div className="col-start-3 relative z-10 hidden shrink-0 items-center gap-2 sm:flex">
+              <div className="relative flex flex-col items-center">
                 <Link
                   href="/for-candidates"
                   className="rounded-full border border-purple-300/20 bg-purple-300/[0.07] px-4 py-2 text-xs font-black text-purple-100 transition hover:bg-purple-300/[0.12]"
@@ -104,12 +104,12 @@ export function PublicShell({ children, currentPath }: PublicShellProps) {
                 </Link>
                 <Link
                   href="/for-candidates/sign-in"
-                  className="rounded-full bg-violet-600 px-4 py-1 text-[11px] font-black text-white transition hover:bg-violet-500"
+                  className="absolute top-full mt-1.5 rounded-full bg-violet-600 px-4 py-1 text-[11px] font-black text-white transition hover:bg-violet-500"
                 >
                   Sign in
                 </Link>
               </div>
-              <div className="flex flex-col items-center gap-1.5">
+              <div className="relative flex flex-col items-center">
                 <Link
                   href="/for-business"
                   className="rounded-full border border-purple-300/20 bg-purple-300/[0.07] px-4 py-2 text-xs font-black text-purple-100 transition hover:bg-purple-300/[0.12]"
@@ -118,7 +118,7 @@ export function PublicShell({ children, currentPath }: PublicShellProps) {
                 </Link>
                 <Link
                   href="/for-business/sign-in"
-                  className="rounded-full bg-fuchsia-600 px-4 py-1 text-[11px] font-black text-white transition hover:bg-fuchsia-500"
+                  className="absolute top-full mt-1.5 rounded-full bg-fuchsia-600 px-4 py-1 text-[11px] font-black text-white transition hover:bg-fuchsia-500"
                 >
                   Sign in
                 </Link>
