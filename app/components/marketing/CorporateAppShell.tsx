@@ -38,6 +38,7 @@ const navItems: Array<{ href: CorporateAppPath; label: string }> = [
   { href: "/company/templates",  label: "Templates"         },
   { href: "/company/candidates", label: "Invite candidates" },
   { href: "/company/results",    label: "Results"           },
+  { href: "/company/guide",      label: "How it works"      },
 ];
 
 const resourceLinks = [
@@ -87,13 +88,13 @@ export function CorporateAppShell({
             className="relative z-10 flex shrink-0 items-center gap-3"
           >
             <SiteLogo href="" size="md" showText />
-            <span className="hidden rounded-full border border-purple-300/20 bg-white/[0.04] px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-purple-100 sm:inline-block lg:hidden">
+            <span className="hidden rounded-full border border-purple-300/20 bg-white/[0.04] px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-purple-100 sm:inline-block xl:hidden">
               Hiring team
             </span>
           </Link>
 
           {/* Desktop pill nav — absolutely centred so position never shifts */}
-          <nav aria-label="Primary" className="pointer-events-none absolute inset-x-0 hidden justify-center lg:flex">
+          <nav aria-label="Primary" className="pointer-events-none absolute inset-x-0 hidden justify-center xl:flex">
             <div className="pointer-events-auto flex items-center gap-0.5 rounded-full border border-white/[0.09] bg-white/[0.04] p-1.5">
               {navItems.map((item) => {
                 const active =
@@ -101,7 +102,7 @@ export function CorporateAppShell({
                   (item.href === "/company/templates" &&
                     currentPath === "/company/templates/new");
                 return (
-                  <Link key={item.href} href={item.href}>
+                  <Link key={item.href} href={item.href} className={item.href === "/company/guide" ? "hidden xl:block" : undefined}>
                     <span
                       className={`block whitespace-nowrap rounded-full px-3 py-2 text-[12.5px] font-bold transition xl:px-4 xl:text-[13px] ${
                         active
@@ -119,19 +120,6 @@ export function CorporateAppShell({
 
           {/* Right actions */}
           <div className="relative z-10 ml-auto flex shrink-0 items-center gap-2">
-            {/* How it works — persistent guide entry point */}
-            {currentPath !== "/company/guide" && (
-              <Link
-                href="/company/guide"
-                className="hidden items-center gap-1.5 whitespace-nowrap rounded-full border border-cyan-300/30 bg-cyan-400/10 px-4 py-2.5 text-[13px] font-black text-cyan-200 transition hover:bg-cyan-400/20 sm:flex"
-              >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4" aria-hidden>
-                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-                </svg>
-                How it works
-              </Link>
-            )}
             {/* Send invite shortcut — hidden when already on candidates */}
             {currentPath !== "/company/candidates" &&
               currentPath !== "/company/setup" && (
@@ -162,7 +150,7 @@ export function CorporateAppShell({
         </div>
 
         {/* Tablet/mobile compact nav row */}
-        <div className="px-4 py-2 sm:px-6 lg:hidden">
+        <div className="px-4 py-2 sm:px-6 xl:hidden">
           <nav className="mx-auto flex max-w-7xl gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {navItems.map((item) => {
               const active =
@@ -213,15 +201,15 @@ export function CorporateAppShell({
       {/* New-workspace guide banner — dashboard only, dismissible */}
       {showGuideBanner && (
         <div className="relative z-40 px-4 pt-2 sm:px-6">
-          <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 rounded-2xl border border-cyan-300/25 bg-gradient-to-r from-cyan-500/[0.14] via-purple-500/[0.10] to-fuchsia-500/[0.14] px-4 py-3 backdrop-blur-xl sm:px-5">
-            <p className="text-[13px] font-bold leading-5 text-cyan-50">
+          <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 rounded-2xl border border-fuchsia-400/30 bg-gradient-to-r from-fuchsia-600/[0.22] via-purple-600/[0.14] to-fuchsia-600/[0.10] px-4 py-3 backdrop-blur-xl sm:px-5">
+            <p className="text-[13px] font-bold leading-5 text-purple-50">
               <span className="mr-1.5" aria-hidden>📘</span>
               New workspace? See the whole assessment workflow in six steps.
             </p>
             <div className="flex shrink-0 items-center gap-2">
               <Link
                 href="/company/guide"
-                className="whitespace-nowrap rounded-full bg-white px-4 py-1.5 text-[12px] font-black text-black transition hover:bg-cyan-100"
+                className="whitespace-nowrap rounded-full bg-gradient-to-r from-fuchsia-500 via-purple-500 to-blue-500 px-4 py-1.5 text-[12px] font-black text-white shadow-lg shadow-purple-950/40 transition hover:scale-[1.03]"
               >
                 Open the guide →
               </Link>
