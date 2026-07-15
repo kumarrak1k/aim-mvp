@@ -32,6 +32,12 @@ export function useCameraTracking({
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const cameraStreamRef = useRef<MediaStream | null>(null);
+  /**
+   * Set on unmount. Guards startCamera so an exit while getUserMedia is
+   * still pending can't store a stream after stopCamera has already run —
+   * that stream would hold the camera (and its light) on forever.
+   */
+  const disposedRef = useRef(false);
   const faceLandmarkerRef = useRef<FaceLandmarkerInstance | null>(null);
   const cameraLoopRef = useRef<number | null>(null);
   const cameraStartInFlightRef = useRef(false);
@@ -202,7 +208,7 @@ export function useCameraTracking({
 
   const startCamera = useCallback(async () => {
     if (!cameraEnabled || !interviewStarted) return;
-    if (cameraStartInFlightRef.current) return;
+    if (cameraStartInFlightRef.current || disposedRef.current) return;
 
     try {
       cameraStartInFlightRef.current = true;
@@ -217,10 +223,19 @@ export function useCameraTracking({
           ? { facingMode: "user", aspectRatio: { ideal: 4 / 3 } }
           : { facingMode: "user", width: { ideal: 640 }, height: { ideal: 480 } };
 
-        cameraStreamRef.current = await navigator.mediaDevices.getUserMedia({
+        const stream = await navigator.mediaDevices.getUserMedia({
           video: videoConstraints,
           audio: false,
         });
+
+        // Unmounted while getUserMedia was pending — stopCamera has already
+        // run, so storing the stream now would leak the camera. Stop it.
+        if (disposedRef.current) {
+          stream.getTracks().forEach((track) => track.stop());
+          return;
+        }
+
+        cameraStreamRef.current = stream;
       }
 
       if (videoRef.current) {
@@ -309,6 +324,7 @@ export function useCameraTracking({
 
   useEffect(() => {
     return () => {
+      disposedRef.current = true;
       stopCamera();
     };
   }, [stopCamera]);

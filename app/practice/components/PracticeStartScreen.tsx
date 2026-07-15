@@ -998,6 +998,7 @@ function ModeCard({
     <button
       type="button"
       onClick={onClick}
+      aria-pressed={active}
       className={`group relative h-full rounded-[1.35rem] border p-4 text-left transition ${
         locked
           ? "cursor-pointer border-white/[0.06] bg-white/[0.025] opacity-60 hover:opacity-80"

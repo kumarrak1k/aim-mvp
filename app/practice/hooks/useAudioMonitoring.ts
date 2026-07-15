@@ -51,6 +51,13 @@ export function useAudioMonitoring() {
   const audioChunksRef = useRef<Blob[]>([]);
   const recordingMimeTypeRef = useRef<string>("");
 
+  /**
+   * Set on unmount. Guards getOrCreateAudioStream so late callbacks (a
+   * question-audio "ended" event, an in-flight getUserMedia) can never
+   * acquire a fresh microphone stream after the cleanup has already run.
+   */
+  const disposedRef = useRef(false);
+
   const hasLiveAudioStream = useCallback(() => {
     return Boolean(
       audioStreamRef.current?.getAudioTracks().some(
@@ -112,6 +119,10 @@ export function useAudioMonitoring() {
   }, [cleanupAudioGraph]);
 
   const getOrCreateAudioStream = useCallback(async () => {
+    if (disposedRef.current) {
+      throw new Error("Audio monitoring has been shut down.");
+    }
+
     if (hasLiveAudioStream() && audioStreamRef.current) {
       return audioStreamRef.current;
     }
@@ -135,6 +146,13 @@ export function useAudioMonitoring() {
       stream = await navigator.mediaDevices.getUserMedia(
         buildAudioConstraints("")
       );
+    }
+    // The component may have unmounted while getUserMedia was pending (exit
+    // mid-acquisition) — the unmount cleanup has already run, so a stream
+    // stored now would hold the microphone forever. Stop it immediately.
+    if (disposedRef.current) {
+      stream.getTracks().forEach((track) => track.stop());
+      throw new Error("Audio monitoring has been shut down.");
     }
     audioStreamRef.current = stream;
     return stream;
@@ -233,6 +251,7 @@ export function useAudioMonitoring() {
 
   useEffect(() => {
     return () => {
+      disposedRef.current = true;
       cleanupAudioMonitoring();
     };
   }, [cleanupAudioMonitoring]);
