@@ -93,8 +93,8 @@ export function PublicShell({ children, currentPath }: PublicShellProps) {
 
           {/* Audience buttons — matches homepage; signed-out visitors also get a
               per-audience Sign in, signed-in users a single "My dashboard". */}
-          <div className="col-start-3 relative z-10 hidden shrink-0 flex-col items-center gap-1.5 sm:flex">
-            <div className="flex items-start gap-2">
+          <WhenSignedOut>
+            <div className="col-start-3 relative z-10 hidden shrink-0 items-start gap-2 sm:flex">
               <div className="flex flex-col items-center gap-1.5">
                 <Link
                   href="/for-candidates"
@@ -102,14 +102,12 @@ export function PublicShell({ children, currentPath }: PublicShellProps) {
                 >
                   Candidates
                 </Link>
-                <WhenSignedOut>
-                  <Link
-                    href="/for-candidates/sign-in"
-                    className="rounded-full bg-violet-600 px-4 py-1 text-[11px] font-black text-white transition hover:bg-violet-500"
-                  >
-                    Sign in
-                  </Link>
-                </WhenSignedOut>
+                <Link
+                  href="/for-candidates/sign-in"
+                  className="rounded-full bg-violet-600 px-4 py-1 text-[11px] font-black text-white transition hover:bg-violet-500"
+                >
+                  Sign in
+                </Link>
               </div>
               <div className="flex flex-col items-center gap-1.5">
                 <Link
@@ -118,14 +116,12 @@ export function PublicShell({ children, currentPath }: PublicShellProps) {
                 >
                   Corporates
                 </Link>
-                <WhenSignedOut>
-                  <Link
-                    href="/for-business/sign-in"
-                    className="rounded-full bg-fuchsia-600 px-4 py-1 text-[11px] font-black text-white transition hover:bg-fuchsia-500"
-                  >
-                    Sign in
-                  </Link>
-                </WhenSignedOut>
+                <Link
+                  href="/for-business/sign-in"
+                  className="rounded-full bg-fuchsia-600 px-4 py-1 text-[11px] font-black text-white transition hover:bg-fuchsia-500"
+                >
+                  Sign in
+                </Link>
               </div>
               <Link
                 href="/universities"
@@ -134,19 +130,20 @@ export function PublicShell({ children, currentPath }: PublicShellProps) {
                 Universities
               </Link>
             </div>
-            {/* Signed-in: My dashboard sits UNDER the pills (where the Sign in
-                buttons live when signed out) so the header never gets wider
-                and cannot collide with the centred nav oval. Plain <a>: Next's
-                Link would prefetch the redirect route. */}
-            <WhenSignedIn>
+          </WhenSignedOut>
+          {/* Signed in: the marketing pills give way to one dashboard button
+              (same slot, narrower than the pills, so no nav-oval overlap).
+              Plain <a>: Link would prefetch the redirect route. */}
+          <WhenSignedIn>
+            <div className="col-start-3 relative z-10 hidden shrink-0 sm:flex">
               <a
                 href="/api/account/home"
-                className="rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-600 px-4 py-1 text-[11px] font-black text-white shadow-lg shadow-purple-900/30 transition hover:opacity-90"
+                className="rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-600 px-5 py-2.5 text-sm font-black text-white shadow-lg shadow-purple-900/30 transition hover:scale-[1.02]"
               >
                 My dashboard
               </a>
-            </WhenSignedIn>
-          </div>
+            </div>
+          </WhenSignedIn>
         </div>
 
         {/* Mobile / tablet scrollable nav strip (shown below xl) */}
