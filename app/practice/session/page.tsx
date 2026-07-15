@@ -1832,7 +1832,11 @@ export default function PracticeSessionPage() {
       templateContext={templateContext}
     >
       <section className="mx-auto max-w-[1720px] px-4 py-2 sm:px-6 sm:py-3">
-        <div className="grid items-start gap-3 xl:grid-cols-[minmax(360px,0.82fr)_minmax(620px,1.18fr)]">
+        {/* lg (not xl): Edge's effective viewport at 100% zoom on scaled
+             Windows displays sits just under 1280px, which stacked the camera
+             below the fold while Chrome showed the sidebar layout. Column
+             minimums are sized so lg (1024px) fits with page padding. */}
+        <div className="grid items-start gap-3 lg:grid-cols-[minmax(340px,0.82fr)_minmax(600px,1.18fr)]">
           <QuestionHero
             question={question}
             questionLoading={questionLoading}
@@ -1865,7 +1869,7 @@ export default function PracticeSessionPage() {
 
           {/* Camera column only appears when camera is actively enabled
                (voice-camera mode). Voice-only and typed sessions use full width. */}
-          <div className={`grid items-start gap-3 ${cameraEnabled ? "xl:grid-cols-[minmax(0,1fr)_150px]" : ""}`}>
+          <div className={`grid items-start gap-3 ${cameraEnabled ? "lg:grid-cols-[minmax(0,1fr)_150px]" : ""}`}>
             <AnswerWorkspace
               answer={answer}
               question={question}
@@ -1891,7 +1895,7 @@ export default function PracticeSessionPage() {
 
             {/* Camera column — only shown in voice-camera mode */}
             {cameraEnabled && (
-              <aside className="xl:sticky xl:top-20 xl:self-start">
+              <aside className="lg:sticky lg:top-20 lg:self-start">
                 <CameraWorkspace
                   cameraEnabled={cameraEnabled}
                   cameraReady={cameraReady}

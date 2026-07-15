@@ -51,8 +51,8 @@ export function CameraWorkspace({
         </span>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-[minmax(180px,240px)_minmax(0,1fr)] xl:block">
-        <div className="relative mx-auto h-[260px] w-full max-w-[240px] overflow-hidden rounded-[1.15rem] border border-white/10 bg-black shadow-xl shadow-black/20 xl:h-[132px]">
+      <div className="grid gap-3 sm:grid-cols-[minmax(180px,240px)_minmax(0,1fr)] lg:block">
+        <div className="relative mx-auto h-[260px] w-full max-w-[240px] overflow-hidden rounded-[1.15rem] border border-white/10 bg-black shadow-xl shadow-black/20 lg:h-[132px]">
           <video
             ref={videoRef}
             autoPlay
@@ -63,7 +63,7 @@ export function CameraWorkspace({
             // in on tablet widths only (sm–lg); mobile (base) and the xl desktop
             // sidebar stay at 1×. Display-only — camera-presence analysis reads
             // the raw, unscaled video frames, so scoring is unaffected.
-            className="h-full w-full object-cover object-center sm:scale-[1.3] xl:scale-100"
+            className="h-full w-full object-cover object-center sm:scale-[1.3] lg:scale-100"
           />
 
           {cameraEnabled && cameraRequiresTap && (
@@ -90,7 +90,7 @@ export function CameraWorkspace({
 
         <div className="min-w-0">
           {feedbackReady ? (
-            <div className="rounded-[1rem] border border-emerald-300/20 bg-emerald-300/10 p-3 xl:mt-3">
+            <div className="rounded-[1rem] border border-emerald-300/20 bg-emerald-300/10 p-3 lg:mt-3">
               <p className="text-[10px] font-black uppercase tracking-[0.16em] text-emerald-200">
                 {assessmentMode ? "Answer recorded" : "Feedback ready"}
               </p>
@@ -108,7 +108,7 @@ export function CameraWorkspace({
               </button>
             </div>
           ) : (
-            <div className="rounded-[1rem] border border-white/10 bg-black/20 p-3 xl:hidden">
+            <div className="rounded-[1rem] border border-white/10 bg-black/20 p-3 lg:hidden">
               <p className="text-[11px] font-black text-white">
                 Camera presence
               </p>
