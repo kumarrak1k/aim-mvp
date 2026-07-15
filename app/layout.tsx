@@ -218,7 +218,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
+    // Global Clerk URLs: without these, fallback flows (sign-out bounces,
+    // expired sessions, account-portal links) land on Clerk's HOSTED pages at
+    // accounts.aicareermentor.co.uk, which carry default Clerk branding. The
+    // admin area is unaffected (middleware sends it to /admin/sign-in).
+    <ClerkProvider
+      signInUrl="/for-candidates/sign-in"
+      signUpUrl="/for-candidates/sign-up"
+      afterSignOutUrl="/"
+    >
       <html lang="en-GB">
         <body>
           <script
