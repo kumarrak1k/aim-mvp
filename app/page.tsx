@@ -154,7 +154,7 @@ export default function HomePage() {
 
           {/* Universal nav — centred in the grid column between logo and buttons.
               Grid prevents overlap at any width; shown at lg+ (1024px). */}
-          <nav aria-label="Primary" className="hidden min-w-0 justify-center lg:flex">
+          <nav aria-label="Primary" className="hidden min-w-0 justify-center xl:flex">
             <div className="flex items-center gap-0.5 rounded-full border border-white/[0.09] bg-white/[0.04] p-1">
               {[
                 { href: "/about", label: "About us" },
@@ -196,50 +196,55 @@ export default function HomePage() {
               signed-in users get one "My dashboard" button instead (a signed-in
               candidate clicking the corporate Sign in was silently bounced to
               /practice, which read as a bug). */}
-          <div className="col-start-3 relative z-10 hidden shrink-0 items-start gap-2 sm:flex">
-            <div className="flex flex-col items-center gap-1.5">
+          <div className="col-start-3 relative z-10 hidden shrink-0 flex-col items-center gap-1.5 sm:flex">
+            <div className="flex items-start gap-2">
+              <div className="flex flex-col items-center gap-1.5">
+                <Link
+                  href="/for-candidates"
+                  className="rounded-full border border-purple-300/20 bg-purple-300/[0.07] px-4 py-2 text-xs font-black text-purple-100 transition hover:bg-purple-300/[0.12]"
+                >
+                  Candidates
+                </Link>
+                <WhenSignedOut>
+                  <Link
+                    href="/for-candidates/sign-in"
+                    className="rounded-full bg-violet-600 px-4 py-1 text-[11px] font-black text-white transition hover:bg-violet-500"
+                  >
+                    Sign in
+                  </Link>
+                </WhenSignedOut>
+              </div>
+              <div className="flex flex-col items-center gap-1.5">
+                <Link
+                  href="/for-business"
+                  className="rounded-full border border-purple-300/20 bg-purple-300/[0.07] px-4 py-2 text-xs font-black text-purple-100 transition hover:bg-purple-300/[0.12]"
+                >
+                  Corporates
+                </Link>
+                <WhenSignedOut>
+                  <Link
+                    href="/for-business/sign-in"
+                    className="rounded-full bg-fuchsia-600 px-4 py-1 text-[11px] font-black text-white transition hover:bg-fuchsia-500"
+                  >
+                    Sign in
+                  </Link>
+                </WhenSignedOut>
+              </div>
               <Link
-                href="/for-candidates"
+                href="/universities"
                 className="rounded-full border border-purple-300/20 bg-purple-300/[0.07] px-4 py-2 text-xs font-black text-purple-100 transition hover:bg-purple-300/[0.12]"
               >
-                Candidates
+                Universities
               </Link>
-              <WhenSignedOut>
-                <Link
-                  href="/for-candidates/sign-in"
-                  className="rounded-full bg-violet-600 px-4 py-1 text-[11px] font-black text-white transition hover:bg-violet-500"
-                >
-                  Sign in
-                </Link>
-              </WhenSignedOut>
             </div>
-            <div className="flex flex-col items-center gap-1.5">
-              <Link
-                href="/for-business"
-                className="rounded-full border border-purple-300/20 bg-purple-300/[0.07] px-4 py-2 text-xs font-black text-purple-100 transition hover:bg-purple-300/[0.12]"
-              >
-                Corporates
-              </Link>
-              <WhenSignedOut>
-                <Link
-                  href="/for-business/sign-in"
-                  className="rounded-full bg-fuchsia-600 px-4 py-1 text-[11px] font-black text-white transition hover:bg-fuchsia-500"
-                >
-                  Sign in
-                </Link>
-              </WhenSignedOut>
-            </div>
-            <Link
-              href="/universities"
-              className="rounded-full border border-purple-300/20 bg-purple-300/[0.07] px-4 py-2 text-xs font-black text-purple-100 transition hover:bg-purple-300/[0.12]"
-            >
-              Universities
-            </Link>
+            {/* Signed-in: My dashboard sits UNDER the pills (where the Sign in
+                buttons live when signed out) so the header never gets wider
+                and cannot collide with the centred nav oval. Plain <a>: Next's
+                Link would prefetch the redirect route. */}
             <WhenSignedIn>
-              {/* Plain <a>: Next's Link would prefetch the redirect route */}
               <a
                 href="/api/account/home"
-                className="rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-600 px-4 py-2 text-xs font-black text-white shadow-lg shadow-purple-900/30 transition hover:opacity-90"
+                className="rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-600 px-4 py-1 text-[11px] font-black text-white shadow-lg shadow-purple-900/30 transition hover:opacity-90"
               >
                 My dashboard
               </a>
@@ -247,8 +252,8 @@ export default function HomePage() {
           </div>
         </header>
 
-        {/* Mobile resource links — lg+ shows these in the centred nav above */}
-        <div className="mb-8 -mt-4 lg:hidden">
+        {/* Mobile resource links — xl+ shows these in the centred nav above */}
+        <div className="mb-8 -mt-4 xl:hidden">
           <ResourceLinksRow scroll className="px-0.5" />
         </div>
 
