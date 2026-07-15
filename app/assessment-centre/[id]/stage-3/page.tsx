@@ -222,6 +222,13 @@ export default function Stage3Page() {
     setIsRecording(false);
   }, []);
 
+  // Release the microphone if the candidate leaves mid-recording — recording
+  // only stops on submit or timer expiry, so without this the browser's mic
+  // indicator stays on after navigating away.
+  useEffect(() => {
+    return () => { stopRecording(); };
+  }, [stopRecording]);
+
   async function handleSubmit() {
     if (submitting) return;
     if (wordCount < 80 && presentTimeLeft > 0) return;
