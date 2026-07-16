@@ -77,6 +77,7 @@ export default function Stage3Page() {
   const [prepTimeLeft, setPrepTimeLeft] = useState(PREP_TIME);
   const [presentTimeLeft, setPresentTimeLeft] = useState(PRESENT_TIME);
   const [transcript, setTranscript] = useState("");
+  const [interimText, setInterimText] = useState("");
   const [isRecording, setIsRecording] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
@@ -195,17 +196,30 @@ export default function Stage3Page() {
       }
       if (final) {
         setTranscript((prev) => prev + final);
-        interimRef.current = interim;
-      } else {
-        interimRef.current = interim;
       }
+      // Show interim speech live (same behaviour as interview practice) —
+      // without this the transcript only appears once the browser finalises
+      // a segment, which reads as a long lag while presenting.
+      interimRef.current = interim;
+      setInterimText(interim);
     };
 
     rec.onend = () => {
+      // Promote any leftover interim speech into the transcript — words said
+      // just before Stop never finalise once recognition ends and would
+      // otherwise vanish.
+      const leftover = interimRef.current.trim();
+      if (leftover) {
+        setTranscript((prev) => (prev ? `${prev.trimEnd()} ${leftover} ` : `${leftover} `));
+      }
+      interimRef.current = "";
+      setInterimText("");
       setIsRecording(false);
     };
 
     rec.onerror = () => {
+      interimRef.current = "";
+      setInterimText("");
       setIsRecording(false);
     };
 
@@ -473,11 +487,25 @@ export default function Stage3Page() {
               </div>
 
               <textarea
-                value={transcript}
-                onChange={(e) => setTranscript(e.target.value)}
+                value={
+                  isRecording && interimText
+                    ? `${transcript}${transcript && !transcript.endsWith(" ") ? " " : ""}${interimText}`
+                    : transcript
+                }
+                onChange={(e) => {
+                  if (!isRecording) setTranscript(e.target.value);
+                }}
+                readOnly={isRecording}
+                // Assessment integrity — answers must be the candidate's own
+                // words, so pasted or dropped-in text is rejected.
+                onPaste={(e) => e.preventDefault()}
+                onDrop={(e) => e.preventDefault()}
                 placeholder="Your speech will appear here as you speak. You can also type directly or edit what was captured."
                 className="w-full min-h-[200px] resize-y rounded-xl border border-white/[0.06] bg-white/[0.03] p-3 text-sm leading-7 text-gray-300 placeholder-gray-700 outline-none focus:border-cyan-400/40 focus:ring-1 focus:ring-cyan-400/20"
               />
+              <p className="mt-2 text-xs text-gray-600">
+                Pasting is disabled — this stage must be your own spoken or typed words.
+              </p>
             </div>
 
             {submitError && (

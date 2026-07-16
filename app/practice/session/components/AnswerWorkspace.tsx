@@ -28,6 +28,10 @@ type AnswerWorkspaceProps = {
   assessmentMode?: boolean;
   /** When true the session is keyboard-only — hide all recording controls. */
   freePlan?: boolean;
+  /** Assessment integrity: reject pasted/dropped-in text so formal
+   *  assessments (company assignments, assessment centres) stay the
+   *  candidate's own words. Personal practice leaves pasting enabled. */
+  blockPaste?: boolean;
 };
 
 export function AnswerWorkspace({
@@ -51,6 +55,7 @@ export function AnswerWorkspace({
   onViewFeedback,
   assessmentMode = false,
   freePlan = false,
+  blockPaste = false,
 }: AnswerWorkspaceProps) {
   const analysing = feedbackLoading || voiceAnalysisLoading || videoAnalysisLoading;
 
@@ -143,6 +148,8 @@ export function AnswerWorkspace({
         <textarea
           value={answer}
           onChange={(event) => onAnswerChange(event.target.value)}
+          onPaste={blockPaste ? (e) => e.preventDefault() : undefined}
+          onDrop={blockPaste ? (e) => e.preventDefault() : undefined}
           placeholder={
             freePlan
               ? assessmentMode

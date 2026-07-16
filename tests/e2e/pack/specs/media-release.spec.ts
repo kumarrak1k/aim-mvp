@@ -169,13 +169,14 @@ test.describe("media release on mid-session exit", () => {
   });
 
   test("exiting while ANSWERING releases mic, camera and recognition", async ({ page }) => {
-    await instrumentMedia(page, 300); // voice "finishes" quickly → auto-listen starts
+    await instrumentMedia(page, 300);
     await startVoiceCameraSession(page);
 
-    // Enter the guided flow; the voice fallback ends after 300 ms and
-    // auto-listen acquires the microphone and starts speech recognition
-    // (the exact state the old restart leak fired from).
-    await page.getByRole("button", { name: /Play question \+ record/i }).click();
+    // Start dictation via the manual record button — it acquires the
+    // microphone and starts speech recognition directly (the exact state the
+    // old restart leak fired from) without depending on the question-voice
+    // auto-listen choreography, which is timing-sensitive in headless runs.
+    await page.getByRole("button", { name: /^Start recording$/i }).click();
     await page.waitForFunction(
       () =>
         window.__aimRecogs.some((r) => r._running) &&

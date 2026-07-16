@@ -1891,6 +1891,7 @@ export default function PracticeSessionPage() {
               onViewFeedback={scrollToFeedback}
               assessmentMode={assessmentMode}
               freePlan={isKeyboardOnly}
+              blockPaste={assessmentMode || Boolean(assessmentCentreId)}
             />
 
             {/* Camera column — only shown in voice-camera mode */}

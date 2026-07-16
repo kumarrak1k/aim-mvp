@@ -491,9 +491,17 @@ export default function Stage1Page() {
                   <textarea
                     value={response}
                     onChange={(e) => handleTextChange(e.target.value)}
+                    // Assessment integrity — the timed exercise must be the
+                    // candidate's own typed work, so pasted or dropped-in
+                    // text is rejected.
+                    onPaste={(e) => e.preventDefault()}
+                    onDrop={(e) => e.preventDefault()}
                     placeholder="Begin your structured response here. Lead with your recommendation, then support with analysis from the exhibits…"
                     className="w-full min-h-[400px] resize-y rounded-xl border-0 bg-transparent text-sm leading-7 text-white placeholder-gray-700 outline-none focus:ring-0"
                   />
+                  <p className="mt-1 px-1 text-xs text-gray-600">
+                    Pasting is disabled — this timed exercise must be your own typed work.
+                  </p>
                 </div>
 
                 {submitError && (
