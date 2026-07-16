@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
+import { readStoredAttribution } from "@/app/components/AttributionCapture";
 
 /**
  * Post-signup landing for the business flow. Stamps accountType =
@@ -75,7 +76,11 @@ export default function BusinessSignUpCompletePage() {
         const res = await fetch("/api/account-type", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ accountType: "corporate" }),
+          body: JSON.stringify({
+            accountType: "corporate",
+            // First-touch acquisition snapshot captured on landing.
+            attribution: readStoredAttribution(),
+          }),
         });
         if (res.ok) {
           const data = await res.json() as { accountType?: string };

@@ -3,6 +3,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { absoluteUrl, siteConfig } from "@/app/config/site";
+import { AttributionCapture } from "@/app/components/AttributionCapture";
 import { CookieConsent } from "@/app/components/marketing/CookieConsent";
 import { DeferredMentorChat } from "@/app/components/marketing/DeferredMentorChat";
 import "./globals.css";
@@ -236,6 +237,7 @@ export default function RootLayout({
             }}
           />
           {children}
+          <AttributionCapture />
           <DeferredMentorChat />
           <CookieConsent />
           <Analytics />

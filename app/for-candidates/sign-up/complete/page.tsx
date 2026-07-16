@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
+import { readStoredAttribution } from "@/app/components/AttributionCapture";
 
 export default function CandidateSignUpCompletePage() {
   const router = useRouter();
@@ -26,7 +27,11 @@ export default function CandidateSignUpCompletePage() {
         const res = await fetch("/api/account-type", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ accountType: "candidate" }),
+          body: JSON.stringify({
+            accountType: "candidate",
+            // First-touch acquisition snapshot captured on landing.
+            attribution: readStoredAttribution(),
+          }),
         });
         if (res.ok) {
           const data = await res.json() as { accountType?: string };

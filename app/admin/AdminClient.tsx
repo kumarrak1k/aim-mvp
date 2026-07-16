@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useClerk } from "@clerk/nextjs";
+import { deriveChannel } from "@/app/lib/attributionChannel";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -34,6 +35,13 @@ export type AdminUser = {
   docsCount: number;
   lastDocAt: string | null;
   profileComplete: boolean;
+  // First-touch acquisition attribution
+  utmSource: string | null;
+  utmMedium: string | null;
+  utmCampaign: string | null;
+  promoCode: string | null;
+  referrer: string | null;
+  landingPath: string | null;
   createdAt: string;
   lastSignInAt: string | null;
   lastActiveAt: string | null;
@@ -41,6 +49,8 @@ export type AdminUser = {
 
 /** Platform-level usage + growth stats computed server-side in page.tsx. */
 export type AdminOverview = {
+  /** Signup counts per acquisition channel (all-time + last 30 days). */
+  acquisition: Array<{ channel: string; total: number; last30d: number }>;
   newUsers7d: number;
   newUsers30d: number;
   activeUsers7d: number;
@@ -218,7 +228,7 @@ function MembershipBadge({ user }: { user: AdminUser }) {
 // ── CSV export ────────────────────────────────────────────────────────────────
 
 function exportCsv(users: AdminUser[]) {
-  const headers = ["ID","First name","Last name","Email","Account type","Membership","Company","Company role","Period / trial end","Practice sessions","Last session","Assessment centres","Career docs","Profile built","Joined","Last sign-in","Last active"];
+  const headers = ["ID","First name","Last name","Email","Account type","Membership","Company","Company role","Period / trial end","Practice sessions","Last session","Assessment centres","Career docs","Profile built","Source channel","UTM source","UTM medium","UTM campaign","Promo code","Referrer","Landing page","Joined","Last sign-in","Last active"];
   const rows = users.map((u) => [
     u.id, u.firstName ?? "", u.lastName ?? "", u.email, u.accountType,
     getMembershipLabel(u), u.companyName ?? "", u.companyRole ?? "",
@@ -228,6 +238,9 @@ function exportCsv(users: AdminUser[]) {
     u.acCount,
     u.docsCount,
     u.profileComplete ? "yes" : "no",
+    deriveChannel(u),
+    u.utmSource ?? "", u.utmMedium ?? "", u.utmCampaign ?? "",
+    u.promoCode ?? "", u.referrer ?? "", u.landingPath ?? "",
     new Date(u.createdAt).toLocaleDateString("en-GB"),
     u.lastSignInAt ? new Date(u.lastSignInAt).toLocaleDateString("en-GB") : "Never",
     u.lastActiveAt ? new Date(u.lastActiveAt).toLocaleDateString("en-GB") : "Never",
@@ -740,6 +753,45 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
         </div>
       </div>
 
+      {/* Acquisition channels + campaign link builder */}
+      <div className="mb-8 grid gap-4 lg:grid-cols-2">
+        <div className="rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-4">
+          <p className="text-xs font-semibold text-gray-500">
+            Acquisition channels <span className="text-gray-600">· where signups came from</span>
+          </p>
+          {overview.acquisition.length === 0 ? (
+            <p className="mt-3 text-sm text-gray-500">
+              No attributed signups yet — new signups are tracked from their first visit.
+            </p>
+          ) : (
+            <div className="mt-3 space-y-1.5">
+              {overview.acquisition.map(({ channel, total, last30d }) => {
+                const max = overview.acquisition[0]?.total || 1;
+                return (
+                  <div key={channel} className="flex items-center gap-3">
+                    <span className="w-40 shrink-0 truncate text-xs text-gray-300" title={channel}>
+                      {channel}
+                    </span>
+                    <div className="relative h-2 flex-1 rounded-full bg-white/[0.06]">
+                      <div
+                        className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-fuchsia-400 to-purple-400"
+                        style={{ width: `${Math.max(4, Math.round((total / max) * 100))}%` }}
+                      />
+                    </div>
+                    <span className="w-20 shrink-0 text-right text-xs">
+                      <span className="font-black text-white">{total}</span>
+                      <span className="text-gray-600"> · {last30d} 30d</span>
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        <CampaignLinkBuilder />
+      </div>
+
       {/* Filters */}
       <div className="mb-5 flex flex-col gap-3 sm:flex-row">
         <input
@@ -776,6 +828,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
               <th className={thF}>Company</th>
               <th className={thF}>Period end</th>
               <th className={thS} onClick={() => toggleSort("sessions")} title="Practice sessions · assessment centres · career docs">Usage <SortIcon k="sessions" /></th>
+              <th className={thF} title="Where this signup came from (first visit)">Source</th>
               <th className={thS} onClick={() => toggleSort("joined")}>Joined <SortIcon k="joined" /></th>
               <th className={thS} onClick={() => toggleSort("lastSeen")}>Last active <SortIcon k="lastSeen" /></th>
               <th className={thF} style={{ paddingRight: "1.5rem" }}>Actions</th>
@@ -783,7 +836,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
           </thead>
           <tbody className="divide-y divide-white/[0.05]">
             {pageData.length === 0 && (
-              <tr><td colSpan={9} className="py-16 text-center text-gray-500">No users match your filters.</td></tr>
+              <tr><td colSpan={10} className="py-16 text-center text-gray-500">No users match your filters.</td></tr>
             )}
             {pageData.map((u) => (
               <tr key={u.id} className="group transition hover:bg-white/[0.03]">
@@ -824,6 +877,25 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                   ) : (
                     <span className="text-[11px] text-gray-600">–</span>
                   )}
+                </td>
+                {/* Acquisition source */}
+                <td className="whitespace-nowrap py-3.5 pr-4">
+                  <span
+                    className={`rounded-md px-1.5 py-0.5 text-[11px] font-bold ${
+                      u.utmSource || u.promoCode || u.referrer
+                        ? "bg-violet-500/15 text-violet-300"
+                        : "bg-white/[0.04] text-gray-600"
+                    }`}
+                    title={[
+                      u.utmCampaign ? `Campaign: ${u.utmCampaign}` : null,
+                      u.referrer ? `Referrer: ${u.referrer}` : null,
+                      u.landingPath ? `Landed on: ${u.landingPath}` : null,
+                    ]
+                      .filter(Boolean)
+                      .join("\n") || "No attribution captured (signed up before tracking, or direct visit)"}
+                  >
+                    {deriveChannel(u)}
+                  </span>
                 </td>
                 <td className="whitespace-nowrap py-3.5 pr-4 text-[12px] text-gray-400">{fmtDate(u.createdAt)}</td>
                 <td className="whitespace-nowrap py-3.5 pr-4 text-[12px] text-gray-400">{fmtDate(lastSeen(u))}</td>
@@ -1375,6 +1447,111 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+// ── Campaign link builder ─────────────────────────────────────────────────────
+
+const LINK_PRESETS: Array<{ label: string; source: string; medium: string; campaign: string }> = [
+  { label: "The Student Room", source: "tsr",      medium: "community", campaign: "launch" },
+  { label: "Reddit",           source: "reddit",   medium: "community", campaign: "launch" },
+  { label: "TikTok",           source: "tiktok",   medium: "social",    campaign: "launch" },
+  { label: "LinkedIn",         source: "linkedin", medium: "social",    campaign: "launch" },
+  { label: "University pilot", source: "uni",      medium: "partner",   campaign: "pilot" },
+  { label: "Google Ads",       source: "google",   medium: "cpc",       campaign: "search" },
+];
+
+/**
+ * Builds UTM-tagged links so every channel post/ad can be traced back in the
+ * Acquisition card. Client-side only — nothing is stored.
+ */
+function CampaignLinkBuilder() {
+  const [source, setSource] = useState("tsr");
+  const [medium, setMedium] = useState("community");
+  const [campaign, setCampaign] = useState("launch");
+  const [path, setPath] = useState("/");
+  const [copied, setCopied] = useState("");
+
+  const buildUrl = (s: string, m: string, c: string, p: string) => {
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
+    const cleanPath = p.startsWith("/") ? p : `/${p}`;
+    const params = new URLSearchParams();
+    if (s.trim()) params.set("utm_source", s.trim().toLowerCase());
+    if (m.trim()) params.set("utm_medium", m.trim().toLowerCase());
+    if (c.trim()) params.set("utm_campaign", c.trim().toLowerCase());
+    const qs = params.toString();
+    return `${origin}${cleanPath}${qs ? `?${qs}` : ""}`;
+  };
+
+  const copy = async (url: string, key: string) => {
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(key);
+      window.setTimeout(() => setCopied(""), 1600);
+    } catch {
+      // Clipboard unavailable — the URL is visible to copy manually.
+    }
+  };
+
+  const customUrl = buildUrl(source, medium, campaign, path);
+  const inputS =
+    "w-full rounded-xl border border-white/10 bg-white/[0.05] px-3 py-1.5 text-xs text-white placeholder:text-gray-600 focus:border-fuchsia-400/40 focus:outline-none";
+
+  return (
+    <div className="rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-4">
+      <p className="text-xs font-semibold text-gray-500">
+        Campaign link builder <span className="text-gray-600">· tag links so signups are traceable</span>
+      </p>
+
+      <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+        <label className="block">
+          <span className="mb-1 block text-[10px] uppercase tracking-wider text-gray-600">Source</span>
+          <input value={source} onChange={(e) => setSource(e.target.value)} className={inputS} placeholder="tiktok" />
+        </label>
+        <label className="block">
+          <span className="mb-1 block text-[10px] uppercase tracking-wider text-gray-600">Medium</span>
+          <input value={medium} onChange={(e) => setMedium(e.target.value)} className={inputS} placeholder="social" />
+        </label>
+        <label className="block">
+          <span className="mb-1 block text-[10px] uppercase tracking-wider text-gray-600">Campaign</span>
+          <input value={campaign} onChange={(e) => setCampaign(e.target.value)} className={inputS} placeholder="launch" />
+        </label>
+        <label className="block">
+          <span className="mb-1 block text-[10px] uppercase tracking-wider text-gray-600">Page</span>
+          <input value={path} onChange={(e) => setPath(e.target.value)} className={inputS} placeholder="/" />
+        </label>
+      </div>
+
+      <div className="mt-2 flex items-center gap-2">
+        <code className="min-w-0 flex-1 truncate rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-[11px] text-fuchsia-200" title={customUrl}>
+          {customUrl}
+        </code>
+        <button
+          onClick={() => void copy(customUrl, "custom")}
+          className="shrink-0 rounded-full border border-fuchsia-400/25 bg-fuchsia-500/10 px-3 py-1.5 text-[11px] font-black text-fuchsia-300 transition hover:bg-fuchsia-500/20"
+        >
+          {copied === "custom" ? "Copied ✓" : "Copy"}
+        </button>
+      </div>
+
+      <div className="mt-3 flex flex-wrap gap-1.5">
+        {LINK_PRESETS.map((p) => (
+          <button
+            key={p.label}
+            onClick={() => void copy(buildUrl(p.source, p.medium, p.campaign, "/"), p.label)}
+            title={buildUrl(p.source, p.medium, p.campaign, "/")}
+            className="rounded-full border border-white/10 bg-white/[0.05] px-2.5 py-1 text-[11px] font-bold text-gray-300 transition hover:border-fuchsia-400/30 hover:text-white"
+          >
+            {copied === p.label ? "Copied ✓" : p.label}
+          </button>
+        ))}
+      </div>
+
+      <p className="mt-2 text-[10px] leading-4 text-gray-600">
+        Preset buttons copy a homepage link tagged for that channel. Links with a promo code
+        (e.g. ?promo=LAUNCH100) are tracked automatically as promo signups.
+      </p>
     </div>
   );
 }

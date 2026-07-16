@@ -1,5 +1,6 @@
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+import { deriveChannel } from "@/app/lib/attributionChannel";
 import { prisma } from "@/app/lib/prisma";
 import { AdminClient, type AdminUser, type AdminOverview } from "./AdminClient";
 
@@ -144,7 +145,17 @@ export default async function AdminPage() {
       _count: { _all: true },
       _max: { createdAt: true },
     }),
-    prisma.userProfile.findMany({ select: { clerkUserId: true } }),
+    prisma.userProfile.findMany({
+      select: {
+        clerkUserId: true,
+        utmSource: true,
+        utmMedium: true,
+        utmCampaign: true,
+        promoCode: true,
+        referrer: true,
+        landingPath: true,
+      },
+    }),
     prisma.practiceSession.count({ where: { createdAt: { gte: d7 } } }),
     prisma.practiceSession.count({ where: { createdAt: { gte: d30 } } }),
     prisma.assessmentCentreSession.count({ where: { createdAt: { gte: d7 } } }),
@@ -167,6 +178,7 @@ export default async function AdminPage() {
   const acMap = toUsageMap(acByUser);
   const docsMap = toUsageMap(docsByUser);
   const profileSet = new Set(profiles.map((p) => p.clerkUserId));
+  const profileMap = new Map(profiles.map((p) => [p.clerkUserId, p]));
 
   // Build a map: clerkUserId → { company, role }
   const companyById = new Map(allCompanies.map((c) => [c.id, c]));
@@ -200,6 +212,7 @@ export default async function AdminPage() {
     const practice = practiceMap.get(u.id);
     const ac = acMap.get(u.id);
     const docs = docsMap.get(u.id);
+    const profile = profileMap.get(u.id);
 
     const primaryEmail =
       u.emailAddresses.find((e) => e.id === u.primaryEmailAddressId)
@@ -248,6 +261,13 @@ export default async function AdminPage() {
       docsCount: docs?.count ?? 0,
       lastDocAt: docs?.last ?? null,
       profileComplete: profileSet.has(u.id),
+      // First-touch acquisition attribution (UserProfile)
+      utmSource: profile?.utmSource ?? null,
+      utmMedium: profile?.utmMedium ?? null,
+      utmCampaign: profile?.utmCampaign ?? null,
+      promoCode: profile?.promoCode ?? null,
+      referrer: profile?.referrer ?? null,
+      landingPath: profile?.landingPath ?? null,
       // Timestamps
       createdAt: new Date(u.createdAt).toISOString(),
       lastSignInAt: u.lastSignInAt
@@ -289,7 +309,23 @@ export default async function AdminPage() {
   const totalOf = (m: Map<string, { count: number }>) =>
     [...m.values()].reduce((s, v) => s + v.count, 0);
 
+  // Acquisition channels — one row per channel with all-time and 30-day
+  // signup counts, so ad/community spend can be judged from the dashboard.
+  const acquisitionCounts = new Map<string, { total: number; last30d: number }>();
+  for (const u of adminUsers) {
+    const channel = deriveChannel(u);
+    const row = acquisitionCounts.get(channel) ?? { total: 0, last30d: 0 };
+    row.total += 1;
+    if (new Date(u.createdAt).getTime() >= d30.getTime()) row.last30d += 1;
+    acquisitionCounts.set(channel, row);
+  }
+  const acquisition = [...acquisitionCounts.entries()]
+    .map(([channel, c]) => ({ channel, total: c.total, last30d: c.last30d }))
+    .sort((a, b) => b.total - a.total)
+    .slice(0, 10);
+
   const overview: AdminOverview = {
+    acquisition,
     newUsers7d: newWithin(7),
     newUsers30d: newWithin(30),
     activeUsers7d: activeWithin(7),

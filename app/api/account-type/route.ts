@@ -6,6 +6,8 @@ import {
   setAccountTypeIfUnset,
   type AccountType,
 } from "@/app/lib/accountType";
+import { saveSignupAttributionIfUnset } from "@/app/lib/attribution";
+import { sanitizeAttribution } from "@/app/lib/attributionChannel";
 import { autoStartCandidateTrial } from "@/app/lib/trialAutoStart";
 
 export const runtime = "nodejs";
@@ -70,6 +72,17 @@ export async function POST(request: NextRequest) {
     }
 
     const result = await setAccountTypeIfUnset(userId, requested);
+
+    // First-touch acquisition attribution (optional in the body; first write
+    // wins server-side). Non-fatal — signup must succeed without it.
+    const attribution = sanitizeAttribution(body?.attribution);
+    if (attribution) {
+      try {
+        await saveSignupAttributionIfUnset(userId, attribution);
+      } catch (err) {
+        console.error("SAVE ATTRIBUTION ERROR:", err);
+      }
+    }
 
     // Superadmin accounts cannot be used as candidate/corporate — signal
     // this to the sign-up complete pages so they redirect to /admin.

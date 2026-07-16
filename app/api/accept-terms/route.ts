@@ -1,5 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { getAccountType } from "@/app/lib/accountType";
+import { saveSignupAttributionIfUnset } from "@/app/lib/attribution";
+import { sanitizeAttribution } from "@/app/lib/attributionChannel";
 import { CURRENT_TOS_VERSION, recordTosAcceptance } from "@/app/lib/legal";
 import { autoStartCandidateTrial } from "@/app/lib/trialAutoStart";
 
@@ -20,6 +22,7 @@ export async function POST(req: Request) {
       version?: string;
       acceptTerms?: boolean;
       acceptPrivacy?: boolean;
+      attribution?: unknown;
     };
 
     if (!body.acceptTerms || !body.acceptPrivacy) {
@@ -45,6 +48,17 @@ export async function POST(req: Request) {
       ipAddress,
       userAgent: userAgent ? userAgent.slice(0, 600) : null,
     });
+
+    // Backup persistence of the first-touch acquisition snapshot (the main
+    // path is the sign-up completion call; first write wins server-side).
+    const attribution = sanitizeAttribution(body.attribution);
+    if (attribution) {
+      try {
+        await saveSignupAttributionIfUnset(userId, attribution);
+      } catch (err) {
+        console.error("SAVE ATTRIBUTION ERROR:", err);
+      }
+    }
 
     // Backup initialisation: the normal trial + welcome-email auto-start
     // runs from the sign-up completion page, but that call is client-fired

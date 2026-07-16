@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { readStoredAttribution } from "@/app/components/AttributionCapture";
 
 type AcceptTermsFormProps = {
   version: string;
@@ -54,7 +55,14 @@ export function AcceptTermsForm({ version, nextPath }: AcceptTermsFormProps) {
       const res = await fetch("/api/accept-terms", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ version, acceptTerms, acceptPrivacy }),
+        body: JSON.stringify({
+          version,
+          acceptTerms,
+          acceptPrivacy,
+          // First-touch acquisition snapshot — backup persistence path in
+          // case the sign-up completion call was lost.
+          attribution: readStoredAttribution(),
+        }),
       });
 
       const data = (await res.json().catch(() => null)) as { error?: string } | null;

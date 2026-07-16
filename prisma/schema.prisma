@@ -358,6 +358,13 @@ model UserProfile {
   defaultQuestionMix    Json?
   tosAcceptedAt         DateTime?
   tosAcceptedVersion    String?
+  // First-touch signup attribution (captured on landing, saved at signup).
+  utmSource             String?
+  utmMedium             String?
+  utmCampaign           String?
+  promoCode             String?
+  referrer              String?
+  landingPath           String?
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
 
