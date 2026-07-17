@@ -80,14 +80,24 @@ export const idSchema = z
 // ─── Composite schemas (used in multiple routes) ──────────────────────────────
 
 /** Practice session POST body — what the client sends after a full session. */
+// SALVAGE, don't reject: this schema records an interview the candidate has
+// already COMPLETED (time + AI cost spent). The interview-generation route
+// accepts arbitrarily long role text, so a strict cap here silently threw
+// away finished sessions (role > 120 chars → 400 → nothing on My Progress).
+// Out-of-range field values fall back to defaults; long text is truncated.
 export const practiceSessionCreateSchema = z.object({
-  role: cleanStringSchema(120, "Role"),
-  experienceLevel: z.enum(EXPERIENCE_LEVELS).default("Graduate / entry level"),
-  interviewType: z.enum(INTERVIEW_TYPES).default("Competency / behavioural"),
-  difficulty: z.enum(DIFFICULTIES).default("Standard"),
-  focusArea: z.enum(FOCUS_AREAS).default("Balanced"),
-  practiceMode: z.enum(PRACTICE_MODES).default("typed"),
-  totalQuestions: z.number().int().min(1).max(20).default(5),
+  role: z
+    .string()
+    .trim()
+    .min(1, "Role is required.")
+    .max(8000, "Role is too long.")
+    .transform((v) => v.slice(0, 300)),
+  experienceLevel: z.enum(EXPERIENCE_LEVELS).catch("Graduate / entry level"),
+  interviewType: z.enum(INTERVIEW_TYPES).catch("Competency / behavioural"),
+  difficulty: z.enum(DIFFICULTIES).catch("Standard"),
+  focusArea: z.enum(FOCUS_AREAS).catch("Balanced"),
+  practiceMode: z.enum(PRACTICE_MODES).catch("typed"),
+  totalQuestions: z.number().int().min(1).max(20).catch(5),
   // The summary and results blobs are user-generated content from the client.
   // We accept any object shape here but strictly cap nesting / size at the
   // request body level by limiting overall payload size in `extractBody`.

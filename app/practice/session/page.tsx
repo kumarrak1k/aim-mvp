@@ -162,6 +162,11 @@ export default function PracticeSessionPage() {
   const [freePlan, setFreePlan] = useState(false);
   /** Number of sessions the user has used (populated after session save). */
   const [sessionsUsed, setSessionsUsed] = useState<number | null>(null);
+  /** Non-empty when the completed session failed to save to My Progress —
+   *  shown on the summary screen with a retry so it is never lost silently. */
+  const [saveError, setSaveError] = useState("");
+  const [retrySaving, setRetrySaving] = useState(false);
+  const lastSaveArgsRef = useRef<{ summary: InterviewSummary; results: ResultItem[] } | null>(null);
   /** True when the session must use keyboard-only mode — hides all voice and
    *  camera controls. This is true for free-plan users AND for paid users who
    *  explicitly chose "Typed answers only" on the setup screen. */
@@ -719,6 +724,11 @@ export default function PracticeSessionPage() {
 
       if (!isSignedIn) return;
 
+      // Keep the payload so a failed save can be retried from the summary
+      // screen — a completed interview must never be lost silently.
+      lastSaveArgsRef.current = { summary: sessionSummary, results: sessionResults };
+      setSaveError("");
+
       try {
         const response = await fetch("/api/practice-sessions", {
           method: "POST",
@@ -750,12 +760,16 @@ export default function PracticeSessionPage() {
         }
 
         if (!response.ok || data?.error) {
+          setSaveError(
+            data?.error || "The server rejected the save. Please try again."
+          );
           console.warn(
             "Practice session was not saved to database:",
             data?.error || response.statusText
           );
         }
       } catch (error) {
+        setSaveError("Could not reach the server. Check your connection and try again.");
         console.warn("Practice session database save failed:", error);
       }
     },
@@ -1809,6 +1823,29 @@ export default function PracticeSessionPage() {
 
     return (
       <PracticeSessionShell assessmentMode={assessmentMode} templateContext={templateContext}>
+        {saveError && (
+          <div className="mx-auto mb-4 flex max-w-3xl flex-col items-start gap-3 rounded-2xl border border-amber-400/30 bg-amber-400/10 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-sm leading-6 text-amber-200">
+              <span className="font-black">This session hasn&apos;t been saved to My Progress.</span>{" "}
+              {saveError}
+            </p>
+            <button
+              type="button"
+              disabled={retrySaving}
+              onClick={() => {
+                const args = lastSaveArgsRef.current;
+                if (!args) return;
+                setRetrySaving(true);
+                void saveSession(args.summary, args.results).finally(() =>
+                  setRetrySaving(false)
+                );
+              }}
+              className="shrink-0 rounded-full border border-amber-300/30 bg-amber-300/15 px-4 py-2 text-xs font-black text-amber-100 transition hover:bg-amber-300/25 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {retrySaving ? "Saving…" : "Retry save"}
+            </button>
+          </div>
+        )}
         <SessionSummary
           summaryLoading={summaryLoading}
           summary={summary}
