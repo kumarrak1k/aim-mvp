@@ -1,4 +1,5 @@
 import { auth } from "@clerk/nextjs/server";
+import * as Sentry from "@sentry/nextjs";
 import { Prisma } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../lib/prisma";
@@ -163,7 +164,15 @@ export async function POST(request: NextRequest) {
     }
 
     const parsed = await parseJsonBody(request, practiceSessionCreateSchema);
-    if ("response" in parsed) return parsed.response;
+    if ("response" in parsed) {
+      // A completed interview failing validation means lost candidate work —
+      // surface it in Sentry instead of returning a silent 400.
+      Sentry.captureMessage("Practice session save rejected by validation", {
+        level: "warning",
+        extra: { userId },
+      });
+      return parsed.response;
+    }
     const {
       role,
       experienceLevel,
@@ -252,6 +261,7 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("PRACTICE SESSIONS POST ERROR:", error);
+    Sentry.captureException(error);
     return NextResponse.json(
       { error: "Failed to save practice session." },
       { status: 500 }

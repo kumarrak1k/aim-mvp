@@ -722,7 +722,12 @@ export default function PracticeSessionPage() {
       // ── Regular standalone practice session ─────────────────────────────
       addLocalSavedSession(sessionSummary);
 
-      if (!isSignedIn) return;
+      // NOTE: no isSignedIn guard here. Clerk's client state can go stale in
+      // a long-lived tab while the auth cookies remain valid — a client-side
+      // guard silently skipped the save in exactly that state (session ran,
+      // feedback worked, nothing reached My Progress, no error shown). Always
+      // POST: a genuinely signed-out user gets a 401 which surfaces in the
+      // banner below instead of vanishing.
 
       // Keep the payload so a failed save can be retried from the summary
       // screen — a completed interview must never be lost silently.
@@ -781,7 +786,6 @@ export default function PracticeSessionPage() {
       experienceLevel,
       focusArea,
       interviewType,
-      isSignedIn,
       practiceMode,
       role,
       router,
