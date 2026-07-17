@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
-import { readStoredAttribution } from "@/app/components/AttributionCapture";
+import { readStoredAttribution, readStoredPromoCode } from "@/app/components/AttributionCapture";
 
 export default function CandidateSignUpCompletePage() {
   const router = useRouter();
@@ -90,8 +90,9 @@ export default function CandidateSignUpCompletePage() {
       const pendingPlan = sessionStorage.getItem("aim_pending_plan");
       if (pendingPlan) {
         sessionStorage.removeItem("aim_pending_plan");
-        // Promotion code captured from a ?promo= marketing link, if any.
-        const promoCode = sessionStorage.getItem("aim_promo") || undefined;
+        // Promotion code captured from a ?promo= marketing link on any page
+        // (same-tab pricing capture, then the first-touch snapshot).
+        const promoCode = readStoredPromoCode();
         try {
           const res = await fetch("/api/stripe/checkout", {
             method: "POST",

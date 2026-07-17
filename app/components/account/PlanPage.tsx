@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { readStoredPromoCode } from "@/app/components/AttributionCapture";
 
 /**
  * PlanPage — rendered inside the Clerk UserButton modal as a custom profile
@@ -225,13 +226,9 @@ export function PlanPage() {
     setCheckoutLoading(planId);
     setError("");
     try {
-      // Promotion code captured from a ?promo= marketing link, if any.
-      let promoCode: string | undefined;
-      try {
-        promoCode = sessionStorage.getItem("aim_promo") || undefined;
-      } catch {
-        // sessionStorage unavailable; user can type the code at checkout.
-      }
+      // Promotion code captured from a ?promo= marketing link on any page
+      // (same-tab pricing capture, then the first-touch snapshot).
+      const promoCode = readStoredPromoCode();
       const res = await fetch("/api/stripe/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

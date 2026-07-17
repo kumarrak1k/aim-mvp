@@ -58,3 +58,23 @@ export function readStoredAttribution(): Record<string, unknown> | null {
     return null;
   }
 }
+
+/**
+ * Promotion code for checkout pre-apply. Prefers the pricing page's
+ * same-tab capture (sessionStorage "aim_promo"), then falls back to the
+ * first-touch snapshot — so a ?promo= link on ANY page carries the code
+ * through to checkout, even in a later visit or new tab.
+ */
+export function readStoredPromoCode(): string | undefined {
+  try {
+    const session = window.sessionStorage.getItem("aim_promo");
+    if (session) return session;
+    const attr = readStoredAttribution();
+    const promo = attr?.promoCode;
+    return typeof promo === "string" && promo.trim()
+      ? promo.trim().toUpperCase()
+      : undefined;
+  } catch {
+    return undefined;
+  }
+}
