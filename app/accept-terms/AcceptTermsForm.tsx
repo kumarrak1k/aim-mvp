@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { readStoredAttribution } from "@/app/components/AttributionCapture";
+import { clearStoredAttribution, readStoredAttribution } from "@/app/components/AttributionCapture";
 
 type AcceptTermsFormProps = {
   version: string;
@@ -72,6 +72,10 @@ export function AcceptTermsForm({ version, nextPath }: AcceptTermsFormProps) {
         setSubmitting(false);
         return;
       }
+
+      // Snapshot persisted server-side (backup path) — consume it so a
+      // future account from this browser doesn't inherit this one's source.
+      clearStoredAttribution();
 
       router.replace(nextPath);
       router.refresh();

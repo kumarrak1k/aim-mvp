@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
-import { readStoredAttribution, readStoredPromoCode } from "@/app/components/AttributionCapture";
+import { clearStoredAttribution, readStoredAttribution, readStoredPromoCode } from "@/app/components/AttributionCapture";
 
 export default function CandidateSignUpCompletePage() {
   const router = useRouter();
@@ -36,6 +36,9 @@ export default function CandidateSignUpCompletePage() {
         if (res.ok) {
           const data = await res.json() as { accountType?: string };
           resolvedType = data.accountType ?? null;
+          // Snapshot persisted server-side — consume it so a future account
+          // created from this browser doesn't inherit this one's source.
+          clearStoredAttribution();
         }
       } catch {
         // Non-fatal — lazy migration in getAccountType() will catch this.

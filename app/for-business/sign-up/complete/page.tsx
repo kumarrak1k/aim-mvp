@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
-import { readStoredAttribution } from "@/app/components/AttributionCapture";
+import { clearStoredAttribution, readStoredAttribution } from "@/app/components/AttributionCapture";
 
 /**
  * Post-signup landing for the business flow. Stamps accountType =
@@ -85,6 +85,9 @@ export default function BusinessSignUpCompletePage() {
         if (res.ok) {
           const data = await res.json() as { accountType?: string };
           resolvedType = data.accountType ?? null;
+          // Snapshot persisted server-side — consume it so a future account
+          // created from this browser doesn't inherit this one's source.
+          clearStoredAttribution();
         }
       } catch {
         // Non-fatal — lazy migration in getAccountType() will catch this.
