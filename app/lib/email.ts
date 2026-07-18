@@ -240,6 +240,20 @@ export const TRANSACTIONAL_NURTURE_TYPES: ReadonlySet<NurtureType> = new Set([
   "trial_ended",
 ]);
 
+/**
+ * Win-back nudges scheduled off the SIGNUP date. Their copy assumes a lapsed
+ * free user ("still here?", "your free practice sessions are waiting"), so the
+ * sender must skip anyone paying, on complimentary access, or recently active.
+ */
+export const RE_ENGAGEMENT_TYPES: ReadonlySet<NurtureType> = new Set([
+  "day14_reengage",
+  "day21_nudge",
+  "day30_winback",
+]);
+
+/** A user who did anything in this window is not "lapsed". */
+export const RECENT_ACTIVITY_DAYS = 7;
+
 const NURTURE_SUBJECTS: Record<NurtureType, string> = {
   welcome:        "Welcome to AI Career Mentor: your first interview tip",
   day2_tip:       "Most candidates never practise this (but should)",

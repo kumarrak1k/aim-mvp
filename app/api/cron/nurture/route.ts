@@ -2,6 +2,8 @@ import crypto from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma, warmDb } from "@/app/lib/prisma";
 import {
+  RECENT_ACTIVITY_DAYS,
+  RE_ENGAGEMENT_TYPES,
   sendNurtureEmail,
   TRANSACTIONAL_NURTURE_TYPES,
   type NurtureType,
@@ -41,6 +43,26 @@ export async function GET(req: NextRequest) {
     orderBy: { scheduledAt: "asc" },
   });
 
+  // ── Re-engagement targeting ─────────────────────────────────────────────
+  // The day-N re-engagement nudges are scheduled off SIGNUP date, so without
+  // this a happy daily user (or a paying subscriber) would be told "still
+  // here?" and "your free practice sessions are waiting". Resolve who has
+  // been active recently in ONE batch of queries rather than per job.
+  const reengageUserIds = [
+    ...new Set(due.filter((j) => RE_ENGAGEMENT_TYPES.has(j.type as NurtureType)).map((j) => j.userId)),
+  ];
+  const activeRecently = new Set<string>();
+  if (reengageUserIds.length) {
+    const cutoff = new Date(Date.now() - RECENT_ACTIVITY_DAYS * 24 * 60 * 60 * 1000);
+    const scope = { clerkUserId: { in: reengageUserIds }, createdAt: { gte: cutoff } };
+    const [practice, centres, docs] = await Promise.all([
+      prisma.practiceSession.findMany({ where: scope, select: { clerkUserId: true }, distinct: ["clerkUserId"] }),
+      prisma.assessmentCentreSession.findMany({ where: scope, select: { clerkUserId: true }, distinct: ["clerkUserId"] }),
+      prisma.careerDocGeneration.findMany({ where: scope, select: { clerkUserId: true }, distinct: ["clerkUserId"] }),
+    ]);
+    for (const row of [...practice, ...centres, ...docs]) activeRecently.add(row.clerkUserId);
+  }
+
   let sent = 0;
   let failed = 0;
   let skipped = 0;
@@ -79,6 +101,32 @@ export async function GET(req: NextRequest) {
           await prisma.emailJob.update({
             where: { id: job.id },
             data: { status: "skipped", error: "trial state changed", sentAt: new Date() },
+          });
+          skipped++;
+          continue;
+        }
+      }
+
+      // Re-engagement nudges are for LAPSED free users only. A paying
+      // subscriber, an active comp guest, or anyone who practised in the last
+      // week must never be told their "free sessions are waiting".
+      if (RE_ENGAGEMENT_TYPES.has(type)) {
+        let skipReason = "";
+        if (activeRecently.has(job.userId)) {
+          skipReason = `active in last ${RECENT_ACTIVITY_DAYS} days`;
+        } else {
+          try {
+            const plan = await getCandidatePlan(job.userId);
+            if (plan.isPaid) skipReason = "paying subscriber";
+            else if (plan.isComp) skipReason = "complimentary access";
+          } catch {
+            skipReason = "plan unresolved"; // fail closed: don't risk a wrong nudge
+          }
+        }
+        if (skipReason) {
+          await prisma.emailJob.update({
+            where: { id: job.id },
+            data: { status: "skipped", error: skipReason, sentAt: new Date() },
           });
           skipped++;
           continue;

@@ -84,7 +84,7 @@ const yourRights = [
   },
   {
     title: "Withdraw consent",
-    text: "You can stop using the platform at any time. Deleting your account removes access to your data.",
+    text: "You can opt out of tips and practice reminders with one click in any email, or from the notifications page in your account. You can stop using the platform at any time, and deleting your account removes access to your data.",
   },
   {
     title: "Opt out of tips & reminders",
@@ -263,6 +263,36 @@ export default function PrivacyPage() {
                     Managed by Clerk. Deleting your Clerk account removes
                     authentication access. Contact us to request full data
                     deletion.
+                  </p>
+                </div>
+              </div>
+
+              {/* Email you receive */}
+              <div>
+                <h2 className="mb-6 text-2xl font-black tracking-[-0.04em] sm:text-3xl">
+                  Emails we send you.
+                </h2>
+                <div className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-7 space-y-4 text-sm leading-7 text-gray-300">
+                  <p>
+                    <span className="font-black text-white">Service emails</span>:{" "}
+                    Account, security, trial status, assessment invitations and
+                    payment receipts. These are part of running your account, so
+                    they are always sent while your account exists.
+                  </p>
+                  <p>
+                    <span className="font-black text-white">Interview tips and practice reminders</span>:{" "}
+                    Because you signed up for AI Career Mentor, we may email you
+                    tips and reminders about this service under the soft opt-in
+                    rule in the Privacy and Electronic Communications Regulations.
+                    You are offered the choice to decline when you create your
+                    account, every email has a one-click unsubscribe, and you can
+                    change your preference at any time on your notifications page.
+                    We only email you about our own service.
+                  </p>
+                  <p>
+                    <span className="font-black text-white">No selling or sharing</span>:{" "}
+                    We never sell your email address and never pass it to third
+                    parties for their own marketing.
                   </p>
                 </div>
               </div>

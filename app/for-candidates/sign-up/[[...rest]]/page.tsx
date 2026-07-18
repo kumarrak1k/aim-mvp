@@ -147,7 +147,7 @@ export default function CandidateSignUpPage() {
             />
             <span className="text-xs leading-5 text-gray-400">
               Email me interview tips, practice nudges and trial reminders about
-              AI Career Mentor. Untick to opt out — you can also unsubscribe from
+              AI Career Mentor. Untick to opt out: you can also unsubscribe from
               any email with one click, and we never sell your data. Essential
               account emails are always sent.
             </span>
