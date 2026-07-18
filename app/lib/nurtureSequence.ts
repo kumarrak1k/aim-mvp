@@ -1,3 +1,6 @@
+import { sendNurtureEmail } from "./email";
+import { getOrCreateEmailPreference } from "./emailPreferences";
+import { isEmailSuppressed } from "./emailSuppression";
 import { prisma } from "./prisma";
 
 /**
@@ -48,5 +51,55 @@ export async function enqueueNurtureSequence(
 
   if (data.length) {
     await prisma.emailJob.createMany({ data });
+  }
+
+  // Deliver the welcome NOW rather than waiting for the hourly cron — a
+  // welcome that lands an hour after signup reads like spam, not onboarding.
+  await sendWelcomeImmediately(userId, email);
+}
+
+/**
+ * Instant delivery of the pending welcome job, applying the same gates as
+ * the nurture cron (suppression list + marketing consent). Any failure
+ * leaves the job pending so the hourly cron retries with its normal
+ * attempt budget — this is an acceleration, not a replacement.
+ */
+async function sendWelcomeImmediately(userId: string, email: string): Promise<void> {
+  try {
+    const job = await prisma.emailJob.findFirst({
+      where: { userId, type: "welcome", status: "pending" },
+      select: { id: true },
+    });
+    if (!job) return;
+
+    if (await isEmailSuppressed(email)) {
+      await prisma.emailJob.update({
+        where: { id: job.id },
+        data: { status: "skipped", error: "suppressed (bounce/complaint)", sentAt: new Date() },
+      });
+      return;
+    }
+
+    const pref = await getOrCreateEmailPreference(userId, email);
+    if (pref.marketingConsent === false) {
+      await prisma.emailJob.update({
+        where: { id: job.id },
+        data: { status: "skipped", error: "marketing opt-out", sentAt: new Date() },
+      });
+      return;
+    }
+
+    const result = await sendNurtureEmail(email, "welcome", {
+      unsubscribeToken: pref.unsubscribeToken,
+    });
+    if (result.ok) {
+      await prisma.emailJob.update({
+        where: { id: job.id },
+        data: { status: "sent", sentAt: new Date(), messageId: result.id, attempts: 1 },
+      });
+    }
+    // Not ok → leave pending; the cron picks it up within the hour.
+  } catch {
+    // Leave pending for the cron — instant delivery is best-effort.
   }
 }
