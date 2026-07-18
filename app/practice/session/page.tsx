@@ -465,22 +465,22 @@ export default function PracticeSessionPage() {
     requiresManualCameraStart &&
     !cameraUserStarted;
 
+  // Local session history is scoped PER ACCOUNT. The old global
+  // "aicm_sessions" key survived sign-outs and account deletions, so a brand
+  // new account's summary screen showed the browser's lifetime total (e.g.
+  // "8 sessions saved" on a first interview). The DB is the source of truth
+  // for My Progress; this local list only feeds the summary-screen counter.
+  const savedSessionsKey = user?.id ? `aicm_sessions_${user.id}` : null;
+
   useEffect(() => {
-    // One-time migration: move legacy "aim_sessions" key to "aicm_sessions"
-    const legacy = localStorage.getItem("aim_sessions");
-    if (legacy) {
-      try { localStorage.setItem("aicm_sessions", legacy); } catch { /* ignore */ }
-      localStorage.removeItem("aim_sessions");
+    if (!savedSessionsKey) return;
+    try {
+      const stored = localStorage.getItem(savedSessionsKey);
+      setSavedSessions(stored ? JSON.parse(stored) : []);
+    } catch {
+      setSavedSessions([]);
     }
-    const stored = localStorage.getItem("aicm_sessions");
-    if (stored) {
-      try {
-        setSavedSessions(JSON.parse(stored));
-      } catch {
-        setSavedSessions([]);
-      }
-    }
-  }, []);
+  }, [savedSessionsKey]);
 
   useEffect(() => {
     const config = parseSessionConfig();
@@ -683,7 +683,9 @@ export default function PracticeSessionPage() {
         const nextSessions = prependSavedSession(currentSessions, newSession);
 
         try {
-          localStorage.setItem("aicm_sessions", JSON.stringify(nextSessions));
+          if (savedSessionsKey) {
+            localStorage.setItem(savedSessionsKey, JSON.stringify(nextSessions));
+          }
         } catch {
           // Keep UI state even if localStorage is unavailable.
         }
@@ -691,7 +693,7 @@ export default function PracticeSessionPage() {
         return nextSessions;
       });
     },
-    [difficulty, interviewType, role, totalQuestions]
+    [difficulty, interviewType, role, savedSessionsKey, totalQuestions]
   );
 
   const saveSession = useCallback(

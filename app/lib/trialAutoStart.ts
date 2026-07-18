@@ -1,6 +1,7 @@
 import { clerkClient } from "@clerk/nextjs/server";
 import * as Sentry from "@sentry/nextjs";
 import { startCandidateTrialIfEligible } from "./candidatePlan";
+import { enqueueNurtureSequence } from "./nurtureSequence";
 import { enqueueTrialEmails } from "./trialEmails";
 import {
   checkTrialIpAllowance,
@@ -38,6 +39,19 @@ export async function autoStartCandidateTrial(
     if (meta?.trialConsumed === true) return { started: false };
 
     email = user.emailAddresses[0]?.emailAddress ?? "";
+
+    // Enqueue the signup nurture sequence (welcome + tips + re-engagement)
+    // BEFORE the trial eligibility gate: a user whose trial is denied (e.g.
+    // a re-signup with a consumed email) must still get their welcome email.
+    // Server-side so it can't be lost like the completion page's browser
+    // call; idempotent per email type.
+    try {
+      await enqueueNurtureSequence(userId, email);
+    } catch (err) {
+      console.error("ENQUEUE NURTURE SEQUENCE ERROR:", err);
+      Sentry.captureException(err);
+    }
+
     const eligibility = await claimTrialEligibility(userId, email);
     if (!eligibility.eligible) return { started: false };
 
