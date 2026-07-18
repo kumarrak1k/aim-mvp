@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { SignUp } from "@clerk/nextjs";
 import { SiteLogo } from "@/app/components/brand/SiteLogo";
@@ -24,9 +24,25 @@ export default function CandidateSignUpPage() {
     if (ref) sessionStorage.setItem("aim_ref", ref);
   }
 
-  // Marketing-email consent — unticked by default (UK PECR: explicit opt-in).
-  // Captured to sessionStorage so the post-signup step can persist it.
-  const [marketingConsent, setMarketingConsent] = useState(false);
+  // Marketing-email preference — TICKED by default under PECR's soft opt-in
+  // (reg 22(3)): we market only our own similar services to people signing up
+  // for the service, with a clear chance to refuse HERE and a one-click
+  // unsubscribe in every email. (A pre-ticked box is not GDPR "consent" — this
+  // deliberately relies on the soft opt-in exception, not consent.)
+  // Captured to sessionStorage so the post-signup step can persist it; the
+  // default is written on mount so an untouched box still records the choice.
+  const [marketingConsent, setMarketingConsent] = useState(true);
+  useEffect(() => {
+    try {
+      if (sessionStorage.getItem("aim_marketing_consent") === null) {
+        sessionStorage.setItem("aim_marketing_consent", "1");
+      } else {
+        setMarketingConsent(sessionStorage.getItem("aim_marketing_consent") === "1");
+      }
+    } catch {
+      /* ignore */
+    }
+  }, []);
   function onConsentChange(checked: boolean) {
     setMarketingConsent(checked);
     try {
@@ -120,7 +136,8 @@ export default function CandidateSignUpPage() {
             }}
           />
 
-          {/* Marketing consent — explicit opt-in, unticked by default */}
+          {/* Marketing preference — ticked by default (PECR soft opt-in); the
+              label is the clear refusal opportunity the exception requires. */}
           <label className="mt-4 flex cursor-pointer items-start gap-3 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-3.5 text-left">
             <input
               type="checkbox"
@@ -129,9 +146,10 @@ export default function CandidateSignUpPage() {
               className="mt-0.5 h-4 w-4 shrink-0 accent-purple-500"
             />
             <span className="text-xs leading-5 text-gray-400">
-              Email me interview tips, practice nudges and trial reminders. You can
-              unsubscribe any time, and we never sell your data. Essential account
-              emails are always sent.
+              Email me interview tips, practice nudges and trial reminders about
+              AI Career Mentor. Untick to opt out — you can also unsubscribe from
+              any email with one click, and we never sell your data. Essential
+              account emails are always sent.
             </span>
           </label>
 

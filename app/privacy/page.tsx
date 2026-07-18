@@ -86,6 +86,10 @@ const yourRights = [
     title: "Withdraw consent",
     text: "You can stop using the platform at any time. Deleting your account removes access to your data.",
   },
+  {
+    title: "Opt out of tips & reminders",
+    text: "When you sign up we may email you interview tips, practice nudges and trial reminders about AI Career Mentor (and nothing else). You can refuse at sign-up, unsubscribe from any email with one click, or turn them off in your notification settings. Essential account and billing emails are always sent.",
+  },
 ];
 
 const commitments = [
