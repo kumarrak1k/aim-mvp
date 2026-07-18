@@ -227,11 +227,16 @@ export type NurtureType =
   | "trial_ended";
 
 /**
- * Trial-status notices are service notifications about a material change to the
- * user's account access, so they bypass the marketing-consent suppression.
- * (trial_midway is a value nudge and is treated as marketing.)
+ * Service notifications that bypass the marketing-consent suppression:
+ * - welcome: onboarding for the account the user JUST created — a service
+ *   communication, not unsolicited marketing. Without this, the unticked
+ *   signup checkbox meant virtually no new user ever received a welcome.
+ * - trial_ended: a material change to the user's account access.
+ * (trial_midway and the day-N tips/nudges are value nudges → marketing,
+ * consent-gated. Every email still carries one-click unsubscribe.)
  */
 export const TRANSACTIONAL_NURTURE_TYPES: ReadonlySet<NurtureType> = new Set([
+  "welcome",
   "trial_ended",
 ]);
 

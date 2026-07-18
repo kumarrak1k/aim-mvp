@@ -80,14 +80,10 @@ async function sendWelcomeImmediately(userId: string, email: string): Promise<vo
       return;
     }
 
+    // No marketing-consent gate here: the welcome is a service communication
+    // (TRANSACTIONAL_NURTURE_TYPES) for the account the user just created.
+    // The preference row is still resolved for the unsubscribe token.
     const pref = await getOrCreateEmailPreference(userId, email);
-    if (pref.marketingConsent === false) {
-      await prisma.emailJob.update({
-        where: { id: job.id },
-        data: { status: "skipped", error: "marketing opt-out", sentAt: new Date() },
-      });
-      return;
-    }
 
     const result = await sendNurtureEmail(email, "welcome", {
       unsubscribeToken: pref.unsubscribeToken,
