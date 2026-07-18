@@ -24,6 +24,17 @@ export default function CandidateSignUpPage() {
     if (ref) sessionStorage.setItem("aim_ref", ref);
   }
 
+  // Did they get here by clicking a PAID plan on the pricing page? Read after
+  // mount so the server and first client render agree (no hydration mismatch).
+  const [pendingPaidPlan, setPendingPaidPlan] = useState(false);
+  useEffect(() => {
+    try {
+      setPendingPaidPlan(Boolean(sessionStorage.getItem("aim_pending_plan")));
+    } catch {
+      /* sessionStorage unavailable — keep the free-signup wording */
+    }
+  }, []);
+
   // Marketing-email preference — TICKED by default under PECR's soft opt-in
   // (reg 22(3)): we market only our own similar services to people signing up
   // for the service, with a clear chance to refuse HERE and a one-click
@@ -89,13 +100,17 @@ export default function CandidateSignUpPage() {
 
         <div className="mx-auto w-full max-w-md mt-2">
         <section className="w-full max-w-md">
-          {/* Compact heading */}
+          {/* Compact heading. Someone who arrived by clicking a PAID plan is
+              not here to "start practising free" — tell them the account comes
+              first and payment follows, so the extra step makes sense. */}
           <div className="mb-4 text-center">
             <h1 className="text-2xl font-black tracking-[-0.04em] sm:text-3xl">
-              Start practising free.
+              {pendingPaidPlan ? "Create your account." : "Start practising free."}
             </h1>
             <p className="mt-1.5 text-sm leading-5 text-gray-400">
-              Create your account and run your first interview in minutes.
+              {pendingPaidPlan
+                ? "One quick step, then we will take you to secure payment."
+                : "Create your account and run your first interview in minutes."}
             </p>
             <p className="mt-2 text-[11px] text-gray-600">
               Hiring manager?{" "}
