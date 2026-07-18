@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@clerk/nextjs";
 
 export type PricingCurrency = "GBP" | "USD" | "EUR";
 
@@ -87,6 +88,10 @@ type PlanFeature = { text: string; isNew?: boolean };
 export function CandidatePricingPlans({ currency = "GBP" }: { currency?: PricingCurrency }) {
   const [annual, setAnnual] = useState(false);
   const router = useRouter();
+  const { isSignedIn } = useAuth();
+  /** Plan id currently being sent to Stripe (drives the button spinner). */
+  const [checkoutPlan, setCheckoutPlan] = useState<StripePlanId | null>(null);
+  const [checkoutError, setCheckoutError] = useState("");
 
   // Capture a promotion code from marketing links (…/pricing?promo=CODE) so
   // checkout can pre-apply it after sign-up without the user typing anything.
@@ -179,15 +184,51 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
    * This means subscription selection is always part of the sign-up journey
    * rather than a standalone step, and we always capture the account first.
    */
-  function handlePaidCta(plan: (typeof plans)[number]) {
+  async function handlePaidCta(plan: (typeof plans)[number]) {
     const stripePlanId = annual ? plan.stripePlanAnnual : plan.stripePlanMonthly;
     if (!stripePlanId) return;
-    try {
-      sessionStorage.setItem("aim_pending_plan", stripePlanId);
-    } catch {
-      // sessionStorage unavailable — sign-up will just land on /practice
+
+    // SIGNED OUT: selection is carried through sign-up into checkout.
+    if (!isSignedIn) {
+      try {
+        sessionStorage.setItem("aim_pending_plan", stripePlanId);
+      } catch {
+        // sessionStorage unavailable — sign-up will just land on /practice
+      }
+      router.push("/for-candidates/sign-up");
+      return;
     }
-    router.push("/for-candidates/sign-up");
+
+    // SIGNED IN: go straight to Stripe. Previously this also routed to
+    // /for-candidates/sign-up, but Clerk bounces an already-signed-in user off
+    // that page, so they never reached the step that reads the pending plan —
+    // the purchase silently died and they were dropped back into the app.
+    // An existing paid subscription returns 409 and its message points at the
+    // account plan page (changing plan there avoids double-billing). An active
+    // no-card trial is NOT a Stripe subscription, so trialling users check out
+    // normally and the trial is superseded.
+    setCheckoutPlan(stripePlanId);
+    setCheckoutError("");
+    try {
+      const res = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ planId: stripePlanId }),
+      });
+      const data = (await res.json().catch(() => null)) as
+        | { url?: string; error?: string; code?: string }
+        | null;
+
+      if (data?.url) {
+        window.location.href = data.url;
+        return;
+      }
+      setCheckoutError(data?.error ?? "Could not open checkout. Please try again.");
+    } catch {
+      setCheckoutError("Could not open checkout. Please try again.");
+    } finally {
+      setCheckoutPlan(null);
+    }
   }
 
   return (
@@ -310,15 +351,24 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
                 </Link>
               ) : (
                 <button
-                  onClick={() => handlePaidCta(plan)}
-                  className={`mt-8 flex w-full justify-center rounded-2xl px-5 py-3.5 text-sm font-black transition ${
+                  onClick={() => void handlePaidCta(plan)}
+                  disabled={checkoutPlan !== null}
+                  className={`mt-8 flex w-full justify-center rounded-2xl px-5 py-3.5 text-sm font-black transition disabled:cursor-not-allowed disabled:opacity-60 ${
                     plan.highlight
                       ? "bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 text-white shadow-xl shadow-purple-950/35 hover:scale-[1.02]"
                       : "border border-white/10 bg-white/[0.06] text-white hover:bg-white/[0.1]"
                   }`}
                 >
-                  {plan.cta}
+                  {checkoutPlan ===
+                  (annual ? plan.stripePlanAnnual : plan.stripePlanMonthly)
+                    ? "Opening checkout…"
+                    : plan.cta}
                 </button>
+              )}
+              {checkoutError && !startsFreeTrial && checkoutPlan === null && (
+                <p className="mt-3 text-center text-[11px] font-semibold text-amber-300">
+                  {checkoutError}
+                </p>
               )}
               {isPaid && (
                 <p className="mt-3 text-center text-[11px] font-semibold text-emerald-300/90">
