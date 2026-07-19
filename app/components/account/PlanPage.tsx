@@ -144,6 +144,30 @@ export function PlanPage() {
   const [confirm, setConfirm] = useState<ConfirmState | null>(null);
   const [successMsg, setSuccessMsg] = useState("");
   const [error, setError] = useState("");
+  /**
+   * True only just after Stripe redirects back to ?payment=success, which is
+   * the one moment entitlement can legitimately lag behind payment. Recorded
+   * in sessionStorage so it survives the redirect but never outlives the tab,
+   * and expires after 5 minutes so a stalled webhook can't leave the banner
+   * up forever.
+   */
+  const [justCheckedOut, setJustCheckedOut] = useState(false);
+
+  useEffect(() => {
+    const KEY = "aim_checkout_at";
+    const WINDOW_MS = 5 * 60 * 1000;
+    try {
+      if (new URLSearchParams(window.location.search).get("payment") === "success") {
+        sessionStorage.setItem(KEY, String(Date.now()));
+      }
+      const at = Number(sessionStorage.getItem(KEY) ?? 0);
+      const fresh = at > 0 && Date.now() - at < WINDOW_MS;
+      setJustCheckedOut(fresh);
+      if (at > 0 && !fresh) sessionStorage.removeItem(KEY);
+    } catch {
+      // sessionStorage unavailable — never show the transient state.
+    }
+  }, []);
 
   // ── Data loading ──────────────────────────────────────────────────────────
 
@@ -327,7 +351,18 @@ export function PlanPage() {
   const isMonthly = sub?.billingInterval === "monthly";
   const isAnnual = sub?.billingInterval === "annual";
   const cancelAtPeriodEnd = sub?.cancelAtPeriodEnd ?? false;
-  const isConfirming = !sub?.isActive && Boolean(sub?.hasCustomer);
+  /**
+   * "Activating…" is a TRANSIENT post-checkout state: payment taken, waiting
+   * for the Stripe webhook to grant entitlement (usually a second or two).
+   *
+   * It used to be `!isActive && hasCustomer`, which was far too broad — a
+   * Stripe customer is created BEFORE checkout and never deleted, so every
+   * churned customer (and everyone who abandoned checkout) saw a permanent
+   * "Confirming your subscription with Stripe" banner while on Free.
+   * Now it is bounded to a recent return from Stripe's success URL.
+   */
+  const isConfirming =
+    !sub?.isActive && Boolean(sub?.hasCustomer) && justCheckedOut;
   const periodEndDate = fmtDate(sub?.currentPeriodEnd ?? null);
 
   const totalLimit = usage?.dailyLimit ?? 3;
