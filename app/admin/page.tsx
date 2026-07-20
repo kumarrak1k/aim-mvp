@@ -1,10 +1,13 @@
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { deriveChannel } from "@/app/lib/attributionChannel";
-import { prisma } from "@/app/lib/prisma";
+import { prisma, warmDb } from "@/app/lib/prisma";
 import { AdminClient, type AdminUser, type AdminOverview } from "./AdminClient";
 
 export const dynamic = "force-dynamic";
+// Headroom for warmDb's full retry window (~28s) plus the query batch, for
+// when an admin visit lands on a suspended Neon compute.
+export const maxDuration = 60;
 
 // No metadata — this page must not appear in any sitemap or <title> that leaks.
 export const metadata = { robots: "noindex, nofollow" };
@@ -102,20 +105,17 @@ export default async function AdminPage() {
   const d7 = new Date(now - 7 * 24 * 60 * 60 * 1000);
   const d30 = new Date(now - 30 * 24 * 60 * 60 * 1000);
 
-  const [
-    allMembers,
-    allCompanies,
-    practiceByUser,
-    acByUser,
-    docsByUser,
-    profiles,
-    sessions7d,
-    sessions30d,
-    ac7d,
-    ac30d,
-    docs7d,
-    docs30d,
-  ] = await Promise.all([
+  // Wake a suspended Neon compute before the batch below. Without this the
+  // first query after an idle period throws "Can't reach database server"
+  // and the whole page 500s (observed in Sentry on .com, 18 Jul). Failure
+  // here is non-fatal: the guarded batch renders the friendly panel instead.
+  try {
+    await warmDb();
+  } catch {
+    // fall through — the query batch below reports the failure properly
+  }
+
+  const dbResult = await Promise.all([
     prisma.companyMember.findMany({
       select: { clerkUserId: true, companyId: true, role: true },
     }),
@@ -162,7 +162,51 @@ export default async function AdminPage() {
     prisma.assessmentCentreSession.count({ where: { createdAt: { gte: d30 } } }),
     prisma.careerDocGeneration.count({ where: { createdAt: { gte: d7 } } }),
     prisma.careerDocGeneration.count({ where: { createdAt: { gte: d30 } } }),
-  ]);
+  ]).catch((err) => {
+    console.error("ADMIN DB ERROR:", err);
+    return null;
+  });
+
+  if (!dbResult) {
+    return (
+      <main
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontFamily: "system-ui, sans-serif",
+          background: "#f9fafb",
+        }}
+      >
+        <div style={{ textAlign: "center", maxWidth: 400, padding: "2rem" }}>
+          <p style={{ fontSize: "2rem", marginBottom: "1rem" }}>⚠️</p>
+          <h2 style={{ marginBottom: "0.5rem", color: "#111827" }}>
+            Admin temporarily unavailable
+          </h2>
+          <p style={{ color: "#6b7280", margin: 0 }}>
+            The database did not respond in time (it may have been idle).
+            Please refresh in a moment.
+          </p>
+        </div>
+      </main>
+    );
+  }
+
+  const [
+    allMembers,
+    allCompanies,
+    practiceByUser,
+    acByUser,
+    docsByUser,
+    profiles,
+    sessions7d,
+    sessions30d,
+    ac7d,
+    ac30d,
+    docs7d,
+    docs30d,
+  ] = dbResult;
 
   type UsageAgg = { count: number; last: string | null };
   const toUsageMap = (
