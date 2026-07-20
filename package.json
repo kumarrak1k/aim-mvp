@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "predev": "node scripts/check-env-local.mjs",
     "dev": "next dev",
     "build": "prisma generate && next build",
     "start": "next start",
@@ -18,7 +19,8 @@
     "test:pack:real": "playwright test -c playwright.tests.config.ts --grep @real-ai",
     "test:pack:stripe": "playwright test -c playwright.tests.config.ts --grep @stripe",
     "test:pack:ui": "playwright test -c playwright.tests.config.ts --ui",
-    "test:all": "vitest run && playwright test"
+    "test:all": "vitest run && playwright test",
+    "db:drift": "node scripts/check-db-drift.mjs"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.0.12",
