@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getCompetitor, getAllCompetitorSlugs } from "@/app/compare/data";
 import { absoluteUrl } from "@/app/config/site";
+import { buildAlternates } from "@/app/config/seo";
 import { PublicShell } from "@/app/components/marketing/PublicShell";
 
 type Props = { params: Promise<{ competitor: string }> };
@@ -18,7 +19,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: { absolute: `${data.tagline} | AI Career Mentor` },
     description: data.description,
-    alternates: { canonical: absoluteUrl(`/compare/${slug}`) },
+    alternates: buildAlternates(`/compare/${slug}`),
     openGraph: {
       title: `${data.tagline} | AI Career Mentor`,
       description: data.description,

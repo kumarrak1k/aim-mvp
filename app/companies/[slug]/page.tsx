@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { COMPANY_GUIDES, getCompanyGuide } from "../data";
 import { absoluteUrl } from "@/app/config/site";
+import { buildAlternates } from "@/app/config/seo";
 import { PublicShell } from "@/app/components/marketing/PublicShell";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -18,7 +19,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: { absolute: `${guide.name} Interview Guide ${new Date().getFullYear()} | AI Career Mentor` },
     description: guide.metaDescription,
-    alternates: { canonical: absoluteUrl(`/companies/${slug}`) },
+    alternates: buildAlternates(`/companies/${slug}`),
   };
 }
 

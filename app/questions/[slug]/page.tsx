@@ -8,6 +8,7 @@ import {
   getRelatedPosts,
 } from "@/app/lib/content";
 import { absoluteUrl } from "@/app/config/site";
+import { buildAlternates } from "@/app/config/seo";
 import { PublicShell } from "@/app/components/marketing/PublicShell";
 import {
   RelatedContent,
@@ -34,7 +35,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: set.title,
     description: set.description,
     keywords: set.keywords,
-    alternates: { canonical: absoluteUrl(`/questions/${slug}`) },
+    alternates: buildAlternates(`/questions/${slug}`),
     openGraph: {
       title: set.title,
       description: set.description,

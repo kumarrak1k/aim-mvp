@@ -53,6 +53,21 @@ function buildLanguageAlternates(path: string): Record<string, string> {
   };
 }
 
+/**
+ * Canonical + cross-domain hreflang for a dynamic page (blog posts, question
+ * sets, company guides, competitor comparisons) whose metadata is built by
+ * hand rather than through createPageMetadata. Without the `languages` block
+ * these pages exist identically on .co.uk and .com with only a self-canonical,
+ * so Google treats them as duplicate English pages and splits their ranking.
+ * Pass an absolute path beginning with "/".
+ */
+export function buildAlternates(path: string): Metadata["alternates"] {
+  return {
+    canonical: absoluteUrl(path),
+    languages: buildLanguageAlternates(path),
+  };
+}
+
 export function createPageMetadata({
   path,
   title,

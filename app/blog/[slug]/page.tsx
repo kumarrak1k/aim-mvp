@@ -13,6 +13,7 @@ import {
   getRelatedQuestionSet,
 } from "@/app/lib/content";
 import { absoluteUrl } from "@/app/config/site";
+import { buildAlternates } from "@/app/config/seo";
 import { PublicShell } from "@/app/components/marketing/PublicShell";
 import {
   RelatedContent,
@@ -40,7 +41,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: { absolute: `${post.title} | AI Career Mentor` },
     description: post.description,
     keywords: post.keywords,
-    alternates: { canonical: absoluteUrl(`/blog/${slug}`) },
+    alternates: buildAlternates(`/blog/${slug}`),
     openGraph: {
       title: post.title,
       description: post.description,
