@@ -6,8 +6,9 @@ import { Resend } from "resend";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-// Worst case: DB warm-up retries plus two 15s .com fetch attempts.
-export const maxDuration = 60;
+// Worst case: local DB warm-up, then two .com fetch attempts each long
+// enough to outlast the .com endpoint's OWN cold-start warmDb (~28s).
+export const maxDuration = 90;
 
 interface SiteStats {
   newSignups24h: number;
@@ -20,19 +21,24 @@ interface SiteStats {
 }
 
 async function getComStats(secret: string): Promise<SiteStats | null> {
-  // Two attempts: the first can land while the .com side's Neon compute is
-  // still resuming from idle suspend (crons run at quiet hours).
+  // The .com endpoint runs its OWN warmDb() (up to ~28s) before responding
+  // when its Neon compute is suspended — which it always is at the quiet hour
+  // this cron fires. The previous 15s per-attempt timeout aborted before the
+  // .com side had even finished waking, so overnight runs always reported
+  // ".com stats unavailable". Each attempt now allows 35s (comfortably past
+  // the cold-start window); attempt 1 also triggers the resume, so attempt 2
+  // lands on a warm compute. Worst case 35 + 5 + 35 = 75s < maxDuration 90.
   for (let attempt = 1; attempt <= 2; attempt++) {
     try {
       const res = await fetch("https://aicareermentor.com/api/internal/stats", {
         headers: { authorization: `Bearer ${secret}` },
-        signal: AbortSignal.timeout(15_000),
+        signal: AbortSignal.timeout(35_000),
       });
       if (res.ok) return res.json();
     } catch {
       // fall through to retry
     }
-    if (attempt === 1) await new Promise((resolve) => setTimeout(resolve, 3000));
+    if (attempt === 1) await new Promise((resolve) => setTimeout(resolve, 5000));
   }
   return null;
 }
