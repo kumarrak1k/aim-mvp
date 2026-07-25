@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { clerkClient } from "@clerk/nextjs/server";
 import { requireStripe } from "@/app/lib/stripe";
 import { recordStripeEvent, deleteStripeEvent } from "@/app/lib/stripeEvents";
+import { warmDb } from "@/app/lib/prisma";
 import {
   isCorporateSubscription,
   candidateUpsertMeta,
@@ -13,6 +14,9 @@ export const runtime = "nodejs";
 
 // Stripe sends raw bodies — Next.js must not parse this route.
 export const dynamic = "force-dynamic";
+
+// Headroom for warmDb's full retry window (~28s) on a cold Neon compute.
+export const maxDuration = 60;
 
 /**
  * Read the user's current metadata, apply the stale/out-of-order guard, then
@@ -109,6 +113,13 @@ export async function POST(req: NextRequest) {
     console.error("STRIPE WEBHOOK: signature verification failed", err);
     return NextResponse.json({ error: "Webhook signature invalid." }, { status: 400 });
   }
+
+  // Signature is verified: safe to touch the database. Wake a suspended Neon
+  // compute before recordStripeEvent, which otherwise throws an uncaught 500 on
+  // a cold start and delays the plan update until Stripe's retry. No-op (~1ms)
+  // when the database is already warm; if it is genuinely down this throws,
+  // Stripe retries, and the idempotency guard keeps the replay safe.
+  await warmDb();
 
   // Idempotency — Stripe retries/replays; process each event id at most once.
   const { firstTime } = await recordStripeEvent(event.id, event.type);

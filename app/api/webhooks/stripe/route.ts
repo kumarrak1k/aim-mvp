@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireStripe } from "@/app/lib/stripe";
-import { prisma } from "@/app/lib/prisma";
+import { prisma, warmDb } from "@/app/lib/prisma";
 import { recordStripeEvent, deleteStripeEvent } from "@/app/lib/stripeEvents";
 import {
   corporateUpsertData,
@@ -13,6 +13,11 @@ export const runtime = "nodejs";
 
 // Stripe sends raw bodies — Next.js must not parse this route.
 export const dynamic = "force-dynamic";
+
+// Headroom for warmDb's full retry window (~28s) on a cold Neon compute.
+// Corporate webhooks are infrequent, so they routinely land on a suspended
+// database; without this the default timeout can cut the retry short.
+export const maxDuration = 60;
 
 /**
  * POST /api/webhooks/stripe
@@ -150,6 +155,14 @@ export async function POST(req: NextRequest) {
       { status: 400 }
     );
   }
+
+  // Signature is verified, so this is a genuine Stripe call: safe to touch the
+  // database. Wake a suspended Neon compute before the first write, otherwise
+  // recordStripeEvent below throws an uncaught 500 on a cold start and the
+  // subscription update is delayed until Stripe's retry. No-op (~1ms) when the
+  // database is already warm. If the DB is genuinely down this throws, Stripe
+  // retries, and the idempotency guard keeps the eventual replay safe.
+  await warmDb();
 
   // Idempotency — Stripe retries/replays; process each event id at most once.
   const { firstTime } = await recordStripeEvent(event.id, event.type);

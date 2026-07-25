@@ -1,9 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import { suppressEmail } from "@/app/lib/emailSuppression";
+import { warmDb } from "@/app/lib/prisma";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+
+// Headroom for warmDb's full retry window (~28s) on a cold Neon compute.
+// Bounce/complaint webhooks arrive sporadically, so they often land on a
+// suspended database.
+export const maxDuration = 60;
 
 /**
  * POST /api/webhooks/resend — records hard bounces and spam complaints so we
@@ -83,6 +89,12 @@ export async function POST(req: NextRequest) {
       : null;
 
   if (reason) {
+    // Wake a suspended Neon compute before the suppress writes. Without this a
+    // cold start makes every suppressEmail below fail; the per-recipient catch
+    // swallows the error, so the bounce is silently lost and we keep emailing a
+    // dead address. No-op (~1ms) when the database is already warm.
+    await warmDb();
+
     const to = event.data?.to;
     const recipients = Array.isArray(to) ? to : to ? [to] : [];
     for (const addr of recipients) {
