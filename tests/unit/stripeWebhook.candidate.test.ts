@@ -54,6 +54,13 @@ vi.mock("@/app/lib/stripe", () => ({
   }),
 }));
 
+// The route wakes a suspended Neon compute before its first write. Without
+// this stub the real warmDb runs its ~28s retry loop against no database and
+// the tests time out.
+vi.mock("@/app/lib/prisma", () => ({
+  warmDb: async () => {},
+}));
+
 vi.mock("@/app/lib/stripeEvents", () => ({
   recordStripeEvent: async () => ({ firstTime: h.state.recordFirstTime }),
   deleteStripeEvent: async (id: string) => {
