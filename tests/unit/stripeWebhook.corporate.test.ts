@@ -25,6 +25,8 @@ const h = vi.hoisted(() => ({
 }));
 
 vi.mock("@/app/lib/prisma", () => ({
+  // Cold-start guard called before the first DB write; a no-op in tests.
+  warmDb: async () => {},
   prisma: {
     company: {
       findUnique: async () => h.state.company,
