@@ -67,6 +67,17 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
+        // www -> apex, preserving the path, as a permanent (308) redirect. This
+        // is defence in depth alongside Vercel's platform-level canonicalisation
+        // (which currently serves a temporary 307): if that platform setting is
+        // ever removed, the app still canonicalises www to the apex correctly.
+        // Same direction as Vercel's redirect, so it cannot cause a loop.
+        source: "/:path*",
+        has: [{ type: "host", value: "www.aicareermentor.co.uk" }],
+        destination: "https://aicareermentor.co.uk/:path*",
+        permanent: true,
+      },
+      {
         source: "/candidates",
         destination: "/for-candidates",
         permanent: true,
