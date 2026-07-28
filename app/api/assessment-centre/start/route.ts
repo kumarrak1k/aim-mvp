@@ -4,7 +4,7 @@ import { z } from "zod";
 import { prisma } from "@/app/lib/prisma";
 import { callOpenAIChat } from "@/app/lib/openai-client";
 import { MODEL_PREMIUM } from "@/app/lib/aiModels";
-import { buildCaseStudyPrompts } from "@/app/lib/assessmentCentrePrompts";
+import { buildCaseStudyPrompts, buildPresentationBriefPrompts } from "@/app/lib/assessmentCentrePrompts";
 import { checkRateLimit } from "@/app/lib/rateLimit";
 import { parseJsonBody } from "@/app/lib/validation";
 import { getCandidatePlan, TRIAL_USAGE_CAPS } from "@/app/lib/candidatePlan";
@@ -84,8 +84,8 @@ export async function POST(request: NextRequest) {
   // When stage3 is the only selected stage, generate the brief now — there is
   // no submit-case-study or submit-interview call to generate it later.
   if (!hasStage1 && !hasStage2 && hasStage3) {
-    const briefSystemPrompt = `You are a senior assessment centre designer. Generate a realistic presentation brief appropriate for a ${role} candidate in the ${sector} sector. JSON only.`;
-    const briefUserPrompt = `Generate a presentation brief for a ${role} in ${sector}. Return JSON: { "topic": "<topic string>", "audience": "<audience string>", "context": "<2-3 sentences of background>", "format": "3-minute spoken presentation", "objectives": ["<objective 1>", "<objective 2>", "<objective 3>"], "timeMinutes": 3 }`;
+    const { systemPrompt: briefSystemPrompt, userPrompt: briefUserPrompt } =
+      buildPresentationBriefPrompts({ role, sector });
 
     const briefResponse = await callOpenAIChat({
       model: MODEL_PREMIUM,

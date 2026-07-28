@@ -12,6 +12,35 @@
  * (The original prompt requested a McKinsey-depth multi-exhibit pack —
  * far beyond what any graduate AC written exercise actually uses.)
  */
+/**
+ * Presentation brief (stage 3).
+ *
+ * Shared by the start route (when stage 3 runs standalone) and the
+ * submit-interview route (when stage 3 follows the interview). Kept here so the
+ * two callers cannot drift: they previously held identical inline copies, and a
+ * fix to one would silently miss the other.
+ *
+ * The fictional-company guard matters as much here as in the case study. The
+ * target role is free text and frequently names a real employer, and without
+ * this the model builds the brief around that real organisation and invents
+ * facts about it.
+ */
+export function buildPresentationBriefPrompts({
+  role,
+  sector,
+}: {
+  role: string;
+  sector: string;
+}): { systemPrompt: string; userPrompt: string } {
+  const systemPrompt = `You are a senior assessment centre designer. Generate a realistic presentation brief appropriate for a ${role} candidate in the ${sector} sector. JSON only.
+
+CRITICAL: any organisation referred to in the brief MUST be fictional, with invented figures. Never name a real company, and never lightly disguise one. If the candidate's target role text names an employer, use it only to infer the sector and type of business, never as the subject of the brief.`;
+
+  const userPrompt = `Generate a presentation brief for a ${role} in ${sector}. Any company referenced must be fictional with invented figures. Return JSON: { "topic": "<topic string>", "audience": "<audience string>", "context": "<2-3 sentences of background>", "format": "3-minute spoken presentation", "objectives": ["<objective 1>", "<objective 2>", "<objective 3>"], "timeMinutes": 3 }`;
+
+  return { systemPrompt, userPrompt };
+}
+
 export function buildCaseStudyPrompts({
   role,
   sector,
@@ -21,13 +50,17 @@ export function buildCaseStudyPrompts({
   sector: string;
   experienceLevel: string;
 }): { systemPrompt: string; userPrompt: string } {
-  const systemPrompt = `You are a senior assessment centre designer who has run graduate and professional assessment centres for Big 4 firms and investment banks. You create realistic written case exercises matching the calibre those employers actually use: a short, sharp brief with a few simple exhibits that tests structured thinking and commercial judgement — never volume or complex financial engineering. Output must be valid JSON only — no markdown fences, no commentary.`;
+  const systemPrompt = `You are a senior assessment centre designer who has run graduate and professional assessment centres for Big 4 firms and investment banks. You create realistic written case exercises matching the calibre those employers actually use: a short, sharp brief with a few simple exhibits that tests structured thinking and commercial judgement — never volume or complex financial engineering. Output must be valid JSON only — no markdown fences, no commentary.
+
+CRITICAL: the case company MUST be fictional. Real employers never set case studies about real named organisations, because the exercise tests reasoning about an unfamiliar business, not recall. Invent a plausible company name and invent all of its figures. Never use the name of a real company, and never use a real company's name with a minor alteration. If the candidate's target role text names an employer, use that only to infer the sector and the type of business, never as the case subject.`;
 
   const userPrompt = `Create a written case exercise for a ${role} candidate (${experienceLevel}) in the ${sector} sector or organisation context, at the standard of a Big 4 / investment bank graduate assessment centre written exercise.
 
 CALIBRATION: the candidate reads the case untimed (it should take about 5 minutes), then has 12 minutes to WRITE a structured recommendation. The whole pack (overview + challenge + exhibits + task + question) must total roughly 450-600 words. The test is structure and judgement, not reading stamina — depth comes from a clear trade-off in the data.
 
-OVERVIEW (overview field): ONE paragraph, 80-110 words: who the company is, its size (a revenue or headcount figure), what it sells, its market position, and one line of strategic context. No company-history essay.
+COMPANY (company field): a FICTIONAL organisation, invented for this exercise. Give it a plausible but clearly made-up name appropriate to the sector. Do NOT name a real company, and do NOT lightly disguise one. Where the target role text mentions an employer, mirror only the shape of that business (its sector, scale and operating model), never its identity. All figures throughout the pack are invented for the exercise.
+
+OVERVIEW (overview field): ONE paragraph, 80-110 words: who this fictional company is, its size (an invented revenue or headcount figure), what it sells, its market position, and one line of strategic context. No company-history essay.
 
 CHALLENGE (challenge field): ONE paragraph, 80-110 words: a single focused business decision with a genuine trade-off, what triggered it, and what is at stake. There must be 2-3 plausible options with no single obvious answer.
 

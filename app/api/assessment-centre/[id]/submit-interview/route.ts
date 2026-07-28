@@ -4,6 +4,7 @@ import { z } from "zod";
 import { prisma } from "@/app/lib/prisma";
 import { callOpenAIChat } from "@/app/lib/openai-client";
 import { MODEL_PREMIUM } from "@/app/lib/aiModels";
+import { buildPresentationBriefPrompts } from "@/app/lib/assessmentCentrePrompts";
 import { checkRateLimit } from "@/app/lib/rateLimit";
 import { parseJsonBody } from "@/app/lib/validation";
 import { getCandidatePlan } from "@/app/lib/candidatePlan";
@@ -73,8 +74,10 @@ export async function POST(
 
   if (hasStage3) {
     // Generate presentation brief and proceed to stage 3
-    const systemPrompt = `You are a senior assessment centre designer. Generate a realistic presentation brief appropriate for a ${session.role} candidate in the ${session.sector} sector. JSON only.`;
-    const userPrompt = `Generate a presentation brief for a ${session.role} in ${session.sector}. Return JSON: { "topic": "<topic string>", "audience": "<audience string>", "context": "<2-3 sentences of background>", "format": "3-minute spoken presentation", "objectives": ["<objective 1>", "<objective 2>", "<objective 3>"], "timeMinutes": 3 }`;
+    const { systemPrompt, userPrompt } = buildPresentationBriefPrompts({
+      role: session.role,
+      sector: session.sector,
+    });
 
     const aiResponse = await callOpenAIChat({
       model: MODEL_PREMIUM,

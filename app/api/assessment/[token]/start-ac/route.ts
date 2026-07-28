@@ -14,7 +14,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/app/lib/prisma";
 import { callOpenAIChat } from "@/app/lib/openai-client";
 import { MODEL_PREMIUM } from "@/app/lib/aiModels";
-import { buildCaseStudyPrompts } from "@/app/lib/assessmentCentrePrompts";
+import { buildCaseStudyPrompts, buildPresentationBriefPrompts } from "@/app/lib/assessmentCentrePrompts";
 import { checkRateLimit } from "@/app/lib/rateLimit";
 
 export const runtime = "nodejs";
@@ -115,8 +115,14 @@ export async function POST(_req: NextRequest, { params }: Params) {
     // When stage3 is the only selected stage, generate the brief now — there is
     // no submit-case-study or submit-interview call to generate it later.
     if (!hasStage1 && !hasStage2 && hasStage3) {
-      const briefSystemPrompt = `You are a senior assessment centre designer. Generate a realistic presentation brief appropriate for a ${template.role} candidate in the ${assignment.company.name} sector. JSON only.`;
-      const briefUserPrompt = `Generate a presentation brief for a ${template.role} in ${assignment.company.name}. Return JSON: { "topic": "<topic string>", "audience": "<audience string>", "context": "<2-3 sentences of background>", "format": "3-minute spoken presentation", "objectives": ["<objective 1>", "<objective 2>", "<objective 3>"], "timeMinutes": 3 }`;
+      // Corporate invites carry no sector, so the company name stands in as the
+      // organisational context (matching the case-study call below). The prompt's
+      // fictional-company guard stops that name becoming the subject of the brief.
+      const { systemPrompt: briefSystemPrompt, userPrompt: briefUserPrompt } =
+        buildPresentationBriefPrompts({
+          role: template.role,
+          sector: assignment.company.name,
+        });
 
       const briefResponse = await callOpenAIChat(
         {
