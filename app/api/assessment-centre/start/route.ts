@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/app/lib/prisma";
 import { callOpenAIChat } from "@/app/lib/openai-client";
 import { MODEL_PREMIUM } from "@/app/lib/aiModels";
@@ -106,10 +107,28 @@ export async function POST(request: NextRequest) {
   }
 
   if (hasStage1) {
+    // Company names and challenges this candidate has already seen. Without this
+    // the generator has no memory, so repeat runs on the same role produce the
+    // same business with a different invented name.
+    const priorSessions = await prisma.assessmentCentreSession.findMany({
+      where: { clerkUserId: userId, caseStudyScenario: { not: Prisma.DbNull } },
+      select: { caseStudyScenario: true },
+      orderBy: { createdAt: "desc" },
+      take: 6,
+    });
+    const recentScenarios = priorSessions
+      .map((s) => {
+        const sc = s.caseStudyScenario as { company?: string; challenge?: string } | null;
+        if (!sc?.company) return null;
+        const gist = sc.challenge ? ` (${sc.challenge.slice(0, 120)})` : "";
+        return `${sc.company}${gist}`;
+      })
+      .filter((v): v is string => Boolean(v));
     const { systemPrompt, userPrompt } = buildCaseStudyPrompts({
       role,
       sector,
       experienceLevel,
+      recentScenarios,
     });
 
     const aiResponse = await callOpenAIChat({
@@ -118,7 +137,7 @@ export async function POST(request: NextRequest) {
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt },
       ],
-      temperature: 0.7,
+      temperature: 0.85,
       max_tokens: 2000,
     }, { timeoutMs: 90000 });
 

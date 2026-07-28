@@ -57,31 +57,93 @@ Judge against what is achievable within the time allowed, not against an unhurri
  * this the model builds the brief around that real organisation and invents
  * facts about it.
  */
+const PRESENTATION_ANGLES = [
+  "recommend whether to proceed with a proposed change, and why",
+  "explain a setback to a senior audience and set out the recovery",
+  "make the case for investment in one of two competing priorities",
+  "present findings from a review and the actions that follow",
+  "propose how to improve a process that stakeholders disagree about",
+  "brief a leadership team on a risk and how you would mitigate it",
+] as const;
+
 export function buildPresentationBriefPrompts({
   role,
   sector,
+  recentTopics = [],
 }: {
   role: string;
   sector: string;
+  /** Presentation topics this candidate has already been given. */
+  recentTopics?: string[];
 }): { systemPrompt: string; userPrompt: string } {
+  const angle =
+    PRESENTATION_ANGLES[Math.floor(Math.random() * PRESENTATION_ANGLES.length)];
+  const avoidTopics = recentTopics.length
+    ? ` Avoid these topics already used for this candidate: ${recentTopics.join("; ")}.`
+    : "";
   const systemPrompt = `You are a senior assessment centre designer. Generate a realistic presentation brief appropriate for a ${role} candidate in the ${sector} sector. JSON only.
 
 CRITICAL: any organisation referred to in the brief MUST be fictional, with invented figures. Never name a real company, and never lightly disguise one. If the candidate's target role text names an employer, use it only to infer the sector and type of business, never as the subject of the brief.`;
 
-  const userPrompt = `Generate a presentation brief for a ${role} in ${sector}. Any company referenced must be fictional with invented figures. Return JSON: { "topic": "<topic string>", "audience": "<audience string>", "context": "<2-3 sentences of background>", "format": "3-minute spoken presentation", "objectives": ["<objective 1>", "<objective 2>", "<objective 3>"], "timeMinutes": 3 }`;
+  const userPrompt = `Generate a presentation brief for a ${role} in ${sector}. Any company referenced must be fictional with invented figures.
+
+REQUIRED ANGLE for this brief: ${angle}. Build the topic around that.${avoidTopics}
+
+Return JSON: { "topic": "<topic string>", "audience": "<audience string>", "context": "<2-3 sentences of background>", "format": "3-minute spoken presentation", "objectives": ["<objective 1>", "<objective 2>", "<objective 3>"], "timeMinutes": 3 }`;
 
   return { systemPrompt, userPrompt };
+}
+
+/**
+ * Decision archetypes for case study variety.
+ *
+ * Role, sector and experience level are the only generator inputs, so without
+ * a varying axis the same candidate gets structurally the same case on every
+ * run: same business shape, same challenge, different invented name. Temperature
+ * alone does not fix this, because the model's default framing for a given
+ * sector is stable.
+ *
+ * One archetype is drawn per session, which changes the shape of the decision
+ * rather than just its dressing.
+ */
+const CASE_STUDY_ANGLES = [
+  "a cost reduction that risks damaging service quality",
+  "a build, buy or partner decision on a capability gap",
+  "entering a new client segment or geography with limited capacity",
+  "whether to outsource a function, or bring an outsourced one back in house",
+  "a pricing or fee structure change under competitive pressure",
+  "consolidating duplicated sites, systems or teams after growth or a merger",
+  "responding to a competitor move that has taken share",
+  "a regulatory or compliance change forcing an operating model decision",
+  "dependence on one dominant client or supplier, and how to reduce it",
+  "a technology migration that is over budget and behind schedule",
+  "prioritising between two investments when only one can be funded",
+  "a quality or incident problem that has damaged client trust",
+] as const;
+
+export function pickCaseStudyAngle(): string {
+  return CASE_STUDY_ANGLES[Math.floor(Math.random() * CASE_STUDY_ANGLES.length)];
 }
 
 export function buildCaseStudyPrompts({
   role,
   sector,
   experienceLevel,
+  angle,
+  recentScenarios = [],
 }: {
   role: string;
   sector: string;
   experienceLevel: string;
+  /** Decision archetype for this run. Defaults to a random draw. */
+  angle?: string;
+  /** Company names and challenge summaries this candidate has already seen. */
+  recentScenarios?: string[];
 }): { systemPrompt: string; userPrompt: string } {
+  const chosenAngle = angle ?? pickCaseStudyAngle();
+  const avoidBlock = recentScenarios.length
+    ? `\n\nALREADY USED FOR THIS CANDIDATE — do not repeat these company names, and do not reuse the same underlying business situation even with a different name:\n${recentScenarios.map((s) => `- ${s}`).join("\n")}`
+    : "";
   const systemPrompt = `You are a senior assessment centre designer who has run graduate and professional assessment centres for Big 4 firms and investment banks. You create realistic written case exercises matching the calibre those employers actually use: a short, sharp brief with a few simple exhibits that tests structured thinking and commercial judgement — never volume or complex financial engineering. Output must be valid JSON only — no markdown fences, no commentary.
 
 CRITICAL: the case company MUST be fictional. Real employers never set case studies about real named organisations, because the exercise tests reasoning about an unfamiliar business, not recall. Invent a plausible company name and invent all of its figures. Never use the name of a real company, and never use a real company's name with a minor alteration. If the candidate's target role text names an employer, use that only to infer the sector and the type of business, never as the case subject.`;
@@ -95,6 +157,10 @@ COMPANY (company field): a FICTIONAL organisation, invented for this exercise. G
 OVERVIEW (overview field): ONE paragraph, 80-110 words: who this fictional company is, its size (an invented revenue or headcount figure), what it sells, its market position, and one line of strategic context. No company-history essay.
 
 CHALLENGE (challenge field): ONE paragraph, 80-110 words: a single focused business decision with a genuine trade-off, what triggered it, and what is at stake. There must be 2-3 plausible options with no single obvious answer.
+
+REQUIRED ANGLE for this case: ${chosenAngle}. Build the challenge around this specific decision. Do not fall back on a generic "grow revenue while controlling cost" framing.
+
+VARIETY: vary the shape of the business itself, not only its name. Change the scale (from a mid-size firm to a large one), the operating model, and the stakeholder in play between cases. Two cases in the same sector should feel like different companies with different problems, not the same scenario relabelled.${avoidBlock}
 
 EXHIBITS (exhibits field): EXACTLY 3 exhibits. Each exhibit content MUST be a STRING (not an array) containing one compact markdown pipe table — maximum 6 data rows and 4 columns — plus at most one short caption sentence. Keep the numbers graduate-friendly: clear trends and simple percentages a candidate can work with mentally — no DCFs or dense financial statements. The exhibits must not all point the same way:
 - Exhibit 1: a financial or performance snapshot (e.g. 3-year revenue/margin mini-table, or KPIs vs budget)
