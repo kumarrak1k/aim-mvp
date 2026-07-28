@@ -4,7 +4,7 @@ import { z } from "zod";
 import { prisma } from "@/app/lib/prisma";
 import { callOpenAIChat } from "@/app/lib/openai-client";
 import { MODEL_PREMIUM } from "@/app/lib/aiModels";
-import { buildPresentationBriefPrompts } from "@/app/lib/assessmentCentrePrompts";
+import { AC_SCORING_CALIBRATION, buildPresentationBriefPrompts } from "@/app/lib/assessmentCentrePrompts";
 import { checkRateLimit } from "@/app/lib/rateLimit";
 import { parseJsonBody } from "@/app/lib/validation";
 import { moderateText } from "@/app/lib/moderation";
@@ -78,7 +78,9 @@ export async function POST(
 
   const scenario = JSON.stringify(session.caseStudyScenario);
 
-  const systemPrompt = `You are a senior assessor scoring a written case exercise from a ${session.role} candidate (${session.experienceLevel}), at the standard of a Big 4 / investment bank graduate assessment centre. The candidate read the case untimed but had only 12 minutes to write once they began — calibrate expectations to that: a strong answer is a concise, structured recommendation (roughly 150-350 words) that commits to a decision and uses the exhibit data selectively, not a polished essay. Score rigorously and honestly against that standard. Output valid JSON only.`;
+  const systemPrompt = `You are a senior assessor scoring a written case exercise from a ${session.role} candidate (${session.experienceLevel}), at the standard of a Big 4 / investment bank graduate assessment centre. The candidate read the case untimed but had only 12 minutes to write once they began — calibrate expectations to that: a strong answer is a concise, structured recommendation (roughly 150-350 words) that commits to a decision and uses the exhibit data selectively, not a polished essay. Output valid JSON only.
+
+${AC_SCORING_CALIBRATION}`;
 
   const userPrompt = `You are scoring a case study response.
 

@@ -13,6 +13,38 @@
  * far beyond what any graduate AC written exercise actually uses.)
  */
 /**
+ * Shared scoring calibration for the assessment centre markers.
+ *
+ * The practice module was recalibrated after users found it too harsh (see
+ * "Recalibrate scoring: usable top end"), but that change only reached
+ * /api/feedback and /api/summary. The assessment centre markers were left
+ * telling the model to "score rigorously and honestly" with no band
+ * definitions, which reliably produces harsh, middle-clustered marks: with no
+ * anchor for what a 9 looks like, models default to withholding the top of the
+ * scale.
+ *
+ * These bands are deliberately two-sided. Candidates re-run assessments to see
+ * progress, so the top must be reachable; but an unusable top end and an
+ * inflated one are both failures, so the lower bands are explicit too.
+ */
+export const AC_SCORING_CALIBRATION = `CALIBRATION: you are a fair, calibrated assessor, neither a soft tutor nor a gatekeeper. Candidates use these scores to track progress between attempts, so the top of the scale must be genuinely reachable and every band must be applied honestly.
+
+Scoring bands (apply to EACH category and to the overall score):
+- 10   Outstanding. Would stand out in a competitive graduate assessment centre.
+- 9    Excellent. Meets the standard fully; at most one dimension slightly thinner.
+- 7-8  Strong. Does what was asked with a clear line of reasoning, but light on one
+       of: use of the specific material provided, commitment to a recommendation,
+       or risks and next steps.
+- 5-6  Adequate. Addresses the task but stays generic: little use of the material
+       given, or states conclusions without supporting them.
+- 3-4  Weak. Vague, or largely restates the brief without analysis of its own.
+- 0-2  Non-answer, or does not address the task set.
+
+Do not cluster scores in the middle. If the work meets a band, award that band: 9 and 10 are attainable and must be given when the criteria are met. Equally, do not inflate: a genuinely generic response is a 5, not a 7.
+
+Judge against what is achievable within the time allowed, not against an unhurried, polished submission.`;
+
+/**
  * Presentation brief (stage 3).
  *
  * Shared by the start route (when stage 3 runs standalone) and the

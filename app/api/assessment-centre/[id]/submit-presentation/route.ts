@@ -4,6 +4,7 @@ import { z } from "zod";
 import { prisma } from "@/app/lib/prisma";
 import { callOpenAIChat } from "@/app/lib/openai-client";
 import { MODEL_PREMIUM } from "@/app/lib/aiModels";
+import { AC_SCORING_CALIBRATION } from "@/app/lib/assessmentCentrePrompts";
 import { checkRateLimit } from "@/app/lib/rateLimit";
 import { parseJsonBody } from "@/app/lib/validation";
 import { moderateText } from "@/app/lib/moderation";
@@ -74,7 +75,9 @@ export async function POST(
   }
 
   // Score the presentation
-  const scoreSystemPrompt = `You are a senior assessor scoring a presentation transcript from a ${session.role} candidate (${session.experienceLevel}) in the ${session.sector} sector. Score rigorously and honestly. Output valid JSON only.`;
+  const scoreSystemPrompt = `You are a senior assessor scoring a presentation transcript from a ${session.role} candidate (${session.experienceLevel}) in the ${session.sector} sector. Output valid JSON only.
+
+${AC_SCORING_CALIBRATION}`;
 
   const briefStr = session.presentationBrief ? JSON.stringify(session.presentationBrief) : "No brief available.";
   const scoreUserPrompt = `Score this presentation transcript.
