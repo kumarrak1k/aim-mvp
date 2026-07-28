@@ -121,8 +121,20 @@ const CASE_STUDY_ANGLES = [
   "a quality or incident problem that has damaged client trust",
 ] as const;
 
-export function pickCaseStudyAngle(): string {
-  return CASE_STUDY_ANGLES[Math.floor(Math.random() * CASE_STUDY_ANGLES.length)];
+/**
+ * A random draw repeats sooner than intuition suggests: with twelve angles, two
+ * of three runs collide roughly a quarter of the time, and a live check showed
+ * exactly that (two technology-migration cases in three runs).
+ *
+ * Rotating by the candidate's completed-run count instead guarantees twelve
+ * distinct angles before any repeat, and seeding the starting offset from their
+ * id stops every candidate meeting the same case first.
+ */
+export function pickCaseStudyAngle(seed = "", runIndex = 0): string {
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) | 0;
+  const offset = Math.abs(h) % CASE_STUDY_ANGLES.length;
+  return CASE_STUDY_ANGLES[(offset + runIndex) % CASE_STUDY_ANGLES.length];
 }
 
 export function buildCaseStudyPrompts({
@@ -131,6 +143,8 @@ export function buildCaseStudyPrompts({
   experienceLevel,
   angle,
   recentScenarios = [],
+  seed = "",
+  runIndex = 0,
 }: {
   role: string;
   sector: string;
@@ -139,10 +153,16 @@ export function buildCaseStudyPrompts({
   angle?: string;
   /** Company names and challenge summaries this candidate has already seen. */
   recentScenarios?: string[];
+  /** Stable per-candidate value so candidates do not all start on the same angle. */
+  seed?: string;
+  /** Case studies this candidate has already had; rotates the angle. */
+  runIndex?: number;
 }): { systemPrompt: string; userPrompt: string } {
-  const chosenAngle = angle ?? pickCaseStudyAngle();
+  const chosenAngle = angle ?? pickCaseStudyAngle(seed, runIndex);
   const avoidBlock = recentScenarios.length
-    ? `\n\nALREADY USED FOR THIS CANDIDATE — do not repeat these company names, and do not reuse the same underlying business situation even with a different name:\n${recentScenarios.map((s) => `- ${s}`).join("\n")}`
+    ? `\n\nALREADY USED FOR THIS CANDIDATE — these are the cases this person has already worked through:\n${recentScenarios.map((s) => `- ${s}`).join("\n")}
+
+Your case MUST differ from every one of them in the TYPE of problem, not merely in company name and wording. Narrow operational roles pull strongly towards one familiar problem (for a fund accountant, outsourced administration and reconciliation breaks; for a developer, legacy migration), and repeating that with new names is the failure mode to avoid. If a listed case turned on an outsourcing or supplier relationship, yours must not. If one turned on a control or reconciliation failure, yours must not. Choose a genuinely different decision, even if it sits slightly further from the candidate's day-to-day remit, because breadth of commercial judgement is what is being assessed.`
     : "";
   const systemPrompt = `You are a senior assessment centre designer who has run graduate and professional assessment centres for Big 4 firms and investment banks. You create realistic written case exercises matching the calibre those employers actually use: a short, sharp brief with a few simple exhibits that tests structured thinking and commercial judgement — never volume or complex financial engineering. Output must be valid JSON only — no markdown fences, no commentary.
 

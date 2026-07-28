@@ -129,6 +129,8 @@ export async function POST(request: NextRequest) {
       sector,
       experienceLevel,
       recentScenarios,
+      seed: userId,
+      runIndex: priorSessions.length,
     });
 
     const aiResponse = await callOpenAIChat({
