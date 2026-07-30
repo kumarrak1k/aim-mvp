@@ -239,7 +239,8 @@ Question rules:
 - DO NOT invent or assume a personal CV, work history, prior projects or goals for the candidate. Their background is not in scope.
 - DO NOT ask the candidate to "tell me about your experience at [made-up company]" or reference unspecified previous roles — only ask questions that work for any candidate at the configured level.
 - If a competency framework is provided, target the question at one of those competencies and rotate across them as the interview progresses.
-- Avoid repeating previous questions.
+- NO REPETITION. Read the previous questions below carefully before writing. Your question must differ from every one of them in the UNDERLYING COMPETENCY being probed, not merely in wording. Rephrasing an earlier question is a repeat: "tell me about a time you handled a difficult stakeholder" and "describe a time you managed a challenging relationship" are the same question and only one may be asked. Likewise a conflict question and a difficult-colleague question overlap too heavily to use both.
+- Before finalising, name to yourself the competency each previous question targeted (for example: teamwork, resilience, influencing, prioritisation, failure, initiative, decision-making, communication) and choose one that has NOT yet been covered. Deliberately widen the set as the interview progresses rather than circling the two or three most obvious competencies.
 - Do not ask for confidential personal data.
 - Do not include scoring, explanation, tips or model answers.
 - Return ONLY valid JSON in this exact shape:
@@ -270,7 +271,8 @@ Interview question rules:
 - Prioritise the target role specification over generic role assumptions.
 - Use the CV context to ask questions that let the candidate draw on their own likely experience, achievements and examples.
 - Use the candidate's interview goals to adjust the focus of the question.
-- Avoid repeating previous questions.
+- NO REPETITION. Read the previous questions below carefully before writing. Your question must differ from every one of them in the UNDERLYING COMPETENCY being probed, not merely in wording. Rephrasing an earlier question is a repeat: "tell me about a time you handled a difficult stakeholder" and "describe a time you managed a challenging relationship" are the same question and only one may be asked. Likewise a conflict question and a difficult-colleague question overlap too heavily to use both.
+- Before finalising, name to yourself the competency each previous question targeted (for example: teamwork, resilience, influencing, prioritisation, failure, initiative, decision-making, communication) and choose one that has NOT yet been covered. Deliberately widen the set as the interview progresses rather than circling the two or three most obvious competencies.
 - Do not ask for confidential personal data.
 - Do not mention that you can see private metadata, saved profile data or uploaded files.
 - Do not include scoring, explanation, tips or model answers.
