@@ -339,7 +339,7 @@ export default function ProgressPage() {
             {acLoading && <ProgressLoadingState />}
             {!acLoading && acError && <ErrorState message={acError} />}
             {!acLoading && !acError && acSessions.length === 0 && <EmptyACState />}
-            {!acLoading && !acError && acSessions.length > 0 && <ACDashboard sessions={acSessions} />}
+            {!acLoading && !acError && acSessions.length > 0 && <ACDashboard sessions={acSessions} onSessionDeleted={(id) => setAcSessions((prev) => prev.filter((x) => x.id !== id))} />}
           </>
         )}
 
@@ -671,9 +671,12 @@ function CategoryLine({
 function DeleteSessionButton({
   sessionId,
   onDeleted,
+  endpoint = "/api/practice-sessions",
 }: {
   sessionId: string;
   onDeleted: (id: string) => void;
+  /** Collection route the id hangs off. Practice and AC sessions differ. */
+  endpoint?: string;
 }) {
   const [busy, setBusy] = useState(false);
 
@@ -688,7 +691,7 @@ function DeleteSessionButton({
     }
     setBusy(true);
     try {
-      const res = await fetch(`/api/practice-sessions/${sessionId}`, {
+      const res = await fetch(`${endpoint}/${sessionId}`, {
         method: "DELETE",
       });
       if (!res.ok) throw new Error(`Delete failed (${res.status})`);
@@ -932,7 +935,13 @@ function ACScoreBar({ label, score, colour = "purple" }: { label: string; score:
   );
 }
 
-function ACSessionRow({ session }: { session: ACSession }) {
+function ACSessionRow({
+  session,
+  onDeleted,
+}: {
+  session: ACSession;
+  onDeleted: (id: string) => void;
+}) {
   const score = session.overallScore;
   const scoreCol =
     score === null ? "text-gray-500"
@@ -947,8 +956,16 @@ function ACSessionRow({ session }: { session: ACSession }) {
   };
 
   return (
+    <div className="relative">
+      <div className="absolute right-3 top-3 z-10">
+        <DeleteSessionButton
+          sessionId={session.id}
+          onDeleted={onDeleted}
+          endpoint="/api/assessment-centre"
+        />
+      </div>
     <Link href={`/assessment-centre/${session.id}/report`} className="block">
-      <div className="grid gap-3 rounded-[1.35rem] border border-white/10 bg-black/25 p-4 transition hover:-translate-y-0.5 hover:border-cyan-300/25 hover:bg-white/[0.055] sm:grid-cols-[minmax(0,1fr)_100px] sm:items-center">
+      <div className="grid gap-3 rounded-[1.35rem] border border-white/10 bg-black/25 p-4 pr-24 transition hover:-translate-y-0.5 hover:border-cyan-300/25 hover:bg-white/[0.055] sm:grid-cols-[minmax(0,1fr)_100px] sm:items-center">
         <div className="min-w-0">
           <div className="mb-2 flex flex-wrap items-center gap-1.5">
             {session.selectedStages.map((s) => (
@@ -970,10 +987,11 @@ function ACSessionRow({ session }: { session: ACSession }) {
         </div>
       </div>
     </Link>
+    </div>
   );
 }
 
-function ACDashboard({ sessions }: { sessions: ACSession[] }) {
+function ACDashboard({ sessions, onSessionDeleted }: { sessions: ACSession[]; onSessionDeleted: (id: string) => void }) {
   const latest = sessions[0];
   const scores = sessions.map((s) => s.overallScore).filter((s): s is number => s !== null);
   const avg = scores.length ? Math.round((scores.reduce((a, b) => a + b, 0) / scores.length) * 10) / 10 : null;
@@ -1120,7 +1138,7 @@ function ACDashboard({ sessions }: { sessions: ACSession[] }) {
         </div>
         <div className="space-y-3">
           {sessions.map((s) => (
-            <ACSessionRow key={s.id} session={s} />
+            <ACSessionRow key={s.id} session={s} onDeleted={onSessionDeleted} />
           ))}
         </div>
       </section>
