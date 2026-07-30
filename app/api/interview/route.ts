@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { checkRateLimit } from "@/app/lib/rateLimit";
+import { prisma } from "@/app/lib/prisma";
 import { callOpenAIChat, OpenAIError } from "@/app/lib/openai-client";
 import { MODEL_QUALITY } from "@/app/lib/aiModels";
 import {
@@ -211,6 +212,47 @@ export async function POST(req: NextRequest) {
       ? `This question MUST be an opening/introduction question — for example "Tell me about yourself", "Walk me through your background", or "Could you start with a brief introduction?". Adapt the phrasing naturally to the candidate's target role and experience level.`
       : `This question MUST be a ${requiredQuestionType} question. Do not deviate from this type.`;
 
+    // Questions this candidate has already been asked in EARLIER sessions for
+    // the same role. `history` only covers the session in progress (it is sent
+    // by the client), so without this a second interview on the same role can
+    // reproduce the first one question for question.
+    //
+    // PracticeSession.results already stores each ResultItem with its question
+    // text, so this needs no schema change and rides the existing
+    // [clerkUserId, createdAt] index.
+    //
+    // Deliberately non-fatal: question generation is the primary job here, and
+    // a database hiccup must degrade de-duplication rather than break the
+    // interview.
+    let earlierSessionQuestions = "";
+    try {
+      const priorSessions = await prisma.practiceSession.findMany({
+        where: { clerkUserId: userId, role: String(role) },
+        orderBy: { createdAt: "desc" },
+        take: 3,
+        select: { results: true },
+      });
+
+      const asked = priorSessions
+        .flatMap((s) => (Array.isArray(s.results) ? s.results : []))
+        .map((r) =>
+          r && typeof r === "object" && "question" in r
+            ? String((r as { question?: unknown }).question ?? "").trim()
+            : ""
+        )
+        .filter(Boolean);
+
+      // Cap so the prompt cannot bloat on a heavy user.
+      const unique = [...new Set(asked)].slice(0, 20);
+      if (unique.length) {
+        earlierSessionQuestions = `\n\nAsked in this candidate's PREVIOUS sessions for the same role. These must not be repeated either, and the same competency-level rule applies: do not reword them.\n${unique
+          .map((q) => `- ${q}`)
+          .join("\n")}`;
+      }
+    } catch (err) {
+      console.error("INTERVIEW: prior-question lookup failed", err);
+    }
+
     const previousQuestions = Array.isArray(history)
       ? history
           .map((item, index) => {
@@ -297,7 +339,7 @@ Current question:
 ${safeQuestionNumber} of ${safeTotalQuestions}${questionTypeInstruction ? `\n\nRequired question type for this position:\n${questionTypeInstruction}` : ""}
 
 Previous interview history:
-${previousQuestions || "No previous questions yet."}
+${previousQuestions || "No previous questions yet."}${earlierSessionQuestions}
 
 Generate the next best UK English interview question, drawing only from the brief above.
 `.trim()
@@ -312,7 +354,7 @@ Current question:
 ${safeQuestionNumber} of ${safeTotalQuestions}${questionTypeInstruction ? `\n\nRequired question type for this position:\n${questionTypeInstruction}` : ""}
 
 Previous interview history:
-${previousQuestions || "No previous questions yet."}
+${previousQuestions || "No previous questions yet."}${earlierSessionQuestions}
 
 Generate the next best UK English interview question.
 `.trim();
