@@ -9,7 +9,13 @@ import type { SignupAttribution } from "./attributionChannel";
  */
 export async function saveSignupAttributionIfUnset(
   clerkUserId: string,
-  attr: SignupAttribution
+  attr: SignupAttribution,
+  /**
+   * ISO country from the edge (x-vercel-ip-country). Passed separately from
+   * `attr` because attribution is client-derived and therefore spoofable,
+   * whereas this is set by the platform and can be trusted.
+   */
+  signupCountry?: string | null
 ): Promise<void> {
   const existing = await prisma.userProfile.findUnique({
     where: { clerkUserId },
@@ -35,9 +41,11 @@ export async function saveSignupAttributionIfUnset(
     return; // first touch already recorded
   }
 
+  const data = { ...attr, ...(signupCountry ? { signupCountry } : {}) };
+
   await prisma.userProfile.upsert({
     where: { clerkUserId },
-    update: attr,
-    create: { clerkUserId, ...attr },
+    update: data,
+    create: { clerkUserId, ...data },
   });
 }

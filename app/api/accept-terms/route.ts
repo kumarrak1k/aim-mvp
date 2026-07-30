@@ -54,7 +54,11 @@ export async function POST(req: Request) {
     const attribution = sanitizeAttribution(body.attribution);
     if (attribution) {
       try {
-        await saveSignupAttributionIfUnset(userId, attribution);
+        await saveSignupAttributionIfUnset(
+          userId,
+          attribution,
+          req.headers.get("x-vercel-ip-country")
+        );
       } catch (err) {
         console.error("SAVE ATTRIBUTION ERROR:", err);
       }

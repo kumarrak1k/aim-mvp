@@ -27,6 +27,7 @@ export type AdminUser = {
   companyCompUntil: string | null;
   trialEndsAt: string | null;
   trialConsumed: boolean;
+  signupCountry: string | null;
   // Usage aggregates (Prisma)
   practiceCount: number;
   lastPracticeAt: string | null;
@@ -171,7 +172,12 @@ function getMembershipLabel(u: AdminUser): string {
     if (hasActiveComp(u)) {
       return `${u.compPlan!.toLowerCase() === "professional" ? "Professional" : "Plus"} (Comp)`;
     }
-    return "Free";
+    // "Free" alone conflates two very different people: someone who never
+    // started a trial (not convinced enough to try) and someone who used the
+    // trial and chose not to pay (tried it, was not convinced). They need
+    // different follow-up, so the distinction is surfaced here. trialConsumed
+    // is already fetched from Clerk metadata.
+    return u.trialConsumed ? "Free (trial used)" : "Free (no trial)";
   }
   if (status === "trialing") return `${tier} (Trial)`;
   if (status === "past_due") return `${tier} (Past due)`;
@@ -228,7 +234,7 @@ function MembershipBadge({ user }: { user: AdminUser }) {
 // ── CSV export ────────────────────────────────────────────────────────────────
 
 function exportCsv(users: AdminUser[]) {
-  const headers = ["ID","First name","Last name","Email","Account type","Membership","Company","Company role","Period / trial end","Practice sessions","Last session","Assessment centres","Career docs","Profile built","Source channel","UTM source","UTM medium","UTM campaign","Promo code","Referrer","Landing page","Joined","Last sign-in","Last active"];
+  const headers = ["ID","First name","Last name","Email","Account type","Membership","Company","Company role","Period / trial end","Practice sessions","Last session","Assessment centres","Career docs","Profile built","Source channel","UTM source","UTM medium","UTM campaign","Promo code","Referrer","Landing page","Country","Joined","Last sign-in","Last active"];
   const rows = users.map((u) => [
     u.id, u.firstName ?? "", u.lastName ?? "", u.email, u.accountType,
     getMembershipLabel(u), u.companyName ?? "", u.companyRole ?? "",
@@ -240,7 +246,7 @@ function exportCsv(users: AdminUser[]) {
     u.profileComplete ? "yes" : "no",
     deriveChannel(u),
     u.utmSource ?? "", u.utmMedium ?? "", u.utmCampaign ?? "",
-    u.promoCode ?? "", u.referrer ?? "", u.landingPath ?? "",
+    u.promoCode ?? "", u.referrer ?? "", u.landingPath ?? "", u.signupCountry ?? "",
     new Date(u.createdAt).toLocaleDateString("en-GB"),
     u.lastSignInAt ? new Date(u.lastSignInAt).toLocaleDateString("en-GB") : "Never",
     u.lastActiveAt ? new Date(u.lastActiveAt).toLocaleDateString("en-GB") : "Never",
@@ -561,6 +567,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
         promoCode: null,
         referrer: null,
         landingPath: null,
+        signupCountry: null,
         createdAt: new Date().toISOString(),
         lastSignInAt: null,
         lastActiveAt: null,
@@ -896,6 +903,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                       u.utmCampaign ? `Campaign: ${u.utmCampaign}` : null,
                       u.referrer ? `Referrer: ${u.referrer}` : null,
                       u.landingPath ? `Landed on: ${u.landingPath}` : null,
+                      u.signupCountry ? `Country: ${u.signupCountry}` : null,
                     ]
                       .filter(Boolean)
                       .join("\n") || "No attribution captured (signed up before tracking, or direct visit)"}

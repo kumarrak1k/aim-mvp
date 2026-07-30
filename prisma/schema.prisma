@@ -365,6 +365,10 @@ model UserProfile {
   promoCode             String?
   referrer              String?
   landingPath           String?
+  // ISO 3166-1 alpha-2 from the edge at signup (x-vercel-ip-country). Recorded
+  // once alongside first-touch attribution so the admin view can tell a UK
+  // signup from an overseas one, which changes how a non-conversion reads.
+  signupCountry         String?
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
 
