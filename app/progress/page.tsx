@@ -321,7 +321,15 @@ export default function ProgressPage() {
             {sessionsLoading && <ProgressLoadingState />}
             {!sessionsLoading && sessionsError && <ErrorState message={sessionsError} />}
             {!sessionsLoading && !sessionsError && !stats.latestSession && <EmptyProgressState isAdvancedPlan={planName === "Professional"} />}
-            {!sessionsLoading && !sessionsError && stats.latestSession && <ProgressDashboard stats={stats} isAdvancedPlan={planName === "Professional"} />}
+            {!sessionsLoading && !sessionsError && stats.latestSession && (
+              <ProgressDashboard
+                stats={stats}
+                isAdvancedPlan={planName === "Professional"}
+                onSessionDeleted={(id) =>
+                  setSessions((prev) => prev.filter((s) => s.id !== id))
+                }
+              />
+            )}
           </>
         )}
 
@@ -340,7 +348,7 @@ export default function ProgressPage() {
   );
 }
 
-function ProgressDashboard({ stats, isAdvancedPlan }: { stats: ProgressStats; isAdvancedPlan: boolean }) {
+function ProgressDashboard({ stats, isAdvancedPlan, onSessionDeleted }: { stats: ProgressStats; isAdvancedPlan: boolean; onSessionDeleted: (id: string) => void }) {
   const latest = stats.latestSession;
   if (!latest) return null;
 
@@ -486,7 +494,11 @@ function ProgressDashboard({ stats, isAdvancedPlan }: { stats: ProgressStats; is
 
           <div className="mt-6 space-y-3">
             {stats.recentSessions.map((session) => (
-              <SessionRow key={session.id} session={session} />
+              <SessionRow
+                key={session.id}
+                session={session}
+                onDeleted={onSessionDeleted}
+              />
             ))}
           </div>
         </GlassPanel>
@@ -644,10 +656,78 @@ function CategoryLine({
   );
 }
 
-function SessionRow({ session }: { session: DashboardSession }) {
+/**
+ * Delete control for a saved practice session.
+ *
+ * The DELETE endpoint already existed but had no route through the UI, so a
+ * candidate could not remove a session they did not want kept. For a product
+ * that stores interview performance, that is a gap worth closing on its own
+ * terms as well as a data protection one.
+ *
+ * Sits outside the row's Link (nested interactive elements inside an anchor
+ * are invalid and swallow the click), and confirms before deleting because
+ * there is no undo.
+ */
+function DeleteSessionButton({
+  sessionId,
+  onDeleted,
+}: {
+  sessionId: string;
+  onDeleted: (id: string) => void;
+}) {
+  const [busy, setBusy] = useState(false);
+
+  async function handleDelete() {
+    if (busy) return;
+    if (
+      !window.confirm(
+        "Delete this saved session? Its scores will be removed from your trend and averages. This cannot be undone."
+      )
+    ) {
+      return;
+    }
+    setBusy(true);
+    try {
+      const res = await fetch(`/api/practice-sessions/${sessionId}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) throw new Error(`Delete failed (${res.status})`);
+      onDeleted(sessionId);
+    } catch (err) {
+      console.error("Session delete failed", err);
+      window.alert("Could not delete that session. Please try again.");
+      setBusy(false);
+    }
+  }
+
   return (
+    <button
+      type="button"
+      onClick={handleDelete}
+      disabled={busy}
+      aria-label="Delete this saved session"
+      title="Delete this session"
+      className="shrink-0 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-[11px] font-black text-gray-400 transition hover:border-rose-400/40 hover:bg-rose-500/10 hover:text-rose-300 disabled:opacity-50"
+    >
+      {busy ? "Deleting…" : "Delete"}
+    </button>
+  );
+}
+
+function SessionRow({
+  session,
+  onDeleted,
+}: {
+  session: DashboardSession;
+  onDeleted: (id: string) => void;
+}) {
+  return (
+    <div className="relative">
+      <div className="absolute right-3 top-3 z-10">
+        <DeleteSessionButton sessionId={session.id} onDeleted={onDeleted} />
+      </div>
     <Link href={`/progress/${session.id}`} className="block">
-      <div className="grid gap-3 rounded-[1.35rem] border border-white/10 bg-black/25 p-4 transition hover:-translate-y-0.5 hover:border-cyan-300/25 hover:bg-white/[0.055] sm:grid-cols-[minmax(0,1fr)_120px] sm:items-center">
+      <div className="grid gap-3 rounded-[1.35rem] border border-white/10 bg-black/25 p-4 pr-24 transition hover:-translate-y-0.5 hover:border-cyan-300/25 hover:bg-white/[0.055] sm:grid-cols-[minmax(0,1fr)_120px] sm:items-center">
         <div className="min-w-0">
           <div className="mb-2 flex flex-wrap items-center gap-2">
             <span className="rounded-full border border-cyan-300/15 bg-cyan-300/10 px-2.5 py-1 text-[11px] font-black text-cyan-100">
@@ -677,6 +757,7 @@ function SessionRow({ session }: { session: DashboardSession }) {
         </div>
       </div>
     </Link>
+    </div>
   );
 }
 
