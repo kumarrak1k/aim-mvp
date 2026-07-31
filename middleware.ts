@@ -1,5 +1,12 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
+import {
+  ADMIN_BYPASS_COOKIE,
+  BYPASS_DAYS,
+  createBypassToken,
+  isValidBypassToken,
+  timingSafeEqual,
+} from "./app/lib/adminBypass";
 
 /**
  * Next.js edge middleware — must be named middleware.ts at the project root.
@@ -14,6 +21,7 @@ import { NextResponse } from "next/server";
 
 const isAdminArea   = createRouteMatcher(["/admin(.*)"]);
 const isAdminSignIn = createRouteMatcher(["/admin/sign-in(.*)"]);
+const isAdminUnlock = createRouteMatcher(["/admin/unlock"]);
 const isApiRoute    = createRouteMatcher(["/api(.*)"]);
 
 // Routes that require authentication
@@ -47,10 +55,46 @@ export default clerkMiddleware(async (auth, req) => {
 
   // ── Admin area: IP allowlist, then auth + MFA step-up ──────────────────
   // ADMIN_ALLOWED_IPS (comma-separated) gates the ENTIRE admin area incl.
-  // the sign-in page. Unset = allowlist off (safe rollout; set it in Vercel
-  // to arm). If locked out after an ISP IP change, clear the env var in the
-  // Vercel dashboard and redeploy — the dashboard is not behind this gate.
+  // the sign-in page. Unset = allowlist off.
+  //
+  // A device can also be authorised from any network by redeeming
+  // /admin/unlock?key=<ADMIN_BYPASS_SECRET> once — see app/lib/adminBypass.ts.
+  // That is what makes arming the allowlist safe: without it, an ISP IP change
+  // locks you out until a redeploy, because middleware env vars are baked at
+  // build time.
   if (isAdminArea(req)) {
+    const bypassSecret = process.env.ADMIN_BYPASS_SECRET ?? "";
+
+    // Redeem the unlock link. Handled BEFORE the IP gate — a blocked IP is
+    // exactly who needs to use it, so gating it behind the allowlist would
+    // make it useless.
+    if (isAdminUnlock(req)) {
+      const target = req.nextUrl.clone();
+      target.pathname = "/admin";
+      target.search = ""; // never leave the key in the address bar or history
+
+      const supplied = req.nextUrl.searchParams.get("key") ?? "";
+      if (!bypassSecret || !timingSafeEqual(supplied, bypassSecret)) {
+        // 404, not 403 — a wrong key should not confirm the endpoint exists.
+        return new NextResponse("Not found", { status: 404 });
+      }
+
+      const expiresAt = Date.now() + BYPASS_DAYS * 24 * 60 * 60 * 1000;
+      const response = NextResponse.redirect(target);
+      response.cookies.set(
+        ADMIN_BYPASS_COOKIE,
+        await createBypassToken(bypassSecret, expiresAt),
+        {
+          httpOnly: true,
+          secure: true,
+          sameSite: "lax",
+          path: "/",
+          maxAge: BYPASS_DAYS * 24 * 60 * 60,
+        }
+      );
+      return response;
+    }
+
     const allowlist = (process.env.ADMIN_ALLOWED_IPS ?? "")
       .split(",")
       .map((s) => s.trim())
@@ -59,7 +103,13 @@ export default clerkMiddleware(async (auth, req) => {
       const clientIp = (req.headers.get("x-forwarded-for") ?? "")
         .split(",")[0]
         .trim();
-      if (!allowlist.includes(clientIp)) {
+      const allowed =
+        allowlist.includes(clientIp) ||
+        (await isValidBypassToken(
+          bypassSecret,
+          req.cookies.get(ADMIN_BYPASS_COOKIE)?.value
+        ));
+      if (!allowed) {
         return new NextResponse("Not found", { status: 404 });
       }
     }
