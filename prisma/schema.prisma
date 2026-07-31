@@ -339,6 +339,39 @@ model AssessmentCentreSession {
   @@index([status])
 }
 
+/**
+ * Append-only activity log — records ATTEMPTS, not just outcomes.
+ *
+ * PracticeSession and AssessmentCentreSession are only written when a user
+ * FINISHES, which makes "never started" and "started and hit a wall" look
+ * identical (both are simply an absence of rows). That ambiguity is why a
+ * cohort of trial users showing zero sessions could not be diagnosed from the
+ * database at all. This table closes that gap: every start, every completion
+ * and every plan-gated rejection is recorded, so drop-off is visible and
+ * blocked attempts can be counted as demand.
+ *
+ * Deliberately schemaless in `detail` — event shapes differ and this is a
+ * diagnostic log, not a modelled domain entity. Writes are fire-and-forget and
+ * must never fail a user-facing request.
+ */
+model ActivityEvent {
+  id          String   @id @default(cuid())
+  clerkUserId String
+  /** See ACTIVITY_EVENTS in app/lib/activity.ts for the permitted values. */
+  event       String
+  /** Effective plan at the moment of the event ("free" | "plus" | "professional"). */
+  plan        String?
+  /** True when the access came from the no-card reverse trial. */
+  isTrial     Boolean  @default(false)
+  /** Small event-specific payload (role, stage, reason). Never PII. */
+  detail      Json?
+  createdAt   DateTime @default(now())
+
+  @@index([clerkUserId, createdAt])
+  @@index([event, createdAt])
+  @@index([createdAt])
+}
+
 model UserProfile {
   id                    String   @id @default(cuid())
   clerkUserId           String   @unique

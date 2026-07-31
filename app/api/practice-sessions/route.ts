@@ -10,6 +10,7 @@ import {
   type CandidatePlan,
   TRIAL_USAGE_CAPS,
 } from "../../lib/candidatePlan";
+import { recordActivity, ACTIVITY_EVENTS } from "../../lib/activity";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -157,6 +158,10 @@ export async function POST(request: NextRequest) {
     const usage = await getUsageInfo(userId, plan);
 
     if (usage.limitReached) {
+      recordActivity(userId, ACTIVITY_EVENTS.PRACTICE_CAPPED, plan, {
+        usedToday: usage.usedToday,
+        dailyLimit: usage.dailyLimit,
+      });
       const error = usage.isTrial
         ? `You've reached your free-trial fair-use limit of ${TRIAL_USAGE_CAPS.practiceSessions} practice interviews. Upgrade to Plus for unlimited practice.`
         : "You've used all 3 free sessions. Upgrade to Plus for unlimited practice.";
@@ -238,6 +243,12 @@ export async function POST(request: NextRequest) {
       }
 
       return created;
+    });
+
+    recordActivity(userId, ACTIVITY_EVENTS.PRACTICE_COMPLETED, plan, {
+      sessionId: session.id,
+      role: session.role,
+      overallScore: session.overallScore,
     });
 
     // Derive post-save usage locally — the pre-save check already counted, and

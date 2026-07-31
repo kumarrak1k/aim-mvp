@@ -8,6 +8,7 @@ import { buildPresentationBriefPrompts } from "@/app/lib/assessmentCentrePrompts
 import { checkRateLimit } from "@/app/lib/rateLimit";
 import { parseJsonBody } from "@/app/lib/validation";
 import { getCandidatePlan } from "@/app/lib/candidatePlan";
+import { recordActivity, ACTIVITY_EVENTS } from "@/app/lib/activity";
 
 export const runtime = "nodejs";
 export const maxDuration = 120;
@@ -55,12 +56,21 @@ export async function POST(
   if (!session.assignmentToken) {
     const plan = await getCandidatePlan(userId);
     if (!plan.isProfessional) {
+      recordActivity(userId, ACTIVITY_EVENTS.AC_BLOCKED, plan, {
+        reason: "plan",
+        stage: "interview",
+      });
       return NextResponse.json(
         { error: "Assessment centre requires the Professional plan." },
         { status: 403 }
       );
     }
   }
+
+  recordActivity(userId, ACTIVITY_EVENTS.AC_STAGE_SUBMITTED, null, {
+    stage: "interview",
+    sessionId: session.id,
+  });
 
   const parsed = await parseJsonBody(request, submitSchema);
   if ("response" in parsed) return parsed.response;

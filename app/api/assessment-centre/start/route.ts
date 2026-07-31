@@ -9,6 +9,7 @@ import { buildCaseStudyPrompts, buildPresentationBriefPrompts } from "@/app/lib/
 import { checkRateLimit } from "@/app/lib/rateLimit";
 import { parseJsonBody } from "@/app/lib/validation";
 import { getCandidatePlan, TRIAL_USAGE_CAPS } from "@/app/lib/candidatePlan";
+import { recordActivity, ACTIVITY_EVENTS } from "@/app/lib/activity";
 
 export const runtime = "nodejs";
 export const maxDuration = 180;
@@ -44,6 +45,12 @@ export async function POST(request: NextRequest) {
 
   const plan = await getCandidatePlan(userId);
   if (!plan.isProfessional) {
+    // Counted deliberately: a blocked attempt is a user who wanted the
+    // feature and was turned away, which is the demand signal for whether
+    // the trial should include it.
+    recordActivity(userId, ACTIVITY_EVENTS.AC_BLOCKED, plan, {
+      reason: "plan",
+    });
     return NextResponse.json(
       { error: "Assessment centre requires the Professional plan." },
       { status: 403 }
@@ -58,6 +65,10 @@ export async function POST(request: NextRequest) {
       where: { clerkUserId: userId, ...(since && { createdAt: { gte: since } }) },
     });
     if (used >= TRIAL_USAGE_CAPS.assessmentCentres) {
+      recordActivity(userId, ACTIVITY_EVENTS.AC_BLOCKED, plan, {
+        reason: "trial_cap",
+        used,
+      });
       return NextResponse.json(
         {
           error: `Your free trial includes ${TRIAL_USAGE_CAPS.assessmentCentres} mock assessment centres. Upgrade to Professional for unlimited assessment centres.`,
@@ -163,6 +174,10 @@ export async function POST(request: NextRequest) {
       ...(scenario ? { caseStudyScenario: scenario as object } : {}),
       ...(presentationBrief ? { presentationBrief: presentationBrief as object } : {}),
     },
+  });
+
+  recordActivity(userId, ACTIVITY_EVENTS.AC_STARTED, plan, {
+    sessionId: session.id,
   });
 
   return NextResponse.json({ id: session.id, ...(scenario ? { scenario } : {}) });

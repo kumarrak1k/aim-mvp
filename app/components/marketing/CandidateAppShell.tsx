@@ -48,14 +48,36 @@ type CandidateAppShellProps = {
   currentPath: CandidateAppPath;
 };
 
-const navItems: Array<{ href: CandidateAppPath; label: string }> = [
+/**
+ * `proOnly` marks the two Professional-tier features. Without a marker in the
+ * nav they look identical to the included ones, so a Free or trial user picks
+ * one and lands on an upgrade wall — which reads as bait-and-switch during a
+ * three-day trial. The badge sets the expectation up front instead.
+ */
+const navItems: Array<{
+  href: CandidateAppPath;
+  label: string;
+  proOnly?: boolean;
+}> = [
   { href: "/profile",           label: "My Profile"          },
   { href: "/practice",          label: "Interview Practice"  },
-  { href: "/assessment-centre", label: "Assessment Centre"   },
-  { href: "/career-docs",       label: "Career Docs"         },
+  { href: "/assessment-centre", label: "Assessment Centre",  proOnly: true },
+  { href: "/career-docs",       label: "Career Docs",        proOnly: true },
   { href: "/progress",          label: "My Progress"         },
   { href: "/guide",             label: "Guide"               },
 ];
+
+/** Small "Pro" pill shown beside Professional-only nav items. */
+function ProBadge() {
+  return (
+    <span
+      aria-label="Professional plan required"
+      className="ml-1.5 inline-block rounded-full border border-amber-400/30 bg-amber-400/[0.12] px-1.5 py-px align-middle text-[9px] font-black uppercase tracking-[0.1em] text-amber-300"
+    >
+      Pro
+    </span>
+  );
+}
 
 const resourceLinks = [
   { href: "/for-candidates/about",        label: "About us"          },
@@ -87,6 +109,29 @@ export function CandidateAppShell({
       // Best effort.
     }
   }
+
+  // Whether to show the "Pro" markers. Starts false so SSR and the first paint
+  // match; a Professional user simply sees the badges disappear once their plan
+  // resolves. Failing closed here is deliberate — briefly showing a badge to a
+  // paid user is harmless, whereas hiding it from a trial user is the exact
+  // problem this is meant to fix.
+  const [isProfessional, setIsProfessional] = useState(false);
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/subscription")
+      .then((r) => r.json())
+      .then((data: { planName?: string; isActive?: boolean }) => {
+        if (!cancelled) {
+          setIsProfessional(data?.planName === "Professional" && !!data.isActive);
+        }
+      })
+      .catch(() => {
+        // Leave the badges visible — see the note above.
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   return (
     <div className="relative min-h-screen bg-[#0a0614] text-white">
@@ -126,6 +171,7 @@ export function CandidateAppShell({
                       }`}
                     >
                       {item.label}
+                      {item.proOnly && !isProfessional && <ProBadge />}
                     </span>
                   </Link>
                 );
@@ -184,6 +230,7 @@ export function CandidateAppShell({
                     }`}
                   >
                     {item.label}
+                    {item.proOnly && !isProfessional && <ProBadge />}
                   </span>
                 </Link>
               );

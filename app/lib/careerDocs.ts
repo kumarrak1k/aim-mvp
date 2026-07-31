@@ -10,6 +10,7 @@
 
 import { prisma } from "./prisma";
 import { getCandidatePlan, TRIAL_USAGE_CAPS } from "./candidatePlan";
+import { recordActivity, ACTIVITY_EVENTS } from "./activity";
 
 export type CareerDocKind =
   | "cv-enhancer"
@@ -31,6 +32,11 @@ export async function checkCareerDocAccess(
   const plan = await getCandidatePlan(userId);
 
   if (!plan.isProfessional) {
+    // A blocked attempt is demand for the Professional tier — count it.
+    recordActivity(userId, ACTIVITY_EVENTS.CAREER_DOC_BLOCKED, plan, {
+      reason: "plan",
+      tool: label,
+    });
     return {
       ok: false,
       status: 403,
@@ -48,6 +54,11 @@ export async function checkCareerDocAccess(
       where: { clerkUserId: userId, ...(since && { createdAt: { gte: since } }) },
     });
     if (used >= TRIAL_USAGE_CAPS.careerDocs) {
+      recordActivity(userId, ACTIVITY_EVENTS.CAREER_DOC_BLOCKED, plan, {
+        reason: "trial_cap",
+        tool: label,
+        used,
+      });
       return {
         ok: false,
         status: 429,

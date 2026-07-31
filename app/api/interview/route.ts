@@ -9,6 +9,11 @@ import {
   type QuestionMix,
 } from "@/app/practice/session/utils";
 import { getCandidateProfile, EMPTY_PROFILE, type CandidateProfile } from "@/app/lib/candidateProfile";
+import {
+  resolveCandidatePlanFromClaims,
+  type CandidateBillingMeta,
+} from "@/app/lib/candidatePlan";
+import { recordActivity, ACTIVITY_EVENTS } from "@/app/lib/activity";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -131,7 +136,7 @@ async function getSignedInCandidateProfile() {
 
 export async function POST(req: NextRequest) {
   try {
-    const { userId } = await auth();
+    const { userId, sessionClaims } = await auth();
     if (!userId) {
       return NextResponse.json(
         { error: "You must be signed in to generate interview questions." },
@@ -197,6 +202,26 @@ export async function POST(req: NextRequest) {
       typeof totalQuestions === "number" && totalQuestions > 0
         ? totalQuestions
         : 5;
+
+    // Question 1 only — this is the "user actually began an interview"
+    // signal. Nothing else records a start, so without it an abandoned
+    // session is indistinguishable from one that never happened.
+    // Plan is read from JWT claims (free, no network call); the
+    // authoritative plan is recorded on the completion event.
+    if (safeQuestionNumber === 1) {
+      recordActivity(
+        userId,
+        ACTIVITY_EVENTS.PRACTICE_STARTED,
+        resolveCandidatePlanFromClaims(
+          sessionClaims as { metadata?: CandidateBillingMeta } | null
+        ),
+        {
+          role: String(role ?? "").slice(0, 120),
+          totalQuestions: safeTotalQuestions,
+          isAssessment,
+        }
+      );
+    }
 
     // Derive the required question type when the candidate set a custom mix.
     // Empty string means no constraint — the existing interviewType/focusArea

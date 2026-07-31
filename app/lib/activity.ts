@@ -1,0 +1,77 @@
+import { prisma } from "./prisma";
+import type { CandidatePlan } from "./candidatePlan";
+
+/**
+ * Activity instrumentation.
+ *
+ * Existing tables record only COMPLETED work, so a user who starts a practice
+ * interview and abandons it (or is rejected by a plan gate) leaves no trace at
+ * all — indistinguishable from a user who never tried. These events make the
+ * attempt visible so funnel drop-off can actually be measured.
+ *
+ * Every write is fire-and-forget: instrumentation must never fail, slow, or
+ * change the behaviour of the request it is observing.
+ */
+
+export const ACTIVITY_EVENTS = {
+  /** First question of a practice interview was generated. */
+  PRACTICE_STARTED: "practice_started",
+  /** A practice interview was completed and saved. */
+  PRACTICE_COMPLETED: "practice_completed",
+  /** A practice save was refused because a usage cap was hit. */
+  PRACTICE_CAPPED: "practice_capped",
+  /** An assessment centre session was created. */
+  AC_STARTED: "ac_started",
+  /** An assessment centre stage was submitted. */
+  AC_STAGE_SUBMITTED: "ac_stage_submitted",
+  /**
+   * An assessment centre was refused because the plan does not include it.
+   * This is the demand signal for the Professional tier — it counts users who
+   * WANTED the feature and were turned away.
+   */
+  AC_BLOCKED: "ac_blocked",
+  /** A career-doc generation was refused because the plan does not include it. */
+  CAREER_DOC_BLOCKED: "career_doc_blocked",
+} as const;
+
+export type ActivityEventName =
+  (typeof ACTIVITY_EVENTS)[keyof typeof ACTIVITY_EVENTS];
+
+type PlanContext = Pick<CandidatePlan, "effectivePlan" | "isTrial">;
+
+/**
+ * Record one activity event. Never throws and never blocks — callers should
+ * NOT await this in a hot path unless they need ordering.
+ */
+export function recordActivity(
+  clerkUserId: string,
+  event: ActivityEventName,
+  plan?: PlanContext | null,
+  detail?: Record<string, unknown>
+): void {
+  try {
+    // Guarded rather than called directly: this runs inside routes that unit
+    // tests exercise with a partial prisma mock. Instrumentation that throws
+    // when the delegate is absent would make adding an event a breaking change
+    // for every existing test of the route it observes — the opposite of
+    // "never affects the code it measures".
+    const delegate = prisma?.activityEvent;
+    if (!delegate?.create) return;
+
+    void Promise.resolve(
+      delegate.create({
+        data: {
+          clerkUserId,
+          event,
+          plan: plan?.effectivePlan ?? null,
+          isTrial: plan?.isTrial ?? false,
+          detail: detail ? (detail as object) : undefined,
+        },
+      })
+    ).catch(() => {
+      // Diagnostics must never break the request they observe.
+    });
+  } catch {
+    // As above — including synchronous throws from a mock.
+  }
+}
