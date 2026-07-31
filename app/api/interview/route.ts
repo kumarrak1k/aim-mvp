@@ -216,7 +216,13 @@ export async function POST(req: NextRequest) {
           sessionClaims as { metadata?: CandidateBillingMeta } | null
         ),
         {
-          role: String(role ?? "").slice(0, 120),
+          // Labelled so this is never mistaken for the authoritative plan: it
+          // comes from the JWT claims, which lag a metadata change until the
+          // token refreshes. practice_completed carries the Clerk-verified plan.
+          planSource: "claims",
+          // The client sends a composite profile blob here, not a bare role —
+          // named to match what it actually is rather than what it looks like.
+          roleInput: String(role ?? "").replace(/\s+/g, " ").slice(0, 120),
           totalQuestions: safeTotalQuestions,
           isAssessment,
         }
