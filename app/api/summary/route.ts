@@ -597,10 +597,22 @@ Rules:
 - All scores must be integers from 0 to 10.
 - overall_score is the final interview score.
 - readiness_score reflects how ready the candidate is for a real interview.
-- hire_signal must be exactly one of: "Weak", "Moderate", "Strong".
-- Strong means likely competitive in a real interview.
-- Moderate means useful foundation but not consistently strong.
-- Weak means not yet ready for a competitive interview.
+- hire_signal must be exactly one of: "Weak", "Moderate", "Strong", and must follow
+  overall_score EXACTLY — the app derives the same mapping itself, so any other pairing
+  contradicts the rest of the report:
+    overall_score >= 8            -> "Strong"   (likely competitive in a real interview)
+    overall_score 5, 6 or 7       -> "Moderate" (useful foundation, not yet consistent)
+    overall_score <= 4            -> "Weak"     (not yet ready for a competitive process)
+  "Weak" on a mid-range score is the single most discouraging thing this report can say,
+  and at 5-7 it is simply wrong. A candidate who scores 5 is mid-table, not failing.
+
+Language neutrality (applies to every language this product supports):
+Score the SUBSTANCE of the answer only. Never let fluency, accent, grammar, idiom or
+non-native phrasing move a score in any direction. A candidate answering in German,
+Spanish or French must receive exactly the same score an equivalent English answer would
+receive. If wording is awkward but the situation, actions and result are present, that is
+still the full band. Comment on clarity only where meaning is genuinely unclear, never on
+language proficiency itself.
 - category_breakdown should reflect the whole interview, not one answer.
 - strongest_answer and weakest_answer must reference the actual question number.
 - priority_improvements must contain exactly 3 items.

@@ -28,11 +28,18 @@ function watchSave(page: Page) {
     }
   });
   return {
-    expectSaved() {
-      expect(
-        statuses,
-        "the completed interview was never POSTed to /api/practice-sessions"
-      ).not.toHaveLength(0);
+    /**
+     * Awaited, not synchronous: the summary screen renders as soon as the
+     * summary resolves, while the save POST is still in flight behind it.
+     * Asserting immediately raced the request and failed on a working app.
+     */
+    async expectSaved() {
+      await expect
+        .poll(() => statuses.length, {
+          message: "the completed interview was never POSTed to /api/practice-sessions",
+          timeout: 20_000,
+        })
+        .toBeGreaterThan(0);
       expect(statuses, `save returned ${statuses.join(", ")}`).toContain(200);
     },
   };
@@ -46,7 +53,7 @@ test.describe("typed interview — Free persona", () => {
   test("completes a full typed interview and reaches the summary", { tag: "@real-ai" }, async ({ page }) => {
     const save = watchSave(page);
     await runTypedInterview(page, { role: "Graduate software engineer", totalQuestions: 5 });
-    save.expectSaved();
+    await save.expectSaved();
   });
 });
 
@@ -56,6 +63,6 @@ test.describe("typed interview — Professional persona", () => {
   test("completes a full typed interview and reaches the summary", async ({ page }) => {
     const save = watchSave(page);
     await runTypedInterview(page, { role: "Senior product manager", totalQuestions: 5 });
-    save.expectSaved();
+    await save.expectSaved();
   });
 });

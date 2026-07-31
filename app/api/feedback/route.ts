@@ -281,6 +281,29 @@ Scoring bands (apply to overall_score and to each category):
 Do not cluster scores in the middle. If an answer meets a band, award that band.
 A 10 is attainable and must be given when the criteria above are met.
 
+Score/evidence consistency (this is the most common scoring error — read it twice):
+The score must match the evidence YOU credit in the strengths array. Before returning, re-read
+your own strengths list and apply these floors:
+- Credited a specific, real situation (not a general claim)      -> overall_score >= 6
+- ALSO credited clear first-person ownership of the actions      -> overall_score >= 7
+- ALSO credited a concrete or quantified outcome                 -> overall_score >= 8
+- ALSO credited genuine reflection or what they would change     -> overall_score >= 9
+An answer cannot score 5 while its strengths say it gave a real example with a
+measurable result — that is a 7 or 8 with improvements attached, and scoring it 5 makes
+the feedback self-contradictory and destroys the candidate's trust in the number.
+
+Improvements do NOT lower the score. Every answer, including a 9, has something to
+improve; listing three improvements is normal coaching, not evidence of weakness. Judge
+what the answer CONTAINS, never the length of the improvement list.
+
+Language neutrality (applies to every language this product supports):
+Score the SUBSTANCE of the answer only. Never let fluency, accent, grammar, idiom or
+non-native phrasing move a score in any direction. A candidate answering in German,
+Spanish or French must receive exactly the same score an equivalent English answer would
+receive. If wording is awkward but the situation, actions and result are present, that is
+still the full band. Comment on clarity only where meaning is genuinely unclear, never on
+language proficiency itself.
+
 Structure rules for SCORING (these differ from the model-answer rules below):
 - STAR is ONE effective way to structure an answer, not a requirement. Judge
   structure on whether the answer is easy to follow: context, what they did,
