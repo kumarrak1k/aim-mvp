@@ -5,6 +5,7 @@ import { callOpenAIChat, OpenAIError } from "@/app/lib/openai-client";
 import { MODEL_QUALITY } from "@/app/lib/aiModels";
 import { moderateText } from "@/app/lib/moderation";
 import { getCandidateProfile, type CandidateProfile } from "@/app/lib/candidateProfile";
+import { reconcileOverallScore } from "@/app/lib/scoreCoherence";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -519,6 +520,20 @@ ${isTypedMode
       );
     if (!starValid) {
       parsed.improved_answer_star = null;
+    }
+
+    // Keep the headline consistent with the breakdown the candidate can see.
+    // The evidence floors in the prompt lift overall_score alone, so a generous
+    // strengths list could push the headline several points above categories
+    // that stayed low — arithmetic the candidate cannot reconcile on screen.
+    {
+      const reconciled = reconcileOverallScore(
+        parsed.overall_score,
+        parsed.category_scores as Record<string, unknown> | undefined
+      );
+      if (reconciled.overall !== null) {
+        parsed.overall_score = reconciled.overall;
+      }
     }
 
     // For typed sessions: suppress all pace/delivery fields entirely.
