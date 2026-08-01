@@ -65,6 +65,12 @@ export async function GET() {
       // ── Reverse-trial state (drives trial UI) ──────────────────────────
       isTrial: plan.isTrial,
       isPaid: plan.isPaid,
+      // Complimentary (admin-granted) access. Without these the UI
+      // cannot distinguish a Professional guest from a free user,
+      // because comp access sets neither isPaid nor isTrial.
+      isComp: plan.isComp,
+      compUntil: plan.compUntil,
+      effectivePlan: plan.effectivePlan,
       isPastDue: plan.isPastDue,
       paidPlanName: plan.paidPlanName,
       trialEndsAt: plan.trialEndsAt,

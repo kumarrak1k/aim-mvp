@@ -6,6 +6,7 @@
  *
  * Four states, driven by GET /api/subscription:
  *   - paid              → render nothing
+ *   - complimentary     → tier + expiry (sets neither isPaid nor isTrial)
  *   - active trial      → countdown + "upgrade to keep access"
  *   - eligible (free, never trialed) → "start your free 3-day trial"
  *   - trial used (free) → gentle, dismissible "upgrade" nudge
@@ -17,6 +18,8 @@ import Link from "next/link";
 type SubscriptionState = {
   isTrial: boolean;
   isPaid: boolean;
+  isComp: boolean;
+  compUntil: string | null;
   isPastDue: boolean;
   trialConsumed: boolean;
   trialDaysRemaining: number;
@@ -127,6 +130,33 @@ export function TrialBanner() {
   }
 
   if (sub.isPaid) return null;
+
+  // ── Complimentary access ────────────────────────────────────────────────
+  //    Comp sets neither isPaid nor isTrial, so without this branch the
+  //    checks below treat a Professional guest as a never-trialled free
+  //    user and offer them a trial they do not need. Shown rather than
+  //    hidden because comp access expires and they should see when.
+  if (sub.isComp) {
+    const until = sub.compUntil
+      ? new Date(sub.compUntil).toLocaleDateString("en-GB", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        })
+      : null;
+    return (
+      <div className="relative z-40 border-b border-emerald-400/25 bg-emerald-500/[0.10]">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-3 gap-y-1 px-4 py-2 text-center sm:px-6">
+          <span className="text-[13px] font-semibold text-emerald-100">
+            <span aria-hidden>&#127891; </span>
+            You have complimentary{" "}
+            <strong className="font-black">{sub.planName}</strong> access
+            {until ? <> until <strong className="font-black">{until}</strong></> : null}.
+          </span>
+        </div>
+      </div>
+    );
+  }
 
   // ── Active trial — countdown ──────────────────────────────────────────────
   if (sub.isTrial) {

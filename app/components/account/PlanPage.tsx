@@ -27,6 +27,8 @@ type SubscriptionInfo = {
   // Reverse-trial state
   isTrial?: boolean;
   isPaid?: boolean;
+  isComp?: boolean;
+  compUntil?: string | null;
   isPastDue?: boolean;
   paidPlanName?: string;
   trialEndsAt?: string | null;
@@ -344,7 +346,11 @@ export function PlanPage() {
   const trialDays = Math.max(0, sub?.trialDaysRemaining ?? 0);
   // "Free" here means "no upgrade options taken" — covers both the never-paid
   // Free tier and an active trial (both should see upgrade buttons).
-  const isFreeOrTrial = !isPaid;
+  // Comp is access without a subscription: it must not read as Free, but it
+  // also must not switch on the Stripe management UI, which needs a real
+  // subscription behind it. Hence it suppresses isFree without setting isPaid.
+  const isComp = sub?.isComp ?? false;
+  const isFreeOrTrial = !isPaid && !isComp;
   const isFree = isFreeOrTrial && !isTrial;
   const isPlus = isPaid && sub?.planName === "Plus";
   const isProfessional = isPaid && sub?.planName === "Professional";
