@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
+import { hasAnalyticsConsent } from "@/app/lib/analyticsConsent";
 
 /**
  * Page-view and dwell-time beacon for signed-in candidates.
@@ -48,6 +49,9 @@ function getVisitId(): string {
 }
 
 function send(body: Record<string, unknown>, useBeacon = false) {
+  // Consent is checked at send time, not at mount: a user who accepts or
+  // withdraws mid-session must take effect immediately, without a reload.
+  if (!hasAnalyticsConsent()) return;
   try {
     const payload = JSON.stringify(body);
     // sendBeacon survives page unload, where fetch is routinely cancelled.
