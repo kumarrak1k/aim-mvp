@@ -78,6 +78,14 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        // The pricing page moved under /for-candidates in the site split but was
+        // never redirected, so /pricing has been a hard 404 — including from the
+        // "See plans" button on the practice summary screen.
+        source: "/pricing",
+        destination: "/for-candidates/pricing",
+        permanent: true,
+      },
+      {
         source: "/candidates",
         destination: "/for-candidates",
         permanent: true,

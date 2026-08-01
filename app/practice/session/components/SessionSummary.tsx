@@ -695,7 +695,7 @@ export function SessionSummary({
               </p>
               <div className="mt-4 flex flex-wrap gap-3">
                 <Link
-                  href="/pricing"
+                  href="/for-candidates/pricing"
                   className="rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-6 py-3 text-sm font-black text-white shadow-lg shadow-purple-900/35 transition hover:scale-[1.01]"
                 >
                   See plans →
