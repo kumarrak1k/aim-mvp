@@ -56,7 +56,6 @@ type PracticeMode = "typed" | "voice" | "voice-camera";
 
 const DEFAULT_SPEAKER: SpeakerPreference = {
   voice: "female",
-  accent: "british",
   pace: "natural",
 };
 
@@ -620,21 +619,6 @@ function SetupStep({
                   setSpeakerPreference({
                     ...speakerPreference,
                     voice: v as SpeakerPreference["voice"],
-                  })
-                }
-              />
-              <PrefRow
-                label="Accent"
-                options={[
-                  { value: "british", label: "British" },
-                  { value: "american", label: "American" },
-                  { value: "neutral", label: "Neutral" },
-                ]}
-                value={speakerPreference.accent}
-                onChange={(v) =>
-                  setSpeakerPreference({
-                    ...speakerPreference,
-                    accent: v as SpeakerPreference["accent"],
                   })
                 }
               />

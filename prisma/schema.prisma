@@ -381,7 +381,7 @@ model UserProfile {
   cvFileName            String   @default("")
   roleSpecFileName      String   @default("")
   preferredPracticeMode String   @default("typed")
-  speakerPreference     Json     @default("{\"voice\":\"female\",\"accent\":\"british\",\"pace\":\"natural\"}")
+  speakerPreference     Json     @default("{\"voice\":\"female\",\"pace\":\"natural\"}")
   defaultExperienceLevel String  @default("Graduate / entry level")
   defaultInterviewType  String   @default("Competency / behavioural")
   defaultDifficulty     String   @default("Standard")

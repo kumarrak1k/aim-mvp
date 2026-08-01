@@ -122,7 +122,6 @@ export const PRACTICE_SESSION_CONFIG_KEY = "aim_practice_session_config";
 
 export const defaultSpeakerPreference: SpeakerPreference = {
   voice: "female",
-  accent: "british",
   pace: "natural",
 };
 
@@ -224,13 +223,6 @@ export const practiceModeLabels: Record<PracticeMode, string> = {
 export const speakerVoiceLabels: Record<SpeakerPreference["voice"], string> = {
   female: "Female",
   male: "Male",
-  neutral: "Neutral",
-};
-
-export const speakerAccentLabels: Record<SpeakerPreference["accent"], string> = {
-  british: "British",
-  american: "American",
-  neutral: "Neutral",
 };
 
 export const speakerPaceLabels: Record<SpeakerPreference["pace"], string> = {
@@ -270,13 +262,6 @@ function cleanSpeakerPreference(value: unknown): SpeakerPreference {
       ? input.voice
       : defaultSpeakerPreference.voice;
 
-  const accent =
-    input?.accent === "british" ||
-    input?.accent === "american" ||
-    input?.accent === "neutral"
-      ? input.accent
-      : defaultSpeakerPreference.accent;
-
   const pace =
     input?.pace === "slow" ||
     input?.pace === "natural" ||
@@ -284,7 +269,7 @@ function cleanSpeakerPreference(value: unknown): SpeakerPreference {
       ? input.pace
       : defaultSpeakerPreference.pace;
 
-  return { voice, accent, pace };
+  return { voice, pace };
 }
 
 export function parseSessionConfig(): PracticeSessionConfig | null {

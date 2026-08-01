@@ -15,30 +15,29 @@ export const maxDuration = 30;
 
 const OPENAI_TTS_ENDPOINT = "https://api.openai.com/v1/audio/speech";
 
-type SpeakerVoice = "female" | "male" | "neutral";
-type SpeakerAccent = "british" | "american" | "neutral";
+type SpeakerVoice = "female" | "male";
 type SpeakerPace = "slow" | "natural" | "energetic";
 
 type SpeakerPreference = {
   voice: SpeakerVoice;
-  accent: SpeakerAccent;
   pace: SpeakerPace;
 };
 
 const DEFAULT_SPEAKER_PREFERENCE: SpeakerPreference = {
   voice: "female",
-  accent: "british",
   pace: "natural",
 };
 
-const SPEAKER_VOICES: SpeakerVoice[] = ["female", "male", "neutral"];
-const SPEAKER_ACCENTS: SpeakerAccent[] = ["british", "american", "neutral"];
+const SPEAKER_VOICES: SpeakerVoice[] = ["female", "male"];
 const SPEAKER_PACES: SpeakerPace[] = ["slow", "natural", "energetic"];
 
+// Chosen by ear from a blind audition of all 13 voices under the British brief
+// below. OpenAI documents no accent, nationality or gender for any voice — the
+// docs say only "Voices are currently optimized for English" — so there is no
+// specification to select against and listening is the only method available.
 const voiceMap: Record<SpeakerVoice, string> = {
-  female: "nova",
-  male: "onyx",
-  neutral: "alloy",
+  female: "shimmer",
+  male: "fable",
 };
 
 const speedMap: Record<SpeakerPace, number> = {
@@ -50,24 +49,38 @@ const speedMap: Record<SpeakerPace, number> = {
 // gpt-4o-mini-tts takes natural-language delivery instructions instead of a
 // numeric speed. These make the accent preference (long accepted by this API
 // but ignored by tts-1) actually change the voice.
-const accentInstruction: Record<SpeakerAccent, string> = {
-  british: "Speak with a natural British English accent.",
-  american: "Speak with a natural American English accent.",
-  neutral: "",
-};
 
 const paceInstruction: Record<SpeakerPace, string> = {
   slow: "Speak slowly and deliberately, leaving space between sentences.",
-  natural: "Speak at a calm, natural pace.",
+  // Was "calm, natural pace" — wording that invited exactly the flat, dull
+  // delivery this default is meant to avoid.
+  natural: "Keep a brisk, engaged pace — unhurried, but never slow or ponderous.",
   energetic: "Speak with brisk, upbeat energy while staying clear.",
 };
 
+/**
+ * The accent block is deliberately forceful and names specific phonetic
+ * features. A single polite request for "a natural British English accent" was
+ * largely ignored: these voices default to neutral American, and instructions
+ * are the only accent lever the API offers, so shifting one needs an explicit
+ * target plus negative constraints on what makes a voice read as American.
+ */
+const BRITISH_ACCENT_INSTRUCTION = [
+  "Speak in a British English accent — standard Received Pronunciation, as heard on BBC Radio 4.",
+  "This is essential and overrides your default pronunciation.",
+  "Do NOT use an American accent.",
+  "Specifically: use non-rhotic pronunciation — do not pronounce the R at the end of words like 'later', 'better' or 'sure'.",
+  "Use the broad British A in words like 'chance', 'past' and 'ask'.",
+  "Do not flap your T sounds — say 'better' with a clear T, never 'bedder'.",
+].join(" ");
+
 function buildInstructions(pref: SpeakerPreference): string {
   return [
-    "You are a warm, professional job interviewer asking a candidate a question.",
-    accentInstruction[pref.accent],
+    "You are a warm, experienced interviewer speaking with a candidate across a table.",
+    BRITISH_ACCENT_INSTRUCTION,
     paceInstruction[pref.pace],
-    "Sound engaged and encouraging, never robotic.",
+    "Sound conversational and genuinely curious, not like someone reading from a script.",
+    "Vary your intonation naturally. Never flat or monotone.",
   ]
     .filter(Boolean)
     .join(" ");
@@ -87,11 +100,6 @@ function cleanSpeakerPreference(value: unknown): SpeakerPreference {
       SPEAKER_VOICES.includes(input.voice as SpeakerVoice)
         ? (input.voice as SpeakerVoice)
         : DEFAULT_SPEAKER_PREFERENCE.voice,
-    accent:
-      typeof input?.accent === "string" &&
-      SPEAKER_ACCENTS.includes(input.accent as SpeakerAccent)
-        ? (input.accent as SpeakerAccent)
-        : DEFAULT_SPEAKER_PREFERENCE.accent,
     pace:
       typeof input?.pace === "string" &&
       SPEAKER_PACES.includes(input.pace as SpeakerPace)

@@ -21,7 +21,6 @@ type PreparedAudioEntry = {
 
 const defaultSpeakerPreference: SpeakerPreference = {
   voice: "female",
-  accent: "british",
   pace: "natural",
 };
 

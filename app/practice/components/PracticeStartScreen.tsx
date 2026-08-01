@@ -95,20 +95,6 @@ const speakerVoiceOptions: Array<{
     label: "Male",
     description: "Clear, steady and professional.",
   },
-  {
-    value: "neutral",
-    label: "Neutral",
-    description: "Balanced and versatile.",
-  },
-];
-
-const speakerAccentOptions: Array<{
-  value: SpeakerPreference["accent"];
-  label: string;
-}> = [
-  { value: "british", label: "British" },
-  { value: "american", label: "American" },
-  { value: "neutral", label: "Neutral" },
 ];
 
 const speakerPaceOptions: Array<{
@@ -834,18 +820,10 @@ export function PracticeStartScreen({
               </div>
             </div>
 
+            {/* Accent selector removed: this is a UK site, so there was one
+                answer and asking the question only created a way to get it
+                wrong. Pace stays — it is a genuine preference. */}
             <div className="grid gap-4 md:grid-cols-2">
-              <PreferenceSelect
-                label="Accent"
-                value={speakerPreference.accent}
-                options={speakerAccentOptions}
-                onChange={(value) =>
-                  updateSpeakerPreference({
-                    accent: value as SpeakerPreference["accent"],
-                  })
-                }
-              />
-
               <PreferenceSelect
                 label="Pace"
                 value={speakerPreference.pace}
@@ -870,8 +848,8 @@ export function PracticeStartScreen({
                 <span className="font-black text-white">
                   {practiceModeLabels[selectedPracticeMode]}
                 </span>{" "}
-                with a {formatPreferenceWord(speakerPreference.accent)}{" "}
-                {speakerPreference.voice} voice at {speakerPreference.pace} pace.
+                with a {formatPreferenceWord(speakerPreference.voice)} voice
+                at {speakerPreference.pace} pace.
               </p>
 
               <button
@@ -969,8 +947,8 @@ export function PracticeStartScreen({
             <CheckItem>Focus: {focusArea}</CheckItem>
             <CheckItem>{practiceModeLabels[selectedPracticeMode]}</CheckItem>
             <CheckItem>
-              {formatPreferenceWord(speakerPreference.accent)}{" "}
-              {speakerPreference.voice} voice, {speakerPreference.pace} pace
+              {formatPreferenceWord(speakerPreference.voice)} voice,{" "}
+              {speakerPreference.pace} pace
             </CheckItem>
           </div>
         </GlassCard>

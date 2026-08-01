@@ -19,13 +19,22 @@ import {
 } from "@/app/practice/session/utils";
 
 export type PracticeMode = "typed" | "voice" | "voice-camera";
-export type SpeakerVoice = "female" | "male" | "neutral";
-export type SpeakerAccent = "british" | "american" | "neutral";
+
+/**
+ * This is a UK site, so there is one accent and no reason to ask about it.
+ * "neutral" was dropped alongside it: it added a third option that sounded
+ * like neither of the other two rather than a meaningful choice.
+ *
+ * Stored preferences from before this change may still carry voice:"neutral"
+ * or an accent field. cleanSpeaker normalises those rather than rejecting
+ * them — a stale value must never leave a returning user unable to load their
+ * own profile.
+ */
+export type SpeakerVoice = "female" | "male";
 export type SpeakerPace = "slow" | "natural" | "energetic";
 
 export type SpeakerPreference = {
   voice: SpeakerVoice;
-  accent: SpeakerAccent;
   pace: SpeakerPace;
 };
 
@@ -49,7 +58,6 @@ export type CandidateProfile = {
 
 export const DEFAULT_SPEAKER_PREFERENCE: SpeakerPreference = {
   voice: "female",
-  accent: "british",
   pace: "natural",
 };
 
@@ -80,8 +88,7 @@ function clampTotal(value: unknown, fallback: number): number {
 }
 
 const PRACTICE_MODES: PracticeMode[] = ["typed", "voice", "voice-camera"];
-const SPEAKER_VOICES: SpeakerVoice[] = ["female", "male", "neutral"];
-const SPEAKER_ACCENTS: SpeakerAccent[] = ["british", "american", "neutral"];
+const SPEAKER_VOICES: SpeakerVoice[] = ["female", "male"];
 const SPEAKER_PACES: SpeakerPace[] = ["slow", "natural", "energetic"];
 
 function cleanText(value: unknown): string {
@@ -102,10 +109,10 @@ function cleanMode(value: unknown, fallback: PracticeMode): PracticeMode {
 function cleanSpeaker(value: unknown, fallback: SpeakerPreference): SpeakerPreference {
   const input = value as Partial<SpeakerPreference> | undefined;
   return {
+    // A stored "neutral" from before the option was removed falls through to
+    // the default rather than erroring — see the note on SpeakerVoice.
     voice: typeof input?.voice === "string" && SPEAKER_VOICES.includes(input.voice as SpeakerVoice)
       ? (input.voice as SpeakerVoice) : fallback.voice,
-    accent: typeof input?.accent === "string" && SPEAKER_ACCENTS.includes(input.accent as SpeakerAccent)
-      ? (input.accent as SpeakerAccent) : fallback.accent,
     pace: typeof input?.pace === "string" && SPEAKER_PACES.includes(input.pace as SpeakerPace)
       ? (input.pace as SpeakerPace) : fallback.pace,
   };

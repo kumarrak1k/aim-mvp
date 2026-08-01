@@ -53,7 +53,7 @@ const formatSpeakerSetup = (
 ) => {
   if (!speakerEnabled) return "typed answers";
 
-  return `${speakerPreference.accent} ${speakerPreference.voice} voice at ${speakerPreference.pace} pace`;
+  return `${speakerPreference.voice} voice at ${speakerPreference.pace} pace`;
 };
 
 function formatResetTime(value: string) {
