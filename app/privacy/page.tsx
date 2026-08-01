@@ -267,6 +267,63 @@ export default function PrivacyPage() {
                 </div>
               </div>
 
+              {/* Analytics */}
+              <div>
+                <h2 className="mb-6 text-2xl font-black tracking-[-0.04em] sm:text-3xl">
+                  Analytics and how you use the site.
+                </h2>
+                <div className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-7 space-y-4 text-sm leading-7 text-gray-300">
+                  <p>
+                    <span className="font-black text-white">Only if you accept analytics.</span>{" "}
+                    When you choose &ldquo;Accept analytics&rdquo; on the cookie
+                    banner, and only then, we record how you use the site while
+                    signed in: the pages you visit, how long you spend on each
+                    one, the features you open, and the questions you ask the AI
+                    mentor. This is linked to your account.
+                  </p>
+                  <p>
+                    <span className="font-black text-white">Why we collect it.</span>{" "}
+                    To find where people get stuck and fix it. If candidates
+                    consistently abandon a particular step, we want to know which
+                    step and how long they struggled before leaving. We do not use
+                    it for advertising, we do not build marketing profiles, and we
+                    never sell it.
+                  </p>
+                  <p>
+                    <span className="font-black text-white">Your legal basis.</span>{" "}
+                    Consent. If you choose &ldquo;Essential only&rdquo;, none of
+                    this is collected — not anonymously, not at all. Declining has
+                    no effect on your access to any feature.
+                  </p>
+                  <p>
+                    <span className="font-black text-white">How long we keep it.</span>{" "}
+                    Analytics records are deleted after 12 months. Deleting your
+                    account removes them immediately.
+                  </p>
+                  <p>
+                    <span className="font-black text-white">Changing your mind.</span>{" "}
+                    You can withdraw consent at any time by clearing this
+                    site&rsquo;s data in your browser, which makes the banner
+                    reappear so you can choose again. Withdrawal stops collection
+                    straight away. To have analytics already collected about you
+                    erased, contact us and we will delete it.
+                  </p>
+                  <p>
+                    <span className="font-black text-white">Who can see it.</span>{" "}
+                    Only us. Analytics is visible to our administrators to
+                    diagnose problems with the product, and is not shared with any
+                    third party for their own purposes.
+                  </p>
+                  <p>
+                    Separately, and regardless of your choice, we keep a record of
+                    the practice sessions and assessments you complete. That is
+                    part of the service itself rather than analytics: it is what
+                    powers your progress history, and you can delete it from your
+                    profile at any time.
+                  </p>
+                </div>
+              </div>
+
               {/* Email you receive */}
               <div>
                 <h2 className="mb-6 text-2xl font-black tracking-[-0.04em] sm:text-3xl">
