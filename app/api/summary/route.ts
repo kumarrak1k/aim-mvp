@@ -522,8 +522,11 @@ practical and honest.
 Scoring consistency (important):
 - Each answer has ALREADY been scored against a published band scale. Those per-answer
   scores are supplied to you below.
-- overall_score and readiness_score must be consistent with them: within roughly one
-  point of their average, unless you explain the difference in hire_signal_reason.
+- overall_score, readiness_score and hire_signal are CALCULATED from those per-answer
+  scores after you reply — whatever you return for them is discarded. Do not try to
+  raise or lower the session score through them; write hire_signal_reason and the rest
+  of the narrative so it reads correctly for a session scoring the average of the
+  per-answer scores you have been given.
 - Do NOT re-mark the answers more harshly than they were already marked. A candidate who
   sees 9s on individual answers and a 6 overall loses all trust in the score, and the
   score is what they use to track progress between sessions.
@@ -661,14 +664,23 @@ ${formattedResults}
       return Response.json(fallbackSummary);
     }
 
+    // The session headline is the aggregate of the per-question scores the
+    // candidate has already been shown. That is a definition, not a judgement,
+    // so it is computed rather than restated by the model — otherwise the
+    // summary can contradict the five numbers it is summarising. Same
+    // arithmetic as buildFallbackSummary, so both paths always agree.
+    const sessionScore = clampScore(average(safeResults.map(getScore)));
+    const derivedHireSignal: "Weak" | "Moderate" | "Strong" =
+      sessionScore >= 8 ? "Strong" : sessionScore >= 5 ? "Moderate" : "Weak";
+
     const cleanedSummary: PremiumSummary = {
       ...fallbackSummary,
       ...parsed,
-      overall_score: clampScore(parsed.overall_score),
-      readiness_score: clampScore(parsed.readiness_score),
-      hire_signal: ["Weak", "Moderate", "Strong"].includes(parsed.hire_signal)
-        ? parsed.hire_signal
-        : fallbackSummary.hire_signal,
+      overall_score: sessionScore,
+      readiness_score: sessionScore,
+      // Follows the derived score: a "Strong" verdict attached to a 5 is the
+      // same incoherence expressed in words instead of digits.
+      hire_signal: derivedHireSignal,
       category_breakdown: {
         ...fallbackSummary.category_breakdown,
         ...(parsed.category_breakdown || {}),
