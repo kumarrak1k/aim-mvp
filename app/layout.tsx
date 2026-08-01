@@ -4,6 +4,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { absoluteUrl, siteConfig } from "@/app/config/site";
 import { AttributionCapture } from "@/app/components/AttributionCapture";
+import { ActivityTracker } from "@/app/components/ActivityTracker";
 import { CookieConsent } from "@/app/components/marketing/CookieConsent";
 import { DeferredMentorChat } from "@/app/components/marketing/DeferredMentorChat";
 import "./globals.css";
@@ -238,6 +239,9 @@ export default function RootLayout({
           />
           {children}
           <AttributionCapture />
+          {/* Signed-in behavioural telemetry. No-ops for anonymous visitors —
+              the API drops anything without a session. */}
+          <ActivityTracker />
           <DeferredMentorChat />
           <CookieConsent />
           <Analytics />

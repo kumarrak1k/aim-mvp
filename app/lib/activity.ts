@@ -32,6 +32,20 @@ export const ACTIVITY_EVENTS = {
   AC_BLOCKED: "ac_blocked",
   /** A career-doc generation was refused because the plan does not include it. */
   CAREER_DOC_BLOCKED: "career_doc_blocked",
+
+  // ── Behavioural telemetry (client-reported, see /api/activity) ────────────
+  /**
+   * One page view. detail: { path, visitId, dwellMs?, referrer? }.
+   * `visitId` groups views into a single sitting, which is what makes visit
+   * counts, time-on-site and the exit page derivable from this one event.
+   */
+  PAGE_VIEW: "page_view",
+  /** A meaningful in-page action. detail: { action, path, visitId, meta? }. */
+  INTERACTION: "interaction",
+  /** A free/standalone tool was run. detail: { tool, visitId? }. */
+  TOOL_USED: "tool_used",
+  /** A message was sent to the AI mentor chat. detail: { chars, topic? }. */
+  CHAT_MESSAGE: "chat_message",
 } as const;
 
 export type ActivityEventName =

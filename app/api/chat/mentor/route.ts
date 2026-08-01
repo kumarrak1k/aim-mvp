@@ -4,6 +4,8 @@ import { callOpenAIChat } from "@/app/lib/openai-client";
 import { MODEL_UTILITY } from "@/app/lib/aiModels";
 import { parseJsonBody } from "@/app/lib/validation";
 import { checkRateLimit, getClientIp } from "@/app/lib/rateLimit";
+import { auth } from "@clerk/nextjs/server";
+import { recordActivity, ACTIVITY_EVENTS } from "@/app/lib/activity";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
@@ -105,6 +107,30 @@ export async function POST(request: NextRequest) {
   const { messages } = parsed.data;
 
   const recentMessages = messages.slice(-10);
+
+  // Attribute the conversation when the visitor is signed in. The chat itself
+  // is deliberately open to anonymous visitors (it answers pre-signup
+  // questions), so this is best-effort and never gates the reply.
+  //
+  // The latest user message is stored, truncated: "they opened the chat" is a
+  // far less useful signal than what they were actually stuck on, which is the
+  // question the admin view needs to answer.
+  try {
+    const { userId } = await auth();
+    if (userId) {
+      const lastUser = [...recentMessages]
+        .reverse()
+        .find((m) => m.role === "user");
+      const text = (lastUser?.content ?? "").toString();
+      recordActivity(userId, ACTIVITY_EVENTS.CHAT_MESSAGE, null, {
+        chars: text.length,
+        turn: recentMessages.length,
+        question: text.replace(/\s+/g, " ").slice(0, 300),
+      });
+    }
+  } catch {
+    // Anonymous visitor or Clerk unavailable — the chat must still answer.
+  }
 
   const aiResponse = await callOpenAIChat(
     {

@@ -3,6 +3,8 @@ import { callOpenAIChat } from "@/app/lib/openai-client";
 import { MODEL_UTILITY } from "@/app/lib/aiModels";
 import { checkRateLimit, getClientIp } from "@/app/lib/rateLimit";
 import { moderateText } from "@/app/lib/moderation";
+import { auth } from "@clerk/nextjs/server";
+import { recordActivity, ACTIVITY_EVENTS } from "@/app/lib/activity";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -55,6 +57,20 @@ export async function POST(req: NextRequest) {
       { error: "Answer must be under 3,000 characters" },
       { status: 400 }
     );
+  }
+
+  // Attribute tool use when signed in. The STAR scorer is public by design
+  // (it is a top-of-funnel free tool), so this never gates the response.
+  try {
+    const { userId } = await auth();
+    if (userId) {
+      recordActivity(userId, ACTIVITY_EVENTS.TOOL_USED, null, {
+        tool: "star-scorer",
+        answerChars: String(answer ?? "").length,
+      });
+    }
+  } catch {
+    // Anonymous visitor — the tool must still work.
   }
 
   const moderation = await moderateText(answer);

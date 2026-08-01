@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useClerk } from "@clerk/nextjs";
 import { deriveChannel } from "@/app/lib/attributionChannel";
+import { UserActivityPanel } from "./UserActivityPanel";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -466,6 +467,8 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
 
   // ── Copy ID ──────────────────────────────────────────────────────────────────
 
+  const [activityUserId, setActivityUserId] = useState<string | null>(null);
+
   function copyId(id: string) {
     void navigator.clipboard.writeText(id);
     setCopied(id);
@@ -917,6 +920,13 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                 <td className="py-3.5 pr-6">
                   <div className="flex items-center gap-1.5">
                     <button
+                      onClick={() => setActivityUserId(u.id)}
+                      title="Full behavioural report: visits, journey, drop-off point"
+                      className="rounded-full border border-cyan-400/25 bg-cyan-500/10 px-3 py-1 text-[11px] font-black text-cyan-300 transition hover:bg-cyan-500/20"
+                    >
+                      Activity
+                    </button>
+                    <button
                       onClick={() => openEdit(u)}
                       className="rounded-full border border-fuchsia-400/25 bg-fuchsia-500/10 px-3 py-1 text-[11px] font-black text-fuchsia-300 transition hover:bg-fuchsia-500/20"
                     >
@@ -955,6 +965,14 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
       )}
 
       <p className="mt-10 text-center text-[11px] text-gray-700">AI Career Mentor · Internal admin · Not indexed · Not linked from any public page</p>
+
+      {/* ── Per-user activity drill-down ─────────────────────────────────────────── */}
+      {activityUserId && (
+        <UserActivityPanel
+          userId={activityUserId}
+          onClose={() => setActivityUserId(null)}
+        />
+      )}
 
       {/* ── Create user modal ────────────────────────────────────────────────────── */}
       {showCreate && (
