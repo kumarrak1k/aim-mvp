@@ -67,15 +67,23 @@ test.describe("Pricing", () => {
 
 test.describe("Practice page (unauthenticated)", () => {
   test("redirects or shows sign-in for unauthenticated users", async ({ page }) => {
-    await page.goto("/practice");
-    // Either a redirect to sign-in happened, or a sign-in prompt is visible
+    const response = await page.goto("/practice");
+
+    // Assert the status FIRST. This test previously accepted any page carrying
+    // the words "sign in" — which a 404 does, because the site header has a
+    // sign-in link. It therefore passed for weeks while every protected route
+    // returned 404 to signed-out visitors instead of a login prompt.
+    expect(
+      response?.status(),
+      "a signed-out visitor must reach sign-in, not an error page"
+    ).toBeLessThan(400);
+
     const currentUrl = page.url();
     const isAuthPage = currentUrl.includes("sign-in") ||
       currentUrl.includes("clerk") ||
       currentUrl.includes("accounts.");
 
     if (!isAuthPage) {
-      // Alternatively a sign-in link/button might be on the page
       const signInPrompt = page.getByText(/sign in|log in|create an account/i).first();
       await expect(signInPrompt).toBeVisible();
     }

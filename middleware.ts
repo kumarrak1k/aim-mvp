@@ -135,8 +135,19 @@ export default clerkMiddleware(async (auth, req) => {
   }
 
   // ── Protected candidate / corporate areas ───────────────────────────────
-  if (isProtected(req)) {
-    await auth.protect();
+  // Explicit redirect, NOT auth.protect(). Clerk v7 changed protect() to return
+  // a bare 404 for a caller it cannot authorise, where v6 redirected to sign-in
+  // — the same change already documented for the admin MFA branch above. The
+  // result was that every signed-out visit to /practice, /progress, /profile,
+  // /career-docs or /assessment-centre hit a 404 instead of a sign-in page, so
+  // a returning user with a bookmark or an expired session saw a broken site
+  // rather than a login prompt.
+  //
+  // aicareermentor.com already carries this fix; it was never brought back here.
+  if (isProtected(req) && !userId) {
+    const isCompanyPath = /^\/company(\/|$)/.test(req.nextUrl.pathname);
+    const dest = isCompanyPath ? "/for-business/sign-in" : "/for-candidates/sign-in";
+    return NextResponse.redirect(new URL(dest, req.url));
   }
 });
 
