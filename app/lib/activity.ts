@@ -51,6 +51,30 @@ export const ACTIVITY_EVENTS = {
 export type ActivityEventName =
   (typeof ACTIVITY_EVENTS)[keyof typeof ACTIVITY_EVENTS];
 
+/**
+ * Consent-based behavioural telemetry — the events the privacy policy promises
+ * to delete after ANALYTICS_RETENTION_DAYS.
+ *
+ * The service-side events in this table (practice starts and completions,
+ * assessment centre progress, plan-blocked attempts) are deliberately NOT
+ * listed. They record what the product did for a user rather than how they
+ * browsed, are collected without an analytics opt-in, and are what makes
+ * historical funnel analysis possible — pruning them would destroy the
+ * drop-off history the table exists to provide.
+ *
+ * Anything added to ACTIVITY_EVENTS that tracks browsing behaviour must be
+ * added here too, or it will be retained indefinitely in breach of the policy.
+ */
+export const ANALYTICS_EVENTS = [
+  ACTIVITY_EVENTS.PAGE_VIEW,
+  ACTIVITY_EVENTS.INTERACTION,
+  ACTIVITY_EVENTS.TOOL_USED,
+  ACTIVITY_EVENTS.CHAT_MESSAGE,
+] as const;
+
+/** Must match the retention period stated on the privacy page. */
+export const ANALYTICS_RETENTION_DAYS = 365;
+
 type PlanContext = Pick<CandidatePlan, "effectivePlan" | "isTrial">;
 
 /**
