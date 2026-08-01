@@ -5,12 +5,20 @@ on:
     branches: ["main", "develop"]
   pull_request:
     branches: ["main"]
+  # The smoke suite tests the LIVE site, so it must run after a deploy rather
+  # than racing it. On push it fired immediately and hit the previous build,
+  # so any commit that changed production behaviour failed CI once and then
+  # "fixed itself" on the next unrelated push — noise that teaches you to
+  # ignore the alert. Vercel posts a deployment_status when the deploy is
+  # actually live; the e2e-smoke job below keys off that.
+  deployment_status:
 
 jobs:
   # ── Unit tests (Vitest) ──────────────────────────────────────────────────────
   unit-tests:
     name: Unit tests
     runs-on: ubuntu-latest
+    if: github.event_name != 'deployment_status'
 
     steps:
       - name: Checkout code
@@ -40,6 +48,7 @@ jobs:
   typecheck:
     name: TypeScript
     runs-on: ubuntu-latest
+    if: github.event_name != 'deployment_status'
 
     steps:
       - name: Checkout code
@@ -66,8 +75,12 @@ jobs:
   e2e-smoke:
     name: E2E smoke tests
     runs-on: ubuntu-latest
-    # Only run E2E on pushes to main (not every PR) to save minutes
-    if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
+    # Only after a PRODUCTION deploy reports success. Running on push tested
+    # the build the commit was replacing, not the one it created.
+    if: >-
+      github.event_name == 'deployment_status' &&
+      github.event.deployment_status.state == 'success' &&
+      contains(github.event.deployment_status.environment, 'roduction')
 
     steps:
       - name: Checkout code
