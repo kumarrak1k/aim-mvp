@@ -41,6 +41,12 @@ describe("analytics retention scope", () => {
       ACTIVITY_EVENTS.AC_STAGE_SUBMITTED,
       ACTIVITY_EVENTS.AC_BLOCKED,
       ACTIVITY_EVENTS.CAREER_DOC_BLOCKED,
+      // Onboarding is service-side: it records what the product asked and what
+      // the candidate answered, not how they browsed, and it is collected
+      // without an analytics opt-in. Pruning it would destroy the record of
+      // which answers correlate with users who go on to complete sessions.
+      ACTIVITY_EVENTS.ONBOARDING_COMPLETED,
+      ACTIVITY_EVENTS.ONBOARDING_SKIPPED,
     ];
     for (const event of mustSurvive) {
       expect(ANALYTICS_EVENTS as readonly string[]).not.toContain(event);
@@ -54,6 +60,6 @@ describe("analytics retention scope", () => {
     const pruned = new Set<string>(ANALYTICS_EVENTS);
     const retained = all.filter((e) => !pruned.has(e));
     expect(pruned.size + retained.length).toBe(all.length);
-    expect(all.length).toBe(11);
+    expect(all.length).toBe(13);
   });
 });

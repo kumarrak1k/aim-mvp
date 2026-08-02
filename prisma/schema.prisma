@@ -389,6 +389,22 @@ model UserProfile {
   defaultTotalQuestions Int      @default(5)
   defaultUseHybridMix   Boolean  @default(false)
   defaultQuestionMix    Json?
+  // ── Onboarding (see app/lib/onboarding.ts) ────────────────────────────
+  // Asked once, immediately after terms. Every profile in this table was
+  // empty before this existed — not because candidates disengaged, but
+  // because nothing ever asked them.
+  /** Free text, e.g. "Operations Analyst". Distinct from roleSpec, which is a pasted job description. */
+  targetRole            String?
+  /** One of SECTORS. Shapes generated questions. */
+  targetSector          String?
+  /** One of CHALLENGES. Drives focus area and coaching emphasis. */
+  biggestChallenge      String?
+  /** One of PROCESS_TYPES. Decides where onboarding hands the candidate off. */
+  processType           String?
+  /** Null until the flow is finished, so a part-completed run resumes rather than repeats. */
+  onboardingCompletedAt DateTime?
+  onboardingSkipped     Boolean  @default(false)
+
   tosAcceptedAt         DateTime?
   tosAcceptedVersion    String?
   // First-touch signup attribution (captured on landing, saved at signup).

@@ -46,6 +46,15 @@ export const ACTIVITY_EVENTS = {
   TOOL_USED: "tool_used",
   /** A message was sent to the AI mentor chat. detail: { chars, topic? }. */
   CHAT_MESSAGE: "chat_message",
+
+  // ── Onboarding ───────────────────────────────────────────────────────────
+  /** Finished the onboarding flow. detail: { sector, stage, challenge }. */
+  ONBOARDING_COMPLETED: "onboarding_completed",
+  /**
+   * Skipped it. Recorded rather than ignored — a high skip rate means the flow
+   * is the problem, and treating a skip as "never started" would hide that.
+   */
+  ONBOARDING_SKIPPED: "onboarding_skipped",
 } as const;
 
 export type ActivityEventName =

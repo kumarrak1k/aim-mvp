@@ -27,6 +27,7 @@ const isApiRoute    = createRouteMatcher(["/api(.*)"]);
 // Routes that require authentication
 const isProtected = createRouteMatcher([
   "/practice(.*)",
+  "/onboarding(.*)",
   "/company(.*)",
   "/accept-terms(.*)",
   "/change-password(.*)",
