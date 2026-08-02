@@ -150,3 +150,82 @@ Ordered by effect on a first-time visitor, not by effort.
   fictional companies. Worth keeping.
 - **A per-question credit model.** It makes users ration practice, which is the
   opposite of what a coaching product wants.
+
+---
+
+# Appendix A — signed-in flow (batch 1 of n)
+
+Walkthrough screenshots of the real product, which the section above could only
+infer from the marketing site. Notes recorded as received; conclusions held
+until all batches are in.
+
+## The onboarding is the finding
+
+**Nine steps, before the product is used at all.** Each step earns the next
+rather than simply collecting data:
+
+1. **"Before we start"** — date of birth, plus two consent checkboxes:
+   transcript use for AI improvement, and product emails. Both **unchecked by
+   default**, granular, at step one.
+2. **"About you"** — first/last/preferred name, and career stage:
+   *Apprentice / Intern-Placement / Graduate*.
+3. **"Target sector"** — eight tiles: Finance & Banking, Accounting & Audit,
+   Consulting, Technology & Software, Public Sector & Charities, Law,
+   Engineering, Other. Framed as *"This shapes your practice questions."*
+4. **"What is your biggest interview challenge?"** — six options written the
+   way a candidate actually thinks: *"I freeze under pressure"*, *"I ramble and
+   lose structure"*, *"Technical questions trip me up"*, *"I second-guess every
+   answer"*, *"I don't have enough experience to draw on"*, *"I just don't know
+   what to expect"*.
+5. **A personalised payoff card.** Dark terminal-styled panel reading
+   *"Graduate Finance & Banking technicals are harder. That is exactly why
+   practice matters more."* — attributed *"rakesh, Graduate"*. This repays
+   steps 2–4 immediately, which is what stops step 6 feeling like a form.
+6. **"How Mockly works"** — three benefits, placed AFTER the payoff.
+7. **"Real results from real candidates"** — named testimonials with photos and
+   roles, e.g. *"5 Degree Apprenticeship offers from J.P. Morgan, Morgan
+   Stanley, Deutsche Bank, Microsoft, and Grant Thornton"*.
+8. **"How did you find Mockly?"** — LinkedIn, Reddit, Instagram/TikTok,
+   University/Careers Service, Friend or Family, Google Search, Other. Skippable.
+   Attribution asked directly rather than inferred from UTM.
+9. **"Three steps to interview-ready"** — a personalised practice path with a
+   `CALIBRATED` badge, built from the answers given.
+
+**Ours, by comparison, is: accept terms, then land on /practice.** That is the
+most likely explanation for the finding that all eleven `.com` profiles have
+zero characters of CV text, no role spec and no goals — nothing ever asked.
+
+## Graded warm-up before the real session
+
+*"Ready for a quick practice run, rakesh?"* — two questions, two minutes each,
+explicitly labelled a **graded warm-up**: *"You will answer out loud, get graded
+by our AI, and see your baseline starting score."*
+
+Two jobs at once: it removes the fear of the first real attempt, and it
+manufactures a baseline so progress is visible from session two onward. We have
+nothing between signing up and a full scored interview.
+
+## Hardware check as a first-class step
+
+A dedicated screen verifies camera and microphone with a 30-second practice
+clip and live badges — `Face Detected`, `No Audio Detected` — plus device
+pickers and a live mic-level meter. Only then does *"Proceed to Real Interview"*
+enable.
+
+We drop users straight into voice/camera mode and hope it works.
+
+## The interview screen
+
+- Video is the centre of the screen and large.
+- Right rail carries **Goal Reminders** and **Interview Progress**.
+- Questions are **revealed progressively**: *"Hidden until active"*,
+  *"Question 1 is locked"*, with an explicit *"Proceed to Question 1"* gate.
+- During recording: countdown timer, a live **"Look at Camera"** nudge, `Stop
+  Recording`, and a `Hide` control for the self-view.
+- *"Goals hidden during active recording. Will reappear before the next
+  question."* — deliberate reduction of on-screen load at the moment of effort.
+- The question appears in BOTH the right rail and beneath the video.
+- Upgrade prompts sit **in context** — Goal Reminders shows a padlock and
+  *"Upgrade to Ultra to see your goals"* — rather than as a banner.
+- Footer disclaimer: *"Mockly is powered by AI and can make mistakes. Please
+  verify important feedback."*
