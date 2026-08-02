@@ -229,3 +229,117 @@ We drop users straight into voice/camera mode and hope it works.
   *"Upgrade to Ultra to see your goals"* — rather than as a banner.
 - Footer disclaimer: *"Mockly is powered by AI and can make mistakes. Please
   verify important feedback."*
+
+---
+
+# Appendix B — signed-in flow (batch 2, final)
+
+## Correction to section 6
+
+Section 6 said their scoring "inflates by design", citing "94, Excellent". That
+was wrong. **94 was a marketing mockup.** The real product returned **8/100**
+and **11/100** for weak answers, and a dashboard average of **7/100**, labelled
+*"Needs Work"*. Their live scoring is not generous — if anything it is harsher
+than ours.
+
+What they do that we did not is show the arithmetic. The score breakdown lists
+weighted points, not just percentages:
+
+> Answer Length **10%** (1/10 points) · Verbal Delivery **20%** (3/15 points) ·
+> Eye Contact **0%** (0/5 points)
+
+The headline is reconcilable from the parts. That is precisely the incoherence
+fixed in 94ebb14 and 3e00eeb — they solved it by showing the weights rather
+than by constraining the model.
+
+They also publish a **Progression Probability** gauge (LOW / MODERATE / HIGH)
+alongside the score, which answers the question a candidate actually has.
+
+## Feedback quality — the strongest thing they have
+
+Per answer, alongside a video replay of the candidate's own recording:
+
+- **Annotated transcript.** Filler words highlighted inline, with a
+  `Show Filler Words` toggle. The user sees their own "Um, not really sure what
+  else to say" underlined in place.
+- **Pro Suggestion** — a concrete rewrite, not advice:
+  > "You end your answer without landing a clear comparison or final takeaway."
+  > **INSTEAD, TRY SAYING:** "I want the graduate path because it helps me start
+  > my new career and learn lots as I go."
+- **A three-part summary** with a structure worth taking wholesale:
+  **AREA TO IMPROVE** → **EFFECT ON RECRUITER** → **HOW TO FIX**.
+
+"Effect on recruiter" is the standout. It converts a flaw into a consequence —
+*"Very short answers don't give the interviewer enough to work with"* — which is
+far more motivating than a score.
+
+- **Detailed insights**: filler words 5% (above average), speaking rate 277 wpm
+  (too fast), time taken 22s, camera eye contact 0% (poor). Each metric carries
+  a verdict, not just a number.
+
+## Onboarding continues after the first session
+
+- **"Generating your feedback"** — a waiting screen stating *"~2 MIN"* and what
+  is happening: *"Transcribing your responses to evaluate clarity and pacing."*
+  Expectation set rather than a spinner.
+- **A seven-step guided tour** over the real feedback page: Overall Score →
+  Question Selector → Video Replay → Transcript Annotations → Filler Words →
+  Macro Feedback → Complete. With *"Skip tour"*, *"Don't show me tours again"*,
+  and replayable from Settings → Help & Tours.
+- **First Interview Completed** modal at the moment of peak engagement:
+  *"That is your starting point. With regular practice, most users improve
+  significantly within a week."* — followed by a Free vs Ultra comparison and a
+  monthly/yearly toggle.
+- **"How was my interview experience?"** — five-emoji rating inline on the
+  feedback page. Product feedback captured where the user has just formed an
+  opinion.
+
+## Dashboard
+
+Four KPI cards: **Average Score**, **Interviews Completed** (*"Nice start. Aim
+for 10+ sessions!"*), **Offer Readiness**, **Next Interview**. Then Performance
+Analytics over time, Your Statistics (WPM, filler %, average answer time — each
+with a verdict), and Recent Interviews.
+
+Two retention mechanics we have nothing equivalent to:
+
+- **7-day streak tracker** on the Interview Room screen.
+- **Upcoming Interviews** with an `+ Add` control — the user records their real
+  interview dates in the product, which gives the product a reason to matter on
+  a specific date.
+
+Usage is always visible: *"2 / 10 questions used (8 remaining) · Resets in 30
+days"*.
+
+## Question Bank — the moat we do not have
+
+A **Company Prep** tab with per-employer cards: A&O Shearman, Amazon, Goldman
+Sachs, J.P. Morgan, White & Case, AstraZeneca, Aviva, BAE Systems. Each shows
+sector, applicable levels (Apprentice / Intern / Graduate), a verified question
+count, and `View Teaser`. Badged `Featured` and `Weekly Rotation`.
+
+Crucially it is **community-sourced**:
+
+> "Had an interview recently? Help other candidates by sharing your experience.
+> We analyse community submissions to continually update our company-specific
+> profiles and question banks."
+
+That is a compounding asset. Every user who shares makes the product better for
+the next, and it cannot be replicated by generating questions with a model.
+
+## Settings — better GDPR posture than ours
+
+- **Privacy & AI Training** with granular, independently saved toggles:
+  *AI Model Training* and *Marketing Analytics*, both off.
+- **Cookie Preferences** showing `Current status: Accepted` with a
+  **Reset Cookie Preferences** button — withdrawal is one click, in the product.
+- **Download my data** — a JSON export, with UK GDPR named explicitly and a note
+  that video and audio are excluded due to size, with a contact route for them.
+- **Danger Zone** — permanent account deletion.
+- **Resume Storage** — *"We securely encrypt and store them in your private
+  cloud partition."*
+
+We shipped a consent banner and a privacy section this week. They have the
+in-product controls that make those promises operable. Our withdrawal
+instruction is currently "clear this site's data in your browser", which is
+worse than a button.
