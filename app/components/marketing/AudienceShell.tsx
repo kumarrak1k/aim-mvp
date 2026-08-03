@@ -63,7 +63,7 @@ const THEMES: Record<Audience, AudienceTheme> = {
     signInPath: "/for-candidates/sign-in",
     signUpPath: "/for-candidates/sign-up",
     navItems: [
-      { href: "/for-candidates", label: "Overview" },
+      { href: "/", label: "Overview" },
       {
         href: "/interview-practice",
         label: "Interview practice",
