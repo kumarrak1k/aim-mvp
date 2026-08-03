@@ -96,7 +96,7 @@ const THEMES: Record<Audience, AudienceTheme> = {
     accentTextSoft: "text-purple-300/90",
     accentTextStrong: "text-purple-100",
     switchAudienceLabel: "I'm a candidate →",
-    switchAudienceHref: "/for-candidates",
+    switchAudienceHref: "/",
   },
 };
 
@@ -124,7 +124,7 @@ export function AudienceShell({
         <div className="relative mx-auto grid w-full max-w-7xl grid-cols-[auto_minmax(0,1fr)_auto] items-center px-4 pt-1.5 pb-6 sm:px-6 sm:pt-2 sm:pb-8 lg:px-10">
           {/* Logo + audience badge */}
           <Link
-            href={audience === "candidate" ? "/for-candidates" : "/for-business"}
+            href={audience === "candidate" ? "/" : "/for-business"}
             className="relative z-10 flex shrink-0 items-center gap-3"
           >
             <SiteLogo href="" size="md" showText />

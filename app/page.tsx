@@ -35,7 +35,7 @@ const products = [
       "Voice and camera delivery feedback",
       "Model answers and improvement steps",
     ],
-    href: "/for-candidates/interview-practice",
+    href: "/interview-practice",
     cta: "Explore interview practice →",
     accent: "purple",
   },
@@ -50,7 +50,7 @@ const products = [
       "3-minute spoken presentation simulation",
       "Multi-axis scoring report and improvement plan",
     ],
-    href: "/for-candidates/assessment-centre",
+    href: "/mock-assessment-centre",
     cta: "Explore assessment centre →",
     accent: "cyan",
   },
@@ -194,7 +194,7 @@ export default async function ForCandidatesPage() {
             Start free →
           </Link>
           <Link
-            href="/for-candidates/interview-practice"
+            href="/interview-practice"
             className="w-full rounded-2xl border border-white/[0.1] bg-white/[0.04] px-8 py-4 text-center text-base font-black text-white transition hover:bg-white/[0.08] sm:w-auto"
           >
             How it works
@@ -427,7 +427,7 @@ export default async function ForCandidatesPage() {
                   Start free
                 </button>
               </Link>
-              <Link href="/for-candidates/pricing">
+              <Link href="/pricing">
                 <button className="rounded-2xl border border-white/[0.1] bg-white/[0.04] px-6 py-3.5 text-sm font-black text-white transition hover:bg-white/[0.08]">
                   See pricing
                 </button>
