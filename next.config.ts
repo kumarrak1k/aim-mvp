@@ -85,9 +85,28 @@ const nextConfig: NextConfig = {
         destination: "/for-candidates/pricing",
         permanent: true,
       },
+      // ── Single-audience consolidation (stage 1: the duplicate pages) ────────
+      // The audience split left a full /for-candidates/* tree duplicating the
+      // top-level pages, and a second homepage at /for-candidates. Now that
+      // there is one audience these are redundant, split ranking authority
+      // between two URLs, and cost the visitor a click. Each target below is a
+      // real page that does not itself redirect, so there is no loop.
+      //
+      // NOT redirected here, deliberately: /for-candidates/{sign-in,sign-up}
+      // (auth, still linked from the header), and the three UNIQUE product
+      // pages (interview-practice, assessment-centre, pricing) — those carry
+      // their own SEO content and are promoted to top-level in stage 2, which
+      // needs file moves rather than redirects.
+      { source: "/for-candidates", destination: "/", permanent: true },
+      { source: "/for-candidates/about", destination: "/about", permanent: true },
+      { source: "/for-candidates/blog", destination: "/blog", permanent: true },
+      { source: "/for-candidates/questions", destination: "/questions", permanent: true },
+      { source: "/for-candidates/star-scorer", destination: "/tools/star-scorer", permanent: true },
       {
+        // Was → /for-candidates, which would now chain through the redirect
+        // above. Point straight at the homepage instead.
         source: "/candidates",
-        destination: "/for-candidates",
+        destination: "/",
         permanent: true,
       },
       {
