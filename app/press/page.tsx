@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { createPageMetadata } from "@/app/config/seo";
 import { absoluteUrl, siteConfig } from "@/app/config/site";
 import { CopyBoilerplate } from "./CopyBoilerplate";
-import { PublicShell } from "@/app/components/marketing/PublicShell";
+import { AudienceShell } from "@/app/components/marketing/AudienceShell";
 
 export const metadata: Metadata = createPageMetadata({
   path: "/press",
@@ -32,7 +32,7 @@ const boilerplate = `AI Career Mentor is a UK-built AI coaching platform that he
 
 export default function PressPage() {
   return (
-    <PublicShell currentPath="/press">
+    <AudienceShell audience="candidate" currentPath="/press">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
@@ -147,6 +147,6 @@ export default function PressPage() {
           </p>
         </section>
       </div>
-    </PublicShell>
+    </AudienceShell>
   );
 }

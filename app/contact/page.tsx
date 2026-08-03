@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { createPageMetadata } from "@/app/config/seo";
 import { absoluteUrl, siteConfig } from "@/app/config/site";
-import { PublicShell } from "@/app/components/marketing/PublicShell";
+import { AudienceShell } from "@/app/components/marketing/AudienceShell";
 
 export const metadata: Metadata = createPageMetadata({
   path: "/contact",
@@ -66,7 +66,7 @@ const faqs = [
 
 export default function ContactPage() {
   return (
-    <PublicShell currentPath="/contact">
+    <AudienceShell audience="candidate" currentPath="/contact">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
@@ -135,6 +135,6 @@ export default function ContactPage() {
           </div>
         </section>
       </div>
-    </PublicShell>
+    </AudienceShell>
   );
 }

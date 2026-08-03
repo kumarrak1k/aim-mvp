@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { PublicShell } from "@/app/components/marketing/PublicShell";
+import { AudienceShell } from "@/app/components/marketing/AudienceShell";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
@@ -105,7 +105,7 @@ const commitments = [
 
 export default function PrivacyPage() {
   return (
-    <PublicShell currentPath="/privacy">
+    <AudienceShell audience="candidate" currentPath="/privacy">
       <div>
         {/* Hero */}
         <section className="mx-auto max-w-4xl px-4 pb-12 pt-6 text-center sm:px-6 sm:pt-10">
@@ -488,6 +488,6 @@ export default function PrivacyPage() {
           </div>
         </section>
       </div>
-    </PublicShell>
+    </AudienceShell>
   );
 }

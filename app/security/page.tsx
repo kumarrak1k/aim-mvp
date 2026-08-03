@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { createPageMetadata } from "@/app/config/seo";
 import { absoluteUrl, siteConfig } from "@/app/config/site";
-import { PublicShell } from "@/app/components/marketing/PublicShell";
+import { AudienceShell } from "@/app/components/marketing/AudienceShell";
 
 export const metadata: Metadata = createPageMetadata({
   path: "/security",
@@ -89,7 +89,7 @@ const controls = [
 
 export default function SecurityPage() {
   return (
-    <PublicShell currentPath="/security">
+    <AudienceShell audience="candidate" currentPath="/security">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
@@ -233,6 +233,6 @@ export default function SecurityPage() {
           </a>
         </section>
       </div>
-    </PublicShell>
+    </AudienceShell>
   );
 }
