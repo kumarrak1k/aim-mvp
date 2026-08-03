@@ -30,7 +30,7 @@ export function SiteFooter() {
               For candidates
             </p>
             <div className="space-y-3 text-sm text-gray-400">
-              <Link href="/for-candidates" className="block transition hover:text-white">Overview</Link>
+              <Link href="/" className="block transition hover:text-white">Overview</Link>
               <Link href="/interview-practice" className="block transition hover:text-white">Interview practice</Link>
               <Link href="/mock-assessment-centre" className="block transition hover:text-white">Assessment centre</Link>
               <Link href="/pricing" className="block transition hover:text-white">Pricing</Link>
