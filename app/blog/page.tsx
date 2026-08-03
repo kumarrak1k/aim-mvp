@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
-// Revalidate hourly so scheduled (future-dated) posts publish themselves.
-export const revalidate = 3600;
-
+// This page is rendered per-request (it reads auth via CandidateShell to
+// show the right header), so scheduled/future-dated posts publish
+// themselves as soon as their date passes — no ISR revalidate needed.
 import { getAllPosts } from "@/app/lib/content";
 import { absoluteUrl } from "@/app/config/site";
 import { buildAlternates } from "@/app/config/seo";

@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { COMPANY_GUIDES, getCompanyGuide } from "../data";
 import { absoluteUrl } from "@/app/config/site";
 import { buildAlternates } from "@/app/config/seo";
-import { CandidateShell } from "@/app/components/marketing/CandidateShell";
+import { AudienceShell } from "@/app/components/marketing/AudienceShell";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -46,7 +46,7 @@ export default async function CompanyGuidePage({ params }: Props) {
   };
 
   return (
-    <CandidateShell currentPath="/companies">
+    <AudienceShell audience="candidate" currentPath="/companies">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
@@ -184,6 +184,6 @@ export default async function CompanyGuidePage({ params }: Props) {
           </Link>
         </p>
       </div>
-    </CandidateShell>
+    </AudienceShell>
   );
 }
