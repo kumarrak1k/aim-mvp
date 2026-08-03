@@ -3,7 +3,7 @@ import Link from "next/link";
 import { competitors } from "@/app/compare/data";
 import { createPageMetadata } from "@/app/config/seo";
 import { absoluteUrl } from "@/app/config/site";
-import { PublicShell } from "@/app/components/marketing/PublicShell";
+import { AudienceShell } from "@/app/components/marketing/AudienceShell";
 
 export const metadata: Metadata = createPageMetadata({
   path: "/compare",
@@ -153,7 +153,7 @@ const faqSchema = {
 
 export default function CompareIndexPage() {
   return (
-    <PublicShell>
+    <AudienceShell audience="candidate" currentPath="/compare">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
@@ -325,6 +325,6 @@ export default function CompareIndexPage() {
           </p>
         </section>
       </div>
-    </PublicShell>
+    </AudienceShell>
   );
 }

@@ -14,7 +14,7 @@ import {
 } from "@/app/lib/content";
 import { absoluteUrl } from "@/app/config/site";
 import { buildAlternates } from "@/app/config/seo";
-import { PublicShell } from "@/app/components/marketing/PublicShell";
+import { AudienceShell } from "@/app/components/marketing/AudienceShell";
 import {
   RelatedContent,
   type RelatedContentItem,
@@ -206,7 +206,7 @@ export default async function BlogPostPage({ params }: Props) {
   };
 
   return (
-    <PublicShell>
+    <AudienceShell audience="candidate" currentPath="/blog">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
@@ -268,6 +268,6 @@ export default async function BlogPostPage({ params }: Props) {
           </Link>
         </div>
       </div>
-    </PublicShell>
+    </AudienceShell>
   );
 }

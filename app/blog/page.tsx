@@ -6,7 +6,7 @@ export const revalidate = 3600;
 import { getAllPosts } from "@/app/lib/content";
 import { absoluteUrl } from "@/app/config/site";
 import { buildAlternates } from "@/app/config/seo";
-import { PublicShell } from "@/app/components/marketing/PublicShell";
+import { AudienceShell } from "@/app/components/marketing/AudienceShell";
 import { BlogPageContent } from "@/app/components/pages/BlogPageContent";
 
 const _ogImage = absoluteUrl("/brand/logo.jpg");
@@ -38,8 +38,8 @@ export default function BlogIndexPage() {
   const posts = getAllPosts();
 
   return (
-    <PublicShell currentPath="/blog">
+    <AudienceShell audience="candidate" currentPath="/blog">
       <BlogPageContent posts={posts} />
-    </PublicShell>
+    </AudienceShell>
   );
 }

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { createPageMetadata } from "@/app/config/seo";
-import { PublicShell } from "@/app/components/marketing/PublicShell";
+import { AudienceShell } from "@/app/components/marketing/AudienceShell";
 import { STARScorerClient } from "./StarScorerClient";
 
 export const metadata: Metadata = createPageMetadata({
@@ -12,8 +12,8 @@ export const metadata: Metadata = createPageMetadata({
 
 export default function STARScorerPage() {
   return (
-    <PublicShell currentPath="/tools/star-scorer">
+    <AudienceShell audience="candidate" currentPath="/tools/star-scorer">
       <STARScorerClient />
-    </PublicShell>
+    </AudienceShell>
   );
 }

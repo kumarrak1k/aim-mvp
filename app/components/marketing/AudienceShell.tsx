@@ -43,10 +43,10 @@ type AudienceTheme = {
 
 /** Resource links shown in the candidate shell. */
 const CANDIDATE_RESOURCE_LINKS = [
-  { href: "/for-candidates/about",        label: "About us" },
-  { href: "/for-candidates/blog",         label: "Interview guides" },
-  { href: "/for-candidates/questions",    label: "Question library" },
-  { href: "/for-candidates/star-scorer",  label: "Free STAR scorer" },
+  { href: "/about",        label: "About us" },
+  { href: "/blog",         label: "Interview guides" },
+  { href: "/questions",    label: "Question library" },
+  { href: "/tools/star-scorer",  label: "Free STAR scorer" },
 ];
 
 /** Resource links shown in the business/hiring-team shell. */

@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { getCompetitor, getAllCompetitorSlugs } from "@/app/compare/data";
 import { absoluteUrl } from "@/app/config/site";
 import { buildAlternates } from "@/app/config/seo";
-import { PublicShell } from "@/app/components/marketing/PublicShell";
+import { AudienceShell } from "@/app/components/marketing/AudienceShell";
 
 type Props = { params: Promise<{ competitor: string }> };
 
@@ -42,7 +42,7 @@ export default async function ComparisonPage({ params }: Props) {
   };
 
   return (
-    <PublicShell>
+    <AudienceShell audience="candidate" currentPath="/compare">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
@@ -174,6 +174,6 @@ export default async function ComparisonPage({ params }: Props) {
           </p>
         </section>
       </div>
-    </PublicShell>
+    </AudienceShell>
   );
 }
