@@ -164,7 +164,7 @@ export default async function AssessmentCentrePage() {
           {stages.map((stage) => (
             <article
               key={stage.label}
-              className={`relative overflow-hidden rounded-[1.85rem] border p-7 ${
+              className={`relative flex flex-col overflow-hidden rounded-[1.85rem] border p-7 ${
                 stage.accent === "purple"
                   ? "border-purple-500/[0.18] bg-purple-500/[0.05]"
                   : stage.accent === "fuchsia"
@@ -189,7 +189,7 @@ export default async function AssessmentCentrePage() {
               <p className="mt-3 text-sm leading-7 text-gray-300">
                 {stage.text}
               </p>
-              <ul className="mt-5 space-y-2 text-sm text-gray-300">
+              <ul className="mt-auto space-y-2 pt-5 text-sm text-gray-300">
                 {stage.bullets.map((b) => (
                   <li key={b} className="flex items-start gap-2.5">
                     <span
