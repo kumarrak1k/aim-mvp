@@ -55,15 +55,24 @@ type CandidateAppShellProps = {
  * three-day trial. The badge sets the expectation up front instead.
  */
 const navItems: Array<{
-  href: CandidateAppPath;
+  href?: CandidateAppPath;
   label: string;
   proOnly?: boolean;
+  dropdown?: Array<{ href: string; label: string }>;
 }> = [
   { href: "/profile",           label: "My Profile"          },
   { href: "/practice",          label: "Interview Practice"  },
   { href: "/assessment-centre", label: "Assessment Centre",  proOnly: true },
   { href: "/career-docs",       label: "Career Docs",        proOnly: true },
   { href: "/progress",          label: "My Progress"         },
+  {
+    label: "Free tools",
+    dropdown: [
+      { href: "/blog", label: "Interview guides" },
+      { href: "/questions", label: "Question library" },
+      { href: "/tools/star-scorer", label: "Free STAR scorer" },
+    ],
+  },
   { href: "/guide",             label: "User Guide"          },
 ];
 
@@ -78,13 +87,6 @@ function ProBadge() {
     </span>
   );
 }
-
-const resourceLinks = [
-  { href: "/for-candidates/about",        label: "About us"          },
-  { href: "/for-candidates/blog",         label: "Interview guides"  },
-  { href: "/for-candidates/questions",    label: "Question library"  },
-  { href: "/for-candidates/star-scorer",  label: "Free STAR scorer" },
-];
 
 export function CandidateAppShell({
   children,
@@ -143,7 +145,10 @@ export function CandidateAppShell({
 
       {/* Header */}
       <header className="sticky top-0 z-50 backdrop-blur-2xl">
-        <div className="relative mx-auto flex w-full max-w-7xl items-center px-4 py-3 sm:px-6 lg:px-8 lg:py-3.5">
+        {/* Grid so the centred nav lives in its own column and cannot paint over
+            the logo — the old flex + absolute layout let the pill nav overlap
+            "AI Career Mentor" once it grew. */}
+        <div className="relative mx-auto grid w-full max-w-7xl grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 px-4 py-3 sm:px-6 lg:px-8 lg:py-3.5">
           {/* Logo + badge */}
           <Link href="/practice" className="relative z-10 flex shrink-0 items-center gap-3">
             <SiteLogo href="" size="md" showText />
@@ -152,16 +157,41 @@ export function CandidateAppShell({
             </span>
           </Link>
 
-          {/* Desktop pill nav — absolutely centred so position never shifts */}
-          <nav aria-label="Primary" className="pointer-events-none absolute inset-x-0 hidden justify-center xl:flex">
-            <div className="pointer-events-auto flex items-center gap-0.5 rounded-full border border-white/[0.09] bg-white/[0.04] p-1.5">
+          {/* Desktop pill nav */}
+          <nav aria-label="Primary" className="hidden min-w-0 justify-center xl:flex">
+            <div className="flex items-center gap-0.5 rounded-full border border-white/[0.09] bg-white/[0.04] p-1.5">
               {navItems.map((item) => {
+                if (item.dropdown) {
+                  return (
+                    <div key={item.label} className="group/dd relative">
+                      <button
+                        type="button"
+                        aria-haspopup="true"
+                        className="flex items-center gap-1 whitespace-nowrap rounded-full px-3 py-2 text-[12.5px] font-bold text-gray-400 transition group-hover/dd:bg-white/[0.07] group-hover/dd:text-white group-focus-within/dd:bg-white/[0.07] group-focus-within/dd:text-white xl:px-4 xl:text-[13px]"
+                      >
+                        {item.label}
+                        <svg width="10" height="10" viewBox="0 0 12 12" fill="none" aria-hidden className="transition group-hover/dd:rotate-180">
+                          <path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </button>
+                      <div className="invisible absolute left-1/2 top-full z-50 w-56 -translate-x-1/2 pt-2 opacity-0 transition group-hover/dd:visible group-hover/dd:opacity-100 group-focus-within/dd:visible group-focus-within/dd:opacity-100">
+                        <div className="rounded-2xl border border-white/[0.09] bg-[#140a26] p-1.5 shadow-2xl shadow-black/50">
+                          {item.dropdown.map((sub) => (
+                            <Link key={sub.href} href={sub.href} className="block whitespace-nowrap rounded-xl px-3.5 py-2 text-[13px] font-semibold text-gray-300 transition hover:bg-white/[0.07] hover:text-white">
+                              {sub.label}
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }
                 const active =
                   currentPath === item.href ||
                   (item.href === "/practice" && currentPath === "/practice/session") ||
                   (item.href === "/career-docs" && currentPath.startsWith("/career-docs/"));
                 return (
-                  <Link key={item.href} href={item.href} className={item.href === "/guide" ? "hidden xl:block" : undefined}>
+                  <Link key={item.href} href={item.href!}>
                     <span
                       className={`block whitespace-nowrap rounded-full px-3 py-2 text-[12.5px] font-bold transition xl:px-4 xl:text-[13px] ${
                         active
@@ -178,20 +208,8 @@ export function CandidateAppShell({
             </div>
           </nav>
 
-          {/* Right actions */}
-          <div className="relative z-10 ml-auto flex shrink-0 items-center gap-2">
-            {/* Start Practising shortcut — hidden when already on practice or assessment centre */}
-            {currentPath !== "/practice" &&
-              currentPath !== "/practice/session" &&
-              currentPath !== "/assessment-centre" && (
-                <Link
-                  href="/practice"
-                  className="hidden whitespace-nowrap rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-4 py-2.5 text-[13px] font-black text-white shadow-lg shadow-purple-950/40 transition hover:scale-[1.03] sm:flex sm:px-5 xl:px-6"
-                >
-                  Start Practising
-                </Link>
-              )}
-
+          {/* Right actions — avatar only; Start Practising moved to its own row. */}
+          <div className="relative z-10 flex shrink-0 items-center justify-end gap-2">
             <div className="shrink-0 px-2">
               <UserButton>
                 <UserButton.UserProfilePage
@@ -214,7 +232,11 @@ export function CandidateAppShell({
         {/* Tablet/mobile compact nav row */}
         <div className="px-4 py-2 sm:px-6 xl:hidden">
           <nav className="mx-auto flex max-w-7xl gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {navItems.map((item) => {
+            {navItems.flatMap((item): Array<{ href: string; label: string; proOnly?: boolean }> =>
+              item.dropdown
+                ? item.dropdown.map((d) => ({ href: d.href, label: d.label }))
+                : [{ href: item.href as string, label: item.label, proOnly: item.proOnly }]
+            ).map((item) => {
               const active =
                 currentPath === item.href ||
                 (item.href === "/practice" && currentPath === "/practice/session") ||
@@ -234,31 +256,23 @@ export function CandidateAppShell({
                 </Link>
               );
             })}
-            <span className="flex items-center text-white/[0.15]">·</span>
-            {resourceLinks.map((item) => (
-              <Link key={item.href} href={item.href}>
-                <span className="block whitespace-nowrap rounded-full border border-white/[0.08] bg-white/[0.04] px-3.5 py-1.5 text-xs font-bold text-gray-500 transition hover:bg-white/[0.07] hover:text-white">
-                  {item.label}
-                </span>
-              </Link>
-            ))}
           </nav>
         </div>
 
-        {/* Desktop resource links — secondary strip */}
-        <div className="hidden px-4 py-1.5 lg:block">
-          <nav className="mx-auto flex max-w-7xl items-center justify-center gap-6">
-            {resourceLinks.map((item) => (
+        {/* Start Practising — its own centred row, where the resource strip used
+            to be. Hidden on the pages it points at. */}
+        {currentPath !== "/practice" &&
+          currentPath !== "/practice/session" &&
+          currentPath !== "/assessment-centre" && (
+            <div className="flex justify-center px-4 pb-2.5 pt-0.5">
               <Link
-                key={item.href}
-                href={item.href}
-                className="text-[12px] font-semibold text-gray-500 transition hover:text-gray-300"
+                href="/practice"
+                className="whitespace-nowrap rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-6 py-2.5 text-[13px] font-black text-white shadow-lg shadow-purple-950/40 transition hover:scale-[1.03]"
               >
-                {item.label}
+                Start Practising
               </Link>
-            ))}
-          </nav>
-        </div>
+            </div>
+          )}
       </header>
 
       {/* New-user guide banner — practice page only, dismissible */}
