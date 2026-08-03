@@ -148,7 +148,7 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
       cta: "Click for 3-day free trial · No payment details required",
       stripePlanMonthly: "plus_monthly" as StripePlanId,
       stripePlanAnnual: "plus_annual" as StripePlanId,
-      highlight: true,
+      highlight: false,
     },
     {
       name: "Professional",
@@ -171,7 +171,7 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
       cta: "Get started",
       stripePlanMonthly: "professional_monthly" as StripePlanId,
       stripePlanAnnual: "professional_annual" as StripePlanId,
-      highlight: false,
+      highlight: true,
     },
   ];
 
@@ -315,7 +315,13 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
                   )}
                 </p>
               )}
-              <p className="mt-4 min-h-[60px] text-sm leading-6 text-gray-400">
+              <p
+                className={`mt-4 min-h-[60px] leading-6 ${
+                  plan.name === "Free"
+                    ? "text-sm text-gray-400"
+                    : "text-[15px] font-bold text-white"
+                }`}
+              >
                 {plan.description}
               </p>
               <div className="mt-5 flex-1 space-y-2.5">
