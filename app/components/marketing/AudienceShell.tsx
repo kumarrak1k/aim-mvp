@@ -210,43 +210,89 @@ export function AudienceShell({
           </div>
         </div>
 
-        {/* Mobile compact nav row — audience-only (shown below lg) */}
-        <div className="px-4 py-2 sm:px-6 lg:hidden">
-          <nav className="mx-auto flex max-w-7xl gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {theme.navItems.flatMap((item): Array<{ href?: string; label: string }> =>
-              // No hover on mobile — the dropdown's children become their own
-              // pills so every destination stays reachable.
-              item.dropdown ? item.dropdown : [{ href: item.href, label: item.label }]
-            ).map((item) => {
+        {/* Mobile + tablet nav — a hamburger disclosure shown below lg. The
+            old horizontal pill strip overflowed on phones and read as a
+            cramped, not-obviously-scrollable row. This is CSS-only (native
+            <details>) so the shell stays a server component: the <summary>
+            toggles the panel, group-open rotates the chevron, and every
+            destination is a full-width row that shows clearly. */}
+        <details className="group/nav px-4 pb-3 sm:px-6 lg:hidden">
+          <summary className="flex cursor-pointer list-none items-center justify-between rounded-2xl border border-white/[0.09] bg-white/[0.05] px-4 py-3 text-white [&::-webkit-details-marker]:hidden">
+            <span className="flex items-center gap-2.5 text-sm font-bold">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden>
+                <path d="M2.5 4.5h13M2.5 9h13M2.5 13.5h13" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+              </svg>
+              Menu
+            </span>
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden className="text-gray-400 transition group-open/nav:rotate-180">
+              <path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </summary>
+
+          <div className="mt-2 overflow-hidden rounded-2xl border border-white/[0.09] bg-[#140a26] p-2 shadow-2xl shadow-black/50">
+            {theme.navItems.map((item) => {
+              // The "Free tools" dropdown becomes a labelled group with its
+              // children listed underneath — no hover needed on touch.
+              if (item.dropdown) {
+                return (
+                  <div key={item.label} className="mt-1 border-t border-white/[0.06] pt-1">
+                    <p className="px-4 pb-1 pt-2 text-[10px] font-black uppercase tracking-[0.16em] text-gray-500">
+                      {item.label}
+                    </p>
+                    {item.dropdown.map((sub) => (
+                      <Link
+                        key={sub.href}
+                        href={sub.href}
+                        className="block rounded-xl px-4 py-2.5 text-sm font-semibold text-gray-300 transition hover:bg-white/[0.06] hover:text-white"
+                      >
+                        {sub.label}
+                      </Link>
+                    ))}
+                  </div>
+                );
+              }
               const active = currentPath === item.href;
               return (
-                <Link key={item.href} href={item.href!}>
-                  <span
-                    className={`block whitespace-nowrap rounded-full px-3.5 py-1.5 text-xs font-bold transition ${
-                      active
-                        ? "bg-white/[0.12] text-white"
-                        : "border border-white/[0.08] bg-white/[0.04] text-gray-400 hover:bg-white/[0.07] hover:text-white"
-                    }`}
-                  >
-                    {item.label}
-                  </span>
+                <Link
+                  key={item.href}
+                  href={item.href!}
+                  className={`block rounded-xl px-4 py-2.5 text-sm font-bold transition ${
+                    active
+                      ? "bg-white/[0.1] text-white"
+                      : "text-gray-300 hover:bg-white/[0.06] hover:text-white"
+                  }`}
+                >
+                  {item.label}
                 </Link>
               );
             })}
+
             {audience === "business" && (
-              <>
-                <span className="flex items-center text-white/[0.15]">·</span>
+              <div className="mt-1 border-t border-white/[0.06] pt-1">
                 {BUSINESS_RESOURCE_LINKS.map((item) => (
-                  <Link key={item.href} href={item.href}>
-                    <span className="block whitespace-nowrap rounded-full border border-white/[0.08] bg-white/[0.04] px-3.5 py-1.5 text-xs font-bold text-gray-500 transition hover:bg-white/[0.07] hover:text-white">
-                      {item.label}
-                    </span>
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="block rounded-xl px-4 py-2.5 text-sm font-semibold text-gray-400 transition hover:bg-white/[0.06] hover:text-white"
+                  >
+                    {item.label}
                   </Link>
                 ))}
-              </>
+              </div>
             )}
-          </nav>
-        </div>
+
+            {/* Sign in — hidden in the top bar on phones (sm:block there), so
+                surface it inside the menu on the smallest screens. */}
+            <div className="mt-1 border-t border-white/[0.06] pt-1 sm:hidden">
+              <Link
+                href={theme.signInPath}
+                className="block rounded-xl px-4 py-2.5 text-sm font-bold text-white/80 transition hover:bg-white/[0.06] hover:text-white"
+              >
+                Sign in
+              </Link>
+            </div>
+          </div>
+        </details>
 
         {/* Desktop resource strip — business only now. The candidate header
             folds these into the primary nav (About us) and the "Free tools"
