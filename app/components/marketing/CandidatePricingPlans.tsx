@@ -347,7 +347,7 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
               {startsFreeTrial ? (
                 <Link
                   href="/for-candidates/sign-up"
-                  className={`mt-8 flex w-full justify-center rounded-2xl px-5 py-3.5 text-center text-sm font-black leading-tight transition ${
+                  className={`mt-8 flex min-h-[3.75rem] w-full items-center justify-center rounded-2xl px-5 py-3 text-center text-sm font-black leading-tight transition ${
                     plan.highlight
                       ? "bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 text-white shadow-xl shadow-purple-950/35 hover:scale-[1.02]"
                       : "border border-white/10 bg-white/[0.06] text-white hover:bg-white/[0.1]"
@@ -359,7 +359,7 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
                 <button
                   onClick={() => void handlePaidCta(plan)}
                   disabled={checkoutPlan !== null}
-                  className={`mt-8 flex w-full justify-center rounded-2xl px-5 py-3.5 text-sm font-black transition disabled:cursor-not-allowed disabled:opacity-60 ${
+                  className={`mt-8 flex min-h-[3.75rem] w-full items-center justify-center rounded-2xl px-5 py-3 text-sm font-black transition disabled:cursor-not-allowed disabled:opacity-60 ${
                     plan.highlight
                       ? "bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 text-white shadow-xl shadow-purple-950/35 hover:scale-[1.02]"
                       : "border border-white/10 bg-white/[0.06] text-white hover:bg-white/[0.1]"
@@ -376,9 +376,15 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
                   {checkoutError}
                 </p>
               )}
-              {isPaid && (
+              {isPaid ? (
                 <p className="mt-3 text-center text-[11px] font-semibold text-emerald-300/90">
                   7-day money-back guarantee, no questions asked
+                </p>
+              ) : (
+                // Reserve the same vertical space on the Free card (which has no
+                // guarantee line) so all three CTA buttons line up on one row.
+                <p className="mt-3 text-center text-[11px] font-semibold text-transparent" aria-hidden>
+                  &nbsp;
                 </p>
               )}
             </div>
