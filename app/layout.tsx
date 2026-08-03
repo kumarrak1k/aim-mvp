@@ -68,11 +68,11 @@ export const metadata: Metadata = {
     description: siteDescription,
     images: ["/opengraph-image"],
   },
-  icons: {
-    icon: "/brand/logo.jpg",
-    shortcut: "/brand/logo.jpg",
-    apple: "/brand/logo.jpg",
-  },
+  // Favicons come from the file-based convention (app/icon.png and
+  // app/apple-icon.png) — a clean, square, emblem-only crop of the brand
+  // mark. The old manual entries pointed at /brand/logo.jpg, which is the
+  // full lockup (emblem + "AI Career Mentor" text on white) and read as an
+  // illegible white square at tab size.
   appleWebApp: {
     capable: true,
     title: siteName,

@@ -154,7 +154,7 @@ export function CandidateAppShell({
             "AI Career Mentor" once it grew. */}
         <div className="relative mx-auto grid w-full max-w-7xl grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 px-4 py-3 sm:px-6 lg:px-8 lg:py-3.5">
           {/* Logo + badge */}
-          <Link href="/practice" className="relative z-10 flex shrink-0 items-center gap-3">
+          <Link href="/" className="relative z-10 flex shrink-0 items-center gap-3">
             <SiteLogo href="" size="md" showText />
             <span className="hidden rounded-full border border-purple-300/20 bg-white/[0.04] px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-purple-100 sm:inline-block xl:hidden">
               Candidate
