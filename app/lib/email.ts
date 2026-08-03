@@ -271,7 +271,7 @@ function renderNurtureHtml(type: NurtureType, unsubUrl: string): string {
   const practiceUrl = `${siteConfig.url}/practice`;
   const starUrl     = `${siteConfig.url}/tools/star-scorer`;
 
-  const upgradeUrl = `${siteConfig.url}/for-candidates/pricing`;
+  const upgradeUrl = `${siteConfig.url}/pricing`;
   const referUrl   = `${siteConfig.url}/refer`;
 
   const bodies: Record<NurtureType, string> = {
@@ -583,7 +583,7 @@ function renderNurtureHtml(type: NurtureType, unsubUrl: string): string {
 
 function renderNurturePlainText(type: NurtureType): string {
   const practiceUrl = `${siteConfig.url}/practice`;
-  const upgradeUrl = `${siteConfig.url}/for-candidates/pricing`;
+  const upgradeUrl = `${siteConfig.url}/pricing`;
   const referUrl   = `${siteConfig.url}/refer`;
   const texts: Record<NurtureType, string> = {
     welcome:        `Welcome to AI Career Mentor!\n\nTip #1: The STAR method.\nEvery behavioural question is best answered with Situation → Task → Action → Result.\n\nRun your first session: ${practiceUrl}`,

@@ -674,12 +674,12 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
                 </div>
               </div>
               <div className="flex shrink-0 flex-col gap-3 sm:flex-row lg:flex-col">
-                <a href="/for-candidates/pricing">
+                <a href="/pricing">
                   <button className="w-full whitespace-nowrap rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-6 py-3.5 text-sm font-black text-white shadow-lg transition hover:scale-[1.02] sm:w-auto lg:w-full">
                     Upgrade to Professional →
                   </button>
                 </a>
-                <a href="/for-candidates/assessment-centre">
+                <a href="/mock-assessment-centre">
                   <button className="w-full whitespace-nowrap rounded-2xl border border-cyan-400/20 bg-cyan-400/[0.07] px-6 py-3.5 text-sm font-black text-cyan-100 transition hover:bg-cyan-400/[0.12] sm:w-auto lg:w-full">
                     Learn more
                   </button>

@@ -93,7 +93,7 @@ export function SubscriptionCard() {
           </button>
         ) : (
           <Link
-            href="/for-candidates/pricing"
+            href="/pricing"
             className="shrink-0 rounded-xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-4 py-2 text-sm font-black text-white shadow-lg transition hover:scale-[1.02]"
           >
             Upgrade

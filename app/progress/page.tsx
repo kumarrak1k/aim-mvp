@@ -531,12 +531,12 @@ function ProgressDashboard({ stats, isAdvancedPlan, onSessionDeleted }: { stats:
               </Link>
             ) : (
               <>
-                <Link href="/for-candidates/pricing">
+                <Link href="/pricing">
                   <button className="w-full whitespace-nowrap rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-6 py-3.5 text-sm font-black text-white shadow-lg transition hover:scale-[1.02] sm:w-auto lg:w-full">
                     Upgrade to Professional →
                   </button>
                 </Link>
-                <Link href="/for-candidates/assessment-centre">
+                <Link href="/mock-assessment-centre">
                   <button className="w-full whitespace-nowrap rounded-2xl border border-cyan-400/20 bg-cyan-400/[0.07] px-6 py-3.5 text-sm font-black text-cyan-100 transition hover:bg-cyan-400/[0.12] sm:w-auto lg:w-full">
                     See what&apos;s included
                   </button>
@@ -816,7 +816,7 @@ function EmptyProgressState({ isAdvancedPlan }: { isAdvancedPlan: boolean }) {
               Start tracked interview
             </button>
           </Link>
-          <Link href={isAdvancedPlan ? "/assessment-centre" : "/for-candidates/assessment-centre"}>
+          <Link href={isAdvancedPlan ? "/assessment-centre" : "/mock-assessment-centre"}>
             <button className="rounded-2xl border border-cyan-400/20 bg-cyan-400/[0.07] px-6 py-4 text-sm font-black text-cyan-100 transition hover:bg-cyan-400/[0.12]">
               {isAdvancedPlan ? "Try mock assessment centre →" : "Learn about assessment centres →"}
             </button>
@@ -842,7 +842,7 @@ function EmptyProgressState({ isAdvancedPlan }: { isAdvancedPlan: boolean }) {
             </button>
           </Link>
         ) : (
-          <Link href="/for-candidates/pricing">
+          <Link href="/pricing">
             <button className="mt-4 rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-5 py-3 text-sm font-black text-white shadow-lg transition hover:scale-[1.02]">
               Upgrade to Professional →
             </button>
@@ -895,7 +895,7 @@ function EmptyACState() {
               Start assessment centre →
             </button>
           </Link>
-          <Link href="/for-candidates/assessment-centre">
+          <Link href="/mock-assessment-centre">
             <button className="rounded-2xl border border-cyan-400/20 bg-cyan-400/[0.07] px-6 py-4 text-sm font-black text-cyan-100 transition hover:bg-cyan-400/[0.12]">
               What&apos;s included
             </button>

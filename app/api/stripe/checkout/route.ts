@@ -114,7 +114,7 @@ export async function POST(req: NextRequest) {
     mode: "subscription",
     line_items: [{ price: priceId, quantity: 1 }],
     success_url: absoluteUrl("/practice?payment=success"),
-    cancel_url: absoluteUrl("/for-candidates/pricing?payment=cancelled"),
+    cancel_url: absoluteUrl("/pricing?payment=cancelled"),
     ...(promotionCodeId
       ? { discounts: [{ promotion_code: promotionCodeId }] }
       : { allow_promotion_codes: true }),

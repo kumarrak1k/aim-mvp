@@ -102,7 +102,7 @@ export default async function BusinessPricingPage() {
         <p className="text-sm leading-6 text-gray-500">
           Looking for the candidate plan? See{" "}
           <Link
-            href="/for-candidates/pricing"
+            href="/pricing"
             className="font-black text-purple-300 hover:text-purple-200"
           >
             candidate pricing →

@@ -39,9 +39,9 @@ export type CandidateAppPath =
   | "/for-candidates/questions"
   | "/for-candidates/star-scorer"
   // Marketing sub-pages — shown in the audience nav
-  | "/for-candidates/interview-practice"
-  | "/for-candidates/assessment-centre"
-  | "/for-candidates/pricing";
+  | "/interview-practice"
+  | "/mock-assessment-centre"
+  | "/pricing";
 
 type CandidateAppShellProps = {
   children: ReactNode;

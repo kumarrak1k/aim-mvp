@@ -76,7 +76,7 @@ export function PracticeHero({
                   {usageSummary}
                 </p>
                 <Link
-                  href="/for-candidates/pricing"
+                  href="/pricing"
                   className="mt-3 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-4 py-2.5 text-sm font-black text-white shadow-lg transition hover:scale-[1.02]"
                 >
                   Upgrade to Plus →
@@ -192,7 +192,7 @@ export function PracticeHero({
 
           {/* Assessment centre — links direct for Professional users, upsell for others */}
           <Link
-            href={planName === "Professional" ? "/assessment-centre" : "/for-candidates/assessment-centre"}
+            href={planName === "Professional" ? "/assessment-centre" : "/mock-assessment-centre"}
             className="mt-3 block"
           >
             <div className="rounded-[1.35rem] border border-cyan-400/20 bg-gradient-to-br from-cyan-500/[0.09] to-purple-500/[0.09] p-4 transition hover:border-cyan-400/35 hover:from-cyan-500/[0.13] hover:to-purple-500/[0.13]">

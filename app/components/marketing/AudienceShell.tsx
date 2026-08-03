@@ -65,14 +65,14 @@ const THEMES: Record<Audience, AudienceTheme> = {
     navItems: [
       { href: "/for-candidates", label: "Overview" },
       {
-        href: "/for-candidates/interview-practice",
+        href: "/interview-practice",
         label: "Interview practice",
       },
       {
-        href: "/for-candidates/assessment-centre",
+        href: "/mock-assessment-centre",
         label: "Assessment centre",
       },
-      { href: "/for-candidates/pricing", label: "Pricing" },
+      { href: "/pricing", label: "Pricing" },
     ],
     primaryGradient:
       "from-purple-500 via-fuchsia-500 to-blue-500",

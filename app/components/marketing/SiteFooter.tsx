@@ -31,9 +31,9 @@ export function SiteFooter() {
             </p>
             <div className="space-y-3 text-sm text-gray-400">
               <Link href="/for-candidates" className="block transition hover:text-white">Overview</Link>
-              <Link href="/for-candidates/interview-practice" className="block transition hover:text-white">Interview practice</Link>
-              <Link href="/for-candidates/assessment-centre" className="block transition hover:text-white">Assessment centre</Link>
-              <Link href="/for-candidates/pricing" className="block transition hover:text-white">Pricing</Link>
+              <Link href="/interview-practice" className="block transition hover:text-white">Interview practice</Link>
+              <Link href="/mock-assessment-centre" className="block transition hover:text-white">Assessment centre</Link>
+              <Link href="/pricing" className="block transition hover:text-white">Pricing</Link>
               <Link href="/for-candidates/sign-up" className="block transition hover:text-white">Start free</Link>
             </div>
           </div>

@@ -123,13 +123,13 @@ function UpgradeGate({ planName }: { planName: string }) {
         </p>
         <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link
-            href="/for-candidates/pricing"
+            href="/pricing"
             className="rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-8 py-4 text-center text-sm font-black text-white shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.02]"
           >
             Upgrade to Professional →
           </Link>
           <Link
-            href="/for-candidates/assessment-centre"
+            href="/mock-assessment-centre"
             className="rounded-2xl border border-white/[0.1] bg-white/[0.04] px-8 py-4 text-center text-sm font-black text-white transition hover:bg-white/[0.07]"
           >
             See what&apos;s included

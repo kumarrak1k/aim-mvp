@@ -58,7 +58,7 @@ CORPORATE PLANS:
 
 NAVIGATION:
 - Start a practice session: /practice
-- Individual candidate pricing: /pricing or /for-candidates/pricing
+- Individual candidate pricing: /pricing or /pricing
 - Corporate pricing / info: /for-business
 - Career Docs: /career-docs
 - Manage your plan: /account/plan

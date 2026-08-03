@@ -77,14 +77,6 @@ const nextConfig: NextConfig = {
         destination: "https://aicareermentor.co.uk/:path*",
         permanent: true,
       },
-      {
-        // The pricing page moved under /for-candidates in the site split but was
-        // never redirected, so /pricing has been a hard 404 — including from the
-        // "See plans" button on the practice summary screen.
-        source: "/pricing",
-        destination: "/for-candidates/pricing",
-        permanent: true,
-      },
       // ── Single-audience consolidation (stage 1: the duplicate pages) ────────
       // The audience split left a full /for-candidates/* tree duplicating the
       // top-level pages, and a second homepage at /for-candidates. Now that
@@ -102,6 +94,12 @@ const nextConfig: NextConfig = {
       { source: "/for-candidates/blog", destination: "/blog", permanent: true },
       { source: "/for-candidates/questions", destination: "/questions", permanent: true },
       { source: "/for-candidates/star-scorer", destination: "/tools/star-scorer", permanent: true },
+      // Stage 2: the three unique product pages, now promoted to top level.
+      { source: "/for-candidates/interview-practice", destination: "/interview-practice", permanent: true },
+      // /assessment-centre is the authenticated app route, so the marketing page
+      // took a new, descriptive slug rather than colliding with it.
+      { source: "/for-candidates/assessment-centre", destination: "/mock-assessment-centre", permanent: true },
+      { source: "/for-candidates/pricing", destination: "/pricing", permanent: true },
       {
         // Was → /for-candidates, which would now chain through the redirect
         // above. Point straight at the homepage instead.
@@ -116,12 +114,12 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/platform",
-        destination: "/for-candidates/interview-practice",
+        destination: "/interview-practice",
         permanent: true,
       },
       {
         source: "/how-it-works",
-        destination: "/for-candidates/interview-practice",
+        destination: "/interview-practice",
         permanent: true,
       },
     ];

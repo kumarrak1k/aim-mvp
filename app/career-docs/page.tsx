@@ -135,7 +135,7 @@ export default function CareerDocsPage() {
             Career Documents are included in the{" "}
             <span className="font-black text-white">Professional plan.</span>{" "}
             Not on Professional?{" "}
-            <Link href="/for-candidates/pricing" className="font-black text-purple-300 hover:text-purple-200 underline underline-offset-2">
+            <Link href="/pricing" className="font-black text-purple-300 hover:text-purple-200 underline underline-offset-2">
               See plans →
             </Link>
           </p>

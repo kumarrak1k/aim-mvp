@@ -4,14 +4,14 @@ import Link from "next/link";
 import { auth } from "@clerk/nextjs/server";
 import { headers } from "next/headers";
 import { createPageMetadata } from "@/app/config/seo";
-import { AudienceShell } from "@/app/components/marketing/AudienceShell";
+import { PublicShell } from "@/app/components/marketing/PublicShell";
 import { CandidateAppShell } from "@/app/components/marketing/CandidateAppShell";
 import { CandidatePricingPlans, type PricingCurrency } from "@/app/components/marketing/CandidatePricingPlans";
 import { FAQSection } from "@/app/components/marketing/FAQSection";
 import { LaunchPromoBanner } from "@/app/components/marketing/LaunchPromoBanner";
 
 export const metadata: Metadata = createPageMetadata({
-  path: "/for-candidates/pricing",
+  path: "/pricing",
   title: "Candidate Pricing",
   description:
     "Transparent candidate pricing for AI interview practice and assessment centre coaching. Every account starts with a 3-day free trial, no payment details required. Annual plans save up to 28%.",
@@ -88,10 +88,10 @@ export default async function CandidatePricingPage() {
   const [{ userId }, currency] = await Promise.all([auth(), detectCurrency()]);
   const Shell = userId
     ? ({ children }: { children: React.ReactNode }) => (
-        <CandidateAppShell currentPath="/for-candidates/pricing">{children}</CandidateAppShell>
+        <CandidateAppShell currentPath="/pricing">{children}</CandidateAppShell>
       )
     : ({ children }: { children: React.ReactNode }) => (
-        <AudienceShell audience="candidate" currentPath="/for-candidates/pricing">{children}</AudienceShell>
+        <PublicShell currentPath="/pricing">{children}</PublicShell>
       );
 
   return (

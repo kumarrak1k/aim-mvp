@@ -3,11 +3,11 @@ import type React from "react";
 import Link from "next/link";
 import { auth } from "@clerk/nextjs/server";
 import { createPageMetadata } from "@/app/config/seo";
-import { AudienceShell } from "@/app/components/marketing/AudienceShell";
+import { PublicShell } from "@/app/components/marketing/PublicShell";
 import { CandidateAppShell } from "@/app/components/marketing/CandidateAppShell";
 
 export const metadata: Metadata = createPageMetadata({
-  path: "/for-candidates/interview-practice",
+  path: "/interview-practice",
   title: "AI Interview Practice: Mock Interviews Online with Instant Feedback",
   description:
     "Practise interviews online with AI: tailored mock interview questions, answer scoring, voice delivery analysis, camera presence review and model answers. Free to start.",
@@ -113,10 +113,10 @@ export default async function InterviewPracticePage() {
   const { userId } = await auth();
   const Shell = userId
     ? ({ children }: { children: React.ReactNode }) => (
-        <CandidateAppShell currentPath="/for-candidates/interview-practice">{children}</CandidateAppShell>
+        <CandidateAppShell currentPath="/interview-practice">{children}</CandidateAppShell>
       )
     : ({ children }: { children: React.ReactNode }) => (
-        <AudienceShell audience="candidate" currentPath="/for-candidates/interview-practice">{children}</AudienceShell>
+        <PublicShell currentPath="/interview-practice">{children}</PublicShell>
       );
 
   return (
@@ -150,7 +150,7 @@ export default async function InterviewPracticePage() {
             Start free →
           </Link>
           <Link
-            href="/for-candidates/assessment-centre"
+            href="/mock-assessment-centre"
             className="w-full rounded-2xl border border-white/[0.1] bg-white/[0.04] px-8 py-4 text-center text-base font-black text-white transition hover:bg-white/[0.08] sm:w-auto"
           >
             Looking for assessment centre?
@@ -248,7 +248,7 @@ export default async function InterviewPracticePage() {
               Start free →
             </Link>
             <Link
-              href="/for-candidates/pricing"
+              href="/pricing"
               className="rounded-2xl border border-white/[0.1] bg-white/[0.04] px-7 py-4 text-center text-base font-black text-white transition hover:bg-white/[0.08]"
             >
               See pricing

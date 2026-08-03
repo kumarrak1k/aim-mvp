@@ -292,7 +292,7 @@ export default function HomePage() {
             deleted — it is unadvertised while it moves to its own site. */}
         <section className="mb-10 flex flex-1">
           <Link
-            href="/for-candidates/pricing"
+            href="/pricing"
             className="group relative flex flex-col overflow-hidden rounded-[2rem] border border-purple-500/20 bg-gradient-to-br from-purple-500/[0.08] via-purple-500/[0.04] to-transparent p-7 shadow-2xl shadow-purple-950/30 transition hover:-translate-y-1 hover:border-purple-400/40 hover:from-purple-500/[0.12] sm:p-9 lg:p-10"
           >
             <div className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-purple-500/[0.18] blur-3xl transition group-hover:bg-purple-500/[0.28]" />

@@ -696,7 +696,7 @@ export function PlanPage() {
               marginTop: "0.5rem",
             }}
           >
-            <a href="/for-candidates/pricing" style={{ color: "#c084fc" }}>
+            <a href="/pricing" style={{ color: "#c084fc" }}>
               See annual plans and full pricing →
             </a>
           </p>

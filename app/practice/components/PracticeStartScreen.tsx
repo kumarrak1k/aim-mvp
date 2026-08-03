@@ -778,7 +778,7 @@ export function PracticeStartScreen({
                 available on Plus and Professional plans.
               </p>
               <Link
-                href="/for-candidates/pricing"
+                href="/pricing"
                 className="shrink-0 rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-4 py-2 text-xs font-black text-white shadow-lg shadow-purple-950/35 transition hover:scale-[1.03]"
               >
                 Upgrade →

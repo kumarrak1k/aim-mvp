@@ -182,7 +182,7 @@ export function TrialBanner() {
             .
           </span>
           <Link
-            href="/for-candidates/pricing"
+            href="/pricing"
             className="rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-3.5 py-1 text-[12px] font-black text-white shadow transition hover:scale-[1.03]"
           >
             Upgrade to keep access →
@@ -228,7 +228,7 @@ export function TrialBanner() {
             Your free trial has ended. You&rsquo;re on the Free plan.
           </span>
           <Link
-            href="/for-candidates/pricing"
+            href="/pricing"
             className="rounded-full border border-purple-300/25 bg-purple-300/[0.08] px-3.5 py-1 text-[12px] font-black text-purple-100 transition hover:bg-purple-300/[0.14]"
           >
             Upgrade →

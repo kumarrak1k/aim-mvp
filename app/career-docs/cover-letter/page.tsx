@@ -106,7 +106,7 @@ export default function CoverLetterPage() {
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
             <Link
-              href="/for-candidates/pricing"
+              href="/pricing"
               className="rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-6 py-3.5 text-center text-sm font-black text-white shadow-lg"
             >
               See plans →

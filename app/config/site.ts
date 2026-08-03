@@ -48,29 +48,32 @@ export const siteConfig = {
     },
 
     // ── Candidate-side marketing ─────────────────────────────────────
+    // /for-candidates now 308s to / (single-audience consolidation). Kept out
+    // of the sitemap so a redirecting URL is not advertised.
     {
       path: "/for-candidates",
+      hidden: true,
       label: "For candidates",
       description:
         "AI interview practice and mock assessment centre coaching for candidates.",
       priority: 0.95,
     },
     {
-      path: "/for-candidates/interview-practice",
+      path: "/interview-practice",
       label: "Interview practice",
       description:
         "Tailored AI mock interview practice with answer scoring, voice and camera presence feedback.",
       priority: 0.9,
     },
     {
-      path: "/for-candidates/assessment-centre",
+      path: "/mock-assessment-centre",
       label: "Assessment centre",
       description:
         "Mock assessment centre with case study, competency interview, and presentation simulation, scored across competencies.",
       priority: 0.9,
     },
     {
-      path: "/for-candidates/pricing",
+      path: "/pricing",
       label: "Candidate pricing",
       description:
         "Transparent candidate pricing for AI interview practice and assessment centre coaching.",
