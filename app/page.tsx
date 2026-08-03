@@ -192,45 +192,28 @@ export default function HomePage() {
             </a>
           </WhenSignedIn>
 
-          {/* Audience buttons — signed-out visitors also get a per-audience Sign in;
-              signed-in users get one "My dashboard" button instead (a signed-in
-              candidate clicking the corporate Sign in was silently bounced to
-              /practice, which read as a bug). */}
+          {/* One audience, one path.
+              This was three pills — Candidates, Corporates, Universities —
+              each with its own sign-in, so a visitor had to decide which of
+              three products they were before the site would tell them what any
+              of them did. That self-classification is the single thing most
+              cited in user feedback, and no visual refresh fixes it.
+              The corporate and university offers are not deleted, only
+              unadvertised while they move to their own site; see
+              docs/competitive/mockly-audit.md. */}
           <WhenSignedOut>
             <div className="col-start-3 relative z-10 hidden shrink-0 items-center gap-2 sm:flex">
-              <div className="relative flex flex-col items-center">
-                <Link
-                  href="/for-candidates"
-                  className="rounded-full border border-purple-300/20 bg-purple-300/[0.07] px-4 py-2 text-xs font-black text-purple-100 transition hover:bg-purple-300/[0.12]"
-                >
-                  Candidates
-                </Link>
-                <Link
-                  href="/for-candidates/sign-in"
-                  className="absolute top-full mt-1.5 rounded-full bg-violet-600 px-4 py-1 text-[11px] font-black text-white transition hover:bg-violet-500"
-                >
-                  Sign in
-                </Link>
-              </div>
-              <div className="relative flex flex-col items-center">
-                <Link
-                  href="/for-business"
-                  className="rounded-full border border-purple-300/20 bg-purple-300/[0.07] px-4 py-2 text-xs font-black text-purple-100 transition hover:bg-purple-300/[0.12]"
-                >
-                  Corporates
-                </Link>
-                <Link
-                  href="/for-business/sign-in"
-                  className="absolute top-full mt-1.5 rounded-full bg-fuchsia-600 px-4 py-1 text-[11px] font-black text-white transition hover:bg-fuchsia-500"
-                >
-                  Sign in
-                </Link>
-              </div>
               <Link
-                href="/universities"
+                href="/for-candidates/sign-in"
                 className="rounded-full border border-purple-300/20 bg-purple-300/[0.07] px-4 py-2 text-xs font-black text-purple-100 transition hover:bg-purple-300/[0.12]"
               >
-                Universities
+                Sign in
+              </Link>
+              <Link
+                href="/for-candidates/sign-up"
+                className="rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-600 px-5 py-2.5 text-sm font-black text-white shadow-lg shadow-purple-900/30 transition hover:scale-[1.02]"
+              >
+                Start free
               </Link>
             </div>
           </WhenSignedOut>
@@ -297,9 +280,13 @@ export default function HomePage() {
           <DemoVideo src="/videos/product-demo.mp4" poster="/videos/candidate-poster.jpg" />
         </section>
 
-        {/* Two-path cards */}
-        <section className="mb-10 grid flex-1 gap-5 lg:grid-cols-2 lg:gap-7">
-          {/* Candidate side */}
+        {/* One path.
+            This was a two-column "candidates / hiring teams" split. Showing a
+            graduate a recruiter product alongside their own is the split that
+            user feedback said was putting people off, and it made the page
+            answer a question nobody had asked. The corporate offer is not
+            deleted — it is unadvertised while it moves to its own site. */}
+        <section className="mb-10 flex flex-1">
           <Link
             href="/for-candidates/pricing"
             className="group relative flex flex-col overflow-hidden rounded-[2rem] border border-purple-500/20 bg-gradient-to-br from-purple-500/[0.08] via-purple-500/[0.04] to-transparent p-7 shadow-2xl shadow-purple-950/30 transition hover:-translate-y-1 hover:border-purple-400/40 hover:from-purple-500/[0.12] sm:p-9 lg:p-10"
@@ -347,52 +334,6 @@ export default function HomePage() {
             </div>
           </Link>
 
-          {/* Hiring team side */}
-          <Link
-            href="/for-business"
-            className="group relative flex flex-col overflow-hidden rounded-[2rem] border border-purple-500/20 bg-gradient-to-br from-purple-500/[0.08] via-purple-500/[0.04] to-transparent p-7 shadow-2xl shadow-purple-950/30 transition hover:-translate-y-1 hover:border-purple-400/40 hover:from-purple-500/[0.12] sm:p-9 lg:p-10"
-          >
-            <div className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full bg-purple-500/[0.18] blur-3xl transition group-hover:bg-purple-500/[0.28]" />
-            <div className="pointer-events-none absolute -bottom-16 -left-12 h-56 w-56 rounded-full bg-cyan-400/[0.10] blur-3xl" />
-
-            <p className="text-[11px] font-black uppercase tracking-[0.26em] text-purple-300/90">
-              For hiring teams
-            </p>
-            <h2 className="mt-3 text-3xl font-black tracking-[-0.05em] sm:text-4xl">
-              Run structured AI assessments{" "}
-              <span className="bg-gradient-to-r from-purple-200 via-fuchsia-200 to-cyan-200 bg-clip-text text-transparent">
-                at scale.
-              </span>
-            </h2>
-            <p className="mt-4 text-base leading-7 text-gray-300">
-              The fairest, fastest way to screen candidates. Build your own
-              assessment templates, send invite links, and review structured
-              scoring across every applicant.
-            </p>
-
-            <ul className="mt-6 space-y-2.5 text-sm text-gray-300">
-              {[
-                "Custom assessment templates for any role",
-                "Email invites: candidates take it on their own time",
-                "Recruiter dashboard with full scoring + transcripts",
-                "UK GDPR & DPA-ready",
-              ].map((item) => (
-                <li key={item} className="flex items-start gap-3">
-                  <span className="mt-[5px] h-1.5 w-1.5 shrink-0 rounded-full bg-purple-400" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-
-            <div className="mt-auto pt-8">
-              <span className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-7 py-4 text-base font-black text-white shadow-2xl shadow-purple-900/40 transition group-hover:scale-[1.02]">
-                We&rsquo;re a hiring team →
-              </span>
-              <p className="mt-3 text-xs text-gray-500">
-                Custom pricing. Talk to our team.
-              </p>
-            </div>
-          </Link>
         </section>
 
         {/* Free tools row */}

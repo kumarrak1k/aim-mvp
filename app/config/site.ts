@@ -3,6 +3,16 @@ export type SiteRoute = {
   label: string;
   description: string;
   priority: number;
+  /**
+   * Reachable by direct link, but not advertised: kept out of the sitemap, the
+   * primary navigation and search indexes.
+   *
+   * Used for the corporate and university offers while they move to their own
+   * site. Nothing is deleted — the pages, the recruiter app under /company and
+   * the emailed invite flows all keep working, so existing customers are
+   * unaffected and the code is there to lift when the separate site is built.
+   */
+  hidden?: boolean;
 };
 
 export const siteConfig = {
@@ -33,7 +43,7 @@ export const siteConfig = {
       path: "/",
       label: "Home",
       description:
-        "Two products in one: interview practice for candidates and an AI assessment platform for hiring teams.",
+        "AI interview practice, mock assessment centres and honest scored feedback — built for candidates preparing for real interviews.",
       priority: 1,
     },
 
@@ -70,6 +80,9 @@ export const siteConfig = {
     // ── Business / hiring team marketing ─────────────────────────────
     {
       path: "/for-business",
+      /* Hidden from nav, sitemap and search while the corporate offer moves
+         to its own site. The page still resolves — see docs/competitive. */
+      hidden: true,
       label: "For hiring teams",
       description:
         "Run structured AI assessments at scale. Build templates, send invites, score candidates fairly.",
@@ -77,6 +90,9 @@ export const siteConfig = {
     },
     {
       path: "/for-business/assessment-platform",
+      /* Hidden from nav, sitemap and search while the corporate offer moves
+         to its own site. The page still resolves — see docs/competitive. */
+      hidden: true,
       label: "Assessment platform",
       description:
         "How the AI assessment platform works: workspace, templates, invites, results dashboard.",
@@ -84,6 +100,9 @@ export const siteConfig = {
     },
     {
       path: "/for-business/pricing",
+      /* Hidden from nav, sitemap and search while the corporate offer moves
+         to its own site. The page still resolves — see docs/competitive. */
+      hidden: true,
       label: "Business pricing",
       description:
         "Per-seat pricing for hiring teams plus custom enterprise pricing.",
@@ -181,6 +200,9 @@ export const siteConfig = {
     },
     {
       path: "/universities",
+      /* Hidden from nav, sitemap and search while the corporate offer moves
+         to its own site. The page still resolves — see docs/competitive. */
+      hidden: true,
       label: "Universities",
       description:
         "Campus licensing for universities and careers services. Give every student access to AI interview coaching.",

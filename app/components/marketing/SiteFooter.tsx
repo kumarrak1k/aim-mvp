@@ -48,8 +48,13 @@ export function SiteFooter() {
               <Link href="/blog" className="block transition hover:text-white">Interview guides</Link>
               <Link href="/questions" className="block transition hover:text-white">Question library</Link>
               <Link href="/tools/star-scorer" className="block transition hover:text-white">Free STAR scorer</Link>
-              <Link href="/for-business" className="block transition hover:text-white">For hiring teams</Link>
-              <Link href="/universities" className="block transition hover:text-white">Universities</Link>
+              {/*
+                "For hiring teams" and "Universities" removed while those offers
+                move to their own site. The pages still resolve for anyone sent
+                a direct link, and the recruiter app under /company plus the
+                emailed invite flows are untouched — existing customers are
+                unaffected. Nothing here is deleted, only unadvertised.
+              */}
             </div>
           </div>
 

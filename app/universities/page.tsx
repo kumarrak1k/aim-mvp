@@ -7,12 +7,17 @@ import { PublicShell } from "@/app/components/marketing/PublicShell";
 // Tally form embedded on this page (campus-licensing enquiries).
 const TALLY_FORM_ID = "kdk4Do";
 
-export const metadata: Metadata = createPageMetadata({
+// Not indexed while the corporate/university offer moves to its own site.
+// The page still resolves for anyone following a direct link.
+export const metadata: Metadata = {
+  ...createPageMetadata({
   path: "/universities",
   title: "University & Campus Licensing",
   description:
     "Campus licensing for universities and careers services. Give every student unlimited access to AI interview coaching under a single institutional licence.",
-});
+  }),
+  robots: { index: false, follow: false },
+};
 
 const structuredData = {
   "@context": "https://schema.org",

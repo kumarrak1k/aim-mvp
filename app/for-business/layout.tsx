@@ -1,5 +1,19 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
+
+/**
+ * Not indexed while the corporate offer moves to its own site.
+ *
+ * The pages still resolve for anyone following a direct link, and the recruiter
+ * app under /company plus the emailed invite flows are untouched. This only
+ * stops search engines surfacing an offer the main site no longer advertises,
+ * which would otherwise send graduates to a recruiter page.
+ */
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
+
 
 /**
  * Business marketing area layout.

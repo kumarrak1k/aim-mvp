@@ -16,6 +16,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const EXCLUDE_FROM_SITEMAP = new Set(["/practice", "/profile"]);
 
   const staticRoutes: MetadataRoute.Sitemap = siteConfig.routes
+    // `hidden` covers the corporate and university pages: still reachable by
+    // direct link for anyone who has been sent one, but not advertised to
+    // search while that offer moves to its own site.
+    .filter((route) => !route.hidden)
     .filter((route) => !EXCLUDE_FROM_SITEMAP.has(route.path))
     .map((route) => ({
       url: absoluteUrl(route.path),
