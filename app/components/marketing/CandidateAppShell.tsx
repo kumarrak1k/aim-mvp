@@ -64,7 +64,7 @@ const navItems: Array<{
   { href: "/assessment-centre", label: "Assessment Centre",  proOnly: true },
   { href: "/career-docs",       label: "Career Docs",        proOnly: true },
   { href: "/progress",          label: "My Progress"         },
-  { href: "/guide",             label: "Guide"               },
+  { href: "/guide",             label: "User Guide"          },
 ];
 
 /** Small "Pro" pill shown beside Professional-only nav items. */
@@ -110,12 +110,10 @@ export function CandidateAppShell({
     }
   }
 
-  // Whether to show the "Pro" markers. Starts false so SSR and the first paint
-  // match; a Professional user simply sees the badges disappear once their plan
-  // resolves. Failing closed here is deliberate — briefly showing a badge to a
-  // paid user is harmless, whereas hiding it from a trial user is the exact
-  // problem this is meant to fix.
-  const [isProfessional, setIsProfessional] = useState(false);
+  // null = plan not yet known. Badges stay hidden until we confirm the user
+  // is NOT professional, so a Pro/comp user never sees a badge appear and
+  // disappear (the flash), and the centred nav does not jump.
+  const [isProfessional, setIsProfessional] = useState<boolean | null>(null);
   useEffect(() => {
     let cancelled = false;
     fetch("/api/subscription")
@@ -126,7 +124,8 @@ export function CandidateAppShell({
         }
       })
       .catch(() => {
-        // Leave the badges visible — see the note above.
+        // Plan unknown on error — badges stay hidden (see the note above),
+        // which fails closed to a clean nav rather than a flash.
       });
     return () => {
       cancelled = true;
@@ -171,7 +170,7 @@ export function CandidateAppShell({
                       }`}
                     >
                       {item.label}
-                      {item.proOnly && !isProfessional && <ProBadge />}
+                      {item.proOnly && isProfessional === false && <ProBadge />}
                     </span>
                   </Link>
                 );
@@ -230,7 +229,7 @@ export function CandidateAppShell({
                     }`}
                   >
                     {item.label}
-                    {item.proOnly && !isProfessional && <ProBadge />}
+                    {item.proOnly && isProfessional === false && <ProBadge />}
                   </span>
                 </Link>
               );
