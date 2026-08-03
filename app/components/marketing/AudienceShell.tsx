@@ -31,7 +31,7 @@ type AudienceTheme = {
   eyebrow: string;
   signInPath: string;
   signUpPath: string;
-  navItems: Array<{ href: string; label: string }>;
+  navItems: Array<{ href?: string; label: string; dropdown?: Array<{ href: string; label: string }> }>;
   primaryGradient: string;
   primaryShadow: string;
   accentBorder: string;
@@ -40,14 +40,6 @@ type AudienceTheme = {
   switchAudienceLabel: string;
   switchAudienceHref: string;
 };
-
-/** Resource links shown in the candidate shell. */
-const CANDIDATE_RESOURCE_LINKS = [
-  { href: "/about",        label: "About us" },
-  { href: "/blog",         label: "Interview guides" },
-  { href: "/questions",    label: "Question library" },
-  { href: "/tools/star-scorer",  label: "Free STAR scorer" },
-];
 
 /** Resource links shown in the business/hiring-team shell. */
 const BUSINESS_RESOURCE_LINKS = [
@@ -64,15 +56,18 @@ const THEMES: Record<Audience, AudienceTheme> = {
     signUpPath: "/for-candidates/sign-up",
     navItems: [
       { href: "/", label: "Overview" },
-      {
-        href: "/interview-practice",
-        label: "Interview practice",
-      },
-      {
-        href: "/mock-assessment-centre",
-        label: "Assessment centre",
-      },
+      { href: "/about", label: "About us" },
+      { href: "/interview-practice", label: "Interview practice" },
+      { href: "/mock-assessment-centre", label: "Assessment centre" },
       { href: "/pricing", label: "Pricing" },
+      {
+        label: "Free tools",
+        dropdown: [
+          { href: "/blog", label: "Interview guides" },
+          { href: "/questions", label: "Question library" },
+          { href: "/tools/star-scorer", label: "Free STAR scorer" },
+        ],
+      },
     ],
     primaryGradient:
       "from-purple-500 via-fuchsia-500 to-blue-500",
@@ -144,9 +139,42 @@ export function AudienceShell({
           <nav aria-label="Primary" className="hidden min-w-0 justify-center lg:flex">
             <div className="flex items-center gap-0.5 rounded-full border border-white/[0.09] bg-white/[0.04] p-1.5">
               {theme.navItems.map((item) => {
+                // "Free tools" — a hover/focus dropdown. CSS-only so this shell
+                // stays a server component; focus-within keeps it keyboard
+                // accessible, and the outer pt-2 is a transparent bridge so the
+                // pointer can cross from trigger to menu without it closing.
+                if (item.dropdown) {
+                  return (
+                    <div key={item.label} className="group/dd relative">
+                      <button
+                        type="button"
+                        aria-haspopup="true"
+                        className="flex items-center gap-1 whitespace-nowrap rounded-full px-3 py-2 text-[13px] font-bold text-gray-400 transition group-hover/dd:bg-white/[0.07] group-hover/dd:text-white group-focus-within/dd:bg-white/[0.07] group-focus-within/dd:text-white lg:px-4 lg:text-[13.5px]"
+                      >
+                        {item.label}
+                        <svg width="10" height="10" viewBox="0 0 12 12" fill="none" aria-hidden className="transition group-hover/dd:rotate-180">
+                          <path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </button>
+                      <div className="invisible absolute left-1/2 top-full z-50 w-56 -translate-x-1/2 pt-2 opacity-0 transition group-hover/dd:visible group-hover/dd:opacity-100 group-focus-within/dd:visible group-focus-within/dd:opacity-100">
+                        <div className="rounded-2xl border border-white/[0.09] bg-[#140a26] p-1.5 shadow-2xl shadow-black/50">
+                          {item.dropdown.map((sub) => (
+                            <Link
+                              key={sub.href}
+                              href={sub.href}
+                              className="block whitespace-nowrap rounded-xl px-3.5 py-2 text-[13px] font-semibold text-gray-300 transition hover:bg-white/[0.07] hover:text-white"
+                            >
+                              {sub.label}
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }
                 const active = currentPath === item.href;
                 return (
-                  <Link key={item.href} href={item.href}>
+                  <Link key={item.href} href={item.href!}>
                     <span
                       className={`block whitespace-nowrap rounded-full px-3 py-2 text-[13px] font-bold transition lg:px-4 lg:text-[13.5px] ${
                         active
@@ -185,10 +213,14 @@ export function AudienceShell({
         {/* Mobile compact nav row — audience-only (shown below lg) */}
         <div className="px-4 py-2 sm:px-6 lg:hidden">
           <nav className="mx-auto flex max-w-7xl gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {theme.navItems.map((item) => {
+            {theme.navItems.flatMap((item): Array<{ href?: string; label: string }> =>
+              // No hover on mobile — the dropdown's children become their own
+              // pills so every destination stays reachable.
+              item.dropdown ? item.dropdown : [{ href: item.href, label: item.label }]
+            ).map((item) => {
               const active = currentPath === item.href;
               return (
-                <Link key={item.href} href={item.href}>
+                <Link key={item.href} href={item.href!}>
                   <span
                     className={`block whitespace-nowrap rounded-full px-3.5 py-1.5 text-xs font-bold transition ${
                       active
@@ -201,10 +233,10 @@ export function AudienceShell({
                 </Link>
               );
             })}
-            {(audience === "candidate" || audience === "business") && (
+            {audience === "business" && (
               <>
                 <span className="flex items-center text-white/[0.15]">·</span>
-                {(audience === "candidate" ? CANDIDATE_RESOURCE_LINKS : BUSINESS_RESOURCE_LINKS).map((item) => (
+                {BUSINESS_RESOURCE_LINKS.map((item) => (
                   <Link key={item.href} href={item.href}>
                     <span className="block whitespace-nowrap rounded-full border border-white/[0.08] bg-white/[0.04] px-3.5 py-1.5 text-xs font-bold text-gray-500 transition hover:bg-white/[0.07] hover:text-white">
                       {item.label}
@@ -216,11 +248,13 @@ export function AudienceShell({
           </nav>
         </div>
 
-        {/* Desktop resource links — secondary strip for both audiences (lg+) */}
-        {(audience === "candidate" || audience === "business") && (
+        {/* Desktop resource strip — business only now. The candidate header
+            folds these into the primary nav (About us) and the "Free tools"
+            dropdown, so the second row is gone. */}
+        {audience === "business" && (
           <div className="hidden px-4 py-1.5 lg:block">
             <nav className="mx-auto flex max-w-7xl items-center justify-center gap-6">
-              {(audience === "candidate" ? CANDIDATE_RESOURCE_LINKS : BUSINESS_RESOURCE_LINKS).map((item) => (
+              {BUSINESS_RESOURCE_LINKS.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
