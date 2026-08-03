@@ -12,15 +12,15 @@ import { TrialBadge } from "@/app/components/marketing/TrialBadge";
 
 export const metadata: Metadata = createPageMetadata({
   path: "/",
-  title: "AI Interview Practice Online & AI Assessment Platform | AI Career Mentor",
+  title: "AI Interview Practice & Mock Assessment Centres | AI Career Mentor",
   description:
-    "Two products in one. AI Career Mentor helps candidates prepare for interviews and assessment centres, and gives hiring teams a structured AI assessment platform.",
+    "Practise real interview questions for your exact role, out loud and on camera. Scored the way an assessor would score you, with a full mock assessment centre when you need one.",
   keywords: [
     "AI interview practice",
-    "AI assessment centre",
-    "AI assessment platform",
-    "interview practice for candidates",
-    "AI hiring assessment",
+    "mock interview practice",
+    "AI assessment centre practice",
+    "interview preparation UK",
+    "graduate interview practice",
     "AI Career Mentor",
   ],
 });
@@ -34,7 +34,7 @@ const siteSchema = {
       name: "AI Career Mentor",
       url: absoluteUrl("/"),
       description:
-        "UK-built AI coaching platform giving candidates and hiring teams structured, honest interview preparation at scale.",
+        "UK-built AI interview coaching for candidates: role-specific practice, mock assessment centres, and honest scored feedback.",
       foundingDate: "2024",
       areaServed: "GB",
       knowsAbout: [
@@ -53,7 +53,7 @@ const siteSchema = {
       operatingSystem: "Web",
       url: absoluteUrl("/"),
       description:
-        "AI interview practice and assessment platform. Tailored questions, voice and camera coaching, and structured hiring assessments.",
+        "AI interview practice for candidates. Role-specific questions, voice and camera coaching, and mock assessment centres scored stage by stage.",
       offers: {
         "@type": "Offer",
         price: "0",
@@ -240,17 +240,21 @@ export default function HomePage() {
         {/* Hero */}
         <section className="mb-10 text-center sm:mb-14 lg:mb-16">
           <TrialBadge audience="candidate" className="mx-auto mb-6" />
+          {/* Leads with the candidate's situation rather than our feature
+              list. "Scores answers, voice and camera presence" describes what
+              the software does; it does not tell a nervous candidate why they
+              should care. */}
           <h1 className="mx-auto max-w-5xl text-[2.6rem] font-black leading-[1.02] tracking-[-0.055em] sm:text-5xl lg:text-[4rem] xl:text-[4.5rem]">
-            The AI interview coach that{" "}
+            You have read the guides.{" "}
             <span className="bg-gradient-to-r from-purple-300 via-fuchsia-200 to-cyan-200 bg-clip-text text-transparent">
-              scores answers, voice, and camera presence.
+              Now say it out loud.
             </span>
           </h1>
 
           <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-gray-400 sm:text-lg sm:leading-9">
-            Practise interviews tailored to your exact role. Get scored on
-            what you say, how you sound, and how you come across on camera.
-            Walk in with a 7-day improvement plan.
+            Practise real interview questions for your exact role, out loud and
+            on camera. Get scored the way an assessor would score you — on what
+            you said, how you said it, and whether your answer actually landed.
           </p>
 
           <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
@@ -258,7 +262,7 @@ export default function HomePage() {
               href="/for-candidates/sign-up"
               className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-8 py-4 text-base font-black text-white shadow-2xl shadow-purple-900/40 transition hover:scale-[1.02] sm:w-auto"
             >
-              Start free for candidates →
+              Start practising free →
             </Link>
             <Link
               href="/tools/star-scorer"
@@ -295,7 +299,7 @@ export default function HomePage() {
             <div className="pointer-events-none absolute -bottom-16 -left-12 h-56 w-56 rounded-full bg-cyan-400/[0.10] blur-3xl" />
 
             <p className="text-[11px] font-black uppercase tracking-[0.26em] text-purple-300/90">
-              For candidates
+              What you get
             </p>
             <h2 className="mt-3 text-3xl font-black tracking-[-0.05em] sm:text-4xl">
               Practise interviews. Prepare for{" "}
@@ -304,9 +308,9 @@ export default function HomePage() {
               </span>
             </h2>
             <p className="mt-4 text-base leading-7 text-gray-300">
-              AI coaching for the moments that decide your career.
-              Tailored questions for your role. Mock assessment centre exercises.
-              Voice and camera presence reviewed. Progress tracked.
+              Everything is built around the role you are actually going for.
+              Questions written for it, a full mock assessment centre if you are
+              facing one, and honest scoring you can track session to session.
             </p>
 
             <ul className="mt-6 space-y-2.5 text-sm text-gray-300">
