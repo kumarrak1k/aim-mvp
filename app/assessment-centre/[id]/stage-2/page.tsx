@@ -4,7 +4,9 @@ import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { CandidateAppShell } from "@/app/components/marketing/CandidateAppShell";
 import { StageProgress } from "@/app/assessment-centre/components/StageProgress";
-import { PRACTICE_SESSION_CONFIG_KEY } from "@/app/practice/session/utils";
+import { PRACTICE_SESSION_CONFIG_KEY, defaultSpeakerPreference } from "@/app/practice/session/utils";
+import { fetchCandidateProfile } from "@/app/practice/lib/interviewApi";
+import type { SpeakerPreference } from "@/app/practice/types";
 
 type TemplateConfig = {
   interviewType?: string;
@@ -43,6 +45,29 @@ export default function Stage2Page() {
   const [session, setSession] = useState<Session | null>(null);
   const [loadError, setLoadError] = useState("");
   const [mode, setMode] = useState<PracticeMode>("typed");
+  // The interviewer voice used to be hardcoded to female/natural here, which
+  // ignored the voice the candidate set in practice (they'd hear a different,
+  // often female + slower voice mid-flow). Load their saved preference so the
+  // assessment centre uses the same interviewer as their practice sessions.
+  const [speakerPreference, setSpeakerPreference] = useState<SpeakerPreference>(
+    defaultSpeakerPreference
+  );
+
+  useEffect(() => {
+    let cancelled = false;
+    fetchCandidateProfile()
+      .then((profile) => {
+        if (!cancelled && profile?.speakerPreference) {
+          setSpeakerPreference(profile.speakerPreference);
+        }
+      })
+      .catch(() => {
+        // Keep the default preference if the profile can't be loaded.
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     fetch(`/api/assessment-centre/${id}`)
@@ -90,7 +115,7 @@ export default function Stage2Page() {
         questionMix: tc.questionMix ?? undefined,
         speakerEnabled: mode !== "typed",
         cameraEnabled: mode === "voice-camera",
-        speakerPreference: { voice: "female", accent: "british", pace: "natural" },
+        speakerPreference,
         freePlan: false,
         practiceMode: mode,
         createdAt: new Date().toISOString(),
