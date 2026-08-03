@@ -179,6 +179,39 @@ async function requestSpeech(
   });
 }
 
+/**
+ * Request the primary model, retrying transient failures before giving up.
+ *
+ * The tts-1 fallback below ignores the British-accent instructions, so any
+ * question that downgrades sounds audibly different from the rest of the
+ * session (this is the "voice changed on question 2" report). The first
+ * question is fetched on-demand at session start — cold starts and 429s are
+ * most likely there — so a single transient blip used to switch that one
+ * question's voice permanently. Retrying the same model first keeps the
+ * whole session on one consistent voice; we only downgrade when the primary
+ * is genuinely, persistently failing.
+ */
+async function requestSpeechWithRetry(
+  apiKey: string,
+  model: string,
+  text: string,
+  pref: SpeakerPreference,
+  attempts: number
+) {
+  let response = await requestSpeech(apiKey, model, text, pref);
+  for (let attempt = 1; attempt < attempts && !response.ok; attempt++) {
+    // Short backoff — transient 429s / cold-start timeouts usually clear on
+    // the next try. A 5xx or 429 is worth retrying; a 400 (bad request) is
+    // not, so stop early on client errors.
+    if (response.status >= 400 && response.status < 500 && response.status !== 429) {
+      break;
+    }
+    await new Promise((resolve) => setTimeout(resolve, 350 * attempt));
+    response = await requestSpeech(apiKey, model, text, pref);
+  }
+  return response;
+}
+
 async function fetchSpeechStream({
   apiKey,
   text,
@@ -189,14 +222,22 @@ async function fetchSpeechStream({
   speakerPreference: SpeakerPreference;
 }) {
   let model = MODEL_TTS;
-  let response = await requestSpeech(apiKey, model, text, speakerPreference);
+  // Give the accented model up to three tries before downgrading, so a
+  // transient failure on one question doesn't change its voice.
+  let response = await requestSpeechWithRetry(
+    apiKey,
+    model,
+    text,
+    speakerPreference,
+    isLegacyTts(model) ? 1 : 3
+  );
 
-  // Safety net: if the configured model fails for any reason (bad override,
+  // Safety net: if the configured model is genuinely failing (bad override,
   // deprecation, instructions rejected), fall back to tts-1 so the
   // interviewer voice keeps working. tts-1 is the pre-July-2026 behaviour.
   if (!response.ok && !isLegacyTts(model)) {
     const errorMessage = await getOpenAiErrorMessage(response);
-    console.error(`QUESTION AUDIO: ${model} failed (${errorMessage}); falling back to tts-1`);
+    console.error(`QUESTION AUDIO: ${model} failed after retries (${errorMessage}); falling back to tts-1`);
     model = "tts-1";
     response = await requestSpeech(apiKey, model, text, speakerPreference);
   }
