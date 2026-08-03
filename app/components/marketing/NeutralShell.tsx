@@ -52,14 +52,10 @@ export function NeutralShell({ children }: NeutralShellProps) {
               </p>
             </div>
             <div className="flex flex-wrap gap-5 text-xs text-gray-600">
+              {/* "Choose audience" and "Corporates" removed with the audience
+                  split. One product, so there is nothing to choose between. */}
               <Link href="/" className="hover:text-gray-400">
-                Choose audience
-              </Link>
-              <Link href="/for-candidates" className="hover:text-gray-400">
-                Candidates
-              </Link>
-              <Link href="/for-business" className="hover:text-gray-400">
-                Corporates
+                Home
               </Link>
               <Link href="/contact" className="hover:text-gray-400">
                 Contact
