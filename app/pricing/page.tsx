@@ -4,7 +4,7 @@ import Link from "next/link";
 import { auth } from "@clerk/nextjs/server";
 import { headers } from "next/headers";
 import { createPageMetadata } from "@/app/config/seo";
-import { PublicShell } from "@/app/components/marketing/PublicShell";
+import { AudienceShell } from "@/app/components/marketing/AudienceShell";
 import { CandidateAppShell } from "@/app/components/marketing/CandidateAppShell";
 import { CandidatePricingPlans, type PricingCurrency } from "@/app/components/marketing/CandidatePricingPlans";
 import { FAQSection } from "@/app/components/marketing/FAQSection";
@@ -91,7 +91,7 @@ export default async function CandidatePricingPage() {
         <CandidateAppShell currentPath="/pricing">{children}</CandidateAppShell>
       )
     : ({ children }: { children: React.ReactNode }) => (
-        <PublicShell currentPath="/pricing">{children}</PublicShell>
+        <AudienceShell audience="candidate" currentPath="/pricing">{children}</AudienceShell>
       );
 
   return (

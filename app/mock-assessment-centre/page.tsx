@@ -3,7 +3,7 @@ import type React from "react";
 import Link from "next/link";
 import { auth } from "@clerk/nextjs/server";
 import { createPageMetadata } from "@/app/config/seo";
-import { PublicShell } from "@/app/components/marketing/PublicShell";
+import { AudienceShell } from "@/app/components/marketing/AudienceShell";
 import { CandidateAppShell } from "@/app/components/marketing/CandidateAppShell";
 
 export const metadata: Metadata = createPageMetadata({
@@ -119,7 +119,7 @@ export default async function AssessmentCentrePage() {
         <CandidateAppShell currentPath="/mock-assessment-centre">{children}</CandidateAppShell>
       )
     : ({ children }: { children: React.ReactNode }) => (
-        <PublicShell currentPath="/mock-assessment-centre">{children}</PublicShell>
+        <AudienceShell audience="candidate" currentPath="/mock-assessment-centre">{children}</AudienceShell>
       );
 
   return (
