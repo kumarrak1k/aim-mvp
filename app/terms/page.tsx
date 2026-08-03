@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { AudienceShell } from "@/app/components/marketing/AudienceShell";
+import { CandidateShell } from "@/app/components/marketing/CandidateShell";
 
 export const metadata: Metadata = {
   title: "Terms of Use",
@@ -74,7 +74,7 @@ const responsibleUse = [
 
 export default function TermsPage() {
   return (
-    <AudienceShell audience="candidate" currentPath="/terms">
+    <CandidateShell currentPath="/terms">
       <div>
         {/* Hero */}
         <section className="mx-auto max-w-4xl px-4 pb-12 pt-6 text-center sm:px-6 sm:pt-10">
@@ -330,6 +330,6 @@ export default function TermsPage() {
           </div>
         </section>
       </div>
-    </AudienceShell>
+    </CandidateShell>
   );
 }

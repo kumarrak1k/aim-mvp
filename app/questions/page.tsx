@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { getAllQuestionSets } from "@/app/lib/content";
 import { absoluteUrl } from "@/app/config/site";
 import { buildAlternates } from "@/app/config/seo";
-import { AudienceShell } from "@/app/components/marketing/AudienceShell";
+import { CandidateShell } from "@/app/components/marketing/CandidateShell";
 import { QuestionsPageContent } from "@/app/components/pages/QuestionsPageContent";
 
 const _ogImage = absoluteUrl("/brand/logo.jpg");
@@ -34,8 +34,8 @@ export default function QuestionsIndexPage() {
   const sets = getAllQuestionSets();
 
   return (
-    <AudienceShell audience="candidate" currentPath="/questions">
+    <CandidateShell currentPath="/questions">
       <QuestionsPageContent sets={sets} />
-    </AudienceShell>
+    </CandidateShell>
   );
 }

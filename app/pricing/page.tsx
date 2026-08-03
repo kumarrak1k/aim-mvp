@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
-import type React from "react";
 import Link from "next/link";
-import { auth } from "@clerk/nextjs/server";
 import { headers } from "next/headers";
 import { createPageMetadata } from "@/app/config/seo";
-import { AudienceShell } from "@/app/components/marketing/AudienceShell";
-import { CandidateAppShell } from "@/app/components/marketing/CandidateAppShell";
+import { CandidateShell } from "@/app/components/marketing/CandidateShell";
 import { CandidatePricingPlans, type PricingCurrency } from "@/app/components/marketing/CandidatePricingPlans";
 import { FAQSection } from "@/app/components/marketing/FAQSection";
 import { LaunchPromoBanner } from "@/app/components/marketing/LaunchPromoBanner";
@@ -85,17 +82,10 @@ const faqSchema = {
 };
 
 export default async function CandidatePricingPage() {
-  const [{ userId }, currency] = await Promise.all([auth(), detectCurrency()]);
-  const Shell = userId
-    ? ({ children }: { children: React.ReactNode }) => (
-        <CandidateAppShell currentPath="/pricing">{children}</CandidateAppShell>
-      )
-    : ({ children }: { children: React.ReactNode }) => (
-        <AudienceShell audience="candidate" currentPath="/pricing">{children}</AudienceShell>
-      );
+  const currency = await detectCurrency();
 
   return (
-    <Shell>
+    <CandidateShell currentPath="/pricing">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
@@ -142,6 +132,6 @@ export default async function CandidatePricingPage() {
           </Link>
         </p>
       </section>
-    </Shell>
+    </CandidateShell>
   );
 }

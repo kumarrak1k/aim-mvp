@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { COMPANY_GUIDES } from "./data";
-import { AudienceShell } from "@/app/components/marketing/AudienceShell";
+import { CandidateShell } from "@/app/components/marketing/CandidateShell";
 
 export const metadata: Metadata = {
   title: { absolute: "Company Interview Guides | AI Career Mentor" },
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function CompaniesIndexPage() {
   return (
-    <AudienceShell audience="candidate" currentPath="/companies">
+    <CandidateShell currentPath="/companies">
       <div className="mx-auto max-w-4xl px-4 pb-24 pt-6 sm:px-6">
         <div className="mb-10 text-center">
           <h1 className="text-4xl font-black tracking-[-0.04em] sm:text-5xl">
@@ -51,6 +51,6 @@ export default function CompaniesIndexPage() {
           </a>
         </div>
       </div>
-    </AudienceShell>
+    </CandidateShell>
   );
 }

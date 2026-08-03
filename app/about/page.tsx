@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { createPageMetadata } from "@/app/config/seo";
-import { AudienceShell } from "@/app/components/marketing/AudienceShell";
+import { CandidateShell } from "@/app/components/marketing/CandidateShell";
 import { AboutPageContent } from "@/app/components/pages/AboutPageContent";
 
 export const metadata: Metadata = createPageMetadata({
@@ -10,8 +10,8 @@ export const metadata: Metadata = createPageMetadata({
 
 export default function AboutPage() {
   return (
-    <AudienceShell audience="candidate" currentPath="/about">
+    <CandidateShell currentPath="/about">
       <AboutPageContent />
-    </AudienceShell>
+    </CandidateShell>
   );
 }

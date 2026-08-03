@@ -9,7 +9,7 @@ import {
 } from "@/app/lib/content";
 import { absoluteUrl } from "@/app/config/site";
 import { buildAlternates } from "@/app/config/seo";
-import { AudienceShell } from "@/app/components/marketing/AudienceShell";
+import { CandidateShell } from "@/app/components/marketing/CandidateShell";
 import {
   RelatedContent,
   type RelatedContentItem,
@@ -211,7 +211,7 @@ export default async function QuestionSetPage({ params }: Props) {
   };
 
   return (
-    <AudienceShell audience="candidate" currentPath="/questions">
+    <CandidateShell currentPath="/questions">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
@@ -275,6 +275,6 @@ export default async function QuestionSetPage({ params }: Props) {
 
         <RelatedContent items={relatedItems} />
       </div>
-    </AudienceShell>
+    </CandidateShell>
   );
 }

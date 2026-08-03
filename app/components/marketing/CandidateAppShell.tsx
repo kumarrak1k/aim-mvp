@@ -45,7 +45,11 @@ export type CandidateAppPath =
 
 type CandidateAppShellProps = {
   children: ReactNode;
-  currentPath: CandidateAppPath;
+  // Accept any path: marketing pages routed through CandidateShell pass
+  // their own path (/blog, /about, …), which the CandidateAppPath union
+  // deliberately doesn't enumerate. Highlighting is string-compared below,
+  // so a non-nav path simply highlights nothing.
+  currentPath: CandidateAppPath | (string & {});
 };
 
 /**
