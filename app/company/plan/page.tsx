@@ -67,7 +67,7 @@ export default function CompanyPlanPage() {
           <p className="mb-3 text-[11px] font-bold tracking-wide text-fuchsia-300">
             Choose your plan
           </p>
-          <h1 className="text-4xl font-bold tracking-tight sm:text-4xl">
+          <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
             Start your free trial
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-gray-400">

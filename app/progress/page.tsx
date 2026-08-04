@@ -259,7 +259,7 @@ export default function ProgressPage() {
             <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-cyan-300/20 bg-cyan-300/10 px-4 py-2 text-xs font-bold tracking-wide text-cyan-100">
               Track progress
             </div>
-            <h1 className="text-4xl font-bold leading-[1.02] tracking-tight sm:text-4xl lg:text-5xl">
+            <h1 className="text-3xl font-bold leading-[1.02] tracking-tight sm:text-4xl">
               See whether your performance is{" "}
               <span className="text-violet-300">
                 actually improving.

@@ -17,7 +17,6 @@ import type { ReactNode } from "react";
 import { SiteLogo } from "@/app/components/brand/SiteLogo";
 import { SiteFooter } from "@/app/components/marketing/SiteFooter";
 import { DataTrustStrip } from "@/app/components/DataTrustStrip";
-import { TrialBadge } from "@/app/components/marketing/TrialBadge";
 
 export type Audience = "candidate" | "business";
 
@@ -313,16 +312,6 @@ export function AudienceShell({
           </div>
         )}
 
-        {/* Site-wide free-trial CTA, in the same place on every page. Only the
-            assessment-centre page suppresses it (it is Professional-only, so a
-            trial CTA there would mislead). Pricing used to suppress it too and
-            carried its own banner lower down; that made the message jump
-            position between pages, so pricing now uses this shared one. */}
-        {!currentPath.endsWith("/mock-assessment-centre") && (
-          <div className="flex justify-center px-4 pb-3 pt-1">
-            <TrialBadge audience={audience} />
-          </div>
-        )}
       </header>
 
       {/* Content */}

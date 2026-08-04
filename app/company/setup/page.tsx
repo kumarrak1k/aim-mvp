@@ -43,7 +43,7 @@ export default function CompanySetupPage() {
       <section className="mx-auto max-w-xl px-4 py-20 sm:px-6">
         <div className="mb-10 text-center">
           <p className="mb-3 text-sm font-bold tracking-wide text-fuchsia-300">Company Setup</p>
-          <h1 className="text-4xl font-bold tracking-tight sm:text-4xl">Create your workspace</h1>
+          <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Create your workspace</h1>
           <p className="mt-4 text-base leading-8 text-gray-300">
             Set up your company account to send assessments, manage candidates, and review results.
           </p>

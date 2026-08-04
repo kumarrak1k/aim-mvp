@@ -66,7 +66,7 @@ export default async function CompanyGuidePage({ params }: Props) {
               {guide.sector}
             </span>
           </div>
-          <h1 className="text-4xl font-bold leading-tight tracking-tight sm:text-4xl">
+          <h1 className="text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
             {guide.name} Interview Guide
           </h1>
           <p className="mt-4 text-lg leading-8 text-gray-400">{guide.tagline}</p>

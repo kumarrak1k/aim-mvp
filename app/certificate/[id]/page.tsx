@@ -76,7 +76,7 @@ export default async function CertificatePage({ params }: Props) {
             <p className="text-xs tracking-wide text-gray-500">
               This certifies that
             </p>
-            <h1 className="mt-3 text-4xl font-bold tracking-tight sm:text-4xl">
+            <h1 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
               {cert.name}
             </h1>
             <p className="mt-4 text-sm text-gray-400">

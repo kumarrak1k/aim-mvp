@@ -76,7 +76,7 @@ export default function CareerDocsPage() {
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-purple-300/20 bg-purple-300/10 px-4 py-2 text-xs font-bold tracking-wide text-purple-200">
             Professional · Career Documents
           </div>
-          <h1 className="text-4xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
+          <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
             AI-powered{" "}
             <span className="text-violet-300">
               career documents.

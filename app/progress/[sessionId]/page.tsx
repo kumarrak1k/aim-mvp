@@ -381,7 +381,7 @@ function SessionHero({
             </Link>
           </div>
 
-          <h1 className="max-w-4xl text-4xl font-bold leading-[1.02] tracking-tight sm:text-4xl lg:text-5xl">
+          <h1 className="max-w-4xl text-3xl font-bold leading-[1.02] tracking-tight sm:text-4xl">
             {session.role}
           </h1>
 

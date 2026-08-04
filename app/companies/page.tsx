@@ -14,7 +14,7 @@ export default function CompaniesIndexPage() {
     <CandidateShell currentPath="/companies">
       <div className="mx-auto max-w-4xl px-4 pb-24 pt-6 sm:px-6">
         <div className="mb-10 text-center">
-          <h1 className="text-4xl font-bold tracking-tight sm:text-4xl">
+          <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
             Company Interview Guides
           </h1>
           <p className="mx-auto mt-4 max-w-2xl text-lg leading-8 text-gray-400">

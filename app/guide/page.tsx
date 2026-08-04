@@ -90,7 +90,7 @@ export default function CandidateGuidePage() {
           <p className="text-[11px] font-bold tracking-wide text-purple-300">
             User guide
           </p>
-          <h1 className="mt-2 text-4xl font-bold tracking-tight sm:text-4xl">
+          <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
             Interview-ready in{" "}
             <span className="text-violet-300">
               six steps.

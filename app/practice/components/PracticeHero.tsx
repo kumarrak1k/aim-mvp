@@ -46,7 +46,7 @@ export function PracticeHero({
             </span>
           </div>
 
-          <h1 className="max-w-full break-words text-[2.55rem] font-bold leading-[1.02] tracking-tight text-white sm:text-4xl md:text-4xl lg:text-5xl">
+          <h1 className="max-w-full break-words text-3xl font-bold leading-[1.05] tracking-tight text-white sm:text-4xl">
             Interview preparation that makes{" "}
             <span className="text-violet-300">
               a measurable difference.

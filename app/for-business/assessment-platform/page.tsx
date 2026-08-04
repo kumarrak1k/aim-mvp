@@ -68,7 +68,7 @@ export default function BusinessPlatformPage() {
         <p className="mx-auto mb-5 inline-flex items-center gap-2 rounded-full border border-purple-400/25 bg-purple-400/[0.07] px-4 py-2 text-[11px] font-bold tracking-wide text-purple-200">
           Platform
         </p>
-        <h1 className="text-4xl font-bold leading-[1.04] tracking-tight sm:text-4xl lg:text-5xl">
+        <h1 className="text-3xl font-bold leading-[1.04] tracking-tight sm:text-4xl">
           From workspace to first hire{" "}
           <span className="text-violet-300">
             in 4 steps.

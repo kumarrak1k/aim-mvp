@@ -40,13 +40,10 @@ export function AboutPageContent() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
 
-      <div className="mx-auto max-w-4xl px-4 pb-24 pt-6 sm:px-6 sm:pt-10">
+      <div className="mx-auto max-w-4xl px-4 pb-24 pt-2 sm:px-6 sm:pt-5">
         {/* Hero */}
-        <section className="mb-16 text-center">
-          <p className="mx-auto mb-5 inline-flex items-center gap-2 rounded-full border border-purple-400/25 bg-purple-400/[0.07] px-4 py-2 text-[11px] font-bold tracking-wide text-purple-200">
-            About us
-          </p>
-          <h1 className="text-4xl font-bold leading-[1.04] tracking-tight sm:text-4xl">
+        <section className="mb-12 text-center">
+          <h1 className="text-3xl font-bold leading-[1.04] tracking-tight sm:text-4xl">
             Making elite interview prep{" "}
             <span className="text-violet-300">
               accessible to everyone
