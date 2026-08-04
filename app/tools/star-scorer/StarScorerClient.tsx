@@ -100,9 +100,6 @@ export function STARScorerClient() {
     <div className="mx-auto max-w-3xl px-4 pb-24 pt-6 sm:px-6 sm:pt-10">
         {/* Hero */}
         <section className="mb-10 text-center">
-          <p className="mx-auto mb-5 inline-flex items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-400/[0.07] px-4 py-2 text-[11px] font-bold tracking-wide text-emerald-300">
-            Free, no sign-in required
-          </p>
           <h1 className="text-[2.2rem] font-bold leading-[1.04] tracking-tight sm:text-4xl">
             Free STAR Answer Scorer
           </h1>

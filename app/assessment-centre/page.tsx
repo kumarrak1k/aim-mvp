@@ -81,9 +81,6 @@ function UpgradeGate({ planName }: { planName: string }) {
         <div className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-cyan-400/10 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-28 left-10 h-80 w-80 rounded-full bg-purple-500/10 blur-3xl" />
         <div className="relative">
-          <p className="mx-auto mb-4 inline-flex items-center gap-2 rounded-full border border-cyan-400/25 bg-cyan-400/[0.07] px-4 py-2 text-[11px] font-bold tracking-wide text-cyan-200">
-            Professional plan · Assessment centre
-          </p>
           <h1 className="text-3xl font-bold leading-[1.04] tracking-tight text-white sm:text-4xl lg:text-4xl">
             Simulate the full assessment centre experience.
           </h1>
@@ -155,9 +152,6 @@ function SignInGate() {
       <section className="relative overflow-hidden rounded-[2.25rem] border border-cyan-400/20 bg-gradient-to-br from-cyan-500/[0.09] via-purple-500/[0.06] to-transparent p-8 text-center shadow-2xl shadow-purple-950/20 backdrop-blur-2xl sm:p-12">
         <div className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-cyan-400/10 blur-3xl" />
         <div className="relative">
-          <p className="mx-auto mb-4 inline-flex items-center gap-2 rounded-full border border-cyan-400/25 bg-cyan-400/[0.07] px-4 py-2 text-[11px] font-bold tracking-wide text-cyan-200">
-            Professional plan · Assessment centre
-          </p>
           <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
             The full mock assessment centre experience.
           </h1>
