@@ -240,7 +240,7 @@ export function PracticeSummaryPanel({
             )}
           </div>
 
-          <div className="rounded-[1.7rem] border border-purple-300/20 bg-gradient-to-r from-purple-500/15 via-fuchsia-500/10 to-cyan-500/15 p-5">
+          <div className="rounded-[1.7rem] border border-purple-300/20 bg-gradient-to-r from-violet-500/15 via-violet-500/10 to-purple-500/15 p-5">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <div>
                 <p className="text-lg font-bold text-white">

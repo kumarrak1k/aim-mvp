@@ -456,7 +456,7 @@ export default async function ForCandidatesPage() {
 
       {/* Final CTA */}
       <section className="mx-auto max-w-7xl px-4 pb-20 sm:px-6 sm:pb-28">
-        <div className="rounded-[2rem] border border-white/[0.1] bg-gradient-to-br from-purple-500/[0.10] via-fuchsia-500/[0.06] to-transparent p-10 text-center sm:p-14">
+        <div className="rounded-[2rem] border border-white/[0.1] bg-gradient-to-br from-purple-500/[0.10] via-violet-500/[0.06] to-transparent p-10 text-center sm:p-14">
           <p className="text-[11px] font-bold tracking-wide text-purple-300/90">
             Get started
           </p>

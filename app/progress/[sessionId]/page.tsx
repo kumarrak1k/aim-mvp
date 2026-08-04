@@ -313,7 +313,7 @@ function UpgradeNudge() {
   if (!show) return null;
 
   return (
-    <section className="relative overflow-hidden rounded-[2rem] border border-purple-300/20 bg-gradient-to-br from-purple-500/10 via-fuchsia-500/[0.07] to-blue-500/10 p-7 text-center shadow-2xl shadow-purple-950/20">
+    <section className="relative overflow-hidden rounded-[2rem] border border-purple-300/20 bg-gradient-to-br from-violet-500/10 via-violet-500/[0.07] to-purple-500/10 p-7 text-center shadow-2xl shadow-purple-950/20">
       <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-purple-500/20 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-fuchsia-500/15 blur-3xl" />
       <div className="relative">

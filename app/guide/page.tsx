@@ -104,7 +104,7 @@ export default function CandidateGuidePage() {
         </div>
 
         {/* Timeline */}
-        <ol className="relative space-y-6 before:absolute before:bottom-6 before:left-[22px] before:top-6 before:w-px before:bg-gradient-to-b before:from-purple-500/60 before:via-fuchsia-500/40 before:to-cyan-400/40 sm:before:left-[26px]">
+        <ol className="relative space-y-6 before:absolute before:bottom-6 before:left-[22px] before:top-6 before:w-px before:bg-gradient-to-b before:from-purple-500/60 before:via-violet-500/40 before:to-violet-400/30 sm:before:left-[26px]">
           {STEPS.map((step, i) => (
             <li key={step.title} className="relative pl-14 sm:pl-16">
               {/* Number badge */}
