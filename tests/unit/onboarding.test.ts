@@ -27,8 +27,8 @@ const base = {
 };
 
 describe("onboarding shape", () => {
-  it("is five steps — three that ask, one that gives back, one that launches", () => {
-    expect(ONBOARDING_STEPS).toBe(5);
+  it("is six steps — three that ask, one that gives back, one that launches, one that checks equipment", () => {
+    expect(ONBOARDING_STEPS).toBe(6);
   });
 
   it("keeps each choice set short enough to scan", () => {

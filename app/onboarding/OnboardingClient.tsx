@@ -12,9 +12,10 @@ import {
   buildPlanSteps,
   processTypeFor,
 } from "@/app/lib/onboarding";
+import { EquipmentCheck } from "./EquipmentCheck";
 
 /**
- * Five steps: three ask, one gives back, one launches.
+ * Six steps: three ask, one gives back, one launches, one checks equipment.
  *
  * The give-back at step 4 is the load-bearing part. Four questions followed by
  * an empty practice screen is what we do today, and it is why every profile in
@@ -34,6 +35,9 @@ export function OnboardingClient({ firstName }: { firstName: string }) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
+  // Where the candidate chose to go at step 5. Held so the equipment check
+  // (step 6) can run first and then complete the journey they picked.
+  const [pendingDestination, setPendingDestination] = useState("/practice");
   const [targetRole, setTargetRole] = useState("");
   const [careerStage, setCareerStage] = useState<string>("");
   const [targetSector, setTargetSector] = useState<string>("");
@@ -260,17 +264,26 @@ export function OnboardingClient({ firstName }: { firstName: string }) {
               Three questions rather than five. It is scored the same way, so you get a real
               starting point to improve on instead of an empty chart.
             </p>
+            {/* Both choices pass through the equipment check (step 6) first,
+                so mic/camera problems surface before the first question, not
+                during it. */}
             <div className="mt-9 flex flex-col items-center gap-3">
               <button
-                onClick={() => router.push("/practice?warmup=1")}
+                onClick={() => {
+                  setPendingDestination("/practice?warmup=1");
+                  setStep(6);
+                }}
                 className="w-full max-w-sm rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-8 py-4 text-sm font-bold text-white shadow-2xl shadow-purple-900/40 transition hover:scale-[1.02]"
               >
                 Start the warm-up →
               </button>
               <button
-                onClick={() =>
-                  router.push(processTypeFor(processType)?.destination ?? "/practice")
-                }
+                onClick={() => {
+                  setPendingDestination(
+                    processTypeFor(processType)?.destination ?? "/practice"
+                  );
+                  setStep(6);
+                }}
                 className="text-sm font-bold text-gray-400 transition hover:text-white"
               >
                 {processTypeFor(processType)?.value === "assessment-centre"
@@ -279,6 +292,13 @@ export function OnboardingClient({ firstName }: { firstName: string }) {
               </button>
             </div>
           </section>
+        )}
+
+        {step === 6 && (
+          <EquipmentCheck
+            onContinue={() => router.push(pendingDestination)}
+            onBack={() => setStep(5)}
+          />
         )}
       </div>
 

@@ -197,4 +197,4 @@ export function buildPlanSteps(
 }
 
 /** Total steps, used for the progress indicator. */
-export const ONBOARDING_STEPS = 5;
+export const ONBOARDING_STEPS = 6;
