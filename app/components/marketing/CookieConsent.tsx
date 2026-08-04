@@ -2,12 +2,23 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   readConsent,
   setConsent,
   CONSENT_ACCEPTED,
   CONSENT_ESSENTIAL,
 } from "@/app/lib/analyticsConsent";
+
+/**
+ * Routes where the banner must never appear: live interview / assessment
+ * screens. The dialog is fixed at z-[9999] over the page, and on these
+ * screens it can cover the recording controls — a first-session candidate
+ * (who by definition hasn't answered the prompt yet) could be unable to
+ * press "Start recording". Consent is simply asked on the next
+ * non-critical page instead; analytics stays off until answered.
+ */
+const SUPPRESSED_PREFIXES = ["/practice/session", "/assessment-centre"];
 
 /**
  * Cookie and analytics consent.
@@ -24,6 +35,7 @@ import {
  */
 export function CookieConsent() {
   const [visible, setVisible] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     // Older visitors hold the legacy "accepted" value, which was recorded
@@ -37,6 +49,8 @@ export function CookieConsent() {
     setConsent(value);
     setVisible(false);
   }
+
+  if (SUPPRESSED_PREFIXES.some((p) => pathname?.startsWith(p))) return null;
 
   if (!visible) return null;
 
@@ -62,13 +76,13 @@ export function CookieConsent() {
       <div className="mt-3 flex flex-wrap items-center gap-3">
         <button
           onClick={() => choose(CONSENT_ACCEPTED)}
-          className="rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-2 text-[13px] font-black text-white shadow-lg transition hover:scale-[1.03]"
+          className="rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-5 py-2 text-[13px] font-bold text-white shadow-lg transition hover:scale-[1.03]"
         >
           Accept analytics
         </button>
         <button
           onClick={() => choose(CONSENT_ESSENTIAL)}
-          className="rounded-full border border-white/15 bg-white/[0.06] px-5 py-2 text-[13px] font-black text-white transition hover:bg-white/[0.12]"
+          className="rounded-full border border-white/15 bg-white/[0.06] px-5 py-2 text-[13px] font-bold text-white transition hover:bg-white/[0.12]"
         >
           Essential only
         </button>
