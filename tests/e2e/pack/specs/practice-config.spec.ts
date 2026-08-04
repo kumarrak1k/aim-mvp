@@ -16,6 +16,9 @@ test.describe("practice session configuration", () => {
     await page.goto("/practice");
     await page.getByPlaceholder(/Example:|saved profile context/i).first().fill("Data Analyst at a retail company");
 
+    // The tuning controls start folded behind the Customise disclosure.
+    await page.getByRole("button", { name: /Customise session/ }).click();
+
     // The four config dropdowns are native <select>s whose <label> isn't
     // associated, so target each by a unique option it contains.
     const selectWith = (option: string) =>

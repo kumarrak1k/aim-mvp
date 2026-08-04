@@ -152,6 +152,8 @@ export function PracticeStartScreen({
   startDisabledMessage = "",
 }: PracticeStartScreenProps) {
   const [savingPreference, setSavingPreference] = useState(false);
+  // Optional tuning starts folded: three decisions, then Start.
+  const [showCustomise, setShowCustomise] = useState(false);
   const [preferenceMessage, setPreferenceMessage] = useState("");
 
   // Hybrid mix helpers
@@ -508,6 +510,87 @@ export function PracticeStartScreen({
           </div>
         )}
 
+        <div className="mb-5 rounded-[1.7rem] border border-white/10 bg-black/25 p-5">
+          <div className="mb-5">
+            <p className="text-sm font-bold tracking-wide text-cyan-300">
+              Practice mode
+            </p>
+            <h3 className="mt-2 text-xl font-bold tracking-tight text-white">
+              Choose one interview format.
+            </h3>
+            <p className="mt-2 text-sm leading-6 text-gray-400">
+              Select one mode for this session. You can save it as your default
+              in your Candidate Profile and still override it here anytime.
+            </p>
+          </div>
+
+          <div className="grid gap-3 lg:grid-cols-3">
+            <ModeCard
+              active={selectedPracticeMode === "typed"}
+              title="Typed answers only"
+              badge="Keyboard"
+              description="Read each question on screen and type your answer. Best when you want to focus only on answer structure."
+              onClick={() => selectPracticeMode("typed")}
+            />
+
+            <ModeCard
+              active={selectedPracticeMode === "voice"}
+              title="Voice interview"
+              badge="Audio + transcript"
+              description="Hear the question read aloud, then answer by speaking. Your answer is transcribed for AI feedback."
+              onClick={() => selectPracticeMode("voice")}
+              locked={isFreePlan}
+            />
+
+            <ModeCard
+              active={selectedPracticeMode === "voice-camera"}
+              title="Voice + camera interview"
+              badge="Full practice"
+              description="Practise like a remote interview: question audio, spoken answer, transcript and camera presence analysis."
+              onClick={() => selectPracticeMode("voice-camera")}
+              locked={isFreePlan}
+            />
+          </div>
+
+          {/* Upgrade nudge shown when a free user taps a locked mode */}
+          {isFreePlan && (
+            <div className="mt-4 flex flex-col gap-2 rounded-2xl border border-purple-300/20 bg-purple-300/[0.07] p-4 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-sm leading-6 text-gray-300">
+                <span className="font-bold text-purple-200">Voice &amp; camera modes</span> are
+                available on Plus and Professional plans.
+              </p>
+              <Link
+                href="/pricing"
+                className="shrink-0 rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-4 py-2 text-xs font-bold text-white shadow-lg shadow-purple-950/35 transition hover:scale-[1.03]"
+              >
+                Upgrade →
+              </Link>
+            </div>
+          )}
+        </div>
+
+        {/* Everything below is optional tuning. A first-timer sees three
+            decisions - role, mode, start - and this one disclosure opens the
+            full control set for power users. */}
+        <button
+          type="button"
+          onClick={() => setShowCustomise((v) => !v)}
+          aria-expanded={showCustomise}
+          className="mb-5 flex w-full items-center justify-between rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-4 text-left transition hover:bg-white/[0.07]"
+        >
+          <span>
+            <span className="block text-sm font-bold text-white">Customise session</span>
+            <span className="mt-0.5 block text-xs text-gray-400">
+              Experience level, interview type, difficulty, focus{isAdvancedPlan ? ", question count & mix" : ""}, voice and devices
+            </span>
+          </span>
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden className={`shrink-0 text-gray-400 transition ${showCustomise ? "rotate-180" : ""}`}>
+            <path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
+
+        {showCustomise && (
+          <>
         <div className="mb-5 grid gap-4 md:grid-cols-2">
           <SelectField
             label="Experience level"
@@ -728,65 +811,6 @@ export function PracticeStartScreen({
           </div>
         )}
 
-        <div className="mb-5 rounded-[1.7rem] border border-white/10 bg-black/25 p-5">
-          <div className="mb-5">
-            <p className="text-sm font-bold tracking-wide text-cyan-300">
-              Practice mode
-            </p>
-            <h3 className="mt-2 text-xl font-bold tracking-tight text-white">
-              Choose one interview format.
-            </h3>
-            <p className="mt-2 text-sm leading-6 text-gray-400">
-              Select one mode for this session. You can save it as your default
-              in your Candidate Profile and still override it here anytime.
-            </p>
-          </div>
-
-          <div className="grid gap-3 lg:grid-cols-3">
-            <ModeCard
-              active={selectedPracticeMode === "typed"}
-              title="Typed answers only"
-              badge="Keyboard"
-              description="Read each question on screen and type your answer. Best when you want to focus only on answer structure."
-              onClick={() => selectPracticeMode("typed")}
-            />
-
-            <ModeCard
-              active={selectedPracticeMode === "voice"}
-              title="Voice interview"
-              badge="Audio + transcript"
-              description="Hear the question read aloud, then answer by speaking. Your answer is transcribed for AI feedback."
-              onClick={() => selectPracticeMode("voice")}
-              locked={isFreePlan}
-            />
-
-            <ModeCard
-              active={selectedPracticeMode === "voice-camera"}
-              title="Voice + camera interview"
-              badge="Full practice"
-              description="Practise like a remote interview: question audio, spoken answer, transcript and camera presence analysis."
-              onClick={() => selectPracticeMode("voice-camera")}
-              locked={isFreePlan}
-            />
-          </div>
-
-          {/* Upgrade nudge shown when a free user taps a locked mode */}
-          {isFreePlan && (
-            <div className="mt-4 flex flex-col gap-2 rounded-2xl border border-purple-300/20 bg-purple-300/[0.07] p-4 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-sm leading-6 text-gray-300">
-                <span className="font-bold text-purple-200">Voice &amp; camera modes</span> are
-                available on Plus and Professional plans.
-              </p>
-              <Link
-                href="/pricing"
-                className="shrink-0 rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-4 py-2 text-xs font-bold text-white shadow-lg shadow-purple-950/35 transition hover:scale-[1.03]"
-              >
-                Upgrade →
-              </Link>
-            </div>
-          )}
-        </div>
-
         {selectedPracticeMode !== "typed" && (
         <div className="mb-5 rounded-[1.7rem] border border-white/10 bg-black/25 p-5">
           <div className="mb-5">
@@ -877,6 +901,9 @@ export function PracticeStartScreen({
           </div>
         </div>
         )}
+          </>
+        )}
+
 
         <button
           onClick={startInterview}
