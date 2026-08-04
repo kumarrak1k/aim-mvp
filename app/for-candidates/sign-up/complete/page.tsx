@@ -114,10 +114,15 @@ export default function CandidateSignUpCompletePage() {
         }
       }
 
-      // New candidates land on My Profile first to add their CV / role details,
-      // then move on to interview practice or the assessment centre from there.
+      // Hand off to the default destination and let the accept-terms →
+      // resolvePostAuthDestination chain route the user. Hardcoding /profile
+      // here made the resolver treat it as an explicitly requested deep link
+      // (which always wins), so every fresh signup skipped the onboarding
+      // flow. "/practice" is the resolver's DEFAULT_DESTINATION, which it
+      // does NOT treat as explicit — new candidates get terms → onboarding,
+      // returning users go straight to practice.
       if (!cancelled) {
-        router.replace("/profile");
+        router.replace("/practice");
       }
     })();
 
@@ -137,7 +142,7 @@ export default function CandidateSignUpCompletePage() {
           Setting up your account…
         </h1>
         <p className="mt-2 text-sm leading-6 text-gray-400">
-          Almost there. Taking you to your profile so you can add your details.
+          Almost there. Getting everything ready for you.
         </p>
         {error && (
           <p className="mt-4 text-xs text-red-300">{error}</p>

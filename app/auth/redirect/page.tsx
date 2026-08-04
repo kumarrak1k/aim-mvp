@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { getAccountType, AUDIENCE_PATHS } from "@/app/lib/accountType";
+import { resolvePostAuthDestination } from "@/app/lib/postAuthDestination";
 
 /**
  * Post-sign-in dispatcher.
@@ -43,5 +44,14 @@ export default async function AuthRedirectPage() {
   }
 
   const accountType = await getAccountType(userId);
+
+  // Candidates go through the post-auth resolver so anyone who has never
+  // completed (or skipped) onboarding gets routed there once — including
+  // accounts created while the signup path was bypassing it. Everyone else
+  // goes straight to practice.
+  if (accountType === "candidate") {
+    redirect(await resolvePostAuthDestination(userId));
+  }
+
   redirect(AUDIENCE_PATHS[accountType].authedHome);
 }
