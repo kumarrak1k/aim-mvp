@@ -18,9 +18,8 @@ export function TrialBadge({
     return (
       <Link
         href="/for-business/sign-up"
-        className={`inline-flex max-w-[92vw] items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-2.5 text-center text-[12px] font-black uppercase leading-tight tracking-[0.1em] text-white shadow-lg shadow-purple-900/40 transition hover:scale-[1.03] ${className}`}
+        className={`inline-flex max-w-[92vw] items-center gap-2 rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-5 py-2.5 text-center text-[12px] font-bold leading-tight text-white shadow-lg shadow-purple-900/40 transition hover:scale-[1.03] ${className}`}
       >
-        <span className="text-sm" aria-hidden>✨</span>
         Click for 14-day free Team trial · No payment details required
       </Link>
     );
@@ -29,9 +28,8 @@ export function TrialBadge({
   return (
     <Link
       href="/for-candidates/sign-up"
-      className={`inline-flex max-w-[92vw] items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-2.5 text-center text-[12px] font-black uppercase leading-tight tracking-[0.1em] text-white shadow-lg shadow-purple-900/40 transition hover:scale-[1.03] ${className}`}
+      className={`inline-flex max-w-[92vw] items-center gap-2 rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-5 py-2.5 text-center text-[12px] font-bold leading-tight text-white shadow-lg shadow-purple-900/40 transition hover:scale-[1.03] ${className}`}
     >
-      <span className="text-sm" aria-hidden>✨</span>
       Click for 3-day free trial · No payment details required
     </Link>
   );
