@@ -65,6 +65,15 @@ export const PROCESS_TYPES = [
     destination: "/assessment-centre",
   },
   {
+    // Many graduate and corporate processes run both stages. Capturing that
+    // here lets the plan (step 4) set up the interview-first path AND plant
+    // the assessment centre — which is where Professional earns its keep.
+    value: "both",
+    label: "Both — an interview and an assessment centre",
+    hint: "Interview first, then the full centre",
+    destination: "/practice",
+  },
+  {
     value: "unsure",
     label: "I have not been told yet",
     hint: "We will start you on the basics",
@@ -189,10 +198,18 @@ export function buildPlanSteps(
           title: "Then the full assessment centre",
           body: "Written case study against the clock, competency interview, and a presentation — scored stage by stage.",
         }
-      : {
-          title: "Then watch the trend",
-          body: "Every session is saved. The number worth watching is whether it is moving, not any single score.",
-        },
+      : p?.value === "both"
+        ? {
+            // Facing both stages: interview practice comes first, and the
+            // centre is named now so the candidate knows where this is going
+            // (and which plan covers it) before the invite email lands.
+            title: "Then the full assessment centre",
+            body: "Once your answers are landing, run the complete centre — case study, interview and presentation, scored stage by stage. Available on the Professional plan when you are ready.",
+          }
+        : {
+            title: "Then watch the trend",
+            body: "Every session is saved. The number worth watching is whether it is moving, not any single score.",
+          },
   ];
 }
 
