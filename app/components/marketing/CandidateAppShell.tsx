@@ -17,6 +17,7 @@ import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
 import { useEffect, useState, type ReactNode } from "react";
 import { SiteLogo } from "@/app/components/brand/SiteLogo";
+import { DataTrustStrip } from "@/app/components/DataTrustStrip";
 import { SiteFooter } from "@/app/components/marketing/SiteFooter";
 import { PlanPage } from "@/app/components/account/PlanPage";
 import { TrialBanner } from "@/app/components/account/TrialBanner";
@@ -146,6 +147,9 @@ export function CandidateAppShell({
         <div className="absolute left-[-160px] top-[-80px] h-[520px] w-[520px] rounded-full bg-purple-500/[0.08] blur-[160px]" />
         <div className="absolute bottom-[-80px] right-[-160px] h-[520px] w-[520px] rounded-full bg-fuchsia-500/[0.08] blur-[160px]" />
       </div>
+
+      {/* Data trust bar — same messages as the signed-out pages */}
+      <DataTrustStrip variant="topbar" />
 
       {/* Header */}
       <header className="sticky top-0 z-50 backdrop-blur-2xl">
