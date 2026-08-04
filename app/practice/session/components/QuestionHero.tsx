@@ -97,7 +97,7 @@ export function QuestionHero(props: QuestionHeroProps) {
     <section className="flex h-full min-h-0 flex-col overflow-hidden rounded-[1.45rem] border border-white/10 bg-white/[0.055] shadow-2xl shadow-purple-950/10 backdrop-blur-2xl xl:min-h-[360px]">
       <div className="h-1 bg-white/10">
         <div
-          className="h-full bg-gradient-to-r from-purple-400 via-fuchsia-300 to-cyan-300"
+          className="h-full bg-gradient-to-r from-violet-300 to-purple-200"
           style={{ width: `${progressPercent}%` }}
         />
       </div>

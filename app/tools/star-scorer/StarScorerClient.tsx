@@ -97,7 +97,7 @@ export function STARScorerClient() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl px-4 pb-24 pt-6 sm:px-6 sm:pt-10">
+    <div className="mx-auto max-w-3xl px-4 pb-24 pt-1 sm:px-6 sm:pt-3">
         {/* Hero */}
         <section className="mb-10 text-center">
           <h1 className="text-[2.2rem] font-bold leading-[1.04] tracking-tight sm:text-4xl">

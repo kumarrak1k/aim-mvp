@@ -318,7 +318,7 @@ export default function ReportPage() {
         <section className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
           <Link
             href="/assessment-centre/setup"
-            className="rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-8 py-4 text-center text-sm font-bold text-white shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.02]"
+            className="rounded-2xl bg-gradient-to-r from-violet-500 to-purple-500 px-8 py-4 text-center text-sm font-bold text-white shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.02]"
           >
             Retake assessment centre →
           </Link>

@@ -115,7 +115,7 @@ export default async function InterviewPracticePage() {
       />
     <CandidateShell currentPath="/interview-practice">
       {/* Hero */}
-      <section className="mx-auto max-w-5xl px-4 pb-14 pt-6 text-center sm:px-6 sm:pb-16 sm:pt-10">
+      <section className="mx-auto max-w-5xl px-4 pb-14 pt-1 text-center sm:px-6 sm:pb-16 sm:pt-3">
         <h1 className="text-3xl font-bold leading-[1.04] tracking-tight sm:text-4xl">
           Practise interviews{" "}
           <span className="text-violet-300">

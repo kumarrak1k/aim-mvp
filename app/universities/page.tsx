@@ -79,7 +79,7 @@ export default function UniversitiesPage() {
 
       <div>
         {/* Hero */}
-        <section className="mx-auto max-w-5xl px-4 pb-16 pt-6 text-center sm:px-6 sm:pt-10">
+        <section className="mx-auto max-w-5xl px-4 pb-16 pt-1 text-center sm:px-6 sm:pt-3">
           <p className="mx-auto mb-5 inline-flex items-center gap-2 rounded-full border border-purple-400/25 bg-purple-400/[0.07] px-4 py-2 text-[11px] font-bold tracking-wide text-purple-200">
             For universities & careers services
           </p>

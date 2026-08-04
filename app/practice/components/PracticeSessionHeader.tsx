@@ -138,7 +138,7 @@ export function PracticeSessionHeader({
           </div>
           <div className="h-2 overflow-hidden rounded-full bg-black/35 ring-1 ring-white/10">
             <div
-              className="h-full rounded-full bg-gradient-to-r from-purple-400 via-fuchsia-300 to-cyan-300 shadow-[0_0_20px_rgba(168,85,247,0.5)] transition-all duration-500"
+              className="h-full rounded-full bg-gradient-to-r from-violet-300 to-purple-200 shadow-[0_0_20px_rgba(168,85,247,0.5)] transition-all duration-500"
               style={{ width: `${progressPercent}%` }}
             />
           </div>

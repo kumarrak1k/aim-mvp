@@ -128,7 +128,7 @@ export default function CandidateGuidePage() {
                 </ul>
                 {step.tip && (
                   <p className="mt-4 rounded-xl border border-cyan-300/15 bg-cyan-300/[0.06] px-3.5 py-2.5 text-[13px] leading-5 text-cyan-100">
-                    <span className="font-bold uppercase tracking-wide text-cyan-300">Tip </span>
+                    <span className="font-bold tracking-wide text-cyan-300">Tip </span>
                     {step.tip}
                   </p>
                 )}
@@ -147,7 +147,7 @@ export default function CandidateGuidePage() {
         </ol>
 
         {/* Closing CTA */}
-        <div className="mt-14 rounded-[1.75rem] border border-purple-400/20 bg-gradient-to-br from-purple-600/20 via-fuchsia-600/10 to-transparent p-8 text-center">
+        <div className="mt-14 rounded-[1.75rem] border border-purple-400/20 bg-gradient-to-br from-violet-600/20 via-violet-600/10 to-transparent p-8 text-center">
           <h2 className="text-2xl font-bold tracking-tight">Ready when you are.</h2>
           <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-gray-400">
             The fastest way to learn the platform is to run one practice

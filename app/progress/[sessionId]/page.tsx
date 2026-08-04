@@ -830,7 +830,7 @@ function CategoryLine({ label, value }: { label: string; value: number }) {
       </div>
       <div className="h-3 overflow-hidden rounded-full bg-white/10">
         <div
-          className="h-full rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-400 to-cyan-300 shadow-[0_0_20px_rgba(168,85,247,0.35)]"
+          className="h-full rounded-full bg-gradient-to-r from-violet-400 to-purple-300 shadow-[0_0_20px_rgba(168,85,247,0.35)]"
           style={{ width: `${width}%` }}
         />
       </div>

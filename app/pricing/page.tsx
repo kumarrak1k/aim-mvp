@@ -90,7 +90,7 @@ export default async function CandidatePricingPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
-      <section className="mx-auto max-w-5xl px-4 pb-12 pt-2 text-center sm:px-6 sm:pt-5">
+      <section className="mx-auto max-w-5xl px-4 pb-12 pt-1 text-center sm:px-6 sm:pt-3">
         <h1 className="text-3xl font-bold leading-[1.04] tracking-tight sm:text-4xl">
           Start free. Upgrade when the interview matters.
         </h1>

@@ -156,7 +156,7 @@ export default async function ForCandidatesPage() {
       />
       <CandidateShell currentPath="/">
       {/* Hero */}
-      <section className="mx-auto max-w-5xl px-4 pb-16 pt-2 text-center sm:px-6 sm:pb-20 sm:pt-5">
+      <section className="mx-auto max-w-5xl px-4 pb-16 pt-1 text-center sm:px-6 sm:pb-20 sm:pt-3">
         <h1 className="text-3xl font-bold leading-[1.04] tracking-tight sm:text-4xl lg:text-5xl">
           Interview practice. Assessment centre prep.{" "}
           <span className="text-violet-300">

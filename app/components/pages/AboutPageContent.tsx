@@ -40,7 +40,7 @@ export function AboutPageContent() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
 
-      <div className="mx-auto max-w-4xl px-4 pb-24 pt-2 sm:px-6 sm:pt-5">
+      <div className="mx-auto max-w-4xl px-4 pb-24 pt-1 sm:px-6 sm:pt-3">
         {/* Hero */}
         <section className="mb-12 text-center">
           <h1 className="text-3xl font-bold leading-[1.04] tracking-tight sm:text-4xl">

@@ -306,7 +306,7 @@ export default function AssessmentCentreSetupPage() {
             disabled={!canSubmit}
             className={`flex w-full items-center justify-center gap-3 rounded-2xl px-8 py-5 text-base font-bold tracking-tight text-white shadow-2xl transition-all ${
               canSubmit
-                ? "bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 shadow-cyan-900/40 hover:scale-[1.015] hover:shadow-cyan-900/60"
+                ? "bg-gradient-to-r from-violet-500 to-purple-500 shadow-cyan-900/40 hover:scale-[1.015] hover:shadow-cyan-900/60"
                 : "cursor-not-allowed bg-white/[0.06] text-gray-600"
             }`}
           >

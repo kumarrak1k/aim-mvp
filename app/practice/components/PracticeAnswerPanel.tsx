@@ -125,7 +125,7 @@ export function PracticeAnswerPanel({
                 isListening ||
                 (questionAudioLoading && !questionAudioReady)
               }
-              className="w-full rounded-2xl bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-500 px-5 py-4 text-sm font-bold text-black shadow-2xl shadow-cyan-950/30 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
+              className="w-full rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-400 px-5 py-4 text-sm font-bold text-black shadow-2xl shadow-cyan-950/30 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isSpeakingQuestion
                 ? "Question playing..."

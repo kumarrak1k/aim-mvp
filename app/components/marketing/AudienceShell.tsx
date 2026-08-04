@@ -120,7 +120,7 @@ export function AudienceShell({
 
       {/* Header */}
       <header className="relative z-50">
-        <div className="relative mx-auto grid w-full max-w-7xl grid-cols-[auto_minmax(0,1fr)_auto] items-center px-4 pt-1.5 pb-6 sm:px-6 sm:pt-2 sm:pb-8 lg:px-10">
+        <div className="relative mx-auto grid w-full max-w-7xl grid-cols-[auto_minmax(0,1fr)_auto] items-center px-4 pt-1.5 pb-3 sm:px-6 sm:pt-2 sm:pb-4 lg:px-10">
           {/* Logo + audience badge */}
           <Link
             href={audience === "candidate" ? "/" : "/for-business"}

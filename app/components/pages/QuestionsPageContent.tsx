@@ -8,7 +8,7 @@ export function QuestionsPageContent({
   sets: ReturnType<typeof getAllQuestionSets>;
 }) {
   return (
-    <div className="mx-auto max-w-5xl px-4 pb-24 pt-6 sm:px-6 sm:pt-10">
+    <div className="mx-auto max-w-5xl px-4 pb-24 pt-1 sm:px-6 sm:pt-3">
       <header className="mb-10 border-b border-white/[0.08] pb-10 text-center">
         <h1 className="text-[2.2rem] font-bold leading-[1.05] tracking-tight sm:text-4xl">
           A curated library of interview questions across roles and formats.

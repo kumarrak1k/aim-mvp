@@ -108,7 +108,7 @@ export default function PrivacyPage() {
     <CandidateShell currentPath="/privacy">
       <div>
         {/* Hero */}
-        <section className="mx-auto max-w-4xl px-4 pb-12 pt-2 text-center sm:px-6 sm:pt-5">
+        <section className="mx-auto max-w-4xl px-4 pb-12 pt-1 text-center sm:px-6 sm:pt-3">
           <h1 className="mx-auto max-w-3xl text-[2.2rem] font-bold leading-[1.06] tracking-tight sm:text-4xl">
             Your interview data{" "}
             <span className="text-violet-300">
