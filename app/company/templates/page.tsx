@@ -81,14 +81,14 @@ export default function TemplatesPage() {
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-sm font-black uppercase tracking-[0.22em] text-fuchsia-300">Assessment Templates</p>
-            <h1 className="mt-1 text-3xl font-black tracking-[-0.05em] sm:text-4xl">Templates</h1>
+            <p className="text-sm font-bold tracking-wide text-fuchsia-300">Assessment Templates</p>
+            <h1 className="mt-1 text-3xl font-bold tracking-tight sm:text-4xl">Templates</h1>
             <p className="mt-2 text-gray-400">Reusable interview configurations for different roles.</p>
           </div>
           {canEdit && (
             <Link
               href="/company/templates/new"
-              className="rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 px-5 py-2.5 text-sm font-black text-white shadow-lg transition hover:scale-[1.02]"
+              className="rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 px-5 py-2.5 text-sm font-bold text-white shadow-lg transition hover:scale-[1.02]"
             >
               + New template
             </Link>
@@ -97,12 +97,12 @@ export default function TemplatesPage() {
 
         {templates.length === 0 ? (
           <div className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-16 text-center">
-            <p className="text-lg font-black text-gray-300">No templates yet</p>
+            <p className="text-lg font-bold text-gray-300">No templates yet</p>
             <p className="mt-2 text-gray-400">Create your first template to start sending assessments.</p>
             {canEdit && (
               <Link
                 href="/company/templates/new"
-                className="mt-6 inline-block rounded-full bg-fuchsia-500/20 px-6 py-3 text-sm font-black text-fuchsia-200 transition hover:bg-fuchsia-500/30"
+                className="mt-6 inline-block rounded-full bg-fuchsia-500/20 px-6 py-3 text-sm font-bold text-fuchsia-200 transition hover:bg-fuchsia-500/30"
               >
                 Create template →
               </Link>
@@ -116,19 +116,19 @@ export default function TemplatesPage() {
                   <div className="min-w-0">
                     <div className="mb-1 flex items-center gap-2">
                       {t.templateType === "assessment-centre" ? (
-                        <span className="rounded-full border border-purple-400/30 bg-purple-400/10 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-[0.12em] text-purple-200">
+                        <span className="rounded-full border border-purple-400/30 bg-purple-400/10 px-2.5 py-0.5 text-[10px] font-bold tracking-wide text-purple-200">
                           Assessment centre
                         </span>
                       ) : (
-                        <span className="rounded-full border border-white/10 bg-white/[0.05] px-2.5 py-0.5 text-[10px] font-black uppercase tracking-[0.12em] text-gray-400">
+                        <span className="rounded-full border border-white/10 bg-white/[0.05] px-2.5 py-0.5 text-[10px] font-bold tracking-wide text-gray-400">
                           Interview
                         </span>
                       )}
                     </div>
-                    <p className="truncate text-lg font-black text-white">{t.name}</p>
+                    <p className="truncate text-lg font-bold text-white">{t.name}</p>
                     <p className="mt-0.5 text-sm text-gray-400">{t.role}</p>
                   </div>
-                  <span className={`shrink-0 rounded-full border px-2.5 py-1 text-xs font-black ${DIFFICULTY_COLORS[t.difficulty] || "bg-white/5 text-gray-300 border-white/10"}`}>
+                  <span className={`shrink-0 rounded-full border px-2.5 py-1 text-xs font-bold ${DIFFICULTY_COLORS[t.difficulty] || "bg-white/5 text-gray-300 border-white/10"}`}>
                     {t.difficulty}
                   </span>
                 </div>
@@ -157,19 +157,19 @@ export default function TemplatesPage() {
                   <div className="mt-5 flex gap-2">
                     <Link
                       href={`/company/templates/${t.id}`}
-                      className="flex-1 rounded-xl border border-white/15 bg-white/[0.05] px-3 py-2 text-center text-xs font-black text-white transition hover:bg-white/[0.09]"
+                      className="flex-1 rounded-xl border border-white/15 bg-white/[0.05] px-3 py-2 text-center text-xs font-bold text-white transition hover:bg-white/[0.09]"
                     >
                       Edit
                     </Link>
                     <button
                       onClick={() => toggleActive(t)}
-                      className={`flex-1 rounded-xl border px-3 py-2 text-xs font-black transition ${t.isActive ? "border-red-400/20 bg-red-400/10 text-red-300 hover:bg-red-400/15" : "border-green-400/20 bg-green-400/10 text-green-300 hover:bg-green-400/15"}`}
+                      className={`flex-1 rounded-xl border px-3 py-2 text-xs font-bold transition ${t.isActive ? "border-red-400/20 bg-red-400/10 text-red-300 hover:bg-red-400/15" : "border-green-400/20 bg-green-400/10 text-green-300 hover:bg-green-400/15"}`}
                     >
                       {t.isActive ? "Deactivate" : "Activate"}
                     </button>
                     <Link
                       href={`/company/candidates?templateId=${t.id}`}
-                      className="rounded-xl border border-fuchsia-400/25 bg-fuchsia-400/10 px-3 py-2 text-xs font-black text-fuchsia-200 transition hover:bg-fuchsia-400/15"
+                      className="rounded-xl border border-fuchsia-400/25 bg-fuchsia-400/10 px-3 py-2 text-xs font-bold text-fuchsia-200 transition hover:bg-fuchsia-400/15"
                     >
                       Invite
                     </Link>

@@ -86,7 +86,7 @@ function ExhibitContent({ content }: { content: unknown }) {
               {parsed.header.map((cell, i) => (
                 <th
                   key={i}
-                  className="border border-white/10 bg-white/5 px-3 py-2 text-left font-black text-gray-200"
+                  className="border border-white/10 bg-white/5 px-3 py-2 text-left font-bold text-gray-200"
                 >
                   {cell}
                 </th>
@@ -142,7 +142,7 @@ function ExhibitContent({ content }: { content: unknown }) {
           const colon = l.indexOf(":");
           return (
             <div key={i} className="flex items-baseline gap-2 text-sm">
-              <span className="shrink-0 font-black text-gray-400">{l.slice(0, colon)}:</span>
+              <span className="shrink-0 font-bold text-gray-400">{l.slice(0, colon)}:</span>
               <span className="text-gray-300">{l.slice(colon + 1).trimStart()}</span>
             </div>
           );
@@ -175,7 +175,7 @@ function ScoreBar({ label, score }: { label: string; score: number }) {
           style={{ width: `${pct}%` }}
         />
       </div>
-      <span className="w-8 text-right text-xs font-black text-white">{score}</span>
+      <span className="w-8 text-right text-xs font-bold text-white">{score}</span>
     </div>
   );
 }
@@ -375,14 +375,14 @@ export default function Stage1Page() {
             <div className="rounded-[1.75rem] border border-purple-500/[0.18] bg-purple-500/[0.05] p-6 backdrop-blur-xl">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <p className="text-[11px] font-black uppercase tracking-[0.22em] text-purple-300/90">
+                  <p className="text-[11px] font-bold tracking-wide text-purple-300/90">
                     Stage 1 · Case Study Analysis
                   </p>
-                  <h1 className="mt-1.5 text-2xl font-black tracking-[-0.04em] text-white">
+                  <h1 className="mt-1.5 text-2xl font-bold tracking-tight text-white">
                     {safeStr(scenario.company)}
                   </h1>
                 </div>
-                <span className="shrink-0 rounded-full border border-purple-400/30 bg-purple-400/10 px-3 py-1.5 text-xs font-black text-purple-300">
+                <span className="shrink-0 rounded-full border border-purple-400/30 bg-purple-400/10 px-3 py-1.5 text-xs font-bold text-purple-300">
                   {safeStr(scenario.industry)}
                 </span>
               </div>
@@ -396,7 +396,7 @@ export default function Stage1Page() {
 
             {/* Overview */}
             <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-6 backdrop-blur-xl">
-              <h2 className="mb-2 text-[11px] font-black uppercase tracking-[0.22em] text-gray-400">
+              <h2 className="mb-2 text-[11px] font-bold tracking-wide text-gray-400">
                 Background
               </h2>
               <p className="text-sm leading-7 text-gray-300">{safeStr(scenario.overview)}</p>
@@ -404,7 +404,7 @@ export default function Stage1Page() {
 
             {/* Challenge */}
             <div className="rounded-[1.75rem] border border-amber-500/[0.18] bg-amber-500/[0.04] p-6 backdrop-blur-xl">
-              <h2 className="mb-2 text-[11px] font-black uppercase tracking-[0.22em] text-amber-400/90">
+              <h2 className="mb-2 text-[11px] font-bold tracking-wide text-amber-400/90">
                 Business Challenge
               </h2>
               <p className="text-sm leading-7 text-amber-100/80">{safeStr(scenario.challenge)}</p>
@@ -416,7 +416,7 @@ export default function Stage1Page() {
                 key={i}
                 className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-6 backdrop-blur-xl"
               >
-                <h2 className="mb-3 text-[11px] font-black uppercase tracking-[0.22em] text-cyan-400/90">
+                <h2 className="mb-3 text-[11px] font-bold tracking-wide text-cyan-400/90">
                   {safeStr((exhibit as Record<string, unknown>).title)}
                 </h2>
                 <ExhibitContent content={(exhibit as Record<string, unknown>).content} />
@@ -425,25 +425,25 @@ export default function Stage1Page() {
 
             {/* Task + Question */}
             <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-6 backdrop-blur-xl">
-              <p className="text-sm font-black leading-7 text-white">{safeStr(scenario.task)}</p>
+              <p className="text-sm font-bold leading-7 text-white">{safeStr(scenario.task)}</p>
             </div>
 
             <div className="rounded-[1.75rem] border-2 border-cyan-400/40 bg-cyan-400/[0.06] p-6 backdrop-blur-xl">
-              <p className="mb-2 text-[10px] font-black uppercase tracking-[0.2em] text-cyan-400">
+              <p className="mb-2 text-[10px] font-bold tracking-wide text-cyan-400">
                 Your question
               </p>
-              <p className="text-base font-black leading-7 text-white">{safeStr(scenario.question)}</p>
+              <p className="text-base font-bold leading-7 text-white">{safeStr(scenario.question)}</p>
             </div>
 
             {/* Guidance — guard against non-array and non-string tips */}
             <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-6 backdrop-blur-xl">
-              <h2 className="mb-3 text-[11px] font-black uppercase tracking-[0.22em] text-gray-400">
+              <h2 className="mb-3 text-[11px] font-bold tracking-wide text-gray-400">
                 Guidance
               </h2>
               <ul className="space-y-2">
                 {Array.isArray(scenario.guidance) && scenario.guidance.map((tip, i) => (
                   <li key={i} className="flex items-start gap-2.5 text-sm text-gray-300">
-                    <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-cyan-400/20 text-[10px] font-black text-cyan-400">
+                    <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-cyan-400/20 text-[10px] font-bold text-cyan-400">
                       {i + 1}
                     </span>
                     {safeStr(tip)}
@@ -460,7 +460,7 @@ export default function Stage1Page() {
                 {/* Timer */}
                 <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-5 backdrop-blur-xl">
                   <div className="flex items-center justify-between mb-3">
-                    <p className="text-[11px] font-black uppercase tracking-[0.22em] text-gray-500">
+                    <p className="text-[11px] font-bold tracking-wide text-gray-500">
                       Time remaining
                     </p>
                     <p className="text-[11px] text-gray-600">
@@ -468,7 +468,7 @@ export default function Stage1Page() {
                     </p>
                   </div>
                   <div
-                    className={`font-mono text-4xl font-black text-center ${timerColour} ${
+                    className={`font-mono text-4xl font-bold text-center ${timerColour} ${
                       timerPulse ? "animate-pulse" : ""
                     }`}
                   >
@@ -480,7 +480,7 @@ export default function Stage1Page() {
                     </p>
                   )}
                   {timerExpired && (
-                    <p className="mt-2 text-center text-xs font-black text-red-400">
+                    <p className="mt-2 text-center text-xs font-bold text-red-400">
                       Time is up!
                     </p>
                   )}
@@ -513,7 +513,7 @@ export default function Stage1Page() {
                 <button
                   onClick={handleSubmit}
                   disabled={wordCount < 50 || submitting}
-                  className={`flex w-full items-center justify-center gap-3 rounded-2xl px-6 py-4 text-sm font-black transition-all ${
+                  className={`flex w-full items-center justify-center gap-3 rounded-2xl px-6 py-4 text-sm font-bold transition-all ${
                     wordCount >= 50 && !submitting
                       ? "bg-gradient-to-r from-purple-500 to-fuchsia-500 text-white shadow-lg shadow-purple-900/30 hover:scale-[1.01]"
                       : "cursor-not-allowed bg-white/[0.05] text-gray-600"
@@ -537,7 +537,7 @@ export default function Stage1Page() {
                   <div className="mt-3 flex items-start gap-2.5 rounded-xl border border-cyan-300/20 bg-cyan-400/[0.07] px-4 py-3 text-left text-xs leading-5 text-cyan-100">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" className="mt-0.5 h-4 w-4 shrink-0 animate-pulse text-cyan-300" aria-hidden><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
                     <span>
-                      <span className="font-black">Marking takes up to a minute.</span>{" "}
+                      <span className="font-bold">Marking takes up to a minute.</span>{" "}
                       Your response is being scored against the full case pack.
                       Keep this page open.
                     </span>
@@ -549,11 +549,11 @@ export default function Stage1Page() {
               <div className="space-y-4">
                 {/* Overall score */}
                 <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-6 backdrop-blur-xl text-center">
-                  <p className="text-[11px] font-black uppercase tracking-[0.22em] text-gray-500 mb-3">
+                  <p className="text-[11px] font-bold tracking-wide text-gray-500 mb-3">
                     Case Study Score
                   </p>
                   <div
-                    className={`text-6xl font-black ${
+                    className={`text-5xl font-bold ${
                       feedback.overall >= 7
                         ? "text-emerald-400"
                         : feedback.overall >= 5
@@ -569,7 +569,7 @@ export default function Stage1Page() {
 
                 {/* Score bars */}
                 <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-5 backdrop-blur-xl space-y-3">
-                  <p className="text-[11px] font-black uppercase tracking-[0.22em] text-gray-500 mb-2">
+                  <p className="text-[11px] font-bold tracking-wide text-gray-500 mb-2">
                     Dimension scores
                   </p>
                   <ScoreBar label="Structure" score={feedback.scores.structure} />
@@ -581,7 +581,7 @@ export default function Stage1Page() {
 
                 {/* Strengths */}
                 <div className="rounded-[1.75rem] border border-emerald-500/[0.18] bg-emerald-500/[0.04] p-5 backdrop-blur-xl">
-                  <p className="mb-3 text-[11px] font-black uppercase tracking-[0.22em] text-emerald-400">
+                  <p className="mb-3 text-[11px] font-bold tracking-wide text-emerald-400">
                     Strengths
                   </p>
                   <ul className="space-y-2">
@@ -596,7 +596,7 @@ export default function Stage1Page() {
 
                 {/* Improvements */}
                 <div className="rounded-[1.75rem] border border-amber-500/[0.18] bg-amber-500/[0.04] p-5 backdrop-blur-xl">
-                  <p className="mb-3 text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">
+                  <p className="mb-3 text-[11px] font-bold tracking-wide text-amber-400">
                     Areas to improve
                   </p>
                   <ul className="space-y-2">
@@ -612,7 +612,7 @@ export default function Stage1Page() {
                 {/* Model answer */}
                 {feedback.modelAnswer && (
                   <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-5 backdrop-blur-xl">
-                    <p className="mb-2 text-[11px] font-black uppercase tracking-[0.22em] text-cyan-400">
+                    <p className="mb-2 text-[11px] font-bold tracking-wide text-cyan-400">
                       What an excellent answer would include
                     </p>
                     <p className="text-sm leading-7 text-gray-400">{feedback.modelAnswer}</p>
@@ -622,7 +622,7 @@ export default function Stage1Page() {
                 {/* Example model answer */}
                 {feedback.exampleAnswer && (
                   <div className="rounded-[1.75rem] border border-purple-400/20 bg-purple-400/[0.06] p-5 backdrop-blur-xl">
-                    <p className="mb-2 text-[11px] font-black uppercase tracking-[0.22em] text-purple-300">
+                    <p className="mb-2 text-[11px] font-bold tracking-wide text-purple-300">
                       Model Answer Example
                     </p>
                     <p className="text-sm leading-7 text-gray-300 whitespace-pre-line">{feedback.exampleAnswer}</p>
@@ -645,7 +645,7 @@ export default function Stage1Page() {
                   return (
                     <button
                       onClick={() => router.push(nextHref)}
-                      className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-fuchsia-500 to-purple-500 px-6 py-4 text-sm font-black text-white shadow-lg shadow-purple-900/30 transition hover:scale-[1.01]"
+                      className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-fuchsia-500 to-purple-500 px-6 py-4 text-sm font-bold text-white shadow-lg shadow-purple-900/30 transition hover:scale-[1.01]"
                     >
                       {nextLabel}
                     </button>

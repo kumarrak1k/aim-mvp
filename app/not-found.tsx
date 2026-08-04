@@ -19,11 +19,11 @@ export default function NotFound() {
             />
           </div>
 
-          <p className="mb-3 text-sm font-black uppercase tracking-[0.25em] text-purple-300">
+          <p className="mb-3 text-sm font-bold tracking-wide text-purple-300">
             Page not found
           </p>
 
-          <h1 className="text-4xl font-black tracking-[-0.055em] md:text-6xl">
+          <h1 className="text-4xl font-bold tracking-tight md:text-5xl">
             This route has missed the interview.
           </h1>
 
@@ -34,13 +34,13 @@ export default function NotFound() {
 
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
             <Link href="/practice">
-              <button className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-7 py-4 text-sm font-black text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] sm:w-auto">
+              <button className="w-full rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-7 py-4 text-sm font-bold text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] sm:w-auto">
                 Start practice
               </button>
             </Link>
 
             <Link href="/">
-              <button className="w-full rounded-2xl border border-white/10 bg-white/[0.06] px-7 py-4 text-sm font-black text-white transition hover:bg-white/[0.1] sm:w-auto">
+              <button className="w-full rounded-2xl border border-white/10 bg-white/[0.06] px-7 py-4 text-sm font-bold text-white transition hover:bg-white/[0.1] sm:w-auto">
                 Back to homepage
               </button>
             </Link>

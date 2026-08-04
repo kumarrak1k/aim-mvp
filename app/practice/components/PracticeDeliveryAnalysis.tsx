@@ -118,7 +118,7 @@ export function PracticeDeliveryAnalysis({
 
           {videoAnalysis.feedback.improvements.length > 0 && (
             <div className="mt-4">
-              <p className="mb-2 font-black text-orange-300">
+              <p className="mb-2 font-bold text-orange-300">
                 Video improvements
               </p>
               <ul className="list-disc space-y-1 pl-5 text-sm leading-6 text-gray-200">

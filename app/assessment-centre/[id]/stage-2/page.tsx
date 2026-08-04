@@ -166,12 +166,12 @@ export default function Stage2Page() {
 
         {/* Header */}
         <div className="mb-8">
-          <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-fuchsia-400/25 bg-fuchsia-400/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-fuchsia-200">
+          <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-fuchsia-400/25 bg-fuchsia-400/[0.07] px-4 py-2 text-[11px] font-bold tracking-wide text-fuchsia-200">
             Stage 2 of 3
           </div>
-          <h1 className="text-3xl font-black tracking-[-0.05em] text-white sm:text-4xl">
+          <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
             Competency{" "}
-            <span className="bg-gradient-to-r from-fuchsia-300 to-purple-300 bg-clip-text text-transparent">
+            <span className="text-violet-300">
               Interview
             </span>
           </h1>
@@ -186,7 +186,7 @@ export default function Stage2Page() {
 
         {/* What to expect */}
         <div className="mb-6 rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-5 backdrop-blur-xl">
-          <p className="mb-3 text-[11px] font-black uppercase tracking-[0.22em] text-gray-500">
+          <p className="mb-3 text-[11px] font-bold tracking-wide text-gray-500">
             What to expect
           </p>
           <ul className="space-y-2.5">
@@ -196,7 +196,7 @@ export default function Stage2Page() {
               "Your overall interview score feeds into your final assessment centre report",
             ].map((item, i) => (
               <li key={i} className="flex items-start gap-2.5 text-sm text-gray-300">
-                <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-fuchsia-400/20 text-[10px] font-black text-fuchsia-400">
+                <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-fuchsia-400/20 text-[10px] font-bold text-fuchsia-400">
                   {i + 1}
                 </span>
                 {item}
@@ -207,7 +207,7 @@ export default function Stage2Page() {
 
         {/* Mode selection */}
         <div className="mb-6 rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-5 backdrop-blur-xl">
-          <p className="mb-4 text-[11px] font-black uppercase tracking-[0.22em] text-gray-500">
+          <p className="mb-4 text-[11px] font-bold tracking-wide text-gray-500">
             Choose your mode
           </p>
           <div className="space-y-2.5">
@@ -223,13 +223,13 @@ export default function Stage2Page() {
               >
                 <span className="text-2xl">{opt.icon}</span>
                 <div>
-                  <div className={`text-sm font-black ${mode === opt.value ? "text-fuchsia-200" : "text-white"}`}>
+                  <div className={`text-sm font-bold ${mode === opt.value ? "text-fuchsia-200" : "text-white"}`}>
                     {opt.label}
                   </div>
                   <div className="text-xs text-gray-500">{opt.desc}</div>
                 </div>
                 {mode === opt.value && (
-                  <div className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-fuchsia-400 text-[10px] text-black font-black">
+                  <div className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-fuchsia-400 text-[10px] text-black font-bold">
                     ✓
                   </div>
                 )}
@@ -240,13 +240,13 @@ export default function Stage2Page() {
 
         {/* Tip */}
         <div className="mb-8 rounded-xl border border-cyan-400/20 bg-cyan-400/[0.05] px-4 py-3 text-xs text-cyan-300/80">
-          <strong className="font-black">Tip:</strong> Answer each question fully. The AI adapts
+          <strong className="font-bold">Tip:</strong> Answer each question fully. The AI adapts
           follow-up questions based on your responses, just like a real interviewer.
         </div>
 
         <button
           onClick={handleStart}
-          className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 px-8 py-5 text-base font-black text-white shadow-2xl shadow-purple-900/40 transition hover:scale-[1.015]"
+          className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 px-8 py-5 text-base font-bold text-white shadow-2xl shadow-purple-900/40 transition hover:scale-[1.015]"
         >
           Start interview →
         </button>

@@ -89,10 +89,10 @@ export function AudioDeviceSelectors() {
 
   return (
     <div>
-      <p className="mb-3 text-sm font-black text-white">Audio devices</p>
+      <p className="mb-3 text-sm font-bold text-white">Audio devices</p>
       <div className="grid gap-4 md:grid-cols-2">
         <label className="block">
-          <span className="mb-1.5 block text-xs font-bold uppercase tracking-[0.14em] text-gray-400">
+          <span className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400">
             Microphone
           </span>
           <select
@@ -113,7 +113,7 @@ export function AudioDeviceSelectors() {
         </label>
 
         <label className="block">
-          <span className="mb-1.5 block text-xs font-bold uppercase tracking-[0.14em] text-gray-400">
+          <span className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400">
             Speaker
           </span>
           <select
@@ -141,7 +141,7 @@ export function AudioDeviceSelectors() {
           type="button"
           onClick={() => void enableDeviceNames()}
           disabled={requesting}
-          className="mt-3 rounded-full border border-purple-300/20 bg-purple-300/10 px-4 py-2 text-xs font-black text-purple-100 transition hover:bg-purple-300/15 disabled:cursor-not-allowed disabled:opacity-50"
+          className="mt-3 rounded-full border border-purple-300/20 bg-purple-300/10 px-4 py-2 text-xs font-bold text-purple-100 transition hover:bg-purple-300/15 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {requesting ? "Requesting…" : "Allow microphone to show device names"}
         </button>

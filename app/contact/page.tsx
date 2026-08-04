@@ -75,12 +75,12 @@ export default function ContactPage() {
       <div>
         {/* Hero */}
         <section className="mx-auto max-w-4xl px-4 pb-12 pt-6 text-center sm:px-6 sm:pt-10">
-          <p className="mx-auto mb-5 inline-flex items-center gap-2 rounded-full border border-purple-400/25 bg-purple-400/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-purple-200">
+          <p className="mx-auto mb-5 inline-flex items-center gap-2 rounded-full border border-purple-400/25 bg-purple-400/[0.07] px-4 py-2 text-[11px] font-bold tracking-wide text-purple-200">
             Get in touch
           </p>
-          <h1 className="mx-auto max-w-3xl text-[2.2rem] font-black leading-[1.06] tracking-[-0.05em] sm:text-5xl">
+          <h1 className="mx-auto max-w-3xl text-[2.2rem] font-bold leading-[1.06] tracking-tight sm:text-4xl">
             How can we{" "}
-            <span className="bg-gradient-to-r from-purple-300 via-fuchsia-200 to-cyan-200 bg-clip-text text-transparent">
+            <span className="text-violet-300">
               help you?
             </span>
           </h1>
@@ -98,7 +98,7 @@ export default function ContactPage() {
                 className="flex flex-col rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-7"
               >
                 <p className="mb-3 text-3xl">{c.icon}</p>
-                <h2 className="mb-3 font-black leading-tight text-white">
+                <h2 className="mb-3 font-bold leading-tight text-white">
                   {c.audience}
                 </h2>
                 <p className="mb-5 flex-1 text-sm leading-6 text-gray-400">
@@ -106,7 +106,7 @@ export default function ContactPage() {
                 </p>
                 <a
                   href={`mailto:${c.email}?subject=${c.subject}`}
-                  className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-3 text-sm font-black text-white shadow-lg transition hover:scale-[1.02]"
+                  className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-5 py-3 text-sm font-bold text-white shadow-lg transition hover:scale-[1.02]"
                 >
                   Email us →
                 </a>
@@ -119,7 +119,7 @@ export default function ContactPage() {
 
         {/* FAQ */}
         <section className="mx-auto max-w-3xl px-4 pb-24 sm:px-6">
-          <h2 className="mb-8 text-center text-2xl font-black tracking-[-0.04em] sm:text-3xl">
+          <h2 className="mb-8 text-center text-2xl font-bold tracking-tight sm:text-3xl">
             Common questions
           </h2>
           <div className="grid gap-4">
@@ -128,7 +128,7 @@ export default function ContactPage() {
                 key={faq.q}
                 className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-6"
               >
-                <p className="mb-2 font-black text-white">{faq.q}</p>
+                <p className="mb-2 font-bold text-white">{faq.q}</p>
                 <p className="text-sm leading-6 text-gray-400">{faq.a}</p>
               </div>
             ))}

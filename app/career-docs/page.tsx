@@ -73,12 +73,12 @@ export default function CareerDocsPage() {
 
         {/* Hero */}
         <div className="mb-12 text-center">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-purple-300/20 bg-purple-300/10 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-purple-200">
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-purple-300/20 bg-purple-300/10 px-4 py-2 text-xs font-bold tracking-wide text-purple-200">
             Professional · Career Documents
           </div>
-          <h1 className="text-4xl font-black tracking-[-0.05em] text-white sm:text-5xl lg:text-6xl">
+          <h1 className="text-4xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
             AI-powered{" "}
-            <span className="bg-gradient-to-r from-purple-300 via-fuchsia-300 to-cyan-300 bg-clip-text text-transparent">
+            <span className="text-violet-300">
               career documents.
             </span>
           </h1>
@@ -100,10 +100,10 @@ export default function CareerDocsPage() {
                 </div>
 
                 {/* Label */}
-                <p className={`mb-1 text-[10px] font-black uppercase tracking-[0.22em] ${tool.accentText}`}>
+                <p className={`mb-1 text-[10px] font-bold tracking-wide ${tool.accentText}`}>
                   {tool.eyebrow}
                 </p>
-                <h2 className="text-xl font-black tracking-[-0.03em] text-white">
+                <h2 className="text-xl font-bold tracking-tight text-white">
                   {tool.label}
                 </h2>
                 <p className="mt-3 flex-1 text-sm leading-7 text-gray-300">
@@ -121,7 +121,7 @@ export default function CareerDocsPage() {
                 </ul>
 
                 {/* CTA */}
-                <div className={`mt-6 inline-flex items-center text-sm font-black ${tool.accentText} transition group-hover:gap-2`}>
+                <div className={`mt-6 inline-flex items-center text-sm font-bold ${tool.accentText} transition group-hover:gap-2`}>
                   {tool.cta}
                 </div>
               </div>
@@ -133,9 +133,9 @@ export default function CareerDocsPage() {
         <div className="mt-10 rounded-[1.75rem] border border-white/[0.07] bg-white/[0.03] p-6 text-center">
           <p className="text-sm text-gray-400">
             Career Documents are included in the{" "}
-            <span className="font-black text-white">Professional plan.</span>{" "}
+            <span className="font-bold text-white">Professional plan.</span>{" "}
             Not on Professional?{" "}
-            <Link href="/pricing" className="font-black text-purple-300 hover:text-purple-200 underline underline-offset-2">
+            <Link href="/pricing" className="font-bold text-purple-300 hover:text-purple-200 underline underline-offset-2">
               See plans →
             </Link>
           </p>

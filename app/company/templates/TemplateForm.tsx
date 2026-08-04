@@ -385,7 +385,7 @@ export function TemplateForm({ initial, onSave, onCancel, saving }: TemplateForm
 
         {/* ── Template type selector ── */}
         <div className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-8 shadow-2xl shadow-black/10">
-          <label className="mb-3 block text-sm font-black text-white">Template type</label>
+          <label className="mb-3 block text-sm font-bold text-white">Template type</label>
           <div className="grid gap-3 sm:grid-cols-2">
             {(["interview", "assessment-centre"] as TemplateType[]).map((type) => {
               const selected = templateType === type;
@@ -403,7 +403,7 @@ export function TemplateForm({ initial, onSave, onCancel, saving }: TemplateForm
                   <div className="flex items-center gap-3">
                     <span className="text-2xl">{type === "interview" ? "🎙️" : "🏢"}</span>
                     <div>
-                      <p className="text-sm font-black text-white">
+                      <p className="text-sm font-bold text-white">
                         {type === "interview" ? "Interview only" : "Assessment centre"}
                       </p>
                       <p className="mt-0.5 text-xs text-gray-400">
@@ -421,13 +421,13 @@ export function TemplateForm({ initial, onSave, onCancel, saving }: TemplateForm
 
         {/* ── Common fields ── */}
         <div className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-8 shadow-2xl shadow-black/10">
-          <p className="mb-6 text-sm font-black uppercase tracking-[0.16em] text-gray-400">
+          <p className="mb-6 text-sm font-bold tracking-wide text-gray-400">
             Template details
           </p>
           <div className="space-y-6">
             <div className="grid gap-6 sm:grid-cols-2">
               <div>
-                <label className="mb-2 block text-sm font-black text-white">
+                <label className="mb-2 block text-sm font-bold text-white">
                   Template name *
                 </label>
                 <input
@@ -440,7 +440,7 @@ export function TemplateForm({ initial, onSave, onCancel, saving }: TemplateForm
                 />
               </div>
               <div>
-                <label className="mb-2 block text-sm font-black text-white">
+                <label className="mb-2 block text-sm font-bold text-white">
                   Role / job title *
                 </label>
                 <input
@@ -455,7 +455,7 @@ export function TemplateForm({ initial, onSave, onCancel, saving }: TemplateForm
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-black text-white">
+              <label className="mb-2 block text-sm font-bold text-white">
                 Description and Role Profile{" "}
                 <span className="font-normal text-gray-400">(optional)</span>
               </label>
@@ -505,7 +505,7 @@ export function TemplateForm({ initial, onSave, onCancel, saving }: TemplateForm
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
                     disabled={uploadingFile}
-                    className="flex items-center gap-1.5 rounded-full border border-white/15 bg-white/[0.05] px-3 py-1.5 text-xs font-black text-gray-300 transition hover:bg-white/[0.10] disabled:opacity-50"
+                    className="flex items-center gap-1.5 rounded-full border border-white/15 bg-white/[0.05] px-3 py-1.5 text-xs font-bold text-gray-300 transition hover:bg-white/[0.10] disabled:opacity-50"
                   >
                     {uploadingFile ? (
                       <>
@@ -528,7 +528,7 @@ export function TemplateForm({ initial, onSave, onCancel, saving }: TemplateForm
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-black text-white">
+              <label className="mb-2 block text-sm font-bold text-white">
                 Experience level
               </label>
               <select
@@ -549,13 +549,13 @@ export function TemplateForm({ initial, onSave, onCancel, saving }: TemplateForm
         {/* ── Interview-only config ── */}
         {templateType === "interview" && (
           <div className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-8 shadow-2xl shadow-black/10">
-            <p className="mb-6 text-sm font-black uppercase tracking-[0.16em] text-gray-400">
+            <p className="mb-6 text-sm font-bold tracking-wide text-gray-400">
               Interview configuration
             </p>
             <div className="space-y-6">
               <div className="grid gap-6 sm:grid-cols-2">
                 <div>
-                  <label className="mb-2 block text-sm font-black text-white">
+                  <label className="mb-2 block text-sm font-bold text-white">
                     Interview type
                   </label>
                   <select
@@ -571,7 +571,7 @@ export function TemplateForm({ initial, onSave, onCancel, saving }: TemplateForm
                   </select>
                 </div>
                 <div>
-                  <label className="mb-2 block text-sm font-black text-white">
+                  <label className="mb-2 block text-sm font-bold text-white">
                     Difficulty
                   </label>
                   <select
@@ -587,7 +587,7 @@ export function TemplateForm({ initial, onSave, onCancel, saving }: TemplateForm
                   </select>
                 </div>
                 <div>
-                  <label className="mb-2 block text-sm font-black text-white">
+                  <label className="mb-2 block text-sm font-bold text-white">
                     Focus area
                   </label>
                   <select
@@ -605,7 +605,7 @@ export function TemplateForm({ initial, onSave, onCancel, saving }: TemplateForm
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-black text-white">
+                <label className="mb-2 block text-sm font-bold text-white">
                   Number of questions: {questionCount}
                 </label>
                 <input
@@ -648,7 +648,7 @@ export function TemplateForm({ initial, onSave, onCancel, saving }: TemplateForm
         {/* ── Assessment centre config ── */}
         {templateType === "assessment-centre" && (
           <div className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-8 shadow-2xl shadow-black/10">
-            <p className="mb-2 text-sm font-black uppercase tracking-[0.16em] text-gray-400">
+            <p className="mb-2 text-sm font-bold tracking-wide text-gray-400">
               Assessment centre stages
             </p>
             <p className="mb-6 text-xs text-gray-500">
@@ -671,7 +671,7 @@ export function TemplateForm({ initial, onSave, onCancel, saving }: TemplateForm
                   >
                     <div className="flex items-start gap-3">
                       <span
-                        className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded border-2 text-[10px] font-black ${
+                        className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded border-2 text-[10px] font-bold ${
                           checked
                             ? "border-fuchsia-400 bg-fuchsia-400 text-white"
                             : "border-white/30 text-transparent"
@@ -681,7 +681,7 @@ export function TemplateForm({ initial, onSave, onCancel, saving }: TemplateForm
                       </span>
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
-                          <p className="text-sm font-black text-white">{info.title}</p>
+                          <p className="text-sm font-bold text-white">{info.title}</p>
                           <span className="rounded-full border border-white/10 bg-white/[0.05] px-2 py-0.5 text-[10px] font-bold text-gray-400">
                             {info.time}
                           </span>
@@ -697,13 +697,13 @@ export function TemplateForm({ initial, onSave, onCancel, saving }: TemplateForm
             {/* Stage 2 interview sub-config */}
             {acStages.includes("stage2") && (
               <div className="mt-8 rounded-2xl border border-fuchsia-400/20 bg-fuchsia-400/[0.04] p-6">
-                <p className="mb-4 text-xs font-black uppercase tracking-[0.18em] text-fuchsia-300">
+                <p className="mb-4 text-xs font-bold tracking-wide text-fuchsia-300">
                   Competency interview settings
                 </p>
                 <div className="space-y-5">
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div>
-                      <label className="mb-2 block text-xs font-black text-white">
+                      <label className="mb-2 block text-xs font-bold text-white">
                         Interview type
                       </label>
                       <select
@@ -719,7 +719,7 @@ export function TemplateForm({ initial, onSave, onCancel, saving }: TemplateForm
                       </select>
                     </div>
                     <div>
-                      <label className="mb-2 block text-xs font-black text-white">
+                      <label className="mb-2 block text-xs font-bold text-white">
                         Difficulty
                       </label>
                       <select
@@ -735,7 +735,7 @@ export function TemplateForm({ initial, onSave, onCancel, saving }: TemplateForm
                       </select>
                     </div>
                     <div>
-                      <label className="mb-2 block text-xs font-black text-white">
+                      <label className="mb-2 block text-xs font-bold text-white">
                         Focus area
                       </label>
                       <select
@@ -753,7 +753,7 @@ export function TemplateForm({ initial, onSave, onCancel, saving }: TemplateForm
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-xs font-black text-white">
+                    <label className="mb-2 block text-xs font-bold text-white">
                       Number of questions: {acQuestionCount}
                     </label>
                     <input
@@ -796,13 +796,13 @@ export function TemplateForm({ initial, onSave, onCancel, saving }: TemplateForm
 
         {/* ── Shared advanced settings ── */}
         <div className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-8 shadow-2xl shadow-black/10">
-          <p className="mb-6 text-sm font-black uppercase tracking-[0.16em] text-gray-400">
+          <p className="mb-6 text-sm font-bold tracking-wide text-gray-400">
             Advanced settings{" "}
             <span className="font-normal normal-case text-gray-500">(optional)</span>
           </p>
           <div className="space-y-6">
             <div>
-              <label className="mb-2 block text-sm font-black text-white">
+              <label className="mb-2 block text-sm font-bold text-white">
                 Custom instructions
               </label>
               <textarea
@@ -816,7 +816,7 @@ export function TemplateForm({ initial, onSave, onCancel, saving }: TemplateForm
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-black text-white">
+              <label className="mb-2 block text-sm font-bold text-white">
                 Competency framework
               </label>
               <textarea
@@ -842,14 +842,14 @@ export function TemplateForm({ initial, onSave, onCancel, saving }: TemplateForm
         <button
           type="submit"
           disabled={saving}
-          className="flex-1 rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 py-3.5 text-sm font-black text-white shadow-xl shadow-purple-950/35 transition hover:scale-[1.02] disabled:opacity-60"
+          className="flex-1 rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 py-3.5 text-sm font-bold text-white shadow-xl shadow-purple-950/35 transition hover:scale-[1.02] disabled:opacity-60"
         >
           {saving ? "Saving…" : "Save template →"}
         </button>
         <button
           type="button"
           onClick={onCancel}
-          className="rounded-full border border-white/15 bg-white/[0.05] px-6 py-3.5 text-sm font-black text-white transition hover:bg-white/[0.09]"
+          className="rounded-full border border-white/15 bg-white/[0.05] px-6 py-3.5 text-sm font-bold text-white transition hover:bg-white/[0.09]"
         >
           Cancel
         </button>
@@ -874,7 +874,7 @@ function CustomQuestionsSection({
 
   return (
     <div className="mt-4 rounded-2xl border border-fuchsia-400/20 bg-fuchsia-400/[0.04] p-5">
-      <p className="mb-1 text-xs font-black uppercase tracking-[0.16em] text-fuchsia-300">
+      <p className="mb-1 text-xs font-bold tracking-wide text-fuchsia-300">
         Custom question{count > 1 ? "s" : ""}
       </p>
       <p className="mb-4 text-xs text-gray-400">
@@ -939,13 +939,13 @@ function QuestionMixSection({
         }`}
       >
         <div className="text-left">
-          <p className="text-sm font-black text-white">Custom question type mix</p>
+          <p className="text-sm font-bold text-white">Custom question type mix</p>
           <p className="mt-0.5 text-xs text-gray-400">
             Control exactly how many of each type to include.
           </p>
         </div>
         <span
-          className={`ml-4 shrink-0 rounded-full px-3 py-1 text-xs font-black transition ${
+          className={`ml-4 shrink-0 rounded-full px-3 py-1 text-xs font-bold transition ${
             enabled
               ? "bg-cyan-400/20 text-cyan-200"
               : "bg-white/[0.06] text-gray-400"
@@ -958,11 +958,11 @@ function QuestionMixSection({
       {enabled && (
         <div className="mt-4 rounded-2xl border border-white/[0.07] bg-black/20 p-5">
           <div className="mb-3 flex items-center justify-between text-xs">
-            <span className="font-black uppercase tracking-[0.14em] text-gray-400">
+            <span className="font-bold tracking-wide text-gray-400">
               Question type distribution
             </span>
             <span
-              className={`font-black ${
+              className={`font-bold ${
                 remaining < 0
                   ? "text-red-300"
                   : remaining === 0
@@ -979,12 +979,12 @@ function QuestionMixSection({
                 <span className="min-w-0 flex-1 text-xs font-semibold text-gray-300">
                   {QUESTION_MIX_LABELS[key]}
                   {key === "opener" && (
-                    <span className="ml-1.5 rounded-full bg-purple-400/15 px-1.5 py-0.5 text-[9px] font-black text-purple-300">
+                    <span className="ml-1.5 rounded-full bg-purple-400/15 px-1.5 py-0.5 text-[9px] font-bold text-purple-300">
                       AI
                     </span>
                   )}
                   {key === "custom" && (
-                    <span className="ml-1.5 rounded-full bg-fuchsia-400/15 px-1.5 py-0.5 text-[9px] font-black text-fuchsia-300">
+                    <span className="ml-1.5 rounded-full bg-fuchsia-400/15 px-1.5 py-0.5 text-[9px] font-bold text-fuchsia-300">
                       TYPE BELOW
                     </span>
                   )}
@@ -993,18 +993,18 @@ function QuestionMixSection({
                   <button
                     type="button"
                     onClick={() => onChange(key, Math.max(0, mix[key] - 1))}
-                    className="flex h-7 w-7 items-center justify-center rounded-full border border-white/15 bg-white/[0.05] text-sm font-black text-gray-300 transition hover:bg-white/[0.10]"
+                    className="flex h-7 w-7 items-center justify-center rounded-full border border-white/15 bg-white/[0.05] text-sm font-bold text-gray-300 transition hover:bg-white/[0.10]"
                   >
                     −
                   </button>
-                  <span className="w-5 text-center text-sm font-black text-white">
+                  <span className="w-5 text-center text-sm font-bold text-white">
                     {mix[key]}
                   </span>
                   <button
                     type="button"
                     onClick={() => onChange(key, mix[key] + 1)}
                     disabled={remaining <= 0}
-                    className="flex h-7 w-7 items-center justify-center rounded-full border border-white/15 bg-white/[0.05] text-sm font-black text-gray-300 transition hover:bg-white/[0.10] disabled:opacity-30"
+                    className="flex h-7 w-7 items-center justify-center rounded-full border border-white/15 bg-white/[0.05] text-sm font-bold text-gray-300 transition hover:bg-white/[0.10] disabled:opacity-30"
                   >
                     +
                   </button>

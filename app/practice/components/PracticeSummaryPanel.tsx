@@ -18,10 +18,10 @@ export function PracticeSummaryPanel({
     <GlassCard>
       <div className="mb-7 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div>
-          <p className="text-sm font-black uppercase tracking-[0.2em] text-purple-300">
+          <p className="text-sm font-bold tracking-wide text-purple-300">
             Final report
           </p>
-          <h2 className="mt-2 text-3xl font-black tracking-[-0.045em] md:text-5xl">
+          <h2 className="mt-2 text-3xl font-bold tracking-tight md:text-4xl">
             Your interview readiness summary.
           </h2>
           <p className="mt-3 max-w-2xl text-sm leading-7 text-gray-400 md:text-base">
@@ -32,10 +32,10 @@ export function PracticeSummaryPanel({
 
         {summary && (
           <div className="rounded-[1.5rem] border border-emerald-300/20 bg-emerald-300/10 p-4 text-center shadow-xl shadow-emerald-950/10 lg:min-w-[180px]">
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-emerald-200">
+            <p className="text-xs font-bold tracking-wide text-emerald-200">
               Hire signal
             </p>
-            <p className="mt-2 text-3xl font-black tracking-[-0.04em] text-emerald-100">
+            <p className="mt-2 text-3xl font-bold tracking-tight text-emerald-100">
               {summary.hire_signal}
             </p>
           </div>
@@ -46,7 +46,7 @@ export function PracticeSummaryPanel({
         <div className="rounded-[1.6rem] border border-cyan-300/15 bg-cyan-300/10 p-5">
           <div className="mb-3 flex items-center gap-3">
             <span className="h-3 w-3 animate-pulse rounded-full bg-cyan-300" />
-            <p className="font-black text-cyan-100">Generating report...</p>
+            <p className="font-bold text-cyan-100">Generating report...</p>
           </div>
           <p className="text-sm leading-6 text-gray-300">
             The coach is combining answer scores, delivery signals and improvement
@@ -60,7 +60,7 @@ export function PracticeSummaryPanel({
           <div className="grid gap-4 lg:grid-cols-[0.85fr_1.15fr]">
             <div className="rounded-[1.7rem] border border-white/10 bg-black/35 p-5 shadow-xl shadow-black/10">
               <p className="text-sm font-semibold text-gray-400">Final score</p>
-              <p className="mt-2 text-6xl font-black tracking-[-0.07em] text-white md:text-7xl">
+              <p className="mt-2 text-5xl font-bold tracking-tight text-white md:text-7xl">
                 {summary.overall_score}
                 <span className="text-2xl text-gray-500">/10</span>
               </p>
@@ -70,10 +70,10 @@ export function PracticeSummaryPanel({
             </div>
 
             <div className="rounded-[1.7rem] border border-purple-300/20 bg-purple-300/10 p-5 shadow-xl shadow-purple-950/10">
-              <p className="text-sm font-black uppercase tracking-[0.18em] text-purple-200">
+              <p className="text-sm font-bold tracking-wide text-purple-200">
                 Hiring interpretation
               </p>
-              <p className="mt-3 text-2xl font-black tracking-[-0.035em] text-white">
+              <p className="mt-3 text-2xl font-bold tracking-tight text-white">
                 {summary.hire_signal} readiness signal
               </p>
               <p className="mt-3 text-sm leading-7 text-gray-300">
@@ -101,7 +101,7 @@ export function PracticeSummaryPanel({
             <div className="rounded-[1.7rem] border border-white/10 bg-black/25 p-5">
               <div className="mb-4 flex flex-col justify-between gap-2 sm:flex-row sm:items-end">
                 <div>
-                  <h3 className="text-lg font-black text-cyan-300">
+                  <h3 className="text-lg font-bold text-cyan-300">
                     Category breakdown
                   </h3>
                   <p className="mt-1 text-sm leading-6 text-gray-500">
@@ -163,7 +163,7 @@ export function PracticeSummaryPanel({
 
           {summary.priority_improvements && (
             <div className="rounded-[1.7rem] border border-purple-300/20 bg-purple-300/10 p-5">
-              <h3 className="mb-3 text-lg font-black text-purple-200">
+              <h3 className="mb-3 text-lg font-bold text-purple-200">
                 Priority improvement plan
               </h3>
               <p className="mb-4 text-sm leading-6 text-gray-400">
@@ -176,7 +176,7 @@ export function PracticeSummaryPanel({
                     key={`${item}-${index}`}
                     className="rounded-2xl border border-white/10 bg-black/30 p-4"
                   >
-                    <p className="mb-2 text-xs font-black uppercase tracking-[0.18em] text-purple-200/70">
+                    <p className="mb-2 text-xs font-bold tracking-wide text-purple-200/70">
                       Priority {index + 1}
                     </p>
                     <p className="text-sm font-semibold leading-6 text-gray-100">
@@ -189,7 +189,7 @@ export function PracticeSummaryPanel({
           )}
 
           <div className="rounded-[1.7rem] border border-white/10 bg-black/30 p-5">
-            <h3 className="mb-2 text-lg font-black text-purple-300">
+            <h3 className="mb-2 text-lg font-bold text-purple-300">
               Final recommendation
             </h3>
             <p className="leading-8 text-gray-100">
@@ -208,7 +208,7 @@ export function PracticeSummaryPanel({
 
             {summary.seven_day_action_plan ? (
               <div className="rounded-[1.7rem] border border-white/10 bg-black/25 p-5">
-                <h3 className="mb-4 text-lg font-black text-purple-300">
+                <h3 className="mb-4 text-lg font-bold text-purple-300">
                   7-day action plan
                 </h3>
                 <div className="grid gap-3">
@@ -217,7 +217,7 @@ export function PracticeSummaryPanel({
                       key={day.day}
                       className="rounded-2xl border border-white/10 bg-black/35 p-4"
                     >
-                      <p className="font-black text-white">
+                      <p className="font-bold text-white">
                         {day.day}: {day.focus}
                       </p>
                       <p className="mt-2 text-sm leading-6 text-gray-400">
@@ -229,7 +229,7 @@ export function PracticeSummaryPanel({
               </div>
             ) : (
               <div className="rounded-[1.7rem] border border-white/10 bg-black/25 p-5">
-                <h3 className="mb-2 text-lg font-black text-purple-300">
+                <h3 className="mb-2 text-lg font-bold text-purple-300">
                   Suggested next session
                 </h3>
                 <p className="text-sm leading-7 text-gray-400">
@@ -243,7 +243,7 @@ export function PracticeSummaryPanel({
           <div className="rounded-[1.7rem] border border-purple-300/20 bg-gradient-to-r from-purple-500/15 via-fuchsia-500/10 to-cyan-500/15 p-5">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <div>
-                <p className="text-lg font-black text-white">
+                <p className="text-lg font-bold text-white">
                   Ready to practise again?
                 </p>
                 <p className="mt-1 text-sm leading-6 text-gray-400">
@@ -254,7 +254,7 @@ export function PracticeSummaryPanel({
 
               <button
                 onClick={resetInterview}
-                className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-6 py-4 font-black shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] lg:w-auto lg:min-w-[230px]"
+                className="w-full rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-4 font-bold shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] lg:w-auto lg:min-w-[230px]"
               >
                 Start new interview
               </button>

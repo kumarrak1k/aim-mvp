@@ -115,12 +115,12 @@ export function TrialBanner() {
           <span className="text-[13px] font-semibold text-amber-100">
             <span aria-hidden>⚠️ </span>
             Your last payment didn&rsquo;t go through. Update your card to keep your{" "}
-            <strong className="font-black">{planLabel}</strong> access.
+            <strong className="font-bold">{planLabel}</strong> access.
           </span>
           <button
             onClick={openBillingPortal}
             disabled={portalLoading}
-            className="rounded-full bg-amber-400 px-3.5 py-1 text-[12px] font-black text-[#3a2a00] shadow transition hover:scale-[1.03] disabled:opacity-60"
+            className="rounded-full bg-amber-400 px-3.5 py-1 text-[12px] font-bold text-[#3a2a00] shadow transition hover:scale-[1.03] disabled:opacity-60"
           >
             {portalLoading ? "Opening…" : "Update card →"}
           </button>
@@ -150,8 +150,8 @@ export function TrialBanner() {
           <span className="text-[13px] font-semibold text-emerald-100">
             <span aria-hidden>&#127891; </span>
             You have complimentary{" "}
-            <strong className="font-black">{sub.planName}</strong> access
-            {until ? <> until <strong className="font-black">{until}</strong></> : null}.
+            <strong className="font-bold">{sub.planName}</strong> access
+            {until ? <> until <strong className="font-bold">{until}</strong></> : null}.
           </span>
         </div>
       </div>
@@ -174,7 +174,7 @@ export function TrialBanner() {
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-3 gap-y-1 px-4 py-2 text-center sm:px-6">
           <span className="text-[13px] font-semibold text-gray-100">
             <span aria-hidden>✨ </span>
-            You&rsquo;re on the <strong className="font-black">Plus</strong>{" "}
+            You&rsquo;re on the <strong className="font-bold">Plus</strong>{" "}
             free trial, with{" "}
             <span className={urgent ? "text-amber-200" : "text-purple-200"}>
               {dayLabel} left
@@ -183,7 +183,7 @@ export function TrialBanner() {
           </span>
           <Link
             href="/pricing"
-            className="rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-3.5 py-1 text-[12px] font-black text-white shadow transition hover:scale-[1.03]"
+            className="rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-3.5 py-1 text-[12px] font-bold text-white shadow transition hover:scale-[1.03]"
           >
             Upgrade to keep access →
           </Link>
@@ -200,12 +200,12 @@ export function TrialBanner() {
           <span className="text-[13px] font-semibold text-gray-100">
             <span aria-hidden>🎁 </span>
             Unlock voice &amp; camera coaching and unlimited practice,{" "}
-            <strong className="font-black">free for 3 days, no payment details</strong>.
+            <strong className="font-bold">free for 3 days, no payment details</strong>.
           </span>
           <button
             onClick={startTrial}
             disabled={starting}
-            className="rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-3.5 py-1 text-[12px] font-black text-white shadow transition hover:scale-[1.03] disabled:opacity-60"
+            className="rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-3.5 py-1 text-[12px] font-bold text-white shadow transition hover:scale-[1.03] disabled:opacity-60"
           >
             {starting ? "Starting…" : "Start free trial"}
           </button>
@@ -229,7 +229,7 @@ export function TrialBanner() {
           </span>
           <Link
             href="/pricing"
-            className="rounded-full border border-purple-300/25 bg-purple-300/[0.08] px-3.5 py-1 text-[12px] font-black text-purple-100 transition hover:bg-purple-300/[0.14]"
+            className="rounded-full border border-purple-300/25 bg-purple-300/[0.08] px-3.5 py-1 text-[12px] font-bold text-purple-100 transition hover:bg-purple-300/[0.14]"
           >
             Upgrade →
           </Link>

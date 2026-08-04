@@ -83,7 +83,7 @@ export default function JoinPage() {
             <div className="flex items-center gap-3">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/logo.png" alt="AI Career Mentor" className="h-10 w-10 rounded-xl" />
-              <span className="text-lg font-black tracking-[-0.04em] text-white">AI Career Mentor</span>
+              <span className="text-lg font-bold tracking-tight text-white">AI Career Mentor</span>
             </div>
           </Link>
         </div>
@@ -101,12 +101,12 @@ export default function JoinPage() {
           {phase === "error" && (
             <div className="text-center">
               <p className="text-4xl">🔗</p>
-              <h1 className="mt-4 text-2xl font-black tracking-[-0.04em] text-white">Invite unavailable</h1>
+              <h1 className="mt-4 text-2xl font-bold tracking-tight text-white">Invite unavailable</h1>
               <p className="mt-3 text-sm text-gray-400">{errorMsg}</p>
               <p className="mt-2 text-xs text-gray-500">Ask your workspace admin to send a new invite link.</p>
               <Link
                 href="/for-business"
-                className="mt-6 inline-block rounded-full border border-white/10 bg-white/[0.05] px-5 py-2.5 text-sm font-black text-white transition hover:bg-white/[0.09]"
+                className="mt-6 inline-block rounded-full border border-white/10 bg-white/[0.05] px-5 py-2.5 text-sm font-bold text-white transition hover:bg-white/[0.09]"
               >
                 Back to home
               </Link>
@@ -116,21 +116,21 @@ export default function JoinPage() {
           {/* Ready — show invite details */}
           {(phase === "ready" || phase === "accepting") && invite && (
             <>
-              <p className="text-[11px] font-black uppercase tracking-[0.22em] text-fuchsia-300">
+              <p className="text-[11px] font-bold tracking-wide text-fuchsia-300">
                 Workspace invitation
               </p>
-              <h1 className="mt-2 text-2xl font-black tracking-[-0.04em] text-white">
+              <h1 className="mt-2 text-2xl font-bold tracking-tight text-white">
                 You&apos;re invited to join
               </h1>
-              <p className="mt-1 text-xl font-black text-fuchsia-200">{invite.companyName}</p>
+              <p className="mt-1 text-xl font-bold text-fuchsia-200">{invite.companyName}</p>
 
               <div className="mt-6 rounded-2xl border border-white/[0.07] bg-white/[0.03] p-4">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-fuchsia-500/20 text-sm font-black text-fuchsia-300">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-fuchsia-500/20 text-sm font-bold text-fuchsia-300">
                     {(ROLE_LABELS[invite.role] ?? invite.role)[0]}
                   </div>
                   <div>
-                    <p className="text-sm font-black text-white">
+                    <p className="text-sm font-bold text-white">
                       {ROLE_LABELS[invite.role] ?? invite.role}
                     </p>
                     <p className="text-xs text-gray-400">
@@ -157,7 +157,7 @@ export default function JoinPage() {
               <button
                 onClick={() => void acceptInvite()}
                 disabled={phase === "accepting"}
-                className="mt-6 flex w-full justify-center rounded-2xl bg-gradient-to-r from-fuchsia-500 to-purple-500 px-5 py-3.5 text-sm font-black text-white shadow-xl shadow-fuchsia-950/35 transition hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-60"
+                className="mt-6 flex w-full justify-center rounded-2xl bg-gradient-to-r from-fuchsia-500 to-purple-500 px-5 py-3.5 text-sm font-bold text-white shadow-xl shadow-fuchsia-950/35 transition hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {phase === "accepting" ? "Accepting…" : `Accept invitation →`}
               </button>
@@ -174,17 +174,17 @@ export default function JoinPage() {
           {/* Success */}
           {phase === "success" && invite && (
             <div className="text-center">
-              <p className="text-5xl">🎉</p>
-              <h1 className="mt-4 text-2xl font-black tracking-[-0.04em] text-white">
+              <p className="text-4xl">🎉</p>
+              <h1 className="mt-4 text-2xl font-bold tracking-tight text-white">
                 You&apos;re in!
               </h1>
               <p className="mt-2 text-sm text-gray-300">
-                You&apos;ve joined <span className="font-black text-white">{invite.companyName}</span> as{" "}
-                <span className="font-black text-white">{ROLE_LABELS[invite.role] ?? invite.role}</span>.
+                You&apos;ve joined <span className="font-bold text-white">{invite.companyName}</span> as{" "}
+                <span className="font-bold text-white">{ROLE_LABELS[invite.role] ?? invite.role}</span>.
               </p>
               <button
                 onClick={() => router.push("/company/dashboard")}
-                className="mt-6 flex w-full justify-center rounded-2xl bg-gradient-to-r from-fuchsia-500 to-purple-500 px-5 py-3.5 text-sm font-black text-white shadow-xl shadow-fuchsia-950/35 transition hover:scale-[1.02]"
+                className="mt-6 flex w-full justify-center rounded-2xl bg-gradient-to-r from-fuchsia-500 to-purple-500 px-5 py-3.5 text-sm font-bold text-white shadow-xl shadow-fuchsia-950/35 transition hover:scale-[1.02]"
               >
                 Go to dashboard →
               </button>

@@ -34,15 +34,15 @@ export function AssessmentNextPanel({
       <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex items-start gap-4">
           {/* Tick badge */}
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-cyan-400 text-2xl font-black text-[#0b1a17] shadow-lg shadow-emerald-900/40">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-cyan-400 text-2xl font-bold text-[#0b1a17] shadow-lg shadow-emerald-900/40">
             ✓
           </div>
 
           <div className="min-w-0">
-            <p className="text-[11px] font-black uppercase tracking-[0.22em] text-emerald-200">
+            <p className="text-[11px] font-bold tracking-wide text-emerald-200">
               Answer recorded
             </p>
-            <h2 className="mt-1 text-2xl font-black tracking-[-0.035em] text-white">
+            <h2 className="mt-1 text-2xl font-bold tracking-tight text-white">
               {isFinalQuestion
                 ? "That was your final answer."
                 : `Question ${currentQuestionNumber} of ${totalQuestions} submitted.`}
@@ -59,7 +59,7 @@ export function AssessmentNextPanel({
           type="button"
           onClick={onNext}
           disabled={busy}
-          className="shrink-0 rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-6 py-4 text-sm font-black text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-60 sm:px-7"
+          className="shrink-0 rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-4 text-sm font-bold text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-60 sm:px-7"
         >
           {buttonLabel}
         </button>

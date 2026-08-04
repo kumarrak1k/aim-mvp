@@ -83,15 +83,15 @@ function fmtDate(iso: string | null): string {
 }
 
 const CARD = "rounded-[1.25rem] border border-white/[0.08] bg-white/[0.03] p-4";
-const H = "text-[11px] font-black uppercase tracking-[0.18em] text-purple-300/90";
+const H = "text-[11px] font-bold tracking-wide text-purple-300/90";
 
 function Stat({ label, value, tone }: { label: string; value: string; tone?: "warn" | "good" }) {
   const colour =
     tone === "warn" ? "text-amber-300" : tone === "good" ? "text-emerald-300" : "text-white";
   return (
     <div className="rounded-[1rem] border border-white/[0.07] bg-white/[0.03] px-3 py-2.5">
-      <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-gray-500">{label}</p>
-      <p className={`mt-1 text-lg font-black ${colour}`}>{value}</p>
+      <p className="text-[10px] font-bold tracking-wide text-gray-500">{label}</p>
+      <p className={`mt-1 text-lg font-bold ${colour}`}>{value}</p>
     </div>
   );
 }
@@ -131,7 +131,7 @@ export function UserActivityPanel({
       >
         <div className="mb-5 flex items-start justify-between gap-4">
           <div>
-            <h2 className="text-xl font-black tracking-[-0.03em] text-white">
+            <h2 className="text-xl font-bold tracking-tight text-white">
               {report?.identity.name || report?.identity.email || "User activity"}
             </h2>
             <p className="mt-1 text-xs text-gray-500">
@@ -141,7 +141,7 @@ export function UserActivityPanel({
           </div>
           <button
             onClick={onClose}
-            className="rounded-full border border-white/10 bg-white/[0.05] px-4 py-2 text-xs font-black text-white transition hover:bg-white/[0.09]"
+            className="rounded-full border border-white/10 bg-white/[0.05] px-4 py-2 text-xs font-bold text-white transition hover:bg-white/[0.09]"
           >
             Close
           </button>
@@ -258,7 +258,7 @@ export function UserActivityPanel({
                         {v.path.map((p, i) => (
                           <span key={i}>
                             {i > 0 && <span className="text-gray-600"> → </span>}
-                            <span className={i === v.path.length - 1 ? "font-black text-amber-300" : ""}>
+                            <span className={i === v.path.length - 1 ? "font-bold text-amber-300" : ""}>
                               {p}
                             </span>
                           </span>
@@ -313,7 +313,7 @@ export function UserActivityPanel({
                   {report.practiceSessions.map((s) => (
                     <li key={s.id} className="text-xs text-gray-300">
                       {fmtDate(s.createdAt)} · {s.role} · {s.practiceMode} ·{" "}
-                      <span className="font-black text-white">{s.overallScore}/10</span> · {s.hireSignal}
+                      <span className="font-bold text-white">{s.overallScore}/10</span> · {s.hireSignal}
                     </li>
                   ))}
                 </ul>
@@ -328,7 +328,7 @@ export function UserActivityPanel({
                     <li key={a.id} className="text-xs text-gray-300">
                       {fmtDate(a.createdAt)} · {a.role} · status {a.status}
                       {a.abandonedAtStage !== null ? (
-                        <span className="font-black text-amber-300">
+                        <span className="font-bold text-amber-300">
                           {" "}· abandoned at stage {a.abandonedAtStage}
                         </span>
                       ) : (

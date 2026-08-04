@@ -97,13 +97,13 @@ function extractFAQPairs(
 const mdxComponents = {
   h2: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h2
-      className="mb-4 mt-10 text-2xl font-black leading-tight tracking-[-0.04em] text-white first:mt-0"
+      className="mb-4 mt-10 text-2xl font-bold leading-tight tracking-tight text-white first:mt-0"
       {...props}
     />
   ),
   h3: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h3
-      className="mb-3 mt-7 text-lg font-black leading-tight text-white"
+      className="mb-3 mt-7 text-lg font-bold leading-tight text-white"
       {...props}
     />
   ),
@@ -120,7 +120,7 @@ const mdxComponents = {
     <li className="text-sm leading-6 text-gray-400 [&::marker]:text-purple-400" {...props} />
   ),
   strong: (props: React.HTMLAttributes<HTMLElement>) => (
-    <strong className="font-black text-white" {...props} />
+    <strong className="font-bold text-white" {...props} />
   ),
   a: (props: React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
     <a
@@ -139,7 +139,7 @@ const mdxComponents = {
   ),
   th: (props: React.HTMLAttributes<HTMLTableCellElement>) => (
     <th
-      className="px-4 py-3 text-left text-xs font-black uppercase tracking-[0.12em] text-gray-500"
+      className="px-4 py-3 text-left text-xs font-bold tracking-wide text-gray-500"
       {...props}
     />
   ),
@@ -228,11 +228,11 @@ export default async function QuestionSetPage({ params }: Props) {
 
         <header className="mb-10 border-b border-white/[0.07] pb-8">
           {set.category && (
-            <p className="mb-3 text-[11px] font-black uppercase tracking-[0.2em] text-purple-300/70">
+            <p className="mb-3 text-[11px] font-bold tracking-wide text-purple-300/70">
               {set.category}
             </p>
           )}
-          <h1 className="text-[2rem] font-black leading-[1.06] tracking-[-0.05em] sm:text-[2.4rem]">
+          <h1 className="text-[2rem] font-bold leading-[1.06] tracking-tight sm:text-4xl">
             {set.title}
           </h1>
           <p className="mt-3 text-base leading-7 text-gray-400">
@@ -260,14 +260,14 @@ export default async function QuestionSetPage({ params }: Props) {
         </article>
 
         <div className="mt-14 rounded-[2rem] border border-purple-300/20 bg-purple-300/[0.06] p-8 text-center">
-          <p className="font-black">Practise these questions with AI feedback</p>
+          <p className="font-bold">Practise these questions with AI feedback</p>
           <p className="mt-2 text-sm text-gray-400">
             AI Career Mentor generates questions tailored to your role and level,
             scores every answer, and gives you model answers for comparison.
           </p>
           <Link
             href="/for-candidates/sign-up"
-            className="mt-5 inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-7 py-3.5 text-sm font-black text-white shadow-xl transition hover:scale-[1.02]"
+            className="mt-5 inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-7 py-3.5 text-sm font-bold text-white shadow-xl transition hover:scale-[1.02]"
           >
             Start practising free →
           </Link>

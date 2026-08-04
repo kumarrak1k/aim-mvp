@@ -41,7 +41,7 @@ export default function ReferPage() {
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#0a0614] text-white">
       <div className="pointer-events-none absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_-10%,rgba(120,60,255,0.18),transparent)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_-10%,rgba(120,60,255,0.10),transparent)]" />
         <div className="absolute left-1/2 top-[-200px] h-[480px] w-[800px] -translate-x-1/2 rounded-full bg-purple-600/[0.14] blur-[160px]" />
       </div>
 
@@ -52,10 +52,10 @@ export default function ReferPage() {
         </div>
 
         <div className="mb-8 text-center">
-          <p className="mb-3 text-[11px] font-black uppercase tracking-[0.2em] text-purple-300/80">
+          <p className="mb-3 text-[11px] font-bold tracking-wide text-purple-300/80">
             Refer a friend
           </p>
-          <h1 className="text-3xl font-black tracking-[-0.045em] sm:text-4xl">
+          <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
             Share AI Career Mentor
           </h1>
           <p className="mx-auto mt-4 max-w-md text-sm leading-6 text-gray-400">
@@ -100,7 +100,7 @@ export default function ReferPage() {
               <div className="mx-auto flex h-9 w-9 items-center justify-center rounded-xl border border-purple-400/20 bg-purple-400/[0.08] text-purple-300">
                 {item.svg}
               </div>
-              <p className="mt-2 text-[10px] font-black uppercase tracking-[0.15em] text-gray-500">
+              <p className="mt-2 text-[10px] font-bold tracking-wide text-gray-500">
                 {item.label}
               </p>
               <p className="mt-0.5 text-xs font-bold text-gray-300">{item.detail}</p>
@@ -116,7 +116,7 @@ export default function ReferPage() {
           <>
             {/* Stats */}
             <div className="mb-6 rounded-2xl border border-white/[0.08] bg-white/[0.03] px-6 py-5 text-center">
-              <p className="text-4xl font-black tracking-[-0.06em] text-white">{usedCount}</p>
+              <p className="text-4xl font-bold tracking-tight text-white">{usedCount}</p>
               <p className="mt-1 text-sm text-gray-400">
                 {usedCount === 1 ? "person" : "people"} signed up via your link
               </p>
@@ -124,16 +124,16 @@ export default function ReferPage() {
 
             {/* Code display */}
             <div className="mb-6 rounded-[1.75rem] border border-purple-300/20 bg-purple-300/[0.05] p-6">
-              <p className="mb-3 text-[11px] font-black uppercase tracking-[0.18em] text-purple-300/70">
+              <p className="mb-3 text-[11px] font-bold tracking-wide text-purple-300/70">
                 Your referral code
               </p>
               <div className="flex items-center gap-3">
-                <code className="flex-1 rounded-xl border border-white/[0.1] bg-black/30 px-4 py-3 font-mono text-lg font-black tracking-[0.2em] text-white">
+                <code className="flex-1 rounded-xl border border-white/[0.1] bg-black/30 px-4 py-3 font-mono text-lg font-bold tracking-[0.2em] text-white">
                   {code}
                 </code>
                 <button
                   onClick={copyLink}
-                  className="rounded-xl border border-white/[0.1] bg-white/[0.06] px-4 py-3 text-sm font-black text-white transition hover:bg-white/[0.1]"
+                  className="rounded-xl border border-white/[0.1] bg-white/[0.06] px-4 py-3 text-sm font-bold text-white transition hover:bg-white/[0.1]"
                 >
                   {copied ? "Copied!" : "Copy link"}
                 </button>
@@ -147,7 +147,7 @@ export default function ReferPage() {
                 href={twitterUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex flex-col items-center gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.03] py-4 text-xs font-black text-gray-300 transition hover:bg-white/[0.07]"
+                className="flex flex-col items-center gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.03] py-4 text-xs font-bold text-gray-300 transition hover:bg-white/[0.07]"
               >
                 <span className="text-xl">𝕏</span>
                 Twitter / X
@@ -156,7 +156,7 @@ export default function ReferPage() {
                 href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex flex-col items-center gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.03] py-4 text-xs font-black text-gray-300 transition hover:bg-white/[0.07]"
+                className="flex flex-col items-center gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.03] py-4 text-xs font-bold text-gray-300 transition hover:bg-white/[0.07]"
               >
                 <span className="text-xl">💬</span>
                 WhatsApp
@@ -165,7 +165,7 @@ export default function ReferPage() {
                 href={linkedinUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex flex-col items-center gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.03] py-4 text-xs font-black text-gray-300 transition hover:bg-white/[0.07]"
+                className="flex flex-col items-center gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.03] py-4 text-xs font-bold text-gray-300 transition hover:bg-white/[0.07]"
               >
                 <span className="text-xl">in</span>
                 LinkedIn

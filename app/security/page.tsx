@@ -97,10 +97,10 @@ export default function SecurityPage() {
 
       <div className="mx-auto max-w-4xl px-4 pb-24 pt-6 sm:px-6">
         <section className="mb-14 text-center">
-          <p className="mx-auto mb-5 inline-flex items-center gap-2 rounded-full border border-purple-400/25 bg-purple-400/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-purple-200">
+          <p className="mx-auto mb-5 inline-flex items-center gap-2 rounded-full border border-purple-400/25 bg-purple-400/[0.07] px-4 py-2 text-[11px] font-bold tracking-wide text-purple-200">
             Security
           </p>
-          <h1 className="text-[2.4rem] font-black leading-[1.04] tracking-[-0.055em] sm:text-5xl">
+          <h1 className="text-4xl font-bold leading-[1.04] tracking-tight sm:text-4xl">
             Security & data protection
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-gray-400">
@@ -111,11 +111,11 @@ export default function SecurityPage() {
 
         {/* Controls */}
         <section className="mb-14">
-          <h2 className="mb-7 text-2xl font-black tracking-[-0.04em]">Security controls</h2>
+          <h2 className="mb-7 text-2xl font-bold tracking-tight">Security controls</h2>
           <div className="divide-y divide-white/[0.06] rounded-[2rem] border border-white/[0.08] bg-white/[0.02]">
             {controls.map((c) => (
               <div key={c.area} className="px-7 py-6">
-                <p className="mb-1.5 font-black text-white">{c.area}</p>
+                <p className="mb-1.5 font-bold text-white">{c.area}</p>
                 <p className="text-sm leading-6 text-gray-400">{c.detail}</p>
               </div>
             ))}
@@ -132,7 +132,7 @@ export default function SecurityPage() {
 
         {/* Subprocessors */}
         <section className="mb-14">
-          <h2 className="mb-3 text-2xl font-black tracking-[-0.04em]">Sub-processors</h2>
+          <h2 className="mb-3 text-2xl font-bold tracking-tight">Sub-processors</h2>
           <p className="mb-7 text-sm text-gray-500">
             We use the following third-party services to operate the platform. Each
             is bound by a Data Processing Agreement where required under UK GDPR.
@@ -141,13 +141,13 @@ export default function SecurityPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-white/[0.08] bg-white/[0.03]">
-                  <th className="px-6 py-4 text-left text-xs font-black uppercase tracking-[0.12em] text-gray-500">
+                  <th className="px-6 py-4 text-left text-xs font-bold tracking-wide text-gray-500">
                     Processor
                   </th>
-                  <th className="hidden px-6 py-4 text-left text-xs font-black uppercase tracking-[0.12em] text-gray-500 sm:table-cell">
+                  <th className="hidden px-6 py-4 text-left text-xs font-bold tracking-wide text-gray-500 sm:table-cell">
                     Purpose
                   </th>
-                  <th className="px-6 py-4 text-left text-xs font-black uppercase tracking-[0.12em] text-gray-500">
+                  <th className="px-6 py-4 text-left text-xs font-bold tracking-wide text-gray-500">
                     Location
                   </th>
                 </tr>
@@ -178,7 +178,7 @@ export default function SecurityPage() {
 
         {/* GDPR rights */}
         <section className="mb-14 rounded-[2rem] border border-purple-300/15 bg-purple-300/[0.04] p-8">
-          <h2 className="mb-4 text-xl font-black tracking-[-0.03em]">Your rights under UK GDPR</h2>
+          <h2 className="mb-4 text-xl font-bold tracking-tight">Your rights under UK GDPR</h2>
           <p className="mb-4 text-sm leading-7 text-gray-400">
             You have the right to access, correct, export, and delete your data at
             any time. Most of these actions are available directly from your{" "}
@@ -198,7 +198,7 @@ export default function SecurityPage() {
 
         {/* Disclosure */}
         <section className="mb-14">
-          <h2 className="mb-4 text-xl font-black tracking-[-0.03em]">
+          <h2 className="mb-4 text-xl font-bold tracking-tight">
             Responsible disclosure
           </h2>
           <p className="text-sm leading-7 text-gray-400">
@@ -218,7 +218,7 @@ export default function SecurityPage() {
 
         {/* Enterprise */}
         <section className="rounded-[2rem] border border-fuchsia-300/15 bg-fuchsia-300/[0.04] p-8 text-center">
-          <h2 className="mb-2 text-xl font-black tracking-[-0.03em]">
+          <h2 className="mb-2 text-xl font-bold tracking-tight">
             Need a DPA or security review?
           </h2>
           <p className="mb-5 text-sm text-gray-400">
@@ -227,7 +227,7 @@ export default function SecurityPage() {
           </p>
           <a
             href="mailto:security@aicareermentor.co.uk?subject=Enterprise%20security%20review"
-            className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-fuchsia-500 to-purple-500 px-7 py-3.5 text-sm font-black text-white shadow-xl transition hover:scale-[1.02]"
+            className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-fuchsia-500 to-purple-500 px-7 py-3.5 text-sm font-bold text-white shadow-xl transition hover:scale-[1.02]"
           >
             Contact enterprise team →
           </a>

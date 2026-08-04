@@ -238,20 +238,20 @@ function DashboardContent() {
         {/* Header */}
         <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-sm font-black uppercase tracking-[0.22em] text-fuchsia-300">Company Dashboard</p>
-            <h1 className="mt-1 text-3xl font-black tracking-[-0.05em] sm:text-4xl">{company.name}</h1>
+            <p className="text-sm font-bold tracking-wide text-fuchsia-300">Company Dashboard</p>
+            <h1 className="mt-1 text-3xl font-bold tracking-tight sm:text-4xl">{company.name}</h1>
             {company.industry && <p className="mt-1 text-sm text-gray-400">{company.industry}</p>}
           </div>
           <div className="flex flex-wrap gap-3">
             {member.role !== "viewer" && (
               <Link href="/company/templates/new">
-                <button className="rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 px-5 py-2.5 text-sm font-black text-white shadow-lg transition hover:scale-[1.02]">
+                <button className="rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 px-5 py-2.5 text-sm font-bold text-white shadow-lg transition hover:scale-[1.02]">
                   + New template
                 </button>
               </Link>
             )}
             <Link href="/company/candidates">
-              <button className="rounded-full border border-white/15 bg-white/[0.05] px-5 py-2.5 text-sm font-black text-white transition hover:bg-white/[0.09]">
+              <button className="rounded-full border border-white/15 bg-white/[0.05] px-5 py-2.5 text-sm font-bold text-white transition hover:bg-white/[0.09]">
                 Invite candidate
               </button>
             </Link>
@@ -263,7 +263,7 @@ function DashboardContent() {
           <div className="mb-8 flex items-center gap-3 rounded-2xl border border-emerald-400/25 bg-emerald-400/[0.07] px-5 py-4">
             <span className="text-xl">🎉</span>
             <div>
-              <p className="text-sm font-black text-emerald-200">Payment confirmed. Welcome to {plan?.name ?? "your plan"}!</p>
+              <p className="text-sm font-bold text-emerald-200">Payment confirmed. Welcome to {plan?.name ?? "your plan"}!</p>
               <p className="mt-0.5 text-xs text-emerald-200/70">Your workspace is fully activated. Start sending candidate invites.</p>
             </div>
           </div>
@@ -280,11 +280,11 @@ function DashboardContent() {
         {company.planStatus === "none" && (
           <div className="mb-8 flex flex-col gap-3 rounded-2xl border border-amber-400/25 bg-amber-400/[0.07] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-sm font-black text-amber-200">No active plan</p>
+              <p className="text-sm font-bold text-amber-200">No active plan</p>
               <p className="mt-0.5 text-xs text-amber-200/70">Choose a plan to send invites and create templates. Viewing existing data is unaffected.</p>
             </div>
             <Link href="/company/plan">
-              <button className="shrink-0 rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 px-5 py-2.5 text-sm font-black text-white shadow-lg transition hover:scale-[1.02]">
+              <button className="shrink-0 rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 px-5 py-2.5 text-sm font-bold text-white shadow-lg transition hover:scale-[1.02]">
                 Choose a plan →
               </button>
             </Link>
@@ -293,7 +293,7 @@ function DashboardContent() {
         {company.planStatus === "trial" && planActive && (
           <div className="mb-8 flex flex-col gap-3 rounded-2xl border border-fuchsia-400/20 bg-fuchsia-400/[0.06] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-sm font-black text-fuchsia-200">
+              <p className="text-sm font-bold text-fuchsia-200">
                 {plan?.name} plan (free trial) · {daysLeft} day{daysLeft !== 1 ? "s" : ""} remaining
               </p>
               <p className="mt-0.5 text-xs text-fuchsia-200/70">
@@ -307,14 +307,14 @@ function DashboardContent() {
                 <button
                   onClick={() => void startCheckout("monthly")}
                   disabled={billingLoading}
-                  className="rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 px-5 py-2.5 text-sm font-black text-white shadow-lg transition hover:scale-[1.02] disabled:opacity-60"
+                  className="rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 px-5 py-2.5 text-sm font-bold text-white shadow-lg transition hover:scale-[1.02] disabled:opacity-60"
                 >
                   {billingLoading ? "Loading…" : "Upgrade · monthly"}
                 </button>
                 <button
                   onClick={() => void startCheckout("annual")}
                   disabled={billingLoading}
-                  className="rounded-full border border-fuchsia-400/30 bg-fuchsia-500/10 px-5 py-2.5 text-sm font-black text-fuchsia-100 transition hover:bg-fuchsia-500/20 disabled:opacity-60"
+                  className="rounded-full border border-fuchsia-400/30 bg-fuchsia-500/10 px-5 py-2.5 text-sm font-bold text-fuchsia-100 transition hover:bg-fuchsia-500/20 disabled:opacity-60"
                 >
                   Annual · save 33%
                 </button>
@@ -324,7 +324,7 @@ function DashboardContent() {
         )}
         {company.planStatus === "comp" && planActive && (
           <div className="mb-8 rounded-2xl border border-cyan-400/20 bg-cyan-400/[0.06] px-5 py-4">
-            <p className="text-sm font-black text-cyan-200">
+            <p className="text-sm font-bold text-cyan-200">
               {plan?.name} plan (complimentary access) · {compDaysLeft} day{compDaysLeft !== 1 ? "s" : ""} remaining
             </p>
             <p className="mt-0.5 text-xs text-cyan-200/70">
@@ -335,7 +335,7 @@ function DashboardContent() {
         {((company.planStatus === "trial" && !planActive) || (company.planStatus === "comp" && !planActive) || company.planStatus === "expired" || company.planStatus === "cancelled") && (
           <div className="mb-8 flex flex-col gap-3 rounded-2xl border border-red-400/25 bg-red-400/[0.07] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-sm font-black text-red-200">
+              <p className="text-sm font-bold text-red-200">
                 {company.planStatus === "cancelled"
                   ? "Subscription cancelled"
                   : company.planStatus === "comp"
@@ -348,7 +348,7 @@ function DashboardContent() {
               <button
                 onClick={() => void startCheckout()}
                 disabled={billingLoading}
-                className="shrink-0 rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 px-5 py-2.5 text-sm font-black text-white shadow-lg transition hover:scale-[1.02] disabled:opacity-60"
+                className="shrink-0 rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 px-5 py-2.5 text-sm font-bold text-white shadow-lg transition hover:scale-[1.02] disabled:opacity-60"
               >
                 {billingLoading ? "Loading…" : "Upgrade now →"}
               </button>
@@ -358,7 +358,7 @@ function DashboardContent() {
         {company.planStatus === "active" && (
           <div className="mb-8 flex flex-col gap-3 rounded-2xl border border-emerald-400/20 bg-emerald-400/[0.05] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-sm font-black text-emerald-200">
+              <p className="text-sm font-bold text-emerald-200">
                 {plan?.name ?? "Active"} plan (paid)
               </p>
               <p className="mt-0.5 text-xs text-emerald-200/70">Your workspace is fully active. Manage invoices, payment method or cancel in the billing portal.</p>
@@ -367,7 +367,7 @@ function DashboardContent() {
               <button
                 onClick={() => void openBillingPortal()}
                 disabled={billingLoading}
-                className="shrink-0 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-5 py-2.5 text-sm font-black text-emerald-200 transition hover:bg-emerald-500/20 disabled:opacity-60"
+                className="shrink-0 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-5 py-2.5 text-sm font-bold text-emerald-200 transition hover:bg-emerald-500/20 disabled:opacity-60"
               >
                 {billingLoading ? "Loading…" : "Manage billing →"}
               </button>
@@ -399,7 +399,7 @@ function DashboardContent() {
           ].map(({ label, value, color }) => (
             <div key={label} className="rounded-2xl border border-white/10 bg-white/[0.05] p-6">
               <p className="text-sm font-semibold text-gray-400">{label}</p>
-              <p className={`mt-2 text-4xl font-black ${color}`}>{value}</p>
+              <p className={`mt-2 text-4xl font-bold ${color}`}>{value}</p>
             </div>
           ))}
         </div>
@@ -415,7 +415,7 @@ function DashboardContent() {
             <Link key={href} href={href}>
               <div className="group rounded-2xl border border-white/10 bg-white/[0.05] p-6 transition hover:bg-white/[0.08]">
                 <div className="mb-3 text-2xl">{icon}</div>
-                <p className="font-black text-white">{label}</p>
+                <p className="font-bold text-white">{label}</p>
                 <p className="mt-1 text-sm text-gray-400">{desc}</p>
               </div>
             </Link>
@@ -427,7 +427,7 @@ function DashboardContent() {
           <div id="team" className="mb-10 scroll-mt-24 rounded-[2rem] border border-white/10 bg-white/[0.04] p-6 shadow-xl shadow-black/10">
             <div className="mb-5 flex items-center justify-between">
               <div>
-                <h2 className="text-xl font-black">Team members</h2>
+                <h2 className="text-xl font-bold">Team members</h2>
                 {plan && (
                   <p className="mt-0.5 text-xs text-gray-500">
                     {members.length} of {plan.seats} seats used
@@ -437,7 +437,7 @@ function DashboardContent() {
               {planActive && plan && members.length < plan.seats && (
                 <button
                   onClick={() => { setMemberInviteLink(""); setMemberInviteError(""); setShowMemberInviteModal(true); }}
-                  className="rounded-full border border-white/10 bg-white/[0.05] px-4 py-2 text-xs font-black text-white transition hover:bg-white/[0.09]"
+                  className="rounded-full border border-white/10 bg-white/[0.05] px-4 py-2 text-xs font-bold text-white transition hover:bg-white/[0.09]"
                 >
                   + Invite member
                 </button>
@@ -446,7 +446,7 @@ function DashboardContent() {
             {planActive && plan && members.length >= plan.seats && (
               <p className="mb-4 rounded-xl border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm text-amber-200">
                 You've reached your {plan.seats}-seat limit. Remove a member, or{" "}
-                <a href="/company/plan" className="font-black underline">upgrade your plan</a> to add more recruiters.
+                <a href="/company/plan" className="font-bold underline">upgrade your plan</a> to add more recruiters.
               </p>
             )}
             <div className="divide-y divide-white/[0.06]">
@@ -457,7 +457,7 @@ function DashboardContent() {
                 return (
                   <div key={m.id} className="flex items-center justify-between py-3.5">
                     <div className="flex items-center gap-3">
-                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-fuchsia-500/20 text-xs font-black text-fuchsia-300">
+                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-fuchsia-500/20 text-xs font-bold text-fuchsia-300">
                         {m.role === "admin" ? "A" : "R"}
                       </div>
                       <div>
@@ -474,7 +474,7 @@ function DashboardContent() {
                       <button
                         onClick={() => void removeMember(m.id)}
                         disabled={removingMemberId === m.id}
-                        className="rounded-full border border-red-400/25 bg-red-400/[0.07] px-3.5 py-1.5 text-xs font-black text-red-300 transition hover:bg-red-400/[0.14] disabled:opacity-50"
+                        className="rounded-full border border-red-400/25 bg-red-400/[0.07] px-3.5 py-1.5 text-xs font-bold text-red-300 transition hover:bg-red-400/[0.14] disabled:opacity-50"
                       >
                         {removingMemberId === m.id ? "Removing…" : "Remove"}
                       </button>
@@ -487,7 +487,7 @@ function DashboardContent() {
             {/* Pending invites */}
             {pendingInvites.length > 0 && (
               <div className="mt-5 border-t border-white/[0.06] pt-5">
-                <p className="mb-3 text-xs font-black uppercase tracking-[0.18em] text-gray-500">Pending invites</p>
+                <p className="mb-3 text-xs font-bold tracking-wide text-gray-500">Pending invites</p>
                 <div className="space-y-2">
                   {pendingInvites.map((inv) => {
                     const link = `${typeof window !== "undefined" ? window.location.origin : ""}/company/join/${inv.token}`;
@@ -499,7 +499,7 @@ function DashboardContent() {
                         </div>
                         <button
                           onClick={() => void navigator.clipboard.writeText(link)}
-                          className="shrink-0 rounded-full border border-white/10 bg-white/[0.05] px-3.5 py-1.5 text-xs font-black text-gray-300 transition hover:bg-white/[0.09]"
+                          className="shrink-0 rounded-full border border-white/10 bg-white/[0.05] px-3.5 py-1.5 text-xs font-bold text-gray-300 transition hover:bg-white/[0.09]"
                         >
                           Copy invite link
                         </button>
@@ -521,14 +521,14 @@ function DashboardContent() {
           <div className="mb-10 overflow-hidden rounded-[2rem] border border-red-500/25 bg-red-500/[0.04] p-6 shadow-xl shadow-black/10">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <p className="text-[11px] font-black uppercase tracking-[0.22em] text-red-300">
+                <p className="text-[11px] font-bold tracking-wide text-red-300">
                   Danger zone
                 </p>
-                <h2 className="mt-2 text-lg font-black tracking-[-0.03em] text-white">
+                <h2 className="mt-2 text-lg font-bold tracking-tight text-white">
                   Delete this workspace
                 </h2>
                 <p className="mt-1 text-sm leading-6 text-gray-400">
-                  Permanently removes <span className="font-black text-white">{company.name}</span>{" "}
+                  Permanently removes <span className="font-bold text-white">{company.name}</span>{" "}
                   along with every template, assignment, invite and team member.
                   Candidates&rsquo; personal practice sessions are not affected.
                   This cannot be undone.
@@ -540,7 +540,7 @@ function DashboardContent() {
                   setDeleteConfirmName("");
                   setShowDeleteModal(true);
                 }}
-                className="shrink-0 rounded-full border border-red-400/40 bg-red-500/10 px-5 py-2.5 text-sm font-black text-red-200 transition hover:bg-red-500/20"
+                className="shrink-0 rounded-full border border-red-400/40 bg-red-500/10 px-5 py-2.5 text-sm font-bold text-red-200 transition hover:bg-red-500/20"
               >
                 Delete workspace
               </button>
@@ -551,8 +551,8 @@ function DashboardContent() {
         {/* Recent assignments */}
         <div className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-6 shadow-xl shadow-black/10">
           <div className="mb-6 flex items-center justify-between">
-            <h2 className="text-xl font-black">Recent assessments</h2>
-            <Link href="/company/candidates" className="text-sm font-black text-fuchsia-300 hover:text-fuchsia-200">
+            <h2 className="text-xl font-bold">Recent assessments</h2>
+            <Link href="/company/candidates" className="text-sm font-bold text-fuchsia-300 hover:text-fuchsia-200">
               View all →
             </Link>
           </div>
@@ -571,7 +571,7 @@ function DashboardContent() {
                   { n: "3", t: "Review results", d: "Compare AI-scored, ranked candidates." },
                 ].map((s) => (
                   <div key={s.n} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-center">
-                    <p className="text-2xl font-black text-fuchsia-300">{s.n}</p>
+                    <p className="text-2xl font-bold text-fuchsia-300">{s.n}</p>
                     <p className="mt-1 text-sm font-bold">{s.t}</p>
                     <p className="mt-1 text-xs leading-5 text-gray-500">{s.d}</p>
                   </div>
@@ -579,7 +579,7 @@ function DashboardContent() {
               </div>
               <div className="mt-6 flex justify-center">
                 <Link href={templates.length === 0 ? "/company/templates/new" : "/company/candidates"}>
-                  <button className="rounded-full bg-fuchsia-500/20 px-5 py-2.5 text-sm font-black text-fuchsia-200 transition hover:bg-fuchsia-500/30">
+                  <button className="rounded-full bg-fuchsia-500/20 px-5 py-2.5 text-sm font-bold text-fuchsia-200 transition hover:bg-fuchsia-500/30">
                     {templates.length === 0 ? "Create your first template →" : "Send your first invite →"}
                   </button>
                 </Link>
@@ -590,10 +590,10 @@ function DashboardContent() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-white/10">
-                    <th className="pb-3 text-left font-black text-gray-400">Candidate</th>
-                    <th className="pb-3 text-left font-black text-gray-400">Template</th>
-                    <th className="pb-3 text-left font-black text-gray-400">Status</th>
-                    <th className="pb-3 text-left font-black text-gray-400">Sent</th>
+                    <th className="pb-3 text-left font-bold text-gray-400">Candidate</th>
+                    <th className="pb-3 text-left font-bold text-gray-400">Template</th>
+                    <th className="pb-3 text-left font-bold text-gray-400">Status</th>
+                    <th className="pb-3 text-left font-bold text-gray-400">Sent</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/5">
@@ -602,7 +602,7 @@ function DashboardContent() {
                       <td className="py-3 font-semibold text-white">{a.candidateEmail}</td>
                       <td className="py-3 text-gray-300">{a.template.name}</td>
                       <td className="py-3">
-                        <span className={`rounded-full border px-2.5 py-1 text-xs font-black capitalize ${STATUS_COLORS[a.status] || "bg-white/5 text-gray-300 border-white/10"}`}>
+                        <span className={`rounded-full border px-2.5 py-1 text-xs font-bold capitalize ${STATUS_COLORS[a.status] || "bg-white/5 text-gray-300 border-white/10"}`}>
                           {a.status}
                         </span>
                       </td>
@@ -628,8 +628,8 @@ function DashboardContent() {
             className="w-full max-w-md rounded-[1.75rem] border border-fuchsia-400/20 bg-[#120a1e] p-6 shadow-2xl shadow-fuchsia-950/40"
             onClick={(e) => e.stopPropagation()}
           >
-            <p className="text-[11px] font-black uppercase tracking-[0.22em] text-fuchsia-300">Invite team member</p>
-            <h3 className="mt-2 text-2xl font-black tracking-[-0.03em] text-white">Add to your workspace</h3>
+            <p className="text-[11px] font-bold tracking-wide text-fuchsia-300">Invite team member</p>
+            <h3 className="mt-2 text-2xl font-bold tracking-tight text-white">Add to your workspace</h3>
 
             {memberInviteLink ? (
               /* Success state — show the link to copy */
@@ -639,7 +639,7 @@ function DashboardContent() {
                   <p className="flex-1 truncate text-xs text-fuchsia-200">{memberInviteLink}</p>
                   <button
                     onClick={() => void navigator.clipboard.writeText(memberInviteLink)}
-                    className="shrink-0 rounded-full border border-fuchsia-400/30 bg-fuchsia-500/10 px-3 py-1.5 text-xs font-black text-fuchsia-200 transition hover:bg-fuchsia-500/20"
+                    className="shrink-0 rounded-full border border-fuchsia-400/30 bg-fuchsia-500/10 px-3 py-1.5 text-xs font-bold text-fuchsia-200 transition hover:bg-fuchsia-500/20"
                   >
                     Copy
                   </button>
@@ -648,13 +648,13 @@ function DashboardContent() {
                 <div className="mt-5 flex gap-3">
                   <button
                     onClick={() => { setMemberInviteLink(""); setMemberInviteEmail(""); }}
-                    className="flex-1 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm font-black text-white transition hover:bg-white/[0.08]"
+                    className="flex-1 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-white/[0.08]"
                   >
                     Invite another
                   </button>
                   <button
                     onClick={() => { setShowMemberInviteModal(false); setMemberInviteLink(""); }}
-                    className="flex-1 rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 px-4 py-2.5 text-sm font-black text-white"
+                    className="flex-1 rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 px-4 py-2.5 text-sm font-bold text-white"
                   >
                     Done
                   </button>
@@ -664,7 +664,7 @@ function DashboardContent() {
               /* Form state */
               <div className="mt-5 space-y-4">
                 <div>
-                  <label className="block text-xs font-black uppercase tracking-[0.18em] text-gray-400">Email address</label>
+                  <label className="block text-xs font-bold tracking-wide text-gray-400">Email address</label>
                   <input
                     type="email"
                     value={memberInviteEmail}
@@ -676,7 +676,7 @@ function DashboardContent() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-black uppercase tracking-[0.18em] text-gray-400">Role</label>
+                  <label className="block text-xs font-bold tracking-wide text-gray-400">Role</label>
                   <select
                     value={memberInviteRole}
                     onChange={(e) => setMemberInviteRole(e.target.value as "recruiter" | "admin" | "viewer")}
@@ -697,14 +697,14 @@ function DashboardContent() {
                   <button
                     onClick={() => setShowMemberInviteModal(false)}
                     disabled={memberInviteLoading}
-                    className="rounded-full border border-white/10 bg-white/[0.04] px-5 py-2.5 text-sm font-black text-white transition hover:bg-white/[0.08] disabled:opacity-50"
+                    className="rounded-full border border-white/10 bg-white/[0.04] px-5 py-2.5 text-sm font-bold text-white transition hover:bg-white/[0.08] disabled:opacity-50"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={() => void sendMemberInvite()}
                     disabled={memberInviteLoading || !memberInviteEmail.includes("@")}
-                    className="rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 px-5 py-2.5 text-sm font-black text-white shadow-lg transition hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-50"
+                    className="rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 px-5 py-2.5 text-sm font-bold text-white shadow-lg transition hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {memberInviteLoading ? "Sending…" : "Create invite link →"}
                   </button>
@@ -727,10 +727,10 @@ function DashboardContent() {
             className="w-full max-w-md rounded-[1.75rem] border border-red-500/30 bg-[#160a14] p-6 shadow-2xl shadow-red-950/40"
             onClick={(e) => e.stopPropagation()}
           >
-            <p className="text-[11px] font-black uppercase tracking-[0.22em] text-red-300">
+            <p className="text-[11px] font-bold tracking-wide text-red-300">
               Confirm deletion
             </p>
-            <h3 className="mt-2 text-2xl font-black tracking-[-0.03em] text-white">
+            <h3 className="mt-2 text-2xl font-bold tracking-tight text-white">
               Delete {company.name}?
             </h3>
             <p className="mt-3 text-sm leading-6 text-gray-400">
@@ -739,7 +739,7 @@ function DashboardContent() {
               This action cannot be undone.
             </p>
 
-            <label className="mt-5 block text-xs font-black uppercase tracking-[0.18em] text-gray-400">
+            <label className="mt-5 block text-xs font-bold tracking-wide text-gray-400">
               Type{" "}
               <span className="normal-case text-red-300">{company.name}</span>{" "}
               to confirm
@@ -765,7 +765,7 @@ function DashboardContent() {
               <button
                 onClick={() => setShowDeleteModal(false)}
                 disabled={deleteSubmitting}
-                className="rounded-full border border-white/10 bg-white/[0.04] px-5 py-2.5 text-sm font-black text-white transition hover:bg-white/[0.08] disabled:opacity-50"
+                className="rounded-full border border-white/10 bg-white/[0.04] px-5 py-2.5 text-sm font-bold text-white transition hover:bg-white/[0.08] disabled:opacity-50"
               >
                 Cancel
               </button>
@@ -797,7 +797,7 @@ function DashboardContent() {
                   }
                 }}
                 disabled={deleteSubmitting || deleteConfirmName.trim() !== company.name}
-                className="rounded-full bg-red-500/90 px-5 py-2.5 text-sm font-black text-white shadow-lg shadow-red-950/40 transition hover:bg-red-500 disabled:cursor-not-allowed disabled:opacity-50"
+                className="rounded-full bg-red-500/90 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-red-950/40 transition hover:bg-red-500 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {deleteSubmitting ? "Deleting…" : "Permanently delete"}
               </button>

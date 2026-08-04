@@ -109,12 +109,12 @@ export default function PrivacyPage() {
       <div>
         {/* Hero */}
         <section className="mx-auto max-w-4xl px-4 pb-12 pt-6 text-center sm:px-6 sm:pt-10">
-          <p className="mx-auto mb-5 inline-flex items-center gap-2 rounded-full border border-purple-400/25 bg-purple-400/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-purple-200">
+          <p className="mx-auto mb-5 inline-flex items-center gap-2 rounded-full border border-purple-400/25 bg-purple-400/[0.07] px-4 py-2 text-[11px] font-bold tracking-wide text-purple-200">
             Privacy policy
           </p>
-          <h1 className="mx-auto max-w-3xl text-[2.2rem] font-black leading-[1.06] tracking-[-0.05em] sm:text-5xl">
+          <h1 className="mx-auto max-w-3xl text-[2.2rem] font-bold leading-[1.06] tracking-tight sm:text-4xl">
             Your interview data{" "}
-            <span className="bg-gradient-to-r from-purple-300 via-fuchsia-200 to-cyan-200 bg-clip-text text-transparent">
+            <span className="text-violet-300">
               belongs to you.
             </span>
           </h1>
@@ -141,7 +141,7 @@ export default function PrivacyPage() {
 
               {/* What we collect */}
               <div>
-                <h2 className="mb-6 text-2xl font-black tracking-[-0.04em] sm:text-3xl">
+                <h2 className="mb-6 text-2xl font-bold tracking-tight sm:text-3xl">
                   Data we hold about you.
                 </h2>
                 <div className="grid gap-5 sm:grid-cols-2">
@@ -150,7 +150,7 @@ export default function PrivacyPage() {
                       key={item.title}
                       className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-6"
                     >
-                      <p className="mb-2 font-black text-white">{item.title}</p>
+                      <p className="mb-2 font-bold text-white">{item.title}</p>
                       <p className="text-sm leading-7 text-gray-400">{item.text}</p>
                     </div>
                   ))}
@@ -159,7 +159,7 @@ export default function PrivacyPage() {
 
               {/* How we use your data */}
               <div>
-                <h2 className="mb-6 text-2xl font-black tracking-[-0.04em] sm:text-3xl">
+                <h2 className="mb-6 text-2xl font-bold tracking-tight sm:text-3xl">
                   What your data is used for.
                 </h2>
                 <div className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-7 space-y-4 text-sm leading-7 text-gray-300">
@@ -208,7 +208,7 @@ export default function PrivacyPage() {
 
               {/* Sub-processors */}
               <div>
-                <h2 className="mb-2 text-2xl font-black tracking-[-0.04em] sm:text-3xl">
+                <h2 className="mb-2 text-2xl font-bold tracking-tight sm:text-3xl">
                   Who we share your data with.
                 </h2>
                 <p className="mb-6 text-sm leading-7 text-gray-400">
@@ -221,14 +221,14 @@ export default function PrivacyPage() {
                       className="flex flex-col gap-3 rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-6 sm:flex-row sm:items-start sm:justify-between"
                     >
                       <div className="min-w-0">
-                        <p className="mb-1 font-black text-white">{p.name}</p>
+                        <p className="mb-1 font-bold text-white">{p.name}</p>
                         <p className="text-sm leading-7 text-gray-400">{p.purpose}</p>
                       </div>
                       <a
                         href={p.link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="shrink-0 text-xs font-black text-purple-300 hover:text-purple-100"
+                        className="shrink-0 text-xs font-bold text-purple-300 hover:text-purple-100"
                       >
                         Privacy policy →
                       </a>
@@ -239,27 +239,27 @@ export default function PrivacyPage() {
 
               {/* Data retention */}
               <div>
-                <h2 className="mb-6 text-2xl font-black tracking-[-0.04em] sm:text-3xl">
+                <h2 className="mb-6 text-2xl font-bold tracking-tight sm:text-3xl">
                   How long we keep your data.
                 </h2>
                 <div className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-7 space-y-4 text-sm leading-7 text-gray-300">
                   <p>
-                    <span className="font-black text-white">Profile context</span>:{" "}
+                    <span className="font-bold text-white">Profile context</span>:{" "}
                     Stored until you delete it from your profile or delete your
                     account. You can clear CV text, role context or goals
                     individually.
                   </p>
                   <p>
-                    <span className="font-black text-white">Saved practice sessions</span>:{" "}
+                    <span className="font-bold text-white">Saved practice sessions</span>:{" "}
                     Stored until you delete them individually or bulk-delete all
                     sessions from your profile page.
                   </p>
                   <p>
-                    <span className="font-black text-white">Voice and camera data</span>:{" "}
+                    <span className="font-bold text-white">Voice and camera data</span>:{" "}
                     Processed in your browser only. Never stored on our servers.
                   </p>
                   <p>
-                    <span className="font-black text-white">Account data</span>:{" "}
+                    <span className="font-bold text-white">Account data</span>:{" "}
                     Managed by Clerk. Deleting your Clerk account removes
                     authentication access. Contact us to request full data
                     deletion.
@@ -269,12 +269,12 @@ export default function PrivacyPage() {
 
               {/* Analytics */}
               <div>
-                <h2 className="mb-6 text-2xl font-black tracking-[-0.04em] sm:text-3xl">
+                <h2 className="mb-6 text-2xl font-bold tracking-tight sm:text-3xl">
                   Analytics and how you use the site.
                 </h2>
                 <div className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-7 space-y-4 text-sm leading-7 text-gray-300">
                   <p>
-                    <span className="font-black text-white">Only if you accept analytics.</span>{" "}
+                    <span className="font-bold text-white">Only if you accept analytics.</span>{" "}
                     When you choose &ldquo;Accept analytics&rdquo; on the cookie
                     banner, and only then, we record how you use the site while
                     signed in: the pages you visit, how long you spend on each
@@ -282,7 +282,7 @@ export default function PrivacyPage() {
                     mentor. This is linked to your account.
                   </p>
                   <p>
-                    <span className="font-black text-white">Why we collect it.</span>{" "}
+                    <span className="font-bold text-white">Why we collect it.</span>{" "}
                     To find where people get stuck and fix it. If candidates
                     consistently abandon a particular step, we want to know which
                     step and how long they struggled before leaving. We do not use
@@ -290,18 +290,18 @@ export default function PrivacyPage() {
                     never sell it.
                   </p>
                   <p>
-                    <span className="font-black text-white">Your legal basis.</span>{" "}
+                    <span className="font-bold text-white">Your legal basis.</span>{" "}
                     Consent. If you choose &ldquo;Essential only&rdquo;, none of
                     this is collected — not anonymously, not at all. Declining has
                     no effect on your access to any feature.
                   </p>
                   <p>
-                    <span className="font-black text-white">How long we keep it.</span>{" "}
+                    <span className="font-bold text-white">How long we keep it.</span>{" "}
                     Analytics records are deleted after 12 months. Deleting your
                     account removes them immediately.
                   </p>
                   <p>
-                    <span className="font-black text-white">Changing your mind.</span>{" "}
+                    <span className="font-bold text-white">Changing your mind.</span>{" "}
                     You can withdraw consent at any time by clearing this
                     site&rsquo;s data in your browser, which makes the banner
                     reappear so you can choose again. Withdrawal stops collection
@@ -309,7 +309,7 @@ export default function PrivacyPage() {
                     erased, contact us and we will delete it.
                   </p>
                   <p>
-                    <span className="font-black text-white">Who can see it.</span>{" "}
+                    <span className="font-bold text-white">Who can see it.</span>{" "}
                     Only us. Analytics is visible to our administrators to
                     diagnose problems with the product, and is not shared with any
                     third party for their own purposes.
@@ -326,18 +326,18 @@ export default function PrivacyPage() {
 
               {/* Email you receive */}
               <div>
-                <h2 className="mb-6 text-2xl font-black tracking-[-0.04em] sm:text-3xl">
+                <h2 className="mb-6 text-2xl font-bold tracking-tight sm:text-3xl">
                   Emails we send you.
                 </h2>
                 <div className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-7 space-y-4 text-sm leading-7 text-gray-300">
                   <p>
-                    <span className="font-black text-white">Service emails</span>:{" "}
+                    <span className="font-bold text-white">Service emails</span>:{" "}
                     Account, security, trial status, assessment invitations and
                     payment receipts. These are part of running your account, so
                     they are always sent while your account exists.
                   </p>
                   <p>
-                    <span className="font-black text-white">Interview tips and practice reminders</span>:{" "}
+                    <span className="font-bold text-white">Interview tips and practice reminders</span>:{" "}
                     Because you signed up for AI Career Mentor, we may email you
                     tips and reminders about this service under the soft opt-in
                     rule in the Privacy and Electronic Communications Regulations.
@@ -347,7 +347,7 @@ export default function PrivacyPage() {
                     We only email you about our own service.
                   </p>
                   <p>
-                    <span className="font-black text-white">No selling or sharing</span>:{" "}
+                    <span className="font-bold text-white">No selling or sharing</span>:{" "}
                     We never sell your email address and never pass it to third
                     parties for their own marketing.
                   </p>
@@ -356,7 +356,7 @@ export default function PrivacyPage() {
 
               {/* Your rights */}
               <div>
-                <h2 className="mb-2 text-2xl font-black tracking-[-0.04em] sm:text-3xl">
+                <h2 className="mb-2 text-2xl font-bold tracking-tight sm:text-3xl">
                   Control your data.
                 </h2>
                 <p className="mb-6 text-sm leading-7 text-gray-400">
@@ -368,7 +368,7 @@ export default function PrivacyPage() {
                       key={right.title}
                       className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-6"
                     >
-                      <p className="mb-2 font-black text-white">{right.title}</p>
+                      <p className="mb-2 font-bold text-white">{right.title}</p>
                       <p className="text-sm leading-7 text-gray-400">{right.text}</p>
                     </div>
                   ))}
@@ -385,7 +385,7 @@ export default function PrivacyPage() {
 
               {/* Cookies */}
               <div>
-                <h2 className="mb-6 text-2xl font-black tracking-[-0.04em] sm:text-3xl">
+                <h2 className="mb-6 text-2xl font-bold tracking-tight sm:text-3xl">
                   Cookies and analytics.
                 </h2>
                 <div className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-7 space-y-4 text-sm leading-7 text-gray-300">
@@ -411,7 +411,7 @@ export default function PrivacyPage() {
             <aside className="space-y-6">
 
               <div className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-6">
-                <p className="mb-4 text-[11px] font-black uppercase tracking-[0.18em] text-purple-200">
+                <p className="mb-4 text-[11px] font-bold tracking-wide text-purple-200">
                   Our commitments
                 </p>
                 <div className="space-y-3 text-sm leading-6 text-gray-400">
@@ -425,17 +425,17 @@ export default function PrivacyPage() {
               </div>
 
               <div className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-6">
-                <p className="mb-4 text-[11px] font-black uppercase tracking-[0.18em] text-purple-200">
+                <p className="mb-4 text-[11px] font-bold tracking-wide text-purple-200">
                   Your data controls
                 </p>
                 <div className="space-y-3">
                   <Link href="/profile">
-                    <button className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-3 text-sm font-black text-white shadow-lg transition hover:scale-[1.02]">
+                    <button className="w-full rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-5 py-3 text-sm font-bold text-white shadow-lg transition hover:scale-[1.02]">
                       Manage profile &amp; delete data
                     </button>
                   </Link>
                   <Link href="/terms">
-                    <button className="w-full rounded-2xl border border-white/[0.08] bg-white/[0.03] px-5 py-3 text-sm font-black text-gray-300 transition hover:bg-white/[0.06]">
+                    <button className="w-full rounded-2xl border border-white/[0.08] bg-white/[0.03] px-5 py-3 text-sm font-bold text-gray-300 transition hover:bg-white/[0.06]">
                       Terms of use
                     </button>
                   </Link>
@@ -443,7 +443,7 @@ export default function PrivacyPage() {
               </div>
 
               <div className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-6">
-                <p className="mb-3 text-[11px] font-black uppercase tracking-[0.18em] text-purple-200">
+                <p className="mb-3 text-[11px] font-bold tracking-wide text-purple-200">
                   Data controller
                 </p>
                 <p className="mb-1 font-bold text-gray-200">AI Career Mentor Ltd</p>
@@ -453,7 +453,7 @@ export default function PrivacyPage() {
               </div>
 
               <div className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-6">
-                <p className="mb-3 text-[11px] font-black uppercase tracking-[0.18em] text-purple-200">
+                <p className="mb-3 text-[11px] font-bold tracking-wide text-purple-200">
                   Privacy contact
                 </p>
                 <p className="mb-2 text-sm leading-6 text-gray-400">
@@ -468,7 +468,7 @@ export default function PrivacyPage() {
               </div>
 
               <div className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-6">
-                <p className="mb-3 text-[11px] font-black uppercase tracking-[0.18em] text-purple-200">
+                <p className="mb-3 text-[11px] font-bold tracking-wide text-purple-200">
                   Browser permissions
                 </p>
                 <div className="space-y-3 text-sm leading-6 text-gray-400">

@@ -58,7 +58,7 @@ function CompetencyBar({ label, score }: { label: string; score: number }) {
           style={{ width: `${pct}%` }}
         />
       </div>
-      <span className="w-8 text-right text-sm font-black text-white">{score}</span>
+      <span className="w-8 text-right text-sm font-bold text-white">{score}</span>
     </div>
   );
 }
@@ -77,8 +77,8 @@ function ScoreRing({ score }: { score: number }) {
   return (
     <div className={`relative mx-auto flex h-36 w-36 items-center justify-center rounded-full border-4 ${ringColour} shadow-2xl`}>
       <div className="text-center">
-        <div className={`text-5xl font-black ${colour}`}>{score.toFixed(1)}</div>
-        <div className="text-xs text-gray-500 font-black">/ 10</div>
+        <div className={`text-4xl font-bold ${colour}`}>{score.toFixed(1)}</div>
+        <div className="text-xs text-gray-500 font-bold">/ 10</div>
       </div>
     </div>
   );
@@ -137,7 +137,7 @@ export default function ReportPage() {
             </svg>
           </div>
           <div>
-            <h2 className="text-xl font-black text-white">Generating your report…</h2>
+            <h2 className="text-xl font-bold text-white">Generating your report…</h2>
             <p className="mt-2 text-sm text-gray-500 max-w-sm">
               Our chief assessor AI is synthesising your performance across all three stages.
               This takes 15–30 seconds.
@@ -180,21 +180,21 @@ export default function ReportPage() {
           <div className="pointer-events-none absolute -bottom-24 left-10 h-80 w-80 rounded-full bg-cyan-400/10 blur-3xl" />
 
           <div className="relative flex flex-col items-center gap-6 text-center">
-            <div className="mb-1 inline-flex items-center gap-2 rounded-full border border-white/[0.1] bg-white/[0.04] px-4 py-2 text-[11px] font-black uppercase tracking-[0.22em] text-gray-400">
+            <div className="mb-1 inline-flex items-center gap-2 rounded-full border border-white/[0.1] bg-white/[0.04] px-4 py-2 text-[11px] font-bold tracking-wide text-gray-400">
               Final Assessment Centre Report · {sessionDate}
             </div>
 
             <ScoreRing score={report.overallScore} />
 
-            <span className={`rounded-full border px-4 py-1.5 text-xs font-black uppercase tracking-[0.15em] ${readinessColour}`}>
+            <span className={`rounded-full border px-4 py-1.5 text-xs font-bold tracking-wide ${readinessColour}`}>
               {report.readinessLevel} Readiness
             </span>
 
             <div>
-              <div className="text-sm font-black uppercase tracking-[0.2em] text-gray-500 mb-1">
+              <div className="text-sm font-bold tracking-wide text-gray-500 mb-1">
                 {session.role} · {session.sector}
               </div>
-              <p className="text-lg font-black leading-snug text-white max-w-xl">
+              <p className="text-lg font-bold leading-snug text-white max-w-xl">
                 &ldquo;{report.headline}&rdquo;
               </p>
             </div>
@@ -226,10 +226,10 @@ export default function ReportPage() {
             return (
               <div key={stage.label} className={`rounded-[1.75rem] border ${borderBg} p-6 text-center backdrop-blur-xl`}>
                 <div className="text-3xl mb-2">{stage.icon}</div>
-                <p className={`text-[11px] font-black uppercase tracking-[0.22em] ${textColour} mb-2`}>
+                <p className={`text-[11px] font-bold tracking-wide ${textColour} mb-2`}>
                   {stage.label}
                 </p>
-                <div className={`text-4xl font-black ${scoreColour}`}>{stage.score.toFixed(1)}</div>
+                <div className={`text-4xl font-bold ${scoreColour}`}>{stage.score.toFixed(1)}</div>
                 <div className="text-xs text-gray-600">/ 10</div>
               </div>
             );
@@ -238,7 +238,7 @@ export default function ReportPage() {
 
         {/* ─── 3. Competency breakdown ─── */}
         <section className="mb-8 rounded-[2rem] border border-white/[0.08] bg-white/[0.04] p-7 backdrop-blur-xl">
-          <h2 className="mb-6 text-[11px] font-black uppercase tracking-[0.26em] text-gray-400">
+          <h2 className="mb-6 text-[11px] font-bold tracking-wide text-gray-400">
             Competency breakdown
           </h2>
           <div className="space-y-4">
@@ -253,13 +253,13 @@ export default function ReportPage() {
         {/* ─── 4. Strengths & Improvements ─── */}
         <section className="mb-8 grid gap-4 sm:grid-cols-2">
           <div className="rounded-[2rem] border border-emerald-500/[0.18] bg-emerald-500/[0.04] p-6 backdrop-blur-xl">
-            <h2 className="mb-4 text-[11px] font-black uppercase tracking-[0.26em] text-emerald-400">
+            <h2 className="mb-4 text-[11px] font-bold tracking-wide text-emerald-400">
               Your strengths
             </h2>
             <ul className="space-y-3">
               {report.topStrengths.map((s, i) => (
                 <li key={i} className="flex items-start gap-3 text-sm text-gray-300">
-                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-500/20 text-[10px] font-black text-emerald-400">
+                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-500/20 text-[10px] font-bold text-emerald-400">
                     ✓
                   </span>
                   {s}
@@ -268,13 +268,13 @@ export default function ReportPage() {
             </ul>
           </div>
           <div className="rounded-[2rem] border border-amber-500/[0.18] bg-amber-500/[0.04] p-6 backdrop-blur-xl">
-            <h2 className="mb-4 text-[11px] font-black uppercase tracking-[0.26em] text-amber-400">
+            <h2 className="mb-4 text-[11px] font-bold tracking-wide text-amber-400">
               Priority improvements
             </h2>
             <ul className="space-y-3">
               {report.priorityImprovements.map((s, i) => (
                 <li key={i} className="flex items-start gap-3 text-sm text-gray-300">
-                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-500/20 text-[10px] font-black text-amber-400">
+                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-500/20 text-[10px] font-bold text-amber-400">
                     →
                   </span>
                   {s}
@@ -286,7 +286,7 @@ export default function ReportPage() {
 
         {/* ─── 5. 7-day action plan ─── */}
         <section className="mb-8 rounded-[2rem] border border-white/[0.08] bg-white/[0.04] p-7 backdrop-blur-xl">
-          <h2 className="mb-6 text-[11px] font-black uppercase tracking-[0.26em] text-gray-400">
+          <h2 className="mb-6 text-[11px] font-bold tracking-wide text-gray-400">
             Your 7-day action plan
           </h2>
           <div className="space-y-3">
@@ -295,7 +295,7 @@ export default function ReportPage() {
                 key={i}
                 className="flex items-start gap-4 rounded-xl border border-white/[0.06] bg-white/[0.03] px-4 py-3.5"
               >
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-purple-500/40 to-cyan-400/30 text-xs font-black text-white">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-purple-500/40 to-cyan-400/30 text-xs font-bold text-white">
                   {i + 1}
                 </span>
                 <p className="text-sm text-gray-300 leading-6">{action}</p>
@@ -306,7 +306,7 @@ export default function ReportPage() {
 
         {/* ─── 6. Final recommendation ─── */}
         <section className="mb-8 rounded-[2rem] border-l-4 border-l-purple-400 border-y border-r border-white/[0.08] bg-white/[0.04] p-7 backdrop-blur-xl">
-          <h2 className="mb-3 text-[11px] font-black uppercase tracking-[0.26em] text-purple-400">
+          <h2 className="mb-3 text-[11px] font-bold tracking-wide text-purple-400">
             Final recommendation
           </h2>
           <p className="text-base leading-8 text-gray-200 italic">
@@ -318,13 +318,13 @@ export default function ReportPage() {
         <section className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
           <Link
             href="/assessment-centre/setup"
-            className="rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-8 py-4 text-center text-sm font-black text-white shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.02]"
+            className="rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-8 py-4 text-center text-sm font-bold text-white shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.02]"
           >
             Retake assessment centre →
           </Link>
           <Link
             href="/practice"
-            className="rounded-2xl border border-white/[0.1] bg-white/[0.04] px-8 py-4 text-center text-sm font-black text-white transition hover:bg-white/[0.07]"
+            className="rounded-2xl border border-white/[0.1] bg-white/[0.04] px-8 py-4 text-center text-sm font-bold text-white transition hover:bg-white/[0.07]"
           >
             Return to interview practice
           </Link>

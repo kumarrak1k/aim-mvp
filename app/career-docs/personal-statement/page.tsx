@@ -118,19 +118,19 @@ export default function PersonalStatementPage() {
     return (
       <CandidateAppShell currentPath="/career-docs">
         <div className="mx-auto max-w-lg px-4 py-24 text-center">
-          <div className="mb-6 text-5xl">🔒</div>
-          <h1 className="text-2xl font-black text-white">Professional plan required</h1>
+          <div className="mb-6 text-4xl">🔒</div>
+          <h1 className="text-2xl font-bold text-white">Professional plan required</h1>
           <p className="mt-3 text-sm leading-7 text-gray-400">Personal Statement Generator is available on the Professional plan.</p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
             <Link
               href="/pricing"
-              className="rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-6 py-3.5 text-center text-sm font-black text-white shadow-lg"
+              className="rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-3.5 text-center text-sm font-bold text-white shadow-lg"
             >
               See plans →
             </Link>
             <Link
               href="/career-docs"
-              className="rounded-2xl border border-white/10 bg-white/[0.06] px-6 py-3.5 text-center text-sm font-black text-white"
+              className="rounded-2xl border border-white/10 bg-white/[0.06] px-6 py-3.5 text-center text-sm font-bold text-white"
             >
               Back to Career Docs
             </Link>
@@ -145,7 +145,7 @@ export default function PersonalStatementPage() {
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
         {/* Header */}
         <div className="mb-8">
-          <Link href="/career-docs" className="mb-4 inline-flex items-center gap-1.5 text-xs font-black text-gray-500 hover:text-gray-300 transition">← Career Docs</Link>
+          <Link href="/career-docs" className="mb-4 inline-flex items-center gap-1.5 text-xs font-bold text-gray-500 hover:text-gray-300 transition">← Career Docs</Link>
           <div className="flex items-center gap-3">
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-emerald-400/25 bg-emerald-400/10 text-emerald-300">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
@@ -153,8 +153,8 @@ export default function PersonalStatementPage() {
               </svg>
             </div>
             <div>
-              <p className="text-[11px] font-black uppercase tracking-[0.22em] text-emerald-300">AI Writer</p>
-              <h1 className="text-2xl font-black tracking-[-0.04em] text-white">Personal Statement Generator</h1>
+              <p className="text-[11px] font-bold tracking-wide text-emerald-300">AI Writer</p>
+              <h1 className="text-2xl font-bold tracking-tight text-white">Personal Statement Generator</h1>
             </div>
           </div>
         </div>
@@ -166,7 +166,7 @@ export default function PersonalStatementPage() {
 
               {/* Type selector */}
               <div>
-                <label className="mb-2 block text-xs font-black uppercase tracking-[0.18em] text-gray-400">Statement type</label>
+                <label className="mb-2 block text-xs font-bold tracking-wide text-gray-400">Statement type</label>
                 <div className="space-y-2">
                   {statementTypes.map((opt) => (
                     <button key={opt.value} type="button" onClick={() => setStatementType(opt.value)}
@@ -177,7 +177,7 @@ export default function PersonalStatementPage() {
                       }`}>
                       <div className={`h-1.5 w-1.5 rounded-full shrink-0 ${statementType === opt.value ? "bg-emerald-400" : "bg-gray-600"}`} />
                       <div>
-                        <p className="text-sm font-black">{opt.label}</p>
+                        <p className="text-sm font-bold">{opt.label}</p>
                         <p className="text-[11px] text-gray-500">{opt.desc}</p>
                       </div>
                     </button>
@@ -186,21 +186,21 @@ export default function PersonalStatementPage() {
               </div>
 
               <div>
-                <label className="mb-1.5 block text-xs font-black uppercase tracking-[0.18em] text-gray-400">Programme or role *</label>
+                <label className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400">Programme or role *</label>
                 <input type="text" value={targetProgramOrRole} onChange={(e) => setTargetProgramOrRole(e.target.value)}
                   placeholder="e.g. Computer Science, McKinsey Business Analyst"
                   className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-600 outline-none focus:border-emerald-400/40 focus:ring-1 focus:ring-emerald-400/20" required />
               </div>
 
               <div>
-                <label className="mb-1.5 block text-xs font-black uppercase tracking-[0.18em] text-gray-400">Institution / employer</label>
+                <label className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400">Institution / employer</label>
                 <input type="text" value={institution} onChange={(e) => setInstitution(e.target.value)}
                   placeholder="e.g. University of Edinburgh, Deloitte"
                   className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-600 outline-none focus:border-emerald-400/40 focus:ring-1 focus:ring-emerald-400/20" />
               </div>
 
               <div>
-                <label className="mb-1.5 block text-xs font-black uppercase tracking-[0.18em] text-gray-400">Why this programme / role? *</label>
+                <label className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400">Why this programme / role? *</label>
                 <textarea value={whyThis} onChange={(e) => setWhyThis(e.target.value)}
                   placeholder="What drew you to this specifically? Any pivotal moments, projects, experiences, or people that shaped your direction…"
                   rows={4}
@@ -210,7 +210,7 @@ export default function PersonalStatementPage() {
 
               {/* Background field with CV integration */}
               <div>
-                <label className="mb-1.5 block text-xs font-black uppercase tracking-[0.18em] text-gray-400">Your background *</label>
+                <label className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400">Your background *</label>
 
                 {/* Saved CV banner */}
                 {!savedCV.loading && (
@@ -230,7 +230,7 @@ export default function PersonalStatementPage() {
                         type="button"
                         onClick={() => fileInputRef.current?.click()}
                         disabled={savedCV.uploading}
-                        className="rounded-lg border border-emerald-400/30 bg-emerald-400/10 px-2.5 py-1 text-[10px] font-black text-emerald-300 transition hover:bg-emerald-400/20 disabled:opacity-50"
+                        className="rounded-lg border border-emerald-400/30 bg-emerald-400/10 px-2.5 py-1 text-[10px] font-bold text-emerald-300 transition hover:bg-emerald-400/20 disabled:opacity-50"
                       >
                         {savedCV.uploading ? "Uploading…" : savedCV.hasSavedCV ? "Replace" : "Upload CV"}
                       </button>
@@ -239,7 +239,7 @@ export default function PersonalStatementPage() {
                           type="button"
                           onClick={() => void savedCV.removeCV()}
                           disabled={savedCV.removing}
-                          className="rounded-lg border border-red-400/30 bg-red-400/[0.08] px-2.5 py-1 text-[10px] font-black text-red-400 transition hover:bg-red-400/20 disabled:opacity-50"
+                          className="rounded-lg border border-red-400/30 bg-red-400/[0.08] px-2.5 py-1 text-[10px] font-bold text-red-400 transition hover:bg-red-400/20 disabled:opacity-50"
                         >
                           {savedCV.removing ? "Removing…" : "Remove"}
                         </button>
@@ -270,7 +270,7 @@ export default function PersonalStatementPage() {
               </div>
 
               <div>
-                <label className="mb-1.5 block text-xs font-black uppercase tracking-[0.18em] text-gray-400">Key achievements *</label>
+                <label className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400">Key achievements *</label>
                 <textarea value={achievements} onChange={(e) => setAchievements(e.target.value)}
                   placeholder="Awards, projects, leadership roles, results you're proud of. Include numbers where possible…"
                   rows={3}
@@ -279,7 +279,7 @@ export default function PersonalStatementPage() {
               </div>
 
               <div>
-                <label className="mb-2 flex items-center justify-between text-xs font-black uppercase tracking-[0.18em] text-gray-400">
+                <label className="mb-2 flex items-center justify-between text-xs font-bold tracking-wide text-gray-400">
                   Word limit <span className="text-white">{wordLimit} words</span>
                 </label>
                 <input type="range" min={300} max={1000} step={50} value={wordLimit}
@@ -294,7 +294,7 @@ export default function PersonalStatementPage() {
             {error && <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">{error}</div>}
 
             <button type="submit" disabled={loading || !canSubmit}
-              className={`flex w-full items-center justify-center gap-2 rounded-2xl px-6 py-4 text-sm font-black transition-all ${
+              className={`flex w-full items-center justify-center gap-2 rounded-2xl px-6 py-4 text-sm font-bold transition-all ${
                 !loading && canSubmit
                   ? "bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg hover:scale-[1.01]"
                   : "cursor-not-allowed bg-white/[0.05] text-gray-600"
@@ -342,27 +342,27 @@ export default function PersonalStatementPage() {
             {result && (
               <>
                 <div className="flex flex-wrap items-center gap-3">
-                  <span className="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-xs font-black text-emerald-300">{result.wordCount} words</span>
+                  <span className="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-xs font-bold text-emerald-300">{result.wordCount} words</span>
                   <button onClick={copyStatement}
-                    className="ml-auto rounded-xl border border-white/10 bg-white/[0.06] px-4 py-2 text-xs font-black text-white transition hover:bg-white/[0.1]">
+                    className="ml-auto rounded-xl border border-white/10 bg-white/[0.06] px-4 py-2 text-xs font-bold text-white transition hover:bg-white/[0.1]">
                     {copied ? "✓ Copied!" : "Copy statement"}
                   </button>
                 </div>
 
                 {/* Statement */}
                 <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-6 backdrop-blur-xl">
-                  <p className="mb-3 text-[11px] font-black uppercase tracking-[0.22em] text-emerald-300">Your personal statement</p>
+                  <p className="mb-3 text-[11px] font-bold tracking-wide text-emerald-300">Your personal statement</p>
                   <div className="whitespace-pre-line text-sm leading-8 text-gray-200">{result.statement}</div>
                 </div>
 
                 {/* Narrative notes */}
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-5 backdrop-blur-xl">
-                    <p className="mb-2 text-[10px] font-black uppercase tracking-[0.18em] text-purple-300">Opening approach</p>
+                    <p className="mb-2 text-[10px] font-bold tracking-wide text-purple-300">Opening approach</p>
                     <p className="text-sm leading-6 text-gray-300">{result.openingHook}</p>
                   </div>
                   <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-5 backdrop-blur-xl">
-                    <p className="mb-2 text-[10px] font-black uppercase tracking-[0.18em] text-cyan-300">Central narrative</p>
+                    <p className="mb-2 text-[10px] font-bold tracking-wide text-cyan-300">Central narrative</p>
                     <p className="text-sm leading-6 text-gray-300">{result.keyNarrativeThread}</p>
                   </div>
                 </div>
@@ -370,7 +370,7 @@ export default function PersonalStatementPage() {
                 {/* Strengths + suggestions */}
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="rounded-[1.75rem] border border-emerald-400/[0.18] bg-emerald-400/[0.05] p-5">
-                    <p className="mb-3 text-[11px] font-black uppercase tracking-[0.18em] text-emerald-400">What works well</p>
+                    <p className="mb-3 text-[11px] font-bold tracking-wide text-emerald-400">What works well</p>
                     <ul className="space-y-2">
                       {result.strengths.map((s, i) => (
                         <li key={i} className="flex items-start gap-2 text-sm text-gray-300">
@@ -380,7 +380,7 @@ export default function PersonalStatementPage() {
                     </ul>
                   </div>
                   <div className="rounded-[1.75rem] border border-amber-400/[0.18] bg-amber-400/[0.05] p-5">
-                    <p className="mb-3 text-[11px] font-black uppercase tracking-[0.18em] text-amber-400">Before you submit</p>
+                    <p className="mb-3 text-[11px] font-bold tracking-wide text-amber-400">Before you submit</p>
                     <ul className="space-y-2">
                       {result.suggestions.map((s, i) => (
                         <li key={i} className="flex items-start gap-2 text-sm text-gray-300">

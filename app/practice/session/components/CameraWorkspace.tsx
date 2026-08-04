@@ -40,13 +40,13 @@ export function CameraWorkspace({
     <section className="rounded-[1.25rem] border border-white/10 bg-white/[0.055] p-3 shadow-2xl shadow-purple-950/10 backdrop-blur-2xl">
       <div className="mb-2 flex items-center justify-between gap-3">
         <div>
-          <p className="text-[11px] font-black uppercase tracking-[0.18em] text-cyan-300">
+          <p className="text-[11px] font-bold tracking-wide text-cyan-300">
             Camera
           </p>
           <p className="mt-0.5 text-[10px] text-gray-500">Live preview</p>
         </div>
 
-        <span className="rounded-full border border-white/10 bg-white/[0.06] px-2 py-1 text-[10px] font-black text-gray-300">
+        <span className="rounded-full border border-white/10 bg-white/[0.06] px-2 py-1 text-[10px] font-bold text-gray-300">
           {statusLabel}
         </span>
       </div>
@@ -74,7 +74,7 @@ export function CameraWorkspace({
               <button
                 type="button"
                 onClick={onStartCameraFromTap}
-                className="rounded-full bg-white px-4 py-2 text-[11px] font-black text-black transition hover:bg-purple-100"
+                className="rounded-full bg-white px-4 py-2 text-[11px] font-bold text-black transition hover:bg-purple-100"
               >
                 Start
               </button>
@@ -91,7 +91,7 @@ export function CameraWorkspace({
         <div className="min-w-0">
           {feedbackReady ? (
             <div className="rounded-[1rem] border border-emerald-300/20 bg-emerald-300/10 p-3 lg:mt-3">
-              <p className="text-[10px] font-black uppercase tracking-[0.16em] text-emerald-200">
+              <p className="text-[10px] font-bold tracking-wide text-emerald-200">
                 {assessmentMode ? "Answer recorded" : "Feedback ready"}
               </p>
               <p className="mt-1 text-[11px] leading-4 text-gray-300">
@@ -102,14 +102,14 @@ export function CameraWorkspace({
               <button
                 type="button"
                 onClick={onViewFeedback}
-                className="mt-3 w-full rounded-xl bg-white px-3 py-2 text-[11px] font-black text-black transition hover:bg-emerald-100"
+                className="mt-3 w-full rounded-xl bg-white px-3 py-2 text-[11px] font-bold text-black transition hover:bg-emerald-100"
               >
                 {assessmentMode ? "Continue" : "View feedback"}
               </button>
             </div>
           ) : (
             <div className="rounded-[1rem] border border-white/10 bg-black/20 p-3 lg:hidden">
-              <p className="text-[11px] font-black text-white">
+              <p className="text-[11px] font-bold text-white">
                 Camera presence
               </p>
               <p className="mt-1 text-[11px] leading-4 text-gray-500">
@@ -126,7 +126,7 @@ export function CameraWorkspace({
                 <button
                   type="button"
                   onClick={onStartCameraFromTap}
-                  className="mt-2 w-full rounded-xl bg-white px-3 py-1.5 text-[11px] font-black text-black transition hover:bg-amber-100"
+                  className="mt-2 w-full rounded-xl bg-white px-3 py-1.5 text-[11px] font-bold text-black transition hover:bg-amber-100"
                 >
                   Try again
                 </button>

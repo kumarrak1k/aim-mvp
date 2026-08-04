@@ -116,12 +116,12 @@ export default async function InterviewPracticePage() {
     <CandidateShell currentPath="/interview-practice">
       {/* Hero */}
       <section className="mx-auto max-w-5xl px-4 pb-14 pt-6 text-center sm:px-6 sm:pb-16 sm:pt-10">
-        <p className="mx-auto mb-5 inline-flex items-center gap-2 rounded-full border border-purple-400/25 bg-purple-400/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-purple-200">
+        <p className="mx-auto mb-5 inline-flex items-center gap-2 rounded-full border border-purple-400/25 bg-purple-400/[0.07] px-4 py-2 text-[11px] font-bold tracking-wide text-purple-200">
           Interview practice
         </p>
-        <h1 className="text-[2.4rem] font-black leading-[1.04] tracking-[-0.05em] sm:text-5xl lg:text-6xl">
+        <h1 className="text-4xl font-bold leading-[1.04] tracking-tight sm:text-4xl lg:text-5xl">
           Practise interviews{" "}
-          <span className="bg-gradient-to-r from-purple-300 via-fuchsia-200 to-cyan-200 bg-clip-text text-transparent">
+          <span className="text-violet-300">
             until the answers come naturally.
           </span>
         </h1>
@@ -133,13 +133,13 @@ export default async function InterviewPracticePage() {
         <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link
             href="/for-candidates/sign-up"
-            className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-8 py-4 text-center text-base font-black text-white shadow-2xl shadow-purple-900/40 transition hover:scale-[1.02] sm:w-auto"
+            className="w-full rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-8 py-4 text-center text-base font-bold text-white shadow-2xl shadow-purple-900/40 transition hover:scale-[1.02] sm:w-auto"
           >
             Start free →
           </Link>
           <Link
             href="/mock-assessment-centre"
-            className="w-full rounded-2xl border border-white/[0.1] bg-white/[0.04] px-8 py-4 text-center text-base font-black text-white transition hover:bg-white/[0.08] sm:w-auto"
+            className="w-full rounded-2xl border border-white/[0.1] bg-white/[0.04] px-8 py-4 text-center text-base font-bold text-white transition hover:bg-white/[0.08] sm:w-auto"
           >
             Looking for assessment centre?
           </Link>
@@ -154,10 +154,10 @@ export default async function InterviewPracticePage() {
               key={step.number}
               className="rounded-[1.75rem] border border-white/[0.08] bg-white/[0.03] p-6 transition hover:border-white/[0.12] hover:bg-white/[0.05]"
             >
-              <p className="text-3xl font-black leading-none text-purple-500/40">
+              <p className="text-3xl font-bold leading-none text-purple-500/40">
                 {step.number}
               </p>
-              <h3 className="mt-3 text-lg font-black tracking-[-0.03em]">
+              <h3 className="mt-3 text-lg font-bold tracking-tight">
                 {step.title}
               </h3>
               <p className="mt-3 text-sm leading-6 text-gray-400">
@@ -171,10 +171,10 @@ export default async function InterviewPracticePage() {
       {/* Features */}
       <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 sm:pb-20">
         <div className="mb-10 text-center">
-          <p className="text-[11px] font-black uppercase tracking-[0.26em] text-purple-300/90">
+          <p className="text-[11px] font-bold tracking-wide text-purple-300/90">
             What you get
           </p>
-          <h2 className="mt-3 text-3xl font-black tracking-[-0.05em] sm:text-4xl">
+          <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
             A complete interview-coaching toolkit.
           </h2>
         </div>
@@ -189,9 +189,9 @@ export default async function InterviewPracticePage() {
               }`}
             >
               <div className="flex items-center gap-2">
-                <p className="font-black text-white">{f.title}</p>
+                <p className="font-bold text-white">{f.title}</p>
                 {f.badge && (
-                  <span className="rounded-full bg-fuchsia-400/15 px-2 py-0.5 text-[9px] font-black uppercase tracking-[0.12em] text-fuchsia-300">
+                  <span className="rounded-full bg-fuchsia-400/15 px-2 py-0.5 text-[9px] font-bold tracking-wide text-fuchsia-300">
                     {f.badge}
                   </span>
                 )}
@@ -204,13 +204,13 @@ export default async function InterviewPracticePage() {
 
       {/* FAQs */}
       <section className="mx-auto max-w-3xl px-4 pb-16 sm:px-6 sm:pb-20">
-        <h2 className="mb-8 text-2xl font-black tracking-[-0.04em]">
+        <h2 className="mb-8 text-2xl font-bold tracking-tight">
           Frequently asked questions
         </h2>
         <div className="divide-y divide-white/[0.07]">
           {faqs.map((faq) => (
             <details key={faq.q} className="group py-5">
-              <summary className="flex cursor-pointer list-none items-start justify-between gap-4 text-sm font-black text-white">
+              <summary className="flex cursor-pointer list-none items-start justify-between gap-4 text-sm font-bold text-white">
                 {faq.q}
                 <span className="mt-0.5 shrink-0 text-gray-500 transition-transform group-open:rotate-45">
                   +
@@ -225,19 +225,19 @@ export default async function InterviewPracticePage() {
       {/* CTA */}
       <section className="mx-auto max-w-7xl px-4 pb-20 sm:px-6 sm:pb-28">
         <div className="rounded-[2rem] border border-white/[0.1] bg-gradient-to-br from-purple-500/[0.10] via-fuchsia-500/[0.06] to-transparent p-10 text-center sm:p-14">
-          <h2 className="mx-auto max-w-2xl text-3xl font-black tracking-[-0.05em] sm:text-4xl">
+          <h2 className="mx-auto max-w-2xl text-3xl font-bold tracking-tight sm:text-4xl">
             Stop hoping. Start preparing.
           </h2>
           <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link
               href="/for-candidates/sign-up"
-              className="rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-7 py-4 text-center text-base font-black text-white shadow-2xl shadow-purple-900/40 transition hover:scale-[1.02]"
+              className="rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-7 py-4 text-center text-base font-bold text-white shadow-2xl shadow-purple-900/40 transition hover:scale-[1.02]"
             >
               Start free →
             </Link>
             <Link
               href="/pricing"
-              className="rounded-2xl border border-white/[0.1] bg-white/[0.04] px-7 py-4 text-center text-base font-black text-white transition hover:bg-white/[0.08]"
+              className="rounded-2xl border border-white/[0.1] bg-white/[0.04] px-7 py-4 text-center text-base font-bold text-white transition hover:bg-white/[0.08]"
             >
               See pricing
             </Link>

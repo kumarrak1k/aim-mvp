@@ -78,12 +78,12 @@ export default function TermsPage() {
       <div>
         {/* Hero */}
         <section className="mx-auto max-w-4xl px-4 pb-12 pt-6 text-center sm:px-6 sm:pt-10">
-          <p className="mx-auto mb-5 inline-flex items-center gap-2 rounded-full border border-purple-400/25 bg-purple-400/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-purple-200">
+          <p className="mx-auto mb-5 inline-flex items-center gap-2 rounded-full border border-purple-400/25 bg-purple-400/[0.07] px-4 py-2 text-[11px] font-bold tracking-wide text-purple-200">
             Terms of use
           </p>
-          <h1 className="mx-auto max-w-3xl text-[2.2rem] font-black leading-[1.06] tracking-[-0.05em] sm:text-5xl">
+          <h1 className="mx-auto max-w-3xl text-[2.2rem] font-bold leading-[1.06] tracking-tight sm:text-4xl">
             Use AI Career Mentor as a{" "}
-            <span className="bg-gradient-to-r from-purple-300 via-fuchsia-200 to-cyan-200 bg-clip-text text-transparent">
+            <span className="text-violet-300">
               preparation tool.
             </span>
           </h1>
@@ -111,7 +111,7 @@ export default function TermsPage() {
 
               {/* Core terms */}
               <div>
-                <h2 className="mb-2 text-2xl font-black tracking-[-0.04em] sm:text-3xl">
+                <h2 className="mb-2 text-2xl font-bold tracking-tight sm:text-3xl">
                   How the service works.
                 </h2>
                 <p className="mb-6 text-sm leading-7 text-gray-400">
@@ -123,7 +123,7 @@ export default function TermsPage() {
                       key={item.title}
                       className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-6"
                     >
-                      <p className="mb-2 font-black text-white">{item.title}</p>
+                      <p className="mb-2 font-bold text-white">{item.title}</p>
                       <p className="text-sm leading-7 text-gray-400">{item.text}</p>
                     </div>
                   ))}
@@ -132,7 +132,7 @@ export default function TermsPage() {
 
               {/* Limitations */}
               <div>
-                <h2 className="mb-2 text-2xl font-black tracking-[-0.04em] sm:text-3xl">
+                <h2 className="mb-2 text-2xl font-bold tracking-tight sm:text-3xl">
                   What we do not provide.
                 </h2>
                 <p className="mb-6 text-sm leading-7 text-gray-400">
@@ -144,7 +144,7 @@ export default function TermsPage() {
                       key={item.title}
                       className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-6"
                     >
-                      <p className="mb-2 font-black text-white">{item.title}</p>
+                      <p className="mb-2 font-bold text-white">{item.title}</p>
                       <p className="text-sm leading-7 text-gray-400">{item.text}</p>
                     </div>
                   ))}
@@ -153,7 +153,7 @@ export default function TermsPage() {
 
               {/* Uploads */}
               <div>
-                <h2 className="mb-6 text-2xl font-black tracking-[-0.04em] sm:text-3xl">
+                <h2 className="mb-6 text-2xl font-bold tracking-tight sm:text-3xl">
                   What you upload to AI Career Mentor.
                 </h2>
                 <div className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-7 space-y-4 text-sm leading-7 text-gray-300">
@@ -183,7 +183,7 @@ export default function TermsPage() {
 
               {/* Intellectual property */}
               <div>
-                <h2 className="mb-6 text-2xl font-black tracking-[-0.04em] sm:text-3xl">
+                <h2 className="mb-6 text-2xl font-bold tracking-tight sm:text-3xl">
                   Ownership and protection of the platform.
                 </h2>
                 <div className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-7 space-y-4 text-sm leading-7 text-gray-300">
@@ -224,7 +224,7 @@ export default function TermsPage() {
 
               {/* Prohibited use */}
               <div>
-                <h2 className="mb-2 text-2xl font-black tracking-[-0.04em] sm:text-3xl">
+                <h2 className="mb-2 text-2xl font-bold tracking-tight sm:text-3xl">
                   What you must not do.
                 </h2>
                 <p className="mb-6 text-sm leading-7 text-gray-400">
@@ -237,7 +237,7 @@ export default function TermsPage() {
                       key={item.title}
                       className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-6"
                     >
-                      <p className="mb-2 font-black text-white">{item.title}</p>
+                      <p className="mb-2 font-bold text-white">{item.title}</p>
                       <p className="text-sm leading-6 text-gray-400">{item.text}</p>
                     </div>
                   ))}
@@ -252,7 +252,7 @@ export default function TermsPage() {
 
               {/* Governing law */}
               <div>
-                <h2 className="mb-6 text-2xl font-black tracking-[-0.04em] sm:text-3xl">
+                <h2 className="mb-6 text-2xl font-bold tracking-tight sm:text-3xl">
                   Jurisdiction and disputes.
                 </h2>
                 <div className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-7 space-y-4 text-sm leading-7 text-gray-300">
@@ -278,7 +278,7 @@ export default function TermsPage() {
             <aside className="space-y-6">
 
               <div className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-6">
-                <p className="mb-4 text-[11px] font-black uppercase tracking-[0.18em] text-purple-200">
+                <p className="mb-4 text-[11px] font-bold tracking-wide text-purple-200">
                   Responsible use
                 </p>
                 <div className="space-y-3 text-sm leading-6 text-gray-400">
@@ -292,22 +292,22 @@ export default function TermsPage() {
               </div>
 
               <div className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-6">
-                <p className="mb-4 text-[11px] font-black uppercase tracking-[0.18em] text-purple-200">
+                <p className="mb-4 text-[11px] font-bold tracking-wide text-purple-200">
                   Quick links
                 </p>
                 <div className="space-y-3">
                   <Link href="/for-candidates/sign-up">
-                    <button className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-3 text-sm font-black text-white shadow-lg transition hover:scale-[1.02]">
+                    <button className="w-full rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-5 py-3 text-sm font-bold text-white shadow-lg transition hover:scale-[1.02]">
                       Start free
                     </button>
                   </Link>
                   <Link href="/privacy">
-                    <button className="w-full rounded-2xl border border-white/[0.08] bg-white/[0.03] px-5 py-3 text-sm font-black text-gray-300 transition hover:bg-white/[0.06]">
+                    <button className="w-full rounded-2xl border border-white/[0.08] bg-white/[0.03] px-5 py-3 text-sm font-bold text-gray-300 transition hover:bg-white/[0.06]">
                       Privacy policy
                     </button>
                   </Link>
                   <Link href="/contact">
-                    <button className="w-full rounded-2xl border border-white/[0.08] bg-white/[0.03] px-5 py-3 text-sm font-black text-gray-300 transition hover:bg-white/[0.06]">
+                    <button className="w-full rounded-2xl border border-white/[0.08] bg-white/[0.03] px-5 py-3 text-sm font-bold text-gray-300 transition hover:bg-white/[0.06]">
                       Contact us
                     </button>
                   </Link>
@@ -315,7 +315,7 @@ export default function TermsPage() {
               </div>
 
               <div className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-6">
-                <p className="mb-3 text-[11px] font-black uppercase tracking-[0.18em] text-purple-200">
+                <p className="mb-3 text-[11px] font-bold tracking-wide text-purple-200">
                   Questions about these terms
                 </p>
                 <p className="mb-2 text-sm leading-6 text-gray-400">

@@ -62,11 +62,11 @@ export default async function CompanyGuidePage({ params }: Props) {
         {/* Hero */}
         <div className="mb-10">
           <div className="mb-4 flex items-center gap-3">
-            <span className="rounded-lg border border-white/[0.1] bg-white/[0.05] px-3 py-1 text-xs font-black uppercase tracking-[0.14em] text-gray-400">
+            <span className="rounded-lg border border-white/[0.1] bg-white/[0.05] px-3 py-1 text-xs font-bold tracking-wide text-gray-400">
               {guide.sector}
             </span>
           </div>
-          <h1 className="text-4xl font-black leading-tight tracking-[-0.04em] sm:text-5xl">
+          <h1 className="text-4xl font-bold leading-tight tracking-tight sm:text-4xl">
             {guide.name} Interview Guide
           </h1>
           <p className="mt-4 text-lg leading-8 text-gray-400">{guide.tagline}</p>
@@ -74,13 +74,13 @@ export default async function CompanyGuidePage({ params }: Props) {
 
         {/* Overview */}
         <section className="mb-10">
-          <h2 className="mb-4 text-2xl font-black tracking-[-0.03em]">Overview</h2>
+          <h2 className="mb-4 text-2xl font-bold tracking-tight">Overview</h2>
           <p className="leading-8 text-gray-300">{guide.overview}</p>
         </section>
 
         {/* Process */}
         <section className="mb-10">
-          <h2 className="mb-6 text-2xl font-black tracking-[-0.03em]">The interview process</h2>
+          <h2 className="mb-6 text-2xl font-bold tracking-tight">The interview process</h2>
           <div className="space-y-4">
             {guide.processSteps.map((step, i) => (
               <div
@@ -88,11 +88,11 @@ export default async function CompanyGuidePage({ params }: Props) {
                 className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-5"
               >
                 <div className="flex items-start gap-4">
-                  <span className="mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-purple-500/20 text-xs font-black text-purple-300">
+                  <span className="mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-purple-500/20 text-xs font-bold text-purple-300">
                     {i + 1}
                   </span>
                   <div>
-                    <p className="font-black text-white">{step.title}</p>
+                    <p className="font-bold text-white">{step.title}</p>
                     <p className="mt-1.5 text-sm leading-7 text-gray-400">{step.description}</p>
                   </div>
                 </div>
@@ -103,12 +103,12 @@ export default async function CompanyGuidePage({ params }: Props) {
 
         {/* Competencies */}
         <section className="mb-10">
-          <h2 className="mb-4 text-2xl font-black tracking-[-0.03em]">Key competencies assessed</h2>
+          <h2 className="mb-4 text-2xl font-bold tracking-tight">Key competencies assessed</h2>
           <div className="flex flex-wrap gap-2">
             {guide.competencies.map((c) => (
               <span
                 key={c}
-                className="rounded-full border border-purple-300/20 bg-purple-500/10 px-4 py-2 text-sm font-black text-purple-200"
+                className="rounded-full border border-purple-300/20 bg-purple-500/10 px-4 py-2 text-sm font-bold text-purple-200"
               >
                 {c}
               </span>
@@ -118,7 +118,7 @@ export default async function CompanyGuidePage({ params }: Props) {
 
         {/* Sample Q&A */}
         <section className="mb-10">
-          <h2 className="mb-6 text-2xl font-black tracking-[-0.03em]">
+          <h2 className="mb-6 text-2xl font-bold tracking-tight">
             Common {guide.name} interview questions
           </h2>
           <div className="space-y-5">
@@ -127,9 +127,9 @@ export default async function CompanyGuidePage({ params }: Props) {
                 key={i}
                 className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-6"
               >
-                <p className="font-black text-white">Q: &ldquo;{qa.question}&rdquo;</p>
+                <p className="font-bold text-white">Q: &ldquo;{qa.question}&rdquo;</p>
                 <div className="mt-4 border-l-2 border-purple-500/40 pl-4">
-                  <p className="text-xs font-black uppercase tracking-[0.14em] text-purple-400">
+                  <p className="text-xs font-bold tracking-wide text-purple-400">
                     How to answer
                   </p>
                   <p className="mt-2 text-sm leading-7 text-gray-400">{qa.tip}</p>
@@ -141,7 +141,7 @@ export default async function CompanyGuidePage({ params }: Props) {
 
         {/* Insider tips */}
         <section className="mb-10">
-          <h2 className="mb-6 text-2xl font-black tracking-[-0.03em]">Insider tips</h2>
+          <h2 className="mb-6 text-2xl font-bold tracking-tight">Insider tips</h2>
           <div className="space-y-3">
             {guide.insiderTips.map((tip, i) => (
               <div
@@ -157,10 +157,10 @@ export default async function CompanyGuidePage({ params }: Props) {
 
         {/* Practice CTA */}
         <div className="rounded-2xl bg-gradient-to-br from-purple-900/60 to-[#0a0614] border border-purple-400/20 p-8 text-center">
-          <p className="text-xs font-black uppercase tracking-[0.18em] text-purple-400">
+          <p className="text-xs font-bold tracking-wide text-purple-400">
             AI Career Mentor
           </p>
-          <h3 className="mt-3 text-2xl font-black tracking-[-0.03em]">
+          <h3 className="mt-3 text-2xl font-bold tracking-tight">
             Practice for your {guide.name} interview
           </h3>
           <p className="mt-3 text-sm leading-7 text-gray-400">
@@ -171,7 +171,7 @@ export default async function CompanyGuidePage({ params }: Props) {
           </p>
           <Link
             href={`/practice?role=${encodeURIComponent(guide.practiceRole)}`}
-            className="mt-6 inline-block rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-8 py-4 text-sm font-black text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01]"
+            className="mt-6 inline-block rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-8 py-4 text-sm font-bold text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01]"
           >
             Practise for {guide.name} →
           </Link>

@@ -80,12 +80,12 @@ export default function UniversitiesPage() {
       <div>
         {/* Hero */}
         <section className="mx-auto max-w-5xl px-4 pb-16 pt-6 text-center sm:px-6 sm:pt-10">
-          <p className="mx-auto mb-5 inline-flex items-center gap-2 rounded-full border border-purple-400/25 bg-purple-400/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-purple-200">
+          <p className="mx-auto mb-5 inline-flex items-center gap-2 rounded-full border border-purple-400/25 bg-purple-400/[0.07] px-4 py-2 text-[11px] font-bold tracking-wide text-purple-200">
             For universities & careers services
           </p>
-          <h1 className="mx-auto max-w-4xl text-[2.4rem] font-black leading-[1.04] tracking-[-0.055em] sm:text-5xl lg:text-[3.5rem]">
+          <h1 className="mx-auto max-w-4xl text-4xl font-bold leading-[1.04] tracking-tight sm:text-4xl lg:text-4xl">
             Give every student{" "}
-            <span className="bg-gradient-to-r from-purple-300 via-fuchsia-200 to-cyan-200 bg-clip-text text-transparent">
+            <span className="text-violet-300">
               elite interview coaching.
             </span>{" "}
             One campus licence.
@@ -103,7 +103,7 @@ export default function UniversitiesPage() {
               data-tally-overlay="1"
               data-tally-emoji-text="👋"
               data-tally-emoji-animation="wave"
-              className="inline-flex cursor-pointer items-center gap-2 rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-8 py-4 text-base font-black text-white shadow-2xl shadow-purple-950/40 transition hover:scale-[1.02]"
+              className="inline-flex cursor-pointer items-center gap-2 rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-8 py-4 text-base font-bold text-white shadow-2xl shadow-purple-950/40 transition hover:scale-[1.02]"
             >
               Request a demo →
             </button>
@@ -111,7 +111,7 @@ export default function UniversitiesPage() {
               data-tally-open={TALLY_FORM_ID}
               data-tally-width="600"
               data-tally-overlay="1"
-              className="inline-flex cursor-pointer items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.05] px-8 py-4 text-base font-black text-white transition hover:bg-white/[0.09]"
+              className="inline-flex cursor-pointer items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.05] px-8 py-4 text-base font-bold text-white transition hover:bg-white/[0.09]"
             >
               Discuss pricing
             </button>
@@ -126,7 +126,7 @@ export default function UniversitiesPage() {
                 key={b.title}
                 className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-7"
               >
-                <h3 className="mb-3 font-black leading-tight">{b.title}</h3>
+                <h3 className="mb-3 font-bold leading-tight">{b.title}</h3>
                 <p className="text-sm leading-6 text-gray-400">{b.body}</p>
               </div>
             ))}
@@ -135,7 +135,7 @@ export default function UniversitiesPage() {
 
         {/* Use cases */}
         <section className="mx-auto max-w-4xl px-4 pb-20 sm:px-6">
-          <h2 className="mb-8 text-center text-2xl font-black tracking-[-0.04em] sm:text-3xl">
+          <h2 className="mb-8 text-center text-2xl font-bold tracking-tight sm:text-3xl">
             How careers teams use it
           </h2>
           <div className="grid gap-3 sm:grid-cols-2">
@@ -154,10 +154,10 @@ export default function UniversitiesPage() {
         {/* Custom pricing contact */}
         <section className="mx-auto max-w-4xl px-4 pb-24 sm:px-6">
           <div className="rounded-[2rem] border border-purple-300/20 bg-purple-300/[0.06] p-8 sm:p-10">
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-purple-400/25 bg-purple-400/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-purple-200">
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-purple-400/25 bg-purple-400/[0.07] px-4 py-2 text-[11px] font-bold tracking-wide text-purple-200">
               Custom pricing
             </div>
-            <h2 className="mb-4 text-2xl font-black tracking-[-0.04em]">Pricing tailored to your institution</h2>
+            <h2 className="mb-4 text-2xl font-bold tracking-tight">Pricing tailored to your institution</h2>
             <p className="mb-6 text-base leading-7 text-gray-400">
               Every university is different in size, structure, and what they need from
               a careers platform. We don&rsquo;t publish fixed price lists because the right
@@ -173,7 +173,7 @@ export default function UniversitiesPage() {
               ].map((item) => (
                 <div key={item.label} className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-5">
                   <p className="mb-2 text-2xl">{item.icon}</p>
-                  <p className="mb-1 text-sm font-black text-white">{item.label}</p>
+                  <p className="mb-1 text-sm font-bold text-white">{item.label}</p>
                   <p className="text-xs leading-5 text-gray-500">{item.desc}</p>
                 </div>
               ))}
@@ -184,7 +184,7 @@ export default function UniversitiesPage() {
               data-tally-overlay="1"
               data-tally-emoji-text="👋"
               data-tally-emoji-animation="wave"
-              className="inline-flex cursor-pointer items-center gap-2 rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-6 py-3.5 text-sm font-black text-white shadow-lg transition hover:scale-[1.02]"
+              className="inline-flex cursor-pointer items-center gap-2 rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-3.5 text-sm font-bold text-white shadow-lg transition hover:scale-[1.02]"
             >
               Request a proposal →
             </button>

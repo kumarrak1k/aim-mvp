@@ -14,7 +14,7 @@ export default function CompaniesIndexPage() {
     <CandidateShell currentPath="/companies">
       <div className="mx-auto max-w-4xl px-4 pb-24 pt-6 sm:px-6">
         <div className="mb-10 text-center">
-          <h1 className="text-4xl font-black tracking-[-0.04em] sm:text-5xl">
+          <h1 className="text-4xl font-bold tracking-tight sm:text-4xl">
             Company Interview Guides
           </h1>
           <p className="mx-auto mt-4 max-w-2xl text-lg leading-8 text-gray-400">
@@ -30,14 +30,14 @@ export default function CompaniesIndexPage() {
               href={`/companies/${guide.slug}`}
               className="group rounded-2xl border border-white/[0.08] bg-white/[0.03] p-6 transition hover:border-purple-400/30 hover:bg-white/[0.06]"
             >
-              <p className="text-xs font-black uppercase tracking-[0.14em] text-purple-400">
+              <p className="text-xs font-bold tracking-wide text-purple-400">
                 {guide.sector}
               </p>
-              <h2 className="mt-2 text-xl font-black tracking-[-0.02em] group-hover:text-purple-100">
+              <h2 className="mt-2 text-xl font-bold tracking-tight group-hover:text-purple-100">
                 {guide.name}
               </h2>
               <p className="mt-2 text-sm leading-6 text-gray-500">{guide.tagline}</p>
-              <p className="mt-4 text-xs font-black text-purple-400 group-hover:text-purple-300">
+              <p className="mt-4 text-xs font-bold text-purple-400 group-hover:text-purple-300">
                 Read guide →
               </p>
             </Link>

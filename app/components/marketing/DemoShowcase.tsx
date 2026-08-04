@@ -24,10 +24,10 @@ export function DemoShowcase({
   return (
     <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 sm:pb-20">
       <div className="mb-10 text-center">
-        <p className="text-[11px] font-black uppercase tracking-[0.26em] text-purple-300/90">
+        <p className="text-[11px] font-bold tracking-wide text-purple-300/90">
           {eyebrow}
         </p>
-        <h2 className="mt-3 text-3xl font-black tracking-[-0.05em] sm:text-4xl">{title}</h2>
+        <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">{title}</h2>
         <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-gray-400">{subtitle}</p>
       </div>
 

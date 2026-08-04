@@ -63,31 +63,31 @@ export default async function CertificatePage({ params }: Props) {
         <div className="cert-card overflow-hidden rounded-[2rem] border border-purple-300/25 bg-gradient-to-b from-purple-950/60 to-[#0a0614] shadow-2xl shadow-purple-950/50">
           {/* Header band */}
           <div className="bg-gradient-to-r from-purple-600 via-fuchsia-600 to-purple-600 px-8 py-6 text-center">
-            <p className="text-[11px] font-black uppercase tracking-[0.22em] text-white/80">
+            <p className="text-[11px] font-bold tracking-wide text-white/80">
               AI Career Mentor
             </p>
-            <p className="mt-1 text-lg font-black text-white">
+            <p className="mt-1 text-lg font-bold text-white">
               Interview Readiness Certificate
             </p>
           </div>
 
           {/* Body */}
           <div className="px-8 py-10 text-center sm:px-12 sm:py-12">
-            <p className="text-xs uppercase tracking-[0.18em] text-gray-500">
+            <p className="text-xs tracking-wide text-gray-500">
               This certifies that
             </p>
-            <h1 className="mt-3 text-4xl font-black tracking-[-0.04em] sm:text-5xl">
+            <h1 className="mt-3 text-4xl font-bold tracking-tight sm:text-4xl">
               {cert.name}
             </h1>
             <p className="mt-4 text-sm text-gray-400">
               has demonstrated interview readiness for
             </p>
-            <p className="mt-2 text-xl font-black text-purple-200">{cert.role}</p>
+            <p className="mt-2 text-xl font-bold text-purple-200">{cert.role}</p>
 
             {/* Score */}
             <div className="mx-auto mt-8 inline-block rounded-2xl border border-white/[0.1] bg-white/[0.05] px-8 py-5">
-              <p className="text-xs uppercase tracking-[0.14em] text-gray-500">Overall score</p>
-              <p className={`mt-1 text-5xl font-black leading-none tracking-[-0.07em] ${scoreColor}`}>
+              <p className="text-xs tracking-wide text-gray-500">Overall score</p>
+              <p className={`mt-1 text-4xl font-bold leading-none tracking-tight ${scoreColor}`}>
                 {cert.score}
                 <span className="text-2xl text-gray-600">/10</span>
               </p>

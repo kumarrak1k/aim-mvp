@@ -186,10 +186,10 @@ export default function AssessmentLandingPage() {
   if (error) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-[#0a0614] px-4 text-center text-white">
-        <div className="mb-6 text-6xl">
+        <div className="mb-6 text-5xl">
           {error.code === 409 ? "✅" : error.code === 410 ? "⏰" : "🔗"}
         </div>
-        <h1 className="mb-3 text-2xl font-black">
+        <h1 className="mb-3 text-2xl font-bold">
           {error.code === 409
             ? "Assessment already completed"
             : error.code === 410
@@ -199,7 +199,7 @@ export default function AssessmentLandingPage() {
         <p className="mb-8 text-gray-400">{error.message}</p>
         <Link
           href="/"
-          className="rounded-full border border-white/15 bg-white/[0.06] px-6 py-3 text-sm font-black text-white transition hover:bg-white/[0.10]"
+          className="rounded-full border border-white/15 bg-white/[0.06] px-6 py-3 text-sm font-bold text-white transition hover:bg-white/[0.10]"
         >
           Go to AI Career Mentor →
         </Link>
@@ -215,24 +215,24 @@ export default function AssessmentLandingPage() {
   return (
     <div className="min-h-screen bg-[#0a0614] text-white">
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_25%_15%,rgba(120,60,255,0.18),transparent),radial-gradient(ellipse_60%_50%_at_75%_85%,rgba(232,80,180,0.12),transparent),linear-gradient(180deg,#0a0614_0%,#100a1f_50%,#0c0816_100%)]" />
-        <div className="absolute left-[-160px] top-[-80px] h-[520px] w-[520px] rounded-full bg-purple-500/[0.18] blur-[160px]" />
-        <div className="absolute bottom-[-80px] right-[-160px] h-[520px] w-[520px] rounded-full bg-fuchsia-500/[0.18] blur-[160px]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_25%_15%,rgba(120,60,255,0.10),transparent),radial-gradient(ellipse_60%_50%_at_75%_85%,rgba(232,80,180,0.06),transparent),linear-gradient(180deg,#0a0614_0%,#100a1f_50%,#0c0816_100%)]" />
+        <div className="absolute left-[-160px] top-[-80px] h-[520px] w-[520px] rounded-full bg-purple-500/[0.08] blur-[160px]" />
+        <div className="absolute bottom-[-80px] right-[-160px] h-[520px] w-[520px] rounded-full bg-fuchsia-500/[0.08] blur-[160px]" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-2xl px-4 py-16 sm:px-6">
         {/* Brand header */}
         <div className="mb-10 text-center">
           <div
-            className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl text-2xl font-black text-white shadow-xl"
+            className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl text-2xl font-bold text-white shadow-xl"
             style={{ background: brand }}
           >
             {company.name.charAt(0).toUpperCase()}
           </div>
-          <p className="text-sm font-black uppercase tracking-[0.22em] text-gray-400">
+          <p className="text-sm font-bold tracking-wide text-gray-400">
             {company.name} invites you to
           </p>
-          <h1 className="mt-2 text-3xl font-black tracking-[-0.05em] sm:text-4xl">
+          <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
             {template.name}
           </h1>
           {template.description && step === "welcome" && (
@@ -346,13 +346,13 @@ function WelcomeStep({
   return (
     <>
       <div className="mb-8 rounded-[2rem] border border-white/10 bg-white/[0.05] p-7 shadow-2xl shadow-black/10 backdrop-blur-2xl">
-        <h2 className="mb-5 text-base font-black text-gray-200">
+        <h2 className="mb-5 text-base font-bold text-gray-200">
           Assessment details
         </h2>
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
           {infoItems.map(({ label, value }) => (
             <div key={label}>
-              <p className="text-xs font-black uppercase tracking-wider text-gray-500">
+              <p className="text-xs font-bold uppercase tracking-wider text-gray-500">
                 {label}
               </p>
               <p className="mt-1 text-sm font-semibold text-white">{value}</p>
@@ -363,7 +363,7 @@ function WelcomeStep({
         {/* AC stage list */}
         {isAC && stages.length > 0 && (
           <div className="mt-6 space-y-2 border-t border-white/10 pt-5">
-            <p className="mb-3 text-sm font-black text-gray-300">Assessment stages</p>
+            <p className="mb-3 text-sm font-bold text-gray-300">Assessment stages</p>
             {stages.map((stage, i) => {
               const info = AC_STAGE_LABELS[stage];
               return (
@@ -371,11 +371,11 @@ function WelcomeStep({
                   key={stage}
                   className="flex items-center gap-3 rounded-xl border border-white/[0.07] bg-white/[0.03] px-4 py-3"
                 >
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-white/20 text-[11px] font-black text-gray-400">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-white/20 text-[11px] font-bold text-gray-400">
                     {i + 1}
                   </span>
                   <div className="flex-1">
-                    <p className="text-sm font-black text-white">{info.title}</p>
+                    <p className="text-sm font-bold text-white">{info.title}</p>
                   </div>
                   <span className="shrink-0 text-xs text-gray-500">{info.time}</span>
                 </div>
@@ -387,7 +387,7 @@ function WelcomeStep({
         {/* Interview-only what to expect */}
         {!isAC && (
           <div className="mt-6 border-t border-white/10 pt-5">
-            <h3 className="mb-3 text-sm font-black text-gray-300">What to expect</h3>
+            <h3 className="mb-3 text-sm font-bold text-gray-300">What to expect</h3>
             <ul className="space-y-2 text-sm text-gray-400">
               <li className="flex gap-2">
                 <span className="text-purple-400">→</span>{" "}
@@ -441,7 +441,7 @@ function WelcomeStep({
           <button
             onClick={onContinue}
             disabled={acStarting}
-            className="w-full rounded-full py-4 text-base font-black text-white shadow-xl transition hover:scale-[1.02] disabled:opacity-60 sm:w-auto sm:px-12"
+            className="w-full rounded-full py-4 text-base font-bold text-white shadow-xl transition hover:scale-[1.02] disabled:opacity-60 sm:w-auto sm:px-12"
             style={{
               background: `linear-gradient(135deg, ${brand}, #6c4cff)`,
               boxShadow: `0 12px 32px ${brand}40`,
@@ -470,7 +470,7 @@ function WelcomeStep({
         <div className="text-center">
           <SignInButton mode="modal">
             <button
-              className="w-full rounded-full py-4 text-base font-black text-white shadow-xl transition hover:scale-[1.02] sm:w-auto sm:px-12"
+              className="w-full rounded-full py-4 text-base font-bold text-white shadow-xl transition hover:scale-[1.02] sm:w-auto sm:px-12"
               style={{
                 background: `linear-gradient(135deg, ${brand}, #6c4cff)`,
                 boxShadow: `0 12px 32px ${brand}40`,
@@ -542,10 +542,10 @@ function SetupStep({
   return (
     <>
       <div className="mb-8 rounded-[2rem] border border-white/10 bg-white/[0.05] p-7 shadow-2xl shadow-black/10 backdrop-blur-2xl">
-        <p className="text-[11px] font-black uppercase tracking-[0.22em] text-purple-300">
+        <p className="text-[11px] font-bold tracking-wide text-purple-300">
           Step 2 of 2 · How you want to take it
         </p>
-        <h2 className="mt-2 text-2xl font-black tracking-[-0.04em]">
+        <h2 className="mt-2 text-2xl font-bold tracking-tight">
           Pick your interview format
         </h2>
         <p className="mt-2 text-sm leading-6 text-gray-400">
@@ -581,7 +581,7 @@ function SetupStep({
                     )}
                   </span>
                   <div className="flex-1">
-                    <p className="text-sm font-black text-white">{option.title}</p>
+                    <p className="text-sm font-bold text-white">{option.title}</p>
                     <p className="mt-1 text-sm leading-5 text-gray-400">
                       {option.subtitle}
                     </p>
@@ -598,7 +598,7 @@ function SetupStep({
         {/* Voice preferences (only when voice/voice-camera) */}
         {showVoicePrefs && (
           <div className="mt-6 rounded-2xl border border-white/10 bg-black/25 p-5">
-            <p className="text-[11px] font-black uppercase tracking-[0.18em] text-cyan-300">
+            <p className="text-[11px] font-bold tracking-wide text-cyan-300">
               Interviewer voice preference
             </p>
             <p className="mt-1 text-xs leading-5 text-gray-500">
@@ -643,7 +643,7 @@ function SetupStep({
 
         {/* Reminder of locked template fields */}
         <div className="mt-6 rounded-2xl border border-white/[0.07] bg-white/[0.025] p-4">
-          <p className="text-[11px] font-black uppercase tracking-[0.18em] text-gray-500">
+          <p className="text-[11px] font-bold tracking-wide text-gray-500">
             Set by {company.name}
           </p>
           <div className="mt-2 grid grid-cols-2 gap-x-4 gap-y-2 text-xs text-gray-400 sm:grid-cols-3">
@@ -674,13 +674,13 @@ function SetupStep({
       <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
         <button
           onClick={onBack}
-          className="rounded-full border border-white/15 bg-white/[0.04] px-6 py-3 text-sm font-black text-gray-200 transition hover:bg-white/[0.08]"
+          className="rounded-full border border-white/15 bg-white/[0.04] px-6 py-3 text-sm font-bold text-gray-200 transition hover:bg-white/[0.08]"
         >
           ← Back
         </button>
         <button
           onClick={onStart}
-          className="rounded-full px-8 py-4 text-base font-black text-white shadow-xl transition hover:scale-[1.02]"
+          className="rounded-full px-8 py-4 text-base font-bold text-white shadow-xl transition hover:scale-[1.02]"
           style={{
             background: `linear-gradient(135deg, ${brand}, #6c4cff)`,
             boxShadow: `0 12px 32px ${brand}40`,
@@ -715,7 +715,7 @@ function PrefRow({
 }) {
   return (
     <div>
-      <p className="mb-2 text-xs font-black uppercase tracking-[0.16em] text-gray-400">
+      <p className="mb-2 text-xs font-bold tracking-wide text-gray-400">
         {label}
       </p>
       <div className="grid grid-cols-3 gap-2">

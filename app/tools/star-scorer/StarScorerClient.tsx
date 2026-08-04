@@ -59,7 +59,7 @@ function ScoreBar({ score, color }: { score: number; color: string }) {
           style={{ width: `${score * 10}%` }}
         />
       </div>
-      <span className="w-6 text-right text-sm font-black">{score}</span>
+      <span className="w-6 text-right text-sm font-bold">{score}</span>
     </div>
   );
 }
@@ -100,10 +100,10 @@ export function STARScorerClient() {
     <div className="mx-auto max-w-3xl px-4 pb-24 pt-6 sm:px-6 sm:pt-10">
         {/* Hero */}
         <section className="mb-10 text-center">
-          <p className="mx-auto mb-5 inline-flex items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-400/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-emerald-300">
+          <p className="mx-auto mb-5 inline-flex items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-400/[0.07] px-4 py-2 text-[11px] font-bold tracking-wide text-emerald-300">
             Free, no sign-in required
           </p>
-          <h1 className="text-[2.2rem] font-black leading-[1.04] tracking-[-0.055em] sm:text-4xl">
+          <h1 className="text-[2.2rem] font-bold leading-[1.04] tracking-tight sm:text-4xl">
             Free STAR Answer Scorer
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-gray-400">
@@ -172,7 +172,7 @@ export function STARScorerClient() {
           <button
             type="submit"
             disabled={isPending}
-            className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 py-4 text-base font-black text-white shadow-2xl shadow-purple-950/40 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-60"
+            className="w-full rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 py-4 text-base font-bold text-white shadow-2xl shadow-purple-950/40 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isPending ? "Scoring your answer…" : "Score my STAR answer →"}
           </button>
@@ -188,8 +188,8 @@ export function STARScorerClient() {
             {/* Overall */}
             <div className="rounded-[2rem] border border-purple-300/20 bg-purple-300/[0.06] p-7">
               <div className="flex items-center justify-between">
-                <p className="font-black">Overall STAR score</p>
-                <span className="text-4xl font-black tracking-[-0.06em]">
+                <p className="font-bold">Overall STAR score</p>
+                <span className="text-4xl font-bold tracking-tight">
                   {result.overall}
                   <span className="text-lg text-gray-500">/10</span>
                 </span>
@@ -199,7 +199,7 @@ export function STARScorerClient() {
 
             {/* Component scores */}
             <div className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-7">
-              <p className="mb-6 font-black">STAR breakdown</p>
+              <p className="mb-6 font-bold">STAR breakdown</p>
               <div className="space-y-6">
                 {STAR_LABELS.map(({ key, label, color }) => (
                   <div key={key}>
@@ -217,7 +217,7 @@ export function STARScorerClient() {
 
             {/* Top improvement */}
             <div className="rounded-2xl border border-amber-400/15 bg-amber-400/[0.05] p-6">
-              <p className="mb-1 text-xs font-black uppercase tracking-[0.15em] text-amber-300/80">
+              <p className="mb-1 text-xs font-bold tracking-wide text-amber-300/80">
                 Top improvement
               </p>
               <p className="text-sm leading-6 text-gray-300">
@@ -227,7 +227,7 @@ export function STARScorerClient() {
 
             {/* CTA */}
             <div className="rounded-[2rem] border border-purple-300/20 bg-purple-300/[0.06] p-7 text-center">
-              <p className="font-black">Get full AI coaching on every answer</p>
+              <p className="font-bold">Get full AI coaching on every answer</p>
               <p className="mt-2 text-sm text-gray-400">
                 AI Career Mentor generates tailored questions, plays them as audio,
                 and scores your voice delivery and camera presence too, not just
@@ -235,7 +235,7 @@ export function STARScorerClient() {
               </p>
               <Link
                 href="/for-candidates/sign-up"
-                className="mt-5 inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-7 py-3.5 text-sm font-black text-white shadow-xl transition hover:scale-[1.02]"
+                className="mt-5 inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-7 py-3.5 text-sm font-bold text-white shadow-xl transition hover:scale-[1.02]"
               >
                 Start free, no credit card →
               </Link>
@@ -244,13 +244,13 @@ export function STARScorerClient() {
         )}
 
         <div className="mt-10 border-t border-white/[0.07] pt-8">
-          <h2 className="mb-6 text-xl font-black tracking-[-0.04em]">
+          <h2 className="mb-6 text-xl font-bold tracking-tight">
             Frequently asked questions
           </h2>
           <div className="mb-8 divide-y divide-white/[0.07]">
             {faqs.map((faq) => (
               <details key={faq.q} className="group py-4">
-                <summary className="flex cursor-pointer list-none items-start justify-between gap-4 text-sm font-black text-white">
+                <summary className="flex cursor-pointer list-none items-start justify-between gap-4 text-sm font-bold text-white">
                   {faq.q}
                   <span className="mt-0.5 shrink-0 text-gray-500 transition-transform group-open:rotate-45">
                     +

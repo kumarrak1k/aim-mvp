@@ -39,7 +39,7 @@ function ScoreRing({ score }: { score: number }) {
           strokeLinecap="round" transform="rotate(-90 56 56)" />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-4xl font-black" style={{ color: col }}>{score}</span>
+        <span className="text-4xl font-bold" style={{ color: col }}>{score}</span>
         <span className="text-[10px] font-bold text-gray-500">/10</span>
       </div>
     </div>
@@ -53,7 +53,7 @@ function ScoreBar({ score }: { score: number }) {
       <div className="flex-1 h-1.5 rounded-full bg-white/10">
         <div className={`h-full rounded-full ${col}`} style={{ width: `${score * 10}%` }} />
       </div>
-      <span className="w-6 text-right text-xs font-black text-white">{score}</span>
+      <span className="w-6 text-right text-xs font-bold text-white">{score}</span>
     </div>
   );
 }
@@ -246,8 +246,8 @@ export default function CVEnhancerPage() {
     return (
       <CandidateAppShell currentPath="/career-docs">
         <div className="mx-auto max-w-lg px-4 py-24 text-center">
-          <div className="mb-6 text-5xl">🔒</div>
-          <h1 className="text-2xl font-black text-white">Professional plan required</h1>
+          <div className="mb-6 text-4xl">🔒</div>
+          <h1 className="text-2xl font-bold text-white">Professional plan required</h1>
           <p className="mt-3 text-sm leading-7 text-gray-400">
             CV Enhancer is available on the Professional plan. Upgrade to unlock CV analysis,
             cover letters, and personal statement generation.
@@ -255,13 +255,13 @@ export default function CVEnhancerPage() {
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
             <Link
               href="/pricing"
-              className="rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-6 py-3.5 text-center text-sm font-black text-white shadow-lg"
+              className="rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-3.5 text-center text-sm font-bold text-white shadow-lg"
             >
               See plans →
             </Link>
             <Link
               href="/career-docs"
-              className="rounded-2xl border border-white/10 bg-white/[0.06] px-6 py-3.5 text-center text-sm font-black text-white"
+              className="rounded-2xl border border-white/10 bg-white/[0.06] px-6 py-3.5 text-center text-sm font-bold text-white"
             >
               Back to Career Docs
             </Link>
@@ -276,7 +276,7 @@ export default function CVEnhancerPage() {
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
         {/* Header */}
         <div className="mb-8">
-          <Link href="/career-docs" className="mb-4 inline-flex items-center gap-1.5 text-xs font-black text-gray-500 hover:text-gray-300 transition">
+          <Link href="/career-docs" className="mb-4 inline-flex items-center gap-1.5 text-xs font-bold text-gray-500 hover:text-gray-300 transition">
             ← Career Docs
           </Link>
           <div className="flex items-center gap-3">
@@ -287,8 +287,8 @@ export default function CVEnhancerPage() {
               </svg>
             </div>
             <div>
-              <p className="text-[11px] font-black uppercase tracking-[0.22em] text-purple-300">AI Analysis</p>
-              <h1 className="text-2xl font-black tracking-[-0.04em] text-white">CV Enhancer</h1>
+              <p className="text-[11px] font-bold tracking-wide text-purple-300">AI Analysis</p>
+              <h1 className="text-2xl font-bold tracking-tight text-white">CV Enhancer</h1>
             </div>
           </div>
         </div>
@@ -298,7 +298,7 @@ export default function CVEnhancerPage() {
           <form onSubmit={(e) => void handleSubmit(e)} className="space-y-4">
             <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-6 backdrop-blur-xl space-y-4">
               <div>
-                <label className="mb-1.5 block text-xs font-black uppercase tracking-[0.18em] text-gray-400">Target role *</label>
+                <label className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400">Target role *</label>
                 <input
                   type="text"
                   value={targetRole}
@@ -309,7 +309,7 @@ export default function CVEnhancerPage() {
                 />
               </div>
               <div>
-                <label className="mb-1.5 block text-xs font-black uppercase tracking-[0.18em] text-gray-400">Industry / sector</label>
+                <label className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400">Industry / sector</label>
                 <input
                   type="text"
                   value={industry}
@@ -321,7 +321,7 @@ export default function CVEnhancerPage() {
 
               {/* CV field with saved-profile panel */}
               <div>
-                <label className="mb-1.5 block text-xs font-black uppercase tracking-[0.18em] text-gray-400">
+                <label className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400">
                   Your CV *
                   <span className="ml-2 text-[10px] font-semibold normal-case tracking-normal text-gray-600">paste plain text or upload a file</span>
                 </label>
@@ -344,7 +344,7 @@ export default function CVEnhancerPage() {
                         type="button"
                         onClick={() => fileInputRef.current?.click()}
                         disabled={savedCV.uploading}
-                        className="rounded-lg border border-purple-400/30 bg-purple-400/10 px-2.5 py-1 text-[10px] font-black text-purple-300 transition hover:bg-purple-400/20 disabled:opacity-50"
+                        className="rounded-lg border border-purple-400/30 bg-purple-400/10 px-2.5 py-1 text-[10px] font-bold text-purple-300 transition hover:bg-purple-400/20 disabled:opacity-50"
                       >
                         {savedCV.uploading ? "Uploading…" : savedCV.hasSavedCV ? "Replace" : "Upload"}
                       </button>
@@ -353,7 +353,7 @@ export default function CVEnhancerPage() {
                           type="button"
                           onClick={() => void savedCV.removeCV()}
                           disabled={savedCV.removing}
-                          className="rounded-lg border border-red-400/30 bg-red-400/[0.08] px-2.5 py-1 text-[10px] font-black text-red-400 transition hover:bg-red-400/20 disabled:opacity-50"
+                          className="rounded-lg border border-red-400/30 bg-red-400/[0.08] px-2.5 py-1 text-[10px] font-bold text-red-400 transition hover:bg-red-400/20 disabled:opacity-50"
                         >
                           {savedCV.removing ? "Removing…" : "Remove"}
                         </button>
@@ -390,7 +390,7 @@ export default function CVEnhancerPage() {
               <button
                 type="button"
                 onClick={() => setShowJd((v) => !v)}
-                className="text-xs font-black text-purple-400 hover:text-purple-300 transition"
+                className="text-xs font-bold text-purple-400 hover:text-purple-300 transition"
               >
                 {showJd ? "▲ Hide" : "▼ Add"} job description (optional, improves ATS matching)
               </button>
@@ -417,7 +417,7 @@ export default function CVEnhancerPage() {
             <button
               type="submit"
               disabled={loading || !targetRole.trim() || cvText.trim().length < 50}
-              className={`flex w-full items-center justify-center gap-2 rounded-2xl px-6 py-4 text-sm font-black transition-all ${
+              className={`flex w-full items-center justify-center gap-2 rounded-2xl px-6 py-4 text-sm font-bold transition-all ${
                 !loading && targetRole.trim() && cvText.trim().length >= 50
                   ? "bg-gradient-to-r from-purple-500 to-fuchsia-500 text-white shadow-lg hover:scale-[1.01]"
                   : "cursor-not-allowed bg-white/[0.05] text-gray-600"
@@ -465,18 +465,18 @@ export default function CVEnhancerPage() {
                   <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
                     <ScoreRing score={result.overallScore} />
                     <div className="text-center sm:text-left">
-                      <p className="text-xs font-black uppercase tracking-[0.18em] text-gray-500">Overall CV score</p>
-                      <p className="mt-1 text-lg font-black text-white">{result.overallLabel}</p>
+                      <p className="text-xs font-bold tracking-wide text-gray-500">Overall CV score</p>
+                      <p className="mt-1 text-lg font-bold text-white">{result.overallLabel}</p>
                       <p className="mt-2 text-sm leading-6 text-gray-300">{result.summary}</p>
                     </div>
                   </div>
                   <div className="mt-4 grid gap-3 sm:grid-cols-2">
                     <div className="rounded-xl border border-emerald-400/20 bg-emerald-400/[0.06] p-3">
-                      <p className="text-[10px] font-black uppercase tracking-[0.18em] text-emerald-400">Top strength</p>
+                      <p className="text-[10px] font-bold tracking-wide text-emerald-400">Top strength</p>
                       <p className="mt-1 text-sm text-gray-300">{result.topStrength}</p>
                     </div>
                     <div className="rounded-xl border border-amber-400/20 bg-amber-400/[0.06] p-3">
-                      <p className="text-[10px] font-black uppercase tracking-[0.18em] text-amber-400">Biggest gap</p>
+                      <p className="text-[10px] font-bold tracking-wide text-amber-400">Biggest gap</p>
                       <p className="mt-1 text-sm text-gray-300">{result.biggestGap}</p>
                     </div>
                   </div>
@@ -484,11 +484,11 @@ export default function CVEnhancerPage() {
 
                 {/* Quick wins */}
                 <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-6 backdrop-blur-xl">
-                  <p className="mb-4 text-[11px] font-black uppercase tracking-[0.22em] text-purple-300">Quick wins: do these first</p>
+                  <p className="mb-4 text-[11px] font-bold tracking-wide text-purple-300">Quick wins: do these first</p>
                   <ol className="space-y-2.5">
                     {result.quickWins.map((w, i) => (
                       <li key={i} className="flex items-start gap-3 text-sm text-gray-300">
-                        <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-purple-400/20 text-[10px] font-black text-purple-300">{i + 1}</span>
+                        <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-purple-400/20 text-[10px] font-bold text-purple-300">{i + 1}</span>
                         {w}
                       </li>
                     ))}
@@ -497,12 +497,12 @@ export default function CVEnhancerPage() {
 
                 {/* Section breakdown */}
                 <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-6 backdrop-blur-xl">
-                  <p className="mb-4 text-[11px] font-black uppercase tracking-[0.22em] text-gray-400">Section breakdown</p>
+                  <p className="mb-4 text-[11px] font-bold tracking-wide text-gray-400">Section breakdown</p>
                   <div className="space-y-5">
                     {result.sections.map((s, i) => (
                       <div key={i}>
                         <div className="mb-1 flex items-center justify-between gap-2">
-                          <span className="text-sm font-black text-white">{s.name}</span>
+                          <span className="text-sm font-bold text-white">{s.name}</span>
                         </div>
                         <ScoreBar score={s.score} />
                         <p className="mt-2 text-xs leading-5 text-gray-400">{s.feedback}</p>
@@ -515,20 +515,20 @@ export default function CVEnhancerPage() {
                 {/* Enhanced bullets */}
                 {result.enhancedBullets.length > 0 && (
                   <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-6 backdrop-blur-xl">
-                    <p className="mb-4 text-[11px] font-black uppercase tracking-[0.22em] text-cyan-300">Rewritten bullet points</p>
+                    <p className="mb-4 text-[11px] font-bold tracking-wide text-cyan-300">Rewritten bullet points</p>
                     <div className="space-y-5">
                       {result.enhancedBullets.map((b, i) => (
                         <div key={i} className="space-y-2">
                           <div className="rounded-lg border border-white/[0.06] bg-white/[0.03] px-3 py-2">
-                            <p className="text-[10px] font-black uppercase tracking-[0.16em] text-gray-600 mb-1">Before</p>
+                            <p className="text-[10px] font-bold tracking-wide text-gray-600 mb-1">Before</p>
                             <p className="text-xs leading-5 text-gray-500 line-through">{b.original}</p>
                           </div>
                           <div className="relative rounded-lg border border-emerald-400/20 bg-emerald-400/[0.05] px-3 py-2">
-                            <p className="text-[10px] font-black uppercase tracking-[0.16em] text-emerald-400 mb-1">After</p>
+                            <p className="text-[10px] font-bold tracking-wide text-emerald-400 mb-1">After</p>
                             <p className="text-xs leading-5 text-gray-200">{b.enhanced}</p>
                             <button
                               onClick={() => copyText(b.enhanced, `bullet-${i}`)}
-                              className="absolute right-2 top-2 rounded-md border border-white/10 bg-white/[0.06] px-2 py-1 text-[10px] font-black text-gray-400 hover:text-white transition"
+                              className="absolute right-2 top-2 rounded-md border border-white/10 bg-white/[0.06] px-2 py-1 text-[10px] font-bold text-gray-400 hover:text-white transition"
                             >
                               {copied === `bullet-${i}` ? "Copied!" : "Copy"}
                             </button>
@@ -542,17 +542,17 @@ export default function CVEnhancerPage() {
                 {/* Keywords + ATS */}
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-6 backdrop-blur-xl">
-                    <p className="mb-3 text-[11px] font-black uppercase tracking-[0.22em] text-amber-300">Keywords to add</p>
+                    <p className="mb-3 text-[11px] font-bold tracking-wide text-amber-300">Keywords to add</p>
                     <div className="flex flex-wrap gap-2">
                       {result.missingKeywords.map((kw, i) => (
-                        <span key={i} className="rounded-full border border-amber-400/20 bg-amber-400/10 px-2.5 py-1 text-xs font-black text-amber-200">
+                        <span key={i} className="rounded-full border border-amber-400/20 bg-amber-400/10 px-2.5 py-1 text-xs font-bold text-amber-200">
                           {kw}
                         </span>
                       ))}
                     </div>
                   </div>
                   <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-6 backdrop-blur-xl">
-                    <p className="mb-3 text-[11px] font-black uppercase tracking-[0.22em] text-blue-300">ATS tips</p>
+                    <p className="mb-3 text-[11px] font-bold tracking-wide text-blue-300">ATS tips</p>
                     <ul className="space-y-2">
                       {result.atsTips.map((tip, i) => (
                         <li key={i} className="flex items-start gap-2 text-xs text-gray-300">
@@ -575,15 +575,15 @@ export default function CVEnhancerPage() {
               <div className="rounded-[1.75rem] border border-purple-400/25 bg-gradient-to-br from-purple-500/[0.09] to-fuchsia-500/[0.04] p-6">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                   <div>
-                    <p className="mb-1 text-[10px] font-black uppercase tracking-[0.22em] text-purple-400">Pro feature</p>
-                    <h2 className="text-lg font-black tracking-[-0.03em] text-white">Generate Enhanced CV</h2>
+                    <p className="mb-1 text-[10px] font-bold tracking-wide text-purple-400">Pro feature</p>
+                    <h2 className="text-lg font-bold tracking-tight text-white">Generate Enhanced CV</h2>
                     <p className="mt-1 text-sm leading-6 text-gray-400">
                       We'll ask for any missing details first, apply all recommendations, then let you accept or reject each change.
                     </p>
                   </div>
                   <button
                     onClick={() => void handleCheckGaps()}
-                    className="shrink-0 rounded-2xl bg-gradient-to-r from-purple-500 to-fuchsia-500 px-6 py-3.5 text-sm font-black text-white shadow-lg shadow-purple-900/30 transition hover:scale-[1.02]"
+                    className="shrink-0 rounded-2xl bg-gradient-to-r from-purple-500 to-fuchsia-500 px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-purple-900/30 transition hover:scale-[1.02]"
                   >
                     Generate Enhanced CV →
                   </button>
@@ -606,7 +606,7 @@ export default function CVEnhancerPage() {
             {gaps !== null && gaps.length > 0 && !generatingEnhanced && !enhancedResult && (
               <div className="rounded-[1.75rem] border border-purple-400/20 bg-white/[0.03] p-6">
                 <div className="mb-5">
-                  <p className="text-[11px] font-black uppercase tracking-[0.22em] text-purple-300">Before we generate</p>
+                  <p className="text-[11px] font-bold tracking-wide text-purple-300">Before we generate</p>
                   <p className="mt-1 text-sm leading-6 text-gray-400">
                     The AI found {gaps.length} area{gaps.length !== 1 ? "s" : ""} where extra detail would strengthen your CV.
                     Answer what you can, and skip anything you prefer to leave as-is.
@@ -622,7 +622,7 @@ export default function CVEnhancerPage() {
                       >
                         <div className="flex items-start gap-3">
                           <div className="min-w-0 flex-1">
-                            <p className="mb-0.5 text-[10px] font-black uppercase tracking-[0.16em] text-purple-400">{gap.section}</p>
+                            <p className="mb-0.5 text-[10px] font-bold tracking-wide text-purple-400">{gap.section}</p>
                             <p className="text-sm font-semibold text-white">{gap.question}</p>
                             {!skipped && (
                               <textarea
@@ -643,7 +643,7 @@ export default function CVEnhancerPage() {
                                 return next;
                               })
                             }
-                            className="mt-0.5 shrink-0 rounded-lg border border-white/10 bg-white/[0.04] px-3 py-1.5 text-[10px] font-black text-gray-500 transition hover:text-gray-300"
+                            className="mt-0.5 shrink-0 rounded-lg border border-white/10 bg-white/[0.04] px-3 py-1.5 text-[10px] font-bold text-gray-500 transition hover:text-gray-300"
                           >
                             {skipped ? "Restore" : "Skip"}
                           </button>
@@ -655,7 +655,7 @@ export default function CVEnhancerPage() {
                 <div className="mt-5 flex flex-col gap-2 sm:flex-row sm:justify-end">
                   <button
                     onClick={() => { setGaps(null); setGapAnswers({}); setSkippedGaps(new Set()); }}
-                    className="rounded-xl border border-white/10 bg-white/[0.04] px-5 py-2.5 text-sm font-black text-gray-400 transition hover:text-white"
+                    className="rounded-xl border border-white/10 bg-white/[0.04] px-5 py-2.5 text-sm font-bold text-gray-400 transition hover:text-white"
                   >
                     ← Back
                   </button>
@@ -666,7 +666,7 @@ export default function CVEnhancerPage() {
                         .map((g) => ({ id: g.id, answer: gapAnswers[g.id] }));
                       void handleGenerateEnhanced(answers);
                     }}
-                    className="rounded-2xl bg-gradient-to-r from-purple-500 to-fuchsia-500 px-6 py-2.5 text-sm font-black text-white shadow-lg shadow-purple-900/30 transition hover:scale-[1.01]"
+                    className="rounded-2xl bg-gradient-to-r from-purple-500 to-fuchsia-500 px-6 py-2.5 text-sm font-bold text-white shadow-lg shadow-purple-900/30 transition hover:scale-[1.01]"
                   >
                     Generate Enhanced CV →
                   </button>
@@ -696,14 +696,14 @@ export default function CVEnhancerPage() {
                 {/* Change review cards */}
                 <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-6">
                   <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-                    <p className="text-[11px] font-black uppercase tracking-[0.22em] text-purple-300">
+                    <p className="text-[11px] font-bold tracking-wide text-purple-300">
                       {enhancedResult.changes.length} changes: accept or reject each
                     </p>
                     <div className="flex gap-2">
-                      <span className="rounded-full bg-emerald-500/20 px-2.5 py-1 text-[10px] font-black text-emerald-300">
+                      <span className="rounded-full bg-emerald-500/20 px-2.5 py-1 text-[10px] font-bold text-emerald-300">
                         {enhancedResult.changes.length - rejectedIds.size} accepted
                       </span>
-                      <span className="rounded-full bg-red-500/20 px-2.5 py-1 text-[10px] font-black text-red-300">
+                      <span className="rounded-full bg-red-500/20 px-2.5 py-1 text-[10px] font-bold text-red-300">
                         {rejectedIds.size} rejected
                       </span>
                     </div>
@@ -722,16 +722,16 @@ export default function CVEnhancerPage() {
                         >
                           <div className="flex items-start gap-3">
                             <div className="min-w-0 flex-1">
-                              <p className="mb-2 text-[10px] font-black uppercase tracking-[0.16em] text-gray-500">
+                              <p className="mb-2 text-[10px] font-bold tracking-wide text-gray-500">
                                 {change.section}
                               </p>
                               <div className="space-y-2">
                                 <div className="rounded-lg bg-black/20 px-3 py-2">
-                                  <p className="mb-0.5 text-[9px] font-black uppercase tracking-[0.14em] text-gray-600">Before</p>
+                                  <p className="mb-0.5 text-[9px] font-bold tracking-wide text-gray-600">Before</p>
                                   <p className="text-xs leading-5 text-gray-500 line-through">{change.original}</p>
                                 </div>
                                 <div className="rounded-lg bg-black/20 px-3 py-2">
-                                  <p className="mb-0.5 text-[9px] font-black uppercase tracking-[0.14em] text-emerald-500">After</p>
+                                  <p className="mb-0.5 text-[9px] font-bold tracking-wide text-emerald-500">After</p>
                                   <p className="text-xs leading-5 text-gray-200">{change.replacement}</p>
                                 </div>
                               </div>
@@ -739,7 +739,7 @@ export default function CVEnhancerPage() {
                             </div>
                             <button
                               onClick={() => toggleRejection(change.id)}
-                              className={`shrink-0 rounded-lg border px-3 py-1.5 text-[10px] font-black transition ${
+                              className={`shrink-0 rounded-lg border px-3 py-1.5 text-[10px] font-bold transition ${
                                 rejected
                                   ? "border-red-400/40 bg-red-400/10 text-red-300 hover:bg-red-400/20"
                                   : "border-emerald-400/40 bg-emerald-400/10 text-emerald-300 hover:bg-emerald-400/20"
@@ -757,7 +757,7 @@ export default function CVEnhancerPage() {
                 {/* Flagged — needs user input */}
                 {enhancedResult.flagged.length > 0 && (
                   <div className="rounded-[1.75rem] border border-amber-400/20 bg-amber-400/[0.04] p-6">
-                    <p className="mb-3 text-[11px] font-black uppercase tracking-[0.22em] text-amber-300">
+                    <p className="mb-3 text-[11px] font-bold tracking-wide text-amber-300">
                       Needs your input (couldn't auto-apply)
                     </p>
                     <div className="space-y-2.5">
@@ -778,7 +778,7 @@ export default function CVEnhancerPage() {
                 <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-6">
                   <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
                     <div>
-                      <p className="text-[11px] font-black uppercase tracking-[0.22em] text-cyan-300">Your enhanced CV</p>
+                      <p className="text-[11px] font-bold tracking-wide text-cyan-300">Your enhanced CV</p>
                       <p className="mt-0.5 text-xs text-gray-500">
                         {enhancedResult.changes.length - rejectedIds.size} of {enhancedResult.changes.length} changes applied
                       </p>
@@ -796,7 +796,7 @@ export default function CVEnhancerPage() {
                             setTimeout(() => setCopied(null), 2000);
                           });
                         }}
-                        className="rounded-xl border border-cyan-400/30 bg-cyan-400/10 px-4 py-2 text-[11px] font-black text-cyan-300 transition hover:bg-cyan-400/20"
+                        className="rounded-xl border border-cyan-400/30 bg-cyan-400/10 px-4 py-2 text-[11px] font-bold text-cyan-300 transition hover:bg-cyan-400/20"
                       >
                         {copied === "final-cv" ? "Copied!" : "Copy final CV"}
                       </button>
@@ -807,7 +807,7 @@ export default function CVEnhancerPage() {
                           // Return to gap form if there were questions, else back to CTA
                           if (!gaps || gaps.length === 0) setGaps(null);
                         }}
-                        className="rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2 text-[11px] font-black text-gray-400 transition hover:text-white"
+                        className="rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2 text-[11px] font-bold text-gray-400 transition hover:text-white"
                       >
                         Regenerate
                       </button>

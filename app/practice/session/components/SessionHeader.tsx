@@ -82,7 +82,7 @@ function CompanyBrandedHeader({
         {/* Company identity (left) */}
         <div className="flex min-w-0 flex-1 items-center gap-3">
           <div
-            className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl text-base font-black text-white shadow-md"
+            className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl text-base font-bold text-white shadow-md"
             style={{ background: brandColor }}
           >
             {companyLogoUrl ? (
@@ -98,10 +98,10 @@ function CompanyBrandedHeader({
           </div>
 
           <div className="min-w-0">
-            <p className="text-[10px] font-black uppercase tracking-[0.20em] text-gray-400">
+            <p className="text-[10px] font-bold tracking-wide text-gray-400">
               Assessment from
             </p>
-            <p className="truncate text-sm font-black tracking-[-0.02em] text-white sm:text-base">
+            <p className="truncate text-sm font-bold tracking-tight text-white sm:text-base">
               {safeCompany}
             </p>
             {templateName && (
@@ -114,7 +114,7 @@ function CompanyBrandedHeader({
 
         {/* Right: in-progress badge + powered-by */}
         <div className="flex shrink-0 items-center gap-3">
-          <span className="hidden rounded-full border border-emerald-300/25 bg-emerald-300/10 px-3 py-1.5 text-[11px] font-black text-emerald-100 sm:inline-flex">
+          <span className="hidden rounded-full border border-emerald-300/25 bg-emerald-300/10 px-3 py-1.5 text-[11px] font-bold text-emerald-100 sm:inline-flex">
             <span className="relative mr-2 inline-flex h-2 w-2 self-center">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
@@ -123,7 +123,7 @@ function CompanyBrandedHeader({
           </span>
 
           <div className="hidden text-right text-[10px] leading-tight text-gray-500 sm:block">
-            <p className="font-black uppercase tracking-[0.16em]">Powered by</p>
+            <p className="font-bold tracking-wide">Powered by</p>
             <p className="text-gray-300">AI Career Mentor</p>
           </div>
         </div>

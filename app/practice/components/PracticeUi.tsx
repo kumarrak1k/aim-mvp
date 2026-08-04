@@ -67,9 +67,9 @@ export function ToggleButton({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-full px-5 py-2.5 text-sm font-black transition ${
+      className={`rounded-full px-5 py-2.5 text-sm font-bold transition ${
         active
-          ? "bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 text-white shadow-lg shadow-purple-950/30"
+          ? "bg-gradient-to-r from-violet-600 to-purple-600 text-white shadow-lg shadow-purple-950/30"
           : "border border-white/10 bg-white/[0.06] text-gray-300 hover:bg-white/[0.1]"
       }`}
     >
@@ -81,7 +81,7 @@ export function ToggleButton({
 export function MiniStat({ value, label }: { value: string; label: string }) {
   return (
     <div className="rounded-2xl border border-white/10 bg-black/30 p-4 text-center shadow-xl shadow-black/10">
-      <p className="text-2xl font-black tracking-[-0.03em]">{value}</p>
+      <p className="text-2xl font-bold tracking-tight">{value}</p>
       <p className="mt-1 text-xs leading-5 text-gray-400">{label}</p>
     </div>
   );
@@ -105,7 +105,7 @@ export function AnalysisPanel({
       }`}
     >
       <h3
-        className={`mb-4 text-lg font-black ${
+        className={`mb-4 text-lg font-bold ${
           accent === "cyan" ? "text-cyan-300" : "text-purple-300"
         }`}
       >
@@ -127,7 +127,7 @@ export function FeedbackList({
 }) {
   return (
     <div>
-      <h3 className={`mb-2 text-lg font-black ${color}`}>{title}</h3>
+      <h3 className={`mb-2 text-lg font-bold ${color}`}>{title}</h3>
       <ul className="list-disc space-y-1 pl-5 leading-7 text-gray-200">
         {items?.map((item, index) => (
           <li key={index}>{item}</li>
@@ -152,7 +152,7 @@ export function ScoreCard({ label, value }: { label: string; value: number }) {
       <p className="text-xs font-bold uppercase tracking-wide text-gray-500">
         {label}
       </p>
-      <p className="mt-2 text-2xl font-black text-white">
+      <p className="mt-2 text-2xl font-bold text-white">
         {value}
         <span className="text-sm text-gray-500">/10</span>
       </p>
@@ -166,7 +166,7 @@ export function MetricCard({ label, value }: { label: string; value: string }) {
       <p className="text-xs font-bold uppercase tracking-wide text-gray-500">
         {label}
       </p>
-      <p className="mt-2 text-xl font-black text-white">{value}</p>
+      <p className="mt-2 text-xl font-bold text-white">{value}</p>
     </div>
   );
 }
@@ -181,14 +181,14 @@ export function SectionFeedbackCard({
   return (
     <div className="rounded-2xl border border-white/10 bg-black/35 p-5 shadow-xl shadow-black/10">
       <div className="mb-3 flex items-center justify-between gap-3">
-        <h4 className="font-black text-white">{title}</h4>
-        <span className="rounded-full bg-purple-300/15 px-3 py-1 text-sm font-black text-purple-200">
+        <h4 className="font-bold text-white">{title}</h4>
+        <span className="rounded-full bg-purple-300/15 px-3 py-1 text-sm font-bold text-purple-200">
           {item.score}/10
         </span>
       </div>
       <p className="mb-3 text-sm leading-6 text-gray-300">{item.feedback}</p>
       <p className="text-sm leading-6 text-orange-200">
-        <span className="font-black">Improve: </span>
+        <span className="font-bold">Improve: </span>
         {item.improvement}
       </p>
     </div>

@@ -71,10 +71,10 @@ export default async function BusinessPricingPage() {
   return (
     <AudienceShell audience="business" currentPath="/for-business/pricing">
       <section className="mx-auto max-w-4xl px-4 pb-12 pt-6 text-center sm:px-6 sm:pt-10">
-        <p className="mx-auto mb-5 inline-flex items-center gap-2 rounded-full border border-purple-400/25 bg-purple-400/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-purple-200">
+        <p className="mx-auto mb-5 inline-flex items-center gap-2 rounded-full border border-purple-400/25 bg-purple-400/[0.07] px-4 py-2 text-[11px] font-bold tracking-wide text-purple-200">
           Hiring team pricing
         </p>
-        <h1 className="text-[2.5rem] font-black leading-[1.04] tracking-[-0.05em] sm:text-5xl">
+        <h1 className="text-[2.5rem] font-bold leading-[1.04] tracking-tight sm:text-4xl">
           Pricing that scales with your hiring volume.
         </h1>
         <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-gray-400 sm:text-lg sm:leading-9">
@@ -83,7 +83,7 @@ export default async function BusinessPricingPage() {
         </p>
         <Link
           href="/for-business/sign-up"
-          className="mx-auto mt-6 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-2.5 text-sm font-black text-white shadow-lg shadow-purple-900/40 transition hover:scale-[1.02]"
+          className="mx-auto mt-6 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-purple-900/40 transition hover:scale-[1.02]"
         >
           <span aria-hidden>✨</span>
           Try the Team plan free for 14 days: no payment details, 10 candidate invites
@@ -103,7 +103,7 @@ export default async function BusinessPricingPage() {
           Looking for the candidate plan? See{" "}
           <Link
             href="/pricing"
-            className="font-black text-purple-300 hover:text-purple-200"
+            className="font-bold text-purple-300 hover:text-purple-200"
           >
             candidate pricing →
           </Link>
@@ -112,7 +112,7 @@ export default async function BusinessPricingPage() {
           University or large institution?{" "}
           <Link
             href="/universities"
-            className="font-black text-cyan-300 hover:text-cyan-200"
+            className="font-bold text-cyan-300 hover:text-cyan-200"
           >
             See campus licensing →
           </Link>

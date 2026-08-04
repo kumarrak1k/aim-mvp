@@ -9,10 +9,10 @@ export function ProfileLoadingState() {
     <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 sm:pb-20">
       <GlassCard className="overflow-hidden">
         <div className="mx-auto max-w-3xl text-center">
-          <p className="text-sm font-black uppercase tracking-[0.22em] text-cyan-300">
+          <p className="text-sm font-bold tracking-wide text-cyan-300">
             Preparing profile
           </p>
-          <h2 className="mt-4 text-3xl font-black tracking-[-0.045em] text-white">
+          <h2 className="mt-4 text-3xl font-bold tracking-tight text-white">
             Loading your candidate workspace.
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-gray-300">
@@ -47,10 +47,10 @@ export function ProfileSignedOutState() {
       <GlassCard>
         <div className="grid items-center gap-8 lg:grid-cols-[1fr_0.9fr]">
           <div>
-            <p className="text-sm font-black uppercase tracking-[0.22em] text-cyan-300">
+            <p className="text-sm font-bold tracking-wide text-cyan-300">
               Save your context
             </p>
-            <h2 className="mt-4 text-3xl font-black tracking-[-0.045em] text-white sm:text-4xl">
+            <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
               Sign in to make every mock interview more personal.
             </h2>
             <p className="mt-4 max-w-2xl text-base leading-8 text-gray-300">
@@ -76,14 +76,14 @@ export function ProfileSignedOutState() {
 
             <div className="mt-8 flex flex-col gap-4 sm:flex-row">
               <SignInButton mode="modal">
-                <button className="rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-7 py-4 text-sm font-black text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01]">
+                <button className="rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-7 py-4 text-sm font-bold text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01]">
                   Sign in to save profile
                 </button>
               </SignInButton>
 
               <Link
                 href="/practice"
-                className="rounded-2xl border border-white/10 bg-white/[0.07] px-7 py-4 text-center text-sm font-black text-white transition hover:bg-white/[0.12]"
+                className="rounded-2xl border border-white/10 bg-white/[0.07] px-7 py-4 text-center text-sm font-bold text-white transition hover:bg-white/[0.12]"
               >
                 Start without profile
               </Link>

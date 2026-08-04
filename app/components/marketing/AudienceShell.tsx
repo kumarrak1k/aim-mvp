@@ -70,7 +70,7 @@ const THEMES: Record<Audience, AudienceTheme> = {
       },
     ],
     primaryGradient:
-      "from-purple-500 via-fuchsia-500 to-blue-500",
+      "from-violet-600 to-purple-600",
     primaryShadow: "shadow-purple-900/40",
     accentBorder: "border-purple-300/20",
     accentTextSoft: "text-purple-300/90",
@@ -90,7 +90,7 @@ const THEMES: Record<Audience, AudienceTheme> = {
       },
       { href: "/for-business/pricing", label: "Pricing" },
     ],
-    primaryGradient: "from-purple-500 via-fuchsia-500 to-blue-500",
+    primaryGradient: "from-violet-600 to-purple-600",
     primaryShadow: "shadow-purple-900/40",
     accentBorder: "border-purple-300/20",
     accentTextSoft: "text-purple-300/90",
@@ -114,9 +114,9 @@ export function AudienceShell({
 
       {/* Background atmosphere — tinted by audience */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_25%_15%,rgba(120,60,255,0.18),transparent),radial-gradient(ellipse_60%_50%_at_75%_85%,rgba(232,80,180,0.12),transparent),linear-gradient(180deg,#0a0614_0%,#100a1f_50%,#0c0816_100%)]" />
-        <div className="absolute left-[-160px] top-[-80px] h-[520px] w-[520px] rounded-full bg-purple-500/[0.18] blur-[160px]" />
-        <div className="absolute bottom-[-80px] right-[-160px] h-[520px] w-[520px] rounded-full bg-fuchsia-500/[0.18] blur-[160px]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_25%_15%,rgba(120,60,255,0.10),transparent),radial-gradient(ellipse_60%_50%_at_75%_85%,rgba(232,80,180,0.06),transparent),linear-gradient(180deg,#0a0614_0%,#100a1f_50%,#0c0816_100%)]" />
+        <div className="absolute left-[-160px] top-[-80px] h-[520px] w-[520px] rounded-full bg-purple-500/[0.08] blur-[160px]" />
+        <div className="absolute bottom-[-80px] right-[-160px] h-[520px] w-[520px] rounded-full bg-fuchsia-500/[0.08] blur-[160px]" />
       </div>
 
       {/* Header */}
@@ -129,7 +129,7 @@ export function AudienceShell({
           >
             <SiteLogo href="" size="md" showText />
             <span
-              className={`hidden rounded-full border px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] sm:inline-block lg:hidden ${theme.accentBorder} bg-white/[0.04] ${theme.accentTextStrong}`}
+              className={`hidden rounded-full border px-3 py-1 text-[10px] font-bold tracking-wide sm:inline-block lg:hidden ${theme.accentBorder} bg-white/[0.04] ${theme.accentTextStrong}`}
             >
               {theme.eyebrow}
             </span>
@@ -203,7 +203,7 @@ export function AudienceShell({
 
             <Link
               href={theme.signUpPath}
-              className={`min-w-0 whitespace-normal rounded-full bg-gradient-to-r text-center leading-tight ${theme.primaryGradient} px-4 py-2.5 text-[13px] font-black text-white shadow-lg ${theme.primaryShadow} transition hover:scale-[1.03] sm:whitespace-nowrap sm:px-5 lg:px-6`}
+              className={`min-w-0 whitespace-normal rounded-full bg-gradient-to-r text-center leading-tight ${theme.primaryGradient} px-4 py-2.5 text-[13px] font-bold text-white shadow-lg ${theme.primaryShadow} transition hover:scale-[1.03] sm:whitespace-nowrap sm:px-5 lg:px-6`}
             >
               {audience === "candidate" ? "Start free" : "Get started"}
             </Link>
@@ -236,7 +236,7 @@ export function AudienceShell({
               if (item.dropdown) {
                 return (
                   <div key={item.label} className="mt-1 border-t border-white/[0.06] pt-1">
-                    <p className="px-4 pb-1 pt-2 text-[10px] font-black uppercase tracking-[0.16em] text-gray-500">
+                    <p className="px-4 pb-1 pt-2 text-[10px] font-bold tracking-wide text-gray-500">
                       {item.label}
                     </p>
                     {item.dropdown.map((sub) => (

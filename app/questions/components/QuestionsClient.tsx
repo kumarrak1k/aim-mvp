@@ -102,7 +102,7 @@ export function QuestionsClient({ sets }: Props) {
       {hasFilter && (
         <div className="mb-5 flex items-center justify-between gap-4">
           <p className="text-sm text-gray-500">
-            <span className="font-black text-white">{filtered.length}</span>{" "}
+            <span className="font-bold text-white">{filtered.length}</span>{" "}
             {filtered.length === 1 ? "question set" : "question sets"} found
           </p>
           <button
@@ -117,13 +117,13 @@ export function QuestionsClient({ sets }: Props) {
       {/* ── Results grid ── */}
       {filtered.length === 0 ? (
         <div className="py-20 text-center">
-          <p className="text-base font-black text-gray-300">No results found</p>
+          <p className="text-base font-bold text-gray-300">No results found</p>
           <p className="mt-2 text-sm text-gray-500">
             Try a different keyword or browse all categories.
           </p>
           <button
             onClick={clearAll}
-            className="mt-5 rounded-2xl border border-purple-300/20 bg-purple-300/[0.07] px-5 py-2.5 text-sm font-black text-purple-200 transition hover:bg-purple-300/[0.12]"
+            className="mt-5 rounded-2xl border border-purple-300/20 bg-purple-300/[0.07] px-5 py-2.5 text-sm font-bold text-purple-200 transition hover:bg-purple-300/[0.12]"
           >
             Show all question sets
           </button>
@@ -134,11 +134,11 @@ export function QuestionsClient({ sets }: Props) {
             <Link key={set.slug} href={`/questions/${set.slug}`}>
               <article className="group h-full rounded-2xl border border-white/[0.08] bg-white/[0.03] p-6 transition hover:border-purple-300/20 hover:bg-purple-300/[0.05]">
                 {set.category && (
-                  <p className="mb-2 text-[10px] font-black uppercase tracking-[0.18em] text-purple-300/60">
+                  <p className="mb-2 text-[10px] font-bold tracking-wide text-purple-300/60">
                     {set.category}
                   </p>
                 )}
-                <h2 className="font-black leading-tight text-white transition group-hover:text-purple-200">
+                <h2 className="font-bold leading-tight text-white transition group-hover:text-purple-200">
                   {set.title}
                 </h2>
                 <p className="mt-2 text-sm leading-6 text-gray-500">

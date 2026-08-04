@@ -167,7 +167,7 @@ export default function CandidateResultDetailPage() {
           <p className="text-sm text-red-300">{error || "Not found."}</p>
           <Link
             href="/company/results"
-            className="mt-6 inline-block rounded-full border border-white/15 bg-white/[0.06] px-5 py-2.5 text-sm font-black text-white transition hover:bg-white/[0.10]"
+            className="mt-6 inline-block rounded-full border border-white/15 bg-white/[0.06] px-5 py-2.5 text-sm font-bold text-white transition hover:bg-white/[0.10]"
           >
             ← Back to results
           </Link>
@@ -187,7 +187,7 @@ export default function CandidateResultDetailPage() {
         <div className="mb-6">
           <Link
             href="/company/results"
-            className="text-sm font-black text-fuchsia-300 transition hover:text-fuchsia-200"
+            className="text-sm font-bold text-fuchsia-300 transition hover:text-fuchsia-200"
           >
             ← Back to all results
           </Link>
@@ -197,10 +197,10 @@ export default function CandidateResultDetailPage() {
         <div className="mb-8 rounded-[2rem] border border-white/10 bg-white/[0.04] p-7 shadow-xl shadow-black/10">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div className="min-w-0">
-              <p className="text-[11px] font-black uppercase tracking-[0.22em] text-fuchsia-300">
+              <p className="text-[11px] font-bold tracking-wide text-fuchsia-300">
                 Candidate
               </p>
-              <h1 className="mt-1 break-all text-2xl font-black tracking-[-0.04em] sm:text-3xl">
+              <h1 className="mt-1 break-all text-2xl font-bold tracking-tight sm:text-3xl">
                 {assignment.candidateEmail}
               </h1>
               <p className="mt-2 text-sm text-gray-400">
@@ -246,7 +246,7 @@ export default function CandidateResultDetailPage() {
               </div>
             ) : (
               <div className="rounded-2xl border border-amber-300/20 bg-amber-300/10 p-4 text-center">
-                <p className="text-xs font-black uppercase tracking-[0.18em] text-amber-200">
+                <p className="text-xs font-bold tracking-wide text-amber-200">
                   Awaiting
                 </p>
                 <p className="mt-2 text-sm text-amber-100">
@@ -299,7 +299,7 @@ export default function CandidateResultDetailPage() {
 
             {/* Per-question breakdown */}
             <div className="mb-8">
-              <h2 className="mb-4 text-xl font-black tracking-[-0.03em]">
+              <h2 className="mb-4 text-xl font-bold tracking-tight">
                 Per-question breakdown
               </h2>
               <div className="space-y-5">
@@ -350,10 +350,10 @@ function BigStat({
 
   return (
     <div className={`rounded-2xl border px-5 py-3 text-center ${toneClass}`}>
-      <p className="text-[10px] font-black uppercase tracking-[0.16em] opacity-80">
+      <p className="text-[10px] font-bold tracking-wide opacity-80">
         {label}
       </p>
-      <p className="mt-1 text-2xl font-black tracking-[-0.04em]">{value}</p>
+      <p className="mt-1 text-2xl font-bold tracking-tight">{value}</p>
     </div>
   );
 }
@@ -361,7 +361,7 @@ function BigStat({
 function TimelineItem({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-xl border border-white/[0.06] bg-black/20 p-3">
-      <p className="text-[10px] font-black uppercase tracking-[0.16em] text-gray-500">
+      <p className="text-[10px] font-bold tracking-wide text-gray-500">
         {label}
       </p>
       <p className="mt-1 text-xs font-semibold text-gray-200">{value}</p>
@@ -384,10 +384,10 @@ function SummaryCard({ summary }: { summary: SessionSummary }) {
 
   return (
     <section className="mb-8 rounded-[2rem] border border-white/10 bg-white/[0.04] p-6 shadow-xl shadow-black/10 sm:p-7">
-      <p className="text-[11px] font-black uppercase tracking-[0.22em] text-fuchsia-300">
+      <p className="text-[11px] font-bold tracking-wide text-fuchsia-300">
         AI overall summary
       </p>
-      <h2 className="mt-2 text-xl font-black tracking-[-0.03em] sm:text-2xl">
+      <h2 className="mt-2 text-xl font-bold tracking-tight sm:text-2xl">
         Recruiter recommendation
       </h2>
 
@@ -399,7 +399,7 @@ function SummaryCard({ summary }: { summary: SessionSummary }) {
 
       {orderedKeys.length > 0 && (
         <div className="mt-6">
-          <p className="mb-3 text-xs font-black uppercase tracking-[0.18em] text-gray-400">
+          <p className="mb-3 text-xs font-bold tracking-wide text-gray-400">
             Category averages
           </p>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -414,7 +414,7 @@ function SummaryCard({ summary }: { summary: SessionSummary }) {
       <div className="mt-6 grid gap-5 lg:grid-cols-2">
         {(summary.top_strengths || []).length > 0 && (
           <div className="rounded-2xl border border-emerald-400/20 bg-emerald-400/[0.05] p-5">
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-emerald-300">
+            <p className="text-xs font-bold tracking-wide text-emerald-300">
               Top strengths
             </p>
             <ul className="mt-3 space-y-2 text-sm text-gray-200">
@@ -430,7 +430,7 @@ function SummaryCard({ summary }: { summary: SessionSummary }) {
         {((summary.priority_improvements || summary.top_improvements) ?? []).length >
           0 && (
           <div className="rounded-2xl border border-amber-400/20 bg-amber-400/[0.05] p-5">
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-amber-300">
+            <p className="text-xs font-bold tracking-wide text-amber-300">
               Priority improvements
             </p>
             <ul className="mt-3 space-y-2 text-sm text-gray-200">
@@ -466,8 +466,8 @@ function CategoryBar({ label, score }: { label: string; score: number }) {
   return (
     <div className="rounded-xl border border-white/[0.06] bg-black/20 p-3">
       <div className="mb-1.5 flex items-center justify-between">
-        <p className="text-xs font-black text-white">{label}</p>
-        <p className="text-xs font-black text-gray-300">
+        <p className="text-xs font-bold text-white">{label}</p>
+        <p className="text-xs font-bold text-gray-300">
           {Math.round(safe * 10) / 10}/10
         </p>
       </div>
@@ -496,7 +496,7 @@ function QuestionCard({
       <div className="border-b border-white/[0.06] bg-black/20 px-5 py-4 sm:px-7 sm:py-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="min-w-0">
-            <p className="text-[11px] font-black uppercase tracking-[0.18em] text-cyan-300">
+            <p className="text-[11px] font-bold tracking-wide text-cyan-300">
               Question {index + 1} of {totalQuestions}
             </p>
             <p className="mt-2 text-base font-semibold leading-6 text-white sm:text-lg">
@@ -505,11 +505,11 @@ function QuestionCard({
           </div>
           {fb?.overall_score !== undefined && (
             <div className="shrink-0 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-2 text-center">
-              <p className="text-[10px] font-black uppercase tracking-[0.16em] text-gray-400">
+              <p className="text-[10px] font-bold tracking-wide text-gray-400">
                 Score
               </p>
               <p
-                className={`text-2xl font-black ${
+                className={`text-2xl font-bold ${
                   fb.overall_score >= 8
                     ? "text-emerald-300"
                     : fb.overall_score >= 6
@@ -530,7 +530,7 @@ function QuestionCard({
       <div className="grid gap-5 p-5 sm:p-7 lg:grid-cols-2">
         {/* Candidate's answer */}
         <div>
-          <p className="mb-2 text-[11px] font-black uppercase tracking-[0.18em] text-purple-300">
+          <p className="mb-2 text-[11px] font-bold tracking-wide text-purple-300">
             Candidate&rsquo;s answer
           </p>
           <p className="rounded-xl border border-white/[0.06] bg-black/30 p-4 text-sm leading-7 text-gray-200 whitespace-pre-wrap">
@@ -540,7 +540,7 @@ function QuestionCard({
 
         {/* AI feedback */}
         <div>
-          <p className="mb-2 text-[11px] font-black uppercase tracking-[0.18em] text-fuchsia-300">
+          <p className="mb-2 text-[11px] font-bold tracking-wide text-fuchsia-300">
             AI feedback
           </p>
 
@@ -551,10 +551,10 @@ function QuestionCard({
                   key={k}
                   className="rounded-lg border border-white/[0.06] bg-black/25 px-3 py-2"
                 >
-                  <p className="text-[10px] font-black uppercase tracking-[0.14em] text-gray-500">
+                  <p className="text-[10px] font-bold tracking-wide text-gray-500">
                     {CATEGORY_LABELS[k] || k}
                   </p>
-                  <p className="text-sm font-black text-white">{v}/10</p>
+                  <p className="text-sm font-bold text-white">{v}/10</p>
                 </div>
               ))}
             </div>
@@ -562,7 +562,7 @@ function QuestionCard({
 
           {fb?.strengths && fb.strengths.length > 0 && (
             <div className="mb-3">
-              <p className="text-[10px] font-black uppercase tracking-[0.14em] text-emerald-300">
+              <p className="text-[10px] font-bold tracking-wide text-emerald-300">
                 Strengths
               </p>
               <ul className="mt-1 space-y-1 text-sm text-gray-300">
@@ -577,7 +577,7 @@ function QuestionCard({
 
           {fb?.improvements && fb.improvements.length > 0 && (
             <div className="mb-3">
-              <p className="text-[10px] font-black uppercase tracking-[0.14em] text-amber-300">
+              <p className="text-[10px] font-bold tracking-wide text-amber-300">
                 Improvements
               </p>
               <ul className="mt-1 space-y-1 text-sm text-gray-300">
@@ -592,7 +592,7 @@ function QuestionCard({
 
           {fb?.improved_answer && (
             <details className="mt-3 rounded-xl border border-white/[0.06] bg-black/20 p-3">
-              <summary className="cursor-pointer text-xs font-black text-cyan-300">
+              <summary className="cursor-pointer text-xs font-bold text-cyan-300">
                 Show AI model answer
               </summary>
               <div className="mt-3">
@@ -655,7 +655,7 @@ function DeliveryStrip({
 
   return (
     <div>
-      <p className="mb-2 text-[10px] font-black uppercase tracking-[0.14em] text-gray-500">
+      <p className="mb-2 text-[10px] font-bold tracking-wide text-gray-500">
         {title}
       </p>
       <div className="flex flex-wrap gap-2">

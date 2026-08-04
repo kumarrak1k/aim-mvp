@@ -87,7 +87,7 @@ export default function ChangePasswordPage() {
       <div className="relative w-full max-w-sm">
         {/* Logo / wordmark */}
         <div className="mb-8 text-center">
-          <span className="text-2xl font-black tracking-[-0.04em] text-white">
+          <span className="text-2xl font-bold tracking-tight text-white">
             AI Career Mentor
           </span>
         </div>
@@ -100,15 +100,15 @@ export default function ChangePasswordPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <p className="text-lg font-black text-white">Password set!</p>
+              <p className="text-lg font-bold text-white">Password set!</p>
               <p className="mt-1 text-sm text-gray-400">Taking you to your account…</p>
             </div>
           ) : (
             <>
-              <p className="text-[11px] font-black uppercase tracking-[0.22em] text-fuchsia-300">
+              <p className="text-[11px] font-bold tracking-wide text-fuchsia-300">
                 Action required
               </p>
-              <h1 className="mt-1 text-xl font-black text-white">Set your password</h1>
+              <h1 className="mt-1 text-xl font-bold text-white">Set your password</h1>
               <p className="mt-2 text-sm leading-relaxed text-gray-400">
                 Your account was created by an administrator with a temporary password.
                 Please set a permanent password before continuing.
@@ -116,7 +116,7 @@ export default function ChangePasswordPage() {
 
               <form onSubmit={(e) => void handleSubmit(e)} className="mt-6 space-y-4">
                 <div>
-                  <label className="block text-[11px] font-black uppercase tracking-[0.16em] text-gray-400">
+                  <label className="block text-[11px] font-bold tracking-wide text-gray-400">
                     New password
                   </label>
                   <input
@@ -133,7 +133,7 @@ export default function ChangePasswordPage() {
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-black uppercase tracking-[0.16em] text-gray-400">
+                  <label className="block text-[11px] font-bold tracking-wide text-gray-400">
                     Confirm password
                   </label>
                   <input
@@ -158,7 +158,7 @@ export default function ChangePasswordPage() {
                 <button
                   type="submit"
                   disabled={loading || !newPassword || !confirmPassword}
-                  className="mt-2 w-full rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-600 py-3 text-sm font-black text-white shadow-lg transition hover:scale-[1.02] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+                  className="mt-2 w-full rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-600 py-3 text-sm font-bold text-white shadow-lg transition hover:scale-[1.02] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {loading ? "Setting password…" : "Set password & continue →"}
                 </button>

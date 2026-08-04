@@ -60,10 +60,10 @@ export function SubscriptionCard() {
     <div className={`mb-6 rounded-[2rem] border p-6 ${colourClass}`}>
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="mb-1 text-[11px] font-black uppercase tracking-[0.18em] opacity-60">
+          <p className="mb-1 text-[11px] font-bold tracking-wide opacity-60">
             Current plan
           </p>
-          <p className="text-xl font-black tracking-[-0.03em]">{info.planName}</p>
+          <p className="text-xl font-bold tracking-tight">{info.planName}</p>
           {renewalDate && !info.isPastDue && (
             <p className="mt-1 text-xs opacity-60">Renews {renewalDate}</p>
           )}
@@ -83,7 +83,7 @@ export function SubscriptionCard() {
           <button
             onClick={handleManageBilling}
             disabled={managing}
-            className={`shrink-0 rounded-xl px-4 py-2 text-sm font-black text-white transition disabled:opacity-50 ${
+            className={`shrink-0 rounded-xl px-4 py-2 text-sm font-bold text-white transition disabled:opacity-50 ${
               info.isPastDue
                 ? "bg-amber-400 text-[#3a2a00] hover:scale-[1.02]"
                 : "border border-white/10 bg-white/[0.06] hover:bg-white/[0.1]"
@@ -94,7 +94,7 @@ export function SubscriptionCard() {
         ) : (
           <Link
             href="/pricing"
-            className="shrink-0 rounded-xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-4 py-2 text-sm font-black text-white shadow-lg transition hover:scale-[1.02]"
+            className="shrink-0 rounded-xl bg-gradient-to-r from-violet-600 to-purple-600 px-4 py-2 text-sm font-bold text-white shadow-lg transition hover:scale-[1.02]"
           >
             Upgrade
           </Link>

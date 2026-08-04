@@ -133,12 +133,12 @@ export default function AssessmentCentreSetupPage() {
       <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:py-14">
         {/* Header */}
         <div className="mb-10 text-center">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-cyan-400/25 bg-cyan-400/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-cyan-200">
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-cyan-400/25 bg-cyan-400/[0.07] px-4 py-2 text-[11px] font-bold tracking-wide text-cyan-200">
             Advanced · Mock Assessment Centre
           </div>
-          <h1 className="text-3xl font-black leading-[1.04] tracking-[-0.05em] text-white sm:text-4xl lg:text-5xl">
+          <h1 className="text-3xl font-bold leading-[1.04] tracking-tight text-white sm:text-4xl lg:text-4xl">
             Set up your{" "}
-            <span className="bg-gradient-to-r from-cyan-300 via-purple-300 to-fuchsia-300 bg-clip-text text-transparent">
+            <span className="text-violet-300">
               assessment centre
             </span>
           </h1>
@@ -151,7 +151,7 @@ export default function AssessmentCentreSetupPage() {
         <div className="space-y-8">
           {/* Role input */}
           <div className="rounded-[1.75rem] border border-white/[0.08] bg-white/[0.04] p-6 backdrop-blur-xl">
-            <label className="mb-3 block text-[11px] font-black uppercase tracking-[0.22em] text-purple-300/90">
+            <label className="mb-3 block text-[11px] font-bold tracking-wide text-purple-300/90">
               Your target role
             </label>
             <input
@@ -166,7 +166,7 @@ export default function AssessmentCentreSetupPage() {
 
           {/* Sector grid */}
           <div className="rounded-[1.75rem] border border-white/[0.08] bg-white/[0.04] p-6 backdrop-blur-xl">
-            <p className="mb-4 text-[11px] font-black uppercase tracking-[0.22em] text-purple-300/90">
+            <p className="mb-4 text-[11px] font-bold tracking-wide text-purple-300/90">
               Sector
             </p>
             <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-5">
@@ -174,7 +174,7 @@ export default function AssessmentCentreSetupPage() {
                 <button
                   key={s}
                   onClick={() => setSector(s)}
-                  className={`rounded-xl border px-3 py-3 text-center text-[12px] font-black leading-tight transition-all ${
+                  className={`rounded-xl border px-3 py-3 text-center text-[12px] font-bold leading-tight transition-all ${
                     sector === s
                       ? "border-cyan-400/60 bg-cyan-400/10 text-cyan-300 shadow-lg shadow-cyan-900/20 ring-1 ring-cyan-400/30"
                       : "border-white/[0.08] bg-white/[0.03] text-gray-400 hover:border-white/20 hover:bg-white/[0.06] hover:text-white"
@@ -188,7 +188,7 @@ export default function AssessmentCentreSetupPage() {
 
           {/* Experience level */}
           <div className="rounded-[1.75rem] border border-white/[0.08] bg-white/[0.04] p-6 backdrop-blur-xl">
-            <p className="mb-4 text-[11px] font-black uppercase tracking-[0.22em] text-purple-300/90">
+            <p className="mb-4 text-[11px] font-bold tracking-wide text-purple-300/90">
               Experience level
             </p>
             <div className="flex flex-wrap gap-2.5">
@@ -196,7 +196,7 @@ export default function AssessmentCentreSetupPage() {
                 <button
                   key={level}
                   onClick={() => setExperienceLevel(level)}
-                  className={`rounded-xl border px-5 py-3 text-sm font-black transition-all ${
+                  className={`rounded-xl border px-5 py-3 text-sm font-bold transition-all ${
                     experienceLevel === level
                       ? "border-purple-400/60 bg-purple-400/10 text-purple-300 shadow-lg shadow-purple-900/20 ring-1 ring-purple-400/30"
                       : "border-white/[0.08] bg-white/[0.03] text-gray-400 hover:border-white/20 hover:bg-white/[0.06] hover:text-white"
@@ -218,7 +218,7 @@ export default function AssessmentCentreSetupPage() {
           {/* Stage selector */}
           <div className="rounded-[1.75rem] border border-white/[0.08] bg-white/[0.04] p-6 backdrop-blur-xl">
             <div className="mb-4 flex items-center justify-between">
-              <p className="text-[11px] font-black uppercase tracking-[0.22em] text-purple-300/90">
+              <p className="text-[11px] font-bold tracking-wide text-purple-300/90">
                 Stages to include
               </p>
               <span className="text-[11px] text-gray-500">
@@ -260,7 +260,7 @@ export default function AssessmentCentreSetupPage() {
                     className={`relative rounded-xl border p-4 text-left transition-all ${borderColour} ${bgColour} ${isLast ? "cursor-not-allowed" : "cursor-pointer hover:opacity-100"}`}
                   >
                     {/* Selected/deselected indicator */}
-                    <div className={`absolute right-3 top-3 flex h-5 w-5 items-center justify-center rounded-full border text-[10px] font-black transition-all ${
+                    <div className={`absolute right-3 top-3 flex h-5 w-5 items-center justify-center rounded-full border text-[10px] font-bold transition-all ${
                       selected
                         ? "border-emerald-400/50 bg-emerald-400/10 text-emerald-300"
                         : "border-white/20 bg-white/[0.04] text-gray-600"
@@ -268,7 +268,7 @@ export default function AssessmentCentreSetupPage() {
                       {selected ? "✓" : "✕"}
                     </div>
                     <div className="mb-2 text-2xl">{stage.icon}</div>
-                    <div className={`text-sm font-black ${selected ? "text-white" : "text-gray-500"}`}>
+                    <div className={`text-sm font-bold ${selected ? "text-white" : "text-gray-500"}`}>
                       {stage.label}
                     </div>
                     <div className={`mt-0.5 text-[11px] font-semibold ${labelColour}`}>
@@ -287,7 +287,7 @@ export default function AssessmentCentreSetupPage() {
               <span className="text-xs text-gray-500">
                 {selectedStages.size} stage{selectedStages.size !== 1 ? "s" : ""} selected
               </span>
-              <span className="text-xs font-black text-white">
+              <span className="text-xs font-bold text-white">
                 ~{totalMinutes} minutes total
               </span>
             </div>
@@ -304,7 +304,7 @@ export default function AssessmentCentreSetupPage() {
           <button
             onClick={handleSubmit}
             disabled={!canSubmit}
-            className={`flex w-full items-center justify-center gap-3 rounded-2xl px-8 py-5 text-base font-black tracking-[-0.02em] text-white shadow-2xl transition-all ${
+            className={`flex w-full items-center justify-center gap-3 rounded-2xl px-8 py-5 text-base font-bold tracking-tight text-white shadow-2xl transition-all ${
               canSubmit
                 ? "bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 shadow-cyan-900/40 hover:scale-[1.015] hover:shadow-cyan-900/60"
                 : "cursor-not-allowed bg-white/[0.06] text-gray-600"
@@ -330,7 +330,7 @@ export default function AssessmentCentreSetupPage() {
             <div className="mt-3 flex items-start gap-2.5 rounded-xl border border-cyan-300/20 bg-cyan-400/[0.07] px-4 py-3 text-left text-xs leading-5 text-cyan-100">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" className="mt-0.5 h-4 w-4 shrink-0 animate-pulse text-cyan-300" aria-hidden><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
               <span>
-                <span className="font-black">This takes a minute or two.</span>{" "}
+                <span className="font-bold">This takes a minute or two.</span>{" "}
                 We are writing a complete, fresh scenario for your sector: the
                 case study document, exhibits and stage tasks. Keep this page
                 open; you will move straight into Stage 1 when it is ready.

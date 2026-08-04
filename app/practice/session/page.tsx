@@ -1805,10 +1805,10 @@ export default function PracticeSessionPage() {
               </svg>
             </div>
             <div className="max-w-sm">
-              <p className="text-[11px] font-black uppercase tracking-[0.24em] text-fuchsia-300">
+              <p className="text-[11px] font-bold tracking-wide text-fuchsia-300">
                 Stage 2 Complete
               </p>
-              <h2 className="mt-2 text-2xl font-black tracking-[-0.04em] text-white">
+              <h2 className="mt-2 text-2xl font-bold tracking-tight text-white">
                 Preparing your presentation brief…
               </h2>
               <p className="mt-3 text-sm leading-7 text-gray-400">
@@ -1832,7 +1832,7 @@ export default function PracticeSessionPage() {
         {saveError && (
           <div className="mx-auto mb-4 flex max-w-3xl flex-col items-start gap-3 rounded-2xl border border-amber-400/30 bg-amber-400/10 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm leading-6 text-amber-200">
-              <span className="font-black">This session hasn&apos;t been saved to My Progress.</span>{" "}
+              <span className="font-bold">This session hasn&apos;t been saved to My Progress.</span>{" "}
               {saveError}
             </p>
             <button
@@ -1846,7 +1846,7 @@ export default function PracticeSessionPage() {
                   setRetrySaving(false)
                 );
               }}
-              className="shrink-0 rounded-full border border-amber-300/30 bg-amber-300/15 px-4 py-2 text-xs font-black text-amber-100 transition hover:bg-amber-300/25 disabled:cursor-not-allowed disabled:opacity-50"
+              className="shrink-0 rounded-full border border-amber-300/30 bg-amber-300/15 px-4 py-2 text-xs font-bold text-amber-100 transition hover:bg-amber-300/25 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {retrySaving ? "Saving…" : "Retry save"}
             </button>
@@ -2000,9 +2000,9 @@ function PracticeSessionShell({
   return (
     <main className="min-h-screen overflow-x-hidden bg-[#0a0614] text-white">
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_25%_15%,rgba(120,60,255,0.18),transparent),radial-gradient(ellipse_60%_50%_at_75%_85%,rgba(232,80,180,0.12),transparent),linear-gradient(180deg,#0a0614_0%,#100a1f_50%,#0c0816_100%)]" />
-        <div className="absolute left-[-160px] top-[-80px] h-[520px] w-[520px] rounded-full bg-purple-500/[0.18] blur-[160px]" />
-        <div className="absolute bottom-[-80px] right-[-160px] h-[520px] w-[520px] rounded-full bg-fuchsia-500/[0.18] blur-[160px]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_25%_15%,rgba(120,60,255,0.10),transparent),radial-gradient(ellipse_60%_50%_at_75%_85%,rgba(232,80,180,0.06),transparent),linear-gradient(180deg,#0a0614_0%,#100a1f_50%,#0c0816_100%)]" />
+        <div className="absolute left-[-160px] top-[-80px] h-[520px] w-[520px] rounded-full bg-purple-500/[0.08] blur-[160px]" />
+        <div className="absolute bottom-[-80px] right-[-160px] h-[520px] w-[520px] rounded-full bg-fuchsia-500/[0.08] blur-[160px]" />
       </div>
 
       <SessionHeader

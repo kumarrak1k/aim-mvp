@@ -17,20 +17,20 @@ export function CertificateActions({
         href={linkedinShareUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex items-center justify-center gap-2 rounded-2xl bg-[#0a66c2] px-6 py-3.5 text-sm font-black text-white shadow-lg transition hover:scale-[1.02]"
+        className="flex items-center justify-center gap-2 rounded-2xl bg-[#0a66c2] px-6 py-3.5 text-sm font-bold text-white shadow-lg transition hover:scale-[1.02]"
       >
         <span>in</span>
         Share on LinkedIn
       </a>
       <button
         onClick={copyLink}
-        className="flex items-center justify-center gap-2 rounded-2xl border border-white/[0.1] bg-white/[0.05] px-6 py-3.5 text-sm font-black text-white transition hover:bg-white/[0.09]"
+        className="flex items-center justify-center gap-2 rounded-2xl border border-white/[0.1] bg-white/[0.05] px-6 py-3.5 text-sm font-bold text-white transition hover:bg-white/[0.09]"
       >
         Copy link
       </button>
       <button
         onClick={() => window.print()}
-        className="flex items-center justify-center gap-2 rounded-2xl border border-white/[0.1] bg-white/[0.05] px-6 py-3.5 text-sm font-black text-white transition hover:bg-white/[0.09]"
+        className="flex items-center justify-center gap-2 rounded-2xl border border-white/[0.1] bg-white/[0.05] px-6 py-3.5 text-sm font-bold text-white transition hover:bg-white/[0.09]"
       >
         Print / Save PDF
       </button>

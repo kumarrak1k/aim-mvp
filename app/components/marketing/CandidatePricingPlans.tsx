@@ -257,7 +257,7 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
           Annual
         </span>
         {annual && (
-          <span className="rounded-full bg-emerald-400/10 px-2.5 py-1 text-[11px] font-black text-emerald-300">
+          <span className="rounded-full bg-emerald-400/10 px-2.5 py-1 text-[11px] font-bold text-emerald-300">
             Save up to 28%
           </span>
         )}
@@ -286,15 +286,15 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
               }`}
             >
               {plan.highlight && (
-                <span className="mb-5 inline-flex self-start rounded-full bg-white px-3 py-1 text-xs font-black text-black">
+                <span className="mb-5 inline-flex self-start rounded-full bg-white px-3 py-1 text-xs font-bold text-black">
                   Most popular
                 </span>
               )}
               {!plan.highlight && <div className="mb-5 h-7" />}
 
-              <h3 className="text-xl font-black tracking-[-0.03em]">{plan.name}</h3>
+              <h3 className="text-xl font-bold tracking-tight">{plan.name}</h3>
               <div className="mt-3 flex items-end gap-1.5">
-                <span className="text-5xl font-black leading-none tracking-[-0.07em]">
+                <span className="text-4xl font-bold leading-none tracking-tight">
                   {displayPrice}
                 </span>
                 {displayPeriod && (
@@ -336,7 +336,7 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
                     </span>
                     <span className="flex-1">{f.text}</span>
                     {f.isNew && (
-                      <span className="mt-[1px] shrink-0 rounded-full bg-fuchsia-400/15 px-1.5 py-0.5 text-[9px] font-black uppercase tracking-[0.12em] text-fuchsia-300">
+                      <span className="mt-[1px] shrink-0 rounded-full bg-fuchsia-400/15 px-1.5 py-0.5 text-[9px] font-bold tracking-wide text-fuchsia-300">
                         New
                       </span>
                     )}
@@ -347,9 +347,9 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
               {startsFreeTrial ? (
                 <Link
                   href="/for-candidates/sign-up"
-                  className={`mt-8 flex min-h-[3.75rem] w-full items-center justify-center rounded-2xl px-5 py-3 text-center text-sm font-black leading-tight transition ${
+                  className={`mt-8 flex min-h-[3.75rem] w-full items-center justify-center rounded-2xl px-5 py-3 text-center text-sm font-bold leading-tight transition ${
                     plan.highlight
-                      ? "bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 text-white shadow-xl shadow-purple-950/35 hover:scale-[1.02]"
+                      ? "bg-gradient-to-r from-violet-600 to-purple-600 text-white shadow-xl shadow-purple-950/35 hover:scale-[1.02]"
                       : "border border-white/10 bg-white/[0.06] text-white hover:bg-white/[0.1]"
                   }`}
                 >
@@ -359,9 +359,9 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
                 <button
                   onClick={() => void handlePaidCta(plan)}
                   disabled={checkoutPlan !== null}
-                  className={`mt-8 flex min-h-[3.75rem] w-full items-center justify-center rounded-2xl px-5 py-3 text-sm font-black transition disabled:cursor-not-allowed disabled:opacity-60 ${
+                  className={`mt-8 flex min-h-[3.75rem] w-full items-center justify-center rounded-2xl px-5 py-3 text-sm font-bold transition disabled:cursor-not-allowed disabled:opacity-60 ${
                     plan.highlight
-                      ? "bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 text-white shadow-xl shadow-purple-950/35 hover:scale-[1.02]"
+                      ? "bg-gradient-to-r from-violet-600 to-purple-600 text-white shadow-xl shadow-purple-950/35 hover:scale-[1.02]"
                       : "border border-white/10 bg-white/[0.06] text-white hover:bg-white/[0.1]"
                   }`}
                 >
@@ -394,7 +394,7 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
 
       {/* Plan comparison matrix */}
       <div className="mx-auto mt-14 max-w-4xl">
-        <h3 className="mb-6 text-center text-2xl font-black tracking-[-0.04em]">Compare plans</h3>
+        <h3 className="mb-6 text-center text-2xl font-bold tracking-tight">Compare plans</h3>
         {/* On narrow phones the table scrolls sideways but iOS hides the
             scrollbar, so Plus/Professional are invisible without this cue. */}
         <p className="mb-2 text-center text-[11px] font-bold uppercase tracking-wide text-purple-200/80 sm:hidden">
@@ -404,10 +404,10 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
           <table className="w-full min-w-[34rem] text-sm">
             <thead>
               <tr className="border-b border-white/10 bg-white/[0.03]">
-                <th scope="col" className="px-4 py-3 text-left font-black text-gray-300">Feature</th>
-                <th scope="col" className="px-4 py-3 text-center font-black text-gray-300">Free</th>
-                <th scope="col" className="px-4 py-3 text-center font-black text-purple-200">Plus</th>
-                <th scope="col" className="px-4 py-3 text-center font-black text-gray-300">Professional</th>
+                <th scope="col" className="px-4 py-3 text-left font-bold text-gray-300">Feature</th>
+                <th scope="col" className="px-4 py-3 text-center font-bold text-gray-300">Free</th>
+                <th scope="col" className="px-4 py-3 text-center font-bold text-purple-200">Plus</th>
+                <th scope="col" className="px-4 py-3 text-center font-bold text-gray-300">Professional</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/[0.06]">

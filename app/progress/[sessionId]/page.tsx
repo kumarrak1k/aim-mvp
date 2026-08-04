@@ -317,10 +317,10 @@ function UpgradeNudge() {
       <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-purple-500/20 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-fuchsia-500/15 blur-3xl" />
       <div className="relative">
-        <p className="mb-2 text-[11px] font-black uppercase tracking-[0.2em] text-purple-300/70">
+        <p className="mb-2 text-[11px] font-bold tracking-wide text-purple-300/70">
           Free plan · All 3 sessions used
         </p>
-        <h2 className="text-2xl font-black tracking-[-0.04em]">
+        <h2 className="text-2xl font-bold tracking-tight">
           Ready to practise more?
         </h2>
         <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-gray-400">
@@ -331,13 +331,13 @@ function UpgradeNudge() {
         <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
           <Link
             href="/pricing"
-            className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-7 py-3.5 text-sm font-black text-white shadow-xl shadow-purple-950/35 transition hover:scale-[1.02]"
+            className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-7 py-3.5 text-sm font-bold text-white shadow-xl shadow-purple-950/35 transition hover:scale-[1.02]"
           >
             Upgrade to Plus →
           </Link>
           <Link
             href="/practice"
-            className="rounded-2xl border border-white/10 bg-white/[0.06] px-7 py-3.5 text-sm font-black text-white transition hover:bg-white/[0.1]"
+            className="rounded-2xl border border-white/10 bg-white/[0.06] px-7 py-3.5 text-sm font-bold text-white transition hover:bg-white/[0.1]"
           >
             Back to practice
           </Link>
@@ -365,23 +365,23 @@ function SessionHero({
         <div>
           <div className="mb-4 flex flex-wrap items-center gap-2">
             <Link href="/progress">
-              <span className="rounded-full border border-white/10 bg-white/[0.06] px-4 py-2 text-xs font-black text-gray-200 transition hover:bg-white/[0.1]">
+              <span className="rounded-full border border-white/10 bg-white/[0.06] px-4 py-2 text-xs font-bold text-gray-200 transition hover:bg-white/[0.1]">
                 ← Back to progress
               </span>
             </Link>
 
-            <span className="rounded-full border border-cyan-300/20 bg-cyan-300/10 px-4 py-2 text-xs font-black uppercase tracking-[0.16em] text-cyan-100">
+            <span className="rounded-full border border-cyan-300/20 bg-cyan-300/10 px-4 py-2 text-xs font-bold tracking-wide text-cyan-100">
               Session archive
             </span>
 
             <Link href={`/progress/${session.id}/print`} target="_blank" rel="noopener">
-              <span className="rounded-full border border-white/10 bg-white/[0.06] px-4 py-2 text-xs font-black text-gray-200 transition hover:bg-white/[0.1]">
+              <span className="rounded-full border border-white/10 bg-white/[0.06] px-4 py-2 text-xs font-bold text-gray-200 transition hover:bg-white/[0.1]">
                 ↓ Download PDF
               </span>
             </Link>
           </div>
 
-          <h1 className="max-w-4xl text-4xl font-black leading-[1.02] tracking-[-0.055em] sm:text-5xl lg:text-6xl">
+          <h1 className="max-w-4xl text-4xl font-bold leading-[1.02] tracking-tight sm:text-4xl lg:text-5xl">
             {session.role}
           </h1>
 
@@ -430,14 +430,14 @@ function SummaryPanel({ session }: { session: PracticeSessionDetail }) {
           <div>
             <p className="text-sm text-gray-400">Readiness score</p>
             <div className="mt-2 flex items-end gap-2">
-              <span className="text-6xl font-black tracking-[-0.08em] text-white">
+              <span className="text-5xl font-bold tracking-tight text-white">
                 {session.overallScore}
               </span>
-              <span className="mb-2 text-lg font-black text-gray-500">/10</span>
+              <span className="mb-2 text-lg font-bold text-gray-500">/10</span>
             </div>
           </div>
 
-          <span className="w-fit rounded-full border border-emerald-300/20 bg-emerald-300/10 px-4 py-2 text-xs font-black uppercase tracking-[0.14em] text-emerald-100">
+          <span className="w-fit rounded-full border border-emerald-300/20 bg-emerald-300/10 px-4 py-2 text-xs font-bold tracking-wide text-emerald-100">
             {summary?.hire_signal || session.hireSignal}
           </span>
         </div>
@@ -450,7 +450,7 @@ function SummaryPanel({ session }: { session: PracticeSessionDetail }) {
 
         {summary?.final_recommendation && (
           <div className="mt-4 rounded-[1.25rem] border border-white/10 bg-black/25 p-4">
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-purple-300">
+            <p className="text-xs font-bold tracking-wide text-purple-300">
               Recommendation
             </p>
             <p className="mt-2 text-sm leading-7 text-gray-300">
@@ -595,19 +595,19 @@ function QuestionCard({
       <summary className="cursor-pointer list-none p-5 transition hover:bg-white/[0.035]">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="min-w-0">
-            <p className="mb-2 text-xs font-black uppercase tracking-[0.18em] text-cyan-300">
+            <p className="mb-2 text-xs font-bold tracking-wide text-cyan-300">
               Question {index + 1}
             </p>
-            <h3 className="text-lg font-black leading-7 text-white">
+            <h3 className="text-lg font-bold leading-7 text-white">
               {item.question || "Question not saved."}
             </h3>
           </div>
 
           <div className="flex shrink-0 items-center gap-2">
-            <span className="rounded-full border border-purple-300/20 bg-purple-300/10 px-3 py-1.5 text-xs font-black text-purple-100">
+            <span className="rounded-full border border-purple-300/20 bg-purple-300/10 px-3 py-1.5 text-xs font-bold text-purple-100">
               {feedback?.overall_score || 0}/10
             </span>
-            <span className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1.5 text-xs font-black text-gray-300">
+            <span className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1.5 text-xs font-bold text-gray-300">
               Open
             </span>
           </div>
@@ -621,7 +621,7 @@ function QuestionCard({
             text={item.answer || "No answer saved."}
           />
           <div className="rounded-[1.35rem] border border-white/10 bg-white/[0.04] p-4">
-            <p className="mb-3 text-xs font-black uppercase tracking-[0.18em] text-cyan-300">
+            <p className="mb-3 text-xs font-bold tracking-wide text-cyan-300">
               Model answer (STAR)
             </p>
             <StarAnswer
@@ -693,7 +693,7 @@ function SessionInsights({ summary }: { summary?: SessionSummary }) {
               key={`${item}-${index}`}
               className="rounded-[1.25rem] border border-white/10 bg-black/25 p-4"
             >
-              <p className="text-xs font-black uppercase tracking-[0.18em] text-cyan-300">
+              <p className="text-xs font-bold tracking-wide text-cyan-300">
                 Step {index + 1}
               </p>
               <p className="mt-2 text-sm leading-6 text-gray-300">{item}</p>
@@ -702,7 +702,7 @@ function SessionInsights({ summary }: { summary?: SessionSummary }) {
         </div>
 
         <Link href="/practice">
-          <button className="mt-5 w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-3.5 text-sm font-black text-white shadow-2xl shadow-purple-900/30 transition hover:scale-[1.01]">
+          <button className="mt-5 w-full rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-5 py-3.5 text-sm font-bold text-white shadow-2xl shadow-purple-900/30 transition hover:scale-[1.01]">
             Practise this again
           </button>
         </Link>
@@ -723,7 +723,7 @@ function SessionInsights({ summary }: { summary?: SessionSummary }) {
                   key={`${item.day || "day"}-${index}`}
                   className="rounded-[1.25rem] border border-white/10 bg-white/[0.04] p-4"
                 >
-                  <p className="text-sm font-black text-white">
+                  <p className="text-sm font-bold text-white">
                     {item.day || `Day ${index + 1}`} ·{" "}
                     {item.focus || "Practice"}
                   </p>
@@ -747,8 +747,8 @@ function DeliveryBlock({ voice }: { voice: VoiceAnalysis | null }) {
   return (
     <div className="rounded-[1.35rem] border border-white/10 bg-white/[0.04] p-4">
       <div className="mb-4 flex items-center justify-between">
-        <p className="text-sm font-black text-white">Voice delivery</p>
-        <span className="rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1 text-xs font-black text-cyan-100">
+        <p className="text-sm font-bold text-white">Voice delivery</p>
+        <span className="rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1 text-xs font-bold text-cyan-100">
           {voice.overallVoiceScore || 0}/10
         </span>
       </div>
@@ -778,8 +778,8 @@ function PresenceBlock({ video }: { video: VideoAnalysis | null }) {
   return (
     <div className="rounded-[1.35rem] border border-white/10 bg-white/[0.04] p-4">
       <div className="mb-4 flex items-center justify-between">
-        <p className="text-sm font-black text-white">Camera presence</p>
-        <span className="rounded-full border border-purple-300/20 bg-purple-300/10 px-3 py-1 text-xs font-black text-purple-100">
+        <p className="text-sm font-bold text-white">Camera presence</p>
+        <span className="rounded-full border border-purple-300/20 bg-purple-300/10 px-3 py-1 text-xs font-bold text-purple-100">
           {video.overallVideoScore || 0}/10
         </span>
       </div>
@@ -805,10 +805,10 @@ function AnswerSignal({
 }) {
   return (
     <div className="rounded-[1.35rem] border border-white/10 bg-white/[0.04] p-4">
-      <p className="text-xs font-black uppercase tracking-[0.18em] text-purple-300">
+      <p className="text-xs font-bold tracking-wide text-purple-300">
         {label}
       </p>
-      <p className="mt-2 text-sm font-black text-white">
+      <p className="mt-2 text-sm font-bold text-white">
         {answer?.score ? `${answer.score}/10` : "Not scored"}
       </p>
       <p className="mt-2 text-sm leading-6 text-gray-400">
@@ -825,8 +825,8 @@ function CategoryLine({ label, value }: { label: string; value: number }) {
   return (
     <div>
       <div className="mb-2 flex items-center justify-between gap-3">
-        <p className="text-sm font-black text-white">{label}</p>
-        <p className="text-sm font-black text-gray-300">{safeValue}/10</p>
+        <p className="text-sm font-bold text-white">{label}</p>
+        <p className="text-sm font-bold text-gray-300">{safeValue}/10</p>
       </div>
       <div className="h-3 overflow-hidden rounded-full bg-white/10">
         <div
@@ -850,7 +850,7 @@ function ListBlock({
   return (
     <div className="rounded-[1.35rem] border border-white/10 bg-white/[0.04] p-4">
       <p
-        className={`text-xs font-black uppercase tracking-[0.18em] ${
+        className={`text-xs font-bold tracking-wide ${
           tone === "positive" ? "text-emerald-300" : "text-purple-300"
         }`}
       >
@@ -878,7 +878,7 @@ function ListBlock({
 function TextBlock({ title, text }: { title: string; text: string }) {
   return (
     <div className="rounded-[1.35rem] border border-white/10 bg-white/[0.04] p-4">
-      <p className="mb-3 text-xs font-black uppercase tracking-[0.18em] text-cyan-300">
+      <p className="mb-3 text-xs font-bold tracking-wide text-cyan-300">
         {title}
       </p>
       <p className="whitespace-pre-wrap text-sm leading-7 text-gray-300">
@@ -892,7 +892,7 @@ function MiniScore({ label, value }: { label: string; value?: number }) {
   return (
     <div className="rounded-2xl border border-white/10 bg-black/25 p-3">
       <p className="text-xs font-bold text-gray-500">{label}</p>
-      <p className="mt-1 text-xl font-black tracking-[-0.03em] text-white">
+      <p className="mt-1 text-xl font-bold tracking-tight text-white">
         {typeof value === "number" ? value : 0}
         <span className="text-xs text-gray-500">/10</span>
       </p>
@@ -903,10 +903,10 @@ function MiniScore({ label, value }: { label: string; value?: number }) {
 function ScoreTile({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-[1.35rem] border border-white/10 bg-black/25 p-4 text-center">
-      <p className="text-xs font-black uppercase tracking-[0.16em] text-gray-500">
+      <p className="text-xs font-bold tracking-wide text-gray-500">
         {label}
       </p>
-      <p className="mt-2 text-2xl font-black tracking-[-0.04em] text-white">
+      <p className="mt-2 text-2xl font-bold tracking-tight text-white">
         {value}
       </p>
     </div>
@@ -915,7 +915,7 @@ function ScoreTile({ label, value }: { label: string; value: string }) {
 
 function SessionPill({ children }: { children: ReactNode }) {
   return (
-    <span className="rounded-full border border-white/10 bg-white/[0.055] px-3 py-1.5 text-xs font-black text-gray-300">
+    <span className="rounded-full border border-white/10 bg-white/[0.055] px-3 py-1.5 text-xs font-bold text-gray-300">
       {children}
     </span>
   );
@@ -940,10 +940,10 @@ function PanelHeader({
 }) {
   return (
     <div>
-      <p className="text-xs font-black uppercase tracking-[0.2em] text-cyan-300">
+      <p className="text-xs font-bold tracking-wide text-cyan-300">
         {eyebrow}
       </p>
-      <h2 className="mt-2 text-2xl font-black tracking-[-0.035em] text-white">
+      <h2 className="mt-2 text-2xl font-bold tracking-tight text-white">
         {title}
       </h2>
       <p className="mt-2 text-sm leading-6 text-gray-400">{description}</p>
@@ -954,10 +954,10 @@ function PanelHeader({
 function SignedOutState() {
   return (
     <section className="rounded-[2rem] border border-white/10 bg-white/[0.055] p-6 shadow-2xl shadow-purple-950/10 backdrop-blur-2xl">
-      <p className="text-xs font-black uppercase tracking-[0.2em] text-purple-300">
+      <p className="text-xs font-bold tracking-wide text-purple-300">
         Sign in required
       </p>
-      <h1 className="mt-3 text-3xl font-black tracking-[-0.045em] text-white">
+      <h1 className="mt-3 text-3xl font-bold tracking-tight text-white">
         Sign in to view saved session details.
       </h1>
       <p className="mt-3 max-w-2xl text-sm leading-7 text-gray-300">
@@ -966,13 +966,13 @@ function SignedOutState() {
 
       <div className="mt-6 flex flex-col gap-3 sm:flex-row">
         <SignInButton mode="modal">
-          <button className="rounded-2xl bg-white px-6 py-4 text-sm font-black text-black transition hover:bg-purple-100">
+          <button className="rounded-2xl bg-white px-6 py-4 text-sm font-bold text-black transition hover:bg-purple-100">
             Sign in
           </button>
         </SignInButton>
 
         <Link href="/practice">
-          <button className="rounded-2xl border border-purple-300/20 bg-purple-300/10 px-6 py-4 text-sm font-black text-purple-100 transition hover:bg-purple-300/15">
+          <button className="rounded-2xl border border-purple-300/20 bg-purple-300/10 px-6 py-4 text-sm font-bold text-purple-100 transition hover:bg-purple-300/15">
             Start practice
           </button>
         </Link>
@@ -992,11 +992,11 @@ function SimpleState({ message }: { message: string }) {
 function ErrorState({ message }: { message: string }) {
   return (
     <section className="rounded-[2rem] border border-amber-300/20 bg-amber-300/10 p-6 shadow-2xl shadow-purple-950/10 backdrop-blur-2xl">
-      <p className="text-sm font-black text-amber-100">Session could not load</p>
+      <p className="text-sm font-bold text-amber-100">Session could not load</p>
       <p className="mt-2 text-sm leading-7 text-gray-300">{message}</p>
 
       <Link href="/progress">
-        <button className="mt-5 rounded-2xl border border-white/10 bg-white/[0.06] px-5 py-3 text-sm font-black text-white transition hover:bg-white/[0.1]">
+        <button className="mt-5 rounded-2xl border border-white/10 bg-white/[0.06] px-5 py-3 text-sm font-bold text-white transition hover:bg-white/[0.1]">
           Back to progress
         </button>
       </Link>

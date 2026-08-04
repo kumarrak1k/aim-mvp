@@ -113,11 +113,11 @@ export function OnboardingClient({ firstName }: { firstName: string }) {
       <div className="mb-8">
         <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/[0.07]">
           <div
-            className="h-full rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 transition-all duration-500"
+            className="h-full rounded-full bg-gradient-to-r from-violet-600 to-purple-600 transition-all duration-500"
             style={{ width: `${(step / ONBOARDING_STEPS) * 100}%` }}
           />
         </div>
-        <p className="mt-2 text-right text-[11px] font-bold uppercase tracking-[0.18em] text-gray-500">
+        <p className="mt-2 text-right text-[11px] font-bold tracking-wide text-gray-500">
           Step {step} of {ONBOARDING_STEPS}
         </p>
       </div>
@@ -125,14 +125,14 @@ export function OnboardingClient({ firstName }: { firstName: string }) {
       <div className="flex-1">
         {step === 1 && (
           <section>
-            <h1 className="text-3xl font-black tracking-[-0.04em] text-white sm:text-4xl">
+            <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
               {firstName ? `Right ${firstName} — what are you preparing for?` : "What are you preparing for?"}
             </h1>
             <p className="mt-3 text-sm leading-7 text-gray-400">
               This is the one thing we need. Every question you practise is written for it.
             </p>
 
-            <label className="mt-7 block text-[11px] font-black uppercase tracking-[0.16em] text-purple-300/90">
+            <label className="mt-7 block text-[11px] font-bold tracking-wide text-purple-300/90">
               Target role
             </label>
             <input
@@ -143,7 +143,7 @@ export function OnboardingClient({ firstName }: { firstName: string }) {
               className="mt-2 w-full rounded-[1.25rem] border border-white/[0.09] bg-white/[0.03] px-5 py-4 text-base text-white placeholder:text-gray-600 focus:border-purple-400/60 focus:outline-none"
             />
 
-            <p className="mt-7 text-[11px] font-black uppercase tracking-[0.16em] text-purple-300/90">
+            <p className="mt-7 text-[11px] font-bold tracking-wide text-purple-300/90">
               Where you are
             </p>
             <div className="mt-2 grid gap-2 sm:grid-cols-2">
@@ -153,13 +153,13 @@ export function OnboardingClient({ firstName }: { firstName: string }) {
                   onClick={() => setCareerStage(s.value)}
                   className={`${CARD} ${careerStage === s.value ? CARD_ON : CARD_OFF}`}
                 >
-                  <span className="block font-black">{s.label}</span>
+                  <span className="block font-bold">{s.label}</span>
                   <span className="mt-0.5 block text-xs text-gray-400">{s.hint}</span>
                 </button>
               ))}
             </div>
 
-            <p className="mt-7 text-[11px] font-black uppercase tracking-[0.16em] text-purple-300/90">
+            <p className="mt-7 text-[11px] font-bold tracking-wide text-purple-300/90">
               Sector
             </p>
             <div className="mt-2 grid gap-2 sm:grid-cols-3">
@@ -178,7 +178,7 @@ export function OnboardingClient({ firstName }: { firstName: string }) {
 
         {step === 2 && (
           <section>
-            <h1 className="text-3xl font-black tracking-[-0.04em] text-white sm:text-4xl">
+            <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
               What are you actually facing?
             </h1>
             <p className="mt-3 text-sm leading-7 text-gray-400">
@@ -192,7 +192,7 @@ export function OnboardingClient({ firstName }: { firstName: string }) {
                   onClick={() => setProcessType(p.value)}
                   className={`${CARD} ${processType === p.value ? CARD_ON : CARD_OFF}`}
                 >
-                  <span className="block font-black">{p.label}</span>
+                  <span className="block font-bold">{p.label}</span>
                   <span className="mt-0.5 block text-xs text-gray-400">{p.hint}</span>
                 </button>
               ))}
@@ -202,7 +202,7 @@ export function OnboardingClient({ firstName }: { firstName: string }) {
 
         {step === 3 && (
           <section>
-            <h1 className="text-3xl font-black tracking-[-0.04em] text-white sm:text-4xl">
+            <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
               What is the hardest part for you?
             </h1>
             <p className="mt-3 text-sm leading-7 text-gray-400">
@@ -224,10 +224,10 @@ export function OnboardingClient({ firstName }: { firstName: string }) {
 
         {step === 4 && (
           <section>
-            <p className="text-[11px] font-black uppercase tracking-[0.2em] text-emerald-300">
+            <p className="text-[11px] font-bold tracking-wide text-emerald-300">
               Your plan
             </p>
-            <h1 className="mt-3 text-3xl font-black leading-[1.1] tracking-[-0.04em] text-white sm:text-4xl">
+            <h1 className="mt-3 text-3xl font-bold leading-[1.1] tracking-tight text-white sm:text-4xl">
               {plan.headline}
             </h1>
             <p className="mt-4 text-base leading-7 text-gray-300">{plan.body}</p>
@@ -238,11 +238,11 @@ export function OnboardingClient({ firstName }: { firstName: string }) {
                   key={s.title}
                   className="flex gap-4 rounded-[1.25rem] border border-white/[0.08] bg-white/[0.03] p-5"
                 >
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-fuchsia-500 text-sm font-black text-white">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-fuchsia-500 text-sm font-bold text-white">
                     {i + 1}
                   </span>
                   <div>
-                    <p className="font-black text-white">{s.title}</p>
+                    <p className="font-bold text-white">{s.title}</p>
                     <p className="mt-1 text-sm leading-6 text-gray-400">{s.body}</p>
                   </div>
                 </div>
@@ -253,7 +253,7 @@ export function OnboardingClient({ firstName }: { firstName: string }) {
 
         {step === 5 && (
           <section className="text-center">
-            <h1 className="text-3xl font-black tracking-[-0.04em] text-white sm:text-4xl">
+            <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
               Start with a short warm-up?
             </h1>
             <p className="mx-auto mt-4 max-w-md text-base leading-7 text-gray-300">
@@ -263,7 +263,7 @@ export function OnboardingClient({ firstName }: { firstName: string }) {
             <div className="mt-9 flex flex-col items-center gap-3">
               <button
                 onClick={() => router.push("/practice?warmup=1")}
-                className="w-full max-w-sm rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-8 py-4 text-sm font-black text-white shadow-2xl shadow-purple-900/40 transition hover:scale-[1.02]"
+                className="w-full max-w-sm rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-8 py-4 text-sm font-bold text-white shadow-2xl shadow-purple-900/40 transition hover:scale-[1.02]"
               >
                 Start the warm-up →
               </button>
@@ -300,7 +300,7 @@ export function OnboardingClient({ firstName }: { firstName: string }) {
           <button
             onClick={next}
             disabled={!canAdvance || saving}
-            className="rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-8 py-3.5 text-sm font-black text-white shadow-lg shadow-purple-950/40 transition hover:scale-[1.02] disabled:opacity-35 disabled:hover:scale-100"
+            className="rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-8 py-3.5 text-sm font-bold text-white shadow-lg shadow-purple-950/40 transition hover:scale-[1.02] disabled:opacity-35 disabled:hover:scale-100"
           >
             {saving ? "Saving…" : step === 4 ? "Looks right" : "Continue"}
           </button>

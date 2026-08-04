@@ -92,10 +92,10 @@ export function ProfileDetailsForm({
       <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
         <GlassCard className="p-6 sm:p-8">
           <div className="mb-6">
-            <p className="text-sm font-black uppercase tracking-[0.22em] text-cyan-300">
+            <p className="text-sm font-bold tracking-wide text-cyan-300">
               Your information
             </p>
-            <h2 className="mt-3 text-3xl font-black tracking-[-0.045em]">
+            <h2 className="mt-3 text-3xl font-bold tracking-tight">
               Candidate profile details
             </h2>
             <p className="mt-3 text-base leading-8 text-gray-300">
@@ -105,7 +105,7 @@ export function ProfileDetailsForm({
           </div>
 
           <div className="mb-6 rounded-[1.5rem] border border-cyan-300/15 bg-cyan-300/10 p-5">
-            <p className="text-sm font-black text-cyan-100">
+            <p className="text-sm font-bold text-cyan-100">
               Privacy notice
             </p>
             <p className="mt-2 text-sm leading-6 text-gray-300">
@@ -131,7 +131,7 @@ export function ProfileDetailsForm({
                 helper="Paste your CV content, career summary or upload a file."
               >
                 <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-center">
-                  <label className="inline-flex cursor-pointer items-center justify-center rounded-2xl border border-white/10 bg-white/[0.07] px-4 py-3 text-sm font-black text-white transition hover:bg-white/[0.12]">
+                  <label className="inline-flex cursor-pointer items-center justify-center rounded-2xl border border-white/10 bg-white/[0.07] px-4 py-3 text-sm font-bold text-white transition hover:bg-white/[0.12]">
                     {extractingCv ? "Processing CV..." : "Upload CV"}
                     <input
                       type="file"
@@ -152,7 +152,7 @@ export function ProfileDetailsForm({
                       type="button"
                       onClick={() => void removeCv()}
                       disabled={removingCv || saving || destructiveActionRunning}
-                      className="inline-flex items-center justify-center rounded-2xl border border-rose-300/20 bg-rose-300/10 px-4 py-3 text-sm font-black text-rose-100 transition hover:bg-rose-300/15 disabled:cursor-not-allowed disabled:opacity-50"
+                      className="inline-flex items-center justify-center rounded-2xl border border-rose-300/20 bg-rose-300/10 px-4 py-3 text-sm font-bold text-rose-100 transition hover:bg-rose-300/15 disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       {removingCv ? "Removing..." : "Remove CV"}
                     </button>
@@ -178,7 +178,7 @@ export function ProfileDetailsForm({
                 helper="Add the job description or requirements for the role you are preparing for."
               >
                 <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-center">
-                  <label className="inline-flex cursor-pointer items-center justify-center rounded-2xl border border-white/10 bg-white/[0.07] px-4 py-3 text-sm font-black text-white transition hover:bg-white/[0.12]">
+                  <label className="inline-flex cursor-pointer items-center justify-center rounded-2xl border border-white/10 bg-white/[0.07] px-4 py-3 text-sm font-bold text-white transition hover:bg-white/[0.12]">
                     {extractingRole
                       ? "Processing role spec..."
                       : "Upload role spec"}
@@ -203,7 +203,7 @@ export function ProfileDetailsForm({
                       disabled={
                         removingRoleSpec || saving || destructiveActionRunning
                       }
-                      className="inline-flex items-center justify-center rounded-2xl border border-rose-300/20 bg-rose-300/10 px-4 py-3 text-sm font-black text-rose-100 transition hover:bg-rose-300/15 disabled:cursor-not-allowed disabled:opacity-50"
+                      className="inline-flex items-center justify-center rounded-2xl border border-rose-300/20 bg-rose-300/10 px-4 py-3 text-sm font-bold text-rose-100 transition hover:bg-rose-300/15 disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       {removingRoleSpec ? "Removing..." : "Remove role spec"}
                     </button>
@@ -241,14 +241,14 @@ export function ProfileDetailsForm({
                   type="button"
                   onClick={() => void handleSave()}
                   disabled={saving || destructiveActionRunning}
-                  className="rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-7 py-4 text-sm font-black text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-60"
+                  className="rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-7 py-4 text-sm font-bold text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {saving ? "Saving..." : "Save Candidate Profile"}
                 </button>
 
                 <Link
                   href="/practice"
-                  className="rounded-2xl border border-white/10 bg-white/[0.07] px-7 py-4 text-center text-sm font-black text-white transition hover:bg-white/[0.12]"
+                  className="rounded-2xl border border-white/10 bg-white/[0.07] px-7 py-4 text-center text-sm font-bold text-white transition hover:bg-white/[0.12]"
                 >
                   Go to practice
                 </Link>
@@ -256,7 +256,7 @@ export function ProfileDetailsForm({
 
               {hasAnyProfileContext && (
                 <div className="rounded-[1.5rem] border border-rose-300/15 bg-rose-300/10 p-5">
-                  <p className="text-sm font-black text-rose-100">
+                  <p className="text-sm font-bold text-rose-100">
                     Remove saved profile context
                   </p>
                   <p className="mt-2 text-sm leading-6 text-gray-300">
@@ -274,7 +274,7 @@ export function ProfileDetailsForm({
                       deletingPracticeSessions ||
                       deletingAllAimData
                     }
-                    className="mt-4 rounded-2xl border border-rose-300/25 bg-rose-300/10 px-5 py-3 text-sm font-black text-rose-100 transition hover:bg-rose-300/15 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="mt-4 rounded-2xl border border-rose-300/25 bg-rose-300/10 px-5 py-3 text-sm font-bold text-rose-100 transition hover:bg-rose-300/15 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {clearingProfileContext
                       ? "Clearing..."
@@ -331,10 +331,10 @@ function PrivacyControls({
 
   return (
     <div className="rounded-[1.7rem] border border-white/10 bg-black/25 p-5">
-      <p className="text-sm font-black uppercase tracking-[0.2em] text-amber-200">
+      <p className="text-sm font-bold tracking-wide text-amber-200">
         Privacy & data controls
       </p>
-      <h3 className="mt-2 text-xl font-black tracking-[-0.03em] text-white">
+      <h3 className="mt-2 text-xl font-bold tracking-tight text-white">
         Manage saved AI Career Mentor data.
       </h3>
       <p className="mt-2 text-sm leading-6 text-gray-400">
@@ -348,7 +348,7 @@ function PrivacyControls({
           type="button"
           onClick={() => void onExportAccountData()}
           disabled={anyActionRunning}
-          className="rounded-2xl border border-cyan-300/20 bg-cyan-300/10 px-5 py-4 text-left text-sm font-black text-cyan-100 transition hover:bg-cyan-300/15 disabled:cursor-not-allowed disabled:opacity-50"
+          className="rounded-2xl border border-cyan-300/20 bg-cyan-300/10 px-5 py-4 text-left text-sm font-bold text-cyan-100 transition hover:bg-cyan-300/15 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {exportingData ? "Exporting..." : "Export my data"}
           <span className="mt-2 block text-xs font-semibold leading-5 text-gray-400">
@@ -360,7 +360,7 @@ function PrivacyControls({
           type="button"
           onClick={() => void onDeletePracticeSessions()}
           disabled={anyActionRunning}
-          className="rounded-2xl border border-rose-300/20 bg-rose-300/10 px-5 py-4 text-left text-sm font-black text-rose-100 transition hover:bg-rose-300/15 disabled:cursor-not-allowed disabled:opacity-50"
+          className="rounded-2xl border border-rose-300/20 bg-rose-300/10 px-5 py-4 text-left text-sm font-bold text-rose-100 transition hover:bg-rose-300/15 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {deletingPracticeSessions
             ? "Deleting sessions..."
@@ -374,7 +374,7 @@ function PrivacyControls({
           type="button"
           onClick={() => void onDeleteAllAimData()}
           disabled={anyActionRunning}
-          className="rounded-2xl border border-red-300/25 bg-red-300/10 px-5 py-4 text-left text-sm font-black text-red-100 transition hover:bg-red-300/15 disabled:cursor-not-allowed disabled:opacity-50"
+          className="rounded-2xl border border-red-300/25 bg-red-300/10 px-5 py-4 text-left text-sm font-bold text-red-100 transition hover:bg-red-300/15 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {deletingAllAimData ? "Deleting all AI Career Mentor data..." : "Delete all AI Career Mentor data"}
           <span className="mt-2 block text-xs font-semibold leading-5 text-gray-400">
@@ -398,7 +398,7 @@ function ProfileField({
 }) {
   return (
     <div>
-      <label className="mb-2 block text-sm font-black text-white">{label}</label>
+      <label className="mb-2 block text-sm font-bold text-white">{label}</label>
       <p className="mb-3 text-sm leading-6 text-gray-400">{helper}</p>
       {children}
     </div>
@@ -415,10 +415,10 @@ function ProfileSidebar() {
           className="h-[250px] w-full object-cover"
         />
         <div className="p-6">
-          <p className="text-sm font-black uppercase tracking-[0.22em] text-purple-300">
+          <p className="text-sm font-bold tracking-wide text-purple-300">
             Why this matters
           </p>
-          <h3 className="mt-3 text-2xl font-black tracking-[-0.04em]">
+          <h3 className="mt-3 text-2xl font-bold tracking-tight">
             Better context. Better questions. Better feedback.
           </h3>
           <p className="mt-4 text-sm leading-7 text-gray-300">

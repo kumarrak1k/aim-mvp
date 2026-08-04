@@ -36,7 +36,7 @@ export function PracticeHero({
 
       <div className="relative grid min-w-0 gap-6 lg:grid-cols-[minmax(0,1.08fr)_minmax(300px,0.72fr)] lg:items-stretch">
         <div className="flex min-w-0 flex-col">
-          <div className="mb-5 flex max-w-full items-center gap-3 rounded-full border border-white/10 bg-white/[0.055] px-4 py-2 text-xs font-black text-purple-50 shadow-xl shadow-purple-950/20 sm:inline-flex sm:text-sm">
+          <div className="mb-5 flex max-w-full items-center gap-3 rounded-full border border-white/10 bg-white/[0.055] px-4 py-2 text-xs font-bold text-purple-50 shadow-xl shadow-purple-950/20 sm:inline-flex sm:text-sm">
             <span className="relative flex h-2.5 w-2.5 shrink-0">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-300 opacity-60" />
               <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-300" />
@@ -46,9 +46,9 @@ export function PracticeHero({
             </span>
           </div>
 
-          <h1 className="max-w-full break-words text-[2.55rem] font-black leading-[1.02] tracking-[-0.055em] text-white sm:text-4xl md:text-5xl lg:text-6xl">
+          <h1 className="max-w-full break-words text-[2.55rem] font-bold leading-[1.02] tracking-tight text-white sm:text-4xl md:text-4xl lg:text-5xl">
             Interview preparation that makes{" "}
-            <span className="bg-gradient-to-r from-purple-200 via-fuchsia-200 to-cyan-200 bg-clip-text text-transparent">
+            <span className="text-violet-300">
               a measurable difference.
             </span>
           </h1>
@@ -59,7 +59,7 @@ export function PracticeHero({
 
           <div className="mt-6 grid gap-3">
             <div className="w-full rounded-[1.35rem] border border-cyan-300/15 bg-cyan-300/10 p-4">
-              <p className="text-xs font-black uppercase tracking-[0.18em] text-cyan-200">
+              <p className="text-xs font-bold tracking-wide text-cyan-200">
                 Current default setup
               </p>
               <p className="mt-2 max-w-full break-words text-sm font-semibold leading-6 text-gray-200">
@@ -69,7 +69,7 @@ export function PracticeHero({
 
             {usageLimitReached && planName === "Free" ? (
               <div className="w-full rounded-[1.35rem] border border-purple-300/20 bg-purple-300/[0.08] p-4">
-                <p className="text-xs font-black uppercase tracking-[0.18em] text-purple-200">
+                <p className="text-xs font-bold tracking-wide text-purple-200">
                   Free plan · All 3 sessions used
                 </p>
                 <p className="mt-2 max-w-full break-words text-sm font-semibold leading-6 text-gray-200">
@@ -77,7 +77,7 @@ export function PracticeHero({
                 </p>
                 <Link
                   href="/pricing"
-                  className="mt-3 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-4 py-2.5 text-sm font-black text-white shadow-lg transition hover:scale-[1.02]"
+                  className="mt-3 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-purple-600 px-4 py-2.5 text-sm font-bold text-white shadow-lg transition hover:scale-[1.02]"
                 >
                   Upgrade to Plus →
                 </Link>
@@ -91,7 +91,7 @@ export function PracticeHero({
                 }`}
               >
                 <p
-                  className={`text-xs font-black uppercase tracking-[0.18em] ${
+                  className={`text-xs font-bold tracking-wide ${
                     usageLimitReached ? "text-amber-200" : "text-emerald-200"
                   }`}
                 >
@@ -114,7 +114,7 @@ export function PracticeHero({
               type="button"
               onClick={onStartInterview}
               disabled={startDisabled}
-              className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-4 text-sm font-black text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto sm:px-6"
+              className="w-full rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-5 py-4 text-sm font-bold text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto sm:px-6"
             >
               {questionLoading
                 ? "Starting..."
@@ -122,13 +122,13 @@ export function PracticeHero({
             </button>
 
             <a href="#interview-setup" className="block w-full sm:w-auto">
-              <button className="w-full rounded-2xl border border-cyan-300/20 bg-cyan-300/10 px-5 py-4 text-sm font-black text-cyan-100 transition hover:bg-cyan-300/15 sm:w-auto sm:px-6">
+              <button className="w-full rounded-2xl border border-cyan-300/20 bg-cyan-300/10 px-5 py-4 text-sm font-bold text-cyan-100 transition hover:bg-cyan-300/15 sm:w-auto sm:px-6">
                 Adjust setup
               </button>
             </a>
 
             <Link href="/profile" className="block w-full sm:w-auto">
-              <button className="w-full rounded-2xl border border-purple-300/20 bg-purple-300/10 px-5 py-4 text-sm font-black text-purple-100 transition hover:bg-purple-300/15 sm:w-auto sm:px-6">
+              <button className="w-full rounded-2xl border border-purple-300/20 bg-purple-300/10 px-5 py-4 text-sm font-bold text-purple-100 transition hover:bg-purple-300/15 sm:w-auto sm:px-6">
                 Add CV / role profile
               </button>
             </Link>
@@ -152,14 +152,14 @@ export function PracticeHero({
           <div className="flex min-w-0 flex-1 flex-col rounded-[1.35rem] border border-white/10 bg-white/[0.045] p-4">
             <div className="mb-4 flex min-w-0 items-center justify-between gap-3">
               <div className="min-w-0">
-                <p className="text-xs font-black uppercase tracking-[0.2em] text-cyan-300">
+                <p className="text-xs font-bold tracking-wide text-cyan-300">
                   Session preview
                 </p>
                 <p className="mt-1 text-sm text-gray-400">
                   What the coach will assess
                 </p>
               </div>
-              <span className="shrink-0 rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1 text-xs font-black text-emerald-100">
+              <span className="shrink-0 rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1 text-xs font-bold text-emerald-100">
                 Ready
               </span>
             </div>
@@ -197,26 +197,26 @@ export function PracticeHero({
           >
             <div className="rounded-[1.35rem] border border-cyan-400/20 bg-gradient-to-br from-cyan-500/[0.09] to-purple-500/[0.09] p-4 transition hover:border-cyan-400/35 hover:from-cyan-500/[0.13] hover:to-purple-500/[0.13]">
               <div className="mb-2 flex items-center justify-between gap-2">
-                <p className="text-[10px] font-black uppercase tracking-[0.18em] text-cyan-300">
+                <p className="text-[10px] font-bold tracking-wide text-cyan-300">
                   Professional · Mock assessment centre
                 </p>
                 {planName === "Professional" ? (
-                  <span className="rounded-full border border-emerald-400/30 bg-emerald-400/10 px-2 py-0.5 text-[10px] font-black text-emerald-300">
+                  <span className="rounded-full border border-emerald-400/30 bg-emerald-400/10 px-2 py-0.5 text-[10px] font-bold text-emerald-300">
                     Included
                   </span>
                 ) : (
-                  <span className="rounded-full border border-cyan-400/25 bg-cyan-400/10 px-2 py-0.5 text-[10px] font-black text-cyan-200">
+                  <span className="rounded-full border border-cyan-400/25 bg-cyan-400/10 px-2 py-0.5 text-[10px] font-bold text-cyan-200">
                     Upgrade
                   </span>
                 )}
               </div>
-              <p className="text-sm font-black text-white">
+              <p className="text-sm font-bold text-white">
                 Go beyond interview practice
               </p>
               <p className="mt-1 text-xs leading-5 text-gray-400">
                 Case study · Competency interview · Presentation: three stages, one full report.
               </p>
-              <p className="mt-2.5 text-xs font-black text-cyan-300">
+              <p className="mt-2.5 text-xs font-bold text-cyan-300">
                 {planName === "Professional" ? "Go to assessment centre →" : "See assessment centre →"}
               </p>
             </div>
@@ -238,7 +238,7 @@ function HeroPill({ text }: { text: string }) {
 function PreviewMetric({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex min-w-0 items-center justify-between gap-3 rounded-2xl border border-white/10 bg-black/25 p-3">
-      <p className="min-w-0 text-sm font-black text-white">{label}</p>
+      <p className="min-w-0 text-sm font-bold text-white">{label}</p>
       <p className="shrink-0 text-right text-xs font-bold leading-5 text-gray-400">
         {value}
       </p>

@@ -88,7 +88,7 @@ export default function ApiKeysPage() {
       <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
         <div className="mb-8 flex items-start justify-between">
           <div>
-            <h1 className="text-2xl font-black tracking-[-0.03em]">API Keys</h1>
+            <h1 className="text-2xl font-bold tracking-tight">API Keys</h1>
             <p className="mt-1 text-sm text-gray-400">
               Authenticate your ATS integration.{" "}
               <Link href="/api-docs" className="text-purple-300 hover:text-purple-200">
@@ -108,7 +108,7 @@ export default function ApiKeysPage() {
         {/* New key revealed — show once */}
         {createdKey && (
           <div className="mb-6 rounded-2xl border border-green-400/30 bg-green-500/10 p-5">
-            <p className="mb-2 text-sm font-black text-green-300">
+            <p className="mb-2 text-sm font-bold text-green-300">
               Key created. Copy it now, as you won&apos;t see it again.
             </p>
             <div className="flex items-center gap-3">
@@ -117,7 +117,7 @@ export default function ApiKeysPage() {
               </code>
               <button
                 onClick={() => copyKey(createdKey)}
-                className="shrink-0 rounded-lg border border-green-400/30 px-4 py-3 text-sm font-black text-green-300 hover:bg-green-500/10"
+                className="shrink-0 rounded-lg border border-green-400/30 px-4 py-3 text-sm font-bold text-green-300 hover:bg-green-500/10"
               >
                 {copied ? "Copied!" : "Copy"}
               </button>
@@ -133,7 +133,7 @@ export default function ApiKeysPage() {
 
         {/* Create form */}
         <div className="mb-8 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-5">
-          <h2 className="mb-4 text-sm font-black uppercase tracking-wider text-gray-400">
+          <h2 className="mb-4 text-sm font-bold uppercase tracking-wider text-gray-400">
             Create new key
           </h2>
           <div className="flex gap-3">
@@ -148,7 +148,7 @@ export default function ApiKeysPage() {
             <button
               onClick={createKey}
               disabled={creating || !newKeyName.trim()}
-              className="rounded-xl bg-purple-600 px-5 py-2.5 text-sm font-black text-white transition hover:bg-purple-500 disabled:opacity-40"
+              className="rounded-xl bg-purple-600 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-purple-500 disabled:opacity-40"
             >
               {creating ? "Creating..." : "Create"}
             </button>
@@ -158,7 +158,7 @@ export default function ApiKeysPage() {
 
         {/* Key list */}
         <div>
-          <h2 className="mb-4 text-sm font-black uppercase tracking-wider text-gray-400">
+          <h2 className="mb-4 text-sm font-bold uppercase tracking-wider text-gray-400">
             Active keys
           </h2>
           {loading ? (
@@ -172,7 +172,7 @@ export default function ApiKeysPage() {
               {keys.map((key) => (
                 <div key={key.id} className="flex items-center justify-between px-5 py-4">
                   <div>
-                    <p className="text-sm font-black">{key.name}</p>
+                    <p className="text-sm font-bold">{key.name}</p>
                     <p className="mt-0.5 font-mono text-xs text-gray-500">
                       {key.keyPrefix}••••••••••••••••••••••••••••••
                     </p>
@@ -186,7 +186,7 @@ export default function ApiKeysPage() {
                   <button
                     onClick={() => revokeKey(key.id)}
                     disabled={revoking === key.id}
-                    className="ml-4 rounded-lg border border-red-400/20 px-3 py-1.5 text-xs font-black text-red-400 transition hover:bg-red-500/10 disabled:opacity-40"
+                    className="ml-4 rounded-lg border border-red-400/20 px-3 py-1.5 text-xs font-bold text-red-400 transition hover:bg-red-500/10 disabled:opacity-40"
                   >
                     {revoking === key.id ? "Revoking..." : "Revoke"}
                   </button>
@@ -197,7 +197,7 @@ export default function ApiKeysPage() {
         </div>
 
         <div className="mt-10 rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5 text-sm text-gray-400">
-          <p className="font-black text-gray-300 mb-1">Security notice</p>
+          <p className="font-bold text-gray-300 mb-1">Security notice</p>
           Keys are shown only once. Store them in your ATS secret manager.
           Revoke immediately if a key is exposed. Each key is scoped to your company only.
         </div>

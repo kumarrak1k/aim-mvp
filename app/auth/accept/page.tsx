@@ -45,7 +45,7 @@ export default function AuthAcceptPage() {
               socialButtonsBlockButton:
                 "border-white/[0.1] bg-white/[0.04] hover:bg-white/[0.08] text-white",
               formButtonPrimary:
-                "bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 hover:scale-[1.01] shadow-lg text-white font-black normal-case",
+                "bg-gradient-to-r from-violet-600 to-purple-600 hover:scale-[1.01] shadow-lg text-white font-bold normal-case",
               formFieldInput:
                 "bg-black/30 border-white/[0.1] text-white placeholder-gray-500",
               formFieldLabel: "text-gray-300",

@@ -71,10 +71,10 @@ export function PracticeAnswerPanel({
     <GlassCard>
       <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <p className="text-sm font-black uppercase tracking-[0.2em] text-purple-300">
+          <p className="text-sm font-bold tracking-wide text-purple-300">
             Your answer
           </p>
-          <h2 className="mt-2 text-2xl font-black tracking-[-0.035em] text-white">
+          <h2 className="mt-2 text-2xl font-bold tracking-tight text-white">
             Record or type your response.
           </h2>
           <p className="mt-2 text-sm leading-6 text-gray-400">
@@ -87,7 +87,7 @@ export function PracticeAnswerPanel({
           <button
             onClick={getFeedback}
             disabled={!canRequestFeedback}
-            className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-3 text-sm font-black shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto sm:min-w-[180px]"
+            className="w-full rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-5 py-3 text-sm font-bold shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto sm:min-w-[180px]"
           >
             {feedbackLoading
               ? "Evaluating..."
@@ -106,7 +106,7 @@ export function PracticeAnswerPanel({
                 🎙️
               </div>
               <div>
-                <p className="text-sm font-black text-emerald-100">
+                <p className="text-sm font-bold text-emerald-100">
                   Best phone/tablet flow
                 </p>
                 <p className="mt-1 text-sm leading-6 text-gray-300">
@@ -125,7 +125,7 @@ export function PracticeAnswerPanel({
                 isListening ||
                 (questionAudioLoading && !questionAudioReady)
               }
-              className="w-full rounded-2xl bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-500 px-5 py-4 text-sm font-black text-black shadow-2xl shadow-cyan-950/30 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
+              className="w-full rounded-2xl bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-500 px-5 py-4 text-sm font-bold text-black shadow-2xl shadow-cyan-950/30 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isSpeakingQuestion
                 ? "Question playing..."
@@ -147,10 +147,10 @@ export function PracticeAnswerPanel({
 
       <div className="mb-4 rounded-2xl border border-cyan-300/15 bg-cyan-300/10 p-4">
         <div className="mb-2 flex items-center justify-between gap-3">
-          <p className="text-xs font-black uppercase tracking-[0.18em] text-cyan-300">
+          <p className="text-xs font-bold tracking-wide text-cyan-300">
             Question reminder
           </p>
-          <span className="rounded-full border border-white/10 bg-black/25 px-3 py-1 text-[11px] font-black text-gray-300">
+          <span className="rounded-full border border-white/10 bg-black/25 px-3 py-1 text-[11px] font-bold text-gray-300">
             Keep answer relevant
           </span>
         </div>
@@ -161,7 +161,7 @@ export function PracticeAnswerPanel({
 
       <div className="mb-4 overflow-hidden rounded-2xl border border-white/10 bg-black/35 focus-within:border-purple-300/50 focus-within:ring-4 focus-within:ring-purple-500/10">
         <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-3">
-          <p className="text-xs font-black uppercase tracking-[0.18em] text-gray-400">
+          <p className="text-xs font-bold tracking-wide text-gray-400">
             Transcript
           </p>
           <div className="flex items-center gap-2 text-[11px] font-bold text-gray-500">
@@ -191,14 +191,14 @@ export function PracticeAnswerPanel({
           {isListening ? (
             <button
               onClick={stopVoiceInput}
-              className="rounded-2xl bg-red-500 px-5 py-3 text-sm font-black text-white shadow-xl shadow-red-950/20 transition hover:bg-red-600"
+              className="rounded-2xl bg-red-500 px-5 py-3 text-sm font-bold text-white shadow-xl shadow-red-950/20 transition hover:bg-red-600"
             >
               Stop Voice Answer
             </button>
           ) : (
             <button
               onClick={startVoiceInput}
-              className="rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-3 text-sm font-black text-white shadow-xl shadow-purple-950/30 transition hover:opacity-95"
+              className="rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-5 py-3 text-sm font-bold text-white shadow-xl shadow-purple-950/30 transition hover:opacity-95"
             >
               Start Voice Answer
             </button>
@@ -206,7 +206,7 @@ export function PracticeAnswerPanel({
 
           <button
             onClick={clearVoiceAnswer}
-            className="rounded-2xl border border-white/10 bg-white/[0.06] px-5 py-3 text-sm font-black text-gray-200 transition hover:bg-white/[0.1]"
+            className="rounded-2xl border border-white/10 bg-white/[0.06] px-5 py-3 text-sm font-bold text-gray-200 transition hover:bg-white/[0.1]"
           >
             Clear Answer
           </button>
@@ -257,10 +257,10 @@ export function PracticeAnswerPanel({
 function StatusCard({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-2xl border border-white/10 bg-black/25 p-3">
-      <p className="text-[11px] font-black uppercase tracking-[0.16em] text-gray-500">
+      <p className="text-[11px] font-bold tracking-wide text-gray-500">
         {label}
       </p>
-      <p className="mt-1 text-sm font-black text-gray-200">{value}</p>
+      <p className="mt-1 text-sm font-bold text-gray-200">{value}</p>
     </div>
   );
 }

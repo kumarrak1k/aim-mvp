@@ -106,16 +106,16 @@ export function QuestionHero(props: QuestionHeroProps) {
         <div className="mb-3 flex items-start justify-between gap-3">
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1 text-[11px] font-black text-cyan-100 sm:text-xs">
+              <span className="rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1 text-[11px] font-bold text-cyan-100 sm:text-xs">
                 Question {currentQuestionNumber}/{totalQuestions}
               </span>
 
-              <span className="rounded-full border border-purple-300/20 bg-purple-300/10 px-3 py-1 text-[11px] font-black text-purple-100 sm:text-xs">
+              <span className="rounded-full border border-purple-300/20 bg-purple-300/10 px-3 py-1 text-[11px] font-bold text-purple-100 sm:text-xs">
                 {practiceModeLabels[practiceMode]}
               </span>
 
               {speakerEnabled && (
-                <span className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1 text-[11px] font-black text-emerald-100 sm:text-xs">
+                <span className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1 text-[11px] font-bold text-emerald-100 sm:text-xs">
                   Audio
                 </span>
               )}
@@ -140,7 +140,7 @@ export function QuestionHero(props: QuestionHeroProps) {
             <button
               type="button"
               onClick={onBackToSetup}
-              className="shrink-0 rounded-xl border border-white/10 bg-white/[0.06] px-3 py-2 text-xs font-black text-white transition hover:bg-white/[0.1]"
+              className="shrink-0 rounded-xl border border-white/10 bg-white/[0.06] px-3 py-2 text-xs font-bold text-white transition hover:bg-white/[0.1]"
             >
               Back
             </button>
@@ -154,7 +154,7 @@ export function QuestionHero(props: QuestionHeroProps) {
               type="button"
               onClick={onStartGuidedAnswer}
               disabled={guidedDisabled}
-              className="rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-3 text-sm font-black text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
+              className="rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-5 py-3 text-sm font-bold text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isListening
                 ? "Recording..."
@@ -170,7 +170,7 @@ export function QuestionHero(props: QuestionHeroProps) {
                 type="button"
                 onClick={onPlayQuestion}
                 disabled={playOnlyDisabled}
-                className="rounded-2xl border border-cyan-300/20 bg-cyan-300/10 px-5 py-3 text-sm font-black text-cyan-100 transition hover:bg-cyan-300/15 disabled:cursor-not-allowed disabled:opacity-50"
+                className="rounded-2xl border border-cyan-300/20 bg-cyan-300/10 px-5 py-3 text-sm font-bold text-cyan-100 transition hover:bg-cyan-300/15 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 Play question only
               </button>
@@ -180,7 +180,7 @@ export function QuestionHero(props: QuestionHeroProps) {
               <button
                 type="button"
                 onClick={onStopQuestion}
-                className="rounded-2xl border border-white/10 bg-white/[0.06] px-5 py-3 text-sm font-black text-white transition hover:bg-white/[0.1]"
+                className="rounded-2xl border border-white/10 bg-white/[0.06] px-5 py-3 text-sm font-bold text-white transition hover:bg-white/[0.1]"
               >
                 Stop audio
               </button>
@@ -190,7 +190,7 @@ export function QuestionHero(props: QuestionHeroProps) {
 
         {showAutoFlowPrompt && (
           <div className="mb-3 rounded-2xl border border-fuchsia-300/30 bg-fuchsia-300/10 px-4 py-3">
-            <p className="text-sm font-black text-white">
+            <p className="text-sm font-bold text-white">
               Play each question and start recording automatically?
             </p>
             <p className="mt-0.5 text-[12px] leading-5 text-gray-300">
@@ -201,14 +201,14 @@ export function QuestionHero(props: QuestionHeroProps) {
               <button
                 type="button"
                 onClick={() => onAutoFlowDecision?.(true)}
-                className="rounded-xl bg-white px-4 py-2 text-xs font-black text-black transition hover:bg-fuchsia-100"
+                className="rounded-xl bg-white px-4 py-2 text-xs font-bold text-black transition hover:bg-fuchsia-100"
               >
                 Yes, automate
               </button>
               <button
                 type="button"
                 onClick={() => onAutoFlowDecision?.(false)}
-                className="rounded-xl border border-white/15 bg-white/[0.06] px-4 py-2 text-xs font-black text-white transition hover:bg-white/[0.1]"
+                className="rounded-xl border border-white/15 bg-white/[0.06] px-4 py-2 text-xs font-bold text-white transition hover:bg-white/[0.1]"
               >
                 No, I&apos;ll tap
               </button>

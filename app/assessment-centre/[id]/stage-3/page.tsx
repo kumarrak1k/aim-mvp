@@ -60,7 +60,7 @@ function ScoreBar({ label, score }: { label: string; score: number }) {
       <div className="relative flex-1 h-2 rounded-full bg-white/[0.08]">
         <div className={`absolute inset-y-0 left-0 rounded-full ${colour} transition-all duration-700`} style={{ width: `${pct}%` }} />
       </div>
-      <span className="w-6 text-right text-xs font-black text-white">{score}</span>
+      <span className="w-6 text-right text-xs font-bold text-white">{score}</span>
     </div>
   );
 }
@@ -322,12 +322,12 @@ export default function Stage3Page() {
         {phase === "prep" && (
           <div className="space-y-6">
             <div className="mb-2">
-              <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-cyan-400/25 bg-cyan-400/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-cyan-200">
+              <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-cyan-400/25 bg-cyan-400/[0.07] px-4 py-2 text-[11px] font-bold tracking-wide text-cyan-200">
                 Stage 3 of 3 · Preparation time
               </div>
-              <h1 className="text-3xl font-black tracking-[-0.05em] text-white sm:text-4xl">
+              <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
                 Presentation{" "}
-                <span className="bg-gradient-to-r from-cyan-300 to-purple-300 bg-clip-text text-transparent">
+                <span className="text-violet-300">
                   Simulation
                 </span>
               </h1>
@@ -338,10 +338,10 @@ export default function Stage3Page() {
 
             {/* Prep timer */}
             <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-6 backdrop-blur-xl text-center">
-              <p className="text-[11px] font-black uppercase tracking-[0.22em] text-gray-500 mb-2">
+              <p className="text-[11px] font-bold tracking-wide text-gray-500 mb-2">
                 Preparation time
               </p>
-              <div className={`font-mono text-5xl font-black ${prepColour} ${prepTimeLeft <= 30 ? "animate-pulse" : ""}`}>
+              <div className={`font-mono text-4xl font-bold ${prepColour} ${prepTimeLeft <= 30 ? "animate-pulse" : ""}`}>
                 {formatTime(prepTimeLeft)}
               </div>
               <p className="mt-2 text-xs text-gray-600">
@@ -351,37 +351,37 @@ export default function Stage3Page() {
 
             {/* Brief */}
             <div className="rounded-[1.75rem] border border-cyan-500/[0.18] bg-cyan-500/[0.04] p-6 backdrop-blur-xl">
-              <p className="mb-1 text-[11px] font-black uppercase tracking-[0.22em] text-cyan-400">
+              <p className="mb-1 text-[11px] font-bold tracking-wide text-cyan-400">
                 Presentation topic
               </p>
-              <h2 className="text-xl font-black text-white">{brief.topic}</h2>
+              <h2 className="text-xl font-bold text-white">{brief.topic}</h2>
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-5 backdrop-blur-xl">
-                <p className="mb-2 text-[11px] font-black uppercase tracking-[0.22em] text-gray-500">Audience</p>
+                <p className="mb-2 text-[11px] font-bold tracking-wide text-gray-500">Audience</p>
                 <p className="text-sm text-gray-300">{brief.audience}</p>
               </div>
               <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-5 backdrop-blur-xl">
-                <p className="mb-2 text-[11px] font-black uppercase tracking-[0.22em] text-gray-500">Format</p>
+                <p className="mb-2 text-[11px] font-bold tracking-wide text-gray-500">Format</p>
                 <p className="text-sm text-gray-300">{brief.format}</p>
               </div>
             </div>
 
             <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-5 backdrop-blur-xl">
-              <p className="mb-2 text-[11px] font-black uppercase tracking-[0.22em] text-gray-500">Context</p>
+              <p className="mb-2 text-[11px] font-bold tracking-wide text-gray-500">Context</p>
               <p className="text-sm leading-7 text-gray-300">{brief.context}</p>
             </div>
 
             {brief.objectives?.length > 0 && (
               <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-5 backdrop-blur-xl">
-                <p className="mb-3 text-[11px] font-black uppercase tracking-[0.22em] text-gray-500">
+                <p className="mb-3 text-[11px] font-bold tracking-wide text-gray-500">
                   What the audience expects
                 </p>
                 <ul className="space-y-2">
                   {brief.objectives.map((obj, i) => (
                     <li key={i} className="flex items-start gap-2.5 text-sm text-gray-300">
-                      <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-cyan-400/20 text-[10px] font-black text-cyan-400">
+                      <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-cyan-400/20 text-[10px] font-bold text-cyan-400">
                         {i + 1}
                       </span>
                       {obj}
@@ -393,7 +393,7 @@ export default function Stage3Page() {
 
             {/* Tips */}
             <div className="rounded-[1.75rem] border border-purple-500/[0.15] bg-purple-500/[0.04] p-5 backdrop-blur-xl">
-              <p className="mb-3 text-[11px] font-black uppercase tracking-[0.22em] text-purple-400">
+              <p className="mb-3 text-[11px] font-bold tracking-wide text-purple-400">
                 Tips for your 3-minute presentation
               </p>
               <ul className="space-y-2">
@@ -412,7 +412,7 @@ export default function Stage3Page() {
 
             <button
               onClick={startPresenting}
-              className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-8 py-5 text-base font-black text-white shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.015]"
+              className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-8 py-5 text-base font-bold text-white shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.015]"
             >
               I&apos;m ready to present →
             </button>
@@ -423,7 +423,7 @@ export default function Stage3Page() {
         {phase === "presenting" && (
           <div className="space-y-5">
             <div className="mb-2">
-              <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-red-400/25 bg-red-400/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-red-200">
+              <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-red-400/25 bg-red-400/[0.07] px-4 py-2 text-[11px] font-bold tracking-wide text-red-200">
                 {isRecording ? (
                   <>
                     <span className="flex h-2 w-2">
@@ -434,7 +434,7 @@ export default function Stage3Page() {
                   </>
                 ) : "Presentation stage"}
               </div>
-              <h1 className="text-2xl font-black tracking-[-0.04em] text-white">
+              <h1 className="text-2xl font-bold tracking-tight text-white">
                 {brief.topic}
               </h1>
               <p className="mt-1 text-sm text-gray-500">Audience: {brief.audience}</p>
@@ -446,14 +446,14 @@ export default function Stage3Page() {
                 ? "border-red-500/30 bg-red-500/[0.06]"
                 : "border-white/[0.07] bg-white/[0.04]"
             }`}>
-              <p className="text-[11px] font-black uppercase tracking-[0.22em] text-gray-500 mb-2">
+              <p className="text-[11px] font-bold tracking-wide text-gray-500 mb-2">
                 Time remaining
               </p>
-              <div className={`font-mono text-6xl font-black ${presentColour} ${presentTimeLeft <= 30 ? "animate-pulse" : ""}`}>
+              <div className={`font-mono text-5xl font-bold ${presentColour} ${presentTimeLeft <= 30 ? "animate-pulse" : ""}`}>
                 {formatTime(presentTimeLeft)}
               </div>
               {presentTimeLeft === 0 && (
-                <p className="mt-2 text-xs font-black text-red-400">Time is up. Submit your presentation</p>
+                <p className="mt-2 text-xs font-bold text-red-400">Time is up. Submit your presentation</p>
               )}
             </div>
 
@@ -462,7 +462,7 @@ export default function Stage3Page() {
               <div className="flex items-center gap-3 mb-4">
                 <button
                   onClick={isRecording ? stopRecording : startRecording}
-                  className={`flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-black transition-all ${
+                  className={`flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-bold transition-all ${
                     isRecording
                       ? "bg-red-500/20 border border-red-500/40 text-red-300 hover:bg-red-500/30"
                       : "bg-cyan-400/10 border border-cyan-400/40 text-cyan-300 hover:bg-cyan-400/20"
@@ -517,7 +517,7 @@ export default function Stage3Page() {
             <button
               onClick={handleSubmit}
               disabled={(wordCount < 80 && presentTimeLeft > 0) || submitting}
-              className={`flex w-full items-center justify-center gap-3 rounded-2xl px-8 py-5 text-base font-black transition-all ${
+              className={`flex w-full items-center justify-center gap-3 rounded-2xl px-8 py-5 text-base font-bold transition-all ${
                 (wordCount >= 80 || presentTimeLeft === 0) && !submitting
                   ? "bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 text-white shadow-2xl shadow-cyan-900/40 hover:scale-[1.015]"
                   : "cursor-not-allowed bg-white/[0.05] text-gray-600"
@@ -541,7 +541,7 @@ export default function Stage3Page() {
               <div className="mt-3 flex items-start gap-2.5 rounded-xl border border-cyan-300/20 bg-cyan-400/[0.07] px-4 py-3 text-left text-xs leading-5 text-cyan-100">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" className="mt-0.5 h-4 w-4 shrink-0 animate-pulse text-cyan-300" aria-hidden><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
                 <span>
-                  <span className="font-black">This is the longest step, usually one to two minutes.</span>{" "}
+                  <span className="font-bold">This is the longest step, usually one to two minutes.</span>{" "}
                   We are scoring your presentation and compiling your final
                   report across every stage. Keep this page open.
                 </span>
@@ -554,10 +554,10 @@ export default function Stage3Page() {
         {phase === "submitted" && (
           <div className="space-y-5">
             <div className="mb-4">
-              <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-400/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-emerald-200">
+              <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-emerald-400/25 bg-emerald-400/[0.07] px-4 py-2 text-[11px] font-bold tracking-wide text-emerald-200">
                 Stage 3 complete
               </div>
-              <h1 className="text-3xl font-black tracking-[-0.05em] text-white">
+              <h1 className="text-3xl font-bold tracking-tight text-white">
                 Presentation scored
               </h1>
             </div>
@@ -576,10 +576,10 @@ export default function Stage3Page() {
               <>
                 {/* Overall */}
                 <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-6 backdrop-blur-xl text-center">
-                  <p className="text-[11px] font-black uppercase tracking-[0.22em] text-gray-500 mb-3">
+                  <p className="text-[11px] font-bold tracking-wide text-gray-500 mb-3">
                     Presentation Score
                   </p>
-                  <div className={`text-6xl font-black ${
+                  <div className={`text-5xl font-bold ${
                     feedback.overall >= 7 ? "text-emerald-400" : feedback.overall >= 5 ? "text-amber-400" : "text-red-400"
                   }`}>
                     {feedback.overall.toFixed(1)}
@@ -589,7 +589,7 @@ export default function Stage3Page() {
                 </div>
 
                 <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-5 backdrop-blur-xl space-y-3">
-                  <p className="text-[11px] font-black uppercase tracking-[0.22em] text-gray-500 mb-2">
+                  <p className="text-[11px] font-bold tracking-wide text-gray-500 mb-2">
                     Dimension scores
                   </p>
                   <ScoreBar label="Structure" score={feedback.scores.structure} />
@@ -601,7 +601,7 @@ export default function Stage3Page() {
 
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="rounded-[1.75rem] border border-emerald-500/[0.18] bg-emerald-500/[0.04] p-5 backdrop-blur-xl">
-                    <p className="mb-3 text-[11px] font-black uppercase tracking-[0.22em] text-emerald-400">Strengths</p>
+                    <p className="mb-3 text-[11px] font-bold tracking-wide text-emerald-400">Strengths</p>
                     <ul className="space-y-2">
                       {feedback.strengths.map((s, i) => (
                         <li key={i} className="flex items-start gap-2 text-xs text-gray-300">
@@ -611,7 +611,7 @@ export default function Stage3Page() {
                     </ul>
                   </div>
                   <div className="rounded-[1.75rem] border border-amber-500/[0.18] bg-amber-500/[0.04] p-5 backdrop-blur-xl">
-                    <p className="mb-3 text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Improvements</p>
+                    <p className="mb-3 text-[11px] font-bold tracking-wide text-amber-400">Improvements</p>
                     <ul className="space-y-2">
                       {feedback.improvements.map((s, i) => (
                         <li key={i} className="flex items-start gap-2 text-xs text-gray-300">
@@ -624,7 +624,7 @@ export default function Stage3Page() {
 
                 {feedback.exampleAnswer && (
                   <div className="rounded-[1.75rem] border border-purple-400/20 bg-purple-400/[0.06] p-5 backdrop-blur-xl">
-                    <p className="mb-2 text-[11px] font-black uppercase tracking-[0.22em] text-purple-300">
+                    <p className="mb-2 text-[11px] font-bold tracking-wide text-purple-300">
                       Model Answer Example
                     </p>
                     <p className="text-sm leading-7 text-gray-300 whitespace-pre-line">{feedback.exampleAnswer}</p>
@@ -635,7 +635,7 @@ export default function Stage3Page() {
 
             <button
               onClick={() => router.push(`/assessment-centre/${id}/report`)}
-              className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-8 py-5 text-base font-black text-white shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.015]"
+              className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-8 py-5 text-base font-bold text-white shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.015]"
             >
               View your full report →
             </button>

@@ -166,10 +166,10 @@ export default function CompareIndexPage() {
       <div className="mx-auto max-w-4xl px-4 pb-24 pt-6 sm:px-6">
         {/* Hero */}
         <section className="mb-12 mt-8 text-center">
-          <p className="mb-4 text-[11px] font-black uppercase tracking-[0.2em] text-purple-300/70">
+          <p className="mb-4 text-[11px] font-bold tracking-wide text-purple-300/70">
             Editorial comparison
           </p>
-          <h1 className="text-[2rem] font-black leading-[1.05] tracking-[-0.05em] sm:text-[2.6rem]">
+          <h1 className="text-[2rem] font-bold leading-[1.05] tracking-tight sm:text-4xl">
             The best AI interview practice tools in 2026
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-gray-400">
@@ -186,16 +186,16 @@ export default function CompareIndexPage() {
           <div className="overflow-x-auto rounded-[2rem] border border-white/[0.08]">
             <div className="min-w-[760px]">
               <div className="grid grid-cols-[1.3fr_2fr_1.1fr_1.5fr] border-b border-white/[0.08] bg-white/[0.03] px-6 py-4">
-                <p className="text-xs font-black uppercase tracking-[0.12em] text-gray-500">
+                <p className="text-xs font-bold tracking-wide text-gray-500">
                   Tool
                 </p>
-                <p className="text-xs font-black uppercase tracking-[0.12em] text-gray-500">
+                <p className="text-xs font-bold tracking-wide text-gray-500">
                   Key capabilities
                 </p>
-                <p className="text-xs font-black uppercase tracking-[0.12em] text-gray-500">
+                <p className="text-xs font-bold tracking-wide text-gray-500">
                   Price
                 </p>
-                <p className="text-xs font-black uppercase tracking-[0.12em] text-gray-500">
+                <p className="text-xs font-bold tracking-wide text-gray-500">
                   Best for
                 </p>
               </div>
@@ -207,7 +207,7 @@ export default function CompareIndexPage() {
                   }`}
                 >
                   <p
-                    className={`text-sm font-black ${
+                    className={`text-sm font-bold ${
                       tool.key === "ai-career-mentor"
                         ? "text-purple-300"
                         : "text-gray-300"
@@ -243,7 +243,7 @@ export default function CompareIndexPage() {
 
         {/* Per-tool editorial sections */}
         <section className="mb-14">
-          <h2 className="mb-8 text-2xl font-black tracking-[-0.04em]">
+          <h2 className="mb-8 text-2xl font-bold tracking-tight">
             Each tool, honestly
           </h2>
           <div className="space-y-5">
@@ -257,10 +257,10 @@ export default function CompareIndexPage() {
                 }`}
               >
                 <div className="mb-3 flex items-baseline gap-3">
-                  <span className="text-xs font-black text-gray-600">
+                  <span className="text-xs font-bold text-gray-600">
                     {index + 1}.
                   </span>
-                  <h3 className="text-lg font-black leading-tight text-white">
+                  <h3 className="text-lg font-bold leading-tight text-white">
                     {tool.name}
                   </h3>
                 </div>
@@ -269,7 +269,7 @@ export default function CompareIndexPage() {
                 </p>
                 <Link
                   href={tool.href}
-                  className="mt-4 inline-flex items-center gap-1.5 text-sm font-black text-purple-300 transition hover:text-purple-200"
+                  className="mt-4 inline-flex items-center gap-1.5 text-sm font-bold text-purple-300 transition hover:text-purple-200"
                 >
                   {tool.linkLabel} →
                 </Link>
@@ -280,13 +280,13 @@ export default function CompareIndexPage() {
 
         {/* FAQs */}
         <section className="mb-14 border-t border-white/[0.07] pt-10">
-          <h2 className="mb-6 text-2xl font-black tracking-[-0.04em]">
+          <h2 className="mb-6 text-2xl font-bold tracking-tight">
             Frequently asked questions
           </h2>
           <div className="divide-y divide-white/[0.07]">
             {faqs.map((faq) => (
               <details key={faq.q} className="group py-5">
-                <summary className="flex cursor-pointer list-none items-start justify-between gap-4 text-sm font-black text-white">
+                <summary className="flex cursor-pointer list-none items-start justify-between gap-4 text-sm font-bold text-white">
                   {faq.q}
                   <span className="mt-0.5 shrink-0 text-gray-500 transition-transform group-open:rotate-45">
                     +
@@ -300,7 +300,7 @@ export default function CompareIndexPage() {
 
         {/* CTA */}
         <section className="rounded-[2rem] border border-purple-300/20 bg-purple-300/[0.06] p-8 text-center">
-          <p className="font-black">Try before you commit</p>
+          <p className="font-bold">Try before you commit</p>
           <p className="mx-auto mt-2 max-w-xl text-sm text-gray-400">
             Score one of your own answers with the free STAR scorer (no account
             needed), then start a 3-day free trial to practise with voice and
@@ -309,13 +309,13 @@ export default function CompareIndexPage() {
           <div className="mt-5 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link
               href="/for-candidates/sign-up"
-              className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-7 py-3.5 text-sm font-black text-white shadow-xl transition hover:scale-[1.02]"
+              className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-7 py-3.5 text-sm font-bold text-white shadow-xl transition hover:scale-[1.02]"
             >
               Start your free trial →
             </Link>
             <Link
               href="/tools/star-scorer"
-              className="inline-flex items-center gap-2 rounded-2xl border border-white/[0.12] bg-white/[0.04] px-7 py-3.5 text-sm font-black text-white transition hover:bg-white/[0.08]"
+              className="inline-flex items-center gap-2 rounded-2xl border border-white/[0.12] bg-white/[0.04] px-7 py-3.5 text-sm font-bold text-white transition hover:bg-white/[0.08]"
             >
               Score an answer free
             </Link>

@@ -119,12 +119,12 @@ export default async function AssessmentCentrePage() {
     <CandidateShell currentPath="/mock-assessment-centre">
       {/* Hero */}
       <section className="mx-auto max-w-5xl px-4 pb-14 pt-6 text-center sm:px-6 sm:pb-16 sm:pt-10">
-        <p className="mx-auto mb-5 inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-400/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-cyan-200">
+        <p className="mx-auto mb-5 inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-400/[0.07] px-4 py-2 text-[11px] font-bold tracking-wide text-cyan-200">
           NEW · Mock assessment centre
         </p>
-        <h1 className="text-[2.4rem] font-black leading-[1.04] tracking-[-0.05em] sm:text-5xl lg:text-6xl">
+        <h1 className="text-4xl font-bold leading-[1.04] tracking-tight sm:text-4xl lg:text-5xl">
           The first AI platform that runs a{" "}
-          <span className="bg-gradient-to-r from-cyan-300 via-purple-200 to-fuchsia-200 bg-clip-text text-transparent">
+          <span className="text-violet-300">
             full assessment centre experience.
           </span>
         </h1>
@@ -136,13 +136,13 @@ export default async function AssessmentCentrePage() {
         <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link
             href="/pricing"
-            className="w-full rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-8 py-4 text-center text-base font-black text-white shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.02] sm:w-auto"
+            className="w-full rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-8 py-4 text-center text-base font-bold text-white shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.02] sm:w-auto"
           >
             Get Professional →
           </Link>
           <Link
             href="/interview-practice"
-            className="w-full rounded-2xl border border-white/[0.1] bg-white/[0.04] px-8 py-4 text-center text-base font-black text-white transition hover:bg-white/[0.08] sm:w-auto"
+            className="w-full rounded-2xl border border-white/[0.1] bg-white/[0.04] px-8 py-4 text-center text-base font-bold text-white transition hover:bg-white/[0.08] sm:w-auto"
           >
             Just want interview practice?
           </Link>
@@ -152,10 +152,10 @@ export default async function AssessmentCentrePage() {
       {/* Three stages */}
       <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 sm:pb-20">
         <div className="mb-10 text-center">
-          <p className="text-[11px] font-black uppercase tracking-[0.26em] text-cyan-300/90">
+          <p className="text-[11px] font-bold tracking-wide text-cyan-300/90">
             How it works
           </p>
-          <h2 className="mt-3 text-3xl font-black tracking-[-0.05em] sm:text-4xl">
+          <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
             One session. Three stages. Full report.
           </h2>
         </div>
@@ -173,7 +173,7 @@ export default async function AssessmentCentrePage() {
               }`}
             >
               <p
-                className={`text-[11px] font-black uppercase tracking-[0.22em] ${
+                className={`text-[11px] font-bold tracking-wide ${
                   stage.accent === "purple"
                     ? "text-purple-300/90"
                     : stage.accent === "fuchsia"
@@ -183,7 +183,7 @@ export default async function AssessmentCentrePage() {
               >
                 {stage.label} · {stage.duration}
               </p>
-              <h3 className="mt-2 text-2xl font-black tracking-[-0.04em]">
+              <h3 className="mt-2 text-2xl font-bold tracking-tight">
                 {stage.title}
               </h3>
               <p className="mt-3 text-sm leading-7 text-gray-300">
@@ -213,10 +213,10 @@ export default async function AssessmentCentrePage() {
       {/* Why */}
       <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 sm:pb-20">
         <div className="mb-10 text-center">
-          <p className="text-[11px] font-black uppercase tracking-[0.26em] text-cyan-300/90">
+          <p className="text-[11px] font-bold tracking-wide text-cyan-300/90">
             Why it matters
           </p>
-          <h2 className="mt-3 text-3xl font-black tracking-[-0.05em] sm:text-4xl">
+          <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
             Practice that actually mirrors the real thing.
           </h2>
         </div>
@@ -226,7 +226,7 @@ export default async function AssessmentCentrePage() {
               key={w.title}
               className="rounded-[1.5rem] border border-white/[0.08] bg-white/[0.03] p-6"
             >
-              <p className="font-black text-white">{w.title}</p>
+              <p className="font-bold text-white">{w.title}</p>
               <p className="mt-2 text-sm leading-6 text-gray-400">{w.text}</p>
             </div>
           ))}
@@ -235,13 +235,13 @@ export default async function AssessmentCentrePage() {
 
       {/* FAQs */}
       <section className="mx-auto max-w-3xl px-4 pb-16 sm:px-6 sm:pb-20">
-        <h2 className="mb-8 text-2xl font-black tracking-[-0.04em]">
+        <h2 className="mb-8 text-2xl font-bold tracking-tight">
           Frequently asked questions
         </h2>
         <div className="divide-y divide-white/[0.07]">
           {faqs.map((faq) => (
             <details key={faq.q} className="group py-5">
-              <summary className="flex cursor-pointer list-none items-start justify-between gap-4 text-sm font-black text-white">
+              <summary className="flex cursor-pointer list-none items-start justify-between gap-4 text-sm font-bold text-white">
                 {faq.q}
                 <span className="mt-0.5 shrink-0 text-gray-500 transition-transform group-open:rotate-45">
                   +
@@ -256,7 +256,7 @@ export default async function AssessmentCentrePage() {
       {/* CTA */}
       <section className="mx-auto max-w-7xl px-4 pb-20 sm:px-6 sm:pb-28">
         <div className="rounded-[2rem] border border-white/[0.1] bg-gradient-to-br from-cyan-500/[0.10] via-purple-500/[0.06] to-transparent p-10 text-center sm:p-14">
-          <h2 className="mx-auto max-w-2xl text-3xl font-black tracking-[-0.05em] sm:text-4xl">
+          <h2 className="mx-auto max-w-2xl text-3xl font-bold tracking-tight sm:text-4xl">
             Walk into your assessment centre fully prepared.
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-gray-400">
@@ -265,13 +265,13 @@ export default async function AssessmentCentrePage() {
           <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link
               href="/pricing"
-              className="rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-7 py-4 text-center text-base font-black text-white shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.02]"
+              className="rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-7 py-4 text-center text-base font-bold text-white shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.02]"
             >
               Get Professional →
             </Link>
             <Link
               href="/for-candidates/sign-up"
-              className="rounded-2xl border border-white/[0.1] bg-white/[0.04] px-7 py-4 text-center text-base font-black text-white transition hover:bg-white/[0.08]"
+              className="rounded-2xl border border-white/[0.1] bg-white/[0.04] px-7 py-4 text-center text-base font-bold text-white transition hover:bg-white/[0.08]"
             >
               Start free trial
             </Link>

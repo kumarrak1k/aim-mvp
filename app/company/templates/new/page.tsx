@@ -33,8 +33,8 @@ export default function NewTemplatePage() {
     <CorporateAppShell currentPath="/company/templates">
       <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
         <div className="mb-8">
-          <p className="text-sm font-black uppercase tracking-[0.22em] text-fuchsia-300">New Template</p>
-          <h1 className="mt-1 text-3xl font-black tracking-[-0.05em] sm:text-4xl">Create assessment template</h1>
+          <p className="text-sm font-bold tracking-wide text-fuchsia-300">New Template</p>
+          <h1 className="mt-1 text-3xl font-bold tracking-tight sm:text-4xl">Create assessment template</h1>
           <p className="mt-2 text-gray-400">Configure the interview parameters for this role.</p>
         </div>
         {error && (

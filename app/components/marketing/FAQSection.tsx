@@ -23,7 +23,7 @@ export function FAQSection({
 
   return (
     <section className="mx-auto max-w-3xl px-4 py-16 sm:px-6 sm:py-20">
-      <h2 className="mb-10 text-center text-2xl font-black tracking-[-0.04em] sm:text-3xl">
+      <h2 className="mb-10 text-center text-2xl font-bold tracking-tight sm:text-3xl">
         {heading}
       </h2>
       <div className="divide-y divide-white/[0.07]">

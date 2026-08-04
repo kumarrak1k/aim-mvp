@@ -85,7 +85,7 @@ function ProBadge() {
   return (
     <span
       aria-label="Professional plan required"
-      className="ml-1.5 inline-block rounded-full border border-amber-400/30 bg-amber-400/[0.12] px-1.5 py-px align-middle text-[9px] font-black uppercase tracking-[0.1em] text-amber-300"
+      className="ml-1.5 inline-block rounded-full border border-amber-400/30 bg-amber-400/[0.12] px-1.5 py-px align-middle text-[9px] font-bold tracking-wide text-amber-300"
     >
       Pro
     </span>
@@ -142,9 +142,9 @@ export function CandidateAppShell({
     <div className="relative min-h-screen bg-[#0a0614] text-white">
       {/* Background — purple/cyan candidate identity */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_25%_15%,rgba(120,60,255,0.18),transparent),radial-gradient(ellipse_60%_50%_at_75%_85%,rgba(232,80,180,0.12),transparent),linear-gradient(180deg,#0a0614_0%,#100a1f_50%,#0c0816_100%)]" />
-        <div className="absolute left-[-160px] top-[-80px] h-[520px] w-[520px] rounded-full bg-purple-500/[0.18] blur-[160px]" />
-        <div className="absolute bottom-[-80px] right-[-160px] h-[520px] w-[520px] rounded-full bg-fuchsia-500/[0.18] blur-[160px]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_25%_15%,rgba(120,60,255,0.10),transparent),radial-gradient(ellipse_60%_50%_at_75%_85%,rgba(232,80,180,0.06),transparent),linear-gradient(180deg,#0a0614_0%,#100a1f_50%,#0c0816_100%)]" />
+        <div className="absolute left-[-160px] top-[-80px] h-[520px] w-[520px] rounded-full bg-purple-500/[0.08] blur-[160px]" />
+        <div className="absolute bottom-[-80px] right-[-160px] h-[520px] w-[520px] rounded-full bg-fuchsia-500/[0.08] blur-[160px]" />
       </div>
 
       {/* Header */}
@@ -156,7 +156,7 @@ export function CandidateAppShell({
           {/* Logo + badge */}
           <Link href="/" className="relative z-10 flex shrink-0 items-center gap-3">
             <SiteLogo href="" size="md" showText />
-            <span className="hidden rounded-full border border-purple-300/20 bg-white/[0.04] px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-purple-100 sm:inline-block xl:hidden">
+            <span className="hidden rounded-full border border-purple-300/20 bg-white/[0.04] px-3 py-1 text-[10px] font-bold tracking-wide text-purple-100 sm:inline-block xl:hidden">
               Candidate
             </span>
           </Link>
@@ -271,7 +271,7 @@ export function CandidateAppShell({
             <div className="flex justify-center px-4 pb-2.5 pt-0.5">
               <Link
                 href="/practice"
-                className="whitespace-nowrap rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-6 py-2.5 text-[13px] font-black text-white shadow-lg shadow-purple-950/40 transition hover:scale-[1.03]"
+                className="whitespace-nowrap rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-2.5 text-[13px] font-bold text-white shadow-lg shadow-purple-950/40 transition hover:scale-[1.03]"
               >
                 Start Practising
               </Link>
@@ -290,7 +290,7 @@ export function CandidateAppShell({
             <div className="flex shrink-0 items-center gap-2">
               <Link
                 href="/guide"
-                className="whitespace-nowrap rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-4 py-1.5 text-[12px] font-black text-white shadow-lg shadow-purple-950/40 transition hover:scale-[1.03]"
+                className="whitespace-nowrap rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-4 py-1.5 text-[12px] font-bold text-white shadow-lg shadow-purple-950/40 transition hover:scale-[1.03]"
               >
                 Open the guide →
               </Link>
@@ -387,7 +387,7 @@ function BottomNavItem({
           : "bg-gradient-to-br from-cyan-500 via-purple-500 to-fuchsia-500 shadow-cyan-900/40"
         : active
           ? "bg-gradient-to-br from-purple-400 via-fuchsia-400 to-blue-400 shadow-purple-900/60"
-          : "bg-gradient-to-br from-purple-500 via-fuchsia-500 to-blue-500 shadow-purple-900/40";
+          : "bg-gradient-to-br from-violet-600 to-purple-600 shadow-purple-900/40";
 
     const labelColor = primaryColor === "cyan" ? "text-cyan-300" : "text-purple-300";
 

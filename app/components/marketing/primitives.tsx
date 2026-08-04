@@ -25,10 +25,10 @@ export function SectionHeading({
 }) {
   return (
     <div className={align === "center" ? "text-center" : ""}>
-      <p className="mb-3 text-[11px] font-black uppercase tracking-[0.26em] text-purple-300/90">
+      <p className="mb-3 text-[11px] font-bold tracking-wide text-purple-300/90">
         {eyebrow}
       </p>
-      <h2 className="text-3xl font-black tracking-[-0.05em] sm:text-4xl md:text-5xl">
+      <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-4xl">
         {title}
       </h2>
       {description && (
@@ -103,12 +103,12 @@ export function PageLinkCard({
           />
         </div>
         <div className="p-6">
-          <p className="mb-2 text-[10px] font-black uppercase tracking-[0.24em] text-cyan-300/90">
+          <p className="mb-2 text-[10px] font-bold tracking-wide text-cyan-300/90">
             {eyebrow}
           </p>
-          <h3 className="text-xl font-black tracking-[-0.035em]">{title}</h3>
+          <h3 className="text-xl font-bold tracking-tight">{title}</h3>
           <p className="mt-2 text-sm leading-7 text-gray-400">{description}</p>
-          <p className="mt-4 text-xs font-black text-purple-300/80 transition group-hover:text-purple-200">
+          <p className="mt-4 text-xs font-bold text-purple-300/80 transition group-hover:text-purple-200">
             Explore →
           </p>
         </div>

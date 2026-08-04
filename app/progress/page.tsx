@@ -256,12 +256,12 @@ export default function ProgressPage() {
           <div className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-cyan-400/10 blur-3xl" />
           <div className="pointer-events-none absolute -bottom-28 left-10 h-80 w-80 rounded-full bg-purple-500/15 blur-3xl" />
           <div className="relative mx-auto max-w-3xl">
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-cyan-300/20 bg-cyan-300/10 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-cyan-100">
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-cyan-300/20 bg-cyan-300/10 px-4 py-2 text-xs font-bold tracking-wide text-cyan-100">
               Track progress
             </div>
-            <h1 className="text-4xl font-black leading-[1.02] tracking-[-0.055em] sm:text-5xl lg:text-6xl">
+            <h1 className="text-4xl font-bold leading-[1.02] tracking-tight sm:text-4xl lg:text-5xl">
               See whether your performance is{" "}
-              <span className="bg-gradient-to-r from-purple-200 via-fuchsia-200 to-cyan-200 bg-clip-text text-transparent">
+              <span className="text-violet-300">
                 actually improving.
               </span>
             </h1>
@@ -278,7 +278,7 @@ export default function ProgressPage() {
           <div className="mt-6 flex gap-1 rounded-2xl border border-white/[0.08] bg-white/[0.04] p-1.5 backdrop-blur-xl">
             <button
               onClick={() => setActiveTab("practice")}
-              className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-black transition-all ${
+              className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-bold transition-all ${
                 activeTab === "practice"
                   ? "bg-gradient-to-r from-purple-500/20 to-fuchsia-500/20 border border-purple-400/25 text-white shadow-sm"
                   : "text-gray-500 hover:text-gray-300"
@@ -287,14 +287,14 @@ export default function ProgressPage() {
               <span className={`h-1.5 w-1.5 rounded-full ${activeTab === "practice" ? "bg-fuchsia-400" : "bg-gray-600"}`} />
               Interview Practice
               {sessions.length > 0 && (
-                <span className="ml-1 rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-black text-gray-400">
+                <span className="ml-1 rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-bold text-gray-400">
                   {sessions.length}
                 </span>
               )}
             </button>
             <button
               onClick={() => setActiveTab("assessment")}
-              className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-black transition-all ${
+              className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-bold transition-all ${
                 activeTab === "assessment"
                   ? "bg-gradient-to-r from-cyan-500/20 to-purple-500/20 border border-cyan-400/25 text-white shadow-sm"
                   : "text-gray-500 hover:text-gray-300"
@@ -303,7 +303,7 @@ export default function ProgressPage() {
               <span className={`h-1.5 w-1.5 rounded-full ${activeTab === "assessment" ? "bg-cyan-400" : "bg-gray-600"}`} />
               Assessment Centre
               {acSessions.length > 0 && (
-                <span className="ml-1 rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-black text-gray-400">
+                <span className="ml-1 rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-bold text-gray-400">
                   {acSessions.length}
                 </span>
               )}
@@ -414,45 +414,45 @@ function ProgressDashboard({ stats, isAdvancedPlan, onSessionDeleted }: { stats:
               <div>
                 <p className="text-sm text-gray-400">Readiness score</p>
                 <div className="mt-2 flex items-end gap-2">
-                  <span className="text-6xl font-black tracking-[-0.08em] text-white">
+                  <span className="text-5xl font-bold tracking-tight text-white">
                     {latest.overallScore}
                   </span>
-                  <span className="mb-2 text-lg font-black text-gray-500">
+                  <span className="mb-2 text-lg font-bold text-gray-500">
                     /10
                   </span>
                 </div>
               </div>
 
-              <span className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1 text-xs font-black text-emerald-100">
+              <span className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1 text-xs font-bold text-emerald-100">
                 {latest.hireSignal}
               </span>
             </div>
 
             <div className="mt-5 space-y-3 text-sm leading-6 text-gray-300">
               <p>
-                <span className="font-black text-white">Role:</span>{" "}
+                <span className="font-bold text-white">Role:</span>{" "}
                 {latest.role}
               </p>
               <p>
-                <span className="font-black text-white">Setup:</span>{" "}
+                <span className="font-bold text-white">Setup:</span>{" "}
                 {latest.interviewType} · {latest.difficulty} · Focus:{" "}
                 {latest.focusArea}
               </p>
               <p>
-                <span className="font-black text-white">Date:</span>{" "}
+                <span className="font-bold text-white">Date:</span>{" "}
                 {formatSessionDate(latest.createdAt)}
               </p>
             </div>
 
             <Link href={`/progress/${latest.id}`}>
-              <button className="mt-5 w-full rounded-2xl border border-cyan-300/20 bg-cyan-300/10 px-5 py-3 text-sm font-black text-cyan-100 transition hover:bg-cyan-300/15">
+              <button className="mt-5 w-full rounded-2xl border border-cyan-300/20 bg-cyan-300/10 px-5 py-3 text-sm font-bold text-cyan-100 transition hover:bg-cyan-300/15">
                 Review full session
               </button>
             </Link>
           </div>
 
           <div className="mt-4 rounded-[1.35rem] border border-white/10 bg-white/[0.04] p-4">
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-purple-300">
+            <p className="text-xs font-bold tracking-wide text-purple-300">
               Next focus
             </p>
             <p className="mt-2 text-sm leading-6 text-gray-300">
@@ -508,10 +508,10 @@ function ProgressDashboard({ stats, isAdvancedPlan, onSessionDeleted }: { stats:
       <section className="overflow-hidden rounded-[2rem] border border-cyan-400/20 bg-gradient-to-br from-cyan-500/[0.08] via-purple-500/[0.05] to-transparent p-6 shadow-2xl shadow-purple-950/10 backdrop-blur-2xl sm:p-8">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:gap-10">
           <div className="flex-1">
-            <p className="mb-2 text-[10px] font-black uppercase tracking-[0.22em] text-cyan-300">
+            <p className="mb-2 text-[10px] font-bold tracking-wide text-cyan-300">
               Next level · Mock assessment centre
             </p>
-            <h2 className="text-xl font-black tracking-[-0.035em] text-white sm:text-2xl">
+            <h2 className="text-xl font-bold tracking-tight text-white sm:text-2xl">
               Interview practice is just the start.
             </h2>
             <p className="mt-3 text-sm leading-7 text-gray-300">
@@ -525,19 +525,19 @@ function ProgressDashboard({ stats, isAdvancedPlan, onSessionDeleted }: { stats:
           <div className="flex shrink-0 flex-col gap-3 sm:flex-row lg:flex-col">
             {isAdvancedPlan ? (
               <Link href="/assessment-centre">
-                <button className="w-full whitespace-nowrap rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-6 py-3.5 text-sm font-black text-white shadow-lg transition hover:scale-[1.02] sm:w-auto lg:w-full">
+                <button className="w-full whitespace-nowrap rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-6 py-3.5 text-sm font-bold text-white shadow-lg transition hover:scale-[1.02] sm:w-auto lg:w-full">
                   Start mock assessment centre →
                 </button>
               </Link>
             ) : (
               <>
                 <Link href="/pricing">
-                  <button className="w-full whitespace-nowrap rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-6 py-3.5 text-sm font-black text-white shadow-lg transition hover:scale-[1.02] sm:w-auto lg:w-full">
+                  <button className="w-full whitespace-nowrap rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-6 py-3.5 text-sm font-bold text-white shadow-lg transition hover:scale-[1.02] sm:w-auto lg:w-full">
                     Upgrade to Professional →
                   </button>
                 </Link>
                 <Link href="/mock-assessment-centre">
-                  <button className="w-full whitespace-nowrap rounded-2xl border border-cyan-400/20 bg-cyan-400/[0.07] px-6 py-3.5 text-sm font-black text-cyan-100 transition hover:bg-cyan-400/[0.12] sm:w-auto lg:w-full">
+                  <button className="w-full whitespace-nowrap rounded-2xl border border-cyan-400/20 bg-cyan-400/[0.07] px-6 py-3.5 text-sm font-bold text-cyan-100 transition hover:bg-cyan-400/[0.12] sm:w-auto lg:w-full">
                     See what&apos;s included
                   </button>
                 </Link>
@@ -569,10 +569,10 @@ function MetricCard({
           : "border-white/10 bg-white/[0.055] shadow-purple-950/10"
       }`}
     >
-      <p className="text-xs font-black uppercase tracking-[0.18em] text-gray-400">
+      <p className="text-xs font-bold tracking-wide text-gray-400">
         {label}
       </p>
-      <p className="mt-3 text-3xl font-black tracking-[-0.045em] text-white">
+      <p className="mt-3 text-3xl font-bold tracking-tight text-white">
         {value}
       </p>
       <p className="mt-2 text-xs font-semibold leading-5 text-gray-500">
@@ -601,10 +601,10 @@ function PanelHeader({
 }) {
   return (
     <div>
-      <p className="text-xs font-black uppercase tracking-[0.2em] text-cyan-300">
+      <p className="text-xs font-bold tracking-wide text-cyan-300">
         {eyebrow}
       </p>
-      <h2 className="mt-2 text-2xl font-black tracking-[-0.035em] text-white">
+      <h2 className="mt-2 text-2xl font-bold tracking-tight text-white">
         {title}
       </h2>
       <p className="mt-2 text-sm leading-6 text-gray-400">{description}</p>
@@ -628,8 +628,8 @@ function CategoryLine({
     return (
       <div>
         <div className="mb-2 flex items-center justify-between gap-3">
-          <p className="text-sm font-black text-gray-600">{label}</p>
-          <p className="text-xs font-black text-gray-600">
+          <p className="text-sm font-bold text-gray-600">{label}</p>
+          <p className="text-xs font-bold text-gray-600">
             N/A · keyboard only
           </p>
         </div>
@@ -643,8 +643,8 @@ function CategoryLine({
   return (
     <div>
       <div className="mb-2 flex items-center justify-between gap-3">
-        <p className="text-sm font-black text-white">{label}</p>
-        <p className="text-sm font-black text-gray-300">{safeValue}/10</p>
+        <p className="text-sm font-bold text-white">{label}</p>
+        <p className="text-sm font-bold text-gray-300">{safeValue}/10</p>
       </div>
       <div className="h-3 overflow-hidden rounded-full bg-white/10">
         <div
@@ -710,7 +710,7 @@ function DeleteSessionButton({
       disabled={busy}
       aria-label="Delete this saved session"
       title="Delete this session"
-      className="shrink-0 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-[11px] font-black text-gray-400 transition hover:border-rose-400/40 hover:bg-rose-500/10 hover:text-rose-300 disabled:opacity-50"
+      className="shrink-0 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-[11px] font-bold text-gray-400 transition hover:border-rose-400/40 hover:bg-rose-500/10 hover:text-rose-300 disabled:opacity-50"
     >
       {busy ? "Deleting…" : "Delete"}
     </button>
@@ -733,15 +733,15 @@ function SessionRow({
       <div className="grid gap-3 rounded-[1.35rem] border border-white/10 bg-black/25 p-4 pr-24 transition hover:-translate-y-0.5 hover:border-cyan-300/25 hover:bg-white/[0.055] sm:grid-cols-[minmax(0,1fr)_120px] sm:items-center">
         <div className="min-w-0">
           <div className="mb-2 flex flex-wrap items-center gap-2">
-            <span className="rounded-full border border-cyan-300/15 bg-cyan-300/10 px-2.5 py-1 text-[11px] font-black text-cyan-100">
+            <span className="rounded-full border border-cyan-300/15 bg-cyan-300/10 px-2.5 py-1 text-[11px] font-bold text-cyan-100">
               {session.practiceMode}
             </span>
-            <span className="rounded-full border border-white/10 bg-white/[0.06] px-2.5 py-1 text-[11px] font-black text-gray-300">
+            <span className="rounded-full border border-white/10 bg-white/[0.06] px-2.5 py-1 text-[11px] font-bold text-gray-300">
               {session.hireSignal}
             </span>
           </div>
 
-          <p className="truncate text-sm font-black text-white">
+          <p className="truncate text-sm font-bold text-white">
             {session.role}
           </p>
           <p className="mt-1 text-xs leading-5 text-gray-500">
@@ -751,10 +751,10 @@ function SessionRow({
         </div>
 
         <div className="rounded-2xl border border-white/10 bg-white/[0.05] p-3 text-center">
-          <p className="text-2xl font-black tracking-[-0.04em] text-white">
+          <p className="text-2xl font-bold tracking-tight text-white">
             {session.overallScore}
           </p>
-          <p className="text-[11px] font-black uppercase tracking-[0.16em] text-gray-500">
+          <p className="text-[11px] font-bold tracking-wide text-gray-500">
             /10
           </p>
         </div>
@@ -767,10 +767,10 @@ function SessionRow({
 function SignedOutState() {
   return (
     <section className="mt-6 rounded-[2rem] border border-white/10 bg-white/[0.055] p-6 shadow-2xl shadow-purple-950/10 backdrop-blur-2xl">
-      <p className="text-xs font-black uppercase tracking-[0.2em] text-purple-300">
+      <p className="text-xs font-bold tracking-wide text-purple-300">
         Sign in required
       </p>
-      <h2 className="mt-3 text-3xl font-black tracking-[-0.045em] text-white">
+      <h2 className="mt-3 text-3xl font-bold tracking-tight text-white">
         Track your interview progress across saved sessions.
       </h2>
       <p className="mt-3 max-w-2xl text-sm leading-7 text-gray-300">
@@ -780,13 +780,13 @@ function SignedOutState() {
 
       <div className="mt-6 flex flex-col gap-3 sm:flex-row">
         <SignInButton mode="modal">
-          <button className="rounded-2xl bg-white px-6 py-4 text-sm font-black text-black transition hover:bg-purple-100">
+          <button className="rounded-2xl bg-white px-6 py-4 text-sm font-bold text-black transition hover:bg-purple-100">
             Sign in to track progress
           </button>
         </SignInButton>
 
         <Link href="/practice">
-          <button className="rounded-2xl border border-purple-300/20 bg-purple-300/10 px-6 py-4 text-sm font-black text-purple-100 transition hover:bg-purple-300/15">
+          <button className="rounded-2xl border border-purple-300/20 bg-purple-300/10 px-6 py-4 text-sm font-bold text-purple-100 transition hover:bg-purple-300/15">
             Try a practice session
           </button>
         </Link>
@@ -799,10 +799,10 @@ function EmptyProgressState({ isAdvancedPlan }: { isAdvancedPlan: boolean }) {
   return (
     <div className="mt-6 space-y-4">
       <section className="rounded-[2rem] border border-white/10 bg-white/[0.055] p-6 shadow-2xl shadow-purple-950/10 backdrop-blur-2xl">
-        <p className="text-xs font-black uppercase tracking-[0.2em] text-cyan-300">
+        <p className="text-xs font-bold tracking-wide text-cyan-300">
           No sessions yet
         </p>
-        <h2 className="mt-3 text-3xl font-black tracking-[-0.045em] text-white">
+        <h2 className="mt-3 text-3xl font-bold tracking-tight text-white">
           Complete your first tracked interview.
         </h2>
         <p className="mt-3 max-w-2xl text-sm leading-7 text-gray-300">
@@ -812,12 +812,12 @@ function EmptyProgressState({ isAdvancedPlan }: { isAdvancedPlan: boolean }) {
 
         <div className="mt-6 flex flex-col gap-3 sm:flex-row">
           <Link href="/practice">
-            <button className="rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-6 py-4 text-sm font-black text-white shadow-2xl shadow-purple-900/30 transition hover:scale-[1.01]">
+            <button className="rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-4 text-sm font-bold text-white shadow-2xl shadow-purple-900/30 transition hover:scale-[1.01]">
               Start tracked interview
             </button>
           </Link>
           <Link href={isAdvancedPlan ? "/assessment-centre" : "/mock-assessment-centre"}>
-            <button className="rounded-2xl border border-cyan-400/20 bg-cyan-400/[0.07] px-6 py-4 text-sm font-black text-cyan-100 transition hover:bg-cyan-400/[0.12]">
+            <button className="rounded-2xl border border-cyan-400/20 bg-cyan-400/[0.07] px-6 py-4 text-sm font-bold text-cyan-100 transition hover:bg-cyan-400/[0.12]">
               {isAdvancedPlan ? "Try mock assessment centre →" : "Learn about assessment centres →"}
             </button>
           </Link>
@@ -825,10 +825,10 @@ function EmptyProgressState({ isAdvancedPlan }: { isAdvancedPlan: boolean }) {
       </section>
 
       <section className="overflow-hidden rounded-[2rem] border border-cyan-400/20 bg-gradient-to-br from-cyan-500/[0.07] via-purple-500/[0.04] to-transparent p-6 shadow-2xl shadow-purple-950/10 backdrop-blur-2xl">
-        <p className="text-[10px] font-black uppercase tracking-[0.22em] text-cyan-300">
+        <p className="text-[10px] font-bold tracking-wide text-cyan-300">
           {isAdvancedPlan ? "Your plan · Mock assessment centre" : "Professional · Mock assessment centre"}
         </p>
-        <h3 className="mt-2 text-xl font-black tracking-[-0.03em] text-white">
+        <h3 className="mt-2 text-xl font-bold tracking-tight text-white">
           Going for a role with an assessment centre?
         </h3>
         <p className="mt-2 text-sm leading-7 text-gray-300">
@@ -837,13 +837,13 @@ function EmptyProgressState({ isAdvancedPlan }: { isAdvancedPlan: boolean }) {
         </p>
         {isAdvancedPlan ? (
           <Link href="/assessment-centre">
-            <button className="mt-4 rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-5 py-3 text-sm font-black text-white shadow-lg transition hover:scale-[1.02]">
+            <button className="mt-4 rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-5 py-3 text-sm font-bold text-white shadow-lg transition hover:scale-[1.02]">
               Start mock assessment centre →
             </button>
           </Link>
         ) : (
           <Link href="/pricing">
-            <button className="mt-4 rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-5 py-3 text-sm font-black text-white shadow-lg transition hover:scale-[1.02]">
+            <button className="mt-4 rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-5 py-3 text-sm font-bold text-white shadow-lg transition hover:scale-[1.02]">
               Upgrade to Professional →
             </button>
           </Link>
@@ -866,7 +866,7 @@ function ProgressLoadingState() {
 function ErrorState({ message }: { message: string }) {
   return (
     <section className="mt-6 rounded-[2rem] border border-amber-300/20 bg-amber-300/10 p-6 shadow-2xl shadow-purple-950/10 backdrop-blur-2xl">
-      <p className="text-sm font-black text-amber-100">
+      <p className="text-sm font-bold text-amber-100">
         Progress could not load
       </p>
       <p className="mt-2 text-sm leading-7 text-gray-300">{message}</p>
@@ -880,8 +880,8 @@ function EmptyACState() {
   return (
     <div className="mt-6 space-y-4">
       <section className="rounded-[2rem] border border-white/10 bg-white/[0.055] p-6 shadow-2xl shadow-purple-950/10 backdrop-blur-2xl">
-        <p className="text-xs font-black uppercase tracking-[0.2em] text-cyan-300">No results yet</p>
-        <h2 className="mt-3 text-3xl font-black tracking-[-0.045em] text-white">
+        <p className="text-xs font-bold tracking-wide text-cyan-300">No results yet</p>
+        <h2 className="mt-3 text-3xl font-bold tracking-tight text-white">
           Complete your first Assessment Centre.
         </h2>
         <p className="mt-3 max-w-2xl text-sm leading-7 text-gray-300">
@@ -891,12 +891,12 @@ function EmptyACState() {
         </p>
         <div className="mt-6 flex flex-col gap-3 sm:flex-row">
           <Link href="/assessment-centre">
-            <button className="rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-6 py-4 text-sm font-black text-white shadow-2xl shadow-purple-900/30 transition hover:scale-[1.01]">
+            <button className="rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-6 py-4 text-sm font-bold text-white shadow-2xl shadow-purple-900/30 transition hover:scale-[1.01]">
               Start assessment centre →
             </button>
           </Link>
           <Link href="/mock-assessment-centre">
-            <button className="rounded-2xl border border-cyan-400/20 bg-cyan-400/[0.07] px-6 py-4 text-sm font-black text-cyan-100 transition hover:bg-cyan-400/[0.12]">
+            <button className="rounded-2xl border border-cyan-400/20 bg-cyan-400/[0.07] px-6 py-4 text-sm font-bold text-cyan-100 transition hover:bg-cyan-400/[0.12]">
               What&apos;s included
             </button>
           </Link>
@@ -922,8 +922,8 @@ function ACScoreBar({ label, score, colour = "purple" }: { label: string; score:
   return (
     <div>
       <div className="mb-1.5 flex items-center justify-between">
-        <span className="text-sm font-black text-white">{label}</span>
-        <span className={`text-sm font-black ${textCol}`}>{safe.toFixed(1)}/10</span>
+        <span className="text-sm font-bold text-white">{label}</span>
+        <span className={`text-sm font-bold ${textCol}`}>{safe.toFixed(1)}/10</span>
       </div>
       <div className="h-3 overflow-hidden rounded-full bg-white/10">
         <div
@@ -969,21 +969,21 @@ function ACSessionRow({
         <div className="min-w-0">
           <div className="mb-2 flex flex-wrap items-center gap-1.5">
             {session.selectedStages.map((s) => (
-              <span key={s} className="rounded-full border border-cyan-300/15 bg-cyan-300/10 px-2.5 py-0.5 text-[10px] font-black text-cyan-200">
+              <span key={s} className="rounded-full border border-cyan-300/15 bg-cyan-300/10 px-2.5 py-0.5 text-[10px] font-bold text-cyan-200">
                 {stageLabels[s] ?? s}
               </span>
             ))}
           </div>
-          <p className="truncate text-sm font-black text-white">{session.role}</p>
+          <p className="truncate text-sm font-bold text-white">{session.role}</p>
           <p className="mt-0.5 text-xs leading-5 text-gray-500">
             {session.sector} · {session.experienceLevel} · {formatSessionDate(session.createdAt)}
           </p>
         </div>
         <div className="rounded-2xl border border-white/10 bg-white/[0.05] p-3 text-center">
-          <p className={`text-2xl font-black tracking-[-0.04em] ${scoreCol}`}>
+          <p className={`text-2xl font-bold tracking-tight ${scoreCol}`}>
             {score !== null ? score.toFixed(1) : "–"}
           </p>
-          <p className="text-[10px] font-black uppercase tracking-[0.16em] text-gray-500">/10</p>
+          <p className="text-[10px] font-bold tracking-wide text-gray-500">/10</p>
         </div>
       </div>
     </Link>
@@ -1011,29 +1011,29 @@ function ACDashboard({ sessions, onSessionDeleted }: { sessions: ACSession[]; on
       {/* Metrics */}
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <div className="rounded-[1.55rem] border border-cyan-300/20 bg-cyan-300/10 p-5 shadow-2xl backdrop-blur-2xl">
-          <p className="text-xs font-black uppercase tracking-[0.18em] text-gray-400">Latest score</p>
-          <p className="mt-3 text-3xl font-black tracking-[-0.045em] text-white">
+          <p className="text-xs font-bold tracking-wide text-gray-400">Latest score</p>
+          <p className="mt-3 text-3xl font-bold tracking-tight text-white">
             {latest.overallScore !== null ? `${latest.overallScore.toFixed(1)}/10` : "–"}
           </p>
           <p className="mt-2 text-xs font-semibold text-gray-500">{formatSessionDate(latest.createdAt)}</p>
         </div>
         <div className="rounded-[1.55rem] border border-white/10 bg-white/[0.055] p-5 shadow-2xl backdrop-blur-2xl">
-          <p className="text-xs font-black uppercase tracking-[0.18em] text-gray-400">Average</p>
-          <p className="mt-3 text-3xl font-black tracking-[-0.045em] text-white">
+          <p className="text-xs font-bold tracking-wide text-gray-400">Average</p>
+          <p className="mt-3 text-3xl font-bold tracking-tight text-white">
             {avg !== null ? `${avg}/10` : "–"}
           </p>
           <p className="mt-2 text-xs font-semibold text-gray-500">{sessions.length} completed session{sessions.length !== 1 ? "s" : ""}</p>
         </div>
         <div className="rounded-[1.55rem] border border-white/10 bg-white/[0.055] p-5 shadow-2xl backdrop-blur-2xl">
-          <p className="text-xs font-black uppercase tracking-[0.18em] text-gray-400">Best score</p>
-          <p className="mt-3 text-3xl font-black tracking-[-0.045em] text-white">
+          <p className="text-xs font-bold tracking-wide text-gray-400">Best score</p>
+          <p className="mt-3 text-3xl font-bold tracking-tight text-white">
             {best !== null ? `${best.toFixed(1)}/10` : "–"}
           </p>
           <p className="mt-2 text-xs font-semibold text-gray-500">Highest session</p>
         </div>
         <div className="rounded-[1.55rem] border border-white/10 bg-white/[0.055] p-5 shadow-2xl backdrop-blur-2xl">
-          <p className="text-xs font-black uppercase tracking-[0.18em] text-gray-400">Readiness</p>
-          <p className="mt-3 text-xl font-black tracking-[-0.03em] text-white">
+          <p className="text-xs font-bold tracking-wide text-gray-400">Readiness</p>
+          <p className="mt-3 text-xl font-bold tracking-tight text-white">
             {report?.readinessLevel ?? "–"}
           </p>
           <p className="mt-2 text-xs font-semibold text-gray-500">From latest report</p>
@@ -1043,8 +1043,8 @@ function ACDashboard({ sessions, onSessionDeleted }: { sessions: ACSession[]; on
       <div className="grid gap-6 xl:grid-cols-2">
         {/* Latest session stage breakdown */}
         <section className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.055] p-5 shadow-2xl shadow-purple-950/10 backdrop-blur-2xl sm:p-6">
-          <p className="text-xs font-black uppercase tracking-[0.2em] text-cyan-300">Latest session</p>
-          <h2 className="mt-2 text-2xl font-black tracking-[-0.035em] text-white">Stage breakdown</h2>
+          <p className="text-xs font-bold tracking-wide text-cyan-300">Latest session</p>
+          <h2 className="mt-2 text-2xl font-bold tracking-tight text-white">Stage breakdown</h2>
           <p className="mt-1 text-sm text-gray-400">{latest.role} · {latest.sector}</p>
           <div className="mt-6 space-y-4">
             {latest.caseStudyScore !== null && (
@@ -1063,7 +1063,7 @@ function ACDashboard({ sessions, onSessionDeleted }: { sessions: ACSession[]; on
             )}
           </div>
           <Link href={`/assessment-centre/${latest.id}/report`}>
-            <button className="mt-6 w-full rounded-2xl border border-cyan-300/20 bg-cyan-300/[0.08] px-5 py-3 text-sm font-black text-cyan-100 transition hover:bg-cyan-300/15">
+            <button className="mt-6 w-full rounded-2xl border border-cyan-300/20 bg-cyan-300/[0.08] px-5 py-3 text-sm font-bold text-cyan-100 transition hover:bg-cyan-300/15">
               View full report →
             </button>
           </Link>
@@ -1073,8 +1073,8 @@ function ACDashboard({ sessions, onSessionDeleted }: { sessions: ACSession[]; on
         <section className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.055] p-5 shadow-2xl shadow-purple-950/10 backdrop-blur-2xl sm:p-6">
           {report?.competencyScores && Object.keys(report.competencyScores).length > 0 ? (
             <>
-              <p className="text-xs font-black uppercase tracking-[0.2em] text-purple-300">Latest session</p>
-              <h2 className="mt-2 text-2xl font-black tracking-[-0.035em] text-white">Competency scores</h2>
+              <p className="text-xs font-bold tracking-wide text-purple-300">Latest session</p>
+              <h2 className="mt-2 text-2xl font-bold tracking-tight text-white">Competency scores</h2>
               <p className="mt-1 text-sm text-gray-400">From the final assessment report</p>
               <div className="mt-6 space-y-4">
                 {Object.entries(report.competencyScores).map(([key, val]) => (
@@ -1089,14 +1089,14 @@ function ACDashboard({ sessions, onSessionDeleted }: { sessions: ACSession[]; on
             </>
           ) : (
             <>
-              <p className="text-xs font-black uppercase tracking-[0.2em] text-purple-300">Latest report</p>
-              <h2 className="mt-2 text-2xl font-black tracking-[-0.035em] text-white">Feedback summary</h2>
+              <p className="text-xs font-bold tracking-wide text-purple-300">Latest report</p>
+              <h2 className="mt-2 text-2xl font-bold tracking-tight text-white">Feedback summary</h2>
               {report?.headline && (
                 <p className="mt-3 text-sm leading-7 text-gray-300 italic">&ldquo;{report.headline}&rdquo;</p>
               )}
               {report?.topStrengths && report.topStrengths.length > 0 && (
                 <div className="mt-4">
-                  <p className="mb-2 text-[11px] font-black uppercase tracking-[0.18em] text-emerald-400">Strengths</p>
+                  <p className="mb-2 text-[11px] font-bold tracking-wide text-emerald-400">Strengths</p>
                   <ul className="space-y-1.5">
                     {report.topStrengths.slice(0, 3).map((s, i) => (
                       <li key={i} className="flex items-start gap-2 text-sm text-gray-300">
@@ -1108,7 +1108,7 @@ function ACDashboard({ sessions, onSessionDeleted }: { sessions: ACSession[]; on
               )}
               {report?.priorityImprovements && report.priorityImprovements.length > 0 && (
                 <div className="mt-4">
-                  <p className="mb-2 text-[11px] font-black uppercase tracking-[0.18em] text-amber-400">To improve</p>
+                  <p className="mb-2 text-[11px] font-bold tracking-wide text-amber-400">To improve</p>
                   <ul className="space-y-1.5">
                     {report.priorityImprovements.slice(0, 3).map((s, i) => (
                       <li key={i} className="flex items-start gap-2 text-sm text-gray-300">
@@ -1127,11 +1127,11 @@ function ACDashboard({ sessions, onSessionDeleted }: { sessions: ACSession[]; on
       <section className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.055] p-5 shadow-2xl shadow-purple-950/10 backdrop-blur-2xl sm:p-6">
         <div className="flex items-center justify-between gap-4 mb-5">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.2em] text-cyan-300">History</p>
-            <h2 className="mt-1 text-2xl font-black tracking-[-0.035em] text-white">All completed sessions</h2>
+            <p className="text-xs font-bold tracking-wide text-cyan-300">History</p>
+            <h2 className="mt-1 text-2xl font-bold tracking-tight text-white">All completed sessions</h2>
           </div>
           <Link href="/assessment-centre">
-            <button className="shrink-0 rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-5 py-2.5 text-xs font-black text-white shadow-lg transition hover:scale-[1.02]">
+            <button className="shrink-0 rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-5 py-2.5 text-xs font-bold text-white shadow-lg transition hover:scale-[1.02]">
               New session →
             </button>
           </Link>

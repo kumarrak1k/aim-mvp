@@ -200,8 +200,8 @@ function CandidatesContent() {
     <CorporateAppShell currentPath="/company/candidates">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="mb-10">
-          <p className="text-sm font-black uppercase tracking-[0.22em] text-fuchsia-300">Candidates</p>
-          <h1 className="mt-1 text-3xl font-black tracking-[-0.05em] sm:text-4xl">Invite candidates</h1>
+          <p className="text-sm font-bold tracking-wide text-fuchsia-300">Candidates</p>
+          <h1 className="mt-1 text-3xl font-bold tracking-tight sm:text-4xl">Invite candidates</h1>
           <p className="mt-2 text-gray-400">Send personalised assessment links for candidates to complete at their own pace.</p>
         </div>
 
@@ -209,23 +209,23 @@ function CandidatesContent() {
           {/* Invite form */}
           {canInvite && (
             <div className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-7 shadow-xl shadow-black/10">
-              <h2 className="mb-5 text-lg font-black">Send invite</h2>
+              <h2 className="mb-5 text-lg font-bold">Send invite</h2>
               {!planActive ? (
                 <p className="mb-5 rounded-xl border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm text-amber-200">
                   Your workspace needs an active plan to send invites.{" "}
-                  <a href="/company/dashboard" className="font-black underline">Choose a plan →</a>
+                  <a href="/company/dashboard" className="font-bold underline">Choose a plan →</a>
                 </p>
               ) : (
                 <p className={`mb-5 text-sm font-semibold ${invitesLeft <= 2 ? "text-amber-300" : "text-gray-400"}`}>
                   {invitesLeft} invite{invitesLeft === 1 ? "" : "s"} remaining {onTrial ? "in your trial" : "this month"}.
                   {atInviteCap && (
-                    <>{" "}<a href="/company/dashboard" className="font-black text-fuchsia-300 underline">Upgrade to send more →</a></>
+                    <>{" "}<a href="/company/dashboard" className="font-bold text-fuchsia-300 underline">Upgrade to send more →</a></>
                   )}
                 </p>
               )}
               <form onSubmit={handleInvite} className="space-y-5">
                 <div>
-                  <label className="mb-2 block text-sm font-black text-white">Candidate email *</label>
+                  <label className="mb-2 block text-sm font-bold text-white">Candidate email *</label>
                   <input
                     type="email"
                     value={email}
@@ -236,7 +236,7 @@ function CandidatesContent() {
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-black text-white">Assessment template *</label>
+                  <label className="mb-2 block text-sm font-bold text-white">Assessment template *</label>
                   {templates.length === 0 ? (
                     <p className="text-sm text-gray-400">
                       No active templates. <a href="/company/templates/new" className="text-fuchsia-300 hover:underline">Create one →</a>
@@ -255,7 +255,7 @@ function CandidatesContent() {
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-black text-white">Link expires after: {expiryDays} days</label>
+                  <label className="mb-2 block text-sm font-bold text-white">Link expires after: {expiryDays} days</label>
                   <input type="range" min={1} max={30} value={expiryDays} onChange={(e) => setExpiryDays(Number(e.target.value))} className="w-full accent-fuchsia-400" />
                 </div>
 
@@ -272,7 +272,7 @@ function CandidatesContent() {
                     }`}
                   >
                     <p
-                      className={`mb-2 text-sm font-black ${
+                      className={`mb-2 text-sm font-bold ${
                         newInviteEmailStatus?.state === "failed"
                           ? "text-amber-300"
                           : "text-green-300"
@@ -295,7 +295,7 @@ function CandidatesContent() {
                     <button
                       type="button"
                       onClick={() => navigator.clipboard.writeText(newInviteLink)}
-                      className="rounded-full bg-white/10 px-4 py-2 text-xs font-black text-white transition hover:bg-white/15"
+                      className="rounded-full bg-white/10 px-4 py-2 text-xs font-bold text-white transition hover:bg-white/15"
                     >
                       Copy link
                     </button>
@@ -305,7 +305,7 @@ function CandidatesContent() {
                 <button
                   type="submit"
                   disabled={sending || templates.length === 0 || !planActive || atInviteCap}
-                  className="w-full rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 py-3.5 text-sm font-black text-white shadow-xl shadow-purple-950/35 transition hover:scale-[1.02] disabled:opacity-60"
+                  className="w-full rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 py-3.5 text-sm font-bold text-white shadow-xl shadow-purple-950/35 transition hover:scale-[1.02] disabled:opacity-60"
                 >
                   {sending ? "Creating invite…" : atInviteCap ? "Invite limit reached" : "Create invite link →"}
                 </button>
@@ -315,7 +315,7 @@ function CandidatesContent() {
 
           {/* Assignments table */}
           <div className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-6 shadow-xl shadow-black/10">
-            <h2 className="mb-5 text-lg font-black">All assessments ({assignments.length})</h2>
+            <h2 className="mb-5 text-lg font-bold">All assessments ({assignments.length})</h2>
 
             {assignments.length === 0 ? (
               <div className="py-12 text-center">
@@ -326,12 +326,12 @@ function CandidatesContent() {
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-white/10">
-                      <th className="pb-3 text-left font-black text-gray-400">Candidate</th>
-                      <th className="pb-3 text-left font-black text-gray-400">Template</th>
-                      <th className="pb-3 text-left font-black text-gray-400">Status</th>
-                      <th className="pb-3 text-left font-black text-gray-400">Email</th>
-                      <th className="pb-3 text-left font-black text-gray-400">Expires</th>
-                      <th className="pb-3 text-left font-black text-gray-400">Actions</th>
+                      <th className="pb-3 text-left font-bold text-gray-400">Candidate</th>
+                      <th className="pb-3 text-left font-bold text-gray-400">Template</th>
+                      <th className="pb-3 text-left font-bold text-gray-400">Status</th>
+                      <th className="pb-3 text-left font-bold text-gray-400">Email</th>
+                      <th className="pb-3 text-left font-bold text-gray-400">Expires</th>
+                      <th className="pb-3 text-left font-bold text-gray-400">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-white/5">
@@ -345,27 +345,27 @@ function CandidatesContent() {
                           <td className="py-3 font-semibold text-white">{a.candidateEmail}</td>
                           <td className="py-3 text-gray-300">{a.template.name}</td>
                           <td className="py-3">
-                            <span className={`rounded-full border px-2.5 py-1 text-xs font-black capitalize ${STATUS_COLORS[a.status] || "bg-white/5 text-gray-300 border-white/10"}`}>
+                            <span className={`rounded-full border px-2.5 py-1 text-xs font-bold capitalize ${STATUS_COLORS[a.status] || "bg-white/5 text-gray-300 border-white/10"}`}>
                               {expired && a.status === "pending" ? "expired" : a.status}
                             </span>
                           </td>
                           <td className="py-3">
                             {a.emailSent ? (
                               <span
-                                className="rounded-full border border-emerald-400/25 bg-emerald-400/10 px-2.5 py-1 text-xs font-black text-emerald-200"
+                                className="rounded-full border border-emerald-400/25 bg-emerald-400/10 px-2.5 py-1 text-xs font-bold text-emerald-200"
                                 title={a.emailSentAt ? `Sent ${new Date(a.emailSentAt).toLocaleString("en-GB")}` : "Sent"}
                               >
                                 Sent
                               </span>
                             ) : a.emailError ? (
                               <span
-                                className="rounded-full border border-amber-400/25 bg-amber-400/10 px-2.5 py-1 text-xs font-black text-amber-200"
+                                className="rounded-full border border-amber-400/25 bg-amber-400/10 px-2.5 py-1 text-xs font-bold text-amber-200"
                                 title={a.emailError}
                               >
                                 Failed
                               </span>
                             ) : (
-                              <span className="rounded-full border border-white/10 bg-white/[0.05] px-2.5 py-1 text-xs font-black text-gray-400">
+                              <span className="rounded-full border border-white/10 bg-white/[0.05] px-2.5 py-1 text-xs font-bold text-gray-400">
                                 Not sent
                               </span>
                             )}
@@ -379,7 +379,7 @@ function CandidatesContent() {
                                 {a.status !== "completed" && (
                                   <button
                                     onClick={() => copyLink(a.inviteToken)}
-                                    className="rounded-lg border border-white/15 bg-white/[0.05] px-2.5 py-1.5 text-xs font-black text-white transition hover:bg-white/[0.09]"
+                                    className="rounded-lg border border-white/15 bg-white/[0.05] px-2.5 py-1.5 text-xs font-bold text-white transition hover:bg-white/[0.09]"
                                   >
                                     {copiedToken === a.inviteToken ? "Copied!" : "Copy link"}
                                   </button>
@@ -389,7 +389,7 @@ function CandidatesContent() {
                                     onClick={() => resendInvite(a.id)}
                                     disabled={isResending || emailMaxedOut}
                                     title={emailMaxedOut ? "Resend limit reached (5)." : "Email this invite again."}
-                                    className="rounded-lg border border-fuchsia-400/30 bg-fuchsia-400/10 px-2.5 py-1.5 text-xs font-black text-fuchsia-200 transition hover:bg-fuchsia-400/20 disabled:cursor-not-allowed disabled:opacity-50"
+                                    className="rounded-lg border border-fuchsia-400/30 bg-fuchsia-400/10 px-2.5 py-1.5 text-xs font-bold text-fuchsia-200 transition hover:bg-fuchsia-400/20 disabled:cursor-not-allowed disabled:opacity-50"
                                   >
                                     {isResending ? "Sending…" : "Resend"}
                                   </button>
@@ -397,7 +397,7 @@ function CandidatesContent() {
                                 {canInvite && a.status !== "completed" && (
                                   <button
                                     onClick={() => deleteAssignment(a.id, a.candidateEmail)}
-                                    className="rounded-lg border border-red-400/20 bg-red-400/10 px-2.5 py-1.5 text-xs font-black text-red-300 transition hover:bg-red-400/15"
+                                    className="rounded-lg border border-red-400/20 bg-red-400/10 px-2.5 py-1.5 text-xs font-bold text-red-300 transition hover:bg-red-400/15"
                                   >
                                     Delete
                                   </button>

@@ -88,15 +88,15 @@ export function AcceptTermsForm({ version, nextPath }: AcceptTermsFormProps) {
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#0a0614] text-white">
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_25%_15%,rgba(120,60,255,0.18),transparent),radial-gradient(ellipse_60%_50%_at_75%_85%,rgba(232,80,180,0.12),transparent),linear-gradient(180deg,#0a0614_0%,#100a1f_50%,#0c0816_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_25%_15%,rgba(120,60,255,0.10),transparent),radial-gradient(ellipse_60%_50%_at_75%_85%,rgba(232,80,180,0.06),transparent),linear-gradient(180deg,#0a0614_0%,#100a1f_50%,#0c0816_100%)]" />
       </div>
 
       <div className="relative z-10 mx-auto flex min-h-screen max-w-3xl flex-col px-4 py-10 sm:px-6 sm:py-14">
         <div className="rounded-[2rem] border border-white/10 bg-white/[0.05] p-6 shadow-2xl shadow-purple-950/30 backdrop-blur-2xl sm:p-9">
-          <p className="mb-2 text-[11px] font-black uppercase tracking-[0.22em] text-purple-300">
+          <p className="mb-2 text-[11px] font-bold tracking-wide text-purple-300">
             One quick confirmation
           </p>
-          <h1 className="text-3xl font-black leading-[1.05] tracking-[-0.045em] sm:text-4xl">
+          <h1 className="text-3xl font-bold leading-[1.05] tracking-tight sm:text-4xl">
             Please confirm the Terms of Use and Privacy Policy.
           </h1>
           <p className="mt-4 text-sm leading-7 text-gray-400">
@@ -111,7 +111,7 @@ export function AcceptTermsForm({ version, nextPath }: AcceptTermsFormProps) {
                 key={point.title}
                 className="rounded-2xl border border-white/[0.08] bg-black/25 p-4"
               >
-                <h3 className="mb-1 text-sm font-black text-white">{point.title}</h3>
+                <h3 className="mb-1 text-sm font-bold text-white">{point.title}</h3>
                 <p className="text-sm leading-6 text-gray-400">{point.body}</p>
               </div>
             ))}
@@ -189,7 +189,7 @@ export function AcceptTermsForm({ version, nextPath }: AcceptTermsFormProps) {
             type="button"
             onClick={handleSubmit}
             disabled={!canSubmit}
-            className="mt-6 w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-3.5 text-sm font-black text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.005] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:scale-100"
+            className="mt-6 w-full rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-5 py-3.5 text-sm font-bold text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.005] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:scale-100"
           >
             {submitting ? "Recording acceptance..." : "Confirm and continue"}
           </button>

@@ -40,10 +40,10 @@ export default function PressPage() {
 
       <div className="mx-auto max-w-4xl px-4 pb-24 pt-6 sm:px-6">
         <section className="mb-14 text-center">
-          <p className="mx-auto mb-5 inline-flex items-center gap-2 rounded-full border border-purple-400/25 bg-purple-400/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-purple-200">
+          <p className="mx-auto mb-5 inline-flex items-center gap-2 rounded-full border border-purple-400/25 bg-purple-400/[0.07] px-4 py-2 text-[11px] font-bold tracking-wide text-purple-200">
             Press & Media
           </p>
-          <h1 className="text-[2.4rem] font-black leading-[1.04] tracking-[-0.055em] sm:text-5xl">
+          <h1 className="text-4xl font-bold leading-[1.04] tracking-tight sm:text-4xl">
             Media kit & press resources
           </h1>
           <p className="mx-auto mt-5 max-w-xl text-base leading-8 text-gray-400">
@@ -60,21 +60,21 @@ export default function PressPage() {
 
         {/* Boilerplate */}
         <section className="mb-12 rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-8">
-          <h2 className="mb-4 text-lg font-black tracking-[-0.03em]">Boilerplate</h2>
+          <h2 className="mb-4 text-lg font-bold tracking-tight">Boilerplate</h2>
           <p className="text-sm leading-7 text-gray-400">{boilerplate}</p>
           <CopyBoilerplate text={boilerplate} />
         </section>
 
         {/* Key stats */}
         <section className="mb-12">
-          <h2 className="mb-6 text-xl font-black tracking-[-0.03em]">Key facts</h2>
+          <h2 className="mb-6 text-xl font-bold tracking-tight">Key facts</h2>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
             {stats.map((s) => (
               <div
                 key={s.label}
                 className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-5"
               >
-                <p className="text-2xl font-black tracking-[-0.04em]">{s.value}</p>
+                <p className="text-2xl font-bold tracking-tight">{s.value}</p>
                 <p className="mt-1 text-xs text-gray-500">{s.label}</p>
               </div>
             ))}
@@ -83,7 +83,7 @@ export default function PressPage() {
 
         {/* Brand assets */}
         <section className="mb-12">
-          <h2 className="mb-6 text-xl font-black tracking-[-0.03em]">Brand assets</h2>
+          <h2 className="mb-6 text-xl font-bold tracking-tight">Brand assets</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="flex items-center justify-between rounded-2xl border border-white/[0.08] bg-white/[0.03] p-5">
               <div>
@@ -122,7 +122,7 @@ export default function PressPage() {
 
         {/* Usage guidelines */}
         <section className="mb-12 rounded-2xl border border-amber-400/15 bg-amber-400/[0.04] p-6">
-          <h2 className="mb-3 font-black text-amber-200">Usage guidelines</h2>
+          <h2 className="mb-3 font-bold text-amber-200">Usage guidelines</h2>
           <ul className="space-y-2 text-sm text-gray-400">
             <li>• Always refer to the product as &ldquo;AI Career Mentor&rdquo;; do not abbreviate</li>
             <li>• Do not alter the logo colours or proportions</li>
@@ -137,7 +137,7 @@ export default function PressPage() {
             Press contact:{" "}
             <a
               href="mailto:press@aicareermentor.co.uk"
-              className="font-black text-purple-300 hover:text-purple-200"
+              className="font-bold text-purple-300 hover:text-purple-200"
             >
               press@aicareermentor.co.uk
             </a>

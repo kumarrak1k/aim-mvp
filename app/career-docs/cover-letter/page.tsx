@@ -99,21 +99,21 @@ export default function CoverLetterPage() {
     return (
       <CandidateAppShell currentPath="/career-docs">
         <div className="mx-auto max-w-lg px-4 py-24 text-center">
-          <div className="mb-6 text-5xl">🔒</div>
-          <h1 className="text-2xl font-black text-white">Professional plan required</h1>
+          <div className="mb-6 text-4xl">🔒</div>
+          <h1 className="text-2xl font-bold text-white">Professional plan required</h1>
           <p className="mt-3 text-sm leading-7 text-gray-400">
             Cover Letter Generator is available on the Professional plan.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
             <Link
               href="/pricing"
-              className="rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-6 py-3.5 text-center text-sm font-black text-white shadow-lg"
+              className="rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-3.5 text-center text-sm font-bold text-white shadow-lg"
             >
               See plans →
             </Link>
             <Link
               href="/career-docs"
-              className="rounded-2xl border border-white/10 bg-white/[0.06] px-6 py-3.5 text-center text-sm font-black text-white"
+              className="rounded-2xl border border-white/10 bg-white/[0.06] px-6 py-3.5 text-center text-sm font-bold text-white"
             >
               Back to Career Docs
             </Link>
@@ -128,7 +128,7 @@ export default function CoverLetterPage() {
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
         {/* Header */}
         <div className="mb-8">
-          <Link href="/career-docs" className="mb-4 inline-flex items-center gap-1.5 text-xs font-black text-gray-500 hover:text-gray-300 transition">
+          <Link href="/career-docs" className="mb-4 inline-flex items-center gap-1.5 text-xs font-bold text-gray-500 hover:text-gray-300 transition">
             ← Career Docs
           </Link>
           <div className="flex items-center gap-3">
@@ -139,8 +139,8 @@ export default function CoverLetterPage() {
               </svg>
             </div>
             <div>
-              <p className="text-[11px] font-black uppercase tracking-[0.22em] text-cyan-300">AI Generator</p>
-              <h1 className="text-2xl font-black tracking-[-0.04em] text-white">Cover Letter Generator</h1>
+              <p className="text-[11px] font-bold tracking-wide text-cyan-300">AI Generator</p>
+              <h1 className="text-2xl font-bold tracking-tight text-white">Cover Letter Generator</h1>
             </div>
           </div>
         </div>
@@ -151,13 +151,13 @@ export default function CoverLetterPage() {
             <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-6 backdrop-blur-xl space-y-4">
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <label className="mb-1.5 block text-xs font-black uppercase tracking-[0.18em] text-gray-400">Company *</label>
+                  <label className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400">Company *</label>
                   <input type="text" value={companyName} onChange={(e) => setCompanyName(e.target.value)}
                     placeholder="e.g. Goldman Sachs"
                     className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-600 outline-none focus:border-cyan-400/40 focus:ring-1 focus:ring-cyan-400/20" required />
                 </div>
                 <div>
-                  <label className="mb-1.5 block text-xs font-black uppercase tracking-[0.18em] text-gray-400">Job title *</label>
+                  <label className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400">Job title *</label>
                   <input type="text" value={jobTitle} onChange={(e) => setJobTitle(e.target.value)}
                     placeholder="e.g. Analyst"
                     className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-600 outline-none focus:border-cyan-400/40 focus:ring-1 focus:ring-cyan-400/20" required />
@@ -165,7 +165,7 @@ export default function CoverLetterPage() {
               </div>
 
               <div>
-                <label className="mb-1.5 block text-xs font-black uppercase tracking-[0.18em] text-gray-400">Job description *</label>
+                <label className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400">Job description *</label>
                 <textarea value={jobDescription} onChange={(e) => setJobDescription(e.target.value)}
                   placeholder="Paste the job posting here. The more detail, the better for tailoring…"
                   rows={6}
@@ -177,7 +177,7 @@ export default function CoverLetterPage() {
 
               {/* Experience field with CV integration */}
               <div>
-                <label className="mb-1.5 block text-xs font-black uppercase tracking-[0.18em] text-gray-400">Your key experience *</label>
+                <label className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400">Your key experience *</label>
 
                 {/* Saved CV banner */}
                 {!savedCV.loading && (
@@ -197,7 +197,7 @@ export default function CoverLetterPage() {
                         type="button"
                         onClick={() => fileInputRef.current?.click()}
                         disabled={savedCV.uploading}
-                        className="rounded-lg border border-cyan-400/30 bg-cyan-400/10 px-2.5 py-1 text-[10px] font-black text-cyan-300 transition hover:bg-cyan-400/20 disabled:opacity-50"
+                        className="rounded-lg border border-cyan-400/30 bg-cyan-400/10 px-2.5 py-1 text-[10px] font-bold text-cyan-300 transition hover:bg-cyan-400/20 disabled:opacity-50"
                       >
                         {savedCV.uploading ? "Uploading…" : savedCV.hasSavedCV ? "Replace" : "Upload CV"}
                       </button>
@@ -206,7 +206,7 @@ export default function CoverLetterPage() {
                           type="button"
                           onClick={() => void savedCV.removeCV()}
                           disabled={savedCV.removing}
-                          className="rounded-lg border border-red-400/30 bg-red-400/[0.08] px-2.5 py-1 text-[10px] font-black text-red-400 transition hover:bg-red-400/20 disabled:opacity-50"
+                          className="rounded-lg border border-red-400/30 bg-red-400/[0.08] px-2.5 py-1 text-[10px] font-bold text-red-400 transition hover:bg-red-400/20 disabled:opacity-50"
                         >
                           {savedCV.removing ? "Removing…" : "Remove"}
                         </button>
@@ -238,7 +238,7 @@ export default function CoverLetterPage() {
 
               {/* Tone */}
               <div>
-                <label className="mb-2 block text-xs font-black uppercase tracking-[0.18em] text-gray-400">Tone</label>
+                <label className="mb-2 block text-xs font-bold tracking-wide text-gray-400">Tone</label>
                 <div className="grid gap-2 sm:grid-cols-3">
                   {toneOptions.map((opt) => (
                     <button key={opt.value} type="button" onClick={() => setTone(opt.value)}
@@ -247,7 +247,7 @@ export default function CoverLetterPage() {
                           ? "border-cyan-400/40 bg-cyan-400/10 text-white"
                           : "border-white/[0.08] bg-white/[0.02] text-gray-500 hover:border-white/20 hover:text-gray-300"
                       }`}>
-                      <p className="text-xs font-black">{opt.label}</p>
+                      <p className="text-xs font-bold">{opt.label}</p>
                       <p className="text-[10px] mt-0.5 leading-4">{opt.desc}</p>
                     </button>
                   ))}
@@ -256,7 +256,7 @@ export default function CoverLetterPage() {
 
               {/* Word count */}
               <div>
-                <label className="mb-2 flex items-center justify-between text-xs font-black uppercase tracking-[0.18em] text-gray-400">
+                <label className="mb-2 flex items-center justify-between text-xs font-bold tracking-wide text-gray-400">
                   Word limit
                   <span className="text-white">{wordLimit} words</span>
                 </label>
@@ -272,7 +272,7 @@ export default function CoverLetterPage() {
             {error && <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">{error}</div>}
 
             <button type="submit" disabled={loading || !canSubmit}
-              className={`flex w-full items-center justify-center gap-2 rounded-2xl px-6 py-4 text-sm font-black transition-all ${
+              className={`flex w-full items-center justify-center gap-2 rounded-2xl px-6 py-4 text-sm font-bold transition-all ${
                 !loading && canSubmit
                   ? "bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg hover:scale-[1.01]"
                   : "cursor-not-allowed bg-white/[0.05] text-gray-600"
@@ -323,21 +323,21 @@ export default function CoverLetterPage() {
               <>
                 {/* Meta */}
                 <div className="flex flex-wrap items-center gap-3">
-                  <span className="rounded-full border border-cyan-400/20 bg-cyan-400/10 px-3 py-1 text-xs font-black text-cyan-300">
+                  <span className="rounded-full border border-cyan-400/20 bg-cyan-400/10 px-3 py-1 text-xs font-bold text-cyan-300">
                     {result.wordCount} words
                   </span>
-                  <span className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-xs font-black text-gray-300">
+                  <span className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-xs font-bold text-gray-300">
                     Subject: {result.subject}
                   </span>
                   <button onClick={copyLetter}
-                    className="ml-auto rounded-xl border border-white/10 bg-white/[0.06] px-4 py-2 text-xs font-black text-white transition hover:bg-white/[0.1]">
+                    className="ml-auto rounded-xl border border-white/10 bg-white/[0.06] px-4 py-2 text-xs font-bold text-white transition hover:bg-white/[0.1]">
                     {copied ? "✓ Copied!" : "Copy letter"}
                   </button>
                 </div>
 
                 {/* Letter */}
                 <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-6 backdrop-blur-xl">
-                  <p className="mb-3 text-[11px] font-black uppercase tracking-[0.22em] text-cyan-300">Your cover letter</p>
+                  <p className="mb-3 text-[11px] font-bold tracking-wide text-cyan-300">Your cover letter</p>
                   <div className="whitespace-pre-line text-sm leading-8 text-gray-200">
                     {result.letter}
                   </div>
@@ -345,17 +345,17 @@ export default function CoverLetterPage() {
 
                 {/* Key themes */}
                 <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-5 backdrop-blur-xl">
-                  <p className="mb-3 text-[11px] font-black uppercase tracking-[0.22em] text-gray-400">Key themes in this letter</p>
+                  <p className="mb-3 text-[11px] font-bold tracking-wide text-gray-400">Key themes in this letter</p>
                   <div className="flex flex-wrap gap-2">
                     {result.keyThemes.map((t, i) => (
-                      <span key={i} className="rounded-full border border-purple-400/20 bg-purple-400/10 px-3 py-1 text-xs font-black text-purple-300">{t}</span>
+                      <span key={i} className="rounded-full border border-purple-400/20 bg-purple-400/10 px-3 py-1 text-xs font-bold text-purple-300">{t}</span>
                     ))}
                   </div>
                 </div>
 
                 {/* Customisation tips */}
                 <div className="rounded-[1.75rem] border border-amber-400/[0.18] bg-amber-400/[0.05] p-5 backdrop-blur-xl">
-                  <p className="mb-3 text-[11px] font-black uppercase tracking-[0.22em] text-amber-300">Before you send, personalise it</p>
+                  <p className="mb-3 text-[11px] font-bold tracking-wide text-amber-300">Before you send, personalise it</p>
                   <ul className="space-y-2">
                     {result.customisationTips.map((tip, i) => (
                       <li key={i} className="flex items-start gap-2 text-sm text-gray-300">

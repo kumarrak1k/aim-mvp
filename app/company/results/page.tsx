@@ -163,10 +163,10 @@ export default function CompanyResultsPage() {
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-sm font-black uppercase tracking-[0.22em] text-fuchsia-300">
+            <p className="text-sm font-bold tracking-wide text-fuchsia-300">
               Assessment results
             </p>
-            <h1 className="mt-1 text-3xl font-black tracking-[-0.05em] sm:text-4xl">
+            <h1 className="mt-1 text-3xl font-bold tracking-tight sm:text-4xl">
               Candidate scoring &amp; review
             </h1>
             <p className="mt-2 max-w-2xl text-sm text-gray-400">
@@ -209,7 +209,7 @@ export default function CompanyResultsPage() {
               <button
                 key={opt}
                 onClick={() => setFilter(opt)}
-                className={`rounded-full border px-4 py-2 text-xs font-black capitalize transition ${
+                className={`rounded-full border px-4 py-2 text-xs font-bold capitalize transition ${
                   filter === opt
                     ? "border-fuchsia-300/50 bg-fuchsia-300/15 text-fuchsia-100"
                     : "border-white/10 bg-white/[0.04] text-gray-400 hover:bg-white/[0.07] hover:text-white"
@@ -222,7 +222,7 @@ export default function CompanyResultsPage() {
               <select
                 value={templateFilter}
                 onChange={(e) => setTemplateFilter(e.target.value)}
-                className="rounded-full border border-white/10 bg-[#1a1328] px-4 py-2 text-xs font-black text-white outline-none focus:border-fuchsia-400/40"
+                className="rounded-full border border-white/10 bg-[#1a1328] px-4 py-2 text-xs font-bold text-white outline-none focus:border-fuchsia-400/40"
               >
                 <option value="all">All templates</option>
                 {templates.map((t) => (
@@ -269,21 +269,21 @@ export default function CompanyResultsPage() {
                       dir={sortDir}
                       onClick={() => toggleSort("template")}
                     />
-                    <th className="px-4 py-3 text-left font-black text-gray-400">Status</th>
+                    <th className="px-4 py-3 text-left font-bold text-gray-400">Status</th>
                     <SortHeader
                       label="Score"
                       active={sortKey === "score"}
                       dir={sortDir}
                       onClick={() => toggleSort("score")}
                     />
-                    <th className="px-4 py-3 text-left font-black text-gray-400">Signal</th>
+                    <th className="px-4 py-3 text-left font-bold text-gray-400">Signal</th>
                     <SortHeader
                       label="Completed"
                       active={sortKey === "completed"}
                       dir={sortDir}
                       onClick={() => toggleSort("completed")}
                     />
-                    <th className="px-4 py-3 text-right font-black text-gray-400"></th>
+                    <th className="px-4 py-3 text-right font-bold text-gray-400"></th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/5">
@@ -323,7 +323,7 @@ export default function CompanyResultsPage() {
                         </td>
                         <td className="px-4 py-3">
                           <span
-                            className={`rounded-full border px-2.5 py-1 text-xs font-black capitalize ${statusClass}`}
+                            className={`rounded-full border px-2.5 py-1 text-xs font-bold capitalize ${statusClass}`}
                           >
                             {statusLabel}
                           </span>
@@ -338,7 +338,7 @@ export default function CompanyResultsPage() {
                         <td className="px-4 py-3">
                           {r.session?.hireSignal ? (
                             <span
-                              className={`rounded-full border px-2.5 py-1 text-xs font-black ${
+                              className={`rounded-full border px-2.5 py-1 text-xs font-bold ${
                                 SIGNAL_COLORS[r.session.hireSignal] ||
                                 "border-white/10 bg-white/[0.05] text-gray-300"
                               }`}
@@ -363,7 +363,7 @@ export default function CompanyResultsPage() {
                             <Link
                               href={`/company/results/${r.id}`}
                               onClick={(e) => e.stopPropagation()}
-                              className="rounded-lg border border-fuchsia-400/30 bg-fuchsia-400/10 px-3 py-1.5 text-xs font-black text-fuchsia-200 transition hover:bg-fuchsia-400/20"
+                              className="rounded-lg border border-fuchsia-400/30 bg-fuchsia-400/10 px-3 py-1.5 text-xs font-bold text-fuchsia-200 transition hover:bg-fuchsia-400/20"
                             >
                               Review →
                             </Link>
@@ -396,7 +396,7 @@ function StatTile({
   return (
     <div className="rounded-2xl border border-white/10 bg-white/[0.05] p-5">
       <p className="text-sm font-semibold text-gray-400">{label}</p>
-      <p className={`mt-2 text-3xl font-black ${color}`}>{value}</p>
+      <p className={`mt-2 text-3xl font-bold ${color}`}>{value}</p>
     </div>
   );
 }
@@ -426,7 +426,7 @@ function SortHeader({
           onClick();
         }
       }}
-      className="cursor-pointer select-none px-4 py-3 text-left font-black transition hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-cyan-400/60"
+      className="cursor-pointer select-none px-4 py-3 text-left font-bold transition hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-cyan-400/60"
     >
       <span
         className={`inline-flex items-center gap-1 ${active ? "text-white" : "text-gray-400"}`}
@@ -450,7 +450,7 @@ function ScoreCell({ score }: { score: number }) {
           ? "text-amber-300"
           : "text-red-300";
   return (
-    <span className={`text-base font-black ${color}`}>
+    <span className={`text-base font-bold ${color}`}>
       {score}
       <span className="text-xs text-gray-500">/10</span>
     </span>

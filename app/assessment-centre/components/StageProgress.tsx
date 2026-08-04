@@ -42,7 +42,7 @@ export function StageProgress({ currentStage, selectedStages }: Props) {
 
             <div className="flex flex-col items-center gap-1.5">
               <div
-                className={`relative flex h-10 w-10 items-center justify-center rounded-full border text-sm font-black transition-all ${
+                className={`relative flex h-10 w-10 items-center justify-center rounded-full border text-sm font-bold transition-all ${
                   isActive
                     ? "border-cyan-400/60 bg-gradient-to-br from-purple-500/30 to-cyan-400/20 text-cyan-300 shadow-lg shadow-cyan-900/30 ring-2 ring-cyan-400/30"
                     : isPast
@@ -66,7 +66,7 @@ export function StageProgress({ currentStage, selectedStages }: Props) {
               </div>
 
               <span
-                className={`text-[10px] font-black uppercase tracking-[0.15em] whitespace-nowrap ${
+                className={`text-[10px] font-bold tracking-wide whitespace-nowrap ${
                   isActive ? "text-cyan-300" : isPast ? "text-emerald-400/80" : "text-gray-600"
                 }`}
               >

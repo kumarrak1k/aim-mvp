@@ -32,10 +32,10 @@ export function PracticeFeedbackPanel({
     <GlassCard className="mt-6">
       <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div>
-          <p className="text-sm font-black uppercase tracking-[0.2em] text-purple-300">
+          <p className="text-sm font-bold tracking-wide text-purple-300">
             AI feedback
           </p>
-          <h2 className="mt-2 text-2xl font-black tracking-[-0.035em] text-white md:text-3xl">
+          <h2 className="mt-2 text-2xl font-bold tracking-tight text-white md:text-3xl">
             Turn this answer into a stronger interview response.
           </h2>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-gray-400">
@@ -46,10 +46,10 @@ export function PracticeFeedbackPanel({
 
         {!feedback.error && (
           <div className="rounded-[1.35rem] border border-white/10 bg-black/30 p-4 text-center shadow-xl shadow-black/10 lg:min-w-[170px]">
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-gray-500">
+            <p className="text-xs font-bold tracking-wide text-gray-500">
               Overall score
             </p>
-            <p className="mt-2 text-5xl font-black tracking-[-0.06em] text-white">
+            <p className="mt-2 text-4xl font-bold tracking-tight text-white">
               {feedback.overall_score}
               <span className="text-xl text-gray-500">/10</span>
             </p>
@@ -62,7 +62,7 @@ export function PracticeFeedbackPanel({
 
       {feedback.error ? (
         <div className="rounded-2xl border border-red-300/15 bg-red-300/10 p-5">
-          <p className="font-black text-red-200">Feedback error</p>
+          <p className="font-bold text-red-200">Feedback error</p>
           <p className="mt-2 text-sm leading-6 text-red-100/80">
             {feedback.error}
           </p>
@@ -110,7 +110,7 @@ export function PracticeFeedbackPanel({
             <div className="rounded-[1.6rem] border border-white/10 bg-black/25 p-4 sm:p-5">
               <div className="mb-4 flex flex-col justify-between gap-2 sm:flex-row sm:items-end">
                 <div>
-                  <h3 className="text-lg font-black text-cyan-300">
+                  <h3 className="text-lg font-bold text-cyan-300">
                     Section-by-section coaching
                   </h3>
                   <p className="mt-1 text-sm leading-6 text-gray-500">
@@ -152,7 +152,7 @@ export function PracticeFeedbackPanel({
           <div className="rounded-[1.6rem] border border-purple-300/20 bg-purple-300/10 p-5">
             <div className="mb-4 flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
               <div>
-                <h3 className="text-lg font-black text-purple-200">
+                <h3 className="text-lg font-bold text-purple-200">
                   Model answer (8+/10 standard)
                 </h3>
                 <p className="mt-1 text-sm leading-6 text-gray-400">
@@ -160,7 +160,7 @@ export function PracticeFeedbackPanel({
                   specificity and result language.
                 </p>
               </div>
-              <span className="w-fit rounded-full border border-purple-200/25 bg-purple-200/10 px-3 py-1.5 text-xs font-black text-purple-100">
+              <span className="w-fit rounded-full border border-purple-200/25 bg-purple-200/10 px-3 py-1.5 text-xs font-bold text-purple-100">
                 Benchmark answer
               </span>
             </div>
@@ -191,7 +191,7 @@ export function PracticeFeedbackPanel({
 
           <button
             onClick={nextStep}
-            className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-6 py-4 font-black shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01]"
+            className="w-full rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-4 font-bold shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01]"
           >
             {isFinalQuestion ? "Finish interview and view report" : "Next question"}
           </button>
@@ -223,7 +223,7 @@ function FeedbackSummaryCard({
       }`}
     >
       <p
-        className={`mb-2 text-sm font-black uppercase tracking-[0.18em] ${
+        className={`mb-2 text-sm font-bold tracking-wide ${
           tone === "positive" ? "text-blue-300" : "text-orange-300"
         }`}
       >

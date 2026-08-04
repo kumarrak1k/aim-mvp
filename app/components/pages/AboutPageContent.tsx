@@ -43,12 +43,12 @@ export function AboutPageContent() {
       <div className="mx-auto max-w-4xl px-4 pb-24 pt-6 sm:px-6 sm:pt-10">
         {/* Hero */}
         <section className="mb-16 text-center">
-          <p className="mx-auto mb-5 inline-flex items-center gap-2 rounded-full border border-purple-400/25 bg-purple-400/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-purple-200">
+          <p className="mx-auto mb-5 inline-flex items-center gap-2 rounded-full border border-purple-400/25 bg-purple-400/[0.07] px-4 py-2 text-[11px] font-bold tracking-wide text-purple-200">
             About us
           </p>
-          <h1 className="text-[2.4rem] font-black leading-[1.04] tracking-[-0.055em] sm:text-5xl">
+          <h1 className="text-4xl font-bold leading-[1.04] tracking-tight sm:text-4xl">
             Making elite interview prep{" "}
-            <span className="bg-gradient-to-r from-purple-300 via-fuchsia-200 to-cyan-200 bg-clip-text text-transparent">
+            <span className="text-violet-300">
               accessible to everyone
             </span>
           </h1>
@@ -61,10 +61,10 @@ export function AboutPageContent() {
 
         {/* Mission */}
         <section className="mb-16 rounded-[2rem] border border-purple-300/15 bg-purple-300/[0.05] p-8 sm:p-10">
-          <p className="mb-3 text-[11px] font-black uppercase tracking-[0.2em] text-purple-300/80">
+          <p className="mb-3 text-[11px] font-bold tracking-wide text-purple-300/80">
             Our mission
           </p>
-          <blockquote className="text-xl font-black leading-[1.4] tracking-[-0.03em] text-white sm:text-2xl">
+          <blockquote className="text-xl font-bold leading-[1.4] tracking-tight text-white sm:text-2xl">
             &ldquo;To make the gap between a good candidate and a hired one about
             preparation, not privilege.&rdquo;
           </blockquote>
@@ -72,7 +72,7 @@ export function AboutPageContent() {
 
         {/* DE&I statement */}
         <section className="mb-16">
-          <h2 className="mb-6 text-2xl font-black tracking-[-0.04em]">Why this matters</h2>
+          <h2 className="mb-6 text-2xl font-bold tracking-tight">Why this matters</h2>
           <div className="space-y-5 text-base leading-8 text-gray-400">
             <p>
               The interview process has a diversity problem, and it starts long before
@@ -94,7 +94,7 @@ export function AboutPageContent() {
               candidates, and it&rsquo;s not good for employers who miss out on talented
               people who simply didn&rsquo;t know how to present themselves.
             </p>
-            <p className="font-black text-white">
+            <p className="font-bold text-white">
               AI Career Mentor exists to close that gap. We give every candidate,
               regardless of background, institution, or budget, access to the same
               quality of structured, honest, personalised coaching that used to be
@@ -105,7 +105,7 @@ export function AboutPageContent() {
 
         {/* Story */}
         <section className="mb-16">
-          <h2 className="mb-6 text-2xl font-black tracking-[-0.04em]">The story</h2>
+          <h2 className="mb-6 text-2xl font-bold tracking-tight">The story</h2>
           <div className="space-y-5 text-base leading-8 text-gray-400">
             <p>
               AI Career Mentor was built around one observation: preparation makes a
@@ -133,14 +133,14 @@ export function AboutPageContent() {
 
         {/* Values */}
         <section className="mb-16">
-          <h2 className="mb-8 text-2xl font-black tracking-[-0.04em]">What we stand for</h2>
+          <h2 className="mb-8 text-2xl font-bold tracking-tight">What we stand for</h2>
           <div className="grid gap-5 sm:grid-cols-2">
             {values.map((v) => (
               <div
                 key={v.title}
                 className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-6"
               >
-                <h3 className="mb-2 font-black leading-tight">{v.title}</h3>
+                <h3 className="mb-2 font-bold leading-tight">{v.title}</h3>
                 <p className="text-sm leading-6 text-gray-400">{v.body}</p>
               </div>
             ))}
@@ -151,7 +151,7 @@ export function AboutPageContent() {
         <section className="text-center">
           <Link
             href="/for-candidates"
-            className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-8 py-4 text-base font-black text-white shadow-2xl shadow-purple-950/40 transition hover:scale-[1.02]"
+            className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-8 py-4 text-base font-bold text-white shadow-2xl shadow-purple-950/40 transition hover:scale-[1.02]"
           >
             Start practising →
           </Link>

@@ -76,9 +76,9 @@ export function CorporateAppShell({
     <div className="relative min-h-screen bg-[#0a0614] text-white">
       {/* Background — standard brand atmosphere */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_25%_15%,rgba(120,60,255,0.18),transparent),radial-gradient(ellipse_60%_50%_at_75%_85%,rgba(232,80,180,0.12),transparent),linear-gradient(180deg,#0a0614_0%,#100a1f_50%,#0c0816_100%)]" />
-        <div className="absolute left-[-160px] top-[-80px] h-[520px] w-[520px] rounded-full bg-purple-500/[0.18] blur-[160px]" />
-        <div className="absolute bottom-[-80px] right-[-160px] h-[520px] w-[520px] rounded-full bg-purple-500/[0.18] blur-[160px]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_25%_15%,rgba(120,60,255,0.10),transparent),radial-gradient(ellipse_60%_50%_at_75%_85%,rgba(232,80,180,0.06),transparent),linear-gradient(180deg,#0a0614_0%,#100a1f_50%,#0c0816_100%)]" />
+        <div className="absolute left-[-160px] top-[-80px] h-[520px] w-[520px] rounded-full bg-purple-500/[0.08] blur-[160px]" />
+        <div className="absolute bottom-[-80px] right-[-160px] h-[520px] w-[520px] rounded-full bg-purple-500/[0.08] blur-[160px]" />
       </div>
 
       <header className="sticky top-0 z-50 backdrop-blur-2xl">
@@ -88,7 +88,7 @@ export function CorporateAppShell({
             className="relative z-10 flex shrink-0 items-center gap-3"
           >
             <SiteLogo href="" size="md" showText />
-            <span className="hidden rounded-full border border-purple-300/20 bg-white/[0.04] px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-purple-100 sm:inline-block xl:hidden">
+            <span className="hidden rounded-full border border-purple-300/20 bg-white/[0.04] px-3 py-1 text-[10px] font-bold tracking-wide text-purple-100 sm:inline-block xl:hidden">
               Hiring team
             </span>
           </Link>
@@ -124,7 +124,7 @@ export function CorporateAppShell({
             {currentPath !== "/company/candidates" &&
               currentPath !== "/company/setup" && (
                 <Link href="/company/candidates" className="hidden sm:block">
-                  <button className="whitespace-nowrap rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-4 py-2.5 text-[13px] font-black text-white shadow-lg shadow-purple-950/40 transition hover:scale-[1.03] sm:px-5 xl:px-6">
+                  <button className="whitespace-nowrap rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-4 py-2.5 text-[13px] font-bold text-white shadow-lg shadow-purple-950/40 transition hover:scale-[1.03] sm:px-5 xl:px-6">
                     Send invite
                   </button>
                 </Link>
@@ -209,7 +209,7 @@ export function CorporateAppShell({
             <div className="flex shrink-0 items-center gap-2">
               <Link
                 href="/company/guide"
-                className="whitespace-nowrap rounded-full bg-gradient-to-r from-fuchsia-500 via-purple-500 to-blue-500 px-4 py-1.5 text-[12px] font-black text-white shadow-lg shadow-purple-950/40 transition hover:scale-[1.03]"
+                className="whitespace-nowrap rounded-full bg-gradient-to-r from-fuchsia-500 via-purple-500 to-blue-500 px-4 py-1.5 text-[12px] font-bold text-white shadow-lg shadow-purple-950/40 transition hover:scale-[1.03]"
               >
                 Open the guide →
               </Link>
@@ -351,7 +351,7 @@ function BottomNavItem({
           className={`flex h-10 w-10 items-center justify-center rounded-full shadow-lg transition-transform active:scale-95 ${
             active
               ? "bg-gradient-to-br from-purple-400 to-fuchsia-400 shadow-purple-900/60"
-              : "bg-gradient-to-br from-purple-500 via-fuchsia-500 to-blue-500 shadow-purple-900/40"
+              : "bg-gradient-to-br from-violet-600 to-purple-600 shadow-purple-900/40"
           }`}
         >
           <span className="text-white">{children}</span>

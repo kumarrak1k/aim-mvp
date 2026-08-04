@@ -43,7 +43,7 @@ export function ProfileHero({
 function ProfileMetric({ value, label }: { value: string; label: string }) {
   return (
     <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.05] p-4 shadow-xl shadow-black/10">
-      <p className="text-2xl font-black tracking-[-0.03em] text-white">
+      <p className="text-2xl font-bold tracking-tight text-white">
         {value}
       </p>
       <p className="mt-1 text-sm text-gray-400">{label}</p>

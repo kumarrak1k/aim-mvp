@@ -32,10 +32,10 @@ export function FeedbackWorkspace({
       <div className="p-4 sm:p-5 lg:p-6">
         <div className="mb-5 flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.22em] text-emerald-300 sm:text-sm">
+            <p className="text-xs font-bold tracking-wide text-emerald-300 sm:text-sm">
               AI feedback
             </p>
-            <h2 data-testid="overall-score" className="mt-2 text-3xl font-black tracking-[-0.04em] text-white">
+            <h2 data-testid="overall-score" className="mt-2 text-3xl font-bold tracking-tight text-white">
               {feedback.overall_score}/10
             </h2>
             <p className="mt-1 text-sm leading-6 text-gray-400">
@@ -47,7 +47,7 @@ export function FeedbackWorkspace({
           <button
             type="button"
             onClick={onNext}
-            className="rounded-2xl bg-white px-6 py-3 text-sm font-black text-black shadow-xl shadow-purple-950/20 transition hover:bg-purple-100"
+            className="rounded-2xl bg-white px-6 py-3 text-sm font-bold text-black shadow-xl shadow-purple-950/20 transition hover:bg-purple-100"
           >
             {nextLabel}
           </button>
@@ -105,7 +105,7 @@ export function FeedbackWorkspace({
 
         {feedback.improved_answer && (
           <div className="mt-5 rounded-[1.35rem] border border-cyan-300/15 bg-cyan-300/10 p-4 sm:rounded-[1.5rem] sm:p-5">
-            <p className="mb-3 text-xs font-black uppercase tracking-[0.18em] text-cyan-200 sm:text-sm">
+            <p className="mb-3 text-xs font-bold tracking-wide text-cyan-200 sm:text-sm">
               Stronger answer example (STAR)
             </p>
             <StarAnswer
@@ -119,7 +119,7 @@ export function FeedbackWorkspace({
           <button
             type="button"
             onClick={onNext}
-            className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-7 py-4 text-sm font-black text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] sm:w-auto"
+            className="w-full rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-7 py-4 text-sm font-bold text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] sm:w-auto"
           >
             {nextLabel}
           </button>
@@ -146,10 +146,10 @@ function ScoreCard({
           : "border-white/10 bg-black/25"
       }`}
     >
-      <p className="text-[10px] font-black uppercase tracking-[0.15em] text-gray-400 sm:text-[11px]">
+      <p className="text-[10px] font-bold tracking-wide text-gray-400 sm:text-[11px]">
         {label}
       </p>
-      <p className="mt-2 text-2xl font-black text-white">
+      <p className="mt-2 text-2xl font-bold text-white">
         {value}
         <span className="text-sm text-gray-500">/10</span>
       </p>
@@ -175,7 +175,7 @@ function InsightBox({
       }`}
     >
       <p
-        className={`text-sm font-black ${
+        className={`text-sm font-bold ${
           accent === "cyan" ? "text-cyan-100" : "text-purple-100"
         }`}
       >
@@ -195,7 +195,7 @@ export function FeedbackList({
 }) {
   return (
     <div className="rounded-[1.35rem] border border-white/10 bg-black/25 p-4 sm:rounded-[1.5rem] sm:p-5">
-      <p className="mb-4 text-xs font-black uppercase tracking-[0.18em] text-purple-200 sm:text-sm">
+      <p className="mb-4 text-xs font-bold tracking-wide text-purple-200 sm:text-sm">
         {title}
       </p>
       <div className="space-y-3">

@@ -87,12 +87,12 @@ export default function CandidateGuidePage() {
       <div className="mx-auto max-w-3xl px-4 pb-20 pt-6 sm:px-6">
         {/* Hero */}
         <div className="mb-12 text-center">
-          <p className="text-[11px] font-black uppercase tracking-[0.22em] text-purple-300">
+          <p className="text-[11px] font-bold tracking-wide text-purple-300">
             User guide
           </p>
-          <h1 className="mt-2 text-4xl font-black tracking-[-0.04em] sm:text-5xl">
+          <h1 className="mt-2 text-4xl font-bold tracking-tight sm:text-4xl">
             Interview-ready in{" "}
-            <span className="bg-gradient-to-r from-purple-300 via-fuchsia-200 to-cyan-200 bg-clip-text text-transparent">
+            <span className="text-violet-300">
               six steps.
             </span>
           </h1>
@@ -109,13 +109,13 @@ export default function CandidateGuidePage() {
             <li key={step.title} className="relative pl-14 sm:pl-16">
               {/* Number badge */}
               <span
-                className={`absolute left-0 top-0 flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br ${step.grad} text-lg font-black text-black shadow-lg sm:h-[52px] sm:w-[52px] sm:text-xl`}
+                className={`absolute left-0 top-0 flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br ${step.grad} text-lg font-bold text-black shadow-lg sm:h-[52px] sm:w-[52px] sm:text-xl`}
               >
                 {i + 1}
               </span>
 
               <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.04] p-5 shadow-xl shadow-purple-950/10 backdrop-blur-xl sm:p-6">
-                <h2 className="text-lg font-black tracking-[-0.02em] text-white sm:text-xl">
+                <h2 className="text-lg font-bold tracking-tight text-white sm:text-xl">
                   {step.title}
                 </h2>
                 <ul className="mt-3 space-y-2">
@@ -128,14 +128,14 @@ export default function CandidateGuidePage() {
                 </ul>
                 {step.tip && (
                   <p className="mt-4 rounded-xl border border-cyan-300/15 bg-cyan-300/[0.06] px-3.5 py-2.5 text-[13px] leading-5 text-cyan-100">
-                    <span className="font-black uppercase tracking-wide text-cyan-300">Tip </span>
+                    <span className="font-bold uppercase tracking-wide text-cyan-300">Tip </span>
                     {step.tip}
                   </p>
                 )}
                 {step.cta && (
                   <Link
                     href={step.cta.href}
-                    className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-white/[0.08] px-4 py-2 text-[13px] font-black text-white transition hover:bg-white/[0.14]"
+                    className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-white/[0.08] px-4 py-2 text-[13px] font-bold text-white transition hover:bg-white/[0.14]"
                   >
                     {step.cta.label}
                     <span aria-hidden>→</span>
@@ -148,14 +148,14 @@ export default function CandidateGuidePage() {
 
         {/* Closing CTA */}
         <div className="mt-14 rounded-[1.75rem] border border-purple-400/20 bg-gradient-to-br from-purple-600/20 via-fuchsia-600/10 to-transparent p-8 text-center">
-          <h2 className="text-2xl font-black tracking-[-0.03em]">Ready when you are.</h2>
+          <h2 className="text-2xl font-bold tracking-tight">Ready when you are.</h2>
           <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-gray-400">
             The fastest way to learn the platform is to run one practice
             session end to end. It takes about ten minutes.
           </p>
           <Link
             href="/practice"
-            className="mt-5 inline-block rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-8 py-3 text-sm font-black text-white shadow-lg shadow-purple-950/40 transition hover:scale-[1.02]"
+            className="mt-5 inline-block rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-8 py-3 text-sm font-bold text-white shadow-lg shadow-purple-950/40 transition hover:scale-[1.02]"
           >
             Start a practice session
           </Link>

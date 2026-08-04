@@ -85,7 +85,7 @@ function LogoContent({
       {showText && (
         <div className={`min-w-[132px] sm:min-w-0 ${textClassName || ""}`}>
           <p
-            className={`whitespace-nowrap font-black leading-tight tracking-[-0.04em] text-white ${styles.title}`}
+            className={`whitespace-nowrap font-bold leading-tight tracking-tight text-white ${styles.title}`}
           >
             AI Career Mentor
           </p>

@@ -74,7 +74,7 @@ export default function NotificationSettingsPage() {
   return (
     <main className="relative min-h-screen bg-[#0a0614] px-4 py-10 text-white">
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_25%_15%,rgba(120,60,255,0.18),transparent),radial-gradient(ellipse_60%_50%_at_75%_85%,rgba(232,80,180,0.12),transparent),linear-gradient(180deg,#0a0614_0%,#100a1f_50%,#0c0816_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_25%_15%,rgba(120,60,255,0.10),transparent),radial-gradient(ellipse_60%_50%_at_75%_85%,rgba(232,80,180,0.06),transparent),linear-gradient(180deg,#0a0614_0%,#100a1f_50%,#0c0816_100%)]" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-xl">
@@ -85,7 +85,7 @@ export default function NotificationSettingsPage() {
           </Link>
         </div>
 
-        <h1 className="text-2xl font-black tracking-[-0.03em] sm:text-3xl">
+        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
           Email notifications
         </h1>
         <p className="mt-2 text-sm leading-6 text-gray-400">
@@ -96,7 +96,7 @@ export default function NotificationSettingsPage() {
           {/* Marketing toggle */}
           <div className="flex items-start justify-between gap-4">
             <div>
-              <p className="font-black">Tips &amp; product emails</p>
+              <p className="font-bold">Tips &amp; product emails</p>
               <p className="mt-1 text-sm leading-6 text-gray-400">
                 Interview tips, practice nudges, trial reminders and occasional
                 product updates.
@@ -126,13 +126,13 @@ export default function NotificationSettingsPage() {
           {/* Always-on transactional */}
           <div className="flex items-start justify-between gap-4 opacity-70">
             <div>
-              <p className="font-black">Essential account emails</p>
+              <p className="font-bold">Essential account emails</p>
               <p className="mt-1 text-sm leading-6 text-gray-400">
                 Security, billing, assessment invites and trial-status notices.
                 These are always sent and can&rsquo;t be turned off.
               </p>
             </div>
-            <span className="mt-1 rounded-full border border-white/10 bg-white/[0.05] px-3 py-1 text-[11px] font-black uppercase tracking-wider text-gray-400">
+            <span className="mt-1 rounded-full border border-white/10 bg-white/[0.05] px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-gray-400">
               Always on
             </span>
           </div>
@@ -145,17 +145,17 @@ export default function NotificationSettingsPage() {
 
         {/* Danger zone — account deletion (GDPR right to erasure) */}
         <div className="mt-8 rounded-[1.5rem] border border-red-500/25 bg-red-500/[0.04] p-6">
-          <p className="text-[11px] font-black uppercase tracking-[0.2em] text-red-300">
+          <p className="text-[11px] font-bold tracking-wide text-red-300">
             Danger zone
           </p>
-          <h2 className="mt-2 text-lg font-black">Delete your account</h2>
+          <h2 className="mt-2 text-lg font-bold">Delete your account</h2>
           <p className="mt-1 text-sm leading-6 text-gray-400">
             Permanently deletes your account and all personal data: profile, saved
             practice sessions, career docs and email preferences. Assessment results
             you completed for an employer are retained by that employer. This cannot
             be undone.
           </p>
-          <label className="mt-4 block text-xs font-black uppercase tracking-wider text-gray-400">
+          <label className="mt-4 block text-xs font-bold uppercase tracking-wider text-gray-400">
             Type DELETE to confirm
           </label>
           <input
@@ -168,7 +168,7 @@ export default function NotificationSettingsPage() {
           <button
             onClick={deleteAccount}
             disabled={deleteConfirm !== "DELETE" || deleting}
-            className="mt-4 rounded-full bg-red-500/90 px-5 py-2.5 text-sm font-black text-white transition hover:bg-red-500 disabled:cursor-not-allowed disabled:opacity-50"
+            className="mt-4 rounded-full bg-red-500/90 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-red-500 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {deleting ? "Deleting…" : "Permanently delete my account"}
           </button>

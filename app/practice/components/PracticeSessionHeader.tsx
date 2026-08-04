@@ -53,22 +53,22 @@ export function PracticeSessionHeader({
         <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
           <div className="min-w-0">
             <div className="mb-3 flex flex-wrap items-center gap-2">
-              <span className="rounded-full border border-purple-300/20 bg-purple-300/10 px-3 py-1.5 text-xs font-black uppercase tracking-[0.16em] text-purple-200">
+              <span className="rounded-full border border-purple-300/20 bg-purple-300/10 px-3 py-1.5 text-xs font-bold tracking-wide text-purple-200">
                 Question {currentQuestionNumber} of {totalQuestions}
               </span>
 
-              <span className="rounded-full border border-white/10 bg-black/25 px-3 py-1.5 text-xs font-black text-gray-300">
+              <span className="rounded-full border border-white/10 bg-black/25 px-3 py-1.5 text-xs font-bold text-gray-300">
                 Avg score: {averageQuestionScore}/10
               </span>
 
               {manualDeviceMode && (
-                <span className="rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1.5 text-xs font-black text-cyan-100">
+                <span className="rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1.5 text-xs font-bold text-cyan-100">
                   Phone/tablet flow
                 </span>
               )}
             </div>
 
-            <h2 className="text-2xl font-black tracking-[-0.035em] text-white md:text-3xl">
+            <h2 className="text-2xl font-bold tracking-tight text-white md:text-3xl">
               Live interview practice
             </h2>
 
@@ -117,7 +117,7 @@ export function PracticeSessionHeader({
                   }
                 }}
                 disabled={questionAudioLoading}
-                className="w-full rounded-2xl border border-cyan-300/25 bg-cyan-300/10 px-4 py-3 text-sm font-black text-cyan-100 transition hover:bg-cyan-300/15 disabled:cursor-not-allowed disabled:opacity-50"
+                className="w-full rounded-2xl border border-cyan-300/25 bg-cyan-300/10 px-4 py-3 text-sm font-bold text-cyan-100 transition hover:bg-cyan-300/15 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {isSpeakingQuestion
                   ? "Stop question audio"

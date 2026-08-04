@@ -89,19 +89,19 @@ export function AnswerWorkspace({
         <div className="mb-3 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
-              <p className="text-xs font-black uppercase tracking-[0.22em] text-purple-300">
+              <p className="text-xs font-bold tracking-wide text-purple-300">
                 Your answer
               </p>
 
               {cleaningTranscript && (
-                <span className="rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1 text-[11px] font-black text-cyan-100">
+                <span className="rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1 text-[11px] font-bold text-cyan-100">
                   Cleaning transcript
                 </span>
               )}
 
             </div>
 
-            <h2 className="mt-1 text-xl font-black tracking-[-0.035em] text-white sm:text-2xl xl:text-xl 2xl:text-2xl">
+            <h2 className="mt-1 text-xl font-bold tracking-tight text-white sm:text-2xl xl:text-xl 2xl:text-2xl">
               {freePlan ? "Answer editor" : "Transcript and answer editor"}
             </h2>
           </div>
@@ -116,7 +116,7 @@ export function AnswerWorkspace({
               analysing ||
               questionAudioLoading
             }
-            className="hidden rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-3 text-sm font-black text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50 sm:inline-flex"
+            className="hidden rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-5 py-3 text-sm font-bold text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50 sm:inline-flex"
           >
             {submitDesktopLabel}
           </button>
@@ -129,7 +129,7 @@ export function AnswerWorkspace({
               <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-400/25 text-emerald-300">
                 ✓
               </span>
-              <p className="text-sm font-black text-emerald-100">
+              <p className="text-sm font-bold text-emerald-100">
                 AI feedback is ready
               </p>
             </div>
@@ -137,7 +137,7 @@ export function AnswerWorkspace({
               <button
                 type="button"
                 onClick={onViewFeedback}
-                className="shrink-0 rounded-xl border border-emerald-400/30 bg-emerald-400/15 px-4 py-1.5 text-xs font-black text-emerald-100 transition hover:bg-emerald-400/25"
+                className="shrink-0 rounded-xl border border-emerald-400/30 bg-emerald-400/15 px-4 py-1.5 text-xs font-bold text-emerald-100 transition hover:bg-emerald-400/25"
               >
                 View feedback ↓
               </button>
@@ -171,7 +171,7 @@ export function AnswerWorkspace({
                   type="button"
                   onClick={onStartVoice}
                   disabled={!voiceSupported || questionLoading || isSpeakingQuestion}
-                  className="rounded-2xl border border-emerald-300/20 bg-emerald-300/10 px-5 py-3 text-sm font-black text-emerald-100 transition hover:bg-emerald-300/15 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="rounded-2xl border border-emerald-300/20 bg-emerald-300/10 px-5 py-3 text-sm font-bold text-emerald-100 transition hover:bg-emerald-300/15 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   Start recording
                 </button>
@@ -179,7 +179,7 @@ export function AnswerWorkspace({
                 <button
                   type="button"
                   onClick={onStopVoice}
-                  className="rounded-2xl border border-amber-300/20 bg-amber-300/10 px-5 py-3 text-sm font-black text-amber-100 transition hover:bg-amber-300/15"
+                  className="rounded-2xl border border-amber-300/20 bg-amber-300/10 px-5 py-3 text-sm font-bold text-amber-100 transition hover:bg-amber-300/15"
                 >
                   Stop recording
                 </button>
@@ -191,7 +191,7 @@ export function AnswerWorkspace({
             type="button"
             onClick={onClear}
             disabled={!answer || analysing}
-            className="rounded-2xl border border-white/10 bg-white/[0.06] px-5 py-3 text-sm font-black text-white transition hover:bg-white/[0.1] disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-2xl border border-white/10 bg-white/[0.06] px-5 py-3 text-sm font-bold text-white transition hover:bg-white/[0.1] disabled:cursor-not-allowed disabled:opacity-50"
           >
             Clear answer
           </button>
@@ -206,7 +206,7 @@ export function AnswerWorkspace({
               analysing ||
               questionAudioLoading
             }
-            className={`rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-5 py-3 text-sm font-black text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50 ${freePlan ? "" : "sm:hidden"}`}
+            className={`rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-5 py-3 text-sm font-bold text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50 ${freePlan ? "" : "sm:hidden"}`}
           >
             {submitMobileLabel}
           </button>

@@ -84,8 +84,8 @@ export default function EditTemplatePage() {
     <CorporateAppShell currentPath="/company/templates">
       <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
         <div className="mb-8">
-          <p className="text-sm font-black uppercase tracking-[0.22em] text-fuchsia-300">Edit Template</p>
-          <h1 className="mt-1 text-3xl font-black tracking-[-0.05em] sm:text-4xl">{template.name}</h1>
+          <p className="text-sm font-bold tracking-wide text-fuchsia-300">Edit Template</p>
+          <h1 className="mt-1 text-3xl font-bold tracking-tight sm:text-4xl">{template.name}</h1>
         </div>
         {success && (
           <p className="mb-6 rounded-xl border border-green-400/30 bg-green-400/10 px-4 py-3 text-sm text-green-300">

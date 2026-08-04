@@ -58,10 +58,10 @@ function StageCard({ stage }: { stage: typeof stages[number] }) {
 
   return (
     <div className={`rounded-[1.85rem] border p-6 ${colors.border} ${colors.bg}`}>
-      <p className={`text-[11px] font-black uppercase tracking-[0.22em] ${colors.text}`}>
+      <p className={`text-[11px] font-bold tracking-wide ${colors.text}`}>
         {stage.label} · {stage.duration}
       </p>
-      <h3 className="mt-2 text-lg font-black tracking-[-0.03em] text-white">
+      <h3 className="mt-2 text-lg font-bold tracking-tight text-white">
         {stage.title}
       </h3>
       <p className="mt-2 text-sm leading-6 text-gray-300">{stage.description}</p>
@@ -81,10 +81,10 @@ function UpgradeGate({ planName }: { planName: string }) {
         <div className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-cyan-400/10 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-28 left-10 h-80 w-80 rounded-full bg-purple-500/10 blur-3xl" />
         <div className="relative">
-          <p className="mx-auto mb-4 inline-flex items-center gap-2 rounded-full border border-cyan-400/25 bg-cyan-400/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-cyan-200">
+          <p className="mx-auto mb-4 inline-flex items-center gap-2 rounded-full border border-cyan-400/25 bg-cyan-400/[0.07] px-4 py-2 text-[11px] font-bold tracking-wide text-cyan-200">
             Professional plan · Assessment centre
           </p>
-          <h1 className="text-3xl font-black leading-[1.04] tracking-[-0.05em] text-white sm:text-4xl lg:text-5xl">
+          <h1 className="text-3xl font-bold leading-[1.04] tracking-tight text-white sm:text-4xl lg:text-4xl">
             Simulate the full assessment centre experience.
           </h1>
           <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-gray-300">
@@ -93,7 +93,7 @@ function UpgradeGate({ planName }: { planName: string }) {
           </p>
 
           <div className="mt-8 inline-flex flex-col items-center gap-2">
-            <span className="rounded-full border border-amber-400/30 bg-amber-400/[0.08] px-4 py-1.5 text-xs font-black text-amber-300">
+            <span className="rounded-full border border-amber-400/30 bg-amber-400/[0.08] px-4 py-1.5 text-xs font-bold text-amber-300">
               {isProfessional
                 ? "Your Plus plan includes interview practice. Upgrade to Professional to unlock the assessment centre."
                 : "This feature requires the Professional plan."}
@@ -104,7 +104,7 @@ function UpgradeGate({ planName }: { planName: string }) {
 
       {/* Stages preview */}
       <section className="mb-8">
-        <p className="mb-5 text-center text-[11px] font-black uppercase tracking-[0.26em] text-cyan-300/90">
+        <p className="mb-5 text-center text-[11px] font-bold tracking-wide text-cyan-300/90">
           What&apos;s included
         </p>
         <div className="grid gap-4 sm:grid-cols-3">
@@ -114,7 +114,7 @@ function UpgradeGate({ planName }: { planName: string }) {
 
       {/* Upgrade CTA */}
       <section className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-8 text-center">
-        <h2 className="text-2xl font-black tracking-[-0.04em] text-white">
+        <h2 className="text-2xl font-bold tracking-tight text-white">
           Unlock the assessment centre
         </h2>
         <p className="mx-auto mt-3 max-w-xl text-sm leading-7 text-gray-400">
@@ -124,13 +124,13 @@ function UpgradeGate({ planName }: { planName: string }) {
         <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link
             href="/pricing"
-            className="rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-8 py-4 text-center text-sm font-black text-white shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.02]"
+            className="rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-8 py-4 text-center text-sm font-bold text-white shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.02]"
           >
             Upgrade to Professional →
           </Link>
           <Link
             href="/mock-assessment-centre"
-            className="rounded-2xl border border-white/[0.1] bg-white/[0.04] px-8 py-4 text-center text-sm font-black text-white transition hover:bg-white/[0.07]"
+            className="rounded-2xl border border-white/[0.1] bg-white/[0.04] px-8 py-4 text-center text-sm font-bold text-white transition hover:bg-white/[0.07]"
           >
             See what&apos;s included
           </Link>
@@ -155,10 +155,10 @@ function SignInGate() {
       <section className="relative overflow-hidden rounded-[2.25rem] border border-cyan-400/20 bg-gradient-to-br from-cyan-500/[0.09] via-purple-500/[0.06] to-transparent p-8 text-center shadow-2xl shadow-purple-950/20 backdrop-blur-2xl sm:p-12">
         <div className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-cyan-400/10 blur-3xl" />
         <div className="relative">
-          <p className="mx-auto mb-4 inline-flex items-center gap-2 rounded-full border border-cyan-400/25 bg-cyan-400/[0.07] px-4 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-cyan-200">
+          <p className="mx-auto mb-4 inline-flex items-center gap-2 rounded-full border border-cyan-400/25 bg-cyan-400/[0.07] px-4 py-2 text-[11px] font-bold tracking-wide text-cyan-200">
             Professional plan · Assessment centre
           </p>
-          <h1 className="text-3xl font-black tracking-[-0.05em] text-white sm:text-4xl">
+          <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
             The full mock assessment centre experience.
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-gray-300">
@@ -168,12 +168,12 @@ function SignInGate() {
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link
               href="/for-candidates/sign-up"
-              className="rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-8 py-4 text-center text-sm font-black text-white shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.02]"
+              className="rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-8 py-4 text-center text-sm font-bold text-white shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.02]"
             >
               Get started →
             </Link>
             <SignInButton mode="modal">
-              <button className="rounded-2xl border border-white/[0.1] bg-white/[0.04] px-8 py-4 text-sm font-black text-white transition hover:bg-white/[0.07]">
+              <button className="rounded-2xl border border-white/[0.1] bg-white/[0.04] px-8 py-4 text-sm font-bold text-white transition hover:bg-white/[0.07]">
                 Sign in
               </button>
             </SignInButton>
@@ -198,10 +198,10 @@ function AssessmentCentreAccess() {
         <div className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-cyan-400/10 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-28 left-10 h-80 w-80 rounded-full bg-purple-500/15 blur-3xl" />
         <div className="relative">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-300/20 bg-emerald-300/10 px-4 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-emerald-100">
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-300/20 bg-emerald-300/10 px-4 py-2 text-[11px] font-bold tracking-wide text-emerald-100">
             Professional · Unlocked
           </div>
-          <h1 className="text-3xl font-black leading-[1.04] tracking-[-0.05em] text-white sm:text-4xl lg:text-5xl">
+          <h1 className="text-3xl font-bold leading-[1.04] tracking-tight text-white sm:text-4xl lg:text-4xl">
             Mock assessment centre
           </h1>
           <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-gray-300">
@@ -211,7 +211,7 @@ function AssessmentCentreAccess() {
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link
               href="/assessment-centre/setup"
-              className="rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-8 py-4 text-center text-base font-black text-white shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.02]"
+              className="rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-8 py-4 text-center text-base font-bold text-white shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.02]"
             >
               Start assessment centre →
             </Link>
@@ -224,7 +224,7 @@ function AssessmentCentreAccess() {
 
       {/* Stages */}
       <section className="mb-8">
-        <p className="mb-5 text-center text-[11px] font-black uppercase tracking-[0.26em] text-cyan-300/90">
+        <p className="mb-5 text-center text-[11px] font-bold tracking-wide text-cyan-300/90">
           Your session
         </p>
         <div className="grid gap-4 sm:grid-cols-3">

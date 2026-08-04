@@ -64,10 +64,10 @@ export default function CompanyPlanPage() {
       <section className="mx-auto max-w-4xl px-4 py-16 sm:px-6">
         {/* Header */}
         <div className="mb-12 text-center">
-          <p className="mb-3 text-[11px] font-black uppercase tracking-[0.24em] text-fuchsia-300">
+          <p className="mb-3 text-[11px] font-bold tracking-wide text-fuchsia-300">
             Choose your plan
           </p>
-          <h1 className="text-4xl font-black tracking-[-0.05em] sm:text-5xl">
+          <h1 className="text-4xl font-bold tracking-tight sm:text-4xl">
             Start your free trial
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-gray-400">
@@ -88,16 +88,16 @@ export default function CompanyPlanPage() {
               }`}
             >
               {plan.highlight && (
-                <span className="mb-5 inline-flex self-start rounded-full bg-white px-3 py-1 text-xs font-black text-black">
+                <span className="mb-5 inline-flex self-start rounded-full bg-white px-3 py-1 text-xs font-bold text-black">
                   Most popular
                 </span>
               )}
               {!plan.highlight && <div className="mb-5 h-7" />}
 
-              <h2 className="text-2xl font-black tracking-[-0.03em]">{plan.name}</h2>
+              <h2 className="text-2xl font-bold tracking-tight">{plan.name}</h2>
 
               <div className="mt-3 flex items-end gap-1.5">
-                <span className="text-5xl font-black leading-none tracking-[-0.07em]">
+                <span className="text-4xl font-bold leading-none tracking-tight">
                   £{plan.priceGBP}
                 </span>
                 <span className="mb-1.5 text-sm text-gray-500">
@@ -123,7 +123,7 @@ export default function CompanyPlanPage() {
               <button
                 onClick={() => void startTeamTrial()}
                 disabled={starting}
-                className={`mt-8 w-full rounded-2xl px-5 py-4 text-sm font-black transition disabled:opacity-60 ${
+                className={`mt-8 w-full rounded-2xl px-5 py-4 text-sm font-bold transition disabled:opacity-60 ${
                   plan.highlight
                     ? "bg-gradient-to-r from-fuchsia-500 to-purple-500 text-white shadow-xl shadow-fuchsia-950/35 hover:scale-[1.02]"
                     : "border border-white/10 bg-white/[0.06] text-white hover:bg-white/[0.1]"
@@ -151,13 +151,13 @@ export default function CompanyPlanPage() {
 
         {/* Enterprise */}
         <div className="mt-8 rounded-2xl border border-white/10 bg-white/[0.03] p-6 text-center">
-          <p className="text-sm font-black text-white">Enterprise</p>
+          <p className="text-sm font-bold text-white">Enterprise</p>
           <p className="mt-1 text-sm text-gray-400">
             Unlimited seats, SSO, DPA, dedicated CSM and custom pricing.
           </p>
           <Link
             href="mailto:hello@aicareermentor.co.uk?subject=Enterprise enquiry"
-            className="mt-3 inline-block text-sm font-black text-fuchsia-300 hover:text-fuchsia-200"
+            className="mt-3 inline-block text-sm font-bold text-fuchsia-300 hover:text-fuchsia-200"
           >
             Talk to our team →
           </Link>

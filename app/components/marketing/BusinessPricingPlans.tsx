@@ -167,7 +167,7 @@ export function BusinessPricingPlans({ currency = "GBP" }: { currency?: PricingC
           Annual
         </span>
         {annual && (
-          <span className="rounded-full bg-emerald-400/10 px-2.5 py-1 text-[11px] font-black text-emerald-300">
+          <span className="rounded-full bg-emerald-400/10 px-2.5 py-1 text-[11px] font-bold text-emerald-300">
             Save up to 33%
           </span>
         )}
@@ -192,15 +192,15 @@ export function BusinessPricingPlans({ currency = "GBP" }: { currency?: PricingC
               }`}
             >
               {plan.highlight && (
-                <span className="mb-5 inline-flex self-start rounded-full bg-white px-3 py-1 text-xs font-black text-black">
+                <span className="mb-5 inline-flex self-start rounded-full bg-white px-3 py-1 text-xs font-bold text-black">
                   Most popular
                 </span>
               )}
               {!plan.highlight && <div className="mb-5 h-7" />}
 
-              <h3 className="text-xl font-black tracking-[-0.03em]">{plan.name}</h3>
+              <h3 className="text-xl font-bold tracking-tight">{plan.name}</h3>
               <div className="mt-3 flex items-end gap-1.5">
-                <span className="text-5xl font-black leading-none tracking-[-0.07em]">
+                <span className="text-4xl font-bold leading-none tracking-tight">
                   {displayPrice}
                 </span>
                 {displayPeriod && (
@@ -234,9 +234,9 @@ export function BusinessPricingPlans({ currency = "GBP" }: { currency?: PricingC
                 <button
                   onClick={() => handleCheckout(plan.planKey as "team" | "business")}
                   disabled={isLoading || loading !== null}
-                  className={`mt-8 flex w-full justify-center rounded-2xl px-5 py-3.5 text-sm font-black transition disabled:opacity-60 disabled:cursor-not-allowed ${
+                  className={`mt-8 flex w-full justify-center rounded-2xl px-5 py-3.5 text-sm font-bold transition disabled:opacity-60 disabled:cursor-not-allowed ${
                     plan.highlight
-                      ? "bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 text-white shadow-xl shadow-purple-950/35 hover:scale-[1.02]"
+                      ? "bg-gradient-to-r from-violet-600 to-purple-600 text-white shadow-xl shadow-purple-950/35 hover:scale-[1.02]"
                       : "border border-white/10 bg-white/[0.06] text-white hover:bg-white/[0.1]"
                   }`}
                 >
@@ -245,9 +245,9 @@ export function BusinessPricingPlans({ currency = "GBP" }: { currency?: PricingC
               ) : (
                 <Link
                   href={(plan as { ctaHref: string }).ctaHref}
-                  className={`mt-8 flex w-full justify-center rounded-2xl px-5 py-3.5 text-sm font-black transition ${
+                  className={`mt-8 flex w-full justify-center rounded-2xl px-5 py-3.5 text-sm font-bold transition ${
                     plan.highlight
-                      ? "bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 text-white shadow-xl shadow-purple-950/35 hover:scale-[1.02]"
+                      ? "bg-gradient-to-r from-violet-600 to-purple-600 text-white shadow-xl shadow-purple-950/35 hover:scale-[1.02]"
                       : "border border-white/10 bg-white/[0.06] text-white hover:bg-white/[0.1]"
                   }`}
                 >
@@ -261,7 +261,7 @@ export function BusinessPricingPlans({ currency = "GBP" }: { currency?: PricingC
 
       {/* Plan comparison matrix */}
       <div className="mx-auto mt-14 max-w-5xl">
-        <h3 className="mb-6 text-center text-2xl font-black tracking-[-0.04em]">Compare plans</h3>
+        <h3 className="mb-6 text-center text-2xl font-bold tracking-tight">Compare plans</h3>
         {/* On narrow phones the table scrolls sideways but iOS hides the
             scrollbar, so Business/Enterprise are invisible without this cue. */}
         <p className="mb-2 text-center text-[11px] font-bold uppercase tracking-wide text-purple-200/80 md:hidden">
@@ -271,10 +271,10 @@ export function BusinessPricingPlans({ currency = "GBP" }: { currency?: PricingC
           <table className="w-full min-w-[40rem] text-sm">
             <thead>
               <tr className="border-b border-white/10 bg-white/[0.03]">
-                <th scope="col" className="px-4 py-3 text-left font-black text-gray-300">Feature</th>
-                <th scope="col" className="px-4 py-3 text-center font-black text-gray-300">Team</th>
-                <th scope="col" className="px-4 py-3 text-center font-black text-purple-200">Business</th>
-                <th scope="col" className="px-4 py-3 text-center font-black text-gray-300">Enterprise</th>
+                <th scope="col" className="px-4 py-3 text-left font-bold text-gray-300">Feature</th>
+                <th scope="col" className="px-4 py-3 text-center font-bold text-gray-300">Team</th>
+                <th scope="col" className="px-4 py-3 text-center font-bold text-purple-200">Business</th>
+                <th scope="col" className="px-4 py-3 text-center font-bold text-gray-300">Enterprise</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/[0.06]">

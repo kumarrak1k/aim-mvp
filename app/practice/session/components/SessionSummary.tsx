@@ -86,12 +86,12 @@ function StarSection({
   return (
     <div className={`flex gap-3 rounded-[1rem] border ${c.border} ${c.bg} p-4`}>
       <div
-        className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border ${c.border} text-xs font-black ${c.letter}`}
+        className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border ${c.border} text-xs font-bold ${c.letter}`}
       >
         {letter}
       </div>
       <div>
-        <p className={`mb-1 text-xs font-black uppercase tracking-[0.15em] ${c.label}`}>
+        <p className={`mb-1 text-xs font-bold tracking-wide ${c.label}`}>
           {label}
         </p>
         <p className="text-sm leading-7 text-gray-200">{text}</p>
@@ -142,7 +142,7 @@ function ScoreRing({ score }: { score: number }) {
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <span
-          className="text-5xl font-black tracking-tight"
+          className="text-4xl font-bold tracking-tight"
           style={{ color: strokeColor }}
         >
           {score}
@@ -178,7 +178,7 @@ function CategoryBar({
     <div>
       <div className="mb-1 flex items-center justify-between">
         <span className="text-xs font-semibold text-gray-400">{label}</span>
-        <span className={`text-xs font-black ${scoreTextColor(score)}`}>
+        <span className={`text-xs font-bold ${scoreTextColor(score)}`}>
           {score}/10
         </span>
       </div>
@@ -212,7 +212,7 @@ function QuestionCard({
         className="flex w-full items-start gap-4 p-4 text-left transition hover:bg-white/[0.04] sm:p-5"
       >
         <span
-          className={`mt-0.5 shrink-0 rounded-full px-2.5 py-1 text-xs font-black ${scoreTextColor(score)} border ${score >= 8 ? "border-emerald-400/25 bg-emerald-400/10" : score >= 6 ? "border-cyan-400/25 bg-cyan-400/10" : score >= 4 ? "border-amber-400/25 bg-amber-400/10" : "border-rose-400/25 bg-rose-400/10"}`}
+          className={`mt-0.5 shrink-0 rounded-full px-2.5 py-1 text-xs font-bold ${scoreTextColor(score)} border ${score >= 8 ? "border-emerald-400/25 bg-emerald-400/10" : score >= 6 ? "border-cyan-400/25 bg-cyan-400/10" : score >= 4 ? "border-amber-400/25 bg-amber-400/10" : "border-rose-400/25 bg-rose-400/10"}`}
         >
           Q{index + 1} · {score}/10
         </span>
@@ -231,7 +231,7 @@ function QuestionCard({
           <div className="grid gap-4 lg:grid-cols-2">
             {result.answer.trim() && (
               <div className="rounded-[1.35rem] border border-white/10 bg-white/[0.04] p-4">
-                <p className="mb-3 text-xs font-black uppercase tracking-[0.18em] text-cyan-300">
+                <p className="mb-3 text-xs font-bold tracking-wide text-cyan-300">
                   Your answer
                 </p>
                 <p className="whitespace-pre-wrap text-sm leading-7 text-gray-300">
@@ -241,7 +241,7 @@ function QuestionCard({
             )}
             {result.feedback.improved_answer && (
               <div className="rounded-[1.35rem] border border-white/10 bg-white/[0.04] p-4">
-                <p className="mb-3 text-xs font-black uppercase tracking-[0.18em] text-cyan-300">
+                <p className="mb-3 text-xs font-bold tracking-wide text-cyan-300">
                   Model answer (STAR)
                 </p>
                 <StarAnswer
@@ -257,7 +257,7 @@ function QuestionCard({
             <div className="grid gap-4 lg:grid-cols-2">
               {result.feedback.strengths.length > 0 && (
                 <div className="rounded-[1.35rem] border border-white/10 bg-white/[0.04] p-4">
-                  <p className="text-xs font-black uppercase tracking-[0.18em] text-emerald-300">
+                  <p className="text-xs font-bold tracking-wide text-emerald-300">
                     Strengths
                   </p>
                   <ul className="mt-3 space-y-2">
@@ -272,7 +272,7 @@ function QuestionCard({
               )}
               {result.feedback.improvements.length > 0 && (
                 <div className="rounded-[1.35rem] border border-white/10 bg-white/[0.04] p-4">
-                  <p className="text-xs font-black uppercase tracking-[0.18em] text-purple-300">
+                  <p className="text-xs font-bold tracking-wide text-purple-300">
                     Improvements
                   </p>
                   <ul className="mt-3 space-y-2">
@@ -372,11 +372,11 @@ export function SessionSummary({
     <section className="mx-auto max-w-5xl px-4 py-8 sm:px-6 sm:py-10">
       {/* ── Header ─────────────────────────────────────────────────────── */}
       <div className="mb-6 rounded-[2rem] border border-white/10 bg-white/[0.055] p-6 shadow-2xl shadow-purple-950/10 backdrop-blur-2xl sm:p-8">
-        <p className="text-sm font-black uppercase tracking-[0.22em] text-emerald-300">
+        <p className="text-sm font-bold tracking-wide text-emerald-300">
           Interview complete
         </p>
 
-        <h1 className="mt-2 text-3xl font-black tracking-[-0.04em] text-white sm:text-4xl">
+        <h1 className="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">
           {firstName
             ? `Well done, ${firstName}!`
             : "Well done, interview complete!"}
@@ -418,11 +418,11 @@ export function SessionSummary({
             <div className="flex flex-col items-center justify-center gap-4 rounded-[1.7rem] border border-white/10 bg-white/[0.055] p-6 backdrop-blur-2xl sm:flex-row sm:items-start sm:justify-start">
               <ScoreRing score={summary.overall_score} />
               <div className="text-center sm:text-left">
-                <p className="text-xs font-black uppercase tracking-[0.18em] text-gray-500">
+                <p className="text-xs font-bold tracking-wide text-gray-500">
                   Overall score
                 </p>
                 <p
-                  className={`mt-1 text-2xl font-black ${scoreTextColor(summary.overall_score)}`}
+                  className={`mt-1 text-2xl font-bold ${scoreTextColor(summary.overall_score)}`}
                 >
                   {summary.overall_score >= 8
                     ? "Excellent"
@@ -447,7 +447,7 @@ export function SessionSummary({
             {/* Hire signal */}
             <div className="flex flex-col justify-between gap-4 rounded-[1.7rem] border border-white/10 bg-white/[0.055] p-6 backdrop-blur-2xl">
               <div>
-                <p className="text-xs font-black uppercase tracking-[0.18em] text-gray-500">
+                <p className="text-xs font-bold tracking-wide text-gray-500">
                   Hire signal
                 </p>
                 <div className="mt-3 flex items-center gap-2">
@@ -455,7 +455,7 @@ export function SessionSummary({
                     className={`h-2.5 w-2.5 rounded-full ${hireStyle!.dot}`}
                   />
                   <span
-                    className={`rounded-full border px-4 py-1.5 text-sm font-black ${hireStyle!.badge}`}
+                    className={`rounded-full border px-4 py-1.5 text-sm font-bold ${hireStyle!.badge}`}
                   >
                     {summary.hire_signal}
                   </span>
@@ -477,7 +477,7 @@ export function SessionSummary({
           {/* ── Category breakdown ──────────────────────────────────────── */}
           {categoryEntries.length > 0 && (
             <div className="mb-4 rounded-[1.7rem] border border-white/10 bg-white/[0.055] p-6 backdrop-blur-2xl">
-              <p className="mb-5 text-xs font-black uppercase tracking-[0.22em] text-purple-300">
+              <p className="mb-5 text-xs font-bold tracking-wide text-purple-300">
                 Performance breakdown
               </p>
               <div className="grid gap-4 sm:grid-cols-2">
@@ -497,7 +497,7 @@ export function SessionSummary({
             <div className="mb-4 grid gap-4 sm:grid-cols-2">
               {summary.strongest_answer && (
                 <div className="rounded-[1.7rem] border border-emerald-400/20 bg-emerald-400/[0.06] p-5">
-                  <p className="mb-2 text-xs font-black uppercase tracking-[0.18em] text-emerald-300">
+                  <p className="mb-2 text-xs font-bold tracking-wide text-emerald-300">
                     ★ Strongest answer: Q{summary.strongest_answer.question_number}
                   </p>
                   <p className="mb-3 text-sm font-semibold text-white line-clamp-2">
@@ -507,7 +507,7 @@ export function SessionSummary({
                     {summary.strongest_answer.reason}
                   </p>
                   <span
-                    className={`text-xs font-black ${scoreTextColor(summary.strongest_answer.score)}`}
+                    className={`text-xs font-bold ${scoreTextColor(summary.strongest_answer.score)}`}
                   >
                     Score: {summary.strongest_answer.score}/10
                   </span>
@@ -515,7 +515,7 @@ export function SessionSummary({
               )}
               {summary.weakest_answer && (
                 <div className="rounded-[1.7rem] border border-amber-400/20 bg-amber-400/[0.06] p-5">
-                  <p className="mb-2 text-xs font-black uppercase tracking-[0.18em] text-amber-300">
+                  <p className="mb-2 text-xs font-bold tracking-wide text-amber-300">
                     ↗ Biggest opportunity: Q{summary.weakest_answer.question_number}
                   </p>
                   <p className="mb-3 text-sm font-semibold text-white line-clamp-2">
@@ -525,7 +525,7 @@ export function SessionSummary({
                     {summary.weakest_answer.reason}
                   </p>
                   <span
-                    className={`text-xs font-black ${scoreTextColor(summary.weakest_answer.score)}`}
+                    className={`text-xs font-bold ${scoreTextColor(summary.weakest_answer.score)}`}
                   >
                     Score: {summary.weakest_answer.score}/10
                   </span>
@@ -537,7 +537,7 @@ export function SessionSummary({
           {/* ── STAR model answer ───────────────────────────────────────── */}
           {summary.star_model_answer && (
             <div className="mb-4 rounded-[1.7rem] border border-cyan-400/20 bg-cyan-400/[0.05] p-5 backdrop-blur-2xl sm:p-6">
-              <p className="mb-1 text-xs font-black uppercase tracking-[0.22em] text-cyan-300">
+              <p className="mb-1 text-xs font-bold tracking-wide text-cyan-300">
                 STAR model answer
               </p>
               <p className="mb-5 text-sm text-gray-400">
@@ -584,7 +584,7 @@ export function SessionSummary({
           {/* ── Per-question breakdown ──────────────────────────────────── */}
           {results.length > 0 && (
             <div className="mb-4 rounded-[1.7rem] border border-white/10 bg-white/[0.055] p-5 backdrop-blur-2xl sm:p-6">
-              <p className="mb-4 text-xs font-black uppercase tracking-[0.22em] text-cyan-300">
+              <p className="mb-4 text-xs font-bold tracking-wide text-cyan-300">
                 Question-by-question breakdown
               </p>
               <div className="space-y-2">
@@ -598,7 +598,7 @@ export function SessionSummary({
           {/* ── Strengths & Improvements ────────────────────────────────── */}
           <div className="mb-4 grid gap-4 md:grid-cols-2">
             <div className="rounded-[1.7rem] border border-white/10 bg-white/[0.055] p-5 backdrop-blur-2xl sm:p-6">
-              <p className="mb-4 text-xs font-black uppercase tracking-[0.22em] text-emerald-300">
+              <p className="mb-4 text-xs font-bold tracking-wide text-emerald-300">
                 Top strengths
               </p>
               <ul className="space-y-3">
@@ -612,7 +612,7 @@ export function SessionSummary({
             </div>
 
             <div className="rounded-[1.7rem] border border-white/10 bg-white/[0.055] p-5 backdrop-blur-2xl sm:p-6">
-              <p className="mb-4 text-xs font-black uppercase tracking-[0.22em] text-amber-300">
+              <p className="mb-4 text-xs font-bold tracking-wide text-amber-300">
                 Priority improvements
               </p>
               <ul className="space-y-3">
@@ -632,14 +632,14 @@ export function SessionSummary({
           {/* ── 7-day action plan ───────────────────────────────────────── */}
           {summary.seven_day_action_plan && summary.seven_day_action_plan.length > 0 && (
             <div className="mb-4 rounded-[1.7rem] border border-white/10 bg-white/[0.055] p-5 backdrop-blur-2xl sm:p-6">
-              <p className="mb-5 text-xs font-black uppercase tracking-[0.22em] text-purple-300">
+              <p className="mb-5 text-xs font-bold tracking-wide text-purple-300">
                 Your 7-day improvement plan
               </p>
               <div className="space-y-3">
                 {summary.seven_day_action_plan.map((item, i) => (
                   <div key={i} className="flex gap-4">
                     <div className="flex flex-col items-center">
-                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-purple-500/20 text-xs font-black text-purple-300">
+                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-purple-500/20 text-xs font-bold text-purple-300">
                         {i + 1}
                       </div>
                       {i < (summary.seven_day_action_plan?.length ?? 0) - 1 && (
@@ -647,7 +647,7 @@ export function SessionSummary({
                       )}
                     </div>
                     <div className="pb-4">
-                      <p className="text-xs font-black text-purple-200">{item.day}: {item.focus}</p>
+                      <p className="text-xs font-bold text-purple-200">{item.day}: {item.focus}</p>
                       <p className="mt-1 text-sm leading-6 text-gray-300">{item.task}</p>
                     </div>
                   </div>
@@ -659,13 +659,13 @@ export function SessionSummary({
           {/* ── Next steps ──────────────────────────────────────────────── */}
           {summary.next_steps && summary.next_steps.length > 0 && (
             <div className="mb-4 rounded-[1.7rem] border border-white/10 bg-white/[0.055] p-5 backdrop-blur-2xl sm:p-6">
-              <p className="mb-4 text-xs font-black uppercase tracking-[0.22em] text-cyan-300">
+              <p className="mb-4 text-xs font-bold tracking-wide text-cyan-300">
                 Recommended next steps
               </p>
               <ol className="space-y-3">
                 {summary.next_steps.map((step, i) => (
                   <li key={i} className="flex items-start gap-3">
-                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-cyan-400/15 text-[11px] font-black text-cyan-300">
+                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-cyan-400/15 text-[11px] font-bold text-cyan-300">
                       {i + 1}
                     </span>
                     <span className="text-sm leading-6 text-gray-300">{step}</span>
@@ -678,10 +678,10 @@ export function SessionSummary({
           {/* ── Free plan upgrade CTA ───────────────────────────────────── */}
           {freePlan && (
             <div className="mb-4 rounded-[1.7rem] border border-purple-400/25 bg-gradient-to-br from-purple-500/10 to-fuchsia-500/10 p-6">
-              <p className="text-xs font-black uppercase tracking-[0.22em] text-purple-300">
+              <p className="text-xs font-bold tracking-wide text-purple-300">
                 Unlock your full potential
               </p>
-              <h3 className="mt-2 text-lg font-black text-white">
+              <h3 className="mt-2 text-lg font-bold text-white">
                 {sessionsUsed != null && sessionsUsed >= 3
                   ? "You've used all 3 free sessions"
                   : sessionsUsed != null
@@ -696,13 +696,13 @@ export function SessionSummary({
               <div className="mt-4 flex flex-wrap gap-3">
                 <Link
                   href="/pricing"
-                  className="rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-6 py-3 text-sm font-black text-white shadow-lg shadow-purple-900/35 transition hover:scale-[1.01]"
+                  className="rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-purple-900/35 transition hover:scale-[1.01]"
                 >
                   See plans →
                 </Link>
                 <Link
                   href="/practice"
-                  className="rounded-2xl border border-white/10 bg-white/[0.06] px-6 py-3 text-sm font-black text-white transition hover:bg-white/[0.1]"
+                  className="rounded-2xl border border-white/10 bg-white/[0.06] px-6 py-3 text-sm font-bold text-white transition hover:bg-white/[0.1]"
                 >
                   Practice setup
                 </Link>
@@ -715,7 +715,7 @@ export function SessionSummary({
             <div className="mb-4 rounded-[1.7rem] border border-emerald-400/25 bg-emerald-500/[0.08] p-5">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <p className="text-sm font-black text-emerald-300">
+                  <p className="text-sm font-bold text-emerald-300">
                     🏆 Interview Readiness Certificate
                   </p>
                   <p className="mt-1 text-xs text-gray-400">
@@ -729,14 +729,14 @@ export function SessionSummary({
                       <Link
                         href={`/certificate/${certificateId}`}
                         target="_blank"
-                        className="rounded-xl bg-emerald-600 px-4 py-2 text-xs font-black text-white hover:bg-emerald-500"
+                        className="rounded-xl bg-emerald-600 px-4 py-2 text-xs font-bold text-white hover:bg-emerald-500"
                       >
                         View certificate
                       </Link>
                       <button
                         type="button"
                         onClick={copyCertLink}
-                        className="rounded-xl border border-emerald-400/30 px-4 py-2 text-xs font-black text-emerald-300 hover:bg-emerald-500/10"
+                        className="rounded-xl border border-emerald-400/30 px-4 py-2 text-xs font-bold text-emerald-300 hover:bg-emerald-500/10"
                       >
                         {certCopied ? "Copied!" : "Copy link"}
                       </button>
@@ -755,7 +755,7 @@ export function SessionSummary({
           <div className="mb-4 rounded-[1.7rem] border border-purple-400/20 bg-purple-500/[0.07] p-5">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <p className="text-sm font-black text-purple-300">
+                <p className="text-sm font-bold text-purple-300">
                   Know someone preparing for interviews?
                 </p>
                 <p className="mt-1 text-xs text-gray-400">
@@ -764,7 +764,7 @@ export function SessionSummary({
               </div>
               <Link
                 href="/refer"
-                className="shrink-0 rounded-xl border border-purple-400/30 px-4 py-2 text-center text-xs font-black text-purple-300 hover:bg-purple-500/10"
+                className="shrink-0 rounded-xl border border-purple-400/30 px-4 py-2 text-center text-xs font-bold text-purple-300 hover:bg-purple-500/10"
               >
                 Get referral link →
               </Link>
@@ -778,13 +778,13 @@ export function SessionSummary({
         <button
           type="button"
           onClick={onRestart}
-          className="rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-7 py-4 text-sm font-black text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01]"
+          className="rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-7 py-4 text-sm font-bold text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01]"
         >
           Start a new session
         </button>
         <Link
           href="/profile"
-          className="rounded-2xl border border-white/10 bg-white/[0.06] px-7 py-4 text-center text-sm font-black text-white transition hover:bg-white/[0.1]"
+          className="rounded-2xl border border-white/10 bg-white/[0.06] px-7 py-4 text-center text-sm font-bold text-white transition hover:bg-white/[0.1]"
         >
           Candidate profile
         </Link>

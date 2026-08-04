@@ -390,10 +390,10 @@ export function PracticeStartScreen({
     <div className="grid gap-6 lg:grid-cols-[2fr_0.9fr]">
       <GlassCard>
         <div className="mb-6">
-          <p className="mb-2 text-sm font-black uppercase tracking-[0.22em] text-purple-300">
+          <p className="mb-2 text-sm font-bold tracking-wide text-purple-300">
             Start interview
           </p>
-          <h2 className="text-2xl font-black tracking-[-0.03em] md:text-3xl">
+          <h2 className="text-2xl font-bold tracking-tight md:text-3xl">
             Build a tailored mock interview.
           </h2>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-gray-400">
@@ -436,7 +436,7 @@ export function PracticeStartScreen({
             hasCandidateProfileContext(savedCandidateProfile) && (
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <p className="text-sm font-black text-emerald-200">
+                  <p className="text-sm font-bold text-emerald-200">
                     Saved profile detected
                   </p>
                   <p className="mt-1 text-sm leading-6 text-gray-400">
@@ -450,14 +450,14 @@ export function PracticeStartScreen({
                   <button
                     type="button"
                     onClick={useSavedProfileForRole}
-                    className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-4 py-2 text-xs font-black text-emerald-100 transition hover:bg-emerald-300/15"
+                    className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-4 py-2 text-xs font-bold text-emerald-100 transition hover:bg-emerald-300/15"
                   >
                     Use saved profile
                   </button>
 
                   <Link
                     href="/profile"
-                    className="rounded-full border border-white/10 bg-white/[0.06] px-4 py-2 text-xs font-black text-gray-200 transition hover:bg-white/[0.1]"
+                    className="rounded-full border border-white/10 bg-white/[0.06] px-4 py-2 text-xs font-bold text-gray-200 transition hover:bg-white/[0.1]"
                   >
                     Edit profile
                   </Link>
@@ -476,7 +476,7 @@ export function PracticeStartScreen({
 
                 <Link
                   href="/profile"
-                  className="rounded-full border border-purple-300/20 bg-purple-300/10 px-4 py-2 text-xs font-black text-purple-100 transition hover:bg-purple-300/15"
+                  className="rounded-full border border-purple-300/20 bg-purple-300/10 px-4 py-2 text-xs font-bold text-purple-100 transition hover:bg-purple-300/15"
                 >
                   Create profile
                 </Link>
@@ -486,7 +486,7 @@ export function PracticeStartScreen({
 
         {manualDeviceMode && (
           <div className="mb-5 rounded-2xl border border-cyan-300/15 bg-cyan-300/10 p-4">
-            <p className="text-sm font-black text-cyan-200">
+            <p className="text-sm font-bold text-cyan-200">
               Phone/tablet mode enabled
             </p>
             <p className="mt-1 text-sm leading-6 text-gray-300">
@@ -499,7 +499,7 @@ export function PracticeStartScreen({
 
         {startDisabled && startDisabledMessage && (
           <div className="mb-5 rounded-2xl border border-amber-300/20 bg-amber-300/10 p-4">
-            <p className="text-sm font-black text-amber-100">
+            <p className="text-sm font-bold text-amber-100">
               Daily practice limit reached
             </p>
             <p className="mt-1 text-sm leading-6 text-gray-300">
@@ -544,10 +544,10 @@ export function PracticeStartScreen({
           <div className="mb-5 rounded-[1.7rem] border border-purple-400/20 bg-purple-400/[0.05] p-5">
             <div className="mb-5 flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
               <div>
-                <p className="text-sm font-black uppercase tracking-[0.2em] text-purple-300">
+                <p className="text-sm font-bold tracking-wide text-purple-300">
                   Question setup · Advanced
                 </p>
-                <h3 className="mt-2 text-xl font-black tracking-[-0.03em] text-white">
+                <h3 className="mt-2 text-xl font-bold tracking-tight text-white">
                   Customise your question session.
                 </h3>
                 <p className="mt-1 text-sm leading-6 text-gray-400">
@@ -559,24 +559,24 @@ export function PracticeStartScreen({
 
             {/* Question count stepper */}
             <div className="mb-5">
-              <p className="mb-3 text-sm font-black text-white">Number of questions</p>
+              <p className="mb-3 text-sm font-bold text-white">Number of questions</p>
               <div className="flex items-center gap-4">
                 <button
                   type="button"
                   disabled={totalQuestions <= MIN_TOTAL_QUESTIONS}
                   onClick={() => handleTotalQuestionsChange(totalQuestions - 1)}
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-lg font-black text-white transition hover:bg-white/[0.1] disabled:cursor-not-allowed disabled:opacity-30"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-lg font-bold text-white transition hover:bg-white/[0.1] disabled:cursor-not-allowed disabled:opacity-30"
                 >
                   −
                 </button>
-                <span className="min-w-[3rem] text-center text-3xl font-black tracking-[-0.05em] text-white">
+                <span className="min-w-[3rem] text-center text-3xl font-bold tracking-tight text-white">
                   {totalQuestions}
                 </span>
                 <button
                   type="button"
                   disabled={totalQuestions >= MAX_TOTAL_QUESTIONS}
                   onClick={() => handleTotalQuestionsChange(totalQuestions + 1)}
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-lg font-black text-white transition hover:bg-white/[0.1] disabled:cursor-not-allowed disabled:opacity-30"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-lg font-bold text-white transition hover:bg-white/[0.1] disabled:cursor-not-allowed disabled:opacity-30"
                 >
                   +
                 </button>
@@ -619,7 +619,7 @@ export function PracticeStartScreen({
                     Allocate your {totalQuestions} questions by type
                   </p>
                   <span
-                    className={`rounded-full px-3 py-1 text-xs font-black ${
+                    className={`rounded-full px-3 py-1 text-xs font-bold ${
                       mixMatchesTotal
                         ? "bg-emerald-400/15 text-emerald-300"
                         : currentMixTotal > totalQuestions
@@ -654,18 +654,18 @@ export function PracticeStartScreen({
                           type="button"
                           disabled={(questionMix[key] ?? 0) <= 0}
                           onClick={() => adjustMix(key, -1)}
-                          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-sm font-black text-white transition hover:bg-white/[0.1] disabled:cursor-not-allowed disabled:opacity-25"
+                          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-sm font-bold text-white transition hover:bg-white/[0.1] disabled:cursor-not-allowed disabled:opacity-25"
                         >
                           −
                         </button>
-                        <span className="w-6 text-center text-sm font-black text-white">
+                        <span className="w-6 text-center text-sm font-bold text-white">
                           {questionMix[key] ?? 0}
                         </span>
                         <button
                           type="button"
                           disabled={currentMixTotal >= totalQuestions}
                           onClick={() => adjustMix(key, 1)}
-                          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-sm font-black text-white transition hover:bg-white/[0.1] disabled:cursor-not-allowed disabled:opacity-25"
+                          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.06] text-sm font-bold text-white transition hover:bg-white/[0.1] disabled:cursor-not-allowed disabled:opacity-25"
                         >
                           +
                         </button>
@@ -730,10 +730,10 @@ export function PracticeStartScreen({
 
         <div className="mb-5 rounded-[1.7rem] border border-white/10 bg-black/25 p-5">
           <div className="mb-5">
-            <p className="text-sm font-black uppercase tracking-[0.2em] text-cyan-300">
+            <p className="text-sm font-bold tracking-wide text-cyan-300">
               Practice mode
             </p>
-            <h3 className="mt-2 text-xl font-black tracking-[-0.03em] text-white">
+            <h3 className="mt-2 text-xl font-bold tracking-tight text-white">
               Choose one interview format.
             </h3>
             <p className="mt-2 text-sm leading-6 text-gray-400">
@@ -774,12 +774,12 @@ export function PracticeStartScreen({
           {isFreePlan && (
             <div className="mt-4 flex flex-col gap-2 rounded-2xl border border-purple-300/20 bg-purple-300/[0.07] p-4 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-sm leading-6 text-gray-300">
-                <span className="font-black text-purple-200">Voice &amp; camera modes</span> are
+                <span className="font-bold text-purple-200">Voice &amp; camera modes</span> are
                 available on Plus and Professional plans.
               </p>
               <Link
                 href="/pricing"
-                className="shrink-0 rounded-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-4 py-2 text-xs font-black text-white shadow-lg shadow-purple-950/35 transition hover:scale-[1.03]"
+                className="shrink-0 rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-4 py-2 text-xs font-bold text-white shadow-lg shadow-purple-950/35 transition hover:scale-[1.03]"
               >
                 Upgrade →
               </Link>
@@ -790,10 +790,10 @@ export function PracticeStartScreen({
         {selectedPracticeMode !== "typed" && (
         <div className="mb-5 rounded-[1.7rem] border border-white/10 bg-black/25 p-5">
           <div className="mb-5">
-            <p className="text-sm font-black uppercase tracking-[0.2em] text-purple-300">
+            <p className="text-sm font-bold tracking-wide text-purple-300">
               Speaker preference
             </p>
-            <h3 className="mt-2 text-xl font-black tracking-[-0.03em] text-white">
+            <h3 className="mt-2 text-xl font-bold tracking-tight text-white">
               Choose how the interviewer sounds.
             </h3>
             <p className="mt-2 text-sm leading-6 text-gray-400">
@@ -804,7 +804,7 @@ export function PracticeStartScreen({
 
           <div className="space-y-5">
             <div>
-              <p className="mb-3 text-sm font-black text-white">Voice style</p>
+              <p className="mb-3 text-sm font-bold text-white">Voice style</p>
               <div className="grid gap-3 md:grid-cols-3">
                 {speakerVoiceOptions.map((option) => (
                   <PreferenceCard
@@ -843,9 +843,9 @@ export function PracticeStartScreen({
             <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
               <p className="text-sm leading-6 text-gray-300">
                 Current setup:{" "}
-                <span className="font-black text-white">{experienceLevel}</span>{" "}
+                <span className="font-bold text-white">{experienceLevel}</span>{" "}
                 · {interviewType} · {difficulty} difficulty · Focus: {focusArea} ·{" "}
-                <span className="font-black text-white">
+                <span className="font-bold text-white">
                   {practiceModeLabels[selectedPracticeMode]}
                 </span>{" "}
                 with a {formatPreferenceWord(speakerPreference.voice)} voice
@@ -856,7 +856,7 @@ export function PracticeStartScreen({
                 type="button"
                 onClick={() => void savePracticePreference()}
                 disabled={savingPreference || !isSignedIn}
-                className="rounded-full border border-purple-300/20 bg-purple-300/10 px-4 py-2 text-xs font-black text-purple-100 transition hover:bg-purple-300/15 disabled:cursor-not-allowed disabled:opacity-50"
+                className="rounded-full border border-purple-300/20 bg-purple-300/10 px-4 py-2 text-xs font-bold text-purple-100 transition hover:bg-purple-300/15 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {savingPreference ? "Saving..." : "Save full setup as default"}
               </button>
@@ -881,7 +881,7 @@ export function PracticeStartScreen({
         <button
           onClick={startInterview}
           disabled={interviewStartDisabled}
-          className="w-full rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-6 py-4 text-base font-black shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
+          className="w-full rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-4 text-base font-bold shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
         >
           {questionLoading
             ? "Starting..."
@@ -905,7 +905,7 @@ export function PracticeStartScreen({
 
       <aside className="space-y-6">
         <GlassCard>
-          <h2 className="mb-4 text-xl font-black text-white">Account</h2>
+          <h2 className="mb-4 text-xl font-bold text-white">Account</h2>
 
           {!isSignedIn && (
             <>
@@ -914,7 +914,7 @@ export function PracticeStartScreen({
                 and prepare for richer progress tracking.
               </p>
               <SignInButton mode="modal">
-                <button className="w-full rounded-2xl bg-white px-4 py-3 font-black text-black shadow-xl shadow-purple-950/20 transition hover:bg-purple-100">
+                <button className="w-full rounded-2xl bg-white px-4 py-3 font-bold text-black shadow-xl shadow-purple-950/20 transition hover:bg-purple-100">
                   Sign In
                 </button>
               </SignInButton>
@@ -930,7 +930,7 @@ export function PracticeStartScreen({
 
               <Link
                 href="/profile"
-                className="block w-full rounded-2xl border border-purple-300/20 bg-purple-300/10 px-4 py-3 text-center text-sm font-black text-purple-100 transition hover:bg-purple-300/15"
+                className="block w-full rounded-2xl border border-purple-300/20 bg-purple-300/10 px-4 py-3 text-center text-sm font-bold text-purple-100 transition hover:bg-purple-300/15"
               >
                 Manage Candidate Profile
               </Link>
@@ -939,7 +939,7 @@ export function PracticeStartScreen({
         </GlassCard>
 
         <GlassCard>
-          <h2 className="mb-4 text-xl font-black text-white">Premium setup</h2>
+          <h2 className="mb-4 text-xl font-bold text-white">Premium setup</h2>
           <div className="space-y-3 text-sm leading-6 text-gray-400">
             <CheckItem>{experienceLevel}</CheckItem>
             <CheckItem>{interviewType}</CheckItem>
@@ -987,11 +987,11 @@ function ModeCard({
     >
       <div className="mb-3 flex items-start justify-between gap-3">
         <div>
-          <p className="text-base font-black tracking-[-0.02em] text-white">
+          <p className="text-base font-bold tracking-tight text-white">
             {title}
           </p>
           <p
-            className={`mt-1 w-fit rounded-full px-2.5 py-1 text-[11px] font-black uppercase tracking-[0.12em] ${
+            className={`mt-1 w-fit rounded-full px-2.5 py-1 text-[11px] font-bold tracking-wide ${
               locked
                 ? "border border-purple-300/25 bg-purple-300/[0.1] text-purple-200"
                 : active
@@ -1048,7 +1048,7 @@ function PreferenceCard({
           : "border-white/10 bg-white/[0.045] hover:bg-white/[0.07]"
       }`}
     >
-      <p className="text-sm font-black text-white">{title}</p>
+      <p className="text-sm font-bold text-white">{title}</p>
       <p className="mt-2 text-xs leading-5 text-gray-400">{description}</p>
     </button>
   );

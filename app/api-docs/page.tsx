@@ -33,7 +33,7 @@ function Tag({ method }: { method: "GET" | "POST" | "DELETE" }) {
     DELETE: "bg-red-500/20 text-red-300 border-red-500/30",
   };
   return (
-    <span className={`rounded border px-2 py-0.5 text-xs font-black ${colors[method]}`}>
+    <span className={`rounded border px-2 py-0.5 text-xs font-bold ${colors[method]}`}>
       {method}
     </span>
   );
@@ -52,7 +52,7 @@ export default function ApiDocsPage() {
             <Link href="/for-business" className="text-gray-400 hover:text-white">For hiring teams</Link>
             <Link
               href="/company/api-keys"
-              className="rounded-full bg-purple-600 px-4 py-1.5 font-black text-white hover:bg-purple-500"
+              className="rounded-full bg-purple-600 px-4 py-1.5 font-bold text-white hover:bg-purple-500"
             >
               Get API key
             </Link>
@@ -63,10 +63,10 @@ export default function ApiDocsPage() {
       <div className="mx-auto max-w-5xl px-6 py-12">
         {/* Title */}
         <div className="mb-10">
-          <span className="rounded-full border border-purple-300/20 bg-white/[0.04] px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-purple-300">
+          <span className="rounded-full border border-purple-300/20 bg-white/[0.04] px-3 py-1 text-[10px] font-bold tracking-wide text-purple-300">
             v1.0
           </span>
-          <h1 className="mt-4 text-4xl font-black tracking-[-0.04em]">ATS API Reference</h1>
+          <h1 className="mt-4 text-4xl font-bold tracking-tight">ATS API Reference</h1>
           <p className="mt-3 max-w-2xl text-gray-400">
             Pull candidate assessment results directly into your ATS or HRIS. Invite candidates programmatically, track completion status, and retrieve scored results, all via a simple REST API.
           </p>
@@ -89,7 +89,7 @@ export default function ApiDocsPage() {
 
         {/* Authentication */}
         <section className="mb-10">
-          <h2 className="mb-4 text-xl font-black">Authentication</h2>
+          <h2 className="mb-4 text-xl font-bold">Authentication</h2>
           <p className="mb-4 text-gray-400">
             All API requests must include your API key in the <Code>Authorization</Code> header.
             Keys are generated in your{" "}
@@ -103,13 +103,13 @@ export default function ApiDocsPage() {
 
         {/* Base URL */}
         <section className="mb-10">
-          <h2 className="mb-4 text-xl font-black">Base URL</h2>
+          <h2 className="mb-4 text-xl font-bold">Base URL</h2>
           <Block>{BASE}</Block>
         </section>
 
         {/* Endpoints */}
         <section className="mb-10">
-          <h2 className="mb-6 text-xl font-black">Endpoints</h2>
+          <h2 className="mb-6 text-xl font-bold">Endpoints</h2>
 
           {/* GET /templates */}
           <div className="mb-8 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-6">
@@ -120,7 +120,7 @@ export default function ApiDocsPage() {
             <p className="mb-4 text-sm text-gray-400">List all active assessment templates for your company.</p>
             <Block>{`curl -H "Authorization: Bearer aim_..." \\
   ${BASE}/templates`}</Block>
-            <p className="mt-4 mb-2 text-xs font-black uppercase tracking-wider text-gray-500">Response</p>
+            <p className="mt-4 mb-2 text-xs font-bold uppercase tracking-wider text-gray-500">Response</p>
             <Block>{`{
   "data": [
     {
@@ -190,7 +190,7 @@ export default function ApiDocsPage() {
   -H "Content-Type: application/json" \\
   -d '{"candidateEmail":"jane@example.com","templateId":"clt_abc123","expiryDays":7}' \\
   ${BASE}/candidates`}</Block>
-            <p className="mt-4 mb-2 text-xs font-black uppercase tracking-wider text-gray-500">Body parameters</p>
+            <p className="mt-4 mb-2 text-xs font-bold uppercase tracking-wider text-gray-500">Body parameters</p>
             <div className="overflow-x-auto">
               <table className="w-full text-xs">
                 <thead>
@@ -232,7 +232,7 @@ export default function ApiDocsPage() {
             </p>
             <Block>{`curl -H "Authorization: Bearer aim_..." \\
   ${BASE}/candidates/cla_xyz789`}</Block>
-            <p className="mt-4 mb-2 text-xs font-black uppercase tracking-wider text-gray-500">Result object</p>
+            <p className="mt-4 mb-2 text-xs font-bold uppercase tracking-wider text-gray-500">Result object</p>
             <Block>{`{
   "id": "cla_xyz789",
   "candidateEmail": "jane@example.com",
@@ -252,7 +252,7 @@ export default function ApiDocsPage() {
 
         {/* Error codes */}
         <section className="mb-12">
-          <h2 className="mb-4 text-xl font-black">Error codes</h2>
+          <h2 className="mb-4 text-xl font-bold">Error codes</h2>
           <div className="overflow-x-auto rounded-xl border border-white/[0.08]">
             <table className="w-full text-sm">
               <thead className="border-b border-white/[0.08] bg-white/[0.03]">
@@ -276,7 +276,7 @@ export default function ApiDocsPage() {
         <div className="rounded-2xl border border-purple-400/20 bg-purple-500/10 p-6 text-center">
           <p className="text-sm text-gray-300">
             Need help integrating?{" "}
-            <a href="mailto:support@aicareermentor.co.uk" className="font-black text-purple-300 hover:text-purple-200">
+            <a href="mailto:support@aicareermentor.co.uk" className="font-bold text-purple-300 hover:text-purple-200">
               Contact our team →
             </a>
           </p>

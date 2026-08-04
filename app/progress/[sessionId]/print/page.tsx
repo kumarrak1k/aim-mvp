@@ -193,7 +193,7 @@ export default function SessionPrintPage() {
       {session && (
         <>
           <header className="avoid-break border-b border-gray-200 pb-6">
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-purple-700">
+            <p className="text-xs font-bold tracking-wide text-purple-700">
               AI Career Mentor · Interview report
             </p>
             <h1 className="mt-2 text-3xl font-extrabold tracking-tight">{session.role}</h1>

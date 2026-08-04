@@ -69,13 +69,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 const mdxComponents = {
   h2: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h2
-      className="mb-4 mt-10 text-2xl font-black leading-tight tracking-[-0.04em] text-white first:mt-0"
+      className="mb-4 mt-10 text-2xl font-bold leading-tight tracking-tight text-white first:mt-0"
       {...props}
     />
   ),
   h3: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h3
-      className="mb-3 mt-7 text-lg font-black leading-tight text-white"
+      className="mb-3 mt-7 text-lg font-bold leading-tight text-white"
       {...props}
     />
   ),
@@ -92,7 +92,7 @@ const mdxComponents = {
     <li className="text-sm leading-6 text-gray-400 [&::marker]:text-purple-400" {...props} />
   ),
   strong: (props: React.HTMLAttributes<HTMLElement>) => (
-    <strong className="font-black text-white" {...props} />
+    <strong className="font-bold text-white" {...props} />
   ),
   a: (props: React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
     <a
@@ -117,7 +117,7 @@ const mdxComponents = {
   ),
   th: (props: React.HTMLAttributes<HTMLTableCellElement>) => (
     <th
-      className="px-4 py-3 text-left text-xs font-black uppercase tracking-[0.12em] text-gray-500"
+      className="px-4 py-3 text-left text-xs font-bold tracking-wide text-gray-500"
       {...props}
     />
   ),
@@ -215,11 +215,11 @@ export default async function BlogPostPage({ params }: Props) {
       <div className="mx-auto max-w-3xl px-4 pb-24 pt-10 sm:px-6">
         <header className="mb-10 mt-8 border-b border-white/[0.07] pb-8">
           {post.category && (
-            <p className="mb-3 text-[11px] font-black uppercase tracking-[0.2em] text-purple-300/70">
+            <p className="mb-3 text-[11px] font-bold tracking-wide text-purple-300/70">
               {post.category}
             </p>
           )}
-          <h1 className="text-[2rem] font-black leading-[1.06] tracking-[-0.05em] sm:text-[2.5rem]">
+          <h1 className="text-[2rem] font-bold leading-[1.06] tracking-tight sm:text-[2.5rem]">
             {post.title}
           </h1>
           <div className="mt-4 flex items-center gap-3 text-xs text-gray-600">
@@ -244,14 +244,14 @@ export default async function BlogPostPage({ params }: Props) {
         </article>
 
         <div className="mt-14 rounded-[2rem] border border-purple-300/20 bg-purple-300/[0.06] p-8 text-center">
-          <p className="font-black">Ready to put this into practice?</p>
+          <p className="font-bold">Ready to put this into practice?</p>
           <p className="mt-2 text-sm text-gray-400">
             AI Career Mentor generates tailored interview questions for your role
             and scores every answer with specific feedback.
           </p>
           <Link
             href="/for-candidates/sign-up"
-            className="mt-5 inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-purple-500 via-fuchsia-500 to-blue-500 px-7 py-3.5 text-sm font-black text-white shadow-xl transition hover:scale-[1.02]"
+            className="mt-5 inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-7 py-3.5 text-sm font-bold text-white shadow-xl transition hover:scale-[1.02]"
           >
             Start practising free →
           </Link>
