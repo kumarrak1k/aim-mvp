@@ -18,7 +18,15 @@ import {
  * press "Start recording". Consent is simply asked on the next
  * non-critical page instead; analytics stays off until answered.
  */
-const SUPPRESSED_PREFIXES = ["/practice/session", "/assessment-centre"];
+const SUPPRESSED_PREFIXES = [
+  "/practice/session",
+  "/assessment-centre",
+  // The signup funnel: the dialog covered the onboarding Continue button
+  // (caught by the onboarding e2e spec) and would equally cover the terms
+  // form. A brand-new user is exactly who hasn't dismissed it yet.
+  "/onboarding",
+  "/accept-terms",
+];
 
 /**
  * Cookie and analytics consent.
