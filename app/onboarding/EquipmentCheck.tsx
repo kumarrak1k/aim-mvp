@@ -179,13 +179,13 @@ export function EquipmentCheck({
   }
 
   const ROW =
-    "rounded-[1.25rem] border border-white/[0.08] bg-white/[0.03] p-5";
+    "rounded-[1.1rem] border border-white/[0.08] bg-white/[0.03] p-4";
   const BTN_SMALL =
     "rounded-xl border border-white/[0.1] bg-white/[0.05] px-4 py-2 text-xs font-bold text-white transition hover:bg-white/[0.1]";
 
   return (
     <section>
-      <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+      <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
         Quick equipment check
       </h1>
       <p className="mt-3 text-sm leading-7 text-gray-400">
@@ -193,7 +193,7 @@ export function EquipmentCheck({
         coaching need these — typed practice works without them.
       </p>
 
-      <div className="mt-7 space-y-3">
+      <div className="mt-5 space-y-2">
         {/* Microphone */}
         <div className={ROW}>
           <div className="flex items-center justify-between gap-3">
@@ -295,7 +295,7 @@ export function EquipmentCheck({
         </div>
       </div>
 
-      <div className="mt-9 flex flex-col items-center gap-3">
+      <div className="mt-6 flex flex-col items-center gap-3">
         <button
           onClick={() => leave(onContinue)}
           disabled={!allPass}

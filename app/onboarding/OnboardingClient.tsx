@@ -23,7 +23,7 @@ import { EquipmentCheck } from "./EquipmentCheck";
  */
 
 const CARD =
-  "w-full rounded-[1.25rem] border px-5 py-4 text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-400/60";
+  "w-full rounded-[1.1rem] border px-4 py-3 text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-400/60";
 const CARD_OFF =
   "border-white/[0.09] bg-white/[0.03] text-gray-200 hover:border-purple-300/40 hover:bg-white/[0.06]";
 const CARD_ON =
@@ -112,9 +112,9 @@ export function OnboardingClient({ firstName }: { firstName: string }) {
   }
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-2xl flex-col px-4 py-10 sm:px-6">
+    <div className="mx-auto flex min-h-screen max-w-2xl flex-col px-4 py-6 sm:px-6">
       {/* Progress */}
-      <div className="mb-8">
+      <div className="mb-5">
         <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/[0.07]">
           <div
             className="h-full rounded-full bg-gradient-to-r from-violet-600 to-purple-600 transition-all duration-500"
@@ -129,14 +129,14 @@ export function OnboardingClient({ firstName }: { firstName: string }) {
       <div className="flex-1">
         {step === 1 && (
           <section>
-            <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+            <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
               {firstName ? `Right ${firstName} — what are you preparing for?` : "What are you preparing for?"}
             </h1>
             <p className="mt-3 text-sm leading-7 text-gray-400">
               This is the one thing we need. Every question you practise is written for it.
             </p>
 
-            <label className="mt-7 block text-[11px] font-bold tracking-wide text-purple-300/90">
+            <label className="mt-5 block text-[11px] font-bold tracking-wide text-purple-300/90">
               Target role
             </label>
             <input
@@ -144,10 +144,10 @@ export function OnboardingClient({ firstName }: { firstName: string }) {
               value={targetRole}
               onChange={(e) => setTargetRole(e.target.value)}
               placeholder="e.g. Operations Analyst, Graduate Software Engineer"
-              className="mt-2 w-full rounded-[1.25rem] border border-white/[0.09] bg-white/[0.03] px-5 py-4 text-base text-white placeholder:text-gray-600 focus:border-purple-400/60 focus:outline-none"
+              className="mt-2 w-full rounded-[1.25rem] border border-white/[0.09] bg-white/[0.03] px-4 py-3 text-base text-white placeholder:text-gray-600 focus:border-purple-400/60 focus:outline-none"
             />
 
-            <p className="mt-7 text-[11px] font-bold tracking-wide text-purple-300/90">
+            <p className="mt-5 text-[11px] font-bold tracking-wide text-purple-300/90">
               Where you are
             </p>
             <div className="mt-2 grid gap-2 sm:grid-cols-2">
@@ -163,7 +163,7 @@ export function OnboardingClient({ firstName }: { firstName: string }) {
               ))}
             </div>
 
-            <p className="mt-7 text-[11px] font-bold tracking-wide text-purple-300/90">
+            <p className="mt-5 text-[11px] font-bold tracking-wide text-purple-300/90">
               Sector
             </p>
             <div className="mt-2 grid gap-2 sm:grid-cols-3">
@@ -182,14 +182,14 @@ export function OnboardingClient({ firstName }: { firstName: string }) {
 
         {step === 2 && (
           <section>
-            <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+            <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
               What are you actually facing?
             </h1>
             <p className="mt-3 text-sm leading-7 text-gray-400">
               These are very different processes. Knowing which one changes what we put in front of
               you.
             </p>
-            <div className="mt-7 space-y-2">
+            <div className="mt-5 space-y-2">
               {PROCESS_TYPES.map((p) => (
                 <button
                   key={p.value}
@@ -206,13 +206,13 @@ export function OnboardingClient({ firstName }: { firstName: string }) {
 
         {step === 3 && (
           <section>
-            <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+            <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
               What is the hardest part for you?
             </h1>
             <p className="mt-3 text-sm leading-7 text-gray-400">
               Pick the one that stings most. Your sessions will lean on it.
             </p>
-            <div className="mt-7 space-y-2">
+            <div className="mt-5 space-y-2">
               {CHALLENGES.map((c) => (
                 <button
                   key={c.value}
@@ -231,23 +231,23 @@ export function OnboardingClient({ firstName }: { firstName: string }) {
             <p className="text-[11px] font-bold tracking-wide text-emerald-300">
               Your plan
             </p>
-            <h1 className="mt-3 text-3xl font-bold leading-[1.1] tracking-tight text-white sm:text-4xl">
+            <h1 className="mt-3 text-2xl font-bold leading-[1.15] tracking-tight text-white sm:text-3xl">
               {plan.headline}
             </h1>
-            <p className="mt-4 text-base leading-7 text-gray-300">{plan.body}</p>
+            <p className="mt-3 text-sm leading-6 text-gray-300">{plan.body}</p>
 
-            <div className="mt-8 space-y-3">
+            <div className="mt-5 space-y-2">
               {planSteps.map((s, i) => (
                 <div
                   key={s.title}
-                  className="flex gap-4 rounded-[1.25rem] border border-white/[0.08] bg-white/[0.03] p-5"
+                  className="flex gap-3 rounded-[1.1rem] border border-white/[0.08] bg-white/[0.03] p-4"
                 >
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-fuchsia-500 text-sm font-bold text-white">
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-purple-500 text-[13px] font-bold text-white">
                     {i + 1}
                   </span>
                   <div>
                     <p className="font-bold text-white">{s.title}</p>
-                    <p className="mt-1 text-sm leading-6 text-gray-400">{s.body}</p>
+                    <p className="mt-0.5 text-[13px] leading-5 text-gray-400">{s.body}</p>
                   </div>
                 </div>
               ))}
@@ -257,7 +257,7 @@ export function OnboardingClient({ firstName }: { firstName: string }) {
 
         {step === 5 && (
           <section className="text-center">
-            <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+            <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
               Start with a short warm-up?
             </h1>
             <p className="mx-auto mt-4 max-w-md text-base leading-7 text-gray-300">
@@ -267,7 +267,7 @@ export function OnboardingClient({ firstName }: { firstName: string }) {
             {/* Both choices pass through the equipment check (step 6) first,
                 so mic/camera problems surface before the first question, not
                 during it. */}
-            <div className="mt-9 flex flex-col items-center gap-3">
+            <div className="mt-6 flex flex-col items-center gap-3">
               <button
                 onClick={() => {
                   setPendingDestination("/practice?warmup=1");
@@ -309,7 +309,7 @@ export function OnboardingClient({ firstName }: { firstName: string }) {
       )}
 
       {step < 5 && (
-        <div className="mt-10 flex items-center justify-between gap-4">
+        <div className="mt-6 flex items-center justify-between gap-4">
           <button
             onClick={() => (step === 1 ? skip() : setStep((s) => s - 1))}
             disabled={saving}
