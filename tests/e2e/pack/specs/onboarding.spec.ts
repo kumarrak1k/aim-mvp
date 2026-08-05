@@ -44,6 +44,17 @@ test.describe("candidate onboarding", () => {
     await expect(page.getByRole("heading", { name: "Quick equipment check" })).toBeVisible();
     await expect(page.getByText("Step 6 of 6")).toBeVisible();
 
+    // REGRESSION (2026-08-05): a refresh here (e.g. after plugging in a new
+    // camera) must NOT dump the candidate into practice with the flow
+    // unfinished — completion is only stamped when the equipment check hands
+    // off. The saved answers resume the flow at the plan (step 4).
+    await page.reload();
+    await expect(page.getByText("Your plan")).toBeVisible({ timeout: 15_000 });
+    await expect(page).toHaveURL(/\/onboarding/);
+    await page.getByRole("button", { name: "Looks right" }).click();
+    await page.getByRole("button", { name: /Start the warm-up/ }).click();
+    await expect(page.getByRole("heading", { name: "Quick equipment check" })).toBeVisible();
+
     // The fake mic emits a tone, so the meter should genuinely register a pass.
     await page.getByRole("button", { name: "Test microphone" }).click();
     await expect(page.getByText("Working").first()).toBeVisible({ timeout: 15_000 });

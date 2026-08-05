@@ -50,12 +50,15 @@ export async function POST(request: NextRequest) {
 
   const challenge = challengeFor(biggestChallenge);
 
+  // Deliberately NOT stamping onboardingCompletedAt here: the answers save on
+  // the way into step 4, but the flow isn't finished until the equipment
+  // check (step 6) hands off. Stamping early meant a mid-flow refresh
+  // skipped the remaining steps entirely. Completion is PATCH's job.
   const data = {
     targetRole,
     targetSector,
     biggestChallenge,
     processType,
-    onboardingCompletedAt: new Date(),
     onboardingSkipped: false,
     // Applied to the live defaults so the very next session differs.
     defaultExperienceLevel: careerStage,
@@ -71,11 +74,37 @@ export async function POST(request: NextRequest) {
     create: { clerkUserId: userId, ...data },
   });
 
+  return NextResponse.json({ ok: true });
+}
+
+/**
+ * Marks onboarding complete. Called when the equipment check (the final step)
+ * hands the candidate off to their destination — completed OR skipped-check,
+ * both routes go through it.
+ */
+export async function PATCH() {
+  const { userId } = await auth();
+  if (!userId) {
+    return NextResponse.json({ error: "You must be signed in." }, { status: 401 });
+  }
+
+  const profile = await prisma.userProfile.upsert({
+    where: { clerkUserId: userId },
+    update: { onboardingCompletedAt: new Date(), onboardingSkipped: false },
+    create: { clerkUserId: userId, onboardingCompletedAt: new Date(), onboardingSkipped: false },
+    select: {
+      targetSector: true,
+      defaultExperienceLevel: true,
+      biggestChallenge: true,
+      processType: true,
+    },
+  });
+
   recordActivity(userId, ACTIVITY_EVENTS.ONBOARDING_COMPLETED, null, {
-    sector: targetSector,
-    stage: careerStage,
-    challenge: biggestChallenge,
-    processType,
+    sector: profile.targetSector,
+    stage: profile.defaultExperienceLevel,
+    challenge: profile.biggestChallenge,
+    processType: profile.processType,
   });
 
   return NextResponse.json({ ok: true });

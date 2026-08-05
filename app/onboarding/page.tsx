@@ -24,10 +24,30 @@ export default async function OnboardingPage() {
 
   const profile = await prisma.userProfile.findUnique({
     where: { clerkUserId: userId },
-    select: { onboardingCompletedAt: true },
+    select: {
+      onboardingCompletedAt: true,
+      targetRole: true,
+      targetSector: true,
+      biggestChallenge: true,
+      processType: true,
+      defaultExperienceLevel: true,
+    },
   });
 
   if (profile?.onboardingCompletedAt) redirect("/practice");
+
+  // Answers saved but no completion stamp = an interrupted run (refresh or
+  // closed tab mid-flow). Resume at the plan rather than re-asking everything.
+  const resumeAnswers =
+    profile?.targetRole && profile.targetSector && profile.biggestChallenge && profile.processType
+      ? {
+          targetRole: profile.targetRole,
+          careerStage: profile.defaultExperienceLevel ?? "",
+          targetSector: profile.targetSector,
+          biggestChallenge: profile.biggestChallenge,
+          processType: profile.processType,
+        }
+      : null;
 
   const user = await currentUser();
   const firstName = user?.firstName?.trim() ?? "";
@@ -38,7 +58,7 @@ export default async function OnboardingPage() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_25%_15%,rgba(120,60,255,0.10),transparent),radial-gradient(ellipse_60%_50%_at_75%_85%,rgba(232,80,180,0.06),transparent),linear-gradient(180deg,#0a0614_0%,#100a1f_50%,#0c0816_100%)]" />
       </div>
       <div className="relative z-10">
-        <OnboardingClient firstName={firstName} />
+        <OnboardingClient firstName={firstName} resumeAnswers={resumeAnswers} />
       </div>
     </div>
   );

@@ -29,20 +29,36 @@ const CARD_OFF =
 const CARD_ON =
   "border-purple-400/60 bg-purple-500/[0.14] text-white shadow-lg shadow-purple-950/30";
 
-export function OnboardingClient({ firstName }: { firstName: string }) {
+export type OnboardingResumeAnswers = {
+  targetRole: string;
+  careerStage: string;
+  targetSector: string;
+  biggestChallenge: string;
+  processType: string;
+};
+
+export function OnboardingClient({
+  firstName,
+  resumeAnswers,
+}: {
+  firstName: string;
+  /** Saved answers from an interrupted run — resume at the plan (step 4)
+      instead of asking everything again. */
+  resumeAnswers?: OnboardingResumeAnswers | null;
+}) {
   const router = useRouter();
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(resumeAnswers ? 4 : 1);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
   // Where the candidate chose to go at step 5. Held so the equipment check
   // (step 6) can run first and then complete the journey they picked.
   const [pendingDestination, setPendingDestination] = useState("/practice");
-  const [targetRole, setTargetRole] = useState("");
-  const [careerStage, setCareerStage] = useState<string>("");
-  const [targetSector, setTargetSector] = useState<string>("");
-  const [biggestChallenge, setBiggestChallenge] = useState<string>("");
-  const [processType, setProcessType] = useState<string>("");
+  const [targetRole, setTargetRole] = useState(resumeAnswers?.targetRole ?? "");
+  const [careerStage, setCareerStage] = useState<string>(resumeAnswers?.careerStage ?? "");
+  const [targetSector, setTargetSector] = useState<string>(resumeAnswers?.targetSector ?? "");
+  const [biggestChallenge, setBiggestChallenge] = useState<string>(resumeAnswers?.biggestChallenge ?? "");
+  const [processType, setProcessType] = useState<string>(resumeAnswers?.processType ?? "");
 
   const plan = useMemo(
     () =>
@@ -296,7 +312,13 @@ export function OnboardingClient({ firstName }: { firstName: string }) {
 
         {step === 6 && (
           <EquipmentCheck
-            onContinue={() => router.push(pendingDestination)}
+            onContinue={async () => {
+              // The whole flow is now behind us — stamp completion, THEN
+              // leave. Stamping any earlier lets a mid-flow refresh skip the
+              // remaining steps.
+              await fetch("/api/onboarding", { method: "PATCH" }).catch(() => {});
+              router.push(pendingDestination);
+            }}
             onBack={() => setStep(5)}
           />
         )}
