@@ -138,7 +138,7 @@ export default async function ForCandidatesPage() {
       </section>
 
       {/* Two products */}
-      <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 sm:pb-20">
+      <section className="mx-auto max-w-7xl 2xl:max-w-[96rem] px-4 pb-16 sm:px-6 sm:pb-20">
         <div className="mb-10 text-center">
           <p className="text-[11px] font-bold tracking-wide text-purple-300/90">
             What you get
@@ -264,7 +264,7 @@ export default async function ForCandidatesPage() {
       </section>
 
       {/* Final CTA */}
-      <section className="mx-auto max-w-7xl px-4 pb-20 sm:px-6 sm:pb-28">
+      <section className="mx-auto max-w-7xl 2xl:max-w-[96rem] px-4 pb-20 sm:px-6 sm:pb-28">
         <div className="rounded-[2rem] border border-white/[0.1] bg-gradient-to-br from-purple-500/[0.10] via-violet-500/[0.06] to-transparent p-10 text-center sm:p-14">
           <p className="text-[11px] font-bold tracking-wide text-purple-300/90">
             Get started

@@ -78,7 +78,7 @@ export default function TemplatesPage() {
 
   return (
     <CorporateAppShell currentPath="/company/templates">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl 2xl:max-w-[96rem] px-4 py-12 sm:px-6 lg:px-8">
         <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-sm font-bold tracking-wide text-fuchsia-300">Assessment Templates</p>

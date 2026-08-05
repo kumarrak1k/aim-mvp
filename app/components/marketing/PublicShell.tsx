@@ -44,7 +44,7 @@ export function PublicShell({ children, currentPath }: PublicShellProps) {
 
       {/* ── Header ── */}
       <header className="relative z-50">
-        <div className="relative mx-auto grid w-full max-w-7xl grid-cols-[auto_minmax(0,1fr)_auto] items-center px-4 pt-1.5 pb-6 sm:px-6 sm:pt-2 sm:pb-8 lg:px-10">
+        <div className="relative mx-auto grid w-full max-w-7xl 2xl:max-w-[96rem] grid-cols-[auto_minmax(0,1fr)_auto] items-center px-4 pt-1.5 pb-6 sm:px-6 sm:pt-2 sm:pb-8 lg:px-10">
           {/* Logo */}
           <div className="relative z-10">
             <SiteLogo href="/" size="md" showText />
@@ -130,7 +130,7 @@ export function PublicShell({ children, currentPath }: PublicShellProps) {
 
         {/* Mobile / tablet scrollable nav strip (shown below xl) */}
         <div className="px-4 py-2 sm:px-6 xl:hidden">
-          <nav className="mx-auto flex max-w-7xl gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <nav className="mx-auto flex max-w-7xl 2xl:max-w-[96rem] gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {NAV_LINKS.map((item) => {
               const active = currentPath === item.href;
               return (

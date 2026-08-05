@@ -100,7 +100,7 @@ export default async function CandidatePricingPage() {
         </p>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 sm:pb-20">
+      <section className="mx-auto max-w-7xl 2xl:max-w-[96rem] px-4 pb-16 sm:px-6 sm:pb-20">
         <LaunchPromoBanner />
         <CandidatePricingPlans currency={currency} />
       </section>

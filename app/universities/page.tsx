@@ -119,7 +119,7 @@ export default function UniversitiesPage() {
         </section>
 
         {/* Benefits */}
-        <section className="mx-auto max-w-7xl px-4 pb-20 sm:px-6">
+        <section className="mx-auto max-w-7xl 2xl:max-w-[96rem] px-4 pb-20 sm:px-6">
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {benefits.map((b) => (
               <div

@@ -9,7 +9,7 @@ export function SiteFooter() {
       <div className="border-b border-white/[0.05] bg-white/[0.02] px-4 py-3">
         <DataTrustStrip />
       </div>
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:py-16">
+      <div className="mx-auto max-w-7xl 2xl:max-w-[96rem] px-4 py-12 sm:px-6 lg:py-16">
         <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[1.6fr_1fr_1fr_1fr]">
 
           {/* Brand */}

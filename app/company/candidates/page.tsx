@@ -198,7 +198,7 @@ function CandidatesContent() {
 
   return (
     <CorporateAppShell currentPath="/company/candidates">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl 2xl:max-w-[96rem] px-4 py-12 sm:px-6 lg:px-8">
         <div className="mb-10">
           <p className="text-sm font-bold tracking-wide text-fuchsia-300">Candidates</p>
           <h1 className="mt-1 text-3xl font-bold tracking-tight sm:text-4xl">Invite candidates</h1>

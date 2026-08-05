@@ -82,7 +82,7 @@ export function CorporateAppShell({
       </div>
 
       <header className="sticky top-0 z-50 backdrop-blur-2xl">
-        <div className="relative mx-auto flex w-full max-w-7xl items-center px-4 py-3 sm:px-6 lg:px-8 lg:py-3.5">
+        <div className="relative mx-auto flex w-full max-w-7xl 2xl:max-w-[96rem] items-center px-4 py-3 sm:px-6 lg:px-8 lg:py-3.5">
           <Link
             href="/company/dashboard"
             className="relative z-10 flex shrink-0 items-center gap-3"
@@ -151,7 +151,7 @@ export function CorporateAppShell({
 
         {/* Tablet/mobile compact nav row */}
         <div className="px-4 py-2 sm:px-6 xl:hidden">
-          <nav className="mx-auto flex max-w-7xl gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <nav className="mx-auto flex max-w-7xl 2xl:max-w-[96rem] gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {navItems.map((item) => {
               const active =
                 currentPath === item.href ||
@@ -184,7 +184,7 @@ export function CorporateAppShell({
 
         {/* Desktop resource links — secondary strip */}
         <div className="hidden px-4 py-1.5 lg:block">
-          <nav className="mx-auto flex max-w-7xl items-center justify-center gap-6">
+          <nav className="mx-auto flex max-w-7xl 2xl:max-w-[96rem] items-center justify-center gap-6">
             {resourceLinks.map((item) => (
               <Link
                 key={item.href}
@@ -201,7 +201,7 @@ export function CorporateAppShell({
       {/* New-workspace guide banner — dashboard only, dismissible */}
       {showGuideBanner && (
         <div className="relative z-40 px-4 pt-2 sm:px-6">
-          <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 rounded-2xl border border-fuchsia-400/30 bg-gradient-to-r from-fuchsia-600/[0.22] via-purple-600/[0.14] to-fuchsia-600/[0.10] px-4 py-3 backdrop-blur-xl sm:px-5">
+          <div className="mx-auto flex max-w-7xl 2xl:max-w-[96rem] items-center justify-between gap-3 rounded-2xl border border-fuchsia-400/30 bg-gradient-to-r from-fuchsia-600/[0.22] via-purple-600/[0.14] to-fuchsia-600/[0.10] px-4 py-3 backdrop-blur-xl sm:px-5">
             <p className="text-[13px] font-bold leading-5 text-purple-50">
               <span className="mr-1.5" aria-hidden>📘</span>
               New workspace? See the whole assessment workflow in six steps.

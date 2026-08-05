@@ -22,7 +22,7 @@ export function DemoShowcase({
   if (!lead) return null;
 
   return (
-    <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 sm:pb-20">
+    <section className="mx-auto max-w-7xl 2xl:max-w-[96rem] px-4 pb-16 sm:px-6 sm:pb-20">
       <div className="mb-10 text-center">
         <p className="text-[11px] font-bold tracking-wide text-purple-300/90">
           {eyebrow}

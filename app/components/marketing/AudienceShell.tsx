@@ -120,7 +120,7 @@ export function AudienceShell({
 
       {/* Header */}
       <header className="relative z-50">
-        <div className="relative mx-auto grid w-full max-w-7xl grid-cols-[auto_minmax(0,1fr)_auto] items-center px-4 pt-1.5 pb-3 sm:px-6 sm:pt-2 sm:pb-4 lg:px-10">
+        <div className="relative mx-auto grid w-full max-w-7xl 2xl:max-w-[96rem] grid-cols-[auto_minmax(0,1fr)_auto] items-center px-4 pt-1.5 pb-3 sm:px-6 sm:pt-2 sm:pb-4 lg:px-10">
           {/* Logo + audience badge */}
           <Link
             href={audience === "candidate" ? "/" : "/for-business"}
@@ -298,7 +298,7 @@ export function AudienceShell({
             dropdown, so the second row is gone. */}
         {audience === "business" && (
           <div className="hidden px-4 py-1.5 xl:block">
-            <nav className="mx-auto flex max-w-7xl items-center justify-center gap-6">
+            <nav className="mx-auto flex max-w-7xl 2xl:max-w-[96rem] items-center justify-center gap-6">
               {BUSINESS_RESOURCE_LINKS.map((item) => (
                 <Link
                   key={item.href}

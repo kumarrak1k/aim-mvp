@@ -28,7 +28,7 @@ export default function CandidateSignInPage() {
         <div className="absolute bottom-[-80px] right-[-160px] h-[520px] w-[520px] rounded-full bg-fuchsia-500/[0.08] blur-[160px]" />
       </div>
 
-      <div className="relative z-10 mx-auto w-full max-w-7xl px-4 pt-2 pb-8 sm:px-6 lg:px-10">
+      <div className="relative z-10 mx-auto w-full max-w-7xl 2xl:max-w-[96rem] px-4 pt-2 pb-8 sm:px-6 lg:px-10">
         <header className="mb-2 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3">
             <SiteLogo href="" size="md" showText />

@@ -111,7 +111,7 @@ export function TrialBanner() {
       sub.paidPlanName && sub.paidPlanName !== "Free" ? sub.paidPlanName : "subscription";
     return (
       <div className="relative z-40 border-b border-amber-400/30 bg-amber-500/[0.14]">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-3 gap-y-1 px-4 py-2 text-center sm:px-6">
+        <div className="mx-auto flex max-w-7xl 2xl:max-w-[96rem] flex-wrap items-center justify-center gap-x-3 gap-y-1 px-4 py-2 text-center sm:px-6">
           <span className="text-[13px] font-semibold text-amber-100">
             <span aria-hidden>⚠️ </span>
             Your last payment didn&rsquo;t go through. Update your card to keep your{" "}
@@ -146,7 +146,7 @@ export function TrialBanner() {
       : null;
     return (
       <div className="relative z-40 border-b border-emerald-400/25 bg-emerald-500/[0.10]">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-3 gap-y-1 px-4 py-2 text-center sm:px-6">
+        <div className="mx-auto flex max-w-7xl 2xl:max-w-[96rem] flex-wrap items-center justify-center gap-x-3 gap-y-1 px-4 py-2 text-center sm:px-6">
           <span className="text-[13px] font-semibold text-emerald-100">
             <span aria-hidden>&#127891; </span>
             You have complimentary{" "}
@@ -171,7 +171,7 @@ export function TrialBanner() {
             : "border-purple-500/25 bg-[#170c2e]"
         }`}
       >
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-3 gap-y-1 px-4 py-2 text-center sm:px-6">
+        <div className="mx-auto flex max-w-7xl 2xl:max-w-[96rem] flex-wrap items-center justify-center gap-x-3 gap-y-1 px-4 py-2 text-center sm:px-6">
           <span className="text-[13px] font-semibold text-gray-100">
             <span aria-hidden>✨ </span>
             You&rsquo;re on the <strong className="font-bold">Plus</strong>{" "}
@@ -196,7 +196,7 @@ export function TrialBanner() {
   if (!sub.trialConsumed) {
     return (
       <div className="relative z-40 border-b border-purple-500/25 bg-[#170c2e]">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-3 gap-y-1 px-4 py-2 text-center sm:px-6">
+        <div className="mx-auto flex max-w-7xl 2xl:max-w-[96rem] flex-wrap items-center justify-center gap-x-3 gap-y-1 px-4 py-2 text-center sm:px-6">
           <span className="text-[13px] font-semibold text-gray-100">
             <span aria-hidden>🎁 </span>
             Unlock voice &amp; camera coaching and unlimited practice,{" "}
@@ -223,7 +223,7 @@ export function TrialBanner() {
   if (!expiredDismissed) {
     return (
       <div className="relative z-40 border-b border-white/[0.08] bg-white/[0.03]">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-3 gap-y-1 px-4 py-2 text-center sm:px-6">
+        <div className="mx-auto flex max-w-7xl 2xl:max-w-[96rem] flex-wrap items-center justify-center gap-x-3 gap-y-1 px-4 py-2 text-center sm:px-6">
           <span className="text-[13px] font-semibold text-gray-300">
             Your free trial has ended. You&rsquo;re on the Free plan.
           </span>
