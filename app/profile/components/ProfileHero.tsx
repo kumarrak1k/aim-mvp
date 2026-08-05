@@ -16,12 +16,11 @@ export function ProfileHero({
       <div className="mx-auto max-w-3xl">
         <SectionHeading
           align="center"
-          eyebrow="Candidate Profile"
-          title="Build your candidate profile once. Practise smarter every time."
-          description="Save your CV content, target role specification and interview goals so each practice session feels more relevant, focused and personalised."
+          title="Your candidate profile"
+          description="Save your CV, target role and goals once — every session uses them automatically."
         />
 
-        <div className="mt-10 grid gap-4 sm:grid-cols-3">
+        <div className="mt-6 grid gap-4 sm:grid-cols-3">
           <ProfileMetric
             value={`${completionScore}%`}
             label="Profile completion"
