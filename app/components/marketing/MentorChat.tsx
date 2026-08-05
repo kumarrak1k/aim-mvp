@@ -21,6 +21,41 @@ const STORAGE_KEY = "aim_mentor_chat";
 
 type StoredChat = { owner: string; messages: Message[] };
 
+/**
+ * Renders an assistant reply as tidy text. The model is instructed to answer
+ * in plain sentences with full URLs, but this guards the display anyway:
+ * **bold** becomes real bold instead of literal asterisks, and URLs become
+ * clickable links.
+ */
+function renderAssistantText(text: string): React.ReactNode[] {
+  const pattern = /\*\*([^*\n]+)\*\*|(https?:\/\/[^\s<>()]+[^\s<>().,;:!?'"])/g;
+  const nodes: React.ReactNode[] = [];
+  let last = 0;
+  let m: RegExpExecArray | null;
+  let key = 0;
+  while ((m = pattern.exec(text)) !== null) {
+    if (m.index > last) nodes.push(text.slice(last, m.index));
+    if (m[1] !== undefined) {
+      nodes.push(<strong key={key++}>{m[1]}</strong>);
+    } else {
+      nodes.push(
+        <a
+          key={key++}
+          href={m[2]}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-semibold underline decoration-purple-400/60 underline-offset-2 hover:decoration-purple-300"
+        >
+          {m[2]}
+        </a>
+      );
+    }
+    last = pattern.lastIndex;
+  }
+  if (last < text.length) nodes.push(text.slice(last));
+  return nodes;
+}
+
 function loadStoredMessages(): Message[] {
   if (typeof window === "undefined") return [WELCOME];
   try {
@@ -207,7 +242,7 @@ export function MentorChat() {
                   }`}
                   style={m.role === "user" ? { background: "var(--brand-purple)" } : undefined}
                 >
-                  {m.content}
+                  {m.role === "assistant" ? renderAssistantText(m.content) : m.content}
                 </div>
               </div>
             ))}
