@@ -385,6 +385,35 @@ export default function CVEnhancerPage() {
                   required
                 />
                 <p className="mt-1 text-right text-[10px] text-gray-600">{cvText.length.toLocaleString()} / 15,000 chars</p>
+
+                {/* Unsaved-edits bar: the textarea is freely editable, so give
+                    edits an explicit route back into the saved profile CV. */}
+                {!savedCV.loading && cvText.trim().length > 0 && cvText.trim() !== savedCV.cvText.trim() && (
+                  <div className="mt-1 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-amber-400/25 bg-amber-400/[0.06] px-3 py-2">
+                    <span className="text-[11px] font-semibold text-amber-200">
+                      {savedCV.hasSavedCV ? "You've edited your saved CV." : "Save this CV to your profile for next time."}
+                    </span>
+                    <div className="flex shrink-0 items-center gap-1.5">
+                      {savedCV.hasSavedCV && (
+                        <button
+                          type="button"
+                          onClick={() => setCvText(savedCV.cvText)}
+                          className="rounded-lg border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[10px] font-bold text-gray-400 transition hover:text-white"
+                        >
+                          Undo edits
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => void savedCV.saveText(cvText)}
+                        disabled={savedCV.saving}
+                        className="rounded-lg border border-amber-400/30 bg-amber-400/10 px-2.5 py-1 text-[10px] font-bold text-amber-300 transition hover:bg-amber-400/20 disabled:opacity-50"
+                      >
+                        {savedCV.saving ? "Saving…" : "Save to profile"}
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
 
               <button
@@ -523,15 +552,17 @@ export default function CVEnhancerPage() {
                             <p className="text-[10px] font-bold tracking-wide text-gray-600 mb-1">Before</p>
                             <p className="text-xs leading-5 text-gray-500 line-through">{b.original}</p>
                           </div>
-                          <div className="relative rounded-lg border border-emerald-400/20 bg-emerald-400/[0.05] px-3 py-2">
-                            <p className="text-[10px] font-bold tracking-wide text-emerald-400 mb-1">After</p>
+                          <div className="rounded-lg border border-emerald-400/20 bg-emerald-400/[0.05] px-3 py-2">
+                            <div className="mb-1 flex items-center justify-between gap-3">
+                              <p className="text-[10px] font-bold tracking-wide text-emerald-400">After</p>
+                              <button
+                                onClick={() => copyText(b.enhanced, `bullet-${i}`)}
+                                className="shrink-0 rounded-md border border-white/10 bg-white/[0.06] px-2 py-0.5 text-[10px] font-bold text-gray-400 hover:text-white transition"
+                              >
+                                {copied === `bullet-${i}` ? "Copied!" : "Copy"}
+                              </button>
+                            </div>
                             <p className="text-xs leading-5 text-gray-200">{b.enhanced}</p>
-                            <button
-                              onClick={() => copyText(b.enhanced, `bullet-${i}`)}
-                              className="absolute right-2 top-2 rounded-md border border-white/10 bg-white/[0.06] px-2 py-1 text-[10px] font-bold text-gray-400 hover:text-white transition"
-                            >
-                              {copied === `bullet-${i}` ? "Copied!" : "Copy"}
-                            </button>
                           </div>
                         </div>
                       ))}

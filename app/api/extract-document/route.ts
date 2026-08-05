@@ -167,7 +167,34 @@ function tryDecompress(data: Buffer): string | null {
   return null;
 }
 
+/**
+ * Garbled extractions (subset fonts without usable encodings, symbol soup)
+ * come out light on actual letters. Real CV text in the site's locales is
+ * overwhelmingly Latin letters, so a low ratio means the text is junk and
+ * must not be saved or analysed.
+ */
+function looksReadable(text: string): boolean {
+  const t = text.trim();
+  if (t.length < 40) return false;
+  const letters = (t.match(/[A-Za-zÀ-ſ]/g) ?? []).length;
+  return letters / t.length >= 0.5;
+}
+
 async function extractTextFromPdf(buffer: Buffer): Promise<string> {
+  // Primary: pdf.js (via unpdf, packaged for serverless). Unlike the native
+  // fallback below, it resolves font encodings and ToUnicode maps, so PDFs
+  // exported from Word/Google Docs with subset fonts come out as real text
+  // rather than garbled glyph codes.
+  try {
+    const { getDocumentProxy, extractText } = await import("unpdf");
+    const pdf = await getDocumentProxy(new Uint8Array(buffer));
+    const { text } = await extractText(pdf, { mergePages: true });
+    const merged = (Array.isArray(text) ? text.join("\n") : text).trim();
+    if (looksReadable(merged)) return merged;
+  } catch {
+    // fall through to the native extractor
+  }
+
   // Use latin1 (binary-identical to ISO-8859-1) for safe byte→char mapping.
   const raw = buffer.toString("latin1");
   const allParts: string[] = [];
@@ -266,6 +293,18 @@ export async function POST(req: Request) {
         {
           error:
             "No readable text could be extracted from this PDF. If it's a scanned or image-only PDF, please paste your CV text below instead.",
+        },
+        { status: 400 }
+      );
+    }
+
+    // Refuse garbled output rather than saving it — analysing junk text
+    // produces junk feedback ("fix the encoding of your CV").
+    if (extension === ".pdf" && !looksReadable(cleanedText)) {
+      return Response.json(
+        {
+          error:
+            "The text in this PDF couldn't be read cleanly — this happens with scanned or unusually encoded PDFs. Please upload a .docx instead, or paste your CV text directly.",
         },
         { status: 400 }
       );

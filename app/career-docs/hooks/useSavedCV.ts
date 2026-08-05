@@ -9,9 +9,11 @@ export type SavedCVState = {
   loading: boolean;
   uploading: boolean;
   removing: boolean;
+  saving: boolean;
   error: string;
   uploadCV: (file: File) => Promise<void>;
   removeCV: () => Promise<void>;
+  saveText: (text: string) => Promise<void>;
 };
 
 /**
@@ -20,6 +22,8 @@ export type SavedCVState = {
  * - On mount: loads saved CV from the candidate profile via GET /api/candidate-profile
  * - uploadCV(file): extracts text from a PDF/DOCX via /api/extract-document,
  *   then saves cvText + cvFileName back to the profile via POST /api/candidate-profile
+ * - saveText(text): persists manually edited CV text to the profile (keeps the
+ *   file name if the text still derives from an uploaded file)
  * - removeCV(): clears cvText and cvFileName in the profile, resets local state
  */
 export function useSavedCV(): SavedCVState {
@@ -28,6 +32,7 @@ export function useSavedCV(): SavedCVState {
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [removing, setRemoving] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
   // Load saved CV on mount
@@ -93,6 +98,21 @@ export function useSavedCV(): SavedCVState {
     }
   }, [saveToProfile]);
 
+  const saveText = useCallback(async (text: string) => {
+    const trimmed = text.trim();
+    setSaving(true);
+    setError("");
+    try {
+      await saveToProfile(trimmed, trimmed ? cvFileName : "");
+      setCvText(trimmed);
+      if (!trimmed) setCvFileName("");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not save CV.");
+    } finally {
+      setSaving(false);
+    }
+  }, [saveToProfile, cvFileName]);
+
   const removeCV = useCallback(async () => {
     setRemoving(true);
     setError("");
@@ -114,8 +134,10 @@ export function useSavedCV(): SavedCVState {
     loading,
     uploading,
     removing,
+    saving,
     error,
     uploadCV,
     removeCV,
+    saveText,
   };
 }
