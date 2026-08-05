@@ -130,8 +130,8 @@ export const CHALLENGES = [
   },
   {
     value: "black-box",
-    label: "Assessment centres are a black box to me",
-    echo: "find assessment centres opaque",
+    label: "I have little to no experience with Assessment Centres",
+    echo: "have little to no experience with assessment centres",
     focusArea: "Balanced",
     coaching: "walking the full case study, interview and presentation format",
   },
