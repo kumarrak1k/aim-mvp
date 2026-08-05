@@ -28,13 +28,10 @@ export default function CandidateSignInPage() {
         <div className="absolute bottom-[-80px] right-[-160px] h-[520px] w-[520px] rounded-full bg-fuchsia-500/[0.08] blur-[160px]" />
       </div>
 
-      <div className="relative z-10 mx-auto w-full max-w-7xl px-4 pt-3 pb-8 sm:px-6 lg:px-10">
-        <header className="mb-3 flex items-center justify-between sm:mb-4">
+      <div className="relative z-10 mx-auto w-full max-w-7xl px-4 pt-2 pb-8 sm:px-6 lg:px-10">
+        <header className="mb-2 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3">
             <SiteLogo href="" size="md" showText />
-            <span className="hidden rounded-full border border-purple-300/20 bg-white/[0.04] px-3 py-1 text-[10px] font-bold tracking-wide text-purple-100 sm:inline-block">
-              For candidates
-            </span>
           </Link>
           <div className="flex items-center gap-3 text-xs">
             <Link
@@ -43,17 +40,11 @@ export default function CandidateSignInPage() {
             >
               ← Back to overview
             </Link>
-            <Link
-              href="/for-business/sign-in"
-              className="rounded-full border border-purple-300/20 bg-purple-300/[0.07] px-3 py-1.5 font-bold text-purple-200 transition hover:bg-purple-300/[0.12]"
-            >
-              Hiring team? Sign in here
-            </Link>
           </div>
         </header>
 
         {/* Centring wrapper — pushes form to vertical centre of remaining space */}
-        <div className="mx-auto w-full max-w-md mt-2">
+        <div className="mx-auto w-full max-w-md">
         <section className="w-full max-w-md">
           <div className="mb-4 text-center">
             <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
@@ -61,12 +52,6 @@ export default function CandidateSignInPage() {
             </h1>
             <p className="mt-1.5 text-sm leading-5 text-gray-400">
               Continue to your interview practice account.
-            </p>
-            <p className="mt-2 text-[11px] text-gray-600">
-              Hiring team?{" "}
-              <Link href="/for-business/sign-in" className="font-bold text-purple-300 hover:text-purple-200">
-                Sign in here →
-              </Link>
             </p>
           </div>
 

@@ -78,9 +78,6 @@ export default function CandidateSignUpPage() {
         <header className="mb-3 flex items-center justify-between sm:mb-4">
           <Link href="/" className="flex items-center gap-3">
             <SiteLogo href="" size="md" showText />
-            <span className="hidden rounded-full border border-purple-300/20 bg-white/[0.04] px-3 py-1 text-[10px] font-bold tracking-wide text-purple-100 sm:inline-block">
-              For candidates
-            </span>
           </Link>
           <div className="flex items-center gap-3 text-xs">
             <Link
@@ -88,12 +85,6 @@ export default function CandidateSignUpPage() {
               className="hidden text-gray-400 hover:text-white sm:inline-block"
             >
               ← Back to overview
-            </Link>
-            <Link
-              href="/for-business/sign-up"
-              className="rounded-full border border-purple-300/20 bg-purple-300/[0.07] px-3 py-1.5 font-bold text-purple-200 transition hover:bg-purple-300/[0.12]"
-            >
-              Hiring team? Sign up here
             </Link>
           </div>
         </header>
