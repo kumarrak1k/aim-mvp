@@ -138,6 +138,11 @@ export async function POST(req: NextRequest) {
       firstName: body.firstName?.trim() || undefined,
       lastName: body.lastName?.trim() || undefined,
       skipPasswordChecks: true,
+      // Clerk's 'require express legal consent' setting rejects creation
+      // without this. Admin-created accounts are consented by the admin on
+      // the person's behalf; they still accept OUR ToS in-app on first
+      // sign-in (the accept-terms gate is unaffected).
+      legalAcceptedAt: new Date(),
       privateMetadata,
     });
 
