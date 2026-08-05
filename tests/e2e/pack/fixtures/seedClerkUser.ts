@@ -37,6 +37,7 @@ export async function seedPersona(persona: SeedUser) {
   }
 
   const user = await clerk.users.createUser({
+      legalAcceptedAt: new Date(),
     emailAddress: [persona.email],
     password: TEST_PASSWORD,
     skipPasswordChecks: true,
