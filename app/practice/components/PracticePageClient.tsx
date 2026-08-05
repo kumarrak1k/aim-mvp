@@ -602,7 +602,7 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
 
   return (
     <CandidateAppShell currentPath="/practice">
-      <section className="mx-auto max-w-7xl 2xl:max-w-[96rem] px-4 py-6 sm:px-6 sm:py-8 lg:py-10">
+      <section className="mx-auto max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] px-4 py-6 sm:px-6 sm:py-8 lg:py-10">
         {showPaymentSuccess && (
           <div className="mb-5 flex items-center justify-between gap-4 rounded-2xl border border-emerald-300/25 bg-emerald-300/[0.08] px-5 py-4">
             <div className="flex items-center gap-3">

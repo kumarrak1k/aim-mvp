@@ -93,7 +93,7 @@ export function DataTrustStrip({
       // Blended, not banded: no border and no own background, so the strip
       // floats on the page atmosphere exactly like the signed-in header does.
       <div className="relative z-50">
-        <div className="mx-auto flex max-w-7xl 2xl:max-w-[96rem] flex-wrap items-center justify-center gap-x-5 gap-y-1 px-4 py-2.5 sm:px-6">
+        <div className="mx-auto flex max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] flex-wrap items-center justify-center gap-x-5 gap-y-1 px-4 py-2.5 sm:px-6">
           {items.map(({ Icon, text }, i) => (
             <Fragment key={text}>
               {i > 0 && (

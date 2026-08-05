@@ -90,7 +90,7 @@ export default async function BusinessPricingPage() {
         </Link>
       </section>
 
-      <section className="mx-auto max-w-7xl 2xl:max-w-[96rem] px-4 pb-16 sm:px-6 sm:pb-20">
+      <section className="mx-auto max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] px-4 pb-16 sm:px-6 sm:pb-20">
         <BusinessPricingPlans currency={currency} />
       </section>
 

@@ -147,7 +147,7 @@ export default async function AssessmentCentrePage() {
       </section>
 
       {/* Three stages */}
-      <section className="mx-auto max-w-7xl 2xl:max-w-[96rem] px-4 pb-16 sm:px-6 sm:pb-20">
+      <section className="mx-auto max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] px-4 pb-16 sm:px-6 sm:pb-20">
         <div className="mb-10 text-center">
           <p className="text-[11px] font-bold tracking-wide text-cyan-300/90">
             How it works
@@ -208,7 +208,7 @@ export default async function AssessmentCentrePage() {
       </section>
 
       {/* Why */}
-      <section className="mx-auto max-w-7xl 2xl:max-w-[96rem] px-4 pb-16 sm:px-6 sm:pb-20">
+      <section className="mx-auto max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] px-4 pb-16 sm:px-6 sm:pb-20">
         <div className="mb-10 text-center">
           <p className="text-[11px] font-bold tracking-wide text-cyan-300/90">
             Why it matters
@@ -251,7 +251,7 @@ export default async function AssessmentCentrePage() {
       </section>
 
       {/* CTA */}
-      <section className="mx-auto max-w-7xl 2xl:max-w-[96rem] px-4 pb-20 sm:px-6 sm:pb-28">
+      <section className="mx-auto max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] px-4 pb-20 sm:px-6 sm:pb-28">
         <div className="rounded-[2rem] border border-white/[0.1] bg-gradient-to-br from-cyan-500/[0.10] via-purple-500/[0.06] to-transparent p-10 text-center sm:p-14">
           <h2 className="mx-auto max-w-2xl text-3xl font-bold tracking-tight sm:text-4xl">
             Walk into your assessment centre fully prepared.

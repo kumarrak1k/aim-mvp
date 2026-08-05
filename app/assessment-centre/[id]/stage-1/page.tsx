@@ -355,7 +355,7 @@ export default function Stage1Page() {
 
   return (
     <CandidateAppShell currentPath="/assessment-centre">
-      <div className="mx-auto max-w-7xl 2xl:max-w-[96rem] px-4 py-8 sm:px-6">
+      <div className="mx-auto max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] px-4 py-8 sm:px-6">
         <StageProgress currentStage={1} selectedStages={session.selectedStages} />
 
         <div className="grid gap-6 lg:grid-cols-[1fr_480px]">

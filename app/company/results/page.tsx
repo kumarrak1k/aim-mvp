@@ -160,7 +160,7 @@ export default function CompanyResultsPage() {
 
   return (
     <CorporateAppShell currentPath="/company/results">
-      <div className="mx-auto max-w-7xl 2xl:max-w-[96rem] px-4 py-12 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] px-4 py-12 sm:px-6 lg:px-8">
         <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-sm font-bold tracking-wide text-fuchsia-300">

@@ -125,7 +125,7 @@ export default function CoverLetterPage() {
 
   return (
     <CandidateAppShell currentPath="/career-docs">
-      <div className="mx-auto max-w-7xl 2xl:max-w-[96rem] px-4 py-8 sm:px-6">
+      <div className="mx-auto max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] px-4 py-8 sm:px-6">
         {/* Header */}
         <div className="mb-8">
           <Link href="/career-docs" className="mb-4 inline-flex items-center gap-1.5 text-xs font-bold text-gray-500 hover:text-gray-300 transition">
