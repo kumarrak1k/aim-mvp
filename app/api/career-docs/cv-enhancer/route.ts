@@ -60,13 +60,13 @@ ${cvText}
 
 Provide a thorough, specific, actionable analysis. Return JSON matching this exact schema:
 {
-  "overallScore": <number 1-10>,
+  "overallScore": <integer 1-10, whole numbers only, no decimals>,
   "overallLabel": <string: one-line verdict>,
   "summary": <string: 2-3 sentences of honest top-level assessment>,
   "sections": [
     {
       "name": <section name e.g. "Work Experience", "Skills", "Education">,
-      "score": <number 1-10>,
+      "score": <integer 1-10, whole numbers only, no decimals>,
       "feedback": <string: specific feedback on this section — what works and what doesn't>,
       "suggestion": <string: concrete improvement suggestion>
     }
@@ -99,7 +99,9 @@ Rules:
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt },
       ],
-      temperature: 0.4,
+      // 0: scoring must be repeatable — re-analysing an unchanged CV
+      // should not move the number (user-reported 8.3 -> 7.8 wobble).
+      temperature: 0,
       max_tokens: 3000,
     },
     { timeoutMs: 60000 }
@@ -108,6 +110,15 @@ Rules:
   const raw = stripFences(aiResponse.choices[0].message.content);
   try {
     const result = JSON.parse(raw);
+    // Whole numbers regardless of what the model returned.
+    const round10 = (v: unknown) =>
+      Math.max(1, Math.min(10, Math.round(Number(v) || 0)));
+    if (result && typeof result === "object") {
+      result.overallScore = round10(result.overallScore);
+      if (Array.isArray(result.sections)) {
+        for (const sec of result.sections) sec.score = round10(sec.score);
+      }
+    }
     await recordCareerDocGeneration(userId, "cv-enhancer");
     return NextResponse.json({ result });
   } catch {
