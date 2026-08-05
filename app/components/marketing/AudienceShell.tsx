@@ -128,14 +128,14 @@ export function AudienceShell({
           >
             <SiteLogo href="" size="md" showText />
             <span
-              className={`hidden rounded-full border px-3 py-1 text-[10px] font-bold tracking-wide sm:inline-block lg:hidden ${theme.accentBorder} bg-white/[0.04] ${theme.accentTextStrong}`}
+              className={`hidden rounded-full border px-3 py-1 text-[10px] font-bold tracking-wide sm:inline-block xl:hidden ${theme.accentBorder} bg-white/[0.04] ${theme.accentTextStrong}`}
             >
               {theme.eyebrow}
             </span>
           </Link>
 
           {/* Desktop nav — centred in the grid column, lg+ (grid prevents overlap). */}
-          <nav aria-label="Primary" className="hidden min-w-0 justify-center lg:flex">
+          <nav aria-label="Primary" className="hidden min-w-0 justify-center xl:flex">
             <div className="flex items-center gap-0.5 rounded-full border border-white/[0.09] bg-white/[0.04] p-1.5">
               {theme.navItems.map((item) => {
                 // "Free tools" — a hover/focus dropdown. CSS-only so this shell
@@ -148,7 +148,7 @@ export function AudienceShell({
                       <button
                         type="button"
                         aria-haspopup="true"
-                        className="flex items-center gap-1 whitespace-nowrap rounded-full px-3 py-2 text-[13px] font-bold text-gray-400 transition group-hover/dd:bg-white/[0.07] group-hover/dd:text-white group-focus-within/dd:bg-white/[0.07] group-focus-within/dd:text-white lg:px-4 lg:text-[13.5px]"
+                        className="flex items-center gap-1 whitespace-nowrap rounded-full px-3 py-2 text-[13px] font-bold text-gray-400 transition group-hover/dd:bg-white/[0.07] group-hover/dd:text-white group-focus-within/dd:bg-white/[0.07] group-focus-within/dd:text-white xl:px-4 xl:text-[13.5px]"
                       >
                         {item.label}
                         <svg width="10" height="10" viewBox="0 0 12 12" fill="none" aria-hidden className="transition group-hover/dd:rotate-180">
@@ -175,7 +175,7 @@ export function AudienceShell({
                 return (
                   <Link key={item.href} href={item.href!}>
                     <span
-                      className={`block whitespace-nowrap rounded-full px-3 py-2 text-[13px] font-bold transition lg:px-4 lg:text-[13.5px] ${
+                      className={`block whitespace-nowrap rounded-full px-3 py-2 text-[13px] font-bold transition xl:px-4 xl:text-[13.5px] ${
                         active
                           ? "bg-white/[0.12] text-white shadow-sm"
                           : "text-gray-400 hover:bg-white/[0.07] hover:text-white"
@@ -215,7 +215,7 @@ export function AudienceShell({
             <details>) so the shell stays a server component: the <summary>
             toggles the panel, group-open rotates the chevron, and every
             destination is a full-width row that shows clearly. */}
-        <details className="group/nav px-4 pb-3 sm:px-6 lg:hidden">
+        <details className="group/nav px-4 pb-3 sm:px-6 xl:hidden">
           <summary className="flex cursor-pointer list-none items-center justify-between rounded-2xl border border-white/[0.09] bg-white/[0.05] px-4 py-3 text-white [&::-webkit-details-marker]:hidden">
             <span className="flex items-center gap-2.5 text-sm font-bold">
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden>
@@ -297,7 +297,7 @@ export function AudienceShell({
             folds these into the primary nav (About us) and the "Free tools"
             dropdown, so the second row is gone. */}
         {audience === "business" && (
-          <div className="hidden px-4 py-1.5 lg:block">
+          <div className="hidden px-4 py-1.5 xl:block">
             <nav className="mx-auto flex max-w-7xl items-center justify-center gap-6">
               {BUSINESS_RESOURCE_LINKS.map((item) => (
                 <Link
