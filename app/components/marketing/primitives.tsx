@@ -18,16 +18,18 @@ export function SectionHeading({
   description,
   align = "left",
 }: {
-  eyebrow: string;
+  eyebrow?: string;
   title: string;
   description?: string;
   align?: "left" | "center";
 }) {
   return (
     <div className={align === "center" ? "text-center" : ""}>
-      <p className="mb-3 text-[11px] font-bold tracking-wide text-purple-300/90">
-        {eyebrow}
-      </p>
+      {eyebrow && (
+        <p className="mb-3 text-[11px] font-bold tracking-wide text-purple-300/90">
+          {eyebrow}
+        </p>
+      )}
       <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-4xl">
         {title}
       </h2>
