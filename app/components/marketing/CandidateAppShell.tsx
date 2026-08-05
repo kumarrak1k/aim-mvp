@@ -185,7 +185,7 @@ export function CandidateAppShell({
                       <div className="invisible absolute left-1/2 top-full z-50 w-56 -translate-x-1/2 pt-2 opacity-0 transition group-hover/dd:visible group-hover/dd:opacity-100 group-focus-within/dd:visible group-focus-within/dd:opacity-100">
                         <div className="rounded-2xl border border-white/[0.09] bg-[#140a26] p-1.5 shadow-2xl shadow-black/50">
                           {item.dropdown.map((sub) => (
-                            <Link key={sub.href} href={sub.href} className="block whitespace-nowrap rounded-xl px-3.5 py-2 text-[13px] font-semibold text-gray-300 transition hover:bg-white/[0.07] hover:text-white">
+                            <Link key={sub.href} href={sub.href} className="block whitespace-nowrap rounded-xl px-3.5 py-2 text-center text-[13px] font-semibold text-gray-300 transition hover:bg-white/[0.07] hover:text-white">
                               {sub.label}
                             </Link>
                           ))}

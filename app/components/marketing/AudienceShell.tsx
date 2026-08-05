@@ -161,7 +161,7 @@ export function AudienceShell({
                             <Link
                               key={sub.href}
                               href={sub.href}
-                              className="block whitespace-nowrap rounded-xl px-3.5 py-2 text-[13px] font-semibold text-gray-300 transition hover:bg-white/[0.07] hover:text-white"
+                              className="block whitespace-nowrap rounded-xl px-3.5 py-2 text-center text-[13px] font-semibold text-gray-300 transition hover:bg-white/[0.07] hover:text-white"
                             >
                               {sub.label}
                             </Link>
