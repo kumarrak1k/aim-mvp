@@ -108,27 +108,6 @@ export default async function CandidatePricingPage() {
       <div className="border-t border-white/[0.06]">
         <FAQSection items={faqs} accentColor="purple" />
       </div>
-
-      <section className="mx-auto max-w-3xl px-4 pb-20 text-center sm:px-6 sm:pb-28">
-        <p className="text-sm leading-6 text-gray-500">
-          Looking for the hiring-team plan? See{" "}
-          <Link
-            href="/for-business/pricing"
-            className="font-bold text-fuchsia-300 hover:text-fuchsia-200"
-          >
-            business pricing →
-          </Link>
-        </p>
-        <p className="mt-2 text-sm text-gray-500">
-          University or careers service?{" "}
-          <Link
-            href="/universities"
-            className="font-bold text-cyan-300 hover:text-cyan-200"
-          >
-            See campus licensing →
-          </Link>
-        </p>
-      </section>
     </CandidateShell>
   );
 }
