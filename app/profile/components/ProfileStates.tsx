@@ -6,7 +6,7 @@ import { GlassCard } from "@/app/components/marketing/primitives";
 
 export function ProfileLoadingState() {
   return (
-    <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 sm:pb-20">
+    <section className="mx-auto max-w-7xl 2xl:max-w-[96rem] px-4 pb-16 sm:px-6 sm:pb-20">
       <GlassCard className="overflow-hidden">
         <div className="mx-auto max-w-3xl text-center">
           <p className="text-sm font-bold tracking-wide text-cyan-300">
@@ -43,7 +43,7 @@ export function ProfileLoadingState() {
 
 export function ProfileSignedOutState() {
   return (
-    <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 sm:pb-20">
+    <section className="mx-auto max-w-7xl 2xl:max-w-[96rem] px-4 pb-16 sm:px-6 sm:pb-20">
       <GlassCard>
         <div className="grid items-center gap-8 lg:grid-cols-[1fr_0.9fr]">
           <div>

@@ -262,7 +262,7 @@ export default function PracticeSessionDetailPage() {
 
   return (
     <CandidateAppShell currentPath="/progress">
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:py-10">
+      <main className="mx-auto max-w-7xl 2xl:max-w-[96rem] px-4 py-8 sm:px-6 lg:py-10">
         {!isLoaded && <SimpleState message="Loading session archive..." />}
 
         {isLoaded && !isSignedIn && <SignedOutState />}

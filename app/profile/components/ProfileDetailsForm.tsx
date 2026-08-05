@@ -88,7 +88,7 @@ export function ProfileDetailsForm({
     deletingAllAimData;
 
   return (
-    <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 sm:pb-20">
+    <section className="mx-auto max-w-7xl 2xl:max-w-[96rem] px-4 pb-16 sm:px-6 sm:pb-20">
       <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
         <GlassCard className="p-6 sm:p-8">
           <div className="mb-6">

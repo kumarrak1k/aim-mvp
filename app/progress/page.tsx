@@ -249,7 +249,7 @@ export default function ProgressPage() {
 
   return (
     <CandidateAppShell currentPath="/progress">
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:py-10">
+      <main className="mx-auto max-w-7xl 2xl:max-w-[96rem] px-4 py-8 sm:px-6 lg:py-10">
 
         {/* ── Page header ────────────────────────────────────────────────── */}
         <section className="relative overflow-hidden rounded-[2.25rem] border border-white/10 bg-white/[0.065] p-6 text-center shadow-2xl shadow-purple-950/20 backdrop-blur-2xl sm:p-10 lg:p-12">

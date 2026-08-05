@@ -78,7 +78,7 @@ function CompanyBrandedHeader({
       {/* Brand colour stripe — visually anchors this as the company's process */}
       <div className="h-1.5" style={{ background: brandColor }} />
 
-      <div className="mx-auto flex w-full max-w-7xl items-center gap-3 px-4 py-3 sm:px-6 lg:gap-6 lg:px-8 lg:py-3">
+      <div className="mx-auto flex w-full max-w-7xl 2xl:max-w-[96rem] items-center gap-3 px-4 py-3 sm:px-6 lg:gap-6 lg:px-8 lg:py-3">
         {/* Company identity (left) */}
         <div className="flex min-w-0 flex-1 items-center gap-3">
           <div
@@ -144,7 +144,7 @@ function PersonalPracticeHeader() {
     // the soft gradient scrim (page-top tone fading to nothing) only exists
     // so scrolled content stays legible behind the logo.
     <header className="sticky top-0 z-50 bg-gradient-to-b from-[#0e0820]/95 via-[#0e0820]/60 to-transparent pb-3">
-      <div className="mx-auto flex w-full max-w-7xl items-center gap-3 px-4 py-3 sm:px-6 lg:gap-6 lg:px-8 lg:py-3">
+      <div className="mx-auto flex w-full max-w-7xl 2xl:max-w-[96rem] items-center gap-3 px-4 py-3 sm:px-6 lg:gap-6 lg:px-8 lg:py-3">
         {/* Logo */}
         <div className="shrink-0">
           <SiteLogo href="/practice" size="md" showText />

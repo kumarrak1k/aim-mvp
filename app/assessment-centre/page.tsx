@@ -75,7 +75,7 @@ function UpgradeGate({ planName }: { planName: string }) {
   const isProfessional = planName === "Plus";
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:py-10">
+    <div className="mx-auto max-w-7xl 2xl:max-w-[96rem] px-4 py-8 sm:px-6 lg:py-10">
       {/* Header */}
       <section className="relative mb-8 overflow-hidden rounded-[2.25rem] border border-cyan-400/20 bg-gradient-to-br from-cyan-500/[0.09] via-purple-500/[0.06] to-transparent p-8 text-center shadow-2xl shadow-purple-950/20 backdrop-blur-2xl sm:p-12">
         <div className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-cyan-400/10 blur-3xl" />
@@ -148,7 +148,7 @@ function UpgradeGate({ planName }: { planName: string }) {
 
 function SignInGate() {
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:py-10">
+    <div className="mx-auto max-w-7xl 2xl:max-w-[96rem] px-4 py-8 sm:px-6 lg:py-10">
       <section className="relative overflow-hidden rounded-[2.25rem] border border-cyan-400/20 bg-gradient-to-br from-cyan-500/[0.09] via-purple-500/[0.06] to-transparent p-8 text-center shadow-2xl shadow-purple-950/20 backdrop-blur-2xl sm:p-12">
         <div className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-cyan-400/10 blur-3xl" />
         <div className="relative">
@@ -186,7 +186,7 @@ function SignInGate() {
 
 function AssessmentCentreAccess() {
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:py-10">
+    <div className="mx-auto max-w-7xl 2xl:max-w-[96rem] px-4 py-8 sm:px-6 lg:py-10">
       {/* Hero */}
       <section className="relative mb-8 overflow-hidden rounded-[2.25rem] border border-cyan-300/20 bg-white/[0.055] p-8 text-center shadow-2xl shadow-purple-950/20 backdrop-blur-2xl sm:p-12">
         <div className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-cyan-400/10 blur-3xl" />
@@ -262,7 +262,7 @@ export default function AssessmentCentrePage() {
   function renderContent() {
     if (!isLoaded || planLoading) {
       return (
-        <div className="mx-auto max-w-7xl px-4 py-16 text-center sm:px-6">
+        <div className="mx-auto max-w-7xl 2xl:max-w-[96rem] px-4 py-16 text-center sm:px-6">
           <p className="text-sm text-gray-500">Checking your plan…</p>
         </div>
       );

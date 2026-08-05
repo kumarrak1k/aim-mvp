@@ -156,7 +156,7 @@ export function CandidateAppShell({
         {/* Grid so the centred nav lives in its own column and cannot paint over
             the logo — the old flex + absolute layout let the pill nav overlap
             "AI Career Mentor" once it grew. */}
-        <div className="relative mx-auto grid w-full max-w-7xl grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 px-4 py-3 sm:px-6 lg:px-8 lg:py-3.5">
+        <div className="relative mx-auto grid w-full max-w-7xl 2xl:max-w-[96rem] grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 px-4 py-3 sm:px-6 lg:px-8 lg:py-3.5">
           {/* Logo + badge */}
           <Link href="/" className="relative z-10 flex shrink-0 items-center gap-3">
             <SiteLogo href="" size="md" showText />
@@ -239,7 +239,7 @@ export function CandidateAppShell({
 
         {/* Tablet/mobile compact nav row */}
         <div className="px-4 py-2 sm:px-6 xl:hidden">
-          <nav className="mx-auto flex max-w-7xl gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <nav className="mx-auto flex max-w-7xl 2xl:max-w-[96rem] gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {navItems.flatMap((item): Array<{ href: string; label: string; proOnly?: boolean }> =>
               item.dropdown
                 ? item.dropdown.map((d) => ({ href: d.href, label: d.label }))
@@ -286,7 +286,7 @@ export function CandidateAppShell({
       {/* New-user guide banner — practice page only, dismissible */}
       {showGuideBanner && (
         <div className="relative z-40 px-4 pt-2 sm:px-6">
-          <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 rounded-2xl border border-purple-400/30 bg-gradient-to-r from-purple-600/[0.22] via-fuchsia-600/[0.14] to-purple-600/[0.10] px-4 py-3 backdrop-blur-xl sm:px-5">
+          <div className="mx-auto flex max-w-7xl 2xl:max-w-[96rem] items-center justify-between gap-3 rounded-2xl border border-purple-400/30 bg-gradient-to-r from-purple-600/[0.22] via-fuchsia-600/[0.14] to-purple-600/[0.10] px-4 py-3 backdrop-blur-xl sm:px-5">
             <p className="text-[13px] font-bold leading-5 text-purple-50">
               <span className="mr-1.5" aria-hidden>📘</span>
               New here? Learn the platform in six quick steps.
