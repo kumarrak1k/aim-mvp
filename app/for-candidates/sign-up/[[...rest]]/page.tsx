@@ -103,12 +103,6 @@ export default function CandidateSignUpPage() {
                 ? "One quick step, then we will take you to secure payment."
                 : "Create your account and run your first interview in minutes."}
             </p>
-            <p className="mt-2 text-[11px] text-gray-600">
-              Hiring manager?{" "}
-              <Link href="/for-business/sign-up" className="font-bold text-purple-300 hover:text-purple-200">
-                Create a hiring team account →
-              </Link>
-            </p>
           </div>
 
           <SignUp
