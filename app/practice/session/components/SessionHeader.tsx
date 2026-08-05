@@ -136,7 +136,12 @@ function CompanyBrandedHeader({
 
 function PersonalPracticeHeader() {
   return (
-    <header className="sticky top-0 z-50 backdrop-blur-2xl">
+    // A translucent fill under the blur, not naked backdrop-blur: with no
+    // background, the sticky blur layer over the live camera preview
+    // composites as a smeared band that flickers as frames repaint beneath
+    // it (the "strange flashing bar" bug). The tint is the page base colour,
+    // so the header still blends seamlessly — no hard line.
+    <header className="sticky top-0 z-50 bg-[#0a0614]/85 backdrop-blur-xl">
       <div className="mx-auto flex w-full max-w-7xl items-center gap-3 px-4 py-3 sm:px-6 lg:gap-6 lg:px-8 lg:py-3">
         {/* Logo */}
         <div className="shrink-0">
