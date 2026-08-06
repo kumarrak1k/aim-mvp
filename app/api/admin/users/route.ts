@@ -132,7 +132,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const user = await admin.client.users.createUser({
+    const createParams = {
       emailAddress: [email],
       password: generateInternalPassword(),
       firstName: body.firstName?.trim() || undefined,
@@ -144,7 +144,33 @@ export async function POST(req: NextRequest) {
       // sign-in (the accept-terms gate is unaffected).
       legalAcceptedAt: new Date(),
       privateMetadata,
-    });
+    };
+    let user;
+    try {
+      user = await admin.client.users.createUser(createParams);
+    } catch (createErr) {
+      // Clerk's 'require name' instance setting rejects a first name without
+      // a last name, but admins often only have a first name. Retry with no
+      // name fields (the requirement applies to the provided pair), then set
+      // the first name via update, which is not subject to the requirement.
+      const clerkErrors =
+        (createErr as { errors?: Array<{ message?: string; longMessage?: string; meta?: { paramName?: string } }> })
+          ?.errors ?? [];
+      const lastNameRejected = clerkErrors.some((e) =>
+        `${e.meta?.paramName ?? ""} ${e.message ?? ""} ${e.longMessage ?? ""}`
+          .toLowerCase()
+          .includes("last_name")
+      );
+      if (!lastNameRejected || createParams.lastName || !createParams.firstName) throw createErr;
+      const { firstName: _fn, lastName: _ln, ...nameless } = createParams;
+      user = await admin.client.users.createUser(nameless);
+      try {
+        await admin.client.users.updateUser(user.id, { firstName: createParams.firstName });
+      } catch {
+        // The account exists and the invite still works; the name can be
+        // added later from the edit dialog.
+      }
+    }
 
     // 1b. Corporate comp: pre-create the workspace with this person as its
     // admin, so their first sign-in lands on a ready dashboard instead of the
