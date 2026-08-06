@@ -513,7 +513,7 @@ function renderNurtureHtml(type: NurtureType, unsubUrl: string): string {
       <p style="margin:0 0 28px;font-size:15px;line-height:1.7;color:#2a2238;">
         When the trial ends you'll move to the Free plan. Upgrade to Plus to keep
         unlimited voice &amp; camera practice, or Professional for mock assessment
-        centres and career docs. No card needed until you decide.
+        centres and the CV & Application Studio. No card needed until you decide.
       </p>
       <table role="presentation" cellpadding="0" cellspacing="0" style="margin-bottom:12px;">
         <tr><td style="border-radius:12px;background:#8c5cff;">
@@ -540,7 +540,7 @@ function renderNurtureHtml(type: NurtureType, unsubUrl: string): string {
         <p style="margin:0;font-size:15px;line-height:1.7;color:#2a2238;">
           Upgrade to <strong>Plus</strong> to keep unlimited voice &amp; camera
           practice, or <strong>Professional</strong> for mock assessment centres
-          and career docs.
+          and the CV & Application Studio.
         </p>
       </div>
       <table role="presentation" cellpadding="0" cellspacing="0">
@@ -594,7 +594,7 @@ function renderNurturePlainText(type: NurtureType): string {
     day21_nudge:    `Still here? One 15-minute session will move you forward. Pick your role, answer 5 questions, get scored.\n\n${practiceUrl}`,
     day30_winback:  `Your practice sessions are still here. Come back whenever you're ready.\n\n${practiceUrl}`,
     trial_midway:   `Your Plus trial ends soon. Make the most of unlimited voice & camera practice before it ends.\n\nJump back in: ${practiceUrl}\nSee plans: ${upgradeUrl}`,
-    trial_ended:    `Your 3-day Plus trial has ended. Your account is now on the Free plan (3 keyboard-only sessions).\n\nUpgrade to Plus to keep unlimited voice & camera practice, or Professional for assessment centres and career docs: ${upgradeUrl}`,
+    trial_ended:    `Your 3-day Plus trial has ended. Your account is now on the Free plan (3 keyboard-only sessions).\n\nUpgrade to Plus to keep unlimited voice & camera practice, or Professional for assessment centres and the CV & Application Studio: ${upgradeUrl}`,
   };
   return texts[type] + `\n\nAI Career Mentor\n${siteConfig.url}`;
 }

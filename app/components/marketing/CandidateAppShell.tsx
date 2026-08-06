@@ -68,7 +68,7 @@ const navItems: Array<{
   { href: "/profile",           label: "My Profile"          },
   { href: "/practice",          label: "Interview Practice"  },
   { href: "/assessment-centre", label: "Assessment Centre",  proOnly: true },
-  { href: "/career-docs",       label: "Career Docs",        proOnly: true },
+  { href: "/career-docs",       label: "CV Studio",          proOnly: true },
   { href: "/progress",          label: "My Progress"         },
   {
     label: "Free tools",

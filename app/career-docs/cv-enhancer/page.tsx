@@ -263,7 +263,7 @@ export default function CVEnhancerPage() {
               href="/career-docs"
               className="rounded-2xl border border-white/10 bg-white/[0.06] px-6 py-3.5 text-center text-sm font-bold text-white"
             >
-              Back to Career Docs
+              Back to the CV Studio
             </Link>
           </div>
         </div>
@@ -277,7 +277,7 @@ export default function CVEnhancerPage() {
         {/* Header */}
         <div className="mb-8">
           <Link href="/career-docs" className="mb-4 inline-flex items-center gap-1.5 text-xs font-bold text-gray-500 hover:text-gray-300 transition">
-            ← Career Docs
+            ← CV Studio
           </Link>
           <div className="flex items-center gap-3">
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-purple-400/25 bg-purple-400/10 text-purple-300">

@@ -168,7 +168,7 @@ export default function UniversitiesPage() {
             <div className="mb-8 grid gap-4 sm:grid-cols-3">
               {[
                 { icon: "🎓", label: "Institution size", desc: "Priced per campus, not per student, so your whole cohort is covered." },
-                { icon: "📋", label: "Modules & features", desc: "Interview coaching, assessment centre prep, career docs. Mix as needed." },
+                { icon: "📋", label: "Modules & features", desc: "Interview coaching, assessment centre prep, CV & application tools. Mix as needed." },
                 { icon: "📄", label: "Procurement ready", desc: "DPA, GDPR documentation and institutional paperwork provided as standard." },
               ].map((item) => (
                 <div key={item.label} className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-5">

@@ -161,6 +161,7 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
         "For intensive preparation: build fully custom sessions, run mock assessment centres, and track performance with advanced analytics.",
       features: [
         { text: "Everything in Plus" },
+        { text: "CV & Application Studio: CV Enhancer, cover letters and personal statements", isNew: true },
         { text: "Custom session builder: 3–10 questions per session", isNew: true },
         { text: "Hybrid question mix: set your own blend of competency, technical, leadership, motivation and situational", isNew: true },
         { text: "Mock assessment centre (case study + interview + presentation)" },
@@ -324,6 +325,18 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
               >
                 {plan.description}
               </p>
+              {plan.name === "Professional" && (
+                <div className="mt-4 rounded-xl border border-fuchsia-400/25 bg-fuchsia-400/[0.07] px-3.5 py-3">
+                  <p className="text-[11px] font-bold tracking-wide text-fuchsia-300">
+                    CV &amp; Application Studio included
+                  </p>
+                  <p className="mt-1 text-xs leading-5 text-gray-300">
+                    CV Enhancer with scored feedback, tailored cover letters and
+                    personal statements: the tools that get you shortlisted
+                    before you ever interview.
+                  </p>
+                </div>
+              )}
               <div className="mt-5 flex-1 space-y-2.5">
                 {plan.features.map((f) => (
                   <div key={f.text} className="flex items-start gap-2.5 text-sm text-gray-300">

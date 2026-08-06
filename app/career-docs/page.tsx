@@ -74,12 +74,12 @@ export default function CareerDocsPage() {
         {/* Hero */}
         <div className="mb-12 text-center">
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-purple-300/20 bg-purple-300/10 px-4 py-2 text-xs font-bold tracking-wide text-purple-200">
-            Professional · Career Documents
+            Professional · Get shortlisted
           </div>
           <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            AI-powered{" "}
+            Your{" "}
             <span className="text-violet-300">
-              career documents.
+              CV &amp; Application Studio.
             </span>
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-gray-300 sm:text-lg">

@@ -56,7 +56,7 @@ const products = [
 const faqs = [
   {
     q: "Is AI Career Mentor free?",
-    a: "Free to start, no payment details required. You can run a complete interview session and receive feedback at no cost. Unlimited sessions with voice and camera are on Plus (from £19/month); mock assessment centres and career documents are on Professional (£29/month).",
+    a: "Free to start, no payment details required. You can run a complete interview session and receive feedback at no cost. Unlimited sessions with voice and camera are on Plus (from £19/month); mock assessment centres and the CV & Application Studio (CV enhancer, cover letters, personal statements) are on Professional (£29/month).",
   },
   {
     q: "What interview types does it cover?",
@@ -212,6 +212,60 @@ export default async function ForCandidatesPage() {
             </article>
           ))}
         </div>
+      </section>
+
+      {/* CV & Application Studio */}
+      <section className="mx-auto max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] px-4 pb-16 sm:px-6 sm:pb-20">
+        <article className="relative overflow-hidden rounded-[2rem] border border-fuchsia-500/[0.18] bg-fuchsia-500/[0.05] p-8 sm:p-10">
+          <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-fuchsia-500/[0.12] blur-3xl" />
+          <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+            <div>
+              <p className="text-[11px] font-bold tracking-wide text-fuchsia-300/90">
+                Also included · Professional
+              </p>
+              <h2 className="mt-3 text-3xl font-bold tracking-tight">
+                CV &amp; Application Studio
+              </h2>
+              <p className="mt-4 text-base leading-7 text-gray-400">
+                Interviews are won twice: once on paper, once in the room. The
+                Studio handles the paper: three AI tools that turn your real
+                experience into documents that get you shortlisted.
+              </p>
+              <div className="mt-7">
+                <Link
+                  href="/pricing"
+                  className="inline-flex items-center gap-2 rounded-2xl border border-fuchsia-300/30 bg-fuchsia-300/[0.10] px-6 py-3 text-sm font-bold text-white transition hover:scale-[1.01] hover:bg-fuchsia-300/[0.15]"
+                >
+                  See Professional plans →
+                </Link>
+              </div>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-3">
+              {[
+                {
+                  title: "CV Enhancer",
+                  desc: "Your CV scored out of 10, bullets rewritten, and a full enhanced version you accept change by change.",
+                },
+                {
+                  title: "Cover letter generator",
+                  desc: "Letters tailored to the actual job description, built from your own evidence rather than templates.",
+                },
+                {
+                  title: "Personal statement builder",
+                  desc: "University, graduate scheme and MBA statements with a real narrative arc, at the word count you need.",
+                },
+              ].map((tool) => (
+                <div
+                  key={tool.title}
+                  className="rounded-2xl border border-white/[0.08] bg-white/[0.04] p-5"
+                >
+                  <p className="text-sm font-bold text-white">{tool.title}</p>
+                  <p className="mt-2 text-xs leading-5 text-gray-400">{tool.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </article>
       </section>
 
       {/* See it in action */}

@@ -73,7 +73,7 @@ const STEPS: Step[] = [
     title: "Go further when you're ready",
     points: [
       "Run a full mock assessment centre: case study, interview and presentation, scored end to end.",
-      "Generate a tailored CV enhancement, personal statement or cover letter in Career Docs.",
+      "Generate a tailored CV enhancement, personal statement or cover letter in the CV & Application Studio.",
       "After each session you get a 7-day improvement plan: follow it between practices.",
     ],
     cta: { label: "Explore the Assessment Centre", href: "/assessment-centre" },
