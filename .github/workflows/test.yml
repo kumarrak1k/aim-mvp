@@ -13,6 +13,13 @@ on:
   # actually live; the e2e-smoke job below keys off that.
   deployment_status:
 
+# A newer push supersedes any in-flight run for the same branch. Without
+# this, a burst of pushes queues runs that waste minutes and (as on
+# 2026-08-06) pile up behind GitHub incidents.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   # ── Unit tests (Vitest) ──────────────────────────────────────────────────────
   unit-tests:
