@@ -30,12 +30,12 @@ test.describe("Homepage", () => {
 
   test("navigation links are present", async ({ page }) => {
     await page.goto("/");
-    // The page has two <nav> landmarks (the primary site nav, now labelled
-    // "Primary", plus the "Resources" links strip), so a bare locator("nav")
-    // trips a strict-mode violation. Assert the primary nav — first in DOM
-    // order — is visible. Using .first() (not the name) keeps this passing
-    // against the live site regardless of deploy timing.
-    await expect(page.getByRole("navigation").first()).toBeVisible();
+    // Desktop (xl+) shows the primary nav pills; below xl the nav lives
+    // inside a collapsed "Menu" disclosure, so the nav element itself is
+    // hidden. Either a visible nav or the Menu control counts as navigation.
+    const visibleNav = page.locator("nav:visible").first();
+    const menuButton = page.locator("summary, button").filter({ hasText: /menu/i }).first();
+    await expect(visibleNav.or(menuButton).first()).toBeVisible();
   });
 });
 
@@ -57,8 +57,10 @@ test.describe("Pricing", () => {
     await page.goto("/pricing");
     const heading = page.locator("h1, h2").first();
     await expect(heading).toBeVisible();
-    // At least one pricing card or plan mention
-    const planText = page.getByText(/professional|free|monthly|annually/i).first();
+    // At least one pricing card or plan mention. Scope to main: the header's
+    // desktop-only nav also matches (/free/ in "Free tools") but is hidden
+    // below xl, which made .first() fail on the mobile project.
+    const planText = page.locator("main").getByText(/professional|free|monthly|annually/i).first();
     await expect(planText).toBeVisible();
   });
 });
