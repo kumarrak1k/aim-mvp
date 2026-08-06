@@ -11,6 +11,7 @@ import {
 import { getOrCreateEmailPreference } from "@/app/lib/emailPreferences";
 import { isEmailSuppressed } from "@/app/lib/emailSuppression";
 import { getCandidatePlan } from "@/app/lib/candidatePlan";
+import { clerkClient } from "@clerk/nextjs/server";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -63,6 +64,24 @@ export async function GET(req: NextRequest) {
     for (const row of [...practice, ...centres, ...docs]) activeRecently.add(row.clerkUserId);
   }
 
+  // Jobs outlive accounts: a deleted user's queued emails would otherwise
+  // keep going to that address indefinitely. Resolve each distinct user once
+  // per run; a Clerk 404 marks them gone and every job of theirs skips. Any
+  // other Clerk error fails open so an API blip can't halt the pipeline.
+  const userGone = new Set<string>();
+  {
+    const client = await clerkClient();
+    await Promise.all(
+      [...new Set(due.map((j) => j.userId))].map(async (uid) => {
+        try {
+          await client.users.getUser(uid);
+        } catch (err) {
+          if ((err as { status?: number })?.status === 404) userGone.add(uid);
+        }
+      })
+    );
+  }
+
   let sent = 0;
   let failed = 0;
   let skipped = 0;
@@ -75,6 +94,15 @@ export async function GET(req: NextRequest) {
         where: { id: job.id },
         data: { attempts: { increment: 1 } },
       });
+
+      if (userGone.has(job.userId)) {
+        await prisma.emailJob.update({
+          where: { id: job.id },
+          data: { status: "skipped", error: "account deleted", sentAt: new Date() },
+        });
+        skipped++;
+        continue;
+      }
 
       // Never send to a hard-bounced / complained address (sender reputation).
       if (await isEmailSuppressed(job.email)) {

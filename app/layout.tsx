@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Analytics } from "@vercel/analytics/next";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 import { absoluteUrl, siteConfig } from "@/app/config/site";
 import { AttributionCapture } from "@/app/components/AttributionCapture";
 import { ActivityTracker } from "@/app/components/ActivityTracker";
@@ -245,7 +244,6 @@ export default function RootLayout({
           <DeferredMentorChat />
           <CookieConsent />
           <Analytics />
-          <SpeedInsights />
         </body>
       </html>
     </ClerkProvider>
