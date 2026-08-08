@@ -1,4 +1,9 @@
 /**
+ * NAMED zz- ON PURPOSE: Playwright runs spec files in alphabetical order, and
+ * the disposable candidate DELETES ITSELF below. Any spec that signs in as that
+ * persona (onboarding.spec.ts) must run first, or it lands on the sign-in page
+ * with a storageState whose user no longer exists.
+ *
  * Self-serve account deletion (UK GDPR Art. 17) — /api/account/delete. Locks the
  * two guards (a typed confirmation is required; workspace admins must delete the
  * workspace first) and the destructive purge itself, which a throwaway persona
@@ -9,6 +14,19 @@ import { statePath } from "../fixtures/env";
 import { CORPORATE_ADMIN, DISPOSABLE_CANDIDATE } from "../fixtures/personas";
 
 test.describe("account deletion", () => {
+  // The stored __session JWT lives ~60s. This suite now runs at the END of the
+  // pack (see the zz- note above), minutes after auth.setup minted those
+  // tokens, so a bare page.request would 401 before ever reaching the guard
+  // under test. Only a page NAVIGATION triggers the middleware handshake that
+  // mints a fresh token, so visit a protected page first.
+  // Deliberately asserts only that we are not bounced to sign-in: what the
+  // page renders varies by plan and usage state, and the handshake happens on
+  // the navigation itself regardless of what is drawn.
+  test.beforeEach(async ({ page }) => {
+    await page.goto("/practice");
+    await expect(page).not.toHaveURL(/sign-in/);
+  });
+
   test.describe("confirmation guard", () => {
     test.use({ storageState: statePath("free") });
 

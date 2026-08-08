@@ -19,6 +19,22 @@ import { BASE_URL } from "./tests/e2e/pack/fixtures/env";
 // the default or an explicit PLAYWRIGHT_BASE_URL=http://localhost:3000. For a
 // remote preview URL, don't boot one — run against that deployment instead.
 const useLocalServer = /localhost|127\.0\.0\.1/.test(BASE_URL);
+/**
+ * Boot the app on the port BASE_URL actually points at.
+ *
+ * This used to be hardcoded to 3000 while the tests followed BASE_URL. With
+ * reuseExistingServer on, ANY other Next app already holding 3000 (another
+ * project's dev server, say) silently became the app under test: every persona
+ * sign-in then waits for a Clerk that page will never load, and the whole pack
+ * fails in auth.setup with nothing pointing at the real cause.
+ */
+const LOCAL_PORT = (() => {
+  try {
+    return new URL(BASE_URL).port || "3000";
+  } catch {
+    return "3000";
+  }
+})();
 
 // Forward any STRIPE_* vars (secret key + price IDs) to the app under test, so
 // the optional @stripe checkout suite can create sessions in Stripe TEST mode.
@@ -77,8 +93,8 @@ export default defineConfig({
   ...(useLocalServer
     ? {
         webServer: {
-          command: "npm run dev",
-          url: "http://localhost:3000",
+          command: `npm run dev -- --port ${LOCAL_PORT}`,
+          url: BASE_URL,
           reuseExistingServer: true,
           timeout: 120_000,
           // Boot the app with the AI mock seam ON, and forward the TEST Clerk
