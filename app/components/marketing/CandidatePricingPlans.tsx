@@ -44,6 +44,7 @@ const COMPARE: Array<{ feature: string; free: string | boolean; plus: string | b
     info: "Blend different question types in a single session. For example: 3 competency, 3 technical and 2 leadership questions, matching the exact interview you are preparing for.",
   },
   { feature: "Mock assessment centre", free: "1 free run", plus: "1 free run", pro: "Unlimited" },
+  { feature: "CV & Application Studio", free: "2 free", plus: "2 free", pro: "Unlimited" },
   {
     feature: "Advanced analytics & gap tracking",
     free: false, plus: false, pro: true,
@@ -145,6 +146,8 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
         { text: "Full structured feedback per answer" },
         { text: "Model answers per question" },
         { text: "Progress history saved and tracked" },
+        { text: "1 free mock assessment centre to try" },
+        { text: "2 free Career Docs generations to try" },
       ] as PlanFeature[],
       cta: "Click for 3-day free trial · No payment details required",
       stripePlanMonthly: "plus_monthly" as StripePlanId,
