@@ -55,7 +55,7 @@ export function PracticeHero({
       {usageLimitReached && planName === "Free" ? (
         <div className="mt-4 flex flex-wrap items-center gap-3 rounded-[1.1rem] border border-purple-300/20 bg-purple-300/[0.08] px-4 py-3">
           <p className="min-w-0 flex-1 text-sm font-semibold leading-6 text-gray-200">
-            Free plan · all 3 sessions used. {usageSummary}
+            Free plan · this month&apos;s sessions used. {usageSummary}
           </p>
           <Link
             href="/pricing"

@@ -318,13 +318,13 @@ function UpgradeNudge() {
       <div className="pointer-events-none absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-fuchsia-500/15 blur-3xl" />
       <div className="relative">
         <p className="mb-2 text-[11px] font-bold tracking-wide text-purple-300/70">
-          Free plan · All 3 sessions used
+          Free plan · This month&apos;s sessions used
         </p>
         <h2 className="text-2xl font-bold tracking-tight">
           Ready to practise more?
         </h2>
         <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-gray-400">
-          You&apos;ve used all 3 free sessions today. Upgrade to Plus for
+          You&apos;ve used this month&apos;s free sessions. They refill automatically, or upgrade to Plus for
           unlimited daily sessions, plus voice coaching, camera analysis and
           model answers, all included.
         </p>

@@ -5,6 +5,7 @@ import {
   resolveCandidatePlan,
   type CandidateBillingMeta,
 } from "@/app/lib/candidatePlan";
+import { remainingAssessmentCentreTasters } from "@/app/lib/freeTaster";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -54,9 +55,17 @@ export async function GET() {
       }
     }
 
+    // Taster availability, so the assessment-centre page can let a non-paying
+    // candidate through to their one free run instead of showing the upgrade
+    // wall. Only queried when it can matter (paid Professional never sees it).
+    const tasterAssessmentCentres = plan.isProfessional
+      ? 0
+      : await remainingAssessmentCentreTasters(userId);
+
     return NextResponse.json({
       planName: plan.planName,
       isActive: plan.isActive,
+      tasterAssessmentCentres,
       planId: meta?.stripePlanId ?? null,
       currentPeriodEnd: periodEnd,
       hasCustomer,

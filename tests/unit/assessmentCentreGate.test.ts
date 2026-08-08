@@ -1,11 +1,15 @@
 /**
  * Gate tests for the assessment-centre SUBMIT routes (#6).
  *
- * Assessment Centre is Professional-only. The start route already gated, but the
- * three submit routes (case-study / interview / presentation) did not — so a
- * user who downgraded or lapsed mid-flow could keep generating expensive AI
- * scoring. These tests prove every submit route now denies a non-Professional
- * caller BEFORE any OpenAI call, and lets a Professional through.
+ * The three submit routes (case-study / interview / presentation) must deny a
+ * caller who is not entitled BEFORE any OpenAI call, so a user who downgraded
+ * or lapsed mid-flow cannot keep generating expensive AI scoring.
+ *
+ * "Entitled" now means Professional OR still inside the free taster allowance
+ * (FREE_TIER.assessmentCentres): a non-paying candidate gets one full run so
+ * they can see what the paid feature actually is. The lapsed-user protection is
+ * preserved by counting sessions — somebody holding more sessions than the
+ * taster allows built them on a plan they no longer have, and stays blocked.
  */
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
@@ -16,6 +20,8 @@ const h = vi.hoisted(() => ({
     updated: 0,
     selectedStages: ["stage1"] as string[],
     assignmentToken: null as string | null,
+    /** Self-serve AC sessions this user already holds (drives the taster gate). */
+    sessionCount: 1,
   },
 }));
 
@@ -29,6 +35,8 @@ vi.mock("@/app/lib/rateLimit", () => ({
 
 vi.mock("@/app/lib/candidatePlan", () => ({
   getCandidatePlan: async () => ({ isProfessional: h.state.isProfessional, isTrial: false }),
+  // freeTaster reads the allowance from here — the mock must carry it too.
+  FREE_TIER: { assessmentCentres: 1, careerDocs: 2, practiceSessionsPerWindow: 3, windowDays: 30 },
 }));
 
 vi.mock("@/app/lib/moderation", () => ({
@@ -63,6 +71,7 @@ vi.mock("@/app/lib/prisma", () => ({
         h.state.updated++;
         return {};
       },
+      count: async () => h.state.sessionCount,
     },
   },
 }));
@@ -87,9 +96,10 @@ beforeEach(() => {
   h.state.updated = 0;
   h.state.selectedStages = ["stage1"];
   h.state.assignmentToken = null;
+  h.state.sessionCount = 1;
 });
 
-describe("AC submit gate (#6) — denies non-Professional before any AI cost", () => {
+describe("AC submit gate (#6) — denies a lapsed user before any AI cost", () => {
   const routes: Array<[string, (r: Request, c: ReturnType<typeof ctx>) => Promise<Response>]> = [
     ["submit-case-study", submitCaseStudy as never],
     ["submit-interview", submitInterview as never],
@@ -97,14 +107,27 @@ describe("AC submit gate (#6) — denies non-Professional before any AI cost", (
   ];
 
   for (const [name, route] of routes) {
-    it(`${name}: 403 for a non-Professional, no OpenAI call`, async () => {
+    it(`${name}: 403 when a non-Professional holds more sessions than the taster allows`, async () => {
       h.state.isProfessional = false;
+      // Built up on a plan they no longer hold — the case this gate exists for.
+      h.state.sessionCount = 4;
       const res = await route(req(), ctx());
       expect(res.status).toBe(403);
       expect(h.state.openAICalls).toBe(0);
       expect(h.state.updated).toBe(0);
     });
   }
+});
+
+describe("AC submit gate — a free taster run can be completed", () => {
+  it("submit-case-study: a non-Professional inside the taster allowance is scored", async () => {
+    h.state.isProfessional = false;
+    h.state.sessionCount = 1; // their one free run, started legitimately
+    const res = await submitCaseStudy(req() as never, ctx() as never);
+    expect(res.status).toBe(200);
+    expect(h.state.openAICalls).toBeGreaterThan(0);
+    expect(h.state.updated).toBeGreaterThan(0);
+  });
 });
 
 describe("AC submit gate (#6) — lets a Professional through", () => {

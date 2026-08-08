@@ -9,14 +9,17 @@ import {
   getCandidatePlan,
   type CandidatePlan,
   TRIAL_USAGE_CAPS,
+  FREE_TIER,
 } from "../../lib/candidatePlan";
 import { recordActivity, ACTIVITY_EVENTS } from "../../lib/activity";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-/** Total number of sessions a free-tier user can save (all-time, not per day). */
-const FREE_TRIAL_LIMIT = 3;
+/** Start of the rolling free-tier window. */
+function freeWindowStart(): Date {
+  return new Date(Date.now() - FREE_TIER.windowDays * 24 * 60 * 60 * 1000);
+}
 
 function getSummaryScore(summary: Record<string, unknown>): number {
   const value = summary.overall_score;
@@ -63,22 +66,41 @@ async function getUsageInfo(clerkUserId: string, plan: CandidatePlan) {
     };
   }
 
-  // Free tier: count all sessions ever saved (one-time trial of 3 sessions).
-  const totalUsed = await prisma.practiceSession.count({
-    where: { clerkUserId },
+  // Free tier: sessions saved inside the rolling window. Counting all-time
+  // meant a free user hit a wall they could never get past, so there was never
+  // a reason to return; the allowance now refills.
+  const windowStart = freeWindowStart();
+  const usedInWindow = await prisma.practiceSession.count({
+    where: { clerkUserId, createdAt: { gte: windowStart } },
   });
 
-  const remaining = Math.max(0, FREE_TRIAL_LIMIT - totalUsed);
-  const limitReached = totalUsed >= FREE_TRIAL_LIMIT;
+  const remaining = Math.max(0, FREE_TIER.practiceSessionsPerWindow - usedInWindow);
+  const limitReached = usedInWindow >= FREE_TIER.practiceSessionsPerWindow;
+
+  // When the allowance is spent, the oldest session inside the window is the
+  // one whose expiry frees up the next slot.
+  let resetsAt = "";
+  if (limitReached) {
+    const oldest = await prisma.practiceSession.findFirst({
+      where: { clerkUserId, createdAt: { gte: windowStart } },
+      orderBy: { createdAt: "asc" },
+      select: { createdAt: true },
+    });
+    if (oldest) {
+      resetsAt = new Date(
+        oldest.createdAt.getTime() + FREE_TIER.windowDays * 24 * 60 * 60 * 1000
+      ).toISOString();
+    }
+  }
 
   return {
     planName: plan.planName,
     isTrial: false,
-    dailyLimit: FREE_TRIAL_LIMIT,
-    usedToday: totalUsed,
+    dailyLimit: FREE_TIER.practiceSessionsPerWindow,
+    usedToday: usedInWindow,
     remainingToday: remaining,
     limitReached,
-    resetsAt: "",
+    resetsAt,
   };
 }
 
@@ -164,7 +186,11 @@ export async function POST(request: NextRequest) {
       });
       const error = usage.isTrial
         ? `You've reached your free-trial fair-use limit of ${TRIAL_USAGE_CAPS.practiceSessions} practice interviews. Upgrade to Plus for unlimited practice.`
-        : "You've used all 3 free sessions. Upgrade to Plus for unlimited practice.";
+        : `You've used all ${FREE_TIER.practiceSessionsPerWindow} free sessions for this month. They refill ${
+            usage.resetsAt
+              ? `on ${new Date(usage.resetsAt).toLocaleDateString("en-GB", { day: "numeric", month: "long" })}`
+              : `every ${FREE_TIER.windowDays} days`
+          }, or upgrade to Plus for unlimited practice.`;
       return NextResponse.json({ error, usage }, { status: 429 });
     }
 

@@ -8,6 +8,8 @@ import { CandidateAppShell } from "@/app/components/marketing/CandidateAppShell"
 type PlanInfo = {
   planName: string;
   isActive: boolean;
+  /** Free runs left for a non-Professional candidate (see FREE_TIER). */
+  tasterAssessmentCentres?: number;
 };
 
 const stages = [
@@ -184,7 +186,7 @@ function SignInGate() {
 
 // ─── Assessment centre access (right plan) ────────────────────────────────────
 
-function AssessmentCentreAccess() {
+function AssessmentCentreAccess({ isTaster = false }: { isTaster?: boolean }) {
   return (
     <div className="mx-auto max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] px-4 py-8 sm:px-6 lg:py-10">
       {/* Hero */}
@@ -192,8 +194,14 @@ function AssessmentCentreAccess() {
         <div className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-cyan-400/10 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-28 left-10 h-80 w-80 rounded-full bg-purple-500/15 blur-3xl" />
         <div className="relative">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-300/20 bg-emerald-300/10 px-4 py-2 text-[11px] font-bold tracking-wide text-emerald-100">
-            Professional · Unlocked
+          <div
+            className={`mb-4 inline-flex items-center gap-2 rounded-full border px-4 py-2 text-[11px] font-bold tracking-wide ${
+              isTaster
+                ? "border-cyan-300/25 bg-cyan-300/10 text-cyan-100"
+                : "border-emerald-300/20 bg-emerald-300/10 text-emerald-100"
+            }`}
+          >
+            {isTaster ? "One free run · on us" : "Professional · Unlocked"}
           </div>
           <h1 className="text-3xl font-bold leading-[1.04] tracking-tight text-white sm:text-4xl lg:text-4xl">
             Mock assessment centre
@@ -258,6 +266,9 @@ export default function AssessmentCentrePage() {
   }, [isLoaded, isSignedIn]);
 
   const isAdvanced = plan?.planName === "Professional" && plan.isActive;
+  // A non-paying candidate with a taster left gets in: nobody upgrades to buy
+  // something they have never been allowed to see.
+  const hasTaster = (plan?.tasterAssessmentCentres ?? 0) > 0;
 
   function renderContent() {
     if (!isLoaded || planLoading) {
@@ -269,7 +280,7 @@ export default function AssessmentCentrePage() {
     }
 
     if (!isSignedIn) return <SignInGate />;
-    if (isAdvanced) return <AssessmentCentreAccess />;
+    if (isAdvanced || hasTaster) return <AssessmentCentreAccess isTaster={!isAdvanced} />;
     return <UpgradeGate planName={plan?.planName ?? "Free"} />;
   }
 

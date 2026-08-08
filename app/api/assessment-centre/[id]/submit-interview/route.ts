@@ -8,6 +8,7 @@ import { buildPresentationBriefPrompts } from "@/app/lib/assessmentCentrePrompts
 import { checkRateLimit } from "@/app/lib/rateLimit";
 import { parseJsonBody } from "@/app/lib/validation";
 import { getCandidatePlan } from "@/app/lib/candidatePlan";
+import { canSubmitAssessmentCentreStage } from "@/app/lib/freeTaster";
 import { recordActivity, ACTIVITY_EVENTS } from "@/app/lib/activity";
 
 export const runtime = "nodejs";
@@ -55,7 +56,7 @@ export async function POST(
   // gate them.
   if (!session.assignmentToken) {
     const plan = await getCandidatePlan(userId);
-    if (!plan.isProfessional) {
+    if (!(await canSubmitAssessmentCentreStage(userId, plan))) {
       recordActivity(userId, ACTIVITY_EVENTS.AC_BLOCKED, plan, {
         reason: "plan",
         stage: "interview",

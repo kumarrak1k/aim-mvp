@@ -683,7 +683,7 @@ export function SessionSummary({
               </p>
               <h3 className="mt-2 text-lg font-bold text-white">
                 {sessionsUsed != null && sessionsUsed >= 3
-                  ? "You've used all 3 free sessions"
+                  ? "You've used this month's free sessions"
                   : sessionsUsed != null
                   ? `You've used ${sessionsUsed} of 3 free session${sessionsUsed === 1 ? "" : "s"}`
                   : "You're on the free plan"}

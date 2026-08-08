@@ -9,6 +9,7 @@ import { buildCaseStudyPrompts, buildPresentationBriefPrompts } from "@/app/lib/
 import { checkRateLimit } from "@/app/lib/rateLimit";
 import { parseJsonBody } from "@/app/lib/validation";
 import { getCandidatePlan, TRIAL_USAGE_CAPS } from "@/app/lib/candidatePlan";
+import { canStartAssessmentCentre } from "@/app/lib/freeTaster";
 import { recordActivity, ACTIVITY_EVENTS } from "@/app/lib/activity";
 
 export const runtime = "nodejs";
@@ -44,15 +45,20 @@ export async function POST(request: NextRequest) {
   }
 
   const plan = await getCandidatePlan(userId);
-  if (!plan.isProfessional) {
+  const taster = await canStartAssessmentCentre(userId, plan);
+  if (!taster.allowed) {
     // Counted deliberately: a blocked attempt is a user who wanted the
     // feature and was turned away, which is the demand signal for whether
     // the trial should include it.
     recordActivity(userId, ACTIVITY_EVENTS.AC_BLOCKED, plan, {
       reason: "plan",
+      used: taster.used,
     });
     return NextResponse.json(
-      { error: "Assessment centre requires the Professional plan." },
+      {
+        error: `You've used your free mock assessment centre. Upgrade to Professional to run them whenever you like.`,
+        upgrade: true,
+      },
       { status: 403 }
     );
   }

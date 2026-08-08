@@ -11,7 +11,7 @@
  * trial the effective plan is "plus" — unlimited practice with voice + camera
  * coaching, but NOT the Professional-only features (assessment centres, career
  * docs, advanced analytics). When the trial ends the user silently drops to the
- * Free tier (3 saved sessions, keyboard only). A paid subscription always takes
+ * Free tier (see FREE_TIER below). A paid subscription always takes
  * precedence over the trial.
  *
  * Trial state lives in Clerk privateMetadata:
@@ -48,10 +48,39 @@ export const TRIAL_DURATION_DAYS = 3;
 export const TRIAL_USAGE_CAPS = {
   /** Practice interviews that can be saved during the trial. */
   practiceSessions: 15,
-  /** Backstop only — assessment centres are Professional-only (trial = Plus). */
+  /** Assessment centres during the trial (see FREE_TIER taster below). */
   assessmentCentres: 2,
-  /** Backstop only — career docs are Professional-only (trial = Plus). */
+  /** Career-doc generations during the trial (see FREE_TIER taster below). */
   careerDocs: 5,
+} as const;
+
+/**
+ * What a non-paying candidate gets.
+ *
+ * Two separate allowances, deliberately:
+ *
+ *  - `practiceSessionsPerWindow` RECURS every `windowDays`. It used to be three
+ *    sessions for life, which meant a free user hit a permanent wall and had no
+ *    reason to ever come back — the opposite of what a habit-forming coaching
+ *    product needs.
+ *  - The taster counts are LIFETIME. They exist so a free or trialling user can
+ *    experience the two things nothing else on the market does (the mock
+ *    assessment centre and the CV & Application Studio) at least once. Before
+ *    this, those sat entirely behind the top tier, so nobody could ever see what
+ *    they would be paying for.
+ *
+ * Both are cost-bounded: a taster is a handful of pence of OpenAI per user, once.
+ * Set any value to 0 to close that door again — every gate reads from here.
+ */
+export const FREE_TIER = {
+  /** Saved practice interviews per rolling window (was: 3 for life). */
+  practiceSessionsPerWindow: 3,
+  /** Length of the rolling window, in days. */
+  windowDays: 30,
+  /** Lifetime taster: full mock assessment centres a non-paying user may run. */
+  assessmentCentres: 1,
+  /** Lifetime taster: CV / cover letter / personal statement generations. */
+  careerDocs: 2,
 } as const;
 
 export type CandidatePlanName = "Free" | "Plus" | "Professional";

@@ -132,9 +132,10 @@ export default function CareerDocsPage() {
         {/* Advanced badge */}
         <div className="mt-10 rounded-[1.75rem] border border-white/[0.07] bg-white/[0.03] p-6 text-center">
           <p className="text-sm text-gray-400">
-            Career Documents are included in the{" "}
+            Every account gets{" "}
+            <span className="font-bold text-white">2 free generations</span> to
+            try these out. After that they are included in the{" "}
             <span className="font-bold text-white">Professional plan.</span>{" "}
-            Not on Professional?{" "}
             <Link href="/pricing" className="font-bold text-purple-300 hover:text-purple-200 underline underline-offset-2">
               See plans →
             </Link>

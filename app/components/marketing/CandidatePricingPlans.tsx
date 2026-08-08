@@ -30,12 +30,12 @@ type StripePlanId =
 // Side-by-side feature comparison (makes the Free → Plus → Professional cliff clear).
 // `info` renders a hover/focus tooltip with a plain-English explanation.
 const COMPARE: Array<{ feature: string; free: string | boolean; plus: string | boolean; pro: string | boolean; info?: string }> = [
-  { feature: "Practice sessions", free: "3 sessions", plus: "Unlimited", pro: "Unlimited" },
+  { feature: "Practice sessions", free: "3 / month", plus: "Unlimited", pro: "Unlimited" },
   { feature: "Typed interviews", free: true, plus: true, pro: true },
   { feature: "Voice interviews", free: false, plus: true, pro: true },
   { feature: "Voice + camera delivery analysis", free: false, plus: true, pro: true },
   { feature: "Structured AI feedback per answer", free: "Written", plus: "Full", pro: "Full" },
-  { feature: "Model answers", free: false, plus: true, pro: true },
+  { feature: "Model answers", free: true, plus: true, pro: true },
   { feature: "Progress tracking & history", free: false, plus: true, pro: true },
   { feature: "Custom session builder (3–10 questions)", free: false, plus: false, pro: true },
   {
@@ -43,7 +43,7 @@ const COMPARE: Array<{ feature: string; free: string | boolean; plus: string | b
     free: false, plus: false, pro: true,
     info: "Blend different question types in a single session. For example: 3 competency, 3 technical and 2 leadership questions, matching the exact interview you are preparing for.",
   },
-  { feature: "Mock assessment centre", free: false, plus: false, pro: true },
+  { feature: "Mock assessment centre", free: "1 free run", plus: "1 free run", pro: "Unlimited" },
   {
     feature: "Advanced analytics & gap tracking",
     free: false, plus: false, pro: true,
@@ -115,13 +115,14 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
       annualMonthly: null as string | null,
       annualSaving: null as string | null,
       period: null as string | null,
-      description: "Always free, with no payment details and no time limit. Keyboard-based interview practice with AI-tailored questions and written feedback, up to 3 saved practice sessions.",
+      description: "Always free, with no payment details and no time limit. Three practice sessions every month with AI-tailored questions, scored feedback and a model answer to learn from.",
       features: [
         { text: "Always free, no payment details required" },
-        { text: "3 keyboard-only practice sessions" },
+        { text: "3 practice sessions every month" },
         { text: "AI-generated tailored interview questions" },
-        { text: "Written answer feedback per question" },
-        { text: "Session transcript review" },
+        { text: "Scored feedback and a model answer per question" },
+        { text: "1 free mock assessment centre to try" },
+        { text: "2 free Career Docs generations to try" },
       ] as PlanFeature[],
       cta: "Click to use for free",
       stripePlanMonthly: null as StripePlanId | null,

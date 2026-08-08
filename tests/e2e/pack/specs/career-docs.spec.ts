@@ -9,6 +9,7 @@
  */
 import { test, expect } from "@playwright/test";
 import { statePath } from "../fixtures/env";
+import { FREE_TIER } from "../../../../app/lib/candidatePlan";
 
 test.describe("career docs", () => {
   test.describe("professional persona", () => {
@@ -65,14 +66,27 @@ test.describe("career docs", () => {
   test.describe("plus persona (no Professional access)", () => {
     test.use({ storageState: statePath("plus") });
 
-    test("career docs require the Professional plan (plus → 403)", async ({ page }) => {
-      const res = await page.request.post("/api/career-docs/cv-enhancer", {
-        data: {
-          targetRole: "Product Manager",
-          cvText: "Experienced product manager with five years building B2B SaaS products and leading cross-functional teams.",
-        },
-      });
-      expect(res.status()).toBe(403);
+    // A non-Professional account gets FREE_TIER.careerDocs generations so it can
+    // see what the Studio produces, then the upgrade gate returns. Run enough
+    // times to exhaust the taster and assert the wall is still there at the end.
+    test("career docs give a taster, then require Professional", async ({ page }) => {
+      const call = () =>
+        page.request.post("/api/career-docs/cv-enhancer", {
+          data: {
+            targetRole: "Product Manager",
+            cvText:
+              "Experienced product manager with five years building B2B SaaS products and leading cross-functional teams.",
+          },
+        });
+
+      const statuses: number[] = [];
+      for (let i = 0; i < FREE_TIER.careerDocs + 1; i++) {
+        statuses.push((await call()).status());
+      }
+
+      // Everything before the last call is inside the allowance; the last is not.
+      expect(statuses.slice(0, FREE_TIER.careerDocs).every((s) => s === 200)).toBe(true);
+      expect(statuses.at(-1)).toBe(403);
     });
   });
 });
