@@ -59,8 +59,25 @@ test.describe("candidate onboarding", () => {
     await page.getByRole("button", { name: "Test microphone" }).click();
     await expect(page.getByText("Working").first()).toBeVisible({ timeout: 15_000 });
 
+    // A working mic and speaker is enough to SPEAK, so the primary button must
+    // offer the camera-less path rather than staying disabled and pushing a
+    // webcam-less candidate down the typed route.
+    await page.getByRole("button", { name: /Play test sound/ }).click();
+    await page.getByRole("button", { name: /I heard it/ }).click();
+    const primary = page.getByRole("button", { name: /Continue without camera|Everything works/ });
+    await expect(primary).toBeEnabled();
+    await expect(primary).toHaveText(/Continue without camera/);
+
     // The skip path must always exist — typed practice needs no equipment.
     await page.getByRole("button", { name: /Skip the check/ }).click();
     await page.waitForURL(/\/practice\?warmup=1/);
+
+    // The exit taken IS the mode decision, and it has to be persisted: the
+    // practice screen restores preferredPracticeMode, so a first session opens
+    // in the mode the candidate qualified for instead of defaulting to typed.
+    const profile = await page.request.get("/api/candidate-profile");
+    expect(profile.ok(), await profile.text()).toBe(true);
+    const body = await profile.json();
+    expect(body.profile.preferredPracticeMode).toBe("typed");
   });
 });

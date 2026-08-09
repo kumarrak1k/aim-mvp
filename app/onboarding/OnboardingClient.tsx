@@ -312,7 +312,16 @@ export function OnboardingClient({
 
         {step === 6 && (
           <EquipmentCheck
-            onContinue={async () => {
+            onContinue={async (mode) => {
+              // The check IS the mode decision: passing it means the hardware
+              // for spoken practice works, so the first session opens in that
+              // mode instead of defaulting to typed and quietly showing the
+              // weakest version of the product.
+              await fetch("/api/candidate-profile", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ preferredPracticeMode: mode }),
+              }).catch(() => {});
               // The whole flow is now behind us — stamp completion, THEN
               // leave. Stamping any earlier lets a mid-flow refresh skip the
               // remaining steps.

@@ -55,7 +55,7 @@ export function EquipmentCheck({
   onContinue,
   onBack,
 }: {
-  onContinue: () => void;
+  onContinue: (mode: "voice-camera" | "voice" | "typed") => void;
   onBack: () => void;
 }) {
   const [mic, setMic] = useState<CheckState>("idle");
@@ -171,7 +171,12 @@ export function EquipmentCheck({
     }
   }
 
-  const allPass = mic === "pass" && cam === "pass" && spk === "pass";
+  // Speaking needs a mic and an ear; the camera only decides whether
+  // presence is scored on top. Treating all three as one gate pushed anyone
+  // without a webcam down the typed path, which is the outcome this screen
+  // exists to avoid.
+  const voiceReady = mic === "pass" && spk === "pass";
+  const allPass = voiceReady && cam === "pass";
 
   function leave(fn: () => void) {
     stopAllMedia();
@@ -189,8 +194,9 @@ export function EquipmentCheck({
         Quick equipment check
       </h1>
       <p className="mt-3 text-sm leading-7 text-gray-400">
-        Thirty seconds now saves a session lost to a muted mic. Voice and camera
-        coaching need these — typed practice works without them.
+        Thirty seconds now saves a session lost to a muted mic, and sets your
+        first interview up to be spoken: real interviews are, and speaking is
+        where the useful feedback is. Typed practice works without any of this.
       </p>
 
       <div className="mt-5 space-y-2">
@@ -297,14 +303,16 @@ export function EquipmentCheck({
 
       <div className="mt-6 flex flex-col items-center gap-3">
         <button
-          onClick={() => leave(onContinue)}
-          disabled={!allPass}
+          onClick={() => leave(() => onContinue(allPass ? "voice-camera" : "voice"))}
+          disabled={!voiceReady}
           className="w-full max-w-sm rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-8 py-4 text-sm font-bold text-white shadow-2xl shadow-purple-900/40 transition hover:scale-[1.02] disabled:opacity-35 disabled:hover:scale-100"
         >
-          Everything works — let&rsquo;s go →
+          {allPass
+            ? "Everything works — let’s go →"
+            : "Continue without camera →"}
         </button>
         <button
-          onClick={() => leave(onContinue)}
+          onClick={() => leave(() => onContinue("typed"))}
           className="text-sm font-bold text-gray-400 transition hover:text-white"
         >
           Skip the check — I&rsquo;ll practise typed for now
