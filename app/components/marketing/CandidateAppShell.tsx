@@ -237,35 +237,66 @@ export function CandidateAppShell({
           </div>
         </div>
 
-        {/* Tablet/mobile compact nav row */}
-        <div className="px-4 py-2 sm:px-6 xl:hidden">
-          <nav className="mx-auto flex max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {navItems.flatMap((item): Array<{ href: string; label: string; proOnly?: boolean }> =>
-              item.dropdown
-                ? item.dropdown.map((d) => ({ href: d.href, label: d.label }))
-                : [{ href: item.href as string, label: item.label, proOnly: item.proOnly }]
-            ).map((item) => {
+        {/* Tablet/mobile nav — the same hamburger disclosure the signed-out
+            shell uses, so the site behaves identically either side of sign-in.
+            Replaces both a horizontally-scrolling strip (whose overflow was
+            invisible) and a fixed bottom bar (whose last item sat under the
+            floating chat button). */}
+        <details className="group/nav px-4 pb-3 sm:px-6 xl:hidden">
+          <summary className="flex cursor-pointer list-none items-center justify-between rounded-2xl border border-white/[0.09] bg-white/[0.05] px-4 py-3 text-white [&::-webkit-details-marker]:hidden">
+            <span className="flex items-center gap-2.5 text-sm font-bold">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden>
+                <path d="M2.5 4.5h13M2.5 9h13M2.5 13.5h13" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+              </svg>
+              Menu
+            </span>
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden className="text-gray-400 transition group-open/nav:rotate-180">
+              <path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </summary>
+
+          <div className="mt-2 overflow-hidden rounded-2xl border border-white/[0.09] bg-[#140a26] p-2 shadow-2xl shadow-black/50">
+            {navItems.map((item) => {
+              if (item.dropdown) {
+                return (
+                  <div key={item.label} className="mt-1 border-t border-white/[0.06] pt-1">
+                    <p className="px-4 pb-1 pt-2 text-[10px] font-bold tracking-wide text-gray-500">
+                      {item.label}
+                    </p>
+                    {item.dropdown.map((sub) => (
+                      <Link
+                        key={sub.href}
+                        href={sub.href}
+                        className="block rounded-xl px-4 py-2.5 text-sm font-semibold text-gray-300 transition hover:bg-white/[0.06] hover:text-white"
+                      >
+                        SUB{item.label}
+                      </Link>
+                    ))}
+                  </div>
+                );
+              }
+              const href = item.href as string;
               const active =
-                currentPath === item.href ||
-                (item.href === "/practice" && currentPath === "/practice/session") ||
-                (item.href === "/career-docs" && currentPath.startsWith("/career-docs/"));
+                currentPath === href ||
+                (href === "/practice" && currentPath === "/practice/session") ||
+                (href === "/career-docs" && currentPath.startsWith("/career-docs/"));
               return (
-                <Link key={item.href} href={item.href}>
-                  <span
-                    className={`block whitespace-nowrap rounded-full px-3.5 py-1.5 text-xs font-bold transition ${
-                      active
-                        ? "bg-white/[0.12] text-white"
-                        : "border border-white/[0.08] bg-white/[0.04] text-gray-400 hover:bg-white/[0.07] hover:text-white"
-                    }`}
-                  >
-                    {item.label}
-                    {item.proOnly && isProfessional === false && <ProBadge />}
-                  </span>
+                <Link
+                  key={href}
+                  href={href}
+                  className={`block rounded-xl px-4 py-2.5 text-sm font-bold transition ${
+                    active
+                      ? "bg-white/[0.1] text-white"
+                      : "text-gray-300 hover:bg-white/[0.06] hover:text-white"
+                  }`}
+                >
+                  {item.label}
+                  {item.proOnly && isProfessional === false && <ProBadge />}
                 </Link>
               );
             })}
-          </nav>
-        </div>
+          </div>
+        </details>
 
         {/* Start Practising — its own centred row, where the resource strip used
             to be. Hidden on the pages it points at. */}
@@ -314,113 +345,10 @@ export function CandidateAppShell({
       {/* Reverse-trial countdown / start / upgrade bar */}
       <TrialBanner />
 
-      {/* Main content — pb-20 on mobile leaves room for the bottom nav */}
-      <main className="relative z-10 pb-20 sm:pb-0">{children}</main>
+      <main className="relative z-10">{children}</main>
 
       <SiteFooter />
 
-      {/* Mobile bottom navigation bar */}
-      <nav
-        className="fixed bottom-0 left-0 right-0 z-50 border-t border-white/[0.1] bg-[#080412]/96 backdrop-blur-2xl sm:hidden"
-        aria-label="Candidate navigation"
-        style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
-      >
-        <div className="flex h-[60px] items-stretch">
-          <BottomNavItem href="/profile" label="Profile" active={currentPath === "/profile"}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-[18px] w-[18px]">
-              <circle cx="12" cy="8" r="4" />
-              <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
-            </svg>
-          </BottomNavItem>
-
-          <BottomNavItem href="/practice" label="Practice" active={currentPath === "/practice" || currentPath === "/practice/session"}>
-            <svg viewBox="0 0 24 24" fill="currentColor" className="h-[18px] w-[18px]">
-              <path d="M8 5.14v14l11-7-11-7z" />
-            </svg>
-          </BottomNavItem>
-
-          <BottomNavItem href="/assessment-centre" label="Assessment" primary primaryColor="cyan" active={currentPath === "/assessment-centre"}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-[18px] w-[18px]">
-              <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" />
-              <rect x="9" y="3" width="6" height="4" rx="1" />
-              <path d="M9 12h6M9 16h4" />
-            </svg>
-          </BottomNavItem>
-
-          <BottomNavItem href="/career-docs" label="Docs"
-            active={currentPath === "/career-docs" || currentPath.startsWith("/career-docs/")}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-[18px] w-[18px]">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-              <polyline points="14 2 14 8 20 8" />
-              <line x1="16" y1="13" x2="8" y2="13" />
-              <line x1="16" y1="17" x2="8" y2="17" />
-            </svg>
-          </BottomNavItem>
-
-          <BottomNavItem href="/progress" label="Progress" active={currentPath === "/progress"}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-[18px] w-[18px]">
-              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-            </svg>
-          </BottomNavItem>
-        </div>
-      </nav>
     </div>
-  );
-}
-
-function BottomNavItem({
-  href,
-  label,
-  active,
-  primary = false,
-  primaryColor = "purple",
-  children,
-}: {
-  href: string;
-  label: string;
-  active: boolean;
-  primary?: boolean;
-  primaryColor?: "purple" | "cyan";
-  children: ReactNode;
-}) {
-  if (primary) {
-    const gradient =
-      primaryColor === "cyan"
-        ? active
-          ? "bg-gradient-to-br from-cyan-400 via-purple-400 to-fuchsia-400 shadow-cyan-900/60"
-          : "bg-gradient-to-br from-cyan-500 via-purple-500 to-fuchsia-500 shadow-cyan-900/40"
-        : active
-          ? "bg-gradient-to-br from-purple-400 via-fuchsia-400 to-blue-400 shadow-purple-900/60"
-          : "bg-gradient-to-br from-violet-600 to-purple-600 shadow-purple-900/40";
-
-    const labelColor = primaryColor === "cyan" ? "text-cyan-300" : "text-purple-300";
-
-    return (
-      <Link
-        href={href}
-        className="flex flex-1 flex-col items-center justify-center gap-1 py-2 transition-opacity active:opacity-70"
-      >
-        <div className={`flex h-10 w-10 items-center justify-center rounded-full shadow-lg transition-transform active:scale-95 ${gradient}`}>
-          <span className="text-white">{children}</span>
-        </div>
-        <span className={`text-[9px] font-bold leading-none ${labelColor}`}>
-          {label}
-        </span>
-      </Link>
-    );
-  }
-
-  return (
-    <Link
-      href={href}
-      className="flex flex-1 flex-col items-center justify-center gap-1 py-2 transition-opacity active:opacity-60"
-    >
-      <span className={`transition-colors ${active ? "text-white" : "text-gray-500"}`}>
-        {children}
-      </span>
-      <span className={`text-[9px] font-bold leading-none transition-colors ${active ? "text-white" : "text-gray-500"}`}>
-        {label}
-      </span>
-    </Link>
   );
 }
