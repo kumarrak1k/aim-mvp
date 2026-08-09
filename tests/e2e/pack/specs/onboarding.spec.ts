@@ -20,9 +20,22 @@ test.describe("candidate onboarding", () => {
 
     // Step 1 — who they are
     await expect(page.getByText("Step 1 of 6")).toBeVisible();
+    // The picker is a shortcut into the free-text box, not a separate field:
+    // whatever it sets must be what gets saved.
+    await page.getByRole("combobox").selectOption("Data Analyst");
+    await expect(page.getByPlaceholder(/Operations Analyst/i)).toHaveValue("Data Analyst");
     await page.getByPlaceholder(/Operations Analyst/i).fill("Graduate Software Engineer");
     await page.getByRole("button", { name: /Graduate or first role/ }).click();
     await page.getByRole("button", { name: "Technology & data" }).click();
+
+    // Optional context — the reason this step exists at all is that these
+    // sharpen the generated questions, so they must actually reach the profile.
+    await page.getByRole("button", { name: /Add more detail/ }).click();
+    await page.getByPlaceholder(/Retail supervisor/i).fill("Retail supervisor");
+    await page
+      .getByPlaceholder(/Paste the job description/i)
+      .fill("We are hiring a graduate software engineer to work on payments.");
+
     await page.getByRole("button", { name: "Continue" }).click();
 
     // Step 2 — process type
@@ -79,5 +92,10 @@ test.describe("candidate onboarding", () => {
     expect(profile.ok(), await profile.text()).toBe(true);
     const body = await profile.json();
     expect(body.profile.preferredPracticeMode).toBe("typed");
+    expect(body.profile.currentRole).toBe("Retail supervisor");
+    // A pasted job description must LEAD the role spec, not be overwritten by
+    // the generated "Target role / Sector / Level" summary.
+    expect(body.profile.roleSpec).toMatch(/^We are hiring a graduate software engineer/);
+    expect(body.profile.roleSpec).toContain("Target role: Graduate Software Engineer");
   });
 });

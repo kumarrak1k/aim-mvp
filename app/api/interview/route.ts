@@ -62,6 +62,7 @@ function buildTemplateContextBlock(context: TemplateContext | undefined): string
 function buildSavedProfileContext(profile: CandidateProfile) {
   const hasProfile =
     profile.cvText.trim() ||
+    profile.currentRole.trim() ||
     profile.roleSpec.trim() ||
     profile.interviewGoals.trim();
 
@@ -71,6 +72,9 @@ function buildSavedProfileContext(profile: CandidateProfile) {
 
   return `
 Saved candidate profile context:
+
+Current role:
+${profile.currentRole || "Not provided."}
 
 CV / career background:
 ${profile.cvText || "Not provided."}

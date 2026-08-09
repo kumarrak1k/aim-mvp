@@ -26,6 +26,14 @@ const bodySchema = z.object({
   targetSector: z.enum(sectorValues),
   biggestChallenge: z.enum(challengeValues),
   processType: z.enum(processValues),
+  // Optional context gathered on step 1. Every one of these measurably
+  // sharpens generated questions and feedback, and all are skippable: an
+  // empty string means "not given", never "clear what I had".
+  currentRole: z.string().trim().max(160).optional(),
+  cvText: z.string().max(15000).optional(),
+  cvFileName: z.string().trim().max(255).optional(),
+  roleSpec: z.string().max(8000).optional(),
+  roleSpecFileName: z.string().trim().max(255).optional(),
 });
 
 /**
@@ -45,8 +53,18 @@ export async function POST(request: NextRequest) {
 
   const parsed = await parseJsonBody(request, bodySchema);
   if ("response" in parsed) return parsed.response;
-  const { targetRole, careerStage, targetSector, biggestChallenge, processType } =
-    parsed.data;
+  const {
+    targetRole,
+    careerStage,
+    targetSector,
+    biggestChallenge,
+    processType,
+    currentRole,
+    cvText,
+    cvFileName,
+    roleSpec,
+    roleSpecFileName,
+  } = parsed.data;
 
   const challenge = challengeFor(biggestChallenge);
 
@@ -65,7 +83,18 @@ export async function POST(request: NextRequest) {
     ...(challenge ? { defaultFocusArea: challenge.focusArea } : {}),
     // Seeds the practice screen's role field, which is otherwise blank and is
     // the one input standing between a new user and their first question.
-    roleSpec: `Target role: ${targetRole}\nSector: ${targetSector}\nLevel: ${careerStage}`,
+    // A pasted job description is strictly better context than this summary,
+    // so when one is supplied it leads and the summary follows it rather than
+    // being overwritten by it.
+    roleSpec: roleSpec?.trim()
+      ? `${roleSpec.trim()}\n\n---\nTarget role: ${targetRole}\nSector: ${targetSector}\nLevel: ${careerStage}`
+      : `Target role: ${targetRole}\nSector: ${targetSector}\nLevel: ${careerStage}`,
+    // Only write the optional extras when given: a candidate who skips them
+    // here must not have an existing profile value blanked.
+    ...(currentRole?.trim() ? { currentRole: currentRole.trim() } : {}),
+    ...(cvText?.trim() ? { cvText: cvText.trim() } : {}),
+    ...(cvFileName?.trim() ? { cvFileName: cvFileName.trim() } : {}),
+    ...(roleSpecFileName?.trim() ? { roleSpecFileName: roleSpecFileName.trim() } : {}),
   };
 
   await prisma.userProfile.upsert({

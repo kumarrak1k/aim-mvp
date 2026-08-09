@@ -395,6 +395,9 @@ model UserProfile {
   // because nothing ever asked them.
   /** Free text, e.g. "Operations Analyst". Distinct from roleSpec, which is a pasted job description. */
   targetRole            String?
+  /** What they do NOW, e.g. "Retail supervisor". Lets questions bridge from real
+      experience to the target role rather than assuming a blank slate. Optional. */
+  currentRole           String?
   /** One of SECTORS. Shapes generated questions. */
   targetSector          String?
   /** One of CHALLENGES. Drives focus area and coaching emphasis. */

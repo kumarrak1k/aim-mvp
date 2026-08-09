@@ -40,6 +40,7 @@ export type SpeakerPreference = {
 
 export type CandidateProfile = {
   cvText: string;
+  currentRole: string;
   roleSpec: string;
   interviewGoals: string;
   cvFileName: string;
@@ -63,6 +64,7 @@ export const DEFAULT_SPEAKER_PREFERENCE: SpeakerPreference = {
 
 export const EMPTY_PROFILE: CandidateProfile = {
   cvText: "",
+  currentRole: "",
   roleSpec: "",
   interviewGoals: "",
   cvFileName: "",
@@ -120,6 +122,7 @@ function cleanSpeaker(value: unknown, fallback: SpeakerPreference): SpeakerPrefe
 
 function rowToProfile(row: {
   cvText: string;
+  currentRole: string | null;
   roleSpec: string;
   interviewGoals: string;
   cvFileName: string;
@@ -137,6 +140,7 @@ function rowToProfile(row: {
 }): CandidateProfile {
   return {
     cvText: row.cvText,
+    currentRole: row.currentRole ?? "",
     roleSpec: row.roleSpec,
     interviewGoals: row.interviewGoals,
     cvFileName: row.cvFileName,
@@ -168,6 +172,7 @@ async function migrateFromClerk(clerkUserId: string): Promise<CandidateProfile> 
 
     return {
       cvText: cleanText(cp.cvText).slice(0, 15000),
+      currentRole: cleanText(cp.currentRole).slice(0, 160),
       roleSpec: cleanText(cp.roleSpec).slice(0, 8000),
       interviewGoals: cleanText(cp.interviewGoals).slice(0, 2000),
       cvFileName: cleanText(cp.cvFileName).slice(0, 180),
@@ -244,6 +249,7 @@ export async function upsertCandidateProfile(
     interviewGoals: typeof updates.interviewGoals === "string" ? cleanText(updates.interviewGoals).slice(0, 2000) : current.interviewGoals,
     cvFileName: typeof updates.cvFileName === "string" ? cleanText(updates.cvFileName).slice(0, 180) : current.cvFileName,
     roleSpecFileName: typeof updates.roleSpecFileName === "string" ? cleanText(updates.roleSpecFileName).slice(0, 180) : current.roleSpecFileName,
+    currentRole: updates.currentRole !== undefined ? cleanText(updates.currentRole).slice(0, 160) : current.currentRole,
     preferredPracticeMode: updates.preferredPracticeMode !== undefined ? cleanMode(updates.preferredPracticeMode, current.preferredPracticeMode) : current.preferredPracticeMode,
     speakerPreference: updates.speakerPreference !== undefined ? cleanSpeaker(updates.speakerPreference, current.speakerPreference) : current.speakerPreference,
     defaultExperienceLevel: typeof updates.defaultExperienceLevel === "string" ? (updates.defaultExperienceLevel.trim().slice(0, 90) || current.defaultExperienceLevel) : current.defaultExperienceLevel,

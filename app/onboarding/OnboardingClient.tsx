@@ -1,10 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   CAREER_STAGES,
   SECTORS,
+  TARGET_ROLE_SUGGESTIONS,
   CHALLENGES,
   PROCESS_TYPES,
   ONBOARDING_STEPS,
@@ -13,6 +14,7 @@ import {
   processTypeFor,
 } from "@/app/lib/onboarding";
 import { EquipmentCheck } from "./EquipmentCheck";
+import { useSavedCV } from "@/app/career-docs/hooks/useSavedCV";
 
 /**
  * Six steps: three ask, one gives back, one launches, one checks equipment.
@@ -60,6 +62,38 @@ export function OnboardingClient({
   const [biggestChallenge, setBiggestChallenge] = useState<string>(resumeAnswers?.biggestChallenge ?? "");
   const [processType, setProcessType] = useState<string>(resumeAnswers?.processType ?? "");
 
+  // Optional context, all gathered on step 1 behind a disclosure. Empty means
+  // "not given": the API never blanks an existing profile value from here.
+  const [showContext, setShowContext] = useState(false);
+  const [currentRole, setCurrentRole] = useState("");
+  const [roleSpec, setRoleSpec] = useState("");
+  const [roleSpecFileName, setRoleSpecFileName] = useState("");
+  const [jdUploading, setJdUploading] = useState(false);
+  const savedCV = useSavedCV();
+  const cvInputRef = useRef<HTMLInputElement>(null);
+  const jdInputRef = useRef<HTMLInputElement>(null);
+
+  /** Job descriptions arrive as PDF/DOCX far more often than as pasted text. */
+  async function uploadJobDescription(file: File) {
+    setJdUploading(true);
+    try {
+      const form = new FormData();
+      form.append("file", file);
+      const res = await fetch("/api/extract-document", { method: "POST", body: form });
+      const data = (await res.json()) as { text?: string; error?: string };
+      if (!res.ok || data.error) {
+        setError(data.error ?? "Could not read that file.");
+        return;
+      }
+      setRoleSpec((data.text ?? "").trim());
+      setRoleSpecFileName(file.name);
+    } catch {
+      setError("Could not read that file.");
+    } finally {
+      setJdUploading(false);
+    }
+  }
+
   const plan = useMemo(
     () =>
       buildPlanIntro({
@@ -94,6 +128,11 @@ export function OnboardingClient({
           targetSector,
           biggestChallenge,
           processType,
+          currentRole,
+          cvText: savedCV.cvText,
+          cvFileName: savedCV.cvFileName,
+          roleSpec,
+          roleSpecFileName,
         }),
       });
       if (!res.ok) {
@@ -163,6 +202,25 @@ export function OnboardingClient({
               className="mt-2 w-full rounded-[1.25rem] border border-white/[0.09] bg-white/[0.03] px-4 py-3 text-base text-white placeholder:text-gray-600 focus:border-purple-400/60 focus:outline-none"
             />
 
+            <select
+              value=""
+              onChange={(e) => {
+                if (e.target.value) setTargetRole(e.target.value);
+              }}
+              className="mt-2 w-full rounded-[1.25rem] border border-white/[0.09] bg-[#140a26] px-4 py-3 text-sm text-gray-300 focus:border-purple-400/60 focus:outline-none"
+            >
+              <option value="">Or pick a common role…</option>
+              {TARGET_ROLE_SUGGESTIONS.map((g) => (
+                <optgroup key={g.group} label={g.group}>
+                  {g.roles.map((r) => (
+                    <option key={r} value={r}>
+                      {r}
+                    </option>
+                  ))}
+                </optgroup>
+              ))}
+            </select>
+
             <p className="mt-5 text-[11px] font-bold tracking-wide text-purple-300/90">
               Where you are
             </p>
@@ -193,6 +251,110 @@ export function OnboardingClient({
                 </button>
               ))}
             </div>
+
+            {/* Optional context. Collapsed, because step 1 must still read as
+                one question; open, because everything here measurably sharpens
+                the questions and the feedback. */}
+            <button
+              type="button"
+              onClick={() => setShowContext((v) => !v)}
+              className="mt-6 text-sm font-bold text-purple-300 transition hover:text-purple-200"
+            >
+              {showContext ? "− Hide extra detail" : "+ Add more detail (optional)"}
+            </button>
+
+            {showContext && (
+              <div className="mt-3 space-y-5 rounded-[1.1rem] border border-white/[0.08] bg-white/[0.02] p-4">
+                <p className="text-[13px] leading-6 text-gray-400">
+                  None of this is required. Each piece makes the questions and the feedback more specific to you.
+                </p>
+
+                <div>
+                  <label className="block text-[11px] font-bold tracking-wide text-purple-300/90">
+                    What you do now
+                  </label>
+                  <input
+                    value={currentRole}
+                    onChange={(e) => setCurrentRole(e.target.value)}
+                    placeholder="e.g. Retail supervisor, final-year student"
+                    className="mt-2 w-full rounded-[1.25rem] border border-white/[0.09] bg-white/[0.03] px-4 py-3 text-base text-white placeholder:text-gray-600 focus:border-purple-400/60 focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-bold tracking-wide text-purple-300/90">
+                    Your CV
+                  </label>
+                  <input
+                    ref={cvInputRef}
+                    type="file"
+                    accept=".pdf,.doc,.docx,.txt"
+                    className="hidden"
+                    onChange={(e) => {
+                      const f = e.target.files?.[0];
+                      if (f) void savedCV.uploadCV(f);
+                      e.target.value = "";
+                    }}
+                  />
+                  <div className="mt-2 flex flex-wrap items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => cvInputRef.current?.click()}
+                      disabled={savedCV.uploading}
+                      className="inline-flex cursor-pointer items-center justify-center rounded-xl border border-white/[0.12] bg-white/[0.06] px-4 py-2 text-xs font-bold text-white transition hover:bg-white/[0.12] disabled:opacity-50"
+                    >
+                      {savedCV.uploading ? "Uploading…" : savedCV.hasSavedCV ? "Replace CV" : "Upload CV"}
+                    </button>
+                    {savedCV.hasSavedCV && (
+                      <span className="text-xs text-emerald-300">
+                        {savedCV.cvFileName || "CV added"}
+                      </span>
+                    )}
+                  </div>
+                  {savedCV.error && (
+                    <p className="mt-2 text-xs text-red-400">{savedCV.error}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-bold tracking-wide text-purple-300/90">
+                    The job description
+                  </label>
+                  <input
+                    ref={jdInputRef}
+                    type="file"
+                    accept=".pdf,.doc,.docx,.txt"
+                    className="hidden"
+                    onChange={(e) => {
+                      const f = e.target.files?.[0];
+                      if (f) void uploadJobDescription(f);
+                      e.target.value = "";
+                    }}
+                  />
+                  <div className="mt-2 flex flex-wrap items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => jdInputRef.current?.click()}
+                      disabled={jdUploading}
+                      className="inline-flex cursor-pointer items-center justify-center rounded-xl border border-white/[0.12] bg-white/[0.06] px-4 py-2 text-xs font-bold text-white transition hover:bg-white/[0.12] disabled:opacity-50"
+                    >
+                      {jdUploading ? "Reading…" : "Upload job description"}
+                    </button>
+                    {roleSpecFileName && (
+                      <span className="text-xs text-emerald-300">{roleSpecFileName}</span>
+                    )}
+                  </div>
+                  <textarea
+                    value={roleSpec}
+                    onChange={(e) => setRoleSpec(e.target.value)}
+                    placeholder="Paste the job description, or upload it above…"
+                    rows={4}
+                    maxLength={8000}
+                    className="mt-2 w-full rounded-[1.25rem] border border-white/[0.09] bg-white/[0.03] px-4 py-3 text-base text-white placeholder:text-gray-600 focus:border-purple-400/60 focus:outline-none resize-y text-sm"
+                  />
+                </div>
+              </div>
+            )}
           </section>
         )}
 

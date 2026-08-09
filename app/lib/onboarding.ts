@@ -30,6 +30,68 @@ export const CAREER_STAGES = [
 ] as const;
 
 /**
+ * Common target roles, offered as a picker beside the free-text box.
+ *
+ * Not a closed list and never validated against — the text field remains the
+ * source of truth, because the whole point of asking is to catch the role we
+ * did not think of. This exists for the candidate who knows the sector but
+ * hasn't settled on a job title, where a blank box invites a vague answer and
+ * vague answers produce vague questions.
+ *
+ * Grouped by sector so the list stays scannable as it grows.
+ */
+export const TARGET_ROLE_SUGGESTIONS = [
+  {
+    group: "Graduate schemes",
+    roles: [
+      "Graduate Software Engineer",
+      "Graduate Analyst",
+      "Graduate Consultant",
+      "Graduate Trainee Manager",
+    ],
+  },
+  {
+    group: "Finance & professional services",
+    roles: [
+      "Investment Banking Analyst",
+      "Audit Associate",
+      "Tax Associate",
+      "Management Consultant",
+      "Trainee Solicitor",
+    ],
+  },
+  {
+    group: "Technology & data",
+    roles: [
+      "Software Engineer",
+      "Data Analyst",
+      "Data Scientist",
+      "Product Manager",
+      "Cyber Security Analyst",
+    ],
+  },
+  {
+    group: "Business & operations",
+    roles: [
+      "Operations Analyst",
+      "Project Manager",
+      "Business Analyst",
+      "Marketing Executive",
+      "HR Advisor",
+    ],
+  },
+  {
+    group: "Public sector, health & education",
+    roles: [
+      "Civil Service Fast Streamer",
+      "NHS Graduate Trainee",
+      "Teacher",
+      "Policy Adviser",
+    ],
+  },
+] as const;
+
+/**
  * Broader than a graduate-scheme list. This product also serves career
  * changers and experienced hires, so a finance-and-consulting-heavy list would
  * misrepresent who it is for.
