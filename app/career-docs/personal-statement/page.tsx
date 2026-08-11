@@ -118,7 +118,14 @@ export default function PersonalStatementPage() {
     return (
       <CandidateAppShell currentPath="/career-docs">
         <div className="mx-auto max-w-lg px-4 py-24 text-center">
-          <div className="mb-6 text-4xl">🔒</div>
+          <div className="mb-6 flex justify-center">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"
+              strokeLinecap="round" strokeLinejoin="round" aria-hidden
+              className="h-10 w-10 text-purple-300">
+              <rect x="4" y="10" width="16" height="11" rx="2" />
+              <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+            </svg>
+          </div>
           <h1 className="text-2xl font-bold text-white">Professional plan required</h1>
           <p className="mt-3 text-sm leading-7 text-gray-400">Personal Statement Generator is available on the Professional plan.</p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">

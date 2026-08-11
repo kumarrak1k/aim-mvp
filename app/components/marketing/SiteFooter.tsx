@@ -30,11 +30,11 @@ export function SiteFooter() {
               For candidates
             </p>
             <div className="space-y-3 text-sm text-gray-400">
-              <Link href="/" className="block transition hover:text-white">Overview</Link>
-              <Link href="/interview-practice" className="block transition hover:text-white">Interview practice</Link>
-              <Link href="/mock-assessment-centre" className="block transition hover:text-white">Assessment centre</Link>
-              <Link href="/pricing" className="block transition hover:text-white">Pricing</Link>
-              <Link href="/for-candidates/sign-up" className="block transition hover:text-white">Start free</Link>
+              <Link href="/" className="block py-3 transition hover:text-white">Overview</Link>
+              <Link href="/interview-practice" className="block py-3 transition hover:text-white">Interview practice</Link>
+              <Link href="/mock-assessment-centre" className="block py-3 transition hover:text-white">Assessment centre</Link>
+              <Link href="/pricing" className="block py-3 transition hover:text-white">Pricing</Link>
+              <Link href="/for-candidates/sign-up" className="block py-3 transition hover:text-white">Start free</Link>
             </div>
           </div>
 
@@ -44,9 +44,9 @@ export function SiteFooter() {
               Free tools
             </p>
             <div className="space-y-3 text-sm text-gray-400">
-              <Link href="/blog" className="block transition hover:text-white">Interview guides</Link>
-              <Link href="/questions" className="block transition hover:text-white">Question library</Link>
-              <Link href="/tools/star-scorer" className="block transition hover:text-white">Free STAR scorer</Link>
+              <Link href="/blog" className="block py-3 transition hover:text-white">Interview guides</Link>
+              <Link href="/questions" className="block py-3 transition hover:text-white">Question library</Link>
+              <Link href="/tools/star-scorer" className="block py-3 transition hover:text-white">Free STAR scorer</Link>
               {/*
                 "For hiring teams" and "Universities" removed while those offers
                 move to their own site. The pages still resolve for anyone sent
@@ -63,12 +63,12 @@ export function SiteFooter() {
               Company
             </p>
             <div className="space-y-3 text-sm text-gray-400">
-              <Link href="/about" className="block transition hover:text-white">About</Link>
-              <Link href="/contact" className="block transition hover:text-white">Contact</Link>
-              <Link href="/press" className="block transition hover:text-white">Press</Link>
-              <Link href="/security" className="block transition hover:text-white">Security</Link>
-              <Link href="/privacy" className="block transition hover:text-white">Privacy</Link>
-              <Link href="/terms" className="block transition hover:text-white">Terms</Link>
+              <Link href="/about" className="block py-3 transition hover:text-white">About</Link>
+              <Link href="/contact" className="block py-3 transition hover:text-white">Contact</Link>
+              <Link href="/press" className="block py-3 transition hover:text-white">Press</Link>
+              <Link href="/security" className="block py-3 transition hover:text-white">Security</Link>
+              <Link href="/privacy" className="block py-3 transition hover:text-white">Privacy</Link>
+              <Link href="/terms" className="block py-3 transition hover:text-white">Terms</Link>
             </div>
           </div>
 

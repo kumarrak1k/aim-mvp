@@ -267,7 +267,7 @@ export function CandidateAppShell({
                       <Link
                         key={sub.href}
                         href={sub.href}
-                        className="block rounded-xl px-4 py-2.5 text-sm font-semibold text-gray-300 transition hover:bg-white/[0.06] hover:text-white"
+                        className="block rounded-xl px-4 py-3 text-sm font-semibold text-gray-300 transition hover:bg-white/[0.06] hover:text-white"
                       >
                         SUB{item.label}
                       </Link>
@@ -284,7 +284,7 @@ export function CandidateAppShell({
                 <Link
                   key={href}
                   href={href}
-                  className={`block rounded-xl px-4 py-2.5 text-sm font-bold transition ${
+                  className={`block rounded-xl px-4 py-3 text-sm font-bold transition ${
                     active
                       ? "bg-white/[0.1] text-white"
                       : "text-gray-300 hover:bg-white/[0.06] hover:text-white"

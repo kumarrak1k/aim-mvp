@@ -77,11 +77,11 @@ export default function BusinessSignInPage() {
                 headerTitle: "hidden",
                 headerSubtitle: "hidden",
                 socialButtonsBlockButton:
-                  "border-white/[0.1] bg-white/[0.04] hover:bg-white/[0.08] text-white",
+                  "min-h-[44px] border-white/[0.1] bg-white/[0.04] hover:bg-white/[0.08] text-white",
                 formButtonPrimary:
-                  "bg-gradient-to-r from-violet-600 to-purple-600 hover:scale-[1.01] shadow-lg shadow-purple-900/30 text-white font-bold normal-case",
+                  "min-h-[44px] bg-gradient-to-r from-violet-600 to-purple-600 hover:scale-[1.01] shadow-lg shadow-purple-900/30 text-white font-bold normal-case",
                 formFieldInput:
-                  "bg-black/30 border-white/[0.1] text-white placeholder-gray-400",
+                  "min-h-[44px] bg-black/30 border-white/[0.1] text-white placeholder-gray-400",
                 formFieldLabel: "text-gray-300",
                 footerActionText: "text-gray-400",
                 footerActionLink: "text-purple-300 hover:text-purple-200",

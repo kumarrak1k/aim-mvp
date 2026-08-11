@@ -238,7 +238,7 @@ export default async function AssessmentCentrePage() {
         <div className="divide-y divide-white/[0.07]">
           {faqs.map((faq) => (
             <details key={faq.q} className="group py-5">
-              <summary className="flex cursor-pointer list-none items-start justify-between gap-4 text-sm font-bold text-white">
+              <summary className="flex min-h-[44px] cursor-pointer list-none items-center justify-between gap-4 text-sm font-bold text-white">
                 {faq.q}
                 <span className="mt-0.5 shrink-0 text-gray-400 transition-transform group-open:rotate-45">
                   +

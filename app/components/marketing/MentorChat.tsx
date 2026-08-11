@@ -283,7 +283,7 @@ export function MentorChat() {
                 maxLength={500}
                 disabled={loading}
                 aria-label="Chat message"
-                className="flex-1 min-w-0 rounded-lg px-3 py-2 text-sm text-white placeholder:text-gray-400 outline-none disabled:opacity-50"
+                className="flex-1 min-w-0 rounded-lg px-3 py-2 text-sm text-white placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-purple-400/50 disabled:opacity-50"
                 style={{
                   background: "rgba(255,255,255,0.06)",
                   boxShadow: "0 0 0 1px rgba(255,255,255,0.08)",

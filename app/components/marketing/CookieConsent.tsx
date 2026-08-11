@@ -84,19 +84,19 @@ export function CookieConsent() {
       <div className="mt-3 flex flex-wrap items-center gap-3">
         <button
           onClick={() => choose(CONSENT_ACCEPTED)}
-          className="rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-5 py-2 text-[13px] font-bold text-white shadow-lg transition hover:scale-[1.03]"
+          className="rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-5 py-3 text-[13px] font-bold text-white shadow-lg transition hover:scale-[1.03]"
         >
           Accept analytics
         </button>
         <button
           onClick={() => choose(CONSENT_ESSENTIAL)}
-          className="rounded-full border border-white/15 bg-white/[0.06] px-5 py-2 text-[13px] font-bold text-white transition hover:bg-white/[0.12]"
+          className="rounded-full border border-white/15 bg-white/[0.06] px-5 py-3 text-[13px] font-bold text-white transition hover:bg-white/[0.12]"
         >
           Essential only
         </button>
         <Link
           href="/privacy"
-          className="text-[13px] text-gray-400 transition hover:text-gray-200"
+          className="inline-flex min-h-[44px] items-center text-[13px] text-gray-400 transition hover:text-gray-200"
         >
           How we use your data
         </Link>

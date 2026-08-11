@@ -202,7 +202,7 @@ export function AudienceShell({
 
             <Link
               href={theme.signUpPath}
-              className={`min-w-0 whitespace-normal rounded-full bg-gradient-to-r text-center leading-tight ${theme.primaryGradient} px-4 py-2.5 text-[13px] font-bold text-white shadow-lg ${theme.primaryShadow} transition hover:scale-[1.03] sm:whitespace-nowrap sm:px-5 lg:px-6`}
+              className={`min-w-0 whitespace-normal rounded-full bg-gradient-to-r text-center leading-tight ${theme.primaryGradient} min-h-[44px] px-4 py-2.5 text-[13px] font-bold text-white shadow-lg ${theme.primaryShadow} transition hover:scale-[1.03] sm:whitespace-nowrap sm:px-5 lg:px-6`}
             >
               {audience === "candidate" ? "Start free" : "Get started"}
             </Link>
@@ -242,7 +242,7 @@ export function AudienceShell({
                       <Link
                         key={sub.href}
                         href={sub.href}
-                        className="block rounded-xl px-4 py-2.5 text-sm font-semibold text-gray-300 transition hover:bg-white/[0.06] hover:text-white"
+                        className="block rounded-xl px-4 py-3 text-sm font-semibold text-gray-300 transition hover:bg-white/[0.06] hover:text-white"
                       >
                         {sub.label}
                       </Link>
@@ -255,7 +255,7 @@ export function AudienceShell({
                 <Link
                   key={item.href}
                   href={item.href!}
-                  className={`block rounded-xl px-4 py-2.5 text-sm font-bold transition ${
+                  className={`block rounded-xl px-4 py-3 text-sm font-bold transition ${
                     active
                       ? "bg-white/[0.1] text-white"
                       : "text-gray-300 hover:bg-white/[0.06] hover:text-white"
@@ -272,7 +272,7 @@ export function AudienceShell({
                   <Link
                     key={item.href}
                     href={item.href}
-                    className="block rounded-xl px-4 py-2.5 text-sm font-semibold text-gray-400 transition hover:bg-white/[0.06] hover:text-white"
+                    className="block rounded-xl px-4 py-3 text-sm font-semibold text-gray-400 transition hover:bg-white/[0.06] hover:text-white"
                   >
                     {item.label}
                   </Link>
@@ -285,7 +285,7 @@ export function AudienceShell({
             <div className="mt-1 border-t border-white/[0.06] pt-1 sm:hidden">
               <Link
                 href={theme.signInPath}
-                className="block rounded-xl px-4 py-2.5 text-sm font-bold text-white/80 transition hover:bg-white/[0.06] hover:text-white"
+                className="block rounded-xl px-4 py-3 text-sm font-bold text-white/80 transition hover:bg-white/[0.06] hover:text-white"
               >
                 Sign in
               </Link>
