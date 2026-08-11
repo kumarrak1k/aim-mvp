@@ -83,14 +83,14 @@ function fmtDate(iso: string | null): string {
 }
 
 const CARD = "rounded-[1.25rem] border border-white/[0.08] bg-white/[0.03] p-4";
-const H = "text-[11px] font-bold tracking-wide text-purple-300/90";
+const H = "text-[12px] font-bold tracking-wide text-purple-300/90";
 
 function Stat({ label, value, tone }: { label: string; value: string; tone?: "warn" | "good" }) {
   const colour =
     tone === "warn" ? "text-amber-300" : tone === "good" ? "text-emerald-300" : "text-white";
   return (
     <div className="rounded-[1rem] border border-white/[0.07] bg-white/[0.03] px-3 py-2.5">
-      <p className="text-[10px] font-bold tracking-wide text-gray-400">{label}</p>
+      <p className="text-[12px] font-bold tracking-wide text-gray-400">{label}</p>
       <p className={`mt-1 text-lg font-bold ${colour}`}>{value}</p>
     </div>
   );
@@ -178,7 +178,7 @@ export function UserActivityPanel({
                   tone="warn"
                 />
               </div>
-              <p className="mt-2 text-[11px] text-gray-400">
+              <p className="mt-2 text-[12px] text-gray-400">
                 First seen {fmtDate(report.engagement.firstSeen)} · last seen{" "}
                 {fmtDate(report.engagement.lastSeen)} · last sign-in{" "}
                 {fmtDate(report.identity.lastSignInAt)}
@@ -250,7 +250,7 @@ export function UserActivityPanel({
                 <div className="mt-2 space-y-2.5">
                   {report.visits.map((v) => (
                     <div key={v.visitId} className="rounded-[0.9rem] border border-white/[0.06] bg-white/[0.02] p-3">
-                      <p className="text-[11px] text-gray-400">
+                      <p className="text-[12px] text-gray-400">
                         {fmtDate(v.startedAt)} · {fmtDuration(v.durationMs)} · {v.pageCount} views
                         {v.referrer ? ` · from ${v.referrer}` : ""}
                       </p>

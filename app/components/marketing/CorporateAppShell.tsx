@@ -88,7 +88,7 @@ export function CorporateAppShell({
             className="relative z-10 flex shrink-0 items-center gap-3"
           >
             <SiteLogo href="" size="md" showText />
-            <span className="hidden rounded-full border border-purple-300/20 bg-white/[0.04] px-3 py-1 text-[10px] font-bold tracking-wide text-purple-100 sm:inline-block xl:hidden">
+            <span className="hidden rounded-full border border-purple-300/20 bg-white/[0.04] px-3 py-1 text-[12px] font-bold tracking-wide text-purple-100 sm:inline-block xl:hidden">
               Hiring team
             </span>
           </Link>
@@ -356,7 +356,7 @@ function BottomNavItem({
         >
           <span className="text-white">{children}</span>
         </div>
-        <span className="text-[9px] font-bold leading-none text-purple-300">
+        <span className="text-[12px] font-bold leading-none text-purple-300">
           {label}
         </span>
       </Link>
@@ -374,7 +374,7 @@ function BottomNavItem({
         {children}
       </span>
       <span
-        className={`text-[9px] font-bold leading-none transition-colors ${
+        className={`text-[12px] font-bold leading-none transition-colors ${
           active ? "text-white" : "text-gray-400"
         }`}
       >

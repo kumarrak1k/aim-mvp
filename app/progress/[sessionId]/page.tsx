@@ -317,7 +317,7 @@ function UpgradeNudge() {
       <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-purple-500/20 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-fuchsia-500/15 blur-3xl" />
       <div className="relative">
-        <p className="mb-2 text-[11px] font-bold tracking-wide text-purple-300/70">
+        <p className="mb-2 text-[12px] font-bold tracking-wide text-purple-300/70">
           Free plan · This month&apos;s sessions used
         </p>
         <h2 className="text-2xl font-bold tracking-tight">

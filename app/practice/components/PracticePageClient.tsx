@@ -653,7 +653,7 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
           <div className="mb-6 overflow-hidden rounded-[2rem] border border-cyan-400/20 bg-gradient-to-br from-cyan-500/[0.07] via-purple-500/[0.05] to-transparent shadow-2xl shadow-purple-950/10 backdrop-blur-2xl sm:mb-8">
             <div className="flex flex-col gap-6 p-6 sm:p-8 lg:flex-row lg:items-center lg:gap-10">
               <div className="flex-1">
-                <p className="mb-2 text-[10px] font-bold tracking-wide text-cyan-300">
+                <p className="mb-2 text-[12px] font-bold tracking-wide text-cyan-300">
                   Professional plan · Mock assessment centre
                 </p>
                 <h2 className="text-xl font-bold leading-tight tracking-tight text-white sm:text-2xl">

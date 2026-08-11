@@ -287,7 +287,7 @@ export default function ProgressPage() {
               <span className={`h-1.5 w-1.5 rounded-full ${activeTab === "practice" ? "bg-fuchsia-400" : "bg-gray-600"}`} />
               Interview Practice
               {sessions.length > 0 && (
-                <span className="ml-1 rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-bold text-gray-400">
+                <span className="ml-1 rounded-full bg-white/10 px-2 py-0.5 text-[12px] font-bold text-gray-400">
                   {sessions.length}
                 </span>
               )}
@@ -303,7 +303,7 @@ export default function ProgressPage() {
               <span className={`h-1.5 w-1.5 rounded-full ${activeTab === "assessment" ? "bg-cyan-400" : "bg-gray-600"}`} />
               Assessment Centre
               {acSessions.length > 0 && (
-                <span className="ml-1 rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-bold text-gray-400">
+                <span className="ml-1 rounded-full bg-white/10 px-2 py-0.5 text-[12px] font-bold text-gray-400">
                   {acSessions.length}
                 </span>
               )}
@@ -508,7 +508,7 @@ function ProgressDashboard({ stats, isAdvancedPlan, onSessionDeleted }: { stats:
       <section className="overflow-hidden rounded-[2rem] border border-cyan-400/20 bg-gradient-to-br from-cyan-500/[0.08] via-purple-500/[0.05] to-transparent p-6 shadow-2xl shadow-purple-950/10 backdrop-blur-2xl sm:p-8">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:gap-10">
           <div className="flex-1">
-            <p className="mb-2 text-[10px] font-bold tracking-wide text-cyan-300">
+            <p className="mb-2 text-[12px] font-bold tracking-wide text-cyan-300">
               Next level · Mock assessment centre
             </p>
             <h2 className="text-xl font-bold tracking-tight text-white sm:text-2xl">
@@ -710,7 +710,7 @@ function DeleteSessionButton({
       disabled={busy}
       aria-label="Delete this saved session"
       title="Delete this session"
-      className="shrink-0 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-[11px] font-bold text-gray-400 transition hover:border-rose-400/40 hover:bg-rose-500/10 hover:text-rose-300 disabled:opacity-50"
+      className="shrink-0 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-[12px] font-bold text-gray-400 transition hover:border-rose-400/40 hover:bg-rose-500/10 hover:text-rose-300 disabled:opacity-50"
     >
       {busy ? "Deleting…" : "Delete"}
     </button>
@@ -733,10 +733,10 @@ function SessionRow({
       <div className="grid gap-3 rounded-[1.35rem] border border-white/10 bg-black/25 p-4 pr-24 transition hover:-translate-y-0.5 hover:border-cyan-300/25 hover:bg-white/[0.055] sm:grid-cols-[minmax(0,1fr)_120px] sm:items-center">
         <div className="min-w-0">
           <div className="mb-2 flex flex-wrap items-center gap-2">
-            <span className="rounded-full border border-cyan-300/15 bg-cyan-300/10 px-2.5 py-1 text-[11px] font-bold text-cyan-100">
+            <span className="rounded-full border border-cyan-300/15 bg-cyan-300/10 px-2.5 py-1 text-[12px] font-bold text-cyan-100">
               {session.practiceMode}
             </span>
-            <span className="rounded-full border border-white/10 bg-white/[0.06] px-2.5 py-1 text-[11px] font-bold text-gray-300">
+            <span className="rounded-full border border-white/10 bg-white/[0.06] px-2.5 py-1 text-[12px] font-bold text-gray-300">
               {session.hireSignal}
             </span>
           </div>
@@ -754,7 +754,7 @@ function SessionRow({
           <p className="text-2xl font-bold tracking-tight text-white">
             {session.overallScore}
           </p>
-          <p className="text-[11px] font-bold tracking-wide text-gray-400">
+          <p className="text-[12px] font-bold tracking-wide text-gray-400">
             /10
           </p>
         </div>
@@ -825,7 +825,7 @@ function EmptyProgressState({ isAdvancedPlan }: { isAdvancedPlan: boolean }) {
       </section>
 
       <section className="overflow-hidden rounded-[2rem] border border-cyan-400/20 bg-gradient-to-br from-cyan-500/[0.07] via-purple-500/[0.04] to-transparent p-6 shadow-2xl shadow-purple-950/10 backdrop-blur-2xl">
-        <p className="text-[10px] font-bold tracking-wide text-cyan-300">
+        <p className="text-[12px] font-bold tracking-wide text-cyan-300">
           {isAdvancedPlan ? "Your plan · Mock assessment centre" : "Professional · Mock assessment centre"}
         </p>
         <h3 className="mt-2 text-xl font-bold tracking-tight text-white">
@@ -969,7 +969,7 @@ function ACSessionRow({
         <div className="min-w-0">
           <div className="mb-2 flex flex-wrap items-center gap-1.5">
             {session.selectedStages.map((s) => (
-              <span key={s} className="rounded-full border border-cyan-300/15 bg-cyan-300/10 px-2.5 py-0.5 text-[10px] font-bold text-cyan-200">
+              <span key={s} className="rounded-full border border-cyan-300/15 bg-cyan-300/10 px-2.5 py-0.5 text-[12px] font-bold text-cyan-200">
                 {stageLabels[s] ?? s}
               </span>
             ))}
@@ -983,7 +983,7 @@ function ACSessionRow({
           <p className={`text-2xl font-bold tracking-tight ${scoreCol}`}>
             {score !== null ? score.toFixed(1) : "–"}
           </p>
-          <p className="text-[10px] font-bold tracking-wide text-gray-400">/10</p>
+          <p className="text-[12px] font-bold tracking-wide text-gray-400">/10</p>
         </div>
       </div>
     </Link>
@@ -1096,7 +1096,7 @@ function ACDashboard({ sessions, onSessionDeleted }: { sessions: ACSession[]; on
               )}
               {report?.topStrengths && report.topStrengths.length > 0 && (
                 <div className="mt-4">
-                  <p className="mb-2 text-[11px] font-bold tracking-wide text-emerald-400">Strengths</p>
+                  <p className="mb-2 text-[12px] font-bold tracking-wide text-emerald-400">Strengths</p>
                   <ul className="space-y-1.5">
                     {report.topStrengths.slice(0, 3).map((s, i) => (
                       <li key={i} className="flex items-start gap-2 text-sm text-gray-300">
@@ -1108,7 +1108,7 @@ function ACDashboard({ sessions, onSessionDeleted }: { sessions: ACSession[]; on
               )}
               {report?.priorityImprovements && report.priorityImprovements.length > 0 && (
                 <div className="mt-4">
-                  <p className="mb-2 text-[11px] font-bold tracking-wide text-amber-400">To improve</p>
+                  <p className="mb-2 text-[12px] font-bold tracking-wide text-amber-400">To improve</p>
                   <ul className="space-y-1.5">
                     {report.priorityImprovements.slice(0, 3).map((s, i) => (
                       <li key={i} className="flex items-start gap-2 text-sm text-gray-300">

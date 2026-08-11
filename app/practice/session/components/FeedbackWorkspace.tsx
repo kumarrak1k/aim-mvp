@@ -146,7 +146,7 @@ function ScoreCard({
           : "border-white/10 bg-black/25"
       }`}
     >
-      <p className="text-[10px] font-bold tracking-wide text-gray-400 sm:text-[11px]">
+      <p className="text-[12px] font-bold tracking-wide text-gray-400 sm:text-[12px]">
         {label}
       </p>
       <p className="mt-2 text-2xl font-bold text-white">

@@ -58,7 +58,7 @@ export function AboutPageContent() {
 
         {/* Mission */}
         <section className="mb-16 rounded-[2rem] border border-purple-300/15 bg-purple-300/[0.05] p-8 sm:p-10">
-          <p className="mb-3 text-[11px] font-bold tracking-wide text-purple-300/80">
+          <p className="mb-3 text-[12px] font-bold tracking-wide text-purple-300/80">
             Our mission
           </p>
           <blockquote className="text-xl font-bold leading-[1.4] tracking-tight text-white sm:text-2xl">

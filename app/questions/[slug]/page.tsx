@@ -228,7 +228,7 @@ export default async function QuestionSetPage({ params }: Props) {
 
         <header className="mb-10 border-b border-white/[0.07] pb-8">
           {set.category && (
-            <p className="mb-3 text-[11px] font-bold tracking-wide text-purple-300/70">
+            <p className="mb-3 text-[12px] font-bold tracking-wide text-purple-300/70">
               {set.category}
             </p>
           )}

@@ -143,11 +143,11 @@ export function PracticeCoachPanel({
 
                 <div className="min-w-0">
                   <div className="mb-2 flex flex-wrap items-center gap-2">
-                    <span className="rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1 text-[11px] font-bold tracking-wide text-cyan-200">
+                    <span className="rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1 text-[12px] font-bold tracking-wide text-cyan-200">
                       AI Career Coach
                     </span>
 
-                    <span className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-[11px] font-bold text-gray-300">
+                    <span className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-[12px] font-bold text-gray-300">
                       Q{currentQuestionNumber}/{totalQuestions}
                     </span>
                   </div>
@@ -223,7 +223,7 @@ export function PracticeCoachPanel({
                   Current Question
                 </p>
 
-                <span className="rounded-full border border-white/10 bg-black/20 px-3 py-1 text-[11px] font-bold text-gray-300">
+                <span className="rounded-full border border-white/10 bg-black/20 px-3 py-1 text-[12px] font-bold text-gray-300">
                   {questionLoading ? "Loading" : `Question ${currentQuestionNumber}`}
                 </span>
               </div>
@@ -256,12 +256,12 @@ export function PracticeCoachPanel({
                   <p className="text-xs font-bold tracking-wide text-cyan-300">
                     Camera
                   </p>
-                  <p className="mt-1 text-[11px] leading-4 text-gray-400">
+                  <p className="mt-1 text-[12px] leading-4 text-gray-400">
                     Preview
                   </p>
                 </div>
 
-                <span className="rounded-full border border-white/10 bg-white/[0.06] px-2.5 py-1 text-[11px] font-bold text-gray-300">
+                <span className="rounded-full border border-white/10 bg-white/[0.06] px-2.5 py-1 text-[12px] font-bold text-gray-300">
                   {cameraEnabled
                     ? cameraRequiresTap
                       ? "Tap"
@@ -283,14 +283,14 @@ export function PracticeCoachPanel({
 
                 {cameraEnabled && cameraRequiresTap && (
                   <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/85 p-3 text-center">
-                    <p className="text-[11px] leading-4 text-gray-300">
+                    <p className="text-[12px] leading-4 text-gray-300">
                       Tap to start
                     </p>
 
                     <button
                       type="button"
                       onClick={startCameraFromTap}
-                      className="rounded-full bg-white px-3 py-2 text-[11px] font-bold text-black transition hover:bg-purple-100"
+                      className="rounded-full bg-white px-3 py-2 text-[12px] font-bold text-black transition hover:bg-purple-100"
                     >
                       Start
                     </button>
@@ -299,7 +299,7 @@ export function PracticeCoachPanel({
 
                 {!cameraEnabled && (
                   <div className="absolute inset-0 flex items-center justify-center bg-black/70">
-                    <p className="text-[11px] font-bold text-gray-400">
+                    <p className="text-[12px] font-bold text-gray-400">
                       Camera off
                     </p>
                   </div>

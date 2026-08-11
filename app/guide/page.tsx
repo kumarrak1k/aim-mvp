@@ -87,7 +87,7 @@ export default function CandidateGuidePage() {
       <div className="mx-auto max-w-3xl px-4 pb-20 pt-6 sm:px-6">
         {/* Hero */}
         <div className="mb-12 text-center">
-          <p className="text-[11px] font-bold tracking-wide text-purple-300">
+          <p className="text-[12px] font-bold tracking-wide text-purple-300">
             User guide
           </p>
           <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">

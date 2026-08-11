@@ -723,12 +723,12 @@ export function PracticeStartScreen({
                             {QUESTION_TYPE_LABELS[key]}
                           </span>
                           {key === "opener" && (
-                            <p className="text-[10px] text-gray-400 leading-tight mt-0.5">
+                            <p className="text-[12px] text-gray-400 leading-tight mt-0.5">
                               AI-generated intro question
                             </p>
                           )}
                           {key === "custom" && (
-                            <p className="text-[10px] text-gray-400 leading-tight mt-0.5">
+                            <p className="text-[12px] text-gray-400 leading-tight mt-0.5">
                               Your own verbatim question
                             </p>
                           )}
@@ -783,11 +783,11 @@ export function PracticeStartScreen({
                                 className="w-full rounded-xl border border-white/10 bg-white/[0.06] px-3 py-2 text-xs text-white placeholder-gray-400 focus:border-purple-400/50 focus:outline-none resize-none"
                               />
                               {!(customQuestions[i] ?? "").trim() && (
-                                <p className="mt-0.5 text-[10px] font-semibold text-amber-300">
+                                <p className="mt-0.5 text-[12px] font-semibold text-amber-300">
                                   Enter question text to continue.
                                 </p>
                               )}
-                              <p className="mt-0.5 text-right text-[10px] text-gray-400">
+                              <p className="mt-0.5 text-right text-[12px] text-gray-400">
                                 {(customQuestions[i] ?? "").length} /{" "}
                                 {MAX_CUSTOM_QUESTION_LENGTH}
                               </p>
@@ -1018,7 +1018,7 @@ function ModeCard({
             {title}
           </p>
           <p
-            className={`mt-1 w-fit rounded-full px-2.5 py-1 text-[11px] font-bold tracking-wide ${
+            className={`mt-1 w-fit rounded-full px-2.5 py-1 text-[12px] font-bold tracking-wide ${
               locked
                 ? "border border-purple-300/25 bg-purple-300/[0.1] text-purple-200"
                 : active

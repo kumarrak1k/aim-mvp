@@ -405,7 +405,7 @@ function CandidatesContent() {
                               </div>
                               {showResendFeedback && (
                                 <p
-                                  className={`text-[11px] font-semibold ${
+                                  className={`text-[12px] font-semibold ${
                                     resendFeedback?.ok ? "text-emerald-300" : "text-amber-300"
                                   }`}
                                 >

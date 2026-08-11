@@ -128,7 +128,7 @@ export function AudienceShell({
           >
             <SiteLogo href="" size="md" showText />
             <span
-              className={`hidden rounded-full border px-3 py-1 text-[10px] font-bold tracking-wide sm:inline-block xl:hidden ${theme.accentBorder} bg-white/[0.04] ${theme.accentTextStrong}`}
+              className={`hidden rounded-full border px-3 py-1 text-[12px] font-bold tracking-wide sm:inline-block xl:hidden ${theme.accentBorder} bg-white/[0.04] ${theme.accentTextStrong}`}
             >
               {theme.eyebrow}
             </span>
@@ -235,7 +235,7 @@ export function AudienceShell({
               if (item.dropdown) {
                 return (
                   <div key={item.label} className="mt-1 border-t border-white/[0.06] pt-1">
-                    <p className="px-4 pb-1 pt-2 text-[10px] font-bold tracking-wide text-gray-400">
+                    <p className="px-4 pb-1 pt-2 text-[12px] font-bold tracking-wide text-gray-400">
                       {item.label}
                     </p>
                     {item.dropdown.map((sub) => (

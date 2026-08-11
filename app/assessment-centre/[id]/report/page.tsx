@@ -180,7 +180,7 @@ export default function ReportPage() {
           <div className="pointer-events-none absolute -bottom-24 left-10 h-80 w-80 rounded-full bg-cyan-400/10 blur-3xl" />
 
           <div className="relative flex flex-col items-center gap-6 text-center">
-            <div className="mb-1 inline-flex items-center gap-2 rounded-full border border-white/[0.1] bg-white/[0.04] px-4 py-2 text-[11px] font-bold tracking-wide text-gray-400">
+            <div className="mb-1 inline-flex items-center gap-2 rounded-full border border-white/[0.1] bg-white/[0.04] px-4 py-2 text-[12px] font-bold tracking-wide text-gray-400">
               Final Assessment Centre Report · {sessionDate}
             </div>
 
@@ -226,7 +226,7 @@ export default function ReportPage() {
             return (
               <div key={stage.label} className={`rounded-[1.75rem] border ${borderBg} p-6 text-center backdrop-blur-xl`}>
                 <div className="text-3xl mb-2">{stage.icon}</div>
-                <p className={`text-[11px] font-bold tracking-wide ${textColour} mb-2`}>
+                <p className={`text-[12px] font-bold tracking-wide ${textColour} mb-2`}>
                   {stage.label}
                 </p>
                 <div className={`text-4xl font-bold ${scoreColour}`}>{stage.score.toFixed(1)}</div>
@@ -238,7 +238,7 @@ export default function ReportPage() {
 
         {/* ─── 3. Competency breakdown ─── */}
         <section className="mb-8 rounded-[2rem] border border-white/[0.08] bg-white/[0.04] p-7 backdrop-blur-xl">
-          <h2 className="mb-6 text-[11px] font-bold tracking-wide text-gray-400">
+          <h2 className="mb-6 text-[12px] font-bold tracking-wide text-gray-400">
             Competency breakdown
           </h2>
           <div className="space-y-4">
@@ -253,13 +253,13 @@ export default function ReportPage() {
         {/* ─── 4. Strengths & Improvements ─── */}
         <section className="mb-8 grid gap-4 sm:grid-cols-2">
           <div className="rounded-[2rem] border border-emerald-500/[0.18] bg-emerald-500/[0.04] p-6 backdrop-blur-xl">
-            <h2 className="mb-4 text-[11px] font-bold tracking-wide text-emerald-400">
+            <h2 className="mb-4 text-[12px] font-bold tracking-wide text-emerald-400">
               Your strengths
             </h2>
             <ul className="space-y-3">
               {report.topStrengths.map((s, i) => (
                 <li key={i} className="flex items-start gap-3 text-sm text-gray-300">
-                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-500/20 text-[10px] font-bold text-emerald-400">
+                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-500/20 text-[12px] font-bold text-emerald-400">
                     ✓
                   </span>
                   {s}
@@ -268,13 +268,13 @@ export default function ReportPage() {
             </ul>
           </div>
           <div className="rounded-[2rem] border border-amber-500/[0.18] bg-amber-500/[0.04] p-6 backdrop-blur-xl">
-            <h2 className="mb-4 text-[11px] font-bold tracking-wide text-amber-400">
+            <h2 className="mb-4 text-[12px] font-bold tracking-wide text-amber-400">
               Priority improvements
             </h2>
             <ul className="space-y-3">
               {report.priorityImprovements.map((s, i) => (
                 <li key={i} className="flex items-start gap-3 text-sm text-gray-300">
-                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-500/20 text-[10px] font-bold text-amber-400">
+                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-500/20 text-[12px] font-bold text-amber-400">
                     →
                   </span>
                   {s}
@@ -286,7 +286,7 @@ export default function ReportPage() {
 
         {/* ─── 5. 7-day action plan ─── */}
         <section className="mb-8 rounded-[2rem] border border-white/[0.08] bg-white/[0.04] p-7 backdrop-blur-xl">
-          <h2 className="mb-6 text-[11px] font-bold tracking-wide text-gray-400">
+          <h2 className="mb-6 text-[12px] font-bold tracking-wide text-gray-400">
             Your 7-day action plan
           </h2>
           <div className="space-y-3">
@@ -306,7 +306,7 @@ export default function ReportPage() {
 
         {/* ─── 6. Final recommendation ─── */}
         <section className="mb-8 rounded-[2rem] border-l-4 border-l-purple-400 border-y border-r border-white/[0.08] bg-white/[0.04] p-7 backdrop-blur-xl">
-          <h2 className="mb-3 text-[11px] font-bold tracking-wide text-purple-400">
+          <h2 className="mb-3 text-[12px] font-bold tracking-wide text-purple-400">
             Final recommendation
           </h2>
           <p className="text-base leading-8 text-gray-200 italic">

@@ -371,7 +371,7 @@ function WelcomeStep({
                   key={stage}
                   className="flex items-center gap-3 rounded-xl border border-white/[0.07] bg-white/[0.03] px-4 py-3"
                 >
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-white/20 text-[11px] font-bold text-gray-400">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-white/20 text-[12px] font-bold text-gray-400">
                     {i + 1}
                   </span>
                   <div className="flex-1">
@@ -542,7 +542,7 @@ function SetupStep({
   return (
     <>
       <div className="mb-8 rounded-[2rem] border border-white/10 bg-white/[0.05] p-7 shadow-2xl shadow-black/10 backdrop-blur-2xl">
-        <p className="text-[11px] font-bold tracking-wide text-purple-300">
+        <p className="text-[12px] font-bold tracking-wide text-purple-300">
           Step 2 of 2 · How you want to take it
         </p>
         <h2 className="mt-2 text-2xl font-bold tracking-tight">
@@ -598,7 +598,7 @@ function SetupStep({
         {/* Voice preferences (only when voice/voice-camera) */}
         {showVoicePrefs && (
           <div className="mt-6 rounded-2xl border border-white/10 bg-black/25 p-5">
-            <p className="text-[11px] font-bold tracking-wide text-cyan-300">
+            <p className="text-[12px] font-bold tracking-wide text-cyan-300">
               Interviewer voice preference
             </p>
             <p className="mt-1 text-xs leading-5 text-gray-400">
@@ -643,7 +643,7 @@ function SetupStep({
 
         {/* Reminder of locked template fields */}
         <div className="mt-6 rounded-2xl border border-white/[0.07] bg-white/[0.025] p-4">
-          <p className="text-[11px] font-bold tracking-wide text-gray-400">
+          <p className="text-[12px] font-bold tracking-wide text-gray-400">
             Set by {company.name}
           </p>
           <div className="mt-2 grid grid-cols-2 gap-x-4 gap-y-2 text-xs text-gray-400 sm:grid-cols-3">

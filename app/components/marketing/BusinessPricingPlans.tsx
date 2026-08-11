@@ -167,7 +167,7 @@ export function BusinessPricingPlans({ currency = "GBP" }: { currency?: PricingC
           Annual
         </span>
         {annual && (
-          <span className="rounded-full bg-emerald-400/10 px-2.5 py-1 text-[11px] font-bold text-emerald-300">
+          <span className="rounded-full bg-emerald-400/10 px-2.5 py-1 text-[12px] font-bold text-emerald-300">
             Save up to 33%
           </span>
         )}
@@ -264,7 +264,7 @@ export function BusinessPricingPlans({ currency = "GBP" }: { currency?: PricingC
         <h3 className="mb-6 text-center text-2xl font-bold tracking-tight">Compare plans</h3>
         {/* On narrow phones the table scrolls sideways but iOS hides the
             scrollbar, so Business/Enterprise are invisible without this cue. */}
-        <p className="mb-2 text-center text-[11px] font-bold uppercase tracking-wide text-purple-200/80 md:hidden">
+        <p className="mb-2 text-center text-[12px] font-bold uppercase tracking-wide text-purple-200/80 md:hidden">
           Swipe the table sideways to compare all plans →
         </p>
         <div className="overflow-x-auto rounded-2xl border border-white/10">

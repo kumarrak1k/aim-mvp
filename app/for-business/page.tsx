@@ -130,7 +130,7 @@ export default function ForBusinessPage() {
     <AudienceShell audience="business" currentPath="/for-business">
       {/* Hero */}
       <section className="mx-auto max-w-6xl px-4 pb-16 pt-1 text-center sm:px-6 sm:pb-20 sm:pt-3">
-        <p className="mx-auto mb-6 inline-flex items-center gap-2.5 rounded-full border border-purple-400/25 bg-purple-400/[0.07] px-4 py-2 text-[11px] font-bold tracking-wide text-purple-200">
+        <p className="mx-auto mb-6 inline-flex items-center gap-2.5 rounded-full border border-purple-400/25 bg-purple-400/[0.07] px-4 py-2 text-[12px] font-bold tracking-wide text-purple-200">
           For hiring teams
         </p>
 
@@ -174,7 +174,7 @@ export default function ForBusinessPage() {
               <p className={`relative bg-gradient-to-r ${s.grad} bg-clip-text text-xl font-bold tracking-tight text-transparent sm:text-2xl`}>
                 {s.value}
               </p>
-              <p className="relative mt-1 text-[9px] leading-4 text-gray-400 sm:text-[10px]">
+              <p className="relative mt-1 text-[12px] leading-4 text-gray-400 sm:text-[12px]">
                 {s.label}
               </p>
             </div>
@@ -185,7 +185,7 @@ export default function ForBusinessPage() {
       {/* Workflow demo video */}
       <section className="mx-auto max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] px-4 pb-16 sm:px-6 sm:pb-20">
         <div className="mb-8 text-center">
-          <p className="text-[11px] font-bold tracking-wide text-purple-300/90">
+          <p className="text-[12px] font-bold tracking-wide text-purple-300/90">
             See it work
           </p>
           <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
@@ -207,7 +207,7 @@ export default function ForBusinessPage() {
       {/* Feature grid */}
       <section className="mx-auto max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] px-4 pb-16 sm:px-6 sm:pb-20">
         <div className="mb-10 text-center">
-          <p className="text-[11px] font-bold tracking-wide text-purple-300/90">
+          <p className="text-[12px] font-bold tracking-wide text-purple-300/90">
             Platform
           </p>
           <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
@@ -231,7 +231,7 @@ export default function ForBusinessPage() {
       {/* Use cases */}
       <section className="mx-auto max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] px-4 pb-16 sm:px-6 sm:pb-20">
         <div className="mb-10 text-center">
-          <p className="text-[11px] font-bold tracking-wide text-purple-300/90">
+          <p className="text-[12px] font-bold tracking-wide text-purple-300/90">
             Use cases
           </p>
           <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
@@ -279,7 +279,7 @@ export default function ForBusinessPage() {
       {/* Final CTA */}
       <section className="mx-auto max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] px-4 pb-20 sm:px-6 sm:pb-28">
         <div className="rounded-[2rem] border border-white/[0.1] bg-gradient-to-br from-purple-500/[0.10] via-violet-500/[0.06] to-transparent p-10 text-center sm:p-14">
-          <p className="text-[11px] font-bold tracking-wide text-purple-300/90">
+          <p className="text-[12px] font-bold tracking-wide text-purple-300/90">
             Get started
           </p>
           <h2 className="mx-auto mt-3 max-w-2xl text-3xl font-bold tracking-tight sm:text-4xl">

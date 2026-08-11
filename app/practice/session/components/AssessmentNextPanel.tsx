@@ -39,7 +39,7 @@ export function AssessmentNextPanel({
           </div>
 
           <div className="min-w-0">
-            <p className="text-[11px] font-bold tracking-wide text-emerald-200">
+            <p className="text-[12px] font-bold tracking-wide text-emerald-200">
               Answer recorded
             </p>
             <h2 className="mt-1 text-2xl font-bold tracking-tight text-white">

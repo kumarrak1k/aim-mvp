@@ -98,7 +98,7 @@ function CompanyBrandedHeader({
           </div>
 
           <div className="min-w-0">
-            <p className="text-[10px] font-bold tracking-wide text-gray-400">
+            <p className="text-[12px] font-bold tracking-wide text-gray-400">
               Assessment from
             </p>
             <p className="truncate text-sm font-bold tracking-tight text-white sm:text-base">
@@ -114,7 +114,7 @@ function CompanyBrandedHeader({
 
         {/* Right: in-progress badge + powered-by */}
         <div className="flex shrink-0 items-center gap-3">
-          <span className="hidden rounded-full border border-emerald-300/25 bg-emerald-300/10 px-3 py-1.5 text-[11px] font-bold text-emerald-100 sm:inline-flex">
+          <span className="hidden rounded-full border border-emerald-300/25 bg-emerald-300/10 px-3 py-1.5 text-[12px] font-bold text-emerald-100 sm:inline-flex">
             <span className="relative mr-2 inline-flex h-2 w-2 self-center">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
@@ -122,7 +122,7 @@ function CompanyBrandedHeader({
             In progress
           </span>
 
-          <div className="hidden text-right text-[10px] leading-tight text-gray-400 sm:block">
+          <div className="hidden text-right text-[12px] leading-tight text-gray-400 sm:block">
             <p className="font-bold tracking-wide">Powered by</p>
             <p className="text-gray-300">AI Career Mentor</p>
           </div>

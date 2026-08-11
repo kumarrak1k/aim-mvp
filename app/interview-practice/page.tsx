@@ -168,7 +168,7 @@ export default async function InterviewPracticePage() {
       {/* Features */}
       <section className="mx-auto max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] px-4 pb-16 sm:px-6 sm:pb-20">
         <div className="mb-10 text-center">
-          <p className="text-[11px] font-bold tracking-wide text-purple-300/90">
+          <p className="text-[12px] font-bold tracking-wide text-purple-300/90">
             What you get
           </p>
           <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
@@ -188,7 +188,7 @@ export default async function InterviewPracticePage() {
               <div className="flex items-center gap-2">
                 <p className="font-bold text-white">{f.title}</p>
                 {f.badge && (
-                  <span className="rounded-full bg-fuchsia-400/15 px-2 py-0.5 text-[9px] font-bold tracking-wide text-fuchsia-300">
+                  <span className="rounded-full bg-fuchsia-400/15 px-2 py-0.5 text-[12px] font-bold tracking-wide text-fuchsia-300">
                     {f.badge}
                   </span>
                 )}

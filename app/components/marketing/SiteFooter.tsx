@@ -26,7 +26,7 @@ export function SiteFooter() {
 
           {/* For candidates */}
           <div>
-            <p className="mb-4 text-[11px] font-bold tracking-wide text-gray-400">
+            <p className="mb-4 text-[12px] font-bold tracking-wide text-gray-400">
               For candidates
             </p>
             <div className="space-y-3 text-sm text-gray-400">
@@ -40,7 +40,7 @@ export function SiteFooter() {
 
           {/* Resources */}
           <div>
-            <p className="mb-4 text-[11px] font-bold tracking-wide text-gray-400">
+            <p className="mb-4 text-[12px] font-bold tracking-wide text-gray-400">
               Free tools
             </p>
             <div className="space-y-3 text-sm text-gray-400">
@@ -59,7 +59,7 @@ export function SiteFooter() {
 
           {/* Company */}
           <div>
-            <p className="mb-4 text-[11px] font-bold tracking-wide text-gray-400">
+            <p className="mb-4 text-[12px] font-bold tracking-wide text-gray-400">
               Company
             </p>
             <div className="space-y-3 text-sm text-gray-400">

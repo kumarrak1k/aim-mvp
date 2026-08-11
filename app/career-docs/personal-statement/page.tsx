@@ -66,7 +66,7 @@ export default function PersonalStatementPage() {
     if (len === 0 || len >= min) return null;
     const more = min - len;
     return (
-      <p className="mt-1 text-[11px] text-amber-300">
+      <p className="mt-1 text-[12px] text-amber-300">
         {label}: at least {min} characters ({more} more needed).
       </p>
     );
@@ -160,7 +160,7 @@ export default function PersonalStatementPage() {
               </svg>
             </div>
             <div>
-              <p className="text-[11px] font-bold tracking-wide text-emerald-300">AI Writer</p>
+              <p className="text-[12px] font-bold tracking-wide text-emerald-300">AI Writer</p>
               <h1 className="text-2xl font-bold tracking-tight text-white">Personal Statement Generator</h1>
             </div>
           </div>
@@ -185,7 +185,7 @@ export default function PersonalStatementPage() {
                       <div className={`h-1.5 w-1.5 rounded-full shrink-0 ${statementType === opt.value ? "bg-emerald-400" : "bg-gray-600"}`} />
                       <div>
                         <p className="text-sm font-bold">{opt.label}</p>
-                        <p className="text-[11px] text-gray-400">{opt.desc}</p>
+                        <p className="text-[12px] text-gray-400">{opt.desc}</p>
                       </div>
                     </button>
                   ))}
@@ -225,7 +225,7 @@ export default function PersonalStatementPage() {
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5 shrink-0 text-emerald-400">
                       <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" />
                     </svg>
-                    <span className="flex-1 truncate text-[11px] font-semibold text-emerald-300">
+                    <span className="flex-1 truncate text-[12px] font-semibold text-emerald-300">
                       {savedCV.hasSavedCV
                         ? savedCV.cvFileName
                           ? `CV: ${savedCV.cvFileName}`
@@ -237,7 +237,7 @@ export default function PersonalStatementPage() {
                         type="button"
                         onClick={() => fileInputRef.current?.click()}
                         disabled={savedCV.uploading}
-                        className="rounded-lg border border-emerald-400/30 bg-emerald-400/10 px-2.5 py-1 text-[10px] font-bold text-emerald-300 transition hover:bg-emerald-400/20 disabled:opacity-50"
+                        className="rounded-lg border border-emerald-400/30 bg-emerald-400/10 px-2.5 py-1 text-[12px] font-bold text-emerald-300 transition hover:bg-emerald-400/20 disabled:opacity-50"
                       >
                         {savedCV.uploading ? "Uploading…" : savedCV.hasSavedCV ? "Replace" : "Upload CV"}
                       </button>
@@ -246,7 +246,7 @@ export default function PersonalStatementPage() {
                           type="button"
                           onClick={() => void savedCV.removeCV()}
                           disabled={savedCV.removing}
-                          className="rounded-lg border border-red-400/30 bg-red-400/[0.08] px-2.5 py-1 text-[10px] font-bold text-red-400 transition hover:bg-red-400/20 disabled:opacity-50"
+                          className="rounded-lg border border-red-400/30 bg-red-400/[0.08] px-2.5 py-1 text-[12px] font-bold text-red-400 transition hover:bg-red-400/20 disabled:opacity-50"
                         >
                           {savedCV.removing ? "Removing…" : "Remove"}
                         </button>
@@ -271,7 +271,7 @@ export default function PersonalStatementPage() {
                   placeholder="Academic qualifications, relevant work experience, courses, extracurriculars, skills…"
                   rows={4}
                   className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-400 outline-none focus:border-emerald-400/40 focus:ring-1 focus:ring-emerald-400/20 resize-y" required />
-                <p className={`mt-1 text-right text-[10px] ${background.length > 15000 ? "text-red-400" : "text-gray-400"}`}>
+                <p className={`mt-1 text-right text-[12px] ${background.length > 15000 ? "text-red-400" : "text-gray-400"}`}>
                   {background.length.toLocaleString()} / 15,000 characters
                 </p>
               </div>
@@ -292,7 +292,7 @@ export default function PersonalStatementPage() {
                 <input type="range" min={300} max={1000} step={50} value={wordLimit}
                   onChange={(e) => setWordLimit(Number(e.target.value))}
                   className="w-full accent-emerald-400" />
-                <div className="mt-1 flex justify-between text-[10px] text-gray-400">
+                <div className="mt-1 flex justify-between text-[12px] text-gray-400">
                   <span>300 (concise)</span><span>1000 (detailed)</span>
                 </div>
               </div>
@@ -311,7 +311,7 @@ export default function PersonalStatementPage() {
               ) : "Generate personal statement →"}
             </button>
             {!loading && !canSubmit && (
-              <p className="text-center text-[11px] leading-5 text-gray-400">
+              <p className="text-center text-[12px] leading-5 text-gray-400">
                 To enable the button:{" "}
                 {[
                   !targetProgramOrRole.trim() && "add the programme or role",
@@ -358,18 +358,18 @@ export default function PersonalStatementPage() {
 
                 {/* Statement */}
                 <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-6 backdrop-blur-xl">
-                  <p className="mb-3 text-[11px] font-bold tracking-wide text-emerald-300">Your personal statement</p>
+                  <p className="mb-3 text-[12px] font-bold tracking-wide text-emerald-300">Your personal statement</p>
                   <div className="whitespace-pre-line text-sm leading-8 text-gray-200">{result.statement}</div>
                 </div>
 
                 {/* Narrative notes */}
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-5 backdrop-blur-xl">
-                    <p className="mb-2 text-[10px] font-bold tracking-wide text-purple-300">Opening approach</p>
+                    <p className="mb-2 text-[12px] font-bold tracking-wide text-purple-300">Opening approach</p>
                     <p className="text-sm leading-6 text-gray-300">{result.openingHook}</p>
                   </div>
                   <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-5 backdrop-blur-xl">
-                    <p className="mb-2 text-[10px] font-bold tracking-wide text-cyan-300">Central narrative</p>
+                    <p className="mb-2 text-[12px] font-bold tracking-wide text-cyan-300">Central narrative</p>
                     <p className="text-sm leading-6 text-gray-300">{result.keyNarrativeThread}</p>
                   </div>
                 </div>
@@ -377,7 +377,7 @@ export default function PersonalStatementPage() {
                 {/* Strengths + suggestions */}
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="rounded-[1.75rem] border border-emerald-400/[0.18] bg-emerald-400/[0.05] p-5">
-                    <p className="mb-3 text-[11px] font-bold tracking-wide text-emerald-400">What works well</p>
+                    <p className="mb-3 text-[12px] font-bold tracking-wide text-emerald-400">What works well</p>
                     <ul className="space-y-2">
                       {result.strengths.map((s, i) => (
                         <li key={i} className="flex items-start gap-2 text-sm text-gray-300">
@@ -387,7 +387,7 @@ export default function PersonalStatementPage() {
                     </ul>
                   </div>
                   <div className="rounded-[1.75rem] border border-amber-400/[0.18] bg-amber-400/[0.05] p-5">
-                    <p className="mb-3 text-[11px] font-bold tracking-wide text-amber-400">Before you submit</p>
+                    <p className="mb-3 text-[12px] font-bold tracking-wide text-amber-400">Before you submit</p>
                     <ul className="space-y-2">
                       {result.suggestions.map((s, i) => (
                         <li key={i} className="flex items-start gap-2 text-sm text-gray-300">

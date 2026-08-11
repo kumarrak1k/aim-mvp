@@ -105,7 +105,7 @@ export default function ChangePasswordPage() {
             </div>
           ) : (
             <>
-              <p className="text-[11px] font-bold tracking-wide text-fuchsia-300">
+              <p className="text-[12px] font-bold tracking-wide text-fuchsia-300">
                 Action required
               </p>
               <h1 className="mt-1 text-xl font-bold text-white">Set your password</h1>
@@ -116,7 +116,7 @@ export default function ChangePasswordPage() {
 
               <form onSubmit={(e) => void handleSubmit(e)} className="mt-6 space-y-4">
                 <div>
-                  <label className="block text-[11px] font-bold tracking-wide text-gray-400">
+                  <label className="block text-[12px] font-bold tracking-wide text-gray-400">
                     New password
                   </label>
                   <input
@@ -133,7 +133,7 @@ export default function ChangePasswordPage() {
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-bold tracking-wide text-gray-400">
+                  <label className="block text-[12px] font-bold tracking-wide text-gray-400">
                     Confirm password
                   </label>
                   <input
@@ -167,7 +167,7 @@ export default function ChangePasswordPage() {
           )}
         </div>
 
-        <p className="mt-6 text-center text-[11px] text-gray-700">
+        <p className="mt-6 text-center text-[12px] text-gray-700">
           AI Career Mentor · Your password is encrypted and never stored in plain text.
         </p>
       </div>

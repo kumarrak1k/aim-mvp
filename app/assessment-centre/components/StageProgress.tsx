@@ -66,7 +66,7 @@ export function StageProgress({ currentStage, selectedStages }: Props) {
               </div>
 
               <span
-                className={`text-[10px] font-bold tracking-wide whitespace-nowrap ${
+                className={`text-[12px] font-bold tracking-wide whitespace-nowrap ${
                   isActive ? "text-cyan-300" : isPast ? "text-emerald-400/80" : "text-gray-400"
                 }`}
               >

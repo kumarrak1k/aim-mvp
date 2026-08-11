@@ -28,24 +28,24 @@ const HINTS: Record<"mic" | "cam" | "spk", string> = {
 function StatusChip({ state }: { state: CheckState }) {
   if (state === "pass")
     return (
-      <span className="rounded-full border border-emerald-300/25 bg-emerald-300/10 px-2.5 py-1 text-[11px] font-bold text-emerald-200">
+      <span className="rounded-full border border-emerald-300/25 bg-emerald-300/10 px-2.5 py-1 text-[12px] font-bold text-emerald-200">
         Working
       </span>
     );
   if (state === "fail")
     return (
-      <span className="rounded-full border border-amber-300/25 bg-amber-300/10 px-2.5 py-1 text-[11px] font-bold text-amber-200">
+      <span className="rounded-full border border-amber-300/25 bg-amber-300/10 px-2.5 py-1 text-[12px] font-bold text-amber-200">
         Problem
       </span>
     );
   if (state === "checking")
     return (
-      <span className="rounded-full border border-white/15 bg-white/[0.06] px-2.5 py-1 text-[11px] font-bold text-gray-300">
+      <span className="rounded-full border border-white/15 bg-white/[0.06] px-2.5 py-1 text-[12px] font-bold text-gray-300">
         Testing…
       </span>
     );
   return (
-    <span className="rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[11px] font-bold text-gray-400">
+    <span className="rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[12px] font-bold text-gray-400">
       Not tested
     </span>
   );

@@ -60,7 +60,7 @@ export function SubscriptionCard() {
     <div className={`mb-6 rounded-[2rem] border p-6 ${colourClass}`}>
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="mb-1 text-[11px] font-bold tracking-wide opacity-60">
+          <p className="mb-1 text-[12px] font-bold tracking-wide opacity-60">
             Current plan
           </p>
           <p className="text-xl font-bold tracking-tight">{info.planName}</p>

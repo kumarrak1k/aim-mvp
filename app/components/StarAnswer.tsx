@@ -67,7 +67,7 @@ export function StarAnswer({
       <div className="space-y-3">
         {SECTIONS.map((s) => (
           <div key={s.key}>
-            <p className="mb-0.5 text-[11px] font-bold tracking-wide text-gray-400">
+            <p className="mb-0.5 text-[12px] font-bold tracking-wide text-gray-400">
               {s.label}
             </p>
             <p className="whitespace-pre-wrap text-[13px] leading-6 text-gray-800">
@@ -85,12 +85,12 @@ export function StarAnswer({
         <div key={s.key} className="flex items-start gap-3">
           <span
             aria-hidden
-            className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br ${s.darkBadge} text-[11px] font-bold text-white`}
+            className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br ${s.darkBadge} text-[12px] font-bold text-white`}
           >
             {s.letter}
           </span>
           <div className="min-w-0 flex-1">
-            <p className={`text-[11px] font-bold tracking-wide ${s.darkText}`}>
+            <p className={`text-[12px] font-bold tracking-wide ${s.darkText}`}>
               {s.label}
             </p>
             <p className="mt-1 whitespace-pre-wrap text-sm leading-7 text-gray-100">

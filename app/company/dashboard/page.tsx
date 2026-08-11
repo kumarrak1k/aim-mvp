@@ -465,7 +465,7 @@ function DashboardContent() {
                           {m.role.charAt(0).toUpperCase() + m.role.slice(1)}
                           {isYou && <span className="ml-2 text-xs font-semibold text-gray-400">(you)</span>}
                         </p>
-                        <p className="text-[11px] text-gray-400">
+                        <p className="text-[12px] text-gray-400">
                           Joined {new Date(m.createdAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
                         </p>
                       </div>
@@ -495,7 +495,7 @@ function DashboardContent() {
                       <div key={inv.id} className="flex flex-col gap-2 rounded-2xl border border-white/[0.07] bg-white/[0.03] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
                         <div>
                           <p className="text-sm font-semibold text-white">{inv.email}</p>
-                          <p className="text-[11px] text-gray-400 capitalize">{inv.role} · expires {new Date(inv.expiresAt).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}</p>
+                          <p className="text-[12px] text-gray-400 capitalize">{inv.role} · expires {new Date(inv.expiresAt).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}</p>
                         </div>
                         <button
                           onClick={() => void navigator.clipboard.writeText(link)}
@@ -521,7 +521,7 @@ function DashboardContent() {
           <div className="mb-10 overflow-hidden rounded-[2rem] border border-red-500/25 bg-red-500/[0.04] p-6 shadow-xl shadow-black/10">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <p className="text-[11px] font-bold tracking-wide text-red-300">
+                <p className="text-[12px] font-bold tracking-wide text-red-300">
                   Danger zone
                 </p>
                 <h2 className="mt-2 text-lg font-bold tracking-tight text-white">
@@ -628,7 +628,7 @@ function DashboardContent() {
             className="w-full max-w-md rounded-[1.75rem] border border-fuchsia-400/20 bg-[#120a1e] p-6 shadow-2xl shadow-fuchsia-950/40"
             onClick={(e) => e.stopPropagation()}
           >
-            <p className="text-[11px] font-bold tracking-wide text-fuchsia-300">Invite team member</p>
+            <p className="text-[12px] font-bold tracking-wide text-fuchsia-300">Invite team member</p>
             <h3 className="mt-2 text-2xl font-bold tracking-tight text-white">Add to your workspace</h3>
 
             {memberInviteLink ? (
@@ -644,7 +644,7 @@ function DashboardContent() {
                     Copy
                   </button>
                 </div>
-                <p className="mt-2 text-[11px] text-gray-400">The link expires in 7 days. They must have or create a hiring team account to accept.</p>
+                <p className="mt-2 text-[12px] text-gray-400">The link expires in 7 days. They must have or create a hiring team account to accept.</p>
                 <div className="mt-5 flex gap-3">
                   <button
                     onClick={() => { setMemberInviteLink(""); setMemberInviteEmail(""); }}
@@ -727,7 +727,7 @@ function DashboardContent() {
             className="w-full max-w-md rounded-[1.75rem] border border-red-500/30 bg-[#160a14] p-6 shadow-2xl shadow-red-950/40"
             onClick={(e) => e.stopPropagation()}
           >
-            <p className="text-[11px] font-bold tracking-wide text-red-300">
+            <p className="text-[12px] font-bold tracking-wide text-red-300">
               Confirm deletion
             </p>
             <h3 className="mt-2 text-2xl font-bold tracking-tight text-white">

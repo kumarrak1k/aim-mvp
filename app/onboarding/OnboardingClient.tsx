@@ -176,7 +176,7 @@ export function OnboardingClient({
             style={{ width: `${(step / ONBOARDING_STEPS) * 100}%` }}
           />
         </div>
-        <p className="mt-2 text-right text-[11px] font-bold tracking-wide text-gray-400">
+        <p className="mt-2 text-right text-[12px] font-bold tracking-wide text-gray-400">
           Step {step} of {ONBOARDING_STEPS}
         </p>
       </div>
@@ -191,7 +191,7 @@ export function OnboardingClient({
               This is the one thing we need. Every question you practise is written for it.
             </p>
 
-            <label className="mt-5 block text-[11px] font-bold tracking-wide text-purple-300/90">
+            <label className="mt-5 block text-[12px] font-bold tracking-wide text-purple-300/90">
               Target role
             </label>
             <input
@@ -221,7 +221,7 @@ export function OnboardingClient({
               ))}
             </select>
 
-            <p className="mt-5 text-[11px] font-bold tracking-wide text-purple-300/90">
+            <p className="mt-5 text-[12px] font-bold tracking-wide text-purple-300/90">
               Where you are
             </p>
             <div className="mt-2 grid gap-2 sm:grid-cols-2">
@@ -237,7 +237,7 @@ export function OnboardingClient({
               ))}
             </div>
 
-            <p className="mt-5 text-[11px] font-bold tracking-wide text-purple-300/90">
+            <p className="mt-5 text-[12px] font-bold tracking-wide text-purple-300/90">
               Sector
             </p>
             <div className="mt-2 grid gap-2 sm:grid-cols-3">
@@ -270,7 +270,7 @@ export function OnboardingClient({
                 </p>
 
                 <div>
-                  <label className="block text-[11px] font-bold tracking-wide text-purple-300/90">
+                  <label className="block text-[12px] font-bold tracking-wide text-purple-300/90">
                     What you do now
                   </label>
                   <input
@@ -282,7 +282,7 @@ export function OnboardingClient({
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-bold tracking-wide text-purple-300/90">
+                  <label className="block text-[12px] font-bold tracking-wide text-purple-300/90">
                     Your CV
                   </label>
                   <input
@@ -317,7 +317,7 @@ export function OnboardingClient({
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-bold tracking-wide text-purple-300/90">
+                  <label className="block text-[12px] font-bold tracking-wide text-purple-300/90">
                     The job description
                   </label>
                   <input
@@ -406,7 +406,7 @@ export function OnboardingClient({
 
         {step === 4 && (
           <section>
-            <p className="text-[11px] font-bold tracking-wide text-emerald-300">
+            <p className="text-[12px] font-bold tracking-wide text-emerald-300">
               Your plan
             </p>
             <h1 className="mt-3 text-2xl font-bold leading-[1.15] tracking-tight text-white sm:text-3xl">

@@ -490,7 +490,7 @@ export function TemplateForm({ initial, onSave, onCancel, saving }: TemplateForm
               />
 
               <div className="mt-2 flex items-center justify-between">
-                <span className="text-[10px] text-gray-400">
+                <span className="text-[12px] text-gray-400">
                   {description.length}/5000
                 </span>
                 <div>
@@ -518,7 +518,7 @@ export function TemplateForm({ initial, onSave, onCancel, saving }: TemplateForm
                   </button>
                 </div>
               </div>
-              <p className="mt-1 text-[10px] text-gray-400">
+              <p className="mt-1 text-[12px] text-gray-400">
                 Accepts PDF, DOCX, TXT, MD. Text is extracted and pasted above.
               </p>
 
@@ -671,7 +671,7 @@ export function TemplateForm({ initial, onSave, onCancel, saving }: TemplateForm
                   >
                     <div className="flex items-start gap-3">
                       <span
-                        className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded border-2 text-[10px] font-bold ${
+                        className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded border-2 text-[12px] font-bold ${
                           checked
                             ? "border-fuchsia-400 bg-fuchsia-400 text-white"
                             : "border-white/30 text-transparent"
@@ -682,7 +682,7 @@ export function TemplateForm({ initial, onSave, onCancel, saving }: TemplateForm
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
                           <p className="text-sm font-bold text-white">{info.title}</p>
-                          <span className="rounded-full border border-white/10 bg-white/[0.05] px-2 py-0.5 text-[10px] font-bold text-gray-400">
+                          <span className="rounded-full border border-white/10 bg-white/[0.05] px-2 py-0.5 text-[12px] font-bold text-gray-400">
                             {info.time}
                           </span>
                         </div>
@@ -899,7 +899,7 @@ function CustomQuestionsSection({
               maxLength={500}
               className={inputClass}
             />
-            <p className="mt-1 text-right text-[10px] text-gray-400">
+            <p className="mt-1 text-right text-[12px] text-gray-400">
               {(questions[i] ?? "").length}/500
             </p>
           </div>
@@ -979,12 +979,12 @@ function QuestionMixSection({
                 <span className="min-w-0 flex-1 text-xs font-semibold text-gray-300">
                   {QUESTION_MIX_LABELS[key]}
                   {key === "opener" && (
-                    <span className="ml-1.5 rounded-full bg-purple-400/15 px-1.5 py-0.5 text-[9px] font-bold text-purple-300">
+                    <span className="ml-1.5 rounded-full bg-purple-400/15 px-1.5 py-0.5 text-[12px] font-bold text-purple-300">
                       AI
                     </span>
                   )}
                   {key === "custom" && (
-                    <span className="ml-1.5 rounded-full bg-fuchsia-400/15 px-1.5 py-0.5 text-[9px] font-bold text-fuchsia-300">
+                    <span className="ml-1.5 rounded-full bg-fuchsia-400/15 px-1.5 py-0.5 text-[12px] font-bold text-fuchsia-300">
                       TYPE BELOW
                     </span>
                   )}

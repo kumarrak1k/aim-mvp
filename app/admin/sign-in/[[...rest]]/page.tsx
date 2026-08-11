@@ -49,7 +49,7 @@ export default function AdminSignInPage() {
       <div className="relative flex w-full max-w-sm flex-col items-center gap-8">
         <div className="flex flex-col items-center gap-2">
           <SiteLogo href="/" size="md" showText />
-          <span className="rounded-full border border-purple-300/20 bg-white/[0.04] px-3 py-1 text-[10px] font-bold tracking-wide text-purple-300">
+          <span className="rounded-full border border-purple-300/20 bg-white/[0.04] px-3 py-1 text-[12px] font-bold tracking-wide text-purple-300">
             Admin access
           </span>
         </div>

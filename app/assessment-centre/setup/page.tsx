@@ -133,7 +133,7 @@ export default function AssessmentCentreSetupPage() {
       <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:py-14">
         {/* Header */}
         <div className="mb-10 text-center">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-cyan-400/25 bg-cyan-400/[0.07] px-4 py-2 text-[11px] font-bold tracking-wide text-cyan-200">
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-cyan-400/25 bg-cyan-400/[0.07] px-4 py-2 text-[12px] font-bold tracking-wide text-cyan-200">
             Advanced · Mock Assessment Centre
           </div>
           <h1 className="text-3xl font-bold leading-[1.04] tracking-tight text-white sm:text-4xl lg:text-4xl">
@@ -151,7 +151,7 @@ export default function AssessmentCentreSetupPage() {
         <div className="space-y-8">
           {/* Role input */}
           <div className="rounded-[1.75rem] border border-white/[0.08] bg-white/[0.04] p-6 backdrop-blur-xl">
-            <label className="mb-3 block text-[11px] font-bold tracking-wide text-purple-300/90">
+            <label className="mb-3 block text-[12px] font-bold tracking-wide text-purple-300/90">
               Your target role
             </label>
             <input
@@ -166,7 +166,7 @@ export default function AssessmentCentreSetupPage() {
 
           {/* Sector grid */}
           <div className="rounded-[1.75rem] border border-white/[0.08] bg-white/[0.04] p-6 backdrop-blur-xl">
-            <p className="mb-4 text-[11px] font-bold tracking-wide text-purple-300/90">
+            <p className="mb-4 text-[12px] font-bold tracking-wide text-purple-300/90">
               Sector
             </p>
             <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-5">
@@ -188,7 +188,7 @@ export default function AssessmentCentreSetupPage() {
 
           {/* Experience level */}
           <div className="rounded-[1.75rem] border border-white/[0.08] bg-white/[0.04] p-6 backdrop-blur-xl">
-            <p className="mb-4 text-[11px] font-bold tracking-wide text-purple-300/90">
+            <p className="mb-4 text-[12px] font-bold tracking-wide text-purple-300/90">
               Experience level
             </p>
             <div className="flex flex-wrap gap-2.5">
@@ -218,10 +218,10 @@ export default function AssessmentCentreSetupPage() {
           {/* Stage selector */}
           <div className="rounded-[1.75rem] border border-white/[0.08] bg-white/[0.04] p-6 backdrop-blur-xl">
             <div className="mb-4 flex items-center justify-between">
-              <p className="text-[11px] font-bold tracking-wide text-purple-300/90">
+              <p className="text-[12px] font-bold tracking-wide text-purple-300/90">
                 Stages to include
               </p>
-              <span className="text-[11px] text-gray-400">
+              <span className="text-[12px] text-gray-400">
                 Click to deselect · at least 1 required
               </span>
             </div>
@@ -260,7 +260,7 @@ export default function AssessmentCentreSetupPage() {
                     className={`relative rounded-xl border p-4 text-left transition-all ${borderColour} ${bgColour} ${isLast ? "cursor-not-allowed" : "cursor-pointer hover:opacity-100"}`}
                   >
                     {/* Selected/deselected indicator */}
-                    <div className={`absolute right-3 top-3 flex h-5 w-5 items-center justify-center rounded-full border text-[10px] font-bold transition-all ${
+                    <div className={`absolute right-3 top-3 flex h-5 w-5 items-center justify-center rounded-full border text-[12px] font-bold transition-all ${
                       selected
                         ? "border-emerald-400/50 bg-emerald-400/10 text-emerald-300"
                         : "border-white/20 bg-white/[0.04] text-gray-400"
@@ -271,10 +271,10 @@ export default function AssessmentCentreSetupPage() {
                     <div className={`text-sm font-bold ${selected ? "text-white" : "text-gray-400"}`}>
                       {stage.label}
                     </div>
-                    <div className={`mt-0.5 text-[11px] font-semibold ${labelColour}`}>
+                    <div className={`mt-0.5 text-[12px] font-semibold ${labelColour}`}>
                       {stage.desc}
                     </div>
-                    <p className={`mt-2 text-[11px] leading-5 ${selected ? "text-gray-400" : "text-gray-400"}`}>
+                    <p className={`mt-2 text-[12px] leading-5 ${selected ? "text-gray-400" : "text-gray-400"}`}>
                       {stage.detail}
                     </p>
                   </button>

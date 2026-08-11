@@ -166,7 +166,7 @@ export default function CompareIndexPage() {
       <div className="mx-auto max-w-4xl px-4 pb-24 pt-6 sm:px-6">
         {/* Hero */}
         <section className="mb-12 mt-8 text-center">
-          <p className="mb-4 text-[11px] font-bold tracking-wide text-purple-300/70">
+          <p className="mb-4 text-[12px] font-bold tracking-wide text-purple-300/70">
             Editorial comparison
           </p>
           <h1 className="text-[2rem] font-bold leading-[1.05] tracking-tight sm:text-4xl">

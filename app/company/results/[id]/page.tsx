@@ -197,7 +197,7 @@ export default function CandidateResultDetailPage() {
         <div className="mb-8 rounded-[2rem] border border-white/10 bg-white/[0.04] p-7 shadow-xl shadow-black/10">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div className="min-w-0">
-              <p className="text-[11px] font-bold tracking-wide text-fuchsia-300">
+              <p className="text-[12px] font-bold tracking-wide text-fuchsia-300">
                 Candidate
               </p>
               <h1 className="mt-1 break-all text-2xl font-bold tracking-tight sm:text-3xl">
@@ -350,7 +350,7 @@ function BigStat({
 
   return (
     <div className={`rounded-2xl border px-5 py-3 text-center ${toneClass}`}>
-      <p className="text-[10px] font-bold tracking-wide opacity-80">
+      <p className="text-[12px] font-bold tracking-wide opacity-80">
         {label}
       </p>
       <p className="mt-1 text-2xl font-bold tracking-tight">{value}</p>
@@ -361,7 +361,7 @@ function BigStat({
 function TimelineItem({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-xl border border-white/[0.06] bg-black/20 p-3">
-      <p className="text-[10px] font-bold tracking-wide text-gray-400">
+      <p className="text-[12px] font-bold tracking-wide text-gray-400">
         {label}
       </p>
       <p className="mt-1 text-xs font-semibold text-gray-200">{value}</p>
@@ -384,7 +384,7 @@ function SummaryCard({ summary }: { summary: SessionSummary }) {
 
   return (
     <section className="mb-8 rounded-[2rem] border border-white/10 bg-white/[0.04] p-6 shadow-xl shadow-black/10 sm:p-7">
-      <p className="text-[11px] font-bold tracking-wide text-fuchsia-300">
+      <p className="text-[12px] font-bold tracking-wide text-fuchsia-300">
         AI overall summary
       </p>
       <h2 className="mt-2 text-xl font-bold tracking-tight sm:text-2xl">
@@ -496,7 +496,7 @@ function QuestionCard({
       <div className="border-b border-white/[0.06] bg-black/20 px-5 py-4 sm:px-7 sm:py-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="min-w-0">
-            <p className="text-[11px] font-bold tracking-wide text-cyan-300">
+            <p className="text-[12px] font-bold tracking-wide text-cyan-300">
               Question {index + 1} of {totalQuestions}
             </p>
             <p className="mt-2 text-base font-semibold leading-6 text-white sm:text-lg">
@@ -505,7 +505,7 @@ function QuestionCard({
           </div>
           {fb?.overall_score !== undefined && (
             <div className="shrink-0 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-2 text-center">
-              <p className="text-[10px] font-bold tracking-wide text-gray-400">
+              <p className="text-[12px] font-bold tracking-wide text-gray-400">
                 Score
               </p>
               <p
@@ -530,7 +530,7 @@ function QuestionCard({
       <div className="grid gap-5 p-5 sm:p-7 lg:grid-cols-2">
         {/* Candidate's answer */}
         <div>
-          <p className="mb-2 text-[11px] font-bold tracking-wide text-purple-300">
+          <p className="mb-2 text-[12px] font-bold tracking-wide text-purple-300">
             Candidate&rsquo;s answer
           </p>
           <p className="rounded-xl border border-white/[0.06] bg-black/30 p-4 text-sm leading-7 text-gray-200 whitespace-pre-wrap">
@@ -540,7 +540,7 @@ function QuestionCard({
 
         {/* AI feedback */}
         <div>
-          <p className="mb-2 text-[11px] font-bold tracking-wide text-fuchsia-300">
+          <p className="mb-2 text-[12px] font-bold tracking-wide text-fuchsia-300">
             AI feedback
           </p>
 
@@ -551,7 +551,7 @@ function QuestionCard({
                   key={k}
                   className="rounded-lg border border-white/[0.06] bg-black/25 px-3 py-2"
                 >
-                  <p className="text-[10px] font-bold tracking-wide text-gray-400">
+                  <p className="text-[12px] font-bold tracking-wide text-gray-400">
                     {CATEGORY_LABELS[k] || k}
                   </p>
                   <p className="text-sm font-bold text-white">{v}/10</p>
@@ -562,7 +562,7 @@ function QuestionCard({
 
           {fb?.strengths && fb.strengths.length > 0 && (
             <div className="mb-3">
-              <p className="text-[10px] font-bold tracking-wide text-emerald-300">
+              <p className="text-[12px] font-bold tracking-wide text-emerald-300">
                 Strengths
               </p>
               <ul className="mt-1 space-y-1 text-sm text-gray-300">
@@ -577,7 +577,7 @@ function QuestionCard({
 
           {fb?.improvements && fb.improvements.length > 0 && (
             <div className="mb-3">
-              <p className="text-[10px] font-bold tracking-wide text-amber-300">
+              <p className="text-[12px] font-bold tracking-wide text-amber-300">
                 Improvements
               </p>
               <ul className="mt-1 space-y-1 text-sm text-gray-300">
@@ -655,14 +655,14 @@ function DeliveryStrip({
 
   return (
     <div>
-      <p className="mb-2 text-[10px] font-bold tracking-wide text-gray-400">
+      <p className="mb-2 text-[12px] font-bold tracking-wide text-gray-400">
         {title}
       </p>
       <div className="flex flex-wrap gap-2">
         {present.map((e) => (
           <span
             key={e.label}
-            className="rounded-full border border-white/[0.07] bg-black/30 px-2.5 py-1 text-[11px] font-semibold text-gray-300"
+            className="rounded-full border border-white/[0.07] bg-black/30 px-2.5 py-1 text-[12px] font-semibold text-gray-300"
           >
             <span className="text-gray-400">{e.label}:</span>{" "}
             <span className="text-white">{e.value}</span>

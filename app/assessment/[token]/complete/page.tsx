@@ -96,7 +96,7 @@ export default function AssessmentCompletePage() {
 
         {data?.template && (
           <div className="mt-8 w-full max-w-md rounded-[1.5rem] border border-white/10 bg-white/[0.04] p-5 text-center backdrop-blur-2xl">
-            <p className="text-[11px] font-bold tracking-wide text-gray-400">
+            <p className="text-[12px] font-bold tracking-wide text-gray-400">
               You completed
             </p>
             <p className="mt-2 text-base font-bold text-white">{data.template.name}</p>
@@ -108,7 +108,7 @@ export default function AssessmentCompletePage() {
             but DO NOT offer a way back to the company assessment results.
             That data belongs to the hiring team only. */}
         <div className="mt-10 w-full max-w-md rounded-[1.5rem] border border-purple-500/[0.18] bg-purple-500/[0.05] p-5 text-center">
-          <p className="text-[11px] font-bold tracking-wide text-purple-200">
+          <p className="text-[12px] font-bold tracking-wide text-purple-200">
             What happens next
           </p>
           <p className="mt-3 text-sm leading-6 text-gray-300">
@@ -119,7 +119,7 @@ export default function AssessmentCompletePage() {
         </div>
 
         <div className="mt-8 w-full max-w-md rounded-[1.5rem] border border-white/[0.08] bg-white/[0.04] p-5">
-          <p className="text-[11px] font-bold tracking-wide text-cyan-200">
+          <p className="text-[12px] font-bold tracking-wide text-cyan-200">
             While you wait
           </p>
           <p className="mt-3 text-sm leading-6 text-gray-300">

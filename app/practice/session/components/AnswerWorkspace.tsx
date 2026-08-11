@@ -94,7 +94,7 @@ export function AnswerWorkspace({
               </p>
 
               {cleaningTranscript && (
-                <span className="rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1 text-[11px] font-bold text-cyan-100">
+                <span className="rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1 text-[12px] font-bold text-cyan-100">
                   Cleaning transcript
                 </span>
               )}

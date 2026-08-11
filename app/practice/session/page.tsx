@@ -1805,7 +1805,7 @@ export default function PracticeSessionPage() {
               </svg>
             </div>
             <div className="max-w-sm">
-              <p className="text-[11px] font-bold tracking-wide text-fuchsia-300">
+              <p className="text-[12px] font-bold tracking-wide text-fuchsia-300">
                 Stage 2 Complete
               </p>
               <h2 className="mt-2 text-2xl font-bold tracking-tight text-white">

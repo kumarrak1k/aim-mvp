@@ -17,7 +17,7 @@ const sizeClasses = {
     inner: "rounded-[0.82rem] sm:rounded-[0.9rem]",
     image: "h-full w-full rounded-[0.72rem] sm:rounded-[0.8rem]",
     title: "text-sm sm:text-base",
-    subtitle: "text-[10px] sm:text-[11px]",
+    subtitle: "text-[12px] sm:text-[12px]",
     zoom: 1.12,
   },
   md: {
@@ -25,7 +25,7 @@ const sizeClasses = {
     inner: "rounded-[0.84rem] sm:rounded-[1.08rem]",
     image: "h-full w-full rounded-[0.75rem] sm:rounded-[0.95rem]",
     title: "text-sm sm:text-lg",
-    subtitle: "text-[10px] sm:text-xs",
+    subtitle: "text-[12px] sm:text-xs",
     zoom: 1.12,
   },
   lg: {
@@ -33,7 +33,7 @@ const sizeClasses = {
     inner: "rounded-[0.95rem] sm:rounded-[1.2rem]",
     image: "h-full w-full rounded-[0.85rem] sm:rounded-[1.05rem]",
     title: "text-base sm:text-xl",
-    subtitle: "text-[11px] sm:text-sm",
+    subtitle: "text-[12px] sm:text-sm",
     zoom: 1.12,
   },
   xl: {

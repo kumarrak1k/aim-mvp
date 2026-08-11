@@ -14,7 +14,7 @@ export function AssessmentSubmittingCard() {
         <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-cyan-400 text-3xl font-bold text-[#0b1a17] shadow-xl shadow-emerald-900/40">
           ✓
         </div>
-        <p className="text-[11px] font-bold tracking-wide text-emerald-200">
+        <p className="text-[12px] font-bold tracking-wide text-emerald-200">
           Submitting your assessment
         </p>
         <h1 className="mt-3 text-3xl font-bold tracking-tight">

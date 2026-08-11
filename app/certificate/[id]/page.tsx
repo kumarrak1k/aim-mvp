@@ -63,7 +63,7 @@ export default async function CertificatePage({ params }: Props) {
         <div className="cert-card overflow-hidden rounded-[2rem] border border-purple-300/25 bg-gradient-to-b from-purple-950/60 to-[#0a0614] shadow-2xl shadow-purple-950/50">
           {/* Header band */}
           <div className="bg-gradient-to-r from-purple-600 via-fuchsia-600 to-purple-600 px-8 py-6 text-center">
-            <p className="text-[11px] font-bold tracking-wide text-white/80">
+            <p className="text-[12px] font-bold tracking-wide text-white/80">
               AI Career Mentor
             </p>
             <p className="mt-1 text-lg font-bold text-white">

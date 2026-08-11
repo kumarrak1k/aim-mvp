@@ -20,7 +20,7 @@ export async function LaunchPromoBanner() {
 
   return (
     <div className="mx-auto mb-8 max-w-3xl rounded-2xl border border-emerald-400/25 bg-gradient-to-r from-emerald-400/[0.08] via-cyan-400/[0.06] to-emerald-400/[0.08] px-5 py-4 text-center">
-      <p className="text-[11px] font-bold tracking-wide text-emerald-300">
+      <p className="text-[12px] font-bold tracking-wide text-emerald-300">
         Launch offer
       </p>
       <p className="mt-1.5 text-base font-bold text-white sm:text-lg">

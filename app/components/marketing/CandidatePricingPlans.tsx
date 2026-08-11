@@ -59,7 +59,7 @@ function InfoTip({ text }: { text: string }) {
       <button
         type="button"
         aria-label={text}
-        className="flex h-4 w-4 shrink-0 cursor-help items-center justify-center rounded-full border border-white/25 text-[10px] font-bold leading-none text-gray-400 transition hover:border-purple-300/60 hover:text-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-400/40"
+        className="flex h-4 w-4 shrink-0 cursor-help items-center justify-center rounded-full border border-white/25 text-[12px] font-bold leading-none text-gray-400 transition hover:border-purple-300/60 hover:text-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-400/40"
       >
         i
       </button>
@@ -262,7 +262,7 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
           Annual
         </span>
         {annual && (
-          <span className="rounded-full bg-emerald-400/10 px-2.5 py-1 text-[11px] font-bold text-emerald-300">
+          <span className="rounded-full bg-emerald-400/10 px-2.5 py-1 text-[12px] font-bold text-emerald-300">
             Save up to 28%
           </span>
         )}
@@ -331,7 +331,7 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
               </p>
               {plan.name === "Professional" && (
                 <div className="mt-4 rounded-xl border border-fuchsia-400/25 bg-fuchsia-400/[0.07] px-3.5 py-3">
-                  <p className="text-[11px] font-bold tracking-wide text-fuchsia-300">
+                  <p className="text-[12px] font-bold tracking-wide text-fuchsia-300">
                     CV &amp; Application Studio included
                   </p>
                   <p className="mt-1 text-xs leading-5 text-gray-300">
@@ -353,7 +353,7 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
                     </span>
                     <span className="flex-1">{f.text}</span>
                     {f.isNew && (
-                      <span className="mt-[1px] shrink-0 rounded-full bg-fuchsia-400/15 px-1.5 py-0.5 text-[9px] font-bold tracking-wide text-fuchsia-300">
+                      <span className="mt-[1px] shrink-0 rounded-full bg-fuchsia-400/15 px-1.5 py-0.5 text-[12px] font-bold tracking-wide text-fuchsia-300">
                         New
                       </span>
                     )}
@@ -389,18 +389,18 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
                 </button>
               )}
               {checkoutError && !startsFreeTrial && checkoutPlan === null && (
-                <p className="mt-3 text-center text-[11px] font-semibold text-amber-300">
+                <p className="mt-3 text-center text-[12px] font-semibold text-amber-300">
                   {checkoutError}
                 </p>
               )}
               {isPaid ? (
-                <p className="mt-3 text-center text-[11px] font-semibold text-emerald-300/90">
+                <p className="mt-3 text-center text-[12px] font-semibold text-emerald-300/90">
                   7-day money-back guarantee, no questions asked
                 </p>
               ) : (
                 // Reserve the same vertical space on the Free card (which has no
                 // guarantee line) so all three CTA buttons line up on one row.
-                <p className="mt-3 text-center text-[11px] font-semibold text-transparent" aria-hidden>
+                <p className="mt-3 text-center text-[12px] font-semibold text-transparent" aria-hidden>
                   &nbsp;
                 </p>
               )}
@@ -414,7 +414,7 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
         <h3 className="mb-6 text-center text-2xl font-bold tracking-tight">Compare plans</h3>
         {/* On narrow phones the table scrolls sideways but iOS hides the
             scrollbar, so Plus/Professional are invisible without this cue. */}
-        <p className="mb-2 text-center text-[11px] font-bold uppercase tracking-wide text-purple-200/80 sm:hidden">
+        <p className="mb-2 text-center text-[12px] font-bold uppercase tracking-wide text-purple-200/80 sm:hidden">
           Swipe the table sideways to compare all plans →
         </p>
         <div className="overflow-x-auto rounded-2xl border border-white/10">

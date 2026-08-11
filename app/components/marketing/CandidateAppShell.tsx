@@ -86,7 +86,7 @@ function ProBadge() {
   return (
     <span
       aria-label="Professional plan required"
-      className="ml-1.5 inline-block rounded-full border border-amber-400/30 bg-amber-400/[0.12] px-1.5 py-px align-middle text-[9px] font-bold tracking-wide text-amber-300"
+      className="ml-1.5 inline-block rounded-full border border-amber-400/30 bg-amber-400/[0.12] px-1.5 py-px align-middle text-[12px] font-bold tracking-wide text-amber-300"
     >
       Pro
     </span>
@@ -160,7 +160,7 @@ export function CandidateAppShell({
           {/* Logo + badge */}
           <Link href="/" className="relative z-10 flex shrink-0 items-center gap-3">
             <SiteLogo href="" size="md" showText />
-            <span className="hidden rounded-full border border-purple-300/20 bg-white/[0.04] px-3 py-1 text-[10px] font-bold tracking-wide text-purple-100 sm:inline-block xl:hidden">
+            <span className="hidden rounded-full border border-purple-300/20 bg-white/[0.04] px-3 py-1 text-[12px] font-bold tracking-wide text-purple-100 sm:inline-block xl:hidden">
               Candidate
             </span>
           </Link>
@@ -260,7 +260,7 @@ export function CandidateAppShell({
               if (item.dropdown) {
                 return (
                   <div key={item.label} className="mt-1 border-t border-white/[0.06] pt-1">
-                    <p className="px-4 pb-1 pt-2 text-[10px] font-bold tracking-wide text-gray-400">
+                    <p className="px-4 pb-1 pt-2 text-[12px] font-bold tracking-wide text-gray-400">
                       {item.label}
                     </p>
                     {item.dropdown.map((sub) => (

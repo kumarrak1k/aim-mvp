@@ -665,7 +665,7 @@ export function SessionSummary({
               <ol className="space-y-3">
                 {summary.next_steps.map((step, i) => (
                   <li key={i} className="flex items-start gap-3">
-                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-cyan-400/15 text-[11px] font-bold text-cyan-300">
+                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-cyan-400/15 text-[12px] font-bold text-cyan-300">
                       {i + 1}
                     </span>
                     <span className="text-sm leading-6 text-gray-300">{step}</span>

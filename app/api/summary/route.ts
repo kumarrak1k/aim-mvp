@@ -8,9 +8,20 @@ export const runtime = "nodejs";
 export const maxDuration = 60;
 export const dynamic = "force-dynamic";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+/**
+ * Built on first use, not at module load. At module scope the constructor runs
+ * during Next's build-time page-data collection, so a missing OPENAI_API_KEY
+ * failed the whole build instead of reaching the runtime guard below that is
+ * meant to return a clean error. Production always has the key; local builds
+ * and previews without it should still compile.
+ */
+let openaiClient: OpenAI | null = null;
+function getOpenAI(): OpenAI {
+  if (!openaiClient) {
+    openaiClient = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  }
+  return openaiClient;
+}
 
 type FeedbackResult = {
   question?: string;
@@ -504,7 +515,7 @@ Video analysis ${index + 1}:
     // Legacy-style params: adaptRequestForModel converts them for GPT-5.x
     // models and passes them through untouched for older fallback models,
     // so the AI_MODEL_QUALITY env rollback works without code changes.
-    const response = await openai.chat.completions.create(adaptRequestForModel({
+    const response = await getOpenAI().chat.completions.create(adaptRequestForModel({
       model: MODEL_QUALITY,
       temperature: 0.35,
       max_tokens: 2500,

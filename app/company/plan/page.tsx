@@ -64,7 +64,7 @@ export default function CompanyPlanPage() {
       <section className="mx-auto max-w-4xl px-4 py-16 sm:px-6">
         {/* Header */}
         <div className="mb-12 text-center">
-          <p className="mb-3 text-[11px] font-bold tracking-wide text-fuchsia-300">
+          <p className="mb-3 text-[12px] font-bold tracking-wide text-fuchsia-300">
             Choose your plan
           </p>
           <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
@@ -136,7 +136,7 @@ export default function CompanyPlanPage() {
                     : "Start free trial on Team"}
               </button>
               {plan.id === "business" && (
-                <p className="mt-2 text-center text-[11px] text-gray-400">
+                <p className="mt-2 text-center text-[12px] text-gray-400">
                   Trials run on the Team plan. Upgrade to Business anytime from
                   your dashboard.
                 </p>

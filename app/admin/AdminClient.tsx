@@ -225,11 +225,11 @@ const STATUS_BADGE: Record<string, string> = {
 };
 
 function TypeBadge({ type }: { type: string }) {
-  return <span className={`inline-flex rounded-full border px-2.5 py-0.5 text-[11px] font-bold capitalize ${TYPE_BADGE[type] ?? TYPE_BADGE.unknown}`}>{type}</span>;
+  return <span className={`inline-flex rounded-full border px-2.5 py-0.5 text-[12px] font-bold capitalize ${TYPE_BADGE[type] ?? TYPE_BADGE.unknown}`}>{type}</span>;
 }
 function MembershipBadge({ user }: { user: AdminUser }) {
   const g = getStatusGroup(user);
-  return <span className={`inline-flex rounded-full border px-2.5 py-0.5 text-[11px] font-bold ${STATUS_BADGE[g]}`}>{getMembershipLabel(user)}</span>;
+  return <span className={`inline-flex rounded-full border px-2.5 py-0.5 text-[12px] font-bold ${STATUS_BADGE[g]}`}>{getMembershipLabel(user)}</span>;
 }
 
 // ── CSV export ────────────────────────────────────────────────────────────────
@@ -682,7 +682,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
         <div>
           <div className="flex items-center gap-3">
             <h1 className="text-3xl font-bold tracking-tight">Admin</h1>
-            <span className="rounded-full border border-red-400/30 bg-red-500/10 px-2.5 py-0.5 text-[11px] font-bold text-red-300">Internal only</span>
+            <span className="rounded-full border border-red-400/30 bg-red-500/10 px-2.5 py-0.5 text-[12px] font-bold text-red-300">Internal only</span>
           </div>
           <p className="mt-1 text-sm text-gray-400">AI Career Mentor · {stats.total} total accounts</p>
         </div>
@@ -736,7 +736,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
           <div key={label} className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
             <p className="text-xs font-semibold text-gray-400">{label} <span className="text-gray-400">· 7d</span></p>
             <p className={`mt-1 text-2xl font-bold ${color}`}>{value}</p>
-            <p className="mt-0.5 text-[10px] text-gray-400">{sub}</p>
+            <p className="mt-0.5 text-[12px] text-gray-400">{sub}</p>
           </div>
         ))}
       </div>
@@ -759,8 +759,8 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
               <span key={label} className="flex items-center gap-2">
                 <span className="flex items-baseline gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5">
                   <span className="text-sm font-bold text-white">{n}</span>
-                  <span className="text-[11px] text-gray-400">{label}</span>
-                  {i > 0 && <span className="text-[10px] font-bold text-fuchsia-300">{pct}%</span>}
+                  <span className="text-[12px] text-gray-400">{label}</span>
+                  {i > 0 && <span className="text-[12px] font-bold text-fuchsia-300">{pct}%</span>}
                 </span>
                 {i < arr.length - 1 && <span className="text-gray-400">→</span>}
               </span>
@@ -862,7 +862,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                     <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-fuchsia-500/20 text-xs font-bold text-fuchsia-300">{initials(u)}</div>
                     <div>
                       <p className="font-bold leading-tight text-white">{fullName(u)}</p>
-                      <p className="text-[11px] text-gray-400">{u.email}</p>
+                      <p className="text-[12px] text-gray-400">{u.email}</p>
                     </div>
                   </div>
                 </td>
@@ -870,13 +870,13 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                 <td className="py-3.5 pr-4"><MembershipBadge user={u} /></td>
                 <td className="whitespace-nowrap py-3.5 pr-4 text-gray-400">
                   {u.companyName ?? "–"}
-                  {u.companyRole && <span className="ml-1 text-[10px] capitalize text-gray-400">({u.companyRole})</span>}
+                  {u.companyRole && <span className="ml-1 text-[12px] capitalize text-gray-400">({u.companyRole})</span>}
                 </td>
                 <td className="whitespace-nowrap py-3.5 pr-4 text-[12px] text-gray-400">{getPeriodEnd(u) ? fmtDate(getPeriodEnd(u)) : "–"}</td>
                 {/* Usage: sessions · assessment centres · career docs */}
                 <td className="whitespace-nowrap py-3.5 pr-4">
                   {u.accountType === "candidate" ? (
-                    <span className="inline-flex items-center gap-1 text-[11px] font-bold">
+                    <span className="inline-flex items-center gap-1 text-[12px] font-bold">
                       <span className={u.practiceCount > 0 ? "rounded-md bg-fuchsia-500/15 px-1.5 py-0.5 text-fuchsia-300" : "rounded-md bg-white/[0.04] px-1.5 py-0.5 text-gray-400"} title={`${u.practiceCount} practice sessions${u.lastPracticeAt ? ` · last ${fmtDate(u.lastPracticeAt)}` : ""}`}>
                         {u.practiceCount}S
                       </span>
@@ -887,17 +887,17 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                         {u.docsCount}D
                       </span>
                       {!u.profileComplete && (
-                        <span className="ml-0.5 text-[10px] text-gray-400" title="No candidate profile saved yet">no profile</span>
+                        <span className="ml-0.5 text-[12px] text-gray-400" title="No candidate profile saved yet">no profile</span>
                       )}
                     </span>
                   ) : (
-                    <span className="text-[11px] text-gray-400">–</span>
+                    <span className="text-[12px] text-gray-400">–</span>
                   )}
                 </td>
                 {/* Acquisition source */}
                 <td className="whitespace-nowrap py-3.5 pr-4">
                   <span
-                    className={`rounded-md px-1.5 py-0.5 text-[11px] font-bold ${
+                    className={`rounded-md px-1.5 py-0.5 text-[12px] font-bold ${
                       u.utmSource || u.promoCode || u.referrer
                         ? "bg-violet-500/15 text-violet-300"
                         : "bg-white/[0.04] text-gray-400"
@@ -922,25 +922,25 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                     <button
                       onClick={() => setActivityUserId(u.id)}
                       title="Full behavioural report: visits, journey, drop-off point"
-                      className="rounded-full border border-cyan-400/25 bg-cyan-500/10 px-3 py-1 text-[11px] font-bold text-cyan-300 transition hover:bg-cyan-500/20"
+                      className="rounded-full border border-cyan-400/25 bg-cyan-500/10 px-3 py-1 text-[12px] font-bold text-cyan-300 transition hover:bg-cyan-500/20"
                     >
                       Activity
                     </button>
                     <button
                       onClick={() => openEdit(u)}
-                      className="rounded-full border border-fuchsia-400/25 bg-fuchsia-500/10 px-3 py-1 text-[11px] font-bold text-fuchsia-300 transition hover:bg-fuchsia-500/20"
+                      className="rounded-full border border-fuchsia-400/25 bg-fuchsia-500/10 px-3 py-1 text-[12px] font-bold text-fuchsia-300 transition hover:bg-fuchsia-500/20"
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => openDelete(u)}
-                      className="rounded-full border border-red-400/25 bg-red-500/10 px-3 py-1 text-[11px] font-bold text-red-300 transition hover:bg-red-500/20"
+                      className="rounded-full border border-red-400/25 bg-red-500/10 px-3 py-1 text-[12px] font-bold text-red-300 transition hover:bg-red-500/20"
                     >
                       Delete
                     </button>
                     <button
                       onClick={() => copyId(u.id)}
-                      className="rounded-full border border-white/[0.07] bg-white/[0.04] px-3 py-1 text-[11px] font-bold text-gray-400 transition hover:border-white/20 hover:text-gray-300"
+                      className="rounded-full border border-white/[0.07] bg-white/[0.04] px-3 py-1 text-[12px] font-bold text-gray-400 transition hover:border-white/20 hover:text-gray-300"
                     >
                       {copied === u.id ? "Copied!" : "ID"}
                     </button>
@@ -964,7 +964,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
         </div>
       )}
 
-      <p className="mt-10 text-center text-[11px] text-gray-700">AI Career Mentor · Internal admin · Not indexed · Not linked from any public page</p>
+      <p className="mt-10 text-center text-[12px] text-gray-700">AI Career Mentor · Internal admin · Not indexed · Not linked from any public page</p>
 
       {/* ── Per-user activity drill-down ─────────────────────────────────────────── */}
       {activityUserId && (
@@ -978,7 +978,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
       {showCreate && (
         <div className="fixed inset-0 z-[9999] flex items-start justify-center overflow-y-auto bg-black/75 backdrop-blur-sm px-4 py-20" onClick={() => { if (!createLoading) { setShowCreate(false); setCreatedResult(null); } }}>
           <div className="w-full max-w-md rounded-[1.75rem] border border-fuchsia-400/20 bg-[#120a1e] p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
-            <p className="text-[11px] font-bold tracking-wide text-fuchsia-300">Create user</p>
+            <p className="text-[12px] font-bold tracking-wide text-fuchsia-300">Create user</p>
             <h3 className="mt-1 text-xl font-bold text-white">New account</h3>
 
             {createdResult ? (
@@ -1037,7 +1037,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                 <div>
                   <button
                     onClick={() => setShowFallbackUrl((v) => !v)}
-                    className="text-[11px] text-gray-400 hover:text-gray-300 transition"
+                    className="text-[12px] text-gray-400 hover:text-gray-300 transition"
                   >
                     {showFallbackUrl ? "Hide" : "Or copy sign-in link manually ↓"}
                   </button>
@@ -1047,11 +1047,11 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                         readOnly
                         value={createdResult.signInUrl}
                         onClick={(e) => (e.target as HTMLInputElement).select()}
-                        className="flex-1 rounded-xl border border-white/10 bg-black/40 px-3 py-2 font-mono text-[10px] text-fuchsia-300 focus:outline-none truncate"
+                        className="flex-1 rounded-xl border border-white/10 bg-black/40 px-3 py-2 font-mono text-[12px] text-fuchsia-300 focus:outline-none truncate"
                       />
                       <button
                         onClick={() => copyFallbackUrl(createdResult.signInUrl)}
-                        className="shrink-0 rounded-xl border border-white/10 bg-white/[0.05] px-3 py-2 text-[11px] font-bold text-gray-300 transition hover:bg-white/10"
+                        className="shrink-0 rounded-xl border border-white/10 bg-white/[0.05] px-3 py-2 text-[12px] font-bold text-gray-300 transition hover:bg-white/10"
                       >
                         {copiedUrl ? "✓" : "Copy"}
                       </button>
@@ -1070,7 +1070,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
               /* ── Form state ────────────────────────── */
               <div className="mt-5 space-y-4">
                 <div>
-                  <label className="block text-[11px] font-bold tracking-wide text-gray-400">Email address <span className="text-red-400">*</span></label>
+                  <label className="block text-[12px] font-bold tracking-wide text-gray-400">Email address <span className="text-red-400">*</span></label>
                   <input
                     type="email"
                     value={createForm.email}
@@ -1083,7 +1083,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-[11px] font-bold tracking-wide text-gray-400">First name</label>
+                    <label className="block text-[12px] font-bold tracking-wide text-gray-400">First name</label>
                     <input
                       value={createForm.firstName}
                       onChange={(e) => setCreateForm((f) => ({ ...f, firstName: e.target.value }))}
@@ -1092,7 +1092,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                     />
                   </div>
                   <div>
-                    <label className="block text-[11px] font-bold tracking-wide text-gray-400">Last name</label>
+                    <label className="block text-[12px] font-bold tracking-wide text-gray-400">Last name</label>
                     <input
                       value={createForm.lastName}
                       onChange={(e) => setCreateForm((f) => ({ ...f, lastName: e.target.value }))}
@@ -1103,7 +1103,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-bold tracking-wide text-gray-400">Account type <span className="text-red-400">*</span></label>
+                  <label className="block text-[12px] font-bold tracking-wide text-gray-400">Account type <span className="text-red-400">*</span></label>
                   <select
                     value={createForm.accountType}
                     onChange={(e) => setCreateForm((f) => ({ ...f, accountType: e.target.value, membership: (e.target.value === "corporate" ? "none" : "free") as MembershipKey, compPlan: "", companyName: "" }))}
@@ -1117,7 +1117,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-bold tracking-wide text-gray-400">Membership</label>
+                  <label className="block text-[12px] font-bold tracking-wide text-gray-400">Membership</label>
                   <select
                     value={createForm.membership}
                     onChange={(e) => setCreateForm((f) => ({ ...f, membership: e.target.value as MembershipKey }))}
@@ -1142,7 +1142,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                     )}
                   </select>
                   {createForm.accountType === "candidate" && (
-                    <p className="mt-1.5 text-[11px] text-gray-400">
+                    <p className="mt-1.5 text-[12px] text-gray-400">
                       {createForm.compPlan
                         ? "Locked to Free while complimentary access is set. Guests must not look like paying subscribers."
                         : "Membership = a real paid subscription. For invited guests leave this on Free and use complimentary access below."}
@@ -1153,15 +1153,15 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                 {/* Complimentary access — candidates and corporate */}
                 {(createForm.accountType === "candidate" || createForm.accountType === "corporate") && (
                   <div className="rounded-2xl border border-cyan-400/15 bg-cyan-400/[0.04] p-3.5">
-                    <label className="block text-[11px] font-bold tracking-wide text-cyan-300">Complimentary access</label>
-                    <p className="mt-1 text-[11px] leading-4 text-gray-400">
+                    <label className="block text-[12px] font-bold tracking-wide text-cyan-300">Complimentary access</label>
+                    <p className="mt-1 text-[12px] leading-4 text-gray-400">
                       {createForm.accountType === "corporate"
                         ? "Guest workspace with no card and no Stripe. The company is created up front, expires automatically, and there is nothing to cancel."
                         : "Guest access with no card and no Stripe. Expires automatically, then the account returns to Free with nothing to cancel."}
                     </p>
                     <div className="mt-2.5 grid grid-cols-2 gap-3">
                       <div>
-                        <label className="block text-[11px] font-bold tracking-wide text-gray-400">Plan</label>
+                        <label className="block text-[12px] font-bold tracking-wide text-gray-400">Plan</label>
                         <select
                           value={createForm.compPlan}
                           onChange={(e) => setCreateForm((f) => ({
@@ -1189,7 +1189,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                         </select>
                       </div>
                       <div>
-                        <label className="block text-[11px] font-bold tracking-wide text-gray-400">Duration</label>
+                        <label className="block text-[12px] font-bold tracking-wide text-gray-400">Duration</label>
                         <select
                           value={createForm.compDuration}
                           onChange={(e) => setCreateForm((f) => ({ ...f, compDuration: e.target.value }))}
@@ -1205,7 +1205,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                     </div>
                     {createForm.accountType === "corporate" && createForm.compPlan && (
                       <div className="mt-3">
-                        <label className="block text-[11px] font-bold tracking-wide text-gray-400">Company name <span className="text-red-400">*</span></label>
+                        <label className="block text-[12px] font-bold tracking-wide text-gray-400">Company name <span className="text-red-400">*</span></label>
                         <input
                           value={createForm.companyName}
                           onChange={(e) => setCreateForm((f) => ({ ...f, companyName: e.target.value }))}
@@ -1213,7 +1213,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                           placeholder="Acme Corp"
                           className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2.5 text-sm text-white placeholder:text-gray-400 focus:border-cyan-400/40 focus:outline-none"
                         />
-                        <p className="mt-1.5 text-[11px] text-gray-400">The workspace is created immediately with this person as its admin, so they land straight on a ready dashboard.</p>
+                        <p className="mt-1.5 text-[12px] text-gray-400">The workspace is created immediately with this person as its admin, so they land straight on a ready dashboard.</p>
                       </div>
                     )}
                   </div>
@@ -1241,13 +1241,13 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
       {editingUser && (
         <div className="fixed inset-0 z-[9999] flex items-start justify-center overflow-y-auto bg-black/75 backdrop-blur-sm px-4 py-20" onClick={() => { if (!editLoading) setEditingUser(null); }}>
           <div className="w-full max-w-md rounded-[1.75rem] border border-fuchsia-400/20 bg-[#120a1e] p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
-            <p className="text-[11px] font-bold tracking-wide text-fuchsia-300">Edit user</p>
+            <p className="text-[12px] font-bold tracking-wide text-fuchsia-300">Edit user</p>
             <h3 className="mt-1 text-xl font-bold text-white">{editingUser.email}</h3>
-            <p className="mt-0.5 text-[11px] text-gray-400">Clerk ID: {editingUser.id}</p>
+            <p className="mt-0.5 text-[12px] text-gray-400">Clerk ID: {editingUser.id}</p>
 
             {/* Usage snapshot (read-only) */}
             <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.03] p-3.5">
-              <p className="text-[10px] font-bold tracking-wide text-gray-400">Usage</p>
+              <p className="text-[12px] font-bold tracking-wide text-gray-400">Usage</p>
               <div className="mt-2 grid grid-cols-3 gap-2 text-center">
                 {(
                   [
@@ -1258,12 +1258,12 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                 ).map(([label, n, last]) => (
                   <div key={label} className="rounded-xl bg-black/30 px-2 py-2">
                     <p className="text-lg font-bold text-white">{n}</p>
-                    <p className="text-[10px] text-gray-400">{label}</p>
-                    <p className="text-[9px] text-gray-400">{last ? `last ${fmtDate(last)}` : "never"}</p>
+                    <p className="text-[12px] text-gray-400">{label}</p>
+                    <p className="text-[12px] text-gray-400">{last ? `last ${fmtDate(last)}` : "never"}</p>
                   </div>
                 ))}
               </div>
-              <div className="mt-2 flex flex-wrap gap-x-4 gap-y-0.5 text-[10px] text-gray-400">
+              <div className="mt-2 flex flex-wrap gap-x-4 gap-y-0.5 text-[12px] text-gray-400">
                 <span>Profile: <span className={editingUser.profileComplete ? "text-emerald-300" : "text-gray-400"}>{editingUser.profileComplete ? "built" : "not built"}</span></span>
                 <span>Joined {fmtDate(editingUser.createdAt)}</span>
                 <span>Last sign-in {fmtDate(editingUser.lastSignInAt)}</span>
@@ -1282,7 +1282,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
             <div className="mt-5 space-y-4">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[11px] font-bold tracking-wide text-gray-400">First name</label>
+                  <label className="block text-[12px] font-bold tracking-wide text-gray-400">First name</label>
                   <input
                     value={editForm.firstName}
                     onChange={(e) => setEditForm((f) => ({ ...f, firstName: e.target.value }))}
@@ -1291,7 +1291,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-bold tracking-wide text-gray-400">Last name</label>
+                  <label className="block text-[12px] font-bold tracking-wide text-gray-400">Last name</label>
                   <input
                     value={editForm.lastName}
                     onChange={(e) => setEditForm((f) => ({ ...f, lastName: e.target.value }))}
@@ -1302,7 +1302,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold tracking-wide text-gray-400">Account type</label>
+                <label className="block text-[12px] font-bold tracking-wide text-gray-400">Account type</label>
                 <select
                   value={editForm.accountType}
                   onChange={(e) => setEditForm((f) => ({ ...f, accountType: e.target.value, membership: "free" }))}
@@ -1314,12 +1314,12 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                   <option value="university">University</option>
                   <option value="unknown">Unknown</option>
                 </select>
-                <p className="mt-1.5 text-[11px] text-amber-400/80">⚠ Changing account type affects which part of the site they can access.</p>
+                <p className="mt-1.5 text-[12px] text-amber-400/80">⚠ Changing account type affects which part of the site they can access.</p>
               </div>
 
               {/* Membership — options adapt to account type */}
               <div>
-                <label className="block text-[11px] font-bold tracking-wide text-gray-400">Membership</label>
+                <label className="block text-[12px] font-bold tracking-wide text-gray-400">Membership</label>
                 <select
                   value={editForm.membership}
                   onChange={(e) => setEditForm((f) => ({ ...f, membership: e.target.value as MembershipKey }))}
@@ -1348,17 +1348,17 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                   )}
                 </select>
                 {editForm.accountType === "corporate" && (
-                  <p className="mt-1.5 text-[11px] text-gray-400">Affects all members of this company workspace.</p>
+                  <p className="mt-1.5 text-[12px] text-gray-400">Affects all members of this company workspace.</p>
                 )}
                 {editForm.accountType === "candidate" && !!editForm.compPlan && (
-                  <p className="mt-1.5 text-[11px] text-gray-400">Locked to Free while complimentary access is set. Remove the complimentary plan first to set a paid membership manually.</p>
+                  <p className="mt-1.5 text-[12px] text-gray-400">Locked to Free while complimentary access is set. Remove the complimentary plan first to set a paid membership manually.</p>
                 )}
               </div>
 
               {/* Company name — corporate only */}
               {editForm.accountType === "corporate" && (
                 <div>
-                  <label className="block text-[11px] font-bold tracking-wide text-gray-400">Company name</label>
+                  <label className="block text-[12px] font-bold tracking-wide text-gray-400">Company name</label>
                   <input
                     value={editForm.companyName}
                     onChange={(e) => setEditForm((f) => ({ ...f, companyName: e.target.value }))}
@@ -1371,7 +1371,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
 
               {/* Period end */}
               <div>
-                <label className="block text-[11px] font-bold tracking-wide text-gray-400">
+                <label className="block text-[12px] font-bold tracking-wide text-gray-400">
                   {editForm.accountType === "corporate" ? "Trial / subscription end" : "Subscription end"}
                 </label>
                 <input
@@ -1386,13 +1386,13 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
               {/* Complimentary access — candidates only */}
               {editForm.accountType === "candidate" && (
                 <div className="rounded-2xl border border-cyan-400/15 bg-cyan-400/[0.04] p-3.5">
-                  <label className="block text-[11px] font-bold tracking-wide text-cyan-300">Complimentary access</label>
-                  <p className="mt-1 text-[11px] leading-4 text-gray-400">
+                  <label className="block text-[12px] font-bold tracking-wide text-cyan-300">Complimentary access</label>
+                  <p className="mt-1 text-[12px] leading-4 text-gray-400">
                     Guest access with no card and no Stripe. It expires automatically on the end date, then the user returns to Free with nothing to cancel. A paid subscription always takes precedence.
                   </p>
                   <div className="mt-2.5 grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-[11px] font-bold tracking-wide text-gray-400">Plan</label>
+                      <label className="block text-[12px] font-bold tracking-wide text-gray-400">Plan</label>
                       <select
                         value={editForm.compPlan}
                         onChange={(e) => setEditForm((f) => ({ ...f, compPlan: e.target.value, ...(e.target.value ? { membership: "free" as MembershipKey } : {}) }))}
@@ -1405,7 +1405,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                       </select>
                     </div>
                     <div>
-                      <label className="block text-[11px] font-bold tracking-wide text-gray-400">Until</label>
+                      <label className="block text-[12px] font-bold tracking-wide text-gray-400">Until</label>
                       <input
                         type="date"
                         value={editForm.compUntil}
@@ -1421,7 +1421,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
               {/* Joined — read-only */}
               {editingUser && (
                 <div>
-                  <label className="block text-[11px] font-bold tracking-wide text-gray-400">Joined</label>
+                  <label className="block text-[12px] font-bold tracking-wide text-gray-400">Joined</label>
                   <p className="mt-1.5 px-3 py-2.5 text-sm text-gray-400">{fmtDate(editingUser.createdAt)}</p>
                 </div>
               )}
@@ -1443,7 +1443,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
       {deletingUser && (
         <div className="fixed inset-0 z-[9999] flex items-start justify-center overflow-y-auto bg-black/75 backdrop-blur-sm px-4 py-20" onClick={() => { if (!deleteLoading) setDeletingUser(null); }}>
           <div className="w-full max-w-md rounded-[1.75rem] border border-red-500/30 bg-[#160a14] p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
-            <p className="text-[11px] font-bold tracking-wide text-red-300">Delete account</p>
+            <p className="text-[12px] font-bold tracking-wide text-red-300">Delete account</p>
             <h3 className="mt-1 text-xl font-bold text-white">{fullName(deletingUser)}</h3>
             <p className="mt-0.5 text-sm text-gray-400">{deletingUser.email}</p>
 
@@ -1453,7 +1453,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
               <strong className="block mt-1 text-red-200">This cannot be undone.</strong>
             </div>
 
-            <label className="mt-4 block text-[11px] font-bold tracking-wide text-gray-400">
+            <label className="mt-4 block text-[12px] font-bold tracking-wide text-gray-400">
               Type their email to confirm
             </label>
             <input
@@ -1538,30 +1538,30 @@ function CampaignLinkBuilder() {
 
       <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
         <label className="block">
-          <span className="mb-1 block text-[10px] uppercase tracking-wider text-gray-400">Source</span>
+          <span className="mb-1 block text-[12px] uppercase tracking-wider text-gray-400">Source</span>
           <input value={source} onChange={(e) => setSource(e.target.value)} className={inputS} placeholder="tiktok" />
         </label>
         <label className="block">
-          <span className="mb-1 block text-[10px] uppercase tracking-wider text-gray-400">Medium</span>
+          <span className="mb-1 block text-[12px] uppercase tracking-wider text-gray-400">Medium</span>
           <input value={medium} onChange={(e) => setMedium(e.target.value)} className={inputS} placeholder="social" />
         </label>
         <label className="block">
-          <span className="mb-1 block text-[10px] uppercase tracking-wider text-gray-400">Campaign</span>
+          <span className="mb-1 block text-[12px] uppercase tracking-wider text-gray-400">Campaign</span>
           <input value={campaign} onChange={(e) => setCampaign(e.target.value)} className={inputS} placeholder="launch" />
         </label>
         <label className="block">
-          <span className="mb-1 block text-[10px] uppercase tracking-wider text-gray-400">Page</span>
+          <span className="mb-1 block text-[12px] uppercase tracking-wider text-gray-400">Page</span>
           <input value={path} onChange={(e) => setPath(e.target.value)} className={inputS} placeholder="/" />
         </label>
       </div>
 
       <div className="mt-2 flex items-center gap-2">
-        <code className="min-w-0 flex-1 truncate rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-[11px] text-fuchsia-200" title={customUrl}>
+        <code className="min-w-0 flex-1 truncate rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-[12px] text-fuchsia-200" title={customUrl}>
           {customUrl}
         </code>
         <button
           onClick={() => void copy(customUrl, "custom")}
-          className="shrink-0 rounded-full border border-fuchsia-400/25 bg-fuchsia-500/10 px-3 py-1.5 text-[11px] font-bold text-fuchsia-300 transition hover:bg-fuchsia-500/20"
+          className="shrink-0 rounded-full border border-fuchsia-400/25 bg-fuchsia-500/10 px-3 py-1.5 text-[12px] font-bold text-fuchsia-300 transition hover:bg-fuchsia-500/20"
         >
           {copied === "custom" ? "Copied ✓" : "Copy"}
         </button>
@@ -1573,14 +1573,14 @@ function CampaignLinkBuilder() {
             key={p.label}
             onClick={() => void copy(buildUrl(p.source, p.medium, p.campaign, "/"), p.label)}
             title={buildUrl(p.source, p.medium, p.campaign, "/")}
-            className="rounded-full border border-white/10 bg-white/[0.05] px-2.5 py-1 text-[11px] font-bold text-gray-300 transition hover:border-fuchsia-400/30 hover:text-white"
+            className="rounded-full border border-white/10 bg-white/[0.05] px-2.5 py-1 text-[12px] font-bold text-gray-300 transition hover:border-fuchsia-400/30 hover:text-white"
           >
             {copied === p.label ? "Copied ✓" : p.label}
           </button>
         ))}
       </div>
 
-      <p className="mt-2 text-[10px] leading-4 text-gray-400">
+      <p className="mt-2 text-[12px] leading-4 text-gray-400">
         Preset buttons copy a homepage link tagged for that channel. Links with a promo code
         (e.g. ?promo=LAUNCH100) are tracked automatically as promo signups.
       </p>

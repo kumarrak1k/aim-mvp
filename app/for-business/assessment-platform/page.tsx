@@ -65,7 +65,7 @@ export default function BusinessPlatformPage() {
       currentPath="/for-business/assessment-platform"
     >
       <section className="mx-auto max-w-5xl px-4 pb-14 pt-1 text-center sm:px-6 sm:pb-16 sm:pt-3">
-        <p className="mx-auto mb-5 inline-flex items-center gap-2 rounded-full border border-purple-400/25 bg-purple-400/[0.07] px-4 py-2 text-[11px] font-bold tracking-wide text-purple-200">
+        <p className="mx-auto mb-5 inline-flex items-center gap-2 rounded-full border border-purple-400/25 bg-purple-400/[0.07] px-4 py-2 text-[12px] font-bold tracking-wide text-purple-200">
           Platform
         </p>
         <h1 className="text-3xl font-bold leading-[1.04] tracking-tight sm:text-4xl">
@@ -115,7 +115,7 @@ export default function BusinessPlatformPage() {
 
       <section className="mx-auto max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] px-4 pb-16 sm:px-6 sm:pb-20">
         <div className="mb-10 text-center">
-          <p className="text-[11px] font-bold tracking-wide text-purple-300/90">
+          <p className="text-[12px] font-bold tracking-wide text-purple-300/90">
             What you get
           </p>
           <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">

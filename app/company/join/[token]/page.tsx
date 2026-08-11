@@ -116,7 +116,7 @@ export default function JoinPage() {
           {/* Ready — show invite details */}
           {(phase === "ready" || phase === "accepting") && invite && (
             <>
-              <p className="text-[11px] font-bold tracking-wide text-fuchsia-300">
+              <p className="text-[12px] font-bold tracking-wide text-fuchsia-300">
                 Workspace invitation
               </p>
               <h1 className="mt-2 text-2xl font-bold tracking-tight text-white">
@@ -138,7 +138,7 @@ export default function JoinPage() {
                     </p>
                   </div>
                 </div>
-                <p className="mt-3 text-[11px] text-gray-400">
+                <p className="mt-3 text-[12px] text-gray-400">
                   Invite sent to{" "}
                   <span className="text-gray-300">{invite.email}</span>
                   {" · "}expires{" "}
@@ -162,7 +162,7 @@ export default function JoinPage() {
                 {phase === "accepting" ? "Accepting…" : `Accept invitation →`}
               </button>
 
-              <p className="mt-3 text-center text-[11px] text-gray-400">
+              <p className="mt-3 text-center text-[12px] text-gray-400">
                 By accepting you agree to our{" "}
                 <Link href="/terms" className="underline hover:text-gray-400">Terms</Link>
                 {" "}and{" "}

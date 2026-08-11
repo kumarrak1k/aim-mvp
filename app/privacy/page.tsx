@@ -408,7 +408,7 @@ export default function PrivacyPage() {
             <aside className="space-y-6">
 
               <div className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-6">
-                <p className="mb-4 text-[11px] font-bold tracking-wide text-purple-200">
+                <p className="mb-4 text-[12px] font-bold tracking-wide text-purple-200">
                   Our commitments
                 </p>
                 <div className="space-y-3 text-sm leading-6 text-gray-400">
@@ -422,7 +422,7 @@ export default function PrivacyPage() {
               </div>
 
               <div className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-6">
-                <p className="mb-4 text-[11px] font-bold tracking-wide text-purple-200">
+                <p className="mb-4 text-[12px] font-bold tracking-wide text-purple-200">
                   Your data controls
                 </p>
                 <div className="space-y-3">
@@ -440,7 +440,7 @@ export default function PrivacyPage() {
               </div>
 
               <div className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-6">
-                <p className="mb-3 text-[11px] font-bold tracking-wide text-purple-200">
+                <p className="mb-3 text-[12px] font-bold tracking-wide text-purple-200">
                   Data controller
                 </p>
                 <p className="mb-1 font-bold text-gray-200">AI Career Mentor Ltd</p>
@@ -450,7 +450,7 @@ export default function PrivacyPage() {
               </div>
 
               <div className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-6">
-                <p className="mb-3 text-[11px] font-bold tracking-wide text-purple-200">
+                <p className="mb-3 text-[12px] font-bold tracking-wide text-purple-200">
                   Privacy contact
                 </p>
                 <p className="mb-2 text-sm leading-6 text-gray-400">
@@ -465,7 +465,7 @@ export default function PrivacyPage() {
               </div>
 
               <div className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-6">
-                <p className="mb-3 text-[11px] font-bold tracking-wide text-purple-200">
+                <p className="mb-3 text-[12px] font-bold tracking-wide text-purple-200">
                   Browser permissions
                 </p>
                 <div className="space-y-3 text-sm leading-6 text-gray-400">

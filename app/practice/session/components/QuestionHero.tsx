@@ -106,22 +106,22 @@ export function QuestionHero(props: QuestionHeroProps) {
         <div className="mb-3 flex items-start justify-between gap-3">
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1 text-[11px] font-bold text-cyan-100 sm:text-xs">
+              <span className="rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1 text-[12px] font-bold text-cyan-100 sm:text-xs">
                 Question {currentQuestionNumber}/{totalQuestions}
               </span>
 
-              <span className="rounded-full border border-purple-300/20 bg-purple-300/10 px-3 py-1 text-[11px] font-bold text-purple-100 sm:text-xs">
+              <span className="rounded-full border border-purple-300/20 bg-purple-300/10 px-3 py-1 text-[12px] font-bold text-purple-100 sm:text-xs">
                 {practiceModeLabels[practiceMode]}
               </span>
 
               {speakerEnabled && (
-                <span className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1 text-[11px] font-bold text-emerald-100 sm:text-xs">
+                <span className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1 text-[12px] font-bold text-emerald-100 sm:text-xs">
                   Audio
                 </span>
               )}
             </div>
 
-            <div className="mt-3 hidden flex-wrap gap-2 text-[11px] font-bold text-gray-400 sm:flex">
+            <div className="mt-3 hidden flex-wrap gap-2 text-[12px] font-bold text-gray-400 sm:flex">
               <span>{interviewType}</span>
               <span>·</span>
               <span>{difficulty}</span>
@@ -231,7 +231,7 @@ export function QuestionHero(props: QuestionHeroProps) {
         )}
 
         {role && (
-          <p className="mt-3 line-clamp-1 text-[11px] font-semibold text-gray-400 sm:hidden">
+          <p className="mt-3 line-clamp-1 text-[12px] font-semibold text-gray-400 sm:hidden">
             {role}
           </p>
         )}

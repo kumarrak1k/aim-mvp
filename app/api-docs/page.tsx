@@ -63,7 +63,7 @@ export default function ApiDocsPage() {
       <div className="mx-auto max-w-5xl px-6 py-12">
         {/* Title */}
         <div className="mb-10">
-          <span className="rounded-full border border-purple-300/20 bg-white/[0.04] px-3 py-1 text-[10px] font-bold tracking-wide text-purple-300">
+          <span className="rounded-full border border-purple-300/20 bg-white/[0.04] px-3 py-1 text-[12px] font-bold tracking-wide text-purple-300">
             v1.0
           </span>
           <h1 className="mt-4 text-4xl font-bold tracking-tight">ATS API Reference</h1>

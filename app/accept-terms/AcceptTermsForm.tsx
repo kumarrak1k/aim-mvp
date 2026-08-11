@@ -93,7 +93,7 @@ export function AcceptTermsForm({ version, nextPath }: AcceptTermsFormProps) {
 
       <div className="relative z-10 mx-auto flex min-h-screen max-w-3xl flex-col px-4 py-10 sm:px-6 sm:py-14">
         <div className="rounded-[2rem] border border-white/10 bg-white/[0.05] p-6 shadow-2xl shadow-purple-950/30 backdrop-blur-2xl sm:p-9">
-          <p className="mb-2 text-[11px] font-bold tracking-wide text-purple-300">
+          <p className="mb-2 text-[12px] font-bold tracking-wide text-purple-300">
             One quick confirmation
           </p>
           <h1 className="text-3xl font-bold leading-[1.05] tracking-tight sm:text-4xl">
@@ -194,7 +194,7 @@ export function AcceptTermsForm({ version, nextPath }: AcceptTermsFormProps) {
             {submitting ? "Recording acceptance..." : "Confirm and continue"}
           </button>
 
-          <p className="mt-4 text-center text-[11px] text-gray-400">
+          <p className="mt-4 text-center text-[12px] text-gray-400">
             Version {version} · Your acceptance is recorded with a timestamp.
           </p>
         </div>

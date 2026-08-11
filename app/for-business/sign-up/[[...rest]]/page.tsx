@@ -27,7 +27,7 @@ export default function BusinessSignUpPage() {
         <header className="mb-3 flex items-center justify-between sm:mb-4">
           <Link href="/" className="flex items-center gap-3">
             <SiteLogo href="" size="md" showText />
-            <span className="hidden rounded-full border border-purple-300/20 bg-white/[0.04] px-3 py-1 text-[10px] font-bold tracking-wide text-purple-100 sm:inline-block">
+            <span className="hidden rounded-full border border-purple-300/20 bg-white/[0.04] px-3 py-1 text-[12px] font-bold tracking-wide text-purple-100 sm:inline-block">
               For hiring teams
             </span>
           </Link>
@@ -57,7 +57,7 @@ export default function BusinessSignUpPage() {
             <p className="mt-1.5 text-sm leading-5 text-gray-400">
               Build templates, send invite links, and review AI-scored candidates.
             </p>
-            <p className="mt-2 text-[11px] text-gray-400">
+            <p className="mt-2 text-[12px] text-gray-400">
               Job applicant?{" "}
               <Link href="/for-candidates/sign-up" className="font-bold text-purple-300 hover:text-purple-200">
                 Create a candidate account instead →

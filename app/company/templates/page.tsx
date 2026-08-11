@@ -116,11 +116,11 @@ export default function TemplatesPage() {
                   <div className="min-w-0">
                     <div className="mb-1 flex items-center gap-2">
                       {t.templateType === "assessment-centre" ? (
-                        <span className="rounded-full border border-purple-400/30 bg-purple-400/10 px-2.5 py-0.5 text-[10px] font-bold tracking-wide text-purple-200">
+                        <span className="rounded-full border border-purple-400/30 bg-purple-400/10 px-2.5 py-0.5 text-[12px] font-bold tracking-wide text-purple-200">
                           Assessment centre
                         </span>
                       ) : (
-                        <span className="rounded-full border border-white/10 bg-white/[0.05] px-2.5 py-0.5 text-[10px] font-bold tracking-wide text-gray-400">
+                        <span className="rounded-full border border-white/10 bg-white/[0.05] px-2.5 py-0.5 text-[12px] font-bold tracking-wide text-gray-400">
                           Interview
                         </span>
                       )}

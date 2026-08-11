@@ -375,7 +375,7 @@ export default function Stage1Page() {
             <div className="rounded-[1.75rem] border border-purple-500/[0.18] bg-purple-500/[0.05] p-6 backdrop-blur-xl">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <p className="text-[11px] font-bold tracking-wide text-purple-300/90">
+                  <p className="text-[12px] font-bold tracking-wide text-purple-300/90">
                     Stage 1 · Case Study Analysis
                   </p>
                   <h1 className="mt-1.5 text-2xl font-bold tracking-tight text-white">
@@ -386,7 +386,7 @@ export default function Stage1Page() {
                   {safeStr(scenario.industry)}
                 </span>
               </div>
-              <p className="mt-3 text-[10px] text-purple-300/50 flex items-center gap-1.5">
+              <p className="mt-3 text-[12px] text-purple-300/50 flex items-center gap-1.5">
                 <svg className="h-3 w-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
                 </svg>
@@ -396,7 +396,7 @@ export default function Stage1Page() {
 
             {/* Overview */}
             <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-6 backdrop-blur-xl">
-              <h2 className="mb-2 text-[11px] font-bold tracking-wide text-gray-400">
+              <h2 className="mb-2 text-[12px] font-bold tracking-wide text-gray-400">
                 Background
               </h2>
               <p className="text-sm leading-7 text-gray-300">{safeStr(scenario.overview)}</p>
@@ -404,7 +404,7 @@ export default function Stage1Page() {
 
             {/* Challenge */}
             <div className="rounded-[1.75rem] border border-amber-500/[0.18] bg-amber-500/[0.04] p-6 backdrop-blur-xl">
-              <h2 className="mb-2 text-[11px] font-bold tracking-wide text-amber-400/90">
+              <h2 className="mb-2 text-[12px] font-bold tracking-wide text-amber-400/90">
                 Business Challenge
               </h2>
               <p className="text-sm leading-7 text-amber-100/80">{safeStr(scenario.challenge)}</p>
@@ -416,7 +416,7 @@ export default function Stage1Page() {
                 key={i}
                 className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-6 backdrop-blur-xl"
               >
-                <h2 className="mb-3 text-[11px] font-bold tracking-wide text-cyan-400/90">
+                <h2 className="mb-3 text-[12px] font-bold tracking-wide text-cyan-400/90">
                   {safeStr((exhibit as Record<string, unknown>).title)}
                 </h2>
                 <ExhibitContent content={(exhibit as Record<string, unknown>).content} />
@@ -429,7 +429,7 @@ export default function Stage1Page() {
             </div>
 
             <div className="rounded-[1.75rem] border-2 border-cyan-400/40 bg-cyan-400/[0.06] p-6 backdrop-blur-xl">
-              <p className="mb-2 text-[10px] font-bold tracking-wide text-cyan-400">
+              <p className="mb-2 text-[12px] font-bold tracking-wide text-cyan-400">
                 Your question
               </p>
               <p className="text-base font-bold leading-7 text-white">{safeStr(scenario.question)}</p>
@@ -437,13 +437,13 @@ export default function Stage1Page() {
 
             {/* Guidance — guard against non-array and non-string tips */}
             <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-6 backdrop-blur-xl">
-              <h2 className="mb-3 text-[11px] font-bold tracking-wide text-gray-400">
+              <h2 className="mb-3 text-[12px] font-bold tracking-wide text-gray-400">
                 Guidance
               </h2>
               <ul className="space-y-2">
                 {Array.isArray(scenario.guidance) && scenario.guidance.map((tip, i) => (
                   <li key={i} className="flex items-start gap-2.5 text-sm text-gray-300">
-                    <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-cyan-400/20 text-[10px] font-bold text-cyan-400">
+                    <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-cyan-400/20 text-[12px] font-bold text-cyan-400">
                       {i + 1}
                     </span>
                     {safeStr(tip)}
@@ -460,10 +460,10 @@ export default function Stage1Page() {
                 {/* Timer */}
                 <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-5 backdrop-blur-xl">
                   <div className="flex items-center justify-between mb-3">
-                    <p className="text-[11px] font-bold tracking-wide text-gray-400">
+                    <p className="text-[12px] font-bold tracking-wide text-gray-400">
                       Time remaining
                     </p>
-                    <p className="text-[11px] text-gray-400">
+                    <p className="text-[12px] text-gray-400">
                       {wordCount} words
                     </p>
                   </div>
@@ -549,7 +549,7 @@ export default function Stage1Page() {
               <div className="space-y-4">
                 {/* Overall score */}
                 <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-6 backdrop-blur-xl text-center">
-                  <p className="text-[11px] font-bold tracking-wide text-gray-400 mb-3">
+                  <p className="text-[12px] font-bold tracking-wide text-gray-400 mb-3">
                     Case Study Score
                   </p>
                   <div
@@ -569,7 +569,7 @@ export default function Stage1Page() {
 
                 {/* Score bars */}
                 <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-5 backdrop-blur-xl space-y-3">
-                  <p className="text-[11px] font-bold tracking-wide text-gray-400 mb-2">
+                  <p className="text-[12px] font-bold tracking-wide text-gray-400 mb-2">
                     Dimension scores
                   </p>
                   <ScoreBar label="Structure" score={feedback.scores.structure} />
@@ -581,7 +581,7 @@ export default function Stage1Page() {
 
                 {/* Strengths */}
                 <div className="rounded-[1.75rem] border border-emerald-500/[0.18] bg-emerald-500/[0.04] p-5 backdrop-blur-xl">
-                  <p className="mb-3 text-[11px] font-bold tracking-wide text-emerald-400">
+                  <p className="mb-3 text-[12px] font-bold tracking-wide text-emerald-400">
                     Strengths
                   </p>
                   <ul className="space-y-2">
@@ -596,7 +596,7 @@ export default function Stage1Page() {
 
                 {/* Improvements */}
                 <div className="rounded-[1.75rem] border border-amber-500/[0.18] bg-amber-500/[0.04] p-5 backdrop-blur-xl">
-                  <p className="mb-3 text-[11px] font-bold tracking-wide text-amber-400">
+                  <p className="mb-3 text-[12px] font-bold tracking-wide text-amber-400">
                     Areas to improve
                   </p>
                   <ul className="space-y-2">
@@ -612,7 +612,7 @@ export default function Stage1Page() {
                 {/* Model answer */}
                 {feedback.modelAnswer && (
                   <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-5 backdrop-blur-xl">
-                    <p className="mb-2 text-[11px] font-bold tracking-wide text-cyan-400">
+                    <p className="mb-2 text-[12px] font-bold tracking-wide text-cyan-400">
                       What an excellent answer would include
                     </p>
                     <p className="text-sm leading-7 text-gray-400">{feedback.modelAnswer}</p>
@@ -622,7 +622,7 @@ export default function Stage1Page() {
                 {/* Example model answer */}
                 {feedback.exampleAnswer && (
                   <div className="rounded-[1.75rem] border border-purple-400/20 bg-purple-400/[0.06] p-5 backdrop-blur-xl">
-                    <p className="mb-2 text-[11px] font-bold tracking-wide text-purple-300">
+                    <p className="mb-2 text-[12px] font-bold tracking-wide text-purple-300">
                       Model Answer Example
                     </p>
                     <p className="text-sm leading-7 text-gray-300 whitespace-pre-line">{feedback.exampleAnswer}</p>

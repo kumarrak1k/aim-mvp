@@ -146,7 +146,7 @@ export default function CoverLetterPage() {
               </svg>
             </div>
             <div>
-              <p className="text-[11px] font-bold tracking-wide text-cyan-300">AI Generator</p>
+              <p className="text-[12px] font-bold tracking-wide text-cyan-300">AI Generator</p>
               <h1 className="text-2xl font-bold tracking-tight text-white">Cover Letter Generator</h1>
             </div>
           </div>
@@ -177,7 +177,7 @@ export default function CoverLetterPage() {
                   placeholder="Paste the job posting here. The more detail, the better for tailoring…"
                   rows={6}
                   className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-400 outline-none focus:border-cyan-400/40 focus:ring-1 focus:ring-cyan-400/20 resize-y" required />
-                <p className={`mt-1 text-right text-[10px] ${jobDescription.length > 10000 ? "text-red-400" : "text-gray-400"}`}>
+                <p className={`mt-1 text-right text-[12px] ${jobDescription.length > 10000 ? "text-red-400" : "text-gray-400"}`}>
                   {jobDescription.length.toLocaleString()} / 10,000 characters
                 </p>
               </div>
@@ -192,7 +192,7 @@ export default function CoverLetterPage() {
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5 shrink-0 text-cyan-400">
                       <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" />
                     </svg>
-                    <span className="flex-1 truncate text-[11px] font-semibold text-cyan-300">
+                    <span className="flex-1 truncate text-[12px] font-semibold text-cyan-300">
                       {savedCV.hasSavedCV
                         ? savedCV.cvFileName
                           ? `CV: ${savedCV.cvFileName}`
@@ -204,7 +204,7 @@ export default function CoverLetterPage() {
                         type="button"
                         onClick={() => fileInputRef.current?.click()}
                         disabled={savedCV.uploading}
-                        className="rounded-lg border border-cyan-400/30 bg-cyan-400/10 px-2.5 py-1 text-[10px] font-bold text-cyan-300 transition hover:bg-cyan-400/20 disabled:opacity-50"
+                        className="rounded-lg border border-cyan-400/30 bg-cyan-400/10 px-2.5 py-1 text-[12px] font-bold text-cyan-300 transition hover:bg-cyan-400/20 disabled:opacity-50"
                       >
                         {savedCV.uploading ? "Uploading…" : savedCV.hasSavedCV ? "Replace" : "Upload CV"}
                       </button>
@@ -213,7 +213,7 @@ export default function CoverLetterPage() {
                           type="button"
                           onClick={() => void savedCV.removeCV()}
                           disabled={savedCV.removing}
-                          className="rounded-lg border border-red-400/30 bg-red-400/[0.08] px-2.5 py-1 text-[10px] font-bold text-red-400 transition hover:bg-red-400/20 disabled:opacity-50"
+                          className="rounded-lg border border-red-400/30 bg-red-400/[0.08] px-2.5 py-1 text-[12px] font-bold text-red-400 transition hover:bg-red-400/20 disabled:opacity-50"
                         >
                           {savedCV.removing ? "Removing…" : "Remove"}
                         </button>
@@ -238,7 +238,7 @@ export default function CoverLetterPage() {
                   placeholder="Summarise your relevant experience: roles, key achievements, skills. Include numbers and specifics where possible…"
                   rows={5}
                   className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-400 outline-none focus:border-cyan-400/40 focus:ring-1 focus:ring-cyan-400/20 resize-y" required />
-                <p className={`mt-1 text-right text-[10px] ${experience.length > 15000 ? "text-red-400" : "text-gray-400"}`}>
+                <p className={`mt-1 text-right text-[12px] ${experience.length > 15000 ? "text-red-400" : "text-gray-400"}`}>
                   {experience.length.toLocaleString()} / 15,000 characters
                 </p>
               </div>
@@ -255,7 +255,7 @@ export default function CoverLetterPage() {
                           : "border-white/[0.08] bg-white/[0.02] text-gray-400 hover:border-white/20 hover:text-gray-300"
                       }`}>
                       <p className="text-xs font-bold">{opt.label}</p>
-                      <p className="text-[10px] mt-0.5 leading-4">{opt.desc}</p>
+                      <p className="text-[12px] mt-0.5 leading-4">{opt.desc}</p>
                     </button>
                   ))}
                 </div>
@@ -270,7 +270,7 @@ export default function CoverLetterPage() {
                 <input type="range" min={200} max={600} step={50} value={wordLimit}
                   onChange={(e) => setWordLimit(Number(e.target.value))}
                   className="w-full accent-cyan-400" />
-                <div className="mt-1 flex justify-between text-[10px] text-gray-400">
+                <div className="mt-1 flex justify-between text-[12px] text-gray-400">
                   <span>200 (short)</span><span>600 (detailed)</span>
                 </div>
               </div>
@@ -289,7 +289,7 @@ export default function CoverLetterPage() {
               ) : "Generate cover letter →"}
             </button>
             {!loading && !canSubmit && (
-              <p className="text-center text-[11px] leading-5 text-gray-400">
+              <p className="text-center text-[12px] leading-5 text-gray-400">
                 To enable the button:{" "}
                 {[
                   !companyName.trim() && "add the company name",
@@ -344,7 +344,7 @@ export default function CoverLetterPage() {
 
                 {/* Letter */}
                 <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-6 backdrop-blur-xl">
-                  <p className="mb-3 text-[11px] font-bold tracking-wide text-cyan-300">Your cover letter</p>
+                  <p className="mb-3 text-[12px] font-bold tracking-wide text-cyan-300">Your cover letter</p>
                   <div className="whitespace-pre-line text-sm leading-8 text-gray-200">
                     {result.letter}
                   </div>
@@ -352,7 +352,7 @@ export default function CoverLetterPage() {
 
                 {/* Key themes */}
                 <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-5 backdrop-blur-xl">
-                  <p className="mb-3 text-[11px] font-bold tracking-wide text-gray-400">Key themes in this letter</p>
+                  <p className="mb-3 text-[12px] font-bold tracking-wide text-gray-400">Key themes in this letter</p>
                   <div className="flex flex-wrap gap-2">
                     {result.keyThemes.map((t, i) => (
                       <span key={i} className="rounded-full border border-purple-400/20 bg-purple-400/10 px-3 py-1 text-xs font-bold text-purple-300">{t}</span>
@@ -362,7 +362,7 @@ export default function CoverLetterPage() {
 
                 {/* Customisation tips */}
                 <div className="rounded-[1.75rem] border border-amber-400/[0.18] bg-amber-400/[0.05] p-5 backdrop-blur-xl">
-                  <p className="mb-3 text-[11px] font-bold tracking-wide text-amber-300">Before you send, personalise it</p>
+                  <p className="mb-3 text-[12px] font-bold tracking-wide text-amber-300">Before you send, personalise it</p>
                   <ul className="space-y-2">
                     {result.customisationTips.map((tip, i) => (
                       <li key={i} className="flex items-start gap-2 text-sm text-gray-300">

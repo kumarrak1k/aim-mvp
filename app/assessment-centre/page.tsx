@@ -60,7 +60,7 @@ function StageCard({ stage }: { stage: typeof stages[number] }) {
 
   return (
     <div className={`rounded-[1.85rem] border p-6 ${colors.border} ${colors.bg}`}>
-      <p className={`text-[11px] font-bold tracking-wide ${colors.text}`}>
+      <p className={`text-[12px] font-bold tracking-wide ${colors.text}`}>
         {stage.label} · {stage.duration}
       </p>
       <h3 className="mt-2 text-lg font-bold tracking-tight text-white">
@@ -103,7 +103,7 @@ function UpgradeGate({ planName }: { planName: string }) {
 
       {/* Stages preview */}
       <section className="mb-8">
-        <p className="mb-5 text-center text-[11px] font-bold tracking-wide text-cyan-300/90">
+        <p className="mb-5 text-center text-[12px] font-bold tracking-wide text-cyan-300/90">
           What&apos;s included
         </p>
         <div className="grid gap-4 sm:grid-cols-3">
@@ -195,7 +195,7 @@ function AssessmentCentreAccess({ isTaster = false }: { isTaster?: boolean }) {
         <div className="pointer-events-none absolute -bottom-28 left-10 h-80 w-80 rounded-full bg-purple-500/15 blur-3xl" />
         <div className="relative">
           <div
-            className={`mb-4 inline-flex items-center gap-2 rounded-full border px-4 py-2 text-[11px] font-bold tracking-wide ${
+            className={`mb-4 inline-flex items-center gap-2 rounded-full border px-4 py-2 text-[12px] font-bold tracking-wide ${
               isTaster
                 ? "border-cyan-300/25 bg-cyan-300/10 text-cyan-100"
                 : "border-emerald-300/20 bg-emerald-300/10 text-emerald-100"
@@ -226,7 +226,7 @@ function AssessmentCentreAccess({ isTaster = false }: { isTaster?: boolean }) {
 
       {/* Stages */}
       <section className="mb-8">
-        <p className="mb-5 text-center text-[11px] font-bold tracking-wide text-cyan-300/90">
+        <p className="mb-5 text-center text-[12px] font-bold tracking-wide text-cyan-300/90">
           Your session
         </p>
         <div className="grid gap-4 sm:grid-cols-3">

@@ -132,7 +132,7 @@ export default function NotificationSettingsPage() {
                 These are always sent and can&rsquo;t be turned off.
               </p>
             </div>
-            <span className="mt-1 rounded-full border border-white/10 bg-white/[0.05] px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-gray-400">
+            <span className="mt-1 rounded-full border border-white/10 bg-white/[0.05] px-3 py-1 text-[12px] font-bold uppercase tracking-wider text-gray-400">
               Always on
             </span>
           </div>
@@ -145,7 +145,7 @@ export default function NotificationSettingsPage() {
 
         {/* Danger zone — account deletion (GDPR right to erasure) */}
         <div className="mt-8 rounded-[1.5rem] border border-red-500/25 bg-red-500/[0.04] p-6">
-          <p className="text-[11px] font-bold tracking-wide text-red-300">
+          <p className="text-[12px] font-bold tracking-wide text-red-300">
             Danger zone
           </p>
           <h2 className="mt-2 text-lg font-bold">Delete your account</h2>

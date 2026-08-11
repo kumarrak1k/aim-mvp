@@ -307,7 +307,7 @@ export function MentorChat() {
                 </svg>
               </button>
             </form>
-            <p className="text-center text-[11px] text-gray-400 pb-2.5 px-3">
+            <p className="text-center text-[12px] text-gray-400 pb-2.5 px-3">
               Need more help?{" "}
               <Link href="/contact" className="text-gray-400 hover:text-white underline transition-colors">
                 Contact us

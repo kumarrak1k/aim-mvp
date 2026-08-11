@@ -100,7 +100,7 @@ export default function CareerDocsPage() {
                 </div>
 
                 {/* Label */}
-                <p className={`mb-1 text-[10px] font-bold tracking-wide ${tool.accentText}`}>
+                <p className={`mb-1 text-[12px] font-bold tracking-wide ${tool.accentText}`}>
                   {tool.eyebrow}
                 </p>
                 <h2 className="text-xl font-bold tracking-tight text-white">

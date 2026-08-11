@@ -150,7 +150,7 @@ export function PracticeAnswerPanel({
           <p className="text-xs font-bold tracking-wide text-cyan-300">
             Question reminder
           </p>
-          <span className="rounded-full border border-white/10 bg-black/25 px-3 py-1 text-[11px] font-bold text-gray-300">
+          <span className="rounded-full border border-white/10 bg-black/25 px-3 py-1 text-[12px] font-bold text-gray-300">
             Keep answer relevant
           </span>
         </div>
@@ -164,7 +164,7 @@ export function PracticeAnswerPanel({
           <p className="text-xs font-bold tracking-wide text-gray-400">
             Transcript
           </p>
-          <div className="flex items-center gap-2 text-[11px] font-bold text-gray-400">
+          <div className="flex items-center gap-2 text-[12px] font-bold text-gray-400">
             <span>{wordCount} words</span>
             {isListening && (
               <span className="rounded-full border border-red-300/20 bg-red-300/10 px-2 py-1 text-red-100">
@@ -257,7 +257,7 @@ export function PracticeAnswerPanel({
 function StatusCard({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-2xl border border-white/10 bg-black/25 p-3">
-      <p className="text-[11px] font-bold tracking-wide text-gray-400">
+      <p className="text-[12px] font-bold tracking-wide text-gray-400">
         {label}
       </p>
       <p className="mt-1 text-sm font-bold text-gray-200">{value}</p>
