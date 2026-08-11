@@ -107,8 +107,8 @@ export default function ContactPage() {
                 >
                   Email us →
                 </a>
-                <p className="mt-3 text-xs text-gray-600">{c.email}</p>
-                <p className="mt-1 text-xs text-gray-600">{c.response}</p>
+                <p className="mt-3 text-xs text-gray-400">{c.email}</p>
+                <p className="mt-1 text-xs text-gray-400">{c.response}</p>
               </div>
             ))}
           </div>

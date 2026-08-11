@@ -276,9 +276,9 @@ export default function AssessmentLandingPage() {
           />
         )}
 
-        <p className="mt-10 text-center text-xs text-gray-600">
+        <p className="mt-10 text-center text-xs text-gray-400">
           Powered by{" "}
-          <Link href="/" className="text-gray-500 hover:text-gray-400">
+          <Link href="/" className="text-gray-400 hover:text-gray-400">
             AI Career Mentor
           </Link>
         </p>
@@ -352,7 +352,7 @@ function WelcomeStep({
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
           {infoItems.map(({ label, value }) => (
             <div key={label}>
-              <p className="text-xs font-bold uppercase tracking-wider text-gray-500">
+              <p className="text-xs font-bold uppercase tracking-wider text-gray-400">
                 {label}
               </p>
               <p className="mt-1 text-sm font-semibold text-white">{value}</p>
@@ -377,7 +377,7 @@ function WelcomeStep({
                   <div className="flex-1">
                     <p className="text-sm font-bold text-white">{info.title}</p>
                   </div>
-                  <span className="shrink-0 text-xs text-gray-500">{info.time}</span>
+                  <span className="shrink-0 text-xs text-gray-400">{info.time}</span>
                 </div>
               );
             })}
@@ -457,11 +457,11 @@ function WelcomeStep({
             )}
           </button>
           {isAC && (
-            <p className="mt-3 text-xs text-gray-500">
+            <p className="mt-3 text-xs text-gray-400">
               This may take up to 30 seconds while we generate your case study.
             </p>
           )}
-          <p className="mt-3 text-xs text-gray-500">
+          <p className="mt-3 text-xs text-gray-400">
             Invite was sent to {assignment.candidateEmailMasked}. Make sure you are
             signed in to the correct account.
           </p>
@@ -479,7 +479,7 @@ function WelcomeStep({
               Sign in to begin →
             </button>
           </SignInButton>
-          <p className="mt-3 text-xs text-gray-500">
+          <p className="mt-3 text-xs text-gray-400">
             Create a free account or sign in to start. Your results are saved
             securely.
           </p>
@@ -585,7 +585,7 @@ function SetupStep({
                     <p className="mt-1 text-sm leading-5 text-gray-400">
                       {option.subtitle}
                     </p>
-                    <p className="mt-1 text-xs text-gray-500">
+                    <p className="mt-1 text-xs text-gray-400">
                       {option.requirements}
                     </p>
                   </div>
@@ -601,7 +601,7 @@ function SetupStep({
             <p className="text-[11px] font-bold tracking-wide text-cyan-300">
               Interviewer voice preference
             </p>
-            <p className="mt-1 text-xs leading-5 text-gray-500">
+            <p className="mt-1 text-xs leading-5 text-gray-400">
               These only affect how questions sound. Pick whatever feels most
               comfortable.
             </p>
@@ -643,27 +643,27 @@ function SetupStep({
 
         {/* Reminder of locked template fields */}
         <div className="mt-6 rounded-2xl border border-white/[0.07] bg-white/[0.025] p-4">
-          <p className="text-[11px] font-bold tracking-wide text-gray-500">
+          <p className="text-[11px] font-bold tracking-wide text-gray-400">
             Set by {company.name}
           </p>
           <div className="mt-2 grid grid-cols-2 gap-x-4 gap-y-2 text-xs text-gray-400 sm:grid-cols-3">
             <div>
-              <span className="text-gray-600">Role:</span> {template.role}
+              <span className="text-gray-400">Role:</span> {template.role}
             </div>
             <div>
-              <span className="text-gray-600">Level:</span> {template.experienceLevel}
+              <span className="text-gray-400">Level:</span> {template.experienceLevel}
             </div>
             <div>
-              <span className="text-gray-600">Type:</span> {template.interviewType}
+              <span className="text-gray-400">Type:</span> {template.interviewType}
             </div>
             <div>
-              <span className="text-gray-600">Difficulty:</span> {template.difficulty}
+              <span className="text-gray-400">Difficulty:</span> {template.difficulty}
             </div>
             <div>
-              <span className="text-gray-600">Focus:</span> {template.focusArea}
+              <span className="text-gray-400">Focus:</span> {template.focusArea}
             </div>
             <div>
-              <span className="text-gray-600">Questions:</span>{" "}
+              <span className="text-gray-400">Questions:</span>{" "}
               {template.questionCount}
             </div>
           </div>
@@ -690,7 +690,7 @@ function SetupStep({
         </button>
       </div>
 
-      <p className="mt-4 text-center text-xs text-gray-500">
+      <p className="mt-4 text-center text-xs text-gray-400">
         You&rsquo;ll be taken straight into the interview. Once finished, your
         results are sent to {company.name} automatically.
       </p>

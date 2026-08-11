@@ -121,7 +121,7 @@ export function QuestionHero(props: QuestionHeroProps) {
               )}
             </div>
 
-            <div className="mt-3 hidden flex-wrap gap-2 text-[11px] font-bold text-gray-500 sm:flex">
+            <div className="mt-3 hidden flex-wrap gap-2 text-[11px] font-bold text-gray-400 sm:flex">
               <span>{interviewType}</span>
               <span>·</span>
               <span>{difficulty}</span>
@@ -231,7 +231,7 @@ export function QuestionHero(props: QuestionHeroProps) {
         )}
 
         {role && (
-          <p className="mt-3 line-clamp-1 text-[11px] font-semibold text-gray-500 sm:hidden">
+          <p className="mt-3 line-clamp-1 text-[11px] font-semibold text-gray-400 sm:hidden">
             {role}
           </p>
         )}

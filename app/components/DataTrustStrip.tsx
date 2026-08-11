@@ -124,7 +124,7 @@ export function DataTrustStrip({
   /* ── Compact (near CTA) ───────────────────────────────────────────────── */
   if (v === "compact") {
     return (
-      <p className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[11px] text-gray-500">
+      <p className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[11px] text-gray-400">
         {items.map(({ Icon, text }) => (
           <span key={text} className="flex items-center gap-1">
             <Icon className="h-3 w-3 text-purple-400" />
@@ -134,7 +134,7 @@ export function DataTrustStrip({
         <span className="text-gray-700">·</span>
         <Link
           href="/privacy"
-          className="text-gray-500 underline-offset-2 hover:text-gray-300 hover:underline"
+          className="text-gray-400 underline-offset-2 hover:text-gray-300 hover:underline"
         >
           How we protect your data →
         </Link>
@@ -156,7 +156,7 @@ export function DataTrustStrip({
       ))}
       <Link
         href="/privacy"
-        className="text-[11px] text-gray-500 underline-offset-2 hover:text-gray-300 hover:underline"
+        className="text-[11px] text-gray-400 underline-offset-2 hover:text-gray-300 hover:underline"
       >
         How we protect your data →
       </Link>

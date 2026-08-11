@@ -62,7 +62,7 @@ export function PracticeSummaryPanel({
               <p className="text-sm font-semibold text-gray-400">Final score</p>
               <p className="mt-2 text-5xl font-bold tracking-tight text-white md:text-7xl">
                 {summary.overall_score}
-                <span className="text-2xl text-gray-500">/10</span>
+                <span className="text-2xl text-gray-400">/10</span>
               </p>
               <p className="mt-3 text-sm font-bold text-gray-400">
                 {scoreSummary(summary.overall_score)}
@@ -104,7 +104,7 @@ export function PracticeSummaryPanel({
                   <h3 className="text-lg font-bold text-cyan-300">
                     Category breakdown
                   </h3>
-                  <p className="mt-1 text-sm leading-6 text-gray-500">
+                  <p className="mt-1 text-sm leading-6 text-gray-400">
                     The strongest candidates improve both answer content and
                     delivery presence.
                   </p>

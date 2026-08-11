@@ -124,7 +124,7 @@ export default function ApiKeysPage() {
             </div>
             <button
               onClick={() => setCreatedKey(null)}
-              className="mt-3 text-xs text-gray-500 hover:text-gray-300"
+              className="mt-3 text-xs text-gray-400 hover:text-gray-300"
             >
               I&apos;ve saved it, dismiss
             </button>
@@ -143,7 +143,7 @@ export default function ApiKeysPage() {
               onChange={(e) => setNewKeyName(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && createKey()}
               placeholder="e.g. Greenhouse integration"
-              className="flex-1 rounded-xl border border-white/[0.1] bg-black/30 px-4 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+              className="flex-1 rounded-xl border border-white/[0.1] bg-black/30 px-4 py-2.5 text-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
             />
             <button
               onClick={createKey}
@@ -153,7 +153,7 @@ export default function ApiKeysPage() {
               {creating ? "Creating..." : "Create"}
             </button>
           </div>
-          <p className="mt-2 text-xs text-gray-600">Only admins can create and revoke keys.</p>
+          <p className="mt-2 text-xs text-gray-400">Only admins can create and revoke keys.</p>
         </div>
 
         {/* Key list */}
@@ -162,9 +162,9 @@ export default function ApiKeysPage() {
             Active keys
           </h2>
           {loading ? (
-            <p className="text-sm text-gray-500">Loading...</p>
+            <p className="text-sm text-gray-400">Loading...</p>
           ) : keys.length === 0 ? (
-            <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] px-6 py-10 text-center text-sm text-gray-500">
+            <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] px-6 py-10 text-center text-sm text-gray-400">
               No active API keys. Create one above to start integrating.
             </div>
           ) : (
@@ -173,10 +173,10 @@ export default function ApiKeysPage() {
                 <div key={key.id} className="flex items-center justify-between px-5 py-4">
                   <div>
                     <p className="text-sm font-bold">{key.name}</p>
-                    <p className="mt-0.5 font-mono text-xs text-gray-500">
+                    <p className="mt-0.5 font-mono text-xs text-gray-400">
                       {key.keyPrefix}••••••••••••••••••••••••••••••
                     </p>
-                    <p className="mt-1 text-xs text-gray-600">
+                    <p className="mt-1 text-xs text-gray-400">
                       Created {new Date(key.createdAt).toLocaleDateString("en-GB")}
                       {key.lastUsedAt
                         ? ` · Last used ${new Date(key.lastUsedAt).toLocaleDateString("en-GB")}`

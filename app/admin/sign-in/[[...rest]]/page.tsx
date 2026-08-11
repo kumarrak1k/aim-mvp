@@ -80,12 +80,12 @@ export default function AdminSignInPage() {
               formButtonPrimary:
                 "bg-gradient-to-r from-violet-600 to-purple-600 hover:scale-[1.01] shadow-lg text-white font-bold normal-case",
               formFieldInput:
-                "bg-black/30 border-white/[0.1] text-white placeholder-gray-500",
+                "bg-black/30 border-white/[0.1] text-white placeholder-gray-400",
               formFieldLabel: "text-gray-300",
               footerActionText: "text-gray-400",
               footerActionLink: "text-purple-300 hover:text-purple-200",
               dividerLine: "bg-white/[0.1]",
-              dividerText: "text-gray-500",
+              dividerText: "text-gray-400",
             },
             variables: {
               colorPrimary: "#a855f7",

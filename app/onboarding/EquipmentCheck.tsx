@@ -45,7 +45,7 @@ function StatusChip({ state }: { state: CheckState }) {
       </span>
     );
   return (
-    <span className="rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[11px] font-bold text-gray-500">
+    <span className="rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[11px] font-bold text-gray-400">
       Not tested
     </span>
   );
@@ -319,7 +319,7 @@ export function EquipmentCheck({
         </button>
         <button
           onClick={() => leave(onBack)}
-          className="text-xs font-bold text-gray-600 transition hover:text-gray-400"
+          className="text-xs font-bold text-gray-400 transition hover:text-gray-400"
         >
           ← Back
         </button>

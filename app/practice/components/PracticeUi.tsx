@@ -149,12 +149,12 @@ export function CheckItem({ children }: { children: ReactNode }) {
 export function ScoreCard({ label, value }: { label: string; value: number }) {
   return (
     <div className="rounded-2xl border border-white/10 bg-black/35 p-4 text-center shadow-xl shadow-black/10">
-      <p className="text-xs font-bold tracking-wide text-gray-500">
+      <p className="text-xs font-bold tracking-wide text-gray-400">
         {label}
       </p>
       <p className="mt-2 text-2xl font-bold text-white">
         {value}
-        <span className="text-sm text-gray-500">/10</span>
+        <span className="text-sm text-gray-400">/10</span>
       </p>
     </div>
   );
@@ -163,7 +163,7 @@ export function ScoreCard({ label, value }: { label: string; value: number }) {
 export function MetricCard({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-2xl border border-white/10 bg-black/35 p-4 text-center shadow-xl shadow-black/10">
-      <p className="text-xs font-bold tracking-wide text-gray-500">
+      <p className="text-xs font-bold tracking-wide text-gray-400">
         {label}
       </p>
       <p className="mt-2 text-xl font-bold text-white">{value}</p>

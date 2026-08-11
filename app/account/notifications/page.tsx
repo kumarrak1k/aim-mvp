@@ -163,7 +163,7 @@ export default function NotificationSettingsPage() {
             value={deleteConfirm}
             onChange={(e) => setDeleteConfirm(e.target.value)}
             placeholder="DELETE"
-            className="mt-2 w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm font-semibold text-white placeholder:text-gray-600 focus:border-red-400/40 focus:outline-none"
+            className="mt-2 w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm font-semibold text-white placeholder:text-gray-400 focus:border-red-400/40 focus:outline-none"
           />
           <button
             onClick={deleteAccount}

@@ -59,7 +59,7 @@ export default function CompanySetupPage() {
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Acme Corp"
                 maxLength={100}
-                className="w-full rounded-xl border border-white/15 bg-white/[0.06] px-4 py-3 text-white placeholder-gray-500 outline-none focus:border-fuchsia-400/60 focus:ring-2 focus:ring-fuchsia-400/20"
+                className="w-full rounded-xl border border-white/15 bg-white/[0.06] px-4 py-3 text-white placeholder-gray-400 outline-none focus:border-fuchsia-400/60 focus:ring-2 focus:ring-fuchsia-400/20"
               />
             </div>
 
@@ -93,7 +93,7 @@ export default function CompanySetupPage() {
           </form>
         </div>
 
-        <p className="mt-6 text-center text-xs text-gray-500">
+        <p className="mt-6 text-center text-xs text-gray-400">
           You&apos;ll be the admin. You can invite recruiters and team members from the dashboard.
         </p>
       </section>

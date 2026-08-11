@@ -169,7 +169,7 @@ export function ProfileDetailsForm({
                   value={cvText}
                   onChange={(event) => setCvText(event.target.value)}
                   placeholder="Paste your CV text, work experience, education and key achievements..."
-                  className="min-h-[180px] w-full rounded-2xl border border-white/10 bg-black/30 p-4 text-white placeholder-gray-500 outline-none transition focus:border-purple-300/50 focus:ring-4 focus:ring-purple-500/10"
+                  className="min-h-[180px] w-full rounded-2xl border border-white/10 bg-black/30 p-4 text-white placeholder-gray-400 outline-none transition focus:border-purple-300/50 focus:ring-4 focus:ring-purple-500/10"
                 />
               </ProfileField>
 
@@ -220,7 +220,7 @@ export function ProfileDetailsForm({
                   value={roleSpec}
                   onChange={(event) => setRoleSpec(event.target.value)}
                   placeholder="Paste the job description, responsibilities, requirements or employer expectations..."
-                  className="min-h-[180px] w-full rounded-2xl border border-white/10 bg-black/30 p-4 text-white placeholder-gray-500 outline-none transition focus:border-purple-300/50 focus:ring-4 focus:ring-purple-500/10"
+                  className="min-h-[180px] w-full rounded-2xl border border-white/10 bg-black/30 p-4 text-white placeholder-gray-400 outline-none transition focus:border-purple-300/50 focus:ring-4 focus:ring-purple-500/10"
                 />
               </ProfileField>
 
@@ -232,7 +232,7 @@ export function ProfileDetailsForm({
                   value={interviewGoals}
                   onChange={(event) => setInterviewGoals(event.target.value)}
                   placeholder="Example: I want stronger behavioural answers, better confidence, and clearer leadership examples."
-                  className="min-h-[140px] w-full rounded-2xl border border-white/10 bg-black/30 p-4 text-white placeholder-gray-500 outline-none transition focus:border-purple-300/50 focus:ring-4 focus:ring-purple-500/10"
+                  className="min-h-[140px] w-full rounded-2xl border border-white/10 bg-black/30 p-4 text-white placeholder-gray-400 outline-none transition focus:border-purple-300/50 focus:ring-4 focus:ring-purple-500/10"
                 />
               </ProfileField>
 

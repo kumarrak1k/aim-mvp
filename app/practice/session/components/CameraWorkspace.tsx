@@ -43,7 +43,7 @@ export function CameraWorkspace({
           <p className="text-[11px] font-bold tracking-wide text-cyan-300">
             Camera
           </p>
-          <p className="mt-0.5 text-[10px] text-gray-500">Live preview</p>
+          <p className="mt-0.5 text-[10px] text-gray-400">Live preview</p>
         </div>
 
         <span className="rounded-full border border-white/10 bg-white/[0.06] px-2 py-1 text-[10px] font-bold text-gray-300">
@@ -112,7 +112,7 @@ export function CameraWorkspace({
               <p className="text-[11px] font-bold text-white">
                 Camera presence
               </p>
-              <p className="mt-1 text-[11px] leading-4 text-gray-500">
+              <p className="mt-1 text-[11px] leading-4 text-gray-400">
                 Hold the phone at eye level and keep your face centred in the
                 portrait preview.
               </p>

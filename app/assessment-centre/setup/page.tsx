@@ -159,7 +159,7 @@ export default function AssessmentCentreSetupPage() {
               value={role}
               onChange={(e) => setRole(e.target.value)}
               placeholder="e.g. Strategy Consultant at Deloitte"
-              className="w-full rounded-xl border border-white/[0.1] bg-white/[0.05] px-4 py-3.5 text-base text-white placeholder-gray-600 outline-none ring-0 transition focus:border-cyan-400/60 focus:bg-white/[0.07] focus:ring-2 focus:ring-cyan-400/20"
+              className="w-full rounded-xl border border-white/[0.1] bg-white/[0.05] px-4 py-3.5 text-base text-white placeholder-gray-400 outline-none ring-0 transition focus:border-cyan-400/60 focus:bg-white/[0.07] focus:ring-2 focus:ring-cyan-400/20"
               onKeyDown={(e) => e.key === "Enter" && canSubmit && handleSubmit()}
             />
           </div>
@@ -221,7 +221,7 @@ export default function AssessmentCentreSetupPage() {
               <p className="text-[11px] font-bold tracking-wide text-purple-300/90">
                 Stages to include
               </p>
-              <span className="text-[11px] text-gray-500">
+              <span className="text-[11px] text-gray-400">
                 Click to deselect · at least 1 required
               </span>
             </div>
@@ -249,7 +249,7 @@ export default function AssessmentCentreSetupPage() {
                     : stage.color === "fuchsia"
                       ? "text-fuchsia-300"
                       : "text-cyan-300"
-                  : "text-gray-600";
+                  : "text-gray-400";
 
                 return (
                   <button
@@ -263,18 +263,18 @@ export default function AssessmentCentreSetupPage() {
                     <div className={`absolute right-3 top-3 flex h-5 w-5 items-center justify-center rounded-full border text-[10px] font-bold transition-all ${
                       selected
                         ? "border-emerald-400/50 bg-emerald-400/10 text-emerald-300"
-                        : "border-white/20 bg-white/[0.04] text-gray-600"
+                        : "border-white/20 bg-white/[0.04] text-gray-400"
                     }`}>
                       {selected ? "✓" : "✕"}
                     </div>
                     <div className="mb-2 text-2xl">{stage.icon}</div>
-                    <div className={`text-sm font-bold ${selected ? "text-white" : "text-gray-500"}`}>
+                    <div className={`text-sm font-bold ${selected ? "text-white" : "text-gray-400"}`}>
                       {stage.label}
                     </div>
                     <div className={`mt-0.5 text-[11px] font-semibold ${labelColour}`}>
                       {stage.desc}
                     </div>
-                    <p className={`mt-2 text-[11px] leading-5 ${selected ? "text-gray-400" : "text-gray-600"}`}>
+                    <p className={`mt-2 text-[11px] leading-5 ${selected ? "text-gray-400" : "text-gray-400"}`}>
                       {stage.detail}
                     </p>
                   </button>
@@ -284,7 +284,7 @@ export default function AssessmentCentreSetupPage() {
 
             {/* Time estimate */}
             <div className="mt-4 flex items-center justify-between rounded-xl border border-white/[0.06] bg-white/[0.025] px-4 py-3">
-              <span className="text-xs text-gray-500">
+              <span className="text-xs text-gray-400">
                 {selectedStages.size} stage{selectedStages.size !== 1 ? "s" : ""} selected
               </span>
               <span className="text-xs font-bold text-white">
@@ -307,7 +307,7 @@ export default function AssessmentCentreSetupPage() {
             className={`flex w-full items-center justify-center gap-3 rounded-2xl px-8 py-5 text-base font-bold tracking-tight text-white shadow-2xl transition-all ${
               canSubmit
                 ? "bg-gradient-to-r from-violet-500 to-purple-500 shadow-cyan-900/40 hover:scale-[1.015] hover:shadow-cyan-900/60"
-                : "cursor-not-allowed bg-white/[0.06] text-gray-600"
+                : "cursor-not-allowed bg-white/[0.06] text-gray-400"
             }`}
           >
             {loading ? (
@@ -338,7 +338,7 @@ export default function AssessmentCentreSetupPage() {
             </div>
           )}
           {canSubmit && !loading && (
-            <p className="text-center text-xs text-gray-600">
+            <p className="text-center text-xs text-gray-400">
               Each session uses a fresh AI-generated scenario
             </p>
           )}

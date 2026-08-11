@@ -238,7 +238,7 @@ export default function CompanyResultsPage() {
             placeholder="Search candidate email..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-white placeholder-gray-500 outline-none focus:border-fuchsia-400/40 sm:w-72"
+            className="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-white placeholder-gray-400 outline-none focus:border-fuchsia-400/40 sm:w-72"
           />
         </div>
 
@@ -319,7 +319,7 @@ export default function CompanyResultsPage() {
                           <div className="font-semibold text-white">
                             {r.template.name}
                           </div>
-                          <div className="text-xs text-gray-500">{r.template.role}</div>
+                          <div className="text-xs text-gray-400">{r.template.role}</div>
                         </td>
                         <td className="px-4 py-3">
                           <span
@@ -332,7 +332,7 @@ export default function CompanyResultsPage() {
                           {r.session ? (
                             <ScoreCell score={r.session.overallScore} />
                           ) : (
-                            <span className="text-xs text-gray-600">–</span>
+                            <span className="text-xs text-gray-400">–</span>
                           )}
                         </td>
                         <td className="px-4 py-3">
@@ -346,7 +346,7 @@ export default function CompanyResultsPage() {
                               {r.session.hireSignal}
                             </span>
                           ) : (
-                            <span className="text-xs text-gray-600">–</span>
+                            <span className="text-xs text-gray-400">–</span>
                           )}
                         </td>
                         <td className="px-4 py-3 text-xs text-gray-400">
@@ -368,7 +368,7 @@ export default function CompanyResultsPage() {
                               Review →
                             </Link>
                           ) : (
-                            <span className="text-xs text-gray-600">Awaiting</span>
+                            <span className="text-xs text-gray-400">Awaiting</span>
                           )}
                         </td>
                       </tr>
@@ -452,7 +452,7 @@ function ScoreCell({ score }: { score: number }) {
   return (
     <span className={`text-base font-bold ${color}`}>
       {score}
-      <span className="text-xs text-gray-500">/10</span>
+      <span className="text-xs text-gray-400">/10</span>
     </span>
   );
 }

@@ -51,7 +51,7 @@ export function BlogClient({ posts }: Props) {
       <div className="relative mb-5">
         <div className="pointer-events-none absolute inset-y-0 left-4 flex items-center">
           <svg
-            className="h-4.5 w-4.5 text-gray-500"
+            className="h-4.5 w-4.5 text-gray-400"
             width="18"
             height="18"
             fill="none"
@@ -68,12 +68,12 @@ export function BlogClient({ posts }: Props) {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search guides by topic or keyword, e.g. STAR, assessment centre, salary…"
-          className="w-full rounded-2xl border border-white/[0.1] bg-white/[0.04] py-4 pl-11 pr-12 text-sm text-white placeholder:text-gray-500 focus:border-purple-400/40 focus:bg-white/[0.06] focus:outline-none"
+          className="w-full rounded-2xl border border-white/[0.1] bg-white/[0.04] py-4 pl-11 pr-12 text-sm text-white placeholder:text-gray-400 focus:border-purple-400/40 focus:bg-white/[0.06] focus:outline-none"
         />
         {search && (
           <button
             onClick={() => setSearch("")}
-            className="absolute inset-y-0 right-4 flex items-center text-gray-500 transition hover:text-white"
+            className="absolute inset-y-0 right-4 flex items-center text-gray-400 transition hover:text-white"
             aria-label="Clear search"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
@@ -106,13 +106,13 @@ export function BlogClient({ posts }: Props) {
       {/* ── Results meta ── */}
       {hasFilter && (
         <div className="mb-5 flex items-center justify-between gap-4">
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-gray-400">
             <span className="font-bold text-white">{filtered.length}</span>{" "}
             {filtered.length === 1 ? "guide" : "guides"} found
           </p>
           <button
             onClick={clearAll}
-            className="text-xs font-bold text-gray-500 transition hover:text-white"
+            className="text-xs font-bold text-gray-400 transition hover:text-white"
           >
             Clear filters ×
           </button>
@@ -123,7 +123,7 @@ export function BlogClient({ posts }: Props) {
       {filtered.length === 0 ? (
         <div className="py-20 text-center">
           <p className="text-base font-bold text-gray-300">No guides found</p>
-          <p className="mt-2 text-sm text-gray-500">
+          <p className="mt-2 text-sm text-gray-400">
             Try a different keyword or browse all categories.
           </p>
           <button
@@ -151,7 +151,7 @@ export function BlogClient({ posts }: Props) {
                     <p className="mt-2 text-sm leading-6 text-gray-400">
                       {post.description}
                     </p>
-                    <div className="mt-3 flex items-center gap-3 text-xs text-gray-600">
+                    <div className="mt-3 flex items-center gap-3 text-xs text-gray-400">
                       <time dateTime={post.date}>
                         {new Date(post.date).toLocaleDateString("en-GB", {
                           day: "numeric",
@@ -167,7 +167,7 @@ export function BlogClient({ posts }: Props) {
                       )}
                     </div>
                   </div>
-                  <span className="mt-1 shrink-0 text-gray-600 transition group-hover:text-purple-300">
+                  <span className="mt-1 shrink-0 text-gray-400 transition group-hover:text-purple-300">
                     →
                   </span>
                 </div>

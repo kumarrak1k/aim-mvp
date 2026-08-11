@@ -41,7 +41,7 @@ function renderCell(v: string | boolean) {
     return v ? (
       <span className="text-emerald-400" aria-label="Included">✓</span>
     ) : (
-      <span className="text-gray-600" aria-label="Not included">–</span>
+      <span className="text-gray-400" aria-label="Not included">–</span>
     );
   }
   return <span className="text-gray-200">{v}</span>;
@@ -145,7 +145,7 @@ export function BusinessPricingPlans({ currency = "GBP" }: { currency?: PricingC
     <>
       {/* Billing toggle */}
       <div className="mb-10 flex items-center justify-center gap-3">
-        <span className={`text-sm font-semibold ${!annual ? "text-white" : "text-gray-500"}`}>
+        <span className={`text-sm font-semibold ${!annual ? "text-white" : "text-gray-400"}`}>
           Monthly
         </span>
         <button
@@ -163,7 +163,7 @@ export function BusinessPricingPlans({ currency = "GBP" }: { currency?: PricingC
             }`}
           />
         </button>
-        <span className={`text-sm font-semibold ${annual ? "text-white" : "text-gray-500"}`}>
+        <span className={`text-sm font-semibold ${annual ? "text-white" : "text-gray-400"}`}>
           Annual
         </span>
         {annual && (
@@ -204,11 +204,11 @@ export function BusinessPricingPlans({ currency = "GBP" }: { currency?: PricingC
                   {displayPrice}
                 </span>
                 {displayPeriod && (
-                  <span className="mb-1.5 text-sm text-gray-500">{displayPeriod}</span>
+                  <span className="mb-1.5 text-sm text-gray-400">{displayPeriod}</span>
                 )}
               </div>
               {annualMonthlyEquiv && (
-                <p className="mt-1 text-xs text-gray-500">
+                <p className="mt-1 text-xs text-gray-400">
                   {plan.annualMonthly}/month, charged as a single annual payment
                 </p>
               )}
@@ -220,7 +220,7 @@ export function BusinessPricingPlans({ currency = "GBP" }: { currency?: PricingC
                   <div key={f} className="flex items-start gap-2.5 text-sm text-gray-300">
                     <span
                       className={`mt-[3px] h-3.5 w-3.5 shrink-0 ${
-                        plan.highlight ? "text-purple-400" : "text-gray-500"
+                        plan.highlight ? "text-purple-400" : "text-gray-400"
                       }`}
                     >
                       ✓

@@ -304,7 +304,7 @@ export default function Stage3Page() {
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
             </svg>
-            <p className="text-sm text-gray-500">Loading Stage 3…</p>
+            <p className="text-sm text-gray-400">Loading Stage 3…</p>
           </div>
         </div>
       </CandidateAppShell>
@@ -338,13 +338,13 @@ export default function Stage3Page() {
 
             {/* Prep timer */}
             <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-6 backdrop-blur-xl text-center">
-              <p className="text-[11px] font-bold tracking-wide text-gray-500 mb-2">
+              <p className="text-[11px] font-bold tracking-wide text-gray-400 mb-2">
                 Preparation time
               </p>
               <div className={`font-mono text-4xl font-bold ${prepColour} ${prepTimeLeft <= 30 ? "animate-pulse" : ""}`}>
                 {formatTime(prepTimeLeft)}
               </div>
-              <p className="mt-2 text-xs text-gray-600">
+              <p className="mt-2 text-xs text-gray-400">
                 Review the brief. Your presentation starts automatically when this reaches 0:00.
               </p>
             </div>
@@ -359,23 +359,23 @@ export default function Stage3Page() {
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-5 backdrop-blur-xl">
-                <p className="mb-2 text-[11px] font-bold tracking-wide text-gray-500">Audience</p>
+                <p className="mb-2 text-[11px] font-bold tracking-wide text-gray-400">Audience</p>
                 <p className="text-sm text-gray-300">{brief.audience}</p>
               </div>
               <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-5 backdrop-blur-xl">
-                <p className="mb-2 text-[11px] font-bold tracking-wide text-gray-500">Format</p>
+                <p className="mb-2 text-[11px] font-bold tracking-wide text-gray-400">Format</p>
                 <p className="text-sm text-gray-300">{brief.format}</p>
               </div>
             </div>
 
             <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-5 backdrop-blur-xl">
-              <p className="mb-2 text-[11px] font-bold tracking-wide text-gray-500">Context</p>
+              <p className="mb-2 text-[11px] font-bold tracking-wide text-gray-400">Context</p>
               <p className="text-sm leading-7 text-gray-300">{brief.context}</p>
             </div>
 
             {brief.objectives?.length > 0 && (
               <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-5 backdrop-blur-xl">
-                <p className="mb-3 text-[11px] font-bold tracking-wide text-gray-500">
+                <p className="mb-3 text-[11px] font-bold tracking-wide text-gray-400">
                   What the audience expects
                 </p>
                 <ul className="space-y-2">
@@ -437,7 +437,7 @@ export default function Stage3Page() {
               <h1 className="text-2xl font-bold tracking-tight text-white">
                 {brief.topic}
               </h1>
-              <p className="mt-1 text-sm text-gray-500">Audience: {brief.audience}</p>
+              <p className="mt-1 text-sm text-gray-400">Audience: {brief.audience}</p>
             </div>
 
             {/* Big timer */}
@@ -446,7 +446,7 @@ export default function Stage3Page() {
                 ? "border-red-500/30 bg-red-500/[0.06]"
                 : "border-white/[0.07] bg-white/[0.04]"
             }`}>
-              <p className="text-[11px] font-bold tracking-wide text-gray-500 mb-2">
+              <p className="text-[11px] font-bold tracking-wide text-gray-400 mb-2">
                 Time remaining
               </p>
               <div className={`font-mono text-5xl font-bold ${presentColour} ${presentTimeLeft <= 30 ? "animate-pulse" : ""}`}>
@@ -483,7 +483,7 @@ export default function Stage3Page() {
                     </>
                   )}
                 </button>
-                <span className="text-xs text-gray-600">{wordCount} words captured</span>
+                <span className="text-xs text-gray-400">{wordCount} words captured</span>
               </div>
 
               <textarea
@@ -503,7 +503,7 @@ export default function Stage3Page() {
                 placeholder="Your speech will appear here as you speak. You can also type directly or edit what was captured."
                 className="w-full min-h-[200px] resize-y rounded-xl border border-white/[0.06] bg-white/[0.03] p-3 text-sm leading-7 text-gray-300 placeholder-gray-700 outline-none focus:border-cyan-400/40 focus:ring-1 focus:ring-cyan-400/20"
               />
-              <p className="mt-2 text-xs text-gray-600">
+              <p className="mt-2 text-xs text-gray-400">
                 Pasting is disabled — this stage must be your own spoken or typed words.
               </p>
             </div>
@@ -520,7 +520,7 @@ export default function Stage3Page() {
               className={`flex w-full items-center justify-center gap-3 rounded-2xl px-8 py-5 text-base font-bold transition-all ${
                 (wordCount >= 80 || presentTimeLeft === 0) && !submitting
                   ? "bg-gradient-to-r from-violet-500 to-purple-500 text-white shadow-2xl shadow-cyan-900/40 hover:scale-[1.015]"
-                  : "cursor-not-allowed bg-white/[0.05] text-gray-600"
+                  : "cursor-not-allowed bg-white/[0.05] text-gray-400"
               }`}
             >
               {submitting ? (
@@ -568,7 +568,7 @@ export default function Stage3Page() {
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                 </svg>
-                <p className="mt-4 text-sm text-gray-500">Generating your final report…</p>
+                <p className="mt-4 text-sm text-gray-400">Generating your final report…</p>
               </div>
             )}
 
@@ -576,7 +576,7 @@ export default function Stage3Page() {
               <>
                 {/* Overall */}
                 <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-6 backdrop-blur-xl text-center">
-                  <p className="text-[11px] font-bold tracking-wide text-gray-500 mb-3">
+                  <p className="text-[11px] font-bold tracking-wide text-gray-400 mb-3">
                     Presentation Score
                   </p>
                   <div className={`text-5xl font-bold ${
@@ -584,12 +584,12 @@ export default function Stage3Page() {
                   }`}>
                     {feedback.overall.toFixed(1)}
                   </div>
-                  <div className="text-sm text-gray-500">/ 10</div>
+                  <div className="text-sm text-gray-400">/ 10</div>
                   <p className="mt-4 text-sm leading-7 text-gray-300">{feedback.commentary}</p>
                 </div>
 
                 <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-5 backdrop-blur-xl space-y-3">
-                  <p className="text-[11px] font-bold tracking-wide text-gray-500 mb-2">
+                  <p className="text-[11px] font-bold tracking-wide text-gray-400 mb-2">
                     Dimension scores
                   </p>
                   <ScoreBar label="Structure" score={feedback.scores.structure} />

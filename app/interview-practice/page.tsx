@@ -209,7 +209,7 @@ export default async function InterviewPracticePage() {
             <details key={faq.q} className="group py-5">
               <summary className="flex cursor-pointer list-none items-start justify-between gap-4 text-sm font-bold text-white">
                 {faq.q}
-                <span className="mt-0.5 shrink-0 text-gray-500 transition-transform group-open:rotate-45">
+                <span className="mt-0.5 shrink-0 text-gray-400 transition-transform group-open:rotate-45">
                   +
                 </span>
               </summary>

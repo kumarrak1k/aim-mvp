@@ -231,7 +231,7 @@ function CandidatesContent() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="candidate@example.com"
-                    className="w-full rounded-xl border border-white/15 bg-white/[0.06] px-4 py-3 text-white placeholder-gray-500 outline-none focus:border-fuchsia-400/60 focus:ring-2 focus:ring-fuchsia-400/20"
+                    className="w-full rounded-xl border border-white/15 bg-white/[0.06] px-4 py-3 text-white placeholder-gray-400 outline-none focus:border-fuchsia-400/60 focus:ring-2 focus:ring-fuchsia-400/20"
                   />
                 </div>
 

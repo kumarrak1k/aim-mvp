@@ -375,7 +375,7 @@ export function TemplateForm({ initial, onSave, onCancel, saving }: TemplateForm
   const selectClass =
     "w-full rounded-xl border border-white/15 bg-[#1a1328] px-4 py-3 text-white outline-none focus:border-fuchsia-400/60 focus:ring-2 focus:ring-fuchsia-400/20";
   const inputClass =
-    "w-full rounded-xl border border-white/15 bg-white/[0.06] px-4 py-3 text-white placeholder-gray-500 outline-none focus:border-fuchsia-400/60 focus:ring-2 focus:ring-fuchsia-400/20";
+    "w-full rounded-xl border border-white/15 bg-white/[0.06] px-4 py-3 text-white placeholder-gray-400 outline-none focus:border-fuchsia-400/60 focus:ring-2 focus:ring-fuchsia-400/20";
 
   // ─── render ────────────────────────────────────────────────────────────────
 
@@ -490,7 +490,7 @@ export function TemplateForm({ initial, onSave, onCancel, saving }: TemplateForm
               />
 
               <div className="mt-2 flex items-center justify-between">
-                <span className="text-[10px] text-gray-600">
+                <span className="text-[10px] text-gray-400">
                   {description.length}/5000
                 </span>
                 <div>
@@ -518,7 +518,7 @@ export function TemplateForm({ initial, onSave, onCancel, saving }: TemplateForm
                   </button>
                 </div>
               </div>
-              <p className="mt-1 text-[10px] text-gray-600">
+              <p className="mt-1 text-[10px] text-gray-400">
                 Accepts PDF, DOCX, TXT, MD. Text is extracted and pasted above.
               </p>
 
@@ -616,7 +616,7 @@ export function TemplateForm({ initial, onSave, onCancel, saving }: TemplateForm
                   onChange={(e) => setQuestionCount(Number(e.target.value))}
                   className="w-full accent-fuchsia-400"
                 />
-                <div className="mt-1 flex justify-between text-xs text-gray-500">
+                <div className="mt-1 flex justify-between text-xs text-gray-400">
                   <span>1</span>
                   <span>10</span>
                 </div>
@@ -651,7 +651,7 @@ export function TemplateForm({ initial, onSave, onCancel, saving }: TemplateForm
             <p className="mb-2 text-sm font-bold tracking-wide text-gray-400">
               Assessment centre stages
             </p>
-            <p className="mb-6 text-xs text-gray-500">
+            <p className="mb-6 text-xs text-gray-400">
               Choose which stages to include. Candidates complete them in order.
             </p>
             <div className="space-y-3">
@@ -764,7 +764,7 @@ export function TemplateForm({ initial, onSave, onCancel, saving }: TemplateForm
                       onChange={(e) => setAcQuestionCount(Number(e.target.value))}
                       className="w-full accent-fuchsia-400"
                     />
-                    <div className="mt-1 flex justify-between text-xs text-gray-500">
+                    <div className="mt-1 flex justify-between text-xs text-gray-400">
                       <span>1</span>
                       <span>10</span>
                     </div>
@@ -798,7 +798,7 @@ export function TemplateForm({ initial, onSave, onCancel, saving }: TemplateForm
         <div className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-8 shadow-2xl shadow-black/10">
           <p className="mb-6 text-sm font-bold tracking-wide text-gray-400">
             Advanced settings{" "}
-            <span className="font-normal normal-case text-gray-500">(optional)</span>
+            <span className="font-normal normal-case text-gray-400">(optional)</span>
           </p>
           <div className="space-y-6">
             <div>
@@ -870,7 +870,7 @@ function CustomQuestionsSection({
   onChange: (qs: string[]) => void;
 }) {
   const inputClass =
-    "w-full rounded-xl border border-white/15 bg-white/[0.06] px-4 py-3 text-sm text-white placeholder-gray-500 outline-none focus:border-fuchsia-400/60 focus:ring-2 focus:ring-fuchsia-400/20 resize-none";
+    "w-full rounded-xl border border-white/15 bg-white/[0.06] px-4 py-3 text-sm text-white placeholder-gray-400 outline-none focus:border-fuchsia-400/60 focus:ring-2 focus:ring-fuchsia-400/20 resize-none";
 
   return (
     <div className="mt-4 rounded-2xl border border-fuchsia-400/20 bg-fuchsia-400/[0.04] p-5">
@@ -899,7 +899,7 @@ function CustomQuestionsSection({
               maxLength={500}
               className={inputClass}
             />
-            <p className="mt-1 text-right text-[10px] text-gray-600">
+            <p className="mt-1 text-right text-[10px] text-gray-400">
               {(questions[i] ?? "").length}/500
             </p>
           </div>

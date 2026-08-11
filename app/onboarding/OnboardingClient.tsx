@@ -176,7 +176,7 @@ export function OnboardingClient({
             style={{ width: `${(step / ONBOARDING_STEPS) * 100}%` }}
           />
         </div>
-        <p className="mt-2 text-right text-[11px] font-bold tracking-wide text-gray-500">
+        <p className="mt-2 text-right text-[11px] font-bold tracking-wide text-gray-400">
           Step {step} of {ONBOARDING_STEPS}
         </p>
       </div>
@@ -199,7 +199,7 @@ export function OnboardingClient({
               value={targetRole}
               onChange={(e) => setTargetRole(e.target.value)}
               placeholder="e.g. Operations Analyst, Graduate Software Engineer"
-              className="mt-2 w-full rounded-[1.25rem] border border-white/[0.09] bg-white/[0.03] px-4 py-3 text-base text-white placeholder:text-gray-600 focus:border-purple-400/60 focus:outline-none"
+              className="mt-2 w-full rounded-[1.25rem] border border-white/[0.09] bg-white/[0.03] px-4 py-3 text-base text-white placeholder:text-gray-400 focus:border-purple-400/60 focus:outline-none"
             />
 
             <select
@@ -277,7 +277,7 @@ export function OnboardingClient({
                     value={currentRole}
                     onChange={(e) => setCurrentRole(e.target.value)}
                     placeholder="e.g. Retail supervisor, final-year student"
-                    className="mt-2 w-full rounded-[1.25rem] border border-white/[0.09] bg-white/[0.03] px-4 py-3 text-base text-white placeholder:text-gray-600 focus:border-purple-400/60 focus:outline-none"
+                    className="mt-2 w-full rounded-[1.25rem] border border-white/[0.09] bg-white/[0.03] px-4 py-3 text-base text-white placeholder:text-gray-400 focus:border-purple-400/60 focus:outline-none"
                   />
                 </div>
 
@@ -350,7 +350,7 @@ export function OnboardingClient({
                     placeholder="Paste the job description, or upload it above…"
                     rows={4}
                     maxLength={8000}
-                    className="mt-2 w-full rounded-[1.25rem] border border-white/[0.09] bg-white/[0.03] px-4 py-3 text-base text-white placeholder:text-gray-600 focus:border-purple-400/60 focus:outline-none resize-y text-sm"
+                    className="mt-2 w-full rounded-[1.25rem] border border-white/[0.09] bg-white/[0.03] px-4 py-3 text-base text-white placeholder:text-gray-400 focus:border-purple-400/60 focus:outline-none resize-y text-sm"
                   />
                 </div>
               </div>
@@ -506,7 +506,7 @@ export function OnboardingClient({
           <button
             onClick={() => (step === 1 ? skip() : setStep((s) => s - 1))}
             disabled={saving}
-            className="text-sm font-bold text-gray-500 transition hover:text-gray-300 disabled:opacity-40"
+            className="text-sm font-bold text-gray-400 transition hover:text-gray-300 disabled:opacity-40"
           >
             {step === 1 ? "Skip for now" : "← Back"}
           </button>

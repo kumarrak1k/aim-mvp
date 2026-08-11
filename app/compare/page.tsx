@@ -186,16 +186,16 @@ export default function CompareIndexPage() {
           <div className="overflow-x-auto rounded-[2rem] border border-white/[0.08]">
             <div className="min-w-[760px]">
               <div className="grid grid-cols-[1.3fr_2fr_1.1fr_1.5fr] border-b border-white/[0.08] bg-white/[0.03] px-6 py-4">
-                <p className="text-xs font-bold tracking-wide text-gray-500">
+                <p className="text-xs font-bold tracking-wide text-gray-400">
                   Tool
                 </p>
-                <p className="text-xs font-bold tracking-wide text-gray-500">
+                <p className="text-xs font-bold tracking-wide text-gray-400">
                   Key capabilities
                 </p>
-                <p className="text-xs font-bold tracking-wide text-gray-500">
+                <p className="text-xs font-bold tracking-wide text-gray-400">
                   Price
                 </p>
-                <p className="text-xs font-bold tracking-wide text-gray-500">
+                <p className="text-xs font-bold tracking-wide text-gray-400">
                   Best for
                 </p>
               </div>
@@ -233,7 +233,7 @@ export default function CompareIndexPage() {
             . We aim to be fair and factual, so{" "}
             <a
               href="mailto:press@aicareermentor.co.uk"
-              className="text-gray-600 hover:text-gray-400"
+              className="text-gray-400 hover:text-gray-400"
             >
               contact us
             </a>{" "}
@@ -257,7 +257,7 @@ export default function CompareIndexPage() {
                 }`}
               >
                 <div className="mb-3 flex items-baseline gap-3">
-                  <span className="text-xs font-bold text-gray-600">
+                  <span className="text-xs font-bold text-gray-400">
                     {index + 1}.
                   </span>
                   <h3 className="text-lg font-bold leading-tight text-white">
@@ -288,7 +288,7 @@ export default function CompareIndexPage() {
               <details key={faq.q} className="group py-5">
                 <summary className="flex cursor-pointer list-none items-start justify-between gap-4 text-sm font-bold text-white">
                   {faq.q}
-                  <span className="mt-0.5 shrink-0 text-gray-500 transition-transform group-open:rotate-45">
+                  <span className="mt-0.5 shrink-0 text-gray-400 transition-transform group-open:rotate-45">
                     +
                   </span>
                 </summary>
@@ -320,7 +320,7 @@ export default function CompareIndexPage() {
               Score an answer free
             </Link>
           </div>
-          <p className="mt-3 text-xs text-gray-600">
+          <p className="mt-3 text-xs text-gray-400">
             Free to start. No credit card required.
           </p>
         </section>

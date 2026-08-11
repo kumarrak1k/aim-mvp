@@ -152,7 +152,7 @@ export function AboutPageContent() {
           >
             Start practising →
           </Link>
-          <p className="mt-3 text-xs text-gray-600">Free to start. No credit card required.</p>
+          <p className="mt-3 text-xs text-gray-400">Free to start. No credit card required.</p>
         </section>
       </div>
     </>

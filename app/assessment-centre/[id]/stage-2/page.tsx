@@ -152,7 +152,7 @@ export default function Stage2Page() {
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
             </svg>
-            <p className="text-sm text-gray-500">Loading Stage 2…</p>
+            <p className="text-sm text-gray-400">Loading Stage 2…</p>
           </div>
         </div>
       </CandidateAppShell>
@@ -186,7 +186,7 @@ export default function Stage2Page() {
 
         {/* What to expect */}
         <div className="mb-6 rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-5 backdrop-blur-xl">
-          <p className="mb-3 text-[11px] font-bold tracking-wide text-gray-500">
+          <p className="mb-3 text-[11px] font-bold tracking-wide text-gray-400">
             What to expect
           </p>
           <ul className="space-y-2.5">
@@ -207,7 +207,7 @@ export default function Stage2Page() {
 
         {/* Mode selection */}
         <div className="mb-6 rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-5 backdrop-blur-xl">
-          <p className="mb-4 text-[11px] font-bold tracking-wide text-gray-500">
+          <p className="mb-4 text-[11px] font-bold tracking-wide text-gray-400">
             Choose your mode
           </p>
           <div className="space-y-2.5">
@@ -226,7 +226,7 @@ export default function Stage2Page() {
                   <div className={`text-sm font-bold ${mode === opt.value ? "text-fuchsia-200" : "text-white"}`}>
                     {opt.label}
                   </div>
-                  <div className="text-xs text-gray-500">{opt.desc}</div>
+                  <div className="text-xs text-gray-400">{opt.desc}</div>
                 </div>
                 {mode === opt.value && (
                   <div className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-fuchsia-400 text-[10px] text-black font-bold">
@@ -251,7 +251,7 @@ export default function Stage2Page() {
           Start interview →
         </button>
 
-        <p className="mt-3 text-center text-xs text-gray-600">
+        <p className="mt-3 text-center text-xs text-gray-400">
           ~{Math.max(10, (session.templateConfig?.questionCount ?? 5) * 4)} minutes · {session.templateConfig?.questionCount ?? 5} questions · AI feedback on every answer
         </p>
       </div>

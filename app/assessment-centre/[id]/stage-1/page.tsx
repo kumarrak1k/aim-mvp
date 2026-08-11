@@ -330,7 +330,7 @@ export default function Stage1Page() {
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
             </svg>
-            <p className="text-sm text-gray-500">Loading your case study…</p>
+            <p className="text-sm text-gray-400">Loading your case study…</p>
           </div>
         </div>
       </CandidateAppShell>
@@ -460,10 +460,10 @@ export default function Stage1Page() {
                 {/* Timer */}
                 <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-5 backdrop-blur-xl">
                   <div className="flex items-center justify-between mb-3">
-                    <p className="text-[11px] font-bold tracking-wide text-gray-500">
+                    <p className="text-[11px] font-bold tracking-wide text-gray-400">
                       Time remaining
                     </p>
-                    <p className="text-[11px] text-gray-600">
+                    <p className="text-[11px] text-gray-400">
                       {wordCount} words
                     </p>
                   </div>
@@ -475,7 +475,7 @@ export default function Stage1Page() {
                     {timerExpired ? "00:00" : formatTime(timeRemaining)}
                   </div>
                   {!timerStarted && (
-                    <p className="mt-2 text-center text-xs text-gray-600">
+                    <p className="mt-2 text-center text-xs text-gray-400">
                       Timer starts when you begin typing
                     </p>
                   )}
@@ -499,7 +499,7 @@ export default function Stage1Page() {
                     placeholder="Begin your structured response here. Lead with your recommendation, then support with analysis from the exhibits…"
                     className="w-full min-h-[400px] resize-y rounded-xl border-0 bg-transparent text-sm leading-7 text-white placeholder-gray-700 outline-none focus:ring-0"
                   />
-                  <p className="mt-1 px-1 text-xs text-gray-600">
+                  <p className="mt-1 px-1 text-xs text-gray-400">
                     Pasting is disabled — this timed exercise must be your own typed work.
                   </p>
                 </div>
@@ -516,7 +516,7 @@ export default function Stage1Page() {
                   className={`flex w-full items-center justify-center gap-3 rounded-2xl px-6 py-4 text-sm font-bold transition-all ${
                     wordCount >= 50 && !submitting
                       ? "bg-gradient-to-r from-purple-500 to-fuchsia-500 text-white shadow-lg shadow-purple-900/30 hover:scale-[1.01]"
-                      : "cursor-not-allowed bg-white/[0.05] text-gray-600"
+                      : "cursor-not-allowed bg-white/[0.05] text-gray-400"
                   }`}
                 >
                   {submitting ? (
@@ -549,7 +549,7 @@ export default function Stage1Page() {
               <div className="space-y-4">
                 {/* Overall score */}
                 <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-6 backdrop-blur-xl text-center">
-                  <p className="text-[11px] font-bold tracking-wide text-gray-500 mb-3">
+                  <p className="text-[11px] font-bold tracking-wide text-gray-400 mb-3">
                     Case Study Score
                   </p>
                   <div
@@ -563,13 +563,13 @@ export default function Stage1Page() {
                   >
                     {feedback.overall.toFixed(1)}
                   </div>
-                  <div className="text-sm text-gray-500">/ 10</div>
+                  <div className="text-sm text-gray-400">/ 10</div>
                   <p className="mt-4 text-sm leading-7 text-gray-300">{feedback.commentary}</p>
                 </div>
 
                 {/* Score bars */}
                 <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-5 backdrop-blur-xl space-y-3">
-                  <p className="text-[11px] font-bold tracking-wide text-gray-500 mb-2">
+                  <p className="text-[11px] font-bold tracking-wide text-gray-400 mb-2">
                     Dimension scores
                   </p>
                   <ScoreBar label="Structure" score={feedback.scores.structure} />

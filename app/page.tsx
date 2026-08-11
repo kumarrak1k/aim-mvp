@@ -132,7 +132,7 @@ export default async function ForCandidatesPage() {
           </Link>
         </div>
 
-        <p className="mt-5 text-xs text-gray-600">
+        <p className="mt-5 text-xs text-gray-400">
           Free to start. No credit card required.
         </p>
       </section>
@@ -307,7 +307,7 @@ export default async function ForCandidatesPage() {
             <details key={faq.q} className="group py-5">
               <summary className="flex cursor-pointer list-none items-start justify-between gap-4 text-sm font-bold text-white">
                 {faq.q}
-                <span className="mt-0.5 shrink-0 text-gray-500 transition-transform group-open:rotate-45">
+                <span className="mt-0.5 shrink-0 text-gray-400 transition-transform group-open:rotate-45">
                   +
                 </span>
               </summary>

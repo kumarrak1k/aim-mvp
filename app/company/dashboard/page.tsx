@@ -429,7 +429,7 @@ function DashboardContent() {
               <div>
                 <h2 className="text-xl font-bold">Team members</h2>
                 {plan && (
-                  <p className="mt-0.5 text-xs text-gray-500">
+                  <p className="mt-0.5 text-xs text-gray-400">
                     {members.length} of {plan.seats} seats used
                   </p>
                 )}
@@ -463,9 +463,9 @@ function DashboardContent() {
                       <div>
                         <p className="text-sm font-bold text-white">
                           {m.role.charAt(0).toUpperCase() + m.role.slice(1)}
-                          {isYou && <span className="ml-2 text-xs font-semibold text-gray-500">(you)</span>}
+                          {isYou && <span className="ml-2 text-xs font-semibold text-gray-400">(you)</span>}
                         </p>
-                        <p className="text-[11px] text-gray-500">
+                        <p className="text-[11px] text-gray-400">
                           Joined {new Date(m.createdAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
                         </p>
                       </div>
@@ -487,7 +487,7 @@ function DashboardContent() {
             {/* Pending invites */}
             {pendingInvites.length > 0 && (
               <div className="mt-5 border-t border-white/[0.06] pt-5">
-                <p className="mb-3 text-xs font-bold tracking-wide text-gray-500">Pending invites</p>
+                <p className="mb-3 text-xs font-bold tracking-wide text-gray-400">Pending invites</p>
                 <div className="space-y-2">
                   {pendingInvites.map((inv) => {
                     const link = `${typeof window !== "undefined" ? window.location.origin : ""}/company/join/${inv.token}`;
@@ -495,7 +495,7 @@ function DashboardContent() {
                       <div key={inv.id} className="flex flex-col gap-2 rounded-2xl border border-white/[0.07] bg-white/[0.03] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
                         <div>
                           <p className="text-sm font-semibold text-white">{inv.email}</p>
-                          <p className="text-[11px] text-gray-500 capitalize">{inv.role} · expires {new Date(inv.expiresAt).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}</p>
+                          <p className="text-[11px] text-gray-400 capitalize">{inv.role} · expires {new Date(inv.expiresAt).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}</p>
                         </div>
                         <button
                           onClick={() => void navigator.clipboard.writeText(link)}
@@ -511,7 +511,7 @@ function DashboardContent() {
             )}
 
             {members.length === 0 && pendingInvites.length === 0 && (
-              <p className="py-4 text-sm text-gray-500">No team members yet.</p>
+              <p className="py-4 text-sm text-gray-400">No team members yet.</p>
             )}
           </div>
         )}
@@ -573,7 +573,7 @@ function DashboardContent() {
                   <div key={s.n} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-center">
                     <p className="text-2xl font-bold text-fuchsia-300">{s.n}</p>
                     <p className="mt-1 text-sm font-bold">{s.t}</p>
-                    <p className="mt-1 text-xs leading-5 text-gray-500">{s.d}</p>
+                    <p className="mt-1 text-xs leading-5 text-gray-400">{s.d}</p>
                   </div>
                 ))}
               </div>
@@ -644,7 +644,7 @@ function DashboardContent() {
                     Copy
                   </button>
                 </div>
-                <p className="mt-2 text-[11px] text-gray-500">The link expires in 7 days. They must have or create a hiring team account to accept.</p>
+                <p className="mt-2 text-[11px] text-gray-400">The link expires in 7 days. They must have or create a hiring team account to accept.</p>
                 <div className="mt-5 flex gap-3">
                   <button
                     onClick={() => { setMemberInviteLink(""); setMemberInviteEmail(""); }}
@@ -672,7 +672,7 @@ function DashboardContent() {
                     placeholder="colleague@company.com"
                     disabled={memberInviteLoading}
                     autoFocus
-                    className="mt-2 w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm font-semibold text-white placeholder:text-gray-600 focus:border-fuchsia-400/40 focus:outline-none"
+                    className="mt-2 w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm font-semibold text-white placeholder:text-gray-400 focus:border-fuchsia-400/40 focus:outline-none"
                   />
                 </div>
                 <div>
@@ -754,7 +754,7 @@ function DashboardContent() {
               autoFocus
               disabled={deleteSubmitting}
               placeholder={company.name}
-              className="mt-2 w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm font-semibold text-white placeholder:text-gray-600 focus:border-red-400/40 focus:outline-none"
+              className="mt-2 w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm font-semibold text-white placeholder:text-gray-400 focus:border-red-400/40 focus:outline-none"
             />
 
             {deleteError && (

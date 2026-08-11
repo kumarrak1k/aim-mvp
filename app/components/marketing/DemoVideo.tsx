@@ -55,7 +55,7 @@ export function DemoVideo({
           )}
         </div>
         {caption && (
-          <figcaption className="border-t border-white/[0.07] bg-white/[0.03] px-5 py-3 text-center text-xs text-gray-500">
+          <figcaption className="border-t border-white/[0.07] bg-white/[0.03] px-5 py-3 text-center text-xs text-gray-400">
             {caption}
           </figcaption>
         )}
@@ -77,7 +77,7 @@ export function DemoVideo({
         </div>
       </div>
       {caption && (
-        <figcaption className="border-t border-white/[0.07] bg-white/[0.03] px-5 py-3 text-center text-xs text-gray-500">
+        <figcaption className="border-t border-white/[0.07] bg-white/[0.03] px-5 py-3 text-center text-xs text-gray-400">
           {caption}
         </figcaption>
       )}

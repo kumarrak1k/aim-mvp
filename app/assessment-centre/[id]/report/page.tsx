@@ -78,7 +78,7 @@ function ScoreRing({ score }: { score: number }) {
     <div className={`relative mx-auto flex h-36 w-36 items-center justify-center rounded-full border-4 ${ringColour} shadow-2xl`}>
       <div className="text-center">
         <div className={`text-4xl font-bold ${colour}`}>{score.toFixed(1)}</div>
-        <div className="text-xs text-gray-500 font-bold">/ 10</div>
+        <div className="text-xs text-gray-400 font-bold">/ 10</div>
       </div>
     </div>
   );
@@ -138,7 +138,7 @@ export default function ReportPage() {
           </div>
           <div>
             <h2 className="text-xl font-bold text-white">Generating your report…</h2>
-            <p className="mt-2 text-sm text-gray-500 max-w-sm">
+            <p className="mt-2 text-sm text-gray-400 max-w-sm">
               Our chief assessor AI is synthesising your performance across all three stages.
               This takes 15–30 seconds.
             </p>
@@ -191,7 +191,7 @@ export default function ReportPage() {
             </span>
 
             <div>
-              <div className="text-sm font-bold tracking-wide text-gray-500 mb-1">
+              <div className="text-sm font-bold tracking-wide text-gray-400 mb-1">
                 {session.role} · {session.sector}
               </div>
               <p className="text-lg font-bold leading-snug text-white max-w-xl">
@@ -230,7 +230,7 @@ export default function ReportPage() {
                   {stage.label}
                 </p>
                 <div className={`text-4xl font-bold ${scoreColour}`}>{stage.score.toFixed(1)}</div>
-                <div className="text-xs text-gray-600">/ 10</div>
+                <div className="text-xs text-gray-400">/ 10</div>
               </div>
             );
           })}

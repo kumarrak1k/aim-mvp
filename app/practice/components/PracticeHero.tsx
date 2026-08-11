@@ -102,7 +102,7 @@ export function PracticeHero({
       </div>
 
       {!canStartInterview && !usageLimitReached && (
-        <p className="mt-3 text-sm leading-6 text-gray-500">
+        <p className="mt-3 text-sm leading-6 text-gray-400">
           Add or load a target role first, then this button will start the
           interview instantly.
         </p>

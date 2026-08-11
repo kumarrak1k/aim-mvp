@@ -1,3 +1,4 @@
+import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import type { Metadata, Viewport } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Analytics } from "@vercel/analytics/next";
@@ -7,6 +8,29 @@ import { ActivityTracker } from "@/app/components/ActivityTracker";
 import { CookieConsent } from "@/app/components/marketing/CookieConsent";
 import { DeferredMentorChat } from "@/app/components/marketing/DeferredMentorChat";
 import "./globals.css";
+
+/**
+ * Self-hosted at build time by next/font, which matters twice over: the CSP
+ * allows `font-src 'self'` only, and a render-blocking CDN request would cost
+ * exactly the LCP the marketing pages are judged on.
+ *
+ * Plus Jakarta Sans reads as considered rather than default at the small label
+ * sizes this UI leans on; the site previously fell through to Arial because
+ * the theme referenced a --font-geist-sans that was never defined.
+ */
+const sans = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-sans-loaded",
+  weight: ["400", "500", "600", "700", "800"],
+});
+
+const mono = JetBrains_Mono({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-mono-loaded",
+  weight: ["400", "500"],
+});
 
 const siteUrl = siteConfig.url;
 const siteName = siteConfig.name;
@@ -228,7 +252,7 @@ export default function RootLayout({
       signUpUrl="/for-candidates/sign-up"
       afterSignOutUrl="/"
     >
-      <html lang="en-GB">
+      <html lang="en-GB" className={`${sans.variable} ${mono.variable}`}>
         <body>
           <script
             type="application/ld+json"

@@ -36,7 +36,7 @@ export default function CompaniesIndexPage() {
               <h2 className="mt-2 text-xl font-bold tracking-tight group-hover:text-purple-100">
                 {guide.name}
               </h2>
-              <p className="mt-2 text-sm leading-6 text-gray-500">{guide.tagline}</p>
+              <p className="mt-2 text-sm leading-6 text-gray-400">{guide.tagline}</p>
               <p className="mt-4 text-xs font-bold text-purple-400 group-hover:text-purple-300">
                 Read guide →
               </p>
@@ -44,7 +44,7 @@ export default function CompaniesIndexPage() {
           ))}
         </div>
 
-        <div className="mt-12 rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 text-center text-sm text-gray-500">
+        <div className="mt-12 rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 text-center text-sm text-gray-400">
           More company guides coming soon. Want us to cover a specific employer?{" "}
           <a href="mailto:support@aicareermentor.co.uk" className="text-purple-400 hover:text-purple-300">
             Let us know →

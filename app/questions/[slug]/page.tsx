@@ -139,7 +139,7 @@ const mdxComponents = {
   ),
   th: (props: React.HTMLAttributes<HTMLTableCellElement>) => (
     <th
-      className="px-4 py-3 text-left text-xs font-bold tracking-wide text-gray-500"
+      className="px-4 py-3 text-left text-xs font-bold tracking-wide text-gray-400"
       {...props}
     />
   ),
@@ -220,7 +220,7 @@ export default async function QuestionSetPage({ params }: Props) {
         <div className="mb-6">
           <Link
             href="/questions"
-            className="text-sm text-gray-500 transition hover:text-gray-300"
+            className="text-sm text-gray-400 transition hover:text-gray-300"
           >
             ← Question library
           </Link>
@@ -238,7 +238,7 @@ export default async function QuestionSetPage({ params }: Props) {
           <p className="mt-3 text-base leading-7 text-gray-400">
             {set.description}
           </p>
-          <div className="mt-4 flex items-center gap-3 text-xs text-gray-600">
+          <div className="mt-4 flex items-center gap-3 text-xs text-gray-400">
             <time dateTime={set.date}>
               Updated{" "}
               {new Date(set.date).toLocaleDateString("en-GB", {

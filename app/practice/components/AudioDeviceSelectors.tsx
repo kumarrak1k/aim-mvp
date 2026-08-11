@@ -147,7 +147,7 @@ export function AudioDeviceSelectors() {
         </button>
       )}
 
-      <p className="mt-3 text-xs leading-5 text-gray-500">
+      <p className="mt-3 text-xs leading-5 text-gray-400">
         {outputSupported
           ? "Applies to question playback and voice analysis. Live dictation always uses your system default microphone."
           : "Speaker selection isn't supported in this browser; audio plays through your system default. Live dictation always uses your system default microphone."}

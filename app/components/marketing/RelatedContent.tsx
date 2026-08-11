@@ -37,7 +37,7 @@ export function RelatedContent({ items }: { items: RelatedContentItem[] }) {
             <p className="mt-2 line-clamp-2 text-sm leading-6 text-gray-400">
               {item.description}
             </p>
-            <span className="mt-auto pt-3 text-sm text-gray-600 transition group-hover:text-purple-300">
+            <span className="mt-auto pt-3 text-sm text-gray-400 transition group-hover:text-purple-300">
               →
             </span>
           </Link>

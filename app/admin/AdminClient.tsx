@@ -665,12 +665,12 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
   const pageData = sorted.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   function SortIcon({ k }: { k: SortKey }) {
-    if (sortKey !== k) return <span className="ml-1 text-gray-600">↕</span>;
+    if (sortKey !== k) return <span className="ml-1 text-gray-400">↕</span>;
     return <span className="ml-1 text-fuchsia-400">{sortDir === "asc" ? "↑" : "↓"}</span>;
   }
 
-  const thS = "pb-3 text-left text-xs font-bold tracking-wide text-gray-500 cursor-pointer select-none hover:text-gray-300 transition whitespace-nowrap";
-  const thF = "pb-3 text-left text-xs font-bold tracking-wide text-gray-500 whitespace-nowrap";
+  const thS = "pb-3 text-left text-xs font-bold tracking-wide text-gray-400 cursor-pointer select-none hover:text-gray-300 transition whitespace-nowrap";
+  const thF = "pb-3 text-left text-xs font-bold tracking-wide text-gray-400 whitespace-nowrap";
 
   // ── Render ────────────────────────────────────────────────────────────────────
 
@@ -684,7 +684,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
             <h1 className="text-3xl font-bold tracking-tight">Admin</h1>
             <span className="rounded-full border border-red-400/30 bg-red-500/10 px-2.5 py-0.5 text-[11px] font-bold text-red-300">Internal only</span>
           </div>
-          <p className="mt-1 text-sm text-gray-500">AI Career Mentor · {stats.total} total accounts</p>
+          <p className="mt-1 text-sm text-gray-400">AI Career Mentor · {stats.total} total accounts</p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
           <button onClick={openCreate} className="shrink-0 rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-600 px-5 py-2.5 text-sm font-bold text-white shadow-lg transition hover:scale-[1.02]">
@@ -715,7 +715,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
           { label: "Active workspaces",  value: stats.activeCorporate,color: "text-cyan-300" },
         ].map(({ label, value, color }) => (
           <div key={label} className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-            <p className="text-xs font-semibold text-gray-500">{label}</p>
+            <p className="text-xs font-semibold text-gray-400">{label}</p>
             <p className={`mt-1 text-3xl font-bold ${color}`}>{value}</p>
           </div>
         ))}
@@ -734,16 +734,16 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
           { label: "AC + career docs", value: overview.ac7d + overview.docs7d, sub: `${overview.acTotal} AC · ${overview.docsTotal} docs all time`, color: "text-amber-300" },
         ].map(({ label, value, sub, color }) => (
           <div key={label} className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-            <p className="text-xs font-semibold text-gray-500">{label} <span className="text-gray-600">· 7d</span></p>
+            <p className="text-xs font-semibold text-gray-400">{label} <span className="text-gray-400">· 7d</span></p>
             <p className={`mt-1 text-2xl font-bold ${color}`}>{value}</p>
-            <p className="mt-0.5 text-[10px] text-gray-600">{sub}</p>
+            <p className="mt-0.5 text-[10px] text-gray-400">{sub}</p>
           </div>
         ))}
       </div>
 
       {/* Candidate activation funnel */}
       <div className="mb-8 rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-4">
-        <p className="text-xs font-semibold text-gray-500">Candidate activation funnel</p>
+        <p className="text-xs font-semibold text-gray-400">Candidate activation funnel</p>
         <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1">
           {(
             [
@@ -759,10 +759,10 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
               <span key={label} className="flex items-center gap-2">
                 <span className="flex items-baseline gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5">
                   <span className="text-sm font-bold text-white">{n}</span>
-                  <span className="text-[11px] text-gray-500">{label}</span>
+                  <span className="text-[11px] text-gray-400">{label}</span>
                   {i > 0 && <span className="text-[10px] font-bold text-fuchsia-300">{pct}%</span>}
                 </span>
-                {i < arr.length - 1 && <span className="text-gray-600">→</span>}
+                {i < arr.length - 1 && <span className="text-gray-400">→</span>}
               </span>
             );
           })}
@@ -772,11 +772,11 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
       {/* Acquisition channels + campaign link builder */}
       <div className="mb-8 grid gap-4 lg:grid-cols-2">
         <div className="rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-4">
-          <p className="text-xs font-semibold text-gray-500">
-            Acquisition channels <span className="text-gray-600">· where signups came from</span>
+          <p className="text-xs font-semibold text-gray-400">
+            Acquisition channels <span className="text-gray-400">· where signups came from</span>
           </p>
           {overview.acquisition.length === 0 ? (
-            <p className="mt-3 text-sm text-gray-500">
+            <p className="mt-3 text-sm text-gray-400">
               No attributed signups yet — new signups are tracked from their first visit.
             </p>
           ) : (
@@ -796,7 +796,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                     </div>
                     <span className="w-20 shrink-0 text-right text-xs">
                       <span className="font-bold text-white">{total}</span>
-                      <span className="text-gray-600"> · {last30d} 30d</span>
+                      <span className="text-gray-400"> · {last30d} 30d</span>
                     </span>
                   </div>
                 );
@@ -815,7 +815,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
           placeholder="Search name, email or company…"
           value={search}
           onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-          className="flex-1 rounded-2xl border border-white/10 bg-white/[0.05] px-4 py-2.5 text-sm text-white placeholder:text-gray-600 focus:border-fuchsia-400/40 focus:outline-none"
+          className="flex-1 rounded-2xl border border-white/10 bg-white/[0.05] px-4 py-2.5 text-sm text-white placeholder:text-gray-400 focus:border-fuchsia-400/40 focus:outline-none"
         />
         <select value={typeFilter} onChange={(e) => { setTypeFilter(e.target.value); setPage(1); }} className="rounded-2xl border border-white/10 bg-[#0b0918] px-4 py-2.5 text-sm text-white focus:border-fuchsia-400/40 focus:outline-none">
           <option value="all">All types</option>
@@ -852,7 +852,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
           </thead>
           <tbody className="divide-y divide-white/[0.05]">
             {pageData.length === 0 && (
-              <tr><td colSpan={10} className="py-16 text-center text-gray-500">No users match your filters.</td></tr>
+              <tr><td colSpan={10} className="py-16 text-center text-gray-400">No users match your filters.</td></tr>
             )}
             {pageData.map((u) => (
               <tr key={u.id} className="group transition hover:bg-white/[0.03]">
@@ -862,7 +862,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                     <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-fuchsia-500/20 text-xs font-bold text-fuchsia-300">{initials(u)}</div>
                     <div>
                       <p className="font-bold leading-tight text-white">{fullName(u)}</p>
-                      <p className="text-[11px] text-gray-500">{u.email}</p>
+                      <p className="text-[11px] text-gray-400">{u.email}</p>
                     </div>
                   </div>
                 </td>
@@ -870,28 +870,28 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                 <td className="py-3.5 pr-4"><MembershipBadge user={u} /></td>
                 <td className="whitespace-nowrap py-3.5 pr-4 text-gray-400">
                   {u.companyName ?? "–"}
-                  {u.companyRole && <span className="ml-1 text-[10px] capitalize text-gray-600">({u.companyRole})</span>}
+                  {u.companyRole && <span className="ml-1 text-[10px] capitalize text-gray-400">({u.companyRole})</span>}
                 </td>
                 <td className="whitespace-nowrap py-3.5 pr-4 text-[12px] text-gray-400">{getPeriodEnd(u) ? fmtDate(getPeriodEnd(u)) : "–"}</td>
                 {/* Usage: sessions · assessment centres · career docs */}
                 <td className="whitespace-nowrap py-3.5 pr-4">
                   {u.accountType === "candidate" ? (
                     <span className="inline-flex items-center gap-1 text-[11px] font-bold">
-                      <span className={u.practiceCount > 0 ? "rounded-md bg-fuchsia-500/15 px-1.5 py-0.5 text-fuchsia-300" : "rounded-md bg-white/[0.04] px-1.5 py-0.5 text-gray-600"} title={`${u.practiceCount} practice sessions${u.lastPracticeAt ? ` · last ${fmtDate(u.lastPracticeAt)}` : ""}`}>
+                      <span className={u.practiceCount > 0 ? "rounded-md bg-fuchsia-500/15 px-1.5 py-0.5 text-fuchsia-300" : "rounded-md bg-white/[0.04] px-1.5 py-0.5 text-gray-400"} title={`${u.practiceCount} practice sessions${u.lastPracticeAt ? ` · last ${fmtDate(u.lastPracticeAt)}` : ""}`}>
                         {u.practiceCount}S
                       </span>
-                      <span className={u.acCount > 0 ? "rounded-md bg-amber-500/15 px-1.5 py-0.5 text-amber-300" : "rounded-md bg-white/[0.04] px-1.5 py-0.5 text-gray-600"} title={`${u.acCount} assessment centres${u.lastAcAt ? ` · last ${fmtDate(u.lastAcAt)}` : ""}`}>
+                      <span className={u.acCount > 0 ? "rounded-md bg-amber-500/15 px-1.5 py-0.5 text-amber-300" : "rounded-md bg-white/[0.04] px-1.5 py-0.5 text-gray-400"} title={`${u.acCount} assessment centres${u.lastAcAt ? ` · last ${fmtDate(u.lastAcAt)}` : ""}`}>
                         {u.acCount}AC
                       </span>
-                      <span className={u.docsCount > 0 ? "rounded-md bg-cyan-500/15 px-1.5 py-0.5 text-cyan-300" : "rounded-md bg-white/[0.04] px-1.5 py-0.5 text-gray-600"} title={`${u.docsCount} career docs${u.lastDocAt ? ` · last ${fmtDate(u.lastDocAt)}` : ""}`}>
+                      <span className={u.docsCount > 0 ? "rounded-md bg-cyan-500/15 px-1.5 py-0.5 text-cyan-300" : "rounded-md bg-white/[0.04] px-1.5 py-0.5 text-gray-400"} title={`${u.docsCount} career docs${u.lastDocAt ? ` · last ${fmtDate(u.lastDocAt)}` : ""}`}>
                         {u.docsCount}D
                       </span>
                       {!u.profileComplete && (
-                        <span className="ml-0.5 text-[10px] text-gray-600" title="No candidate profile saved yet">no profile</span>
+                        <span className="ml-0.5 text-[10px] text-gray-400" title="No candidate profile saved yet">no profile</span>
                       )}
                     </span>
                   ) : (
-                    <span className="text-[11px] text-gray-600">–</span>
+                    <span className="text-[11px] text-gray-400">–</span>
                   )}
                 </td>
                 {/* Acquisition source */}
@@ -900,7 +900,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                     className={`rounded-md px-1.5 py-0.5 text-[11px] font-bold ${
                       u.utmSource || u.promoCode || u.referrer
                         ? "bg-violet-500/15 text-violet-300"
-                        : "bg-white/[0.04] text-gray-600"
+                        : "bg-white/[0.04] text-gray-400"
                     }`}
                     title={[
                       u.utmCampaign ? `Campaign: ${u.utmCampaign}` : null,
@@ -940,7 +940,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                     </button>
                     <button
                       onClick={() => copyId(u.id)}
-                      className="rounded-full border border-white/[0.07] bg-white/[0.04] px-3 py-1 text-[11px] font-bold text-gray-500 transition hover:border-white/20 hover:text-gray-300"
+                      className="rounded-full border border-white/[0.07] bg-white/[0.04] px-3 py-1 text-[11px] font-bold text-gray-400 transition hover:border-white/20 hover:text-gray-300"
                     >
                       {copied === u.id ? "Copied!" : "ID"}
                     </button>
@@ -955,10 +955,10 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
       {/* Pagination */}
       {totalPages > 1 && (
         <div className="mt-5 flex items-center justify-between">
-          <p className="text-xs text-gray-500">Showing {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, sorted.length)} of {sorted.length}</p>
+          <p className="text-xs text-gray-400">Showing {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, sorted.length)} of {sorted.length}</p>
           <div className="flex gap-2">
             <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1} className="rounded-full border border-white/10 bg-white/[0.05] px-4 py-2 text-sm font-bold text-white transition hover:bg-white/[0.09] disabled:opacity-30">← Prev</button>
-            <span className="flex items-center px-3 text-sm text-gray-500">{page} / {totalPages}</span>
+            <span className="flex items-center px-3 text-sm text-gray-400">{page} / {totalPages}</span>
             <button onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page === totalPages} className="rounded-full border border-white/10 bg-white/[0.05] px-4 py-2 text-sm font-bold text-white transition hover:bg-white/[0.09] disabled:opacity-30">Next →</button>
           </div>
         </div>
@@ -1037,7 +1037,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                 <div>
                   <button
                     onClick={() => setShowFallbackUrl((v) => !v)}
-                    className="text-[11px] text-gray-500 hover:text-gray-300 transition"
+                    className="text-[11px] text-gray-400 hover:text-gray-300 transition"
                   >
                     {showFallbackUrl ? "Hide" : "Or copy sign-in link manually ↓"}
                   </button>
@@ -1077,7 +1077,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                     onChange={(e) => setCreateForm((f) => ({ ...f, email: e.target.value }))}
                     disabled={createLoading}
                     placeholder="user@example.com"
-                    className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2.5 text-sm text-white placeholder:text-gray-600 focus:border-fuchsia-400/40 focus:outline-none"
+                    className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2.5 text-sm text-white placeholder:text-gray-400 focus:border-fuchsia-400/40 focus:outline-none"
                   />
                 </div>
 
@@ -1088,7 +1088,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                       value={createForm.firstName}
                       onChange={(e) => setCreateForm((f) => ({ ...f, firstName: e.target.value }))}
                       disabled={createLoading}
-                      className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2.5 text-sm text-white placeholder:text-gray-600 focus:border-fuchsia-400/40 focus:outline-none"
+                      className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2.5 text-sm text-white placeholder:text-gray-400 focus:border-fuchsia-400/40 focus:outline-none"
                     />
                   </div>
                   <div>
@@ -1097,7 +1097,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                       value={createForm.lastName}
                       onChange={(e) => setCreateForm((f) => ({ ...f, lastName: e.target.value }))}
                       disabled={createLoading}
-                      className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2.5 text-sm text-white placeholder:text-gray-600 focus:border-fuchsia-400/40 focus:outline-none"
+                      className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2.5 text-sm text-white placeholder:text-gray-400 focus:border-fuchsia-400/40 focus:outline-none"
                     />
                   </div>
                 </div>
@@ -1142,7 +1142,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                     )}
                   </select>
                   {createForm.accountType === "candidate" && (
-                    <p className="mt-1.5 text-[11px] text-gray-600">
+                    <p className="mt-1.5 text-[11px] text-gray-400">
                       {createForm.compPlan
                         ? "Locked to Free while complimentary access is set. Guests must not look like paying subscribers."
                         : "Membership = a real paid subscription. For invited guests leave this on Free and use complimentary access below."}
@@ -1154,7 +1154,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                 {(createForm.accountType === "candidate" || createForm.accountType === "corporate") && (
                   <div className="rounded-2xl border border-cyan-400/15 bg-cyan-400/[0.04] p-3.5">
                     <label className="block text-[11px] font-bold tracking-wide text-cyan-300">Complimentary access</label>
-                    <p className="mt-1 text-[11px] leading-4 text-gray-500">
+                    <p className="mt-1 text-[11px] leading-4 text-gray-400">
                       {createForm.accountType === "corporate"
                         ? "Guest workspace with no card and no Stripe. The company is created up front, expires automatically, and there is nothing to cancel."
                         : "Guest access with no card and no Stripe. Expires automatically, then the account returns to Free with nothing to cancel."}
@@ -1211,9 +1211,9 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                           onChange={(e) => setCreateForm((f) => ({ ...f, companyName: e.target.value }))}
                           disabled={createLoading}
                           placeholder="Acme Corp"
-                          className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2.5 text-sm text-white placeholder:text-gray-600 focus:border-cyan-400/40 focus:outline-none"
+                          className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2.5 text-sm text-white placeholder:text-gray-400 focus:border-cyan-400/40 focus:outline-none"
                         />
-                        <p className="mt-1.5 text-[11px] text-gray-600">The workspace is created immediately with this person as its admin, so they land straight on a ready dashboard.</p>
+                        <p className="mt-1.5 text-[11px] text-gray-400">The workspace is created immediately with this person as its admin, so they land straight on a ready dashboard.</p>
                       </div>
                     )}
                   </div>
@@ -1243,11 +1243,11 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
           <div className="w-full max-w-md rounded-[1.75rem] border border-fuchsia-400/20 bg-[#120a1e] p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
             <p className="text-[11px] font-bold tracking-wide text-fuchsia-300">Edit user</p>
             <h3 className="mt-1 text-xl font-bold text-white">{editingUser.email}</h3>
-            <p className="mt-0.5 text-[11px] text-gray-600">Clerk ID: {editingUser.id}</p>
+            <p className="mt-0.5 text-[11px] text-gray-400">Clerk ID: {editingUser.id}</p>
 
             {/* Usage snapshot (read-only) */}
             <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.03] p-3.5">
-              <p className="text-[10px] font-bold tracking-wide text-gray-500">Usage</p>
+              <p className="text-[10px] font-bold tracking-wide text-gray-400">Usage</p>
               <div className="mt-2 grid grid-cols-3 gap-2 text-center">
                 {(
                   [
@@ -1258,12 +1258,12 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                 ).map(([label, n, last]) => (
                   <div key={label} className="rounded-xl bg-black/30 px-2 py-2">
                     <p className="text-lg font-bold text-white">{n}</p>
-                    <p className="text-[10px] text-gray-500">{label}</p>
-                    <p className="text-[9px] text-gray-600">{last ? `last ${fmtDate(last)}` : "never"}</p>
+                    <p className="text-[10px] text-gray-400">{label}</p>
+                    <p className="text-[9px] text-gray-400">{last ? `last ${fmtDate(last)}` : "never"}</p>
                   </div>
                 ))}
               </div>
-              <div className="mt-2 flex flex-wrap gap-x-4 gap-y-0.5 text-[10px] text-gray-500">
+              <div className="mt-2 flex flex-wrap gap-x-4 gap-y-0.5 text-[10px] text-gray-400">
                 <span>Profile: <span className={editingUser.profileComplete ? "text-emerald-300" : "text-gray-400"}>{editingUser.profileComplete ? "built" : "not built"}</span></span>
                 <span>Joined {fmtDate(editingUser.createdAt)}</span>
                 <span>Last sign-in {fmtDate(editingUser.lastSignInAt)}</span>
@@ -1287,7 +1287,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                     value={editForm.firstName}
                     onChange={(e) => setEditForm((f) => ({ ...f, firstName: e.target.value }))}
                     disabled={editLoading}
-                    className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2.5 text-sm text-white placeholder:text-gray-600 focus:border-fuchsia-400/40 focus:outline-none"
+                    className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2.5 text-sm text-white placeholder:text-gray-400 focus:border-fuchsia-400/40 focus:outline-none"
                   />
                 </div>
                 <div>
@@ -1296,7 +1296,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                     value={editForm.lastName}
                     onChange={(e) => setEditForm((f) => ({ ...f, lastName: e.target.value }))}
                     disabled={editLoading}
-                    className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2.5 text-sm text-white placeholder:text-gray-600 focus:border-fuchsia-400/40 focus:outline-none"
+                    className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2.5 text-sm text-white placeholder:text-gray-400 focus:border-fuchsia-400/40 focus:outline-none"
                   />
                 </div>
               </div>
@@ -1348,10 +1348,10 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                   )}
                 </select>
                 {editForm.accountType === "corporate" && (
-                  <p className="mt-1.5 text-[11px] text-gray-600">Affects all members of this company workspace.</p>
+                  <p className="mt-1.5 text-[11px] text-gray-400">Affects all members of this company workspace.</p>
                 )}
                 {editForm.accountType === "candidate" && !!editForm.compPlan && (
-                  <p className="mt-1.5 text-[11px] text-gray-600">Locked to Free while complimentary access is set. Remove the complimentary plan first to set a paid membership manually.</p>
+                  <p className="mt-1.5 text-[11px] text-gray-400">Locked to Free while complimentary access is set. Remove the complimentary plan first to set a paid membership manually.</p>
                 )}
               </div>
 
@@ -1364,7 +1364,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                     onChange={(e) => setEditForm((f) => ({ ...f, companyName: e.target.value }))}
                     disabled={editLoading}
                     placeholder="Acme Corp"
-                    className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2.5 text-sm text-white placeholder:text-gray-600 focus:border-fuchsia-400/40 focus:outline-none"
+                    className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2.5 text-sm text-white placeholder:text-gray-400 focus:border-fuchsia-400/40 focus:outline-none"
                   />
                 </div>
               )}
@@ -1387,7 +1387,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
               {editForm.accountType === "candidate" && (
                 <div className="rounded-2xl border border-cyan-400/15 bg-cyan-400/[0.04] p-3.5">
                   <label className="block text-[11px] font-bold tracking-wide text-cyan-300">Complimentary access</label>
-                  <p className="mt-1 text-[11px] leading-4 text-gray-500">
+                  <p className="mt-1 text-[11px] leading-4 text-gray-400">
                     Guest access with no card and no Stripe. It expires automatically on the end date, then the user returns to Free with nothing to cancel. A paid subscription always takes precedence.
                   </p>
                   <div className="mt-2.5 grid grid-cols-2 gap-3">
@@ -1422,7 +1422,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
               {editingUser && (
                 <div>
                   <label className="block text-[11px] font-bold tracking-wide text-gray-400">Joined</label>
-                  <p className="mt-1.5 px-3 py-2.5 text-sm text-gray-500">{fmtDate(editingUser.createdAt)}</p>
+                  <p className="mt-1.5 px-3 py-2.5 text-sm text-gray-400">{fmtDate(editingUser.createdAt)}</p>
                 </div>
               )}
 
@@ -1461,7 +1461,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
               onChange={(e) => { setDeleteConfirm(e.target.value); setDeleteError(""); }}
               disabled={deleteLoading}
               placeholder={deletingUser.email}
-              className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2.5 text-sm text-white placeholder:text-gray-600 focus:border-red-400/40 focus:outline-none"
+              className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2.5 text-sm text-white placeholder:text-gray-400 focus:border-red-400/40 focus:outline-none"
             />
 
             {deleteError && <p className="mt-2 text-sm font-semibold text-red-300">{deleteError}</p>}
@@ -1528,29 +1528,29 @@ function CampaignLinkBuilder() {
 
   const customUrl = buildUrl(source, medium, campaign, path);
   const inputS =
-    "w-full rounded-xl border border-white/10 bg-white/[0.05] px-3 py-1.5 text-xs text-white placeholder:text-gray-600 focus:border-fuchsia-400/40 focus:outline-none";
+    "w-full rounded-xl border border-white/10 bg-white/[0.05] px-3 py-1.5 text-xs text-white placeholder:text-gray-400 focus:border-fuchsia-400/40 focus:outline-none";
 
   return (
     <div className="rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-4">
-      <p className="text-xs font-semibold text-gray-500">
-        Campaign link builder <span className="text-gray-600">· tag links so signups are traceable</span>
+      <p className="text-xs font-semibold text-gray-400">
+        Campaign link builder <span className="text-gray-400">· tag links so signups are traceable</span>
       </p>
 
       <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
         <label className="block">
-          <span className="mb-1 block text-[10px] uppercase tracking-wider text-gray-600">Source</span>
+          <span className="mb-1 block text-[10px] uppercase tracking-wider text-gray-400">Source</span>
           <input value={source} onChange={(e) => setSource(e.target.value)} className={inputS} placeholder="tiktok" />
         </label>
         <label className="block">
-          <span className="mb-1 block text-[10px] uppercase tracking-wider text-gray-600">Medium</span>
+          <span className="mb-1 block text-[10px] uppercase tracking-wider text-gray-400">Medium</span>
           <input value={medium} onChange={(e) => setMedium(e.target.value)} className={inputS} placeholder="social" />
         </label>
         <label className="block">
-          <span className="mb-1 block text-[10px] uppercase tracking-wider text-gray-600">Campaign</span>
+          <span className="mb-1 block text-[10px] uppercase tracking-wider text-gray-400">Campaign</span>
           <input value={campaign} onChange={(e) => setCampaign(e.target.value)} className={inputS} placeholder="launch" />
         </label>
         <label className="block">
-          <span className="mb-1 block text-[10px] uppercase tracking-wider text-gray-600">Page</span>
+          <span className="mb-1 block text-[10px] uppercase tracking-wider text-gray-400">Page</span>
           <input value={path} onChange={(e) => setPath(e.target.value)} className={inputS} placeholder="/" />
         </label>
       </div>
@@ -1580,7 +1580,7 @@ function CampaignLinkBuilder() {
         ))}
       </div>
 
-      <p className="mt-2 text-[10px] leading-4 text-gray-600">
+      <p className="mt-2 text-[10px] leading-4 text-gray-400">
         Preset buttons copy a homepage link tagged for that channel. Links with a promo code
         (e.g. ?promo=LAUNCH100) are tracked automatically as promo signups.
       </p>

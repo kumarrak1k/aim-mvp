@@ -444,7 +444,7 @@ export default function PrivacyPage() {
                   Data controller
                 </p>
                 <p className="mb-1 font-bold text-gray-200">AI Career Mentor Ltd</p>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-gray-400">
                   Registered in England &amp; Wales<br />Company No. 17288119
                 </p>
               </div>
@@ -459,7 +459,7 @@ export default function PrivacyPage() {
                 <p className="font-bold text-gray-200">
                   privacy@aicareermentor.co.uk
                 </p>
-                <p className="mt-2 text-xs text-gray-500">
+                <p className="mt-2 text-xs text-gray-400">
                   We aim to respond within 30 days.
                 </p>
               </div>

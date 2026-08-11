@@ -47,7 +47,7 @@ export default function Error({
           </p>
 
           {error.digest && (
-            <p className="mx-auto mt-5 w-fit rounded-full border border-white/10 bg-black/30 px-4 py-2 text-xs font-bold text-gray-500">
+            <p className="mx-auto mt-5 w-fit rounded-full border border-white/10 bg-black/30 px-4 py-2 text-xs font-bold text-gray-400">
               Error reference: {error.digest}
             </p>
           )}

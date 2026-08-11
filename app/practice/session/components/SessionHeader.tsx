@@ -105,7 +105,7 @@ function CompanyBrandedHeader({
               {safeCompany}
             </p>
             {templateName && (
-              <p className="hidden truncate text-xs text-gray-500 sm:block">
+              <p className="hidden truncate text-xs text-gray-400 sm:block">
                 {templateName}
               </p>
             )}
@@ -122,7 +122,7 @@ function CompanyBrandedHeader({
             In progress
           </span>
 
-          <div className="hidden text-right text-[10px] leading-tight text-gray-500 sm:block">
+          <div className="hidden text-right text-[10px] leading-tight text-gray-400 sm:block">
             <p className="font-bold tracking-wide">Powered by</p>
             <p className="text-gray-300">AI Career Mentor</p>
           </div>

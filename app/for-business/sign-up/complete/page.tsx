@@ -158,7 +158,7 @@ export default function BusinessSignUpCompletePage() {
             I&rsquo;m actually a job applicant. Take me to candidate sign-up →
           </Link>
 
-          <p className="mt-5 text-center text-xs leading-5 text-gray-600">
+          <p className="mt-5 text-center text-xs leading-5 text-gray-400">
             If you&rsquo;re a freelance recruiter or work from a personal
             email, you can still use a hiring team account. Just confirm
             above.

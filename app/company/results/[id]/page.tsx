@@ -325,7 +325,7 @@ export default function CandidateResultDetailPage() {
 function Pill({ label, value }: { label: string; value: string }) {
   return (
     <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 font-semibold text-gray-300">
-      <span className="text-gray-500">{label}:</span> {value}
+      <span className="text-gray-400">{label}:</span> {value}
     </span>
   );
 }
@@ -361,7 +361,7 @@ function BigStat({
 function TimelineItem({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-xl border border-white/[0.06] bg-black/20 p-3">
-      <p className="text-[10px] font-bold tracking-wide text-gray-500">
+      <p className="text-[10px] font-bold tracking-wide text-gray-400">
         {label}
       </p>
       <p className="mt-1 text-xs font-semibold text-gray-200">{value}</p>
@@ -520,7 +520,7 @@ function QuestionCard({
                 }`}
               >
                 {fb.overall_score}
-                <span className="text-xs text-gray-500">/10</span>
+                <span className="text-xs text-gray-400">/10</span>
               </p>
             </div>
           )}
@@ -534,7 +534,7 @@ function QuestionCard({
             Candidate&rsquo;s answer
           </p>
           <p className="rounded-xl border border-white/[0.06] bg-black/30 p-4 text-sm leading-7 text-gray-200 whitespace-pre-wrap">
-            {item.answer || <span className="italic text-gray-500">No answer recorded.</span>}
+            {item.answer || <span className="italic text-gray-400">No answer recorded.</span>}
           </p>
         </div>
 
@@ -551,7 +551,7 @@ function QuestionCard({
                   key={k}
                   className="rounded-lg border border-white/[0.06] bg-black/25 px-3 py-2"
                 >
-                  <p className="text-[10px] font-bold tracking-wide text-gray-500">
+                  <p className="text-[10px] font-bold tracking-wide text-gray-400">
                     {CATEGORY_LABELS[k] || k}
                   </p>
                   <p className="text-sm font-bold text-white">{v}/10</p>
@@ -655,7 +655,7 @@ function DeliveryStrip({
 
   return (
     <div>
-      <p className="mb-2 text-[10px] font-bold tracking-wide text-gray-500">
+      <p className="mb-2 text-[10px] font-bold tracking-wide text-gray-400">
         {title}
       </p>
       <div className="flex flex-wrap gap-2">
@@ -664,7 +664,7 @@ function DeliveryStrip({
             key={e.label}
             className="rounded-full border border-white/[0.07] bg-black/30 px-2.5 py-1 text-[11px] font-semibold text-gray-300"
           >
-            <span className="text-gray-500">{e.label}:</span>{" "}
+            <span className="text-gray-400">{e.label}:</span>{" "}
             <span className="text-white">{e.value}</span>
           </span>
         ))}

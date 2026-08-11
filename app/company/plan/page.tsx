@@ -100,7 +100,7 @@ export default function CompanyPlanPage() {
                 <span className="text-4xl font-bold leading-none tracking-tight">
                   £{plan.priceGBP}
                 </span>
-                <span className="mb-1.5 text-sm text-gray-500">
+                <span className="mb-1.5 text-sm text-gray-400">
                   {plan.id === "team" ? "/month after trial" : "/month"}
                 </span>
               </div>
@@ -110,7 +110,7 @@ export default function CompanyPlanPage() {
                   <li key={f} className="flex items-start gap-2.5 text-sm text-gray-300">
                     <span
                       className={`mt-[3px] shrink-0 text-[13px] ${
-                        plan.highlight ? "text-fuchsia-400" : "text-gray-500"
+                        plan.highlight ? "text-fuchsia-400" : "text-gray-400"
                       }`}
                     >
                       ✓
@@ -136,7 +136,7 @@ export default function CompanyPlanPage() {
                     : "Start free trial on Team"}
               </button>
               {plan.id === "business" && (
-                <p className="mt-2 text-center text-[11px] text-gray-500">
+                <p className="mt-2 text-center text-[11px] text-gray-400">
                   Trials run on the Team plan. Upgrade to Business anytime from
                   your dashboard.
                 </p>
@@ -163,7 +163,7 @@ export default function CompanyPlanPage() {
           </Link>
         </div>
 
-        <p className="mt-6 text-center text-xs text-gray-600">
+        <p className="mt-6 text-center text-xs text-gray-400">
           Already have a plan?{" "}
           <Link href="/company/dashboard" className="font-bold text-fuchsia-300 hover:text-fuchsia-200">
             Go to dashboard →

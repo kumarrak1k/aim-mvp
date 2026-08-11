@@ -128,7 +128,7 @@ export default function CoverLetterPage() {
       <div className="mx-auto max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] px-4 py-8 sm:px-6">
         {/* Header */}
         <div className="mb-8">
-          <Link href="/career-docs" className="mb-4 inline-flex items-center gap-1.5 text-xs font-bold text-gray-500 hover:text-gray-300 transition">
+          <Link href="/career-docs" className="mb-4 inline-flex items-center gap-1.5 text-xs font-bold text-gray-400 hover:text-gray-300 transition">
             ← CV Studio
           </Link>
           <div className="flex items-center gap-3">
@@ -154,13 +154,13 @@ export default function CoverLetterPage() {
                   <label className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400">Company *</label>
                   <input type="text" value={companyName} onChange={(e) => setCompanyName(e.target.value)}
                     placeholder="e.g. Goldman Sachs"
-                    className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-600 outline-none focus:border-cyan-400/40 focus:ring-1 focus:ring-cyan-400/20" required />
+                    className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-400 outline-none focus:border-cyan-400/40 focus:ring-1 focus:ring-cyan-400/20" required />
                 </div>
                 <div>
                   <label className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400">Job title *</label>
                   <input type="text" value={jobTitle} onChange={(e) => setJobTitle(e.target.value)}
                     placeholder="e.g. Analyst"
-                    className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-600 outline-none focus:border-cyan-400/40 focus:ring-1 focus:ring-cyan-400/20" required />
+                    className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-400 outline-none focus:border-cyan-400/40 focus:ring-1 focus:ring-cyan-400/20" required />
                 </div>
               </div>
 
@@ -169,8 +169,8 @@ export default function CoverLetterPage() {
                 <textarea value={jobDescription} onChange={(e) => setJobDescription(e.target.value)}
                   placeholder="Paste the job posting here. The more detail, the better for tailoring…"
                   rows={6}
-                  className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-600 outline-none focus:border-cyan-400/40 focus:ring-1 focus:ring-cyan-400/20 resize-y" required />
-                <p className={`mt-1 text-right text-[10px] ${jobDescription.length > 10000 ? "text-red-400" : "text-gray-600"}`}>
+                  className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-400 outline-none focus:border-cyan-400/40 focus:ring-1 focus:ring-cyan-400/20 resize-y" required />
+                <p className={`mt-1 text-right text-[10px] ${jobDescription.length > 10000 ? "text-red-400" : "text-gray-400"}`}>
                   {jobDescription.length.toLocaleString()} / 10,000 characters
                 </p>
               </div>
@@ -230,8 +230,8 @@ export default function CoverLetterPage() {
                 <textarea value={experience} onChange={(e) => setExperience(e.target.value)}
                   placeholder="Summarise your relevant experience: roles, key achievements, skills. Include numbers and specifics where possible…"
                   rows={5}
-                  className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-600 outline-none focus:border-cyan-400/40 focus:ring-1 focus:ring-cyan-400/20 resize-y" required />
-                <p className={`mt-1 text-right text-[10px] ${experience.length > 15000 ? "text-red-400" : "text-gray-600"}`}>
+                  className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-400 outline-none focus:border-cyan-400/40 focus:ring-1 focus:ring-cyan-400/20 resize-y" required />
+                <p className={`mt-1 text-right text-[10px] ${experience.length > 15000 ? "text-red-400" : "text-gray-400"}`}>
                   {experience.length.toLocaleString()} / 15,000 characters
                 </p>
               </div>
@@ -245,7 +245,7 @@ export default function CoverLetterPage() {
                       className={`rounded-xl border px-3 py-2.5 text-left transition ${
                         tone === opt.value
                           ? "border-cyan-400/40 bg-cyan-400/10 text-white"
-                          : "border-white/[0.08] bg-white/[0.02] text-gray-500 hover:border-white/20 hover:text-gray-300"
+                          : "border-white/[0.08] bg-white/[0.02] text-gray-400 hover:border-white/20 hover:text-gray-300"
                       }`}>
                       <p className="text-xs font-bold">{opt.label}</p>
                       <p className="text-[10px] mt-0.5 leading-4">{opt.desc}</p>
@@ -263,7 +263,7 @@ export default function CoverLetterPage() {
                 <input type="range" min={200} max={600} step={50} value={wordLimit}
                   onChange={(e) => setWordLimit(Number(e.target.value))}
                   className="w-full accent-cyan-400" />
-                <div className="mt-1 flex justify-between text-[10px] text-gray-600">
+                <div className="mt-1 flex justify-between text-[10px] text-gray-400">
                   <span>200 (short)</span><span>600 (detailed)</span>
                 </div>
               </div>
@@ -275,14 +275,14 @@ export default function CoverLetterPage() {
               className={`flex w-full items-center justify-center gap-2 rounded-2xl px-6 py-4 text-sm font-bold transition-all ${
                 !loading && canSubmit
                   ? "bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg hover:scale-[1.01]"
-                  : "cursor-not-allowed bg-white/[0.05] text-gray-600"
+                  : "cursor-not-allowed bg-white/[0.05] text-gray-400"
               }`}>
               {loading ? (
                 <><svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>Writing your letter…</>
               ) : "Generate cover letter →"}
             </button>
             {!loading && !canSubmit && (
-              <p className="text-center text-[11px] leading-5 text-gray-500">
+              <p className="text-center text-[11px] leading-5 text-gray-400">
                 To enable the button:{" "}
                 {[
                   !companyName.trim() && "add the company name",
@@ -305,7 +305,7 @@ export default function CoverLetterPage() {
                     <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" />
                   </svg>
                 </div>
-                <p className="text-sm text-gray-500">Your cover letter will appear here</p>
+                <p className="text-sm text-gray-400">Your cover letter will appear here</p>
               </div>
             )}
 

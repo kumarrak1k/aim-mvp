@@ -54,7 +54,7 @@ export default async function CompanyGuidePage({ params }: Props) {
 
       <div className="mx-auto max-w-3xl px-4 pb-24 pt-10 sm:px-6">
         <div className="mb-6">
-          <Link href="/companies" className="text-sm text-gray-500 hover:text-gray-300">
+          <Link href="/companies" className="text-sm text-gray-400 hover:text-gray-300">
             ← All guides
           </Link>
         </div>
@@ -178,7 +178,7 @@ export default async function CompanyGuidePage({ params }: Props) {
         </div>
 
         {/* Back link */}
-        <p className="mt-10 text-center text-sm text-gray-600">
+        <p className="mt-10 text-center text-sm text-gray-400">
           <Link href="/companies" className="hover:text-gray-400">
             ← View all company interview guides
           </Link>

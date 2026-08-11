@@ -67,7 +67,7 @@ export function StarAnswer({
       <div className="space-y-3">
         {SECTIONS.map((s) => (
           <div key={s.key}>
-            <p className="mb-0.5 text-[11px] font-bold tracking-wide text-gray-500">
+            <p className="mb-0.5 text-[11px] font-bold tracking-wide text-gray-400">
               {s.label}
             </p>
             <p className="whitespace-pre-wrap text-[13px] leading-6 text-gray-800">

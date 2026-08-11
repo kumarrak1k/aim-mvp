@@ -134,7 +134,7 @@ function UpgradeGate({ planName }: { planName: string }) {
             See what&apos;s included
           </Link>
         </div>
-        <p className="mt-4 text-xs text-gray-500">
+        <p className="mt-4 text-xs text-gray-400">
           Already upgraded?{" "}
           <button onClick={() => window.location.reload()} className="text-cyan-400 underline hover:text-cyan-300">
             Refresh this page
@@ -218,7 +218,7 @@ function AssessmentCentreAccess({ isTaster = false }: { isTaster?: boolean }) {
               Start assessment centre →
             </Link>
           </div>
-          <p className="mt-4 text-xs text-gray-500">
+          <p className="mt-4 text-xs text-gray-400">
             Each session uses a fresh scenario. Approximately 45–60 minutes.
           </p>
         </div>
@@ -274,7 +274,7 @@ export default function AssessmentCentrePage() {
     if (!isLoaded || planLoading) {
       return (
         <div className="mx-auto max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] px-4 py-16 text-center sm:px-6">
-          <p className="text-sm text-gray-500">Checking your plan…</p>
+          <p className="text-sm text-gray-400">Checking your plan…</p>
         </div>
       );
     }

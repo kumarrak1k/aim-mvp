@@ -164,7 +164,7 @@ export function PracticeAnswerPanel({
           <p className="text-xs font-bold tracking-wide text-gray-400">
             Transcript
           </p>
-          <div className="flex items-center gap-2 text-[11px] font-bold text-gray-500">
+          <div className="flex items-center gap-2 text-[11px] font-bold text-gray-400">
             <span>{wordCount} words</span>
             {isListening && (
               <span className="rounded-full border border-red-300/20 bg-red-300/10 px-2 py-1 text-red-100">
@@ -175,7 +175,7 @@ export function PracticeAnswerPanel({
         </div>
 
         <textarea
-          className="min-h-[260px] w-full resize-y bg-transparent p-4 leading-7 text-white placeholder-gray-500 outline-none sm:min-h-[330px]"
+          className="min-h-[260px] w-full resize-y bg-transparent p-4 leading-7 text-white placeholder-gray-400 outline-none sm:min-h-[330px]"
           placeholder={
             voiceSupported
               ? "Speak or type your answer here..."
@@ -257,7 +257,7 @@ export function PracticeAnswerPanel({
 function StatusCard({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-2xl border border-white/10 bg-black/25 p-3">
-      <p className="text-[11px] font-bold tracking-wide text-gray-500">
+      <p className="text-[11px] font-bold tracking-wide text-gray-400">
         {label}
       </p>
       <p className="mt-1 text-sm font-bold text-gray-200">{value}</p>

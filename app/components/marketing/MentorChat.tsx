@@ -283,7 +283,7 @@ export function MentorChat() {
                 maxLength={500}
                 disabled={loading}
                 aria-label="Chat message"
-                className="flex-1 min-w-0 rounded-lg px-3 py-2 text-sm text-white placeholder:text-gray-500 outline-none disabled:opacity-50"
+                className="flex-1 min-w-0 rounded-lg px-3 py-2 text-sm text-white placeholder:text-gray-400 outline-none disabled:opacity-50"
                 style={{
                   background: "rgba(255,255,255,0.06)",
                   boxShadow: "0 0 0 1px rgba(255,255,255,0.08)",
@@ -307,7 +307,7 @@ export function MentorChat() {
                 </svg>
               </button>
             </form>
-            <p className="text-center text-[11px] text-gray-500 pb-2.5 px-3">
+            <p className="text-center text-[11px] text-gray-400 pb-2.5 px-3">
               Need more help?{" "}
               <Link href="/contact" className="text-gray-400 hover:text-white underline transition-colors">
                 Contact us

@@ -410,7 +410,7 @@ export function PracticeStartScreen({
         </label>
 
         <input
-          className="mb-3 w-full rounded-2xl border border-white/10 bg-black/35 p-4 text-white placeholder-gray-500 outline-none transition focus:border-purple-300/50 focus:ring-4 focus:ring-purple-500/10"
+          className="mb-3 w-full rounded-2xl border border-white/10 bg-black/35 p-4 text-white placeholder-gray-400 outline-none transition focus:border-purple-300/50 focus:ring-4 focus:ring-purple-500/10"
           placeholder={
             isSignedIn && hasCandidateProfileContext(savedCandidateProfile)
               ? "Using your saved profile context"
@@ -663,7 +663,7 @@ export function PracticeStartScreen({
                 >
                   +
                 </button>
-                <span className="text-sm text-gray-500">
+                <span className="text-sm text-gray-400">
                   questions in this session
                 </span>
               </div>
@@ -688,7 +688,7 @@ export function PracticeStartScreen({
                 Custom question mix
               </span>
               {!useHybridMix && (
-                <span className="text-xs text-gray-500">
+                <span className="text-xs text-gray-400">
                   (all {interviewType.split("/")[0].trim()} questions)
                 </span>
               )}
@@ -723,12 +723,12 @@ export function PracticeStartScreen({
                             {QUESTION_TYPE_LABELS[key]}
                           </span>
                           {key === "opener" && (
-                            <p className="text-[10px] text-gray-500 leading-tight mt-0.5">
+                            <p className="text-[10px] text-gray-400 leading-tight mt-0.5">
                               AI-generated intro question
                             </p>
                           )}
                           {key === "custom" && (
-                            <p className="text-[10px] text-gray-500 leading-tight mt-0.5">
+                            <p className="text-[10px] text-gray-400 leading-tight mt-0.5">
                               Your own verbatim question
                             </p>
                           )}
@@ -780,14 +780,14 @@ export function PracticeStartScreen({
                                 placeholder={`Question ${i + 1}: type it exactly as you want it asked`}
                                 maxLength={MAX_CUSTOM_QUESTION_LENGTH}
                                 rows={2}
-                                className="w-full rounded-xl border border-white/10 bg-white/[0.06] px-3 py-2 text-xs text-white placeholder-gray-600 focus:border-purple-400/50 focus:outline-none resize-none"
+                                className="w-full rounded-xl border border-white/10 bg-white/[0.06] px-3 py-2 text-xs text-white placeholder-gray-400 focus:border-purple-400/50 focus:outline-none resize-none"
                               />
                               {!(customQuestions[i] ?? "").trim() && (
                                 <p className="mt-0.5 text-[10px] font-semibold text-amber-300">
                                   Enter question text to continue.
                                 </p>
                               )}
-                              <p className="mt-0.5 text-right text-[10px] text-gray-600">
+                              <p className="mt-0.5 text-right text-[10px] text-gray-400">
                                 {(customQuestions[i] ?? "").length} /{" "}
                                 {MAX_CUSTOM_QUESTION_LENGTH}
                               </p>
@@ -893,7 +893,7 @@ export function PracticeStartScreen({
             )}
 
             {!isSignedIn && (
-              <p className="mt-3 text-xs font-semibold leading-5 text-gray-500">
+              <p className="mt-3 text-xs font-semibold leading-5 text-gray-400">
                 Sign in to save your preferred role setup, practice mode and
                 speaker.
               </p>
@@ -920,7 +920,7 @@ export function PracticeStartScreen({
         </button>
 
         {startDisabled && startDisabledMessage && (
-          <p className="mt-3 text-sm font-semibold leading-6 text-gray-500">
+          <p className="mt-3 text-sm font-semibold leading-6 text-gray-400">
             {startDisabledMessage}
           </p>
         )}
@@ -1040,7 +1040,7 @@ function ModeCard({
           }`}
         >
           {locked ? (
-            <svg viewBox="0 0 24 24" fill="currentColor" className="h-3 w-3 text-gray-500">
+            <svg viewBox="0 0 24 24" fill="currentColor" className="h-3 w-3 text-gray-400">
               <path d="M12 1C8.676 1 6 3.676 6 7v1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9a1 1 0 0 0-1-1h-2V7c0-3.324-2.676-6-6-6zm0 2c2.276 0 4 1.724 4 4v1H8V7c0-2.276 1.724-4 4-4zm0 9a2 2 0 1 1 0 4 2 2 0 0 1 0-4z"/>
             </svg>
           ) : active ? (

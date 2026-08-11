@@ -96,7 +96,7 @@ export default function AssessmentCompletePage() {
 
         {data?.template && (
           <div className="mt-8 w-full max-w-md rounded-[1.5rem] border border-white/10 bg-white/[0.04] p-5 text-center backdrop-blur-2xl">
-            <p className="text-[11px] font-bold tracking-wide text-gray-500">
+            <p className="text-[11px] font-bold tracking-wide text-gray-400">
               You completed
             </p>
             <p className="mt-2 text-base font-bold text-white">{data.template.name}</p>
@@ -143,7 +143,7 @@ export default function AssessmentCompletePage() {
           </div>
         </div>
 
-        <p className="mt-12 text-center text-xs text-gray-600">
+        <p className="mt-12 text-center text-xs text-gray-400">
           You can safely close this tab.
         </p>
       </div>

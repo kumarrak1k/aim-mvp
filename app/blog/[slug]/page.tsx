@@ -117,7 +117,7 @@ const mdxComponents = {
   ),
   th: (props: React.HTMLAttributes<HTMLTableCellElement>) => (
     <th
-      className="px-4 py-3 text-left text-xs font-bold tracking-wide text-gray-500"
+      className="px-4 py-3 text-left text-xs font-bold tracking-wide text-gray-400"
       {...props}
     />
   ),
@@ -222,7 +222,7 @@ export default async function BlogPostPage({ params }: Props) {
           <h1 className="text-[2rem] font-bold leading-[1.06] tracking-tight sm:text-[2.5rem]">
             {post.title}
           </h1>
-          <div className="mt-4 flex items-center gap-3 text-xs text-gray-600">
+          <div className="mt-4 flex items-center gap-3 text-xs text-gray-400">
             <time dateTime={post.date}>
               {new Date(post.date).toLocaleDateString("en-GB", {
                 day: "numeric",
@@ -262,7 +262,7 @@ export default async function BlogPostPage({ params }: Props) {
         <div className="mt-8 text-center">
           <Link
             href="/blog"
-            className="text-sm text-gray-600 transition hover:text-gray-400"
+            className="text-sm text-gray-400 transition hover:text-gray-400"
           >
             ← Back to all guides
           </Link>

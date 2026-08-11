@@ -66,7 +66,7 @@ export function AssessmentNextPanel({
       </div>
 
       {!isFinalQuestion && (
-        <p className="mt-6 border-t border-white/[0.06] pt-4 text-xs leading-5 text-gray-500">
+        <p className="mt-6 border-t border-white/[0.06] pt-4 text-xs leading-5 text-gray-400">
           You will not see scores or feedback during this assessment. Your
           answers are reviewed by the hiring team, not by you.
         </p>

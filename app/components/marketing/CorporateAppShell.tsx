@@ -174,7 +174,7 @@ export function CorporateAppShell({
             <span className="flex items-center text-white/[0.15]">·</span>
             {resourceLinks.map((item) => (
               <Link key={item.href} href={item.href}>
-                <span className="block whitespace-nowrap rounded-full border border-white/[0.08] bg-white/[0.04] px-3.5 py-1.5 text-xs font-bold text-gray-500 transition hover:bg-white/[0.07] hover:text-white">
+                <span className="block whitespace-nowrap rounded-full border border-white/[0.08] bg-white/[0.04] px-3.5 py-1.5 text-xs font-bold text-gray-400 transition hover:bg-white/[0.07] hover:text-white">
                   {item.label}
                 </span>
               </Link>
@@ -189,7 +189,7 @@ export function CorporateAppShell({
               <Link
                 key={item.href}
                 href={item.href}
-                className="text-[12px] font-semibold text-gray-500 transition hover:text-gray-300"
+                className="text-[12px] font-semibold text-gray-400 transition hover:text-gray-300"
               >
                 {item.label}
               </Link>
@@ -369,13 +369,13 @@ function BottomNavItem({
       className="flex flex-1 flex-col items-center justify-center gap-1 py-2 transition-opacity active:opacity-60"
     >
       <span
-        className={`transition-colors ${active ? "text-white" : "text-gray-500"}`}
+        className={`transition-colors ${active ? "text-white" : "text-gray-400"}`}
       >
         {children}
       </span>
       <span
         className={`text-[9px] font-bold leading-none transition-colors ${
-          active ? "text-white" : "text-gray-500"
+          active ? "text-white" : "text-gray-400"
         }`}
       >
         {label}

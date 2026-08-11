@@ -90,7 +90,7 @@ function Stat({ label, value, tone }: { label: string; value: string; tone?: "wa
     tone === "warn" ? "text-amber-300" : tone === "good" ? "text-emerald-300" : "text-white";
   return (
     <div className="rounded-[1rem] border border-white/[0.07] bg-white/[0.03] px-3 py-2.5">
-      <p className="text-[10px] font-bold tracking-wide text-gray-500">{label}</p>
+      <p className="text-[10px] font-bold tracking-wide text-gray-400">{label}</p>
       <p className={`mt-1 text-lg font-bold ${colour}`}>{value}</p>
     </div>
   );
@@ -134,7 +134,7 @@ export function UserActivityPanel({
             <h2 className="text-xl font-bold tracking-tight text-white">
               {report?.identity.name || report?.identity.email || "User activity"}
             </h2>
-            <p className="mt-1 text-xs text-gray-500">
+            <p className="mt-1 text-xs text-gray-400">
               {report?.identity.email} · {report?.identity.plan?.planName ?? "—"}
               {report?.identity.plan?.isTrial ? " (on trial)" : ""}
             </p>
@@ -152,7 +152,7 @@ export function UserActivityPanel({
             {error}
           </p>
         )}
-        {!report && !error && <p className="py-10 text-center text-sm text-gray-500">Loading activity…</p>}
+        {!report && !error && <p className="py-10 text-center text-sm text-gray-400">Loading activity…</p>}
 
         {report && (
           <div className="space-y-5">
@@ -178,7 +178,7 @@ export function UserActivityPanel({
                   tone="warn"
                 />
               </div>
-              <p className="mt-2 text-[11px] text-gray-500">
+              <p className="mt-2 text-[11px] text-gray-400">
                 First seen {fmtDate(report.engagement.firstSeen)} · last seen{" "}
                 {fmtDate(report.engagement.lastSeen)} · last sign-in{" "}
                 {fmtDate(report.identity.lastSignInAt)}
@@ -245,7 +245,7 @@ export function UserActivityPanel({
             <section className={CARD}>
               <p className={H}>Visits — where each one ended</p>
               {report.visits.length === 0 ? (
-                <p className="mt-2 text-xs text-gray-500">No page-view telemetry for this user yet.</p>
+                <p className="mt-2 text-xs text-gray-400">No page-view telemetry for this user yet.</p>
               ) : (
                 <div className="mt-2 space-y-2.5">
                   {report.visits.map((v) => (
@@ -257,7 +257,7 @@ export function UserActivityPanel({
                       <p className="mt-1.5 break-words text-xs text-gray-300">
                         {v.path.map((p, i) => (
                           <span key={i}>
-                            {i > 0 && <span className="text-gray-600"> → </span>}
+                            {i > 0 && <span className="text-gray-400"> → </span>}
                             <span className={i === v.path.length - 1 ? "font-bold text-amber-300" : ""}>
                               {p}
                             </span>
@@ -279,7 +279,7 @@ export function UserActivityPanel({
                     {report.topPages.map((p) => (
                       <tr key={p.path} className="border-b border-white/[0.05] last:border-0">
                         <td className="py-1.5 pr-3 text-gray-300">{p.path}</td>
-                        <td className="py-1.5 pr-3 text-right text-gray-500">{p.views}×</td>
+                        <td className="py-1.5 pr-3 text-right text-gray-400">{p.views}×</td>
                         <td className="py-1.5 text-right font-bold text-white">{fmtDuration(p.totalMs)}</td>
                       </tr>
                     ))}
@@ -295,7 +295,7 @@ export function UserActivityPanel({
                 <ul className="mt-2 space-y-2">
                   {report.chats.map((c, i) => (
                     <li key={i} className="text-xs">
-                      <span className="text-gray-500">{fmtDate(c.at)}</span>
+                      <span className="text-gray-400">{fmtDate(c.at)}</span>
                       <p className="mt-0.5 text-gray-200">“{c.question ?? `(${c.chars} chars)`}”</p>
                     </li>
                   ))}
@@ -307,7 +307,7 @@ export function UserActivityPanel({
             <section className={CARD}>
               <p className={H}>Practice sessions</p>
               {report.practiceSessions.length === 0 ? (
-                <p className="mt-2 text-xs text-gray-500">None completed.</p>
+                <p className="mt-2 text-xs text-gray-400">None completed.</p>
               ) : (
                 <ul className="mt-2 space-y-1.5">
                   {report.practiceSessions.map((s) => (

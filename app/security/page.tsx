@@ -117,7 +117,7 @@ export default function SecurityPage() {
               </div>
             ))}
           </div>
-          <p className="mt-5 text-xs leading-6 text-gray-500">
+          <p className="mt-5 text-xs leading-6 text-gray-400">
             * Two endpoints are intentionally public by design:{" "}
             <span className="font-mono text-gray-400">/tools/star-scorer</span> (free
             STAR answer scorer, IP-rate-limited to 5 requests per hour) and{" "}
@@ -130,7 +130,7 @@ export default function SecurityPage() {
         {/* Subprocessors */}
         <section className="mb-14">
           <h2 className="mb-3 text-2xl font-bold tracking-tight">Sub-processors</h2>
-          <p className="mb-7 text-sm text-gray-500">
+          <p className="mb-7 text-sm text-gray-400">
             We use the following third-party services to operate the platform. Each
             is bound by a Data Processing Agreement where required under UK GDPR.
           </p>
@@ -138,13 +138,13 @@ export default function SecurityPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-white/[0.08] bg-white/[0.03]">
-                  <th className="px-6 py-4 text-left text-xs font-bold tracking-wide text-gray-500">
+                  <th className="px-6 py-4 text-left text-xs font-bold tracking-wide text-gray-400">
                     Processor
                   </th>
-                  <th className="hidden px-6 py-4 text-left text-xs font-bold tracking-wide text-gray-500 sm:table-cell">
+                  <th className="hidden px-6 py-4 text-left text-xs font-bold tracking-wide text-gray-400 sm:table-cell">
                     Purpose
                   </th>
-                  <th className="px-6 py-4 text-left text-xs font-bold tracking-wide text-gray-500">
+                  <th className="px-6 py-4 text-left text-xs font-bold tracking-wide text-gray-400">
                     Location
                   </th>
                 </tr>
@@ -165,7 +165,7 @@ export default function SecurityPage() {
                     <td className="hidden px-6 py-4 text-gray-400 sm:table-cell">
                       {sp.purpose}
                     </td>
-                    <td className="px-6 py-4 text-gray-500">{sp.location}</td>
+                    <td className="px-6 py-4 text-gray-400">{sp.location}</td>
                   </tr>
                 ))}
               </tbody>

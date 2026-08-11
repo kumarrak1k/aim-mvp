@@ -260,7 +260,7 @@ export function CandidateAppShell({
               if (item.dropdown) {
                 return (
                   <div key={item.label} className="mt-1 border-t border-white/[0.06] pt-1">
-                    <p className="px-4 pb-1 pt-2 text-[10px] font-bold tracking-wide text-gray-500">
+                    <p className="px-4 pb-1 pt-2 text-[10px] font-bold tracking-wide text-gray-400">
                       {item.label}
                     </p>
                     {item.dropdown.map((sub) => (

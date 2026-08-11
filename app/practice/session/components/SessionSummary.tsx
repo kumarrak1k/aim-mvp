@@ -147,7 +147,7 @@ function ScoreRing({ score }: { score: number }) {
         >
           {score}
         </span>
-        <span className="text-xs font-bold text-gray-500">/10</span>
+        <span className="text-xs font-bold text-gray-400">/10</span>
       </div>
     </div>
   );
@@ -219,7 +219,7 @@ function QuestionCard({
         <p className="flex-1 text-sm font-semibold leading-6 text-gray-200">
           {result.question}
         </p>
-        <span className="mt-1 shrink-0 text-xs text-gray-500">
+        <span className="mt-1 shrink-0 text-xs text-gray-400">
           {open ? "▲" : "▼"}
         </span>
       </button>
@@ -384,17 +384,17 @@ export function SessionSummary({
 
         <p className="mt-2 text-sm text-gray-400">
           {role && <span className="font-semibold text-white">{role}</span>}
-          {role && interviewType && <span className="mx-2 text-gray-600">·</span>}
+          {role && interviewType && <span className="mx-2 text-gray-400">·</span>}
           {interviewType && <span>{interviewType}</span>}
           {difficulty && (
             <>
-              <span className="mx-2 text-gray-600">·</span>
+              <span className="mx-2 text-gray-400">·</span>
               <span>{difficulty} difficulty</span>
             </>
           )}
           {results.length > 0 && (
             <>
-              <span className="mx-2 text-gray-600">·</span>
+              <span className="mx-2 text-gray-400">·</span>
               <span>{results.length} question{results.length !== 1 ? "s" : ""}</span>
             </>
           )}
@@ -418,7 +418,7 @@ export function SessionSummary({
             <div className="flex flex-col items-center justify-center gap-4 rounded-[1.7rem] border border-white/10 bg-white/[0.055] p-6 backdrop-blur-2xl sm:flex-row sm:items-start sm:justify-start">
               <ScoreRing score={summary.overall_score} />
               <div className="text-center sm:text-left">
-                <p className="text-xs font-bold tracking-wide text-gray-500">
+                <p className="text-xs font-bold tracking-wide text-gray-400">
                   Overall score
                 </p>
                 <p
@@ -447,7 +447,7 @@ export function SessionSummary({
             {/* Hire signal */}
             <div className="flex flex-col justify-between gap-4 rounded-[1.7rem] border border-white/10 bg-white/[0.055] p-6 backdrop-blur-2xl">
               <div>
-                <p className="text-xs font-bold tracking-wide text-gray-500">
+                <p className="text-xs font-bold tracking-wide text-gray-400">
                   Hire signal
                 </p>
                 <div className="mt-3 flex items-center gap-2">
@@ -742,7 +742,7 @@ export function SessionSummary({
                       </button>
                     </>
                   ) : (
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-gray-400">
                       {certLoading ? "Generating…" : "Generating certificate…"}
                     </span>
                   )}
@@ -789,7 +789,7 @@ export function SessionSummary({
           Candidate profile
         </Link>
         {savedSessions.length > 1 && (
-          <p className="self-center text-xs text-gray-500">
+          <p className="self-center text-xs text-gray-400">
             {savedSessions.length} sessions saved
           </p>
         )}

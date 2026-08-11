@@ -47,11 +47,11 @@ export function NeutralShell({ children }: NeutralShellProps) {
           <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
             <div>
               <SiteLogo href="/" size="sm" showText />
-              <p className="mt-3 text-xs text-gray-600">
+              <p className="mt-3 text-xs text-gray-400">
                 © {new Date().getFullYear()} AI Career Mentor · England &amp; Wales
               </p>
             </div>
-            <div className="flex flex-wrap gap-5 text-xs text-gray-600">
+            <div className="flex flex-wrap gap-5 text-xs text-gray-400">
               {/* "Choose audience" and "Corporates" removed with the audience
                   split. One product, so there is nothing to choose between. */}
               <Link href="/" className="hover:text-gray-400">

@@ -127,7 +127,7 @@ export default function ChangePasswordPage() {
                     minLength={8}
                     disabled={loading}
                     autoComplete="new-password"
-                    className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white placeholder:text-gray-600 focus:border-fuchsia-400/40 focus:outline-none disabled:opacity-50"
+                    className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white placeholder:text-gray-400 focus:border-fuchsia-400/40 focus:outline-none disabled:opacity-50"
                     placeholder="At least 8 characters"
                   />
                 </div>
@@ -144,7 +144,7 @@ export default function ChangePasswordPage() {
                     minLength={8}
                     disabled={loading}
                     autoComplete="new-password"
-                    className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white placeholder:text-gray-600 focus:border-fuchsia-400/40 focus:outline-none disabled:opacity-50"
+                    className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white placeholder:text-gray-400 focus:border-fuchsia-400/40 focus:outline-none disabled:opacity-50"
                     placeholder="Repeat your new password"
                   />
                 </div>

@@ -99,7 +99,7 @@ export default async function BusinessPricingPage() {
       </div>
 
       <section className="mx-auto max-w-3xl px-4 pb-20 text-center sm:px-6 sm:pb-28">
-        <p className="text-sm leading-6 text-gray-500">
+        <p className="text-sm leading-6 text-gray-400">
           Looking for the candidate plan? See{" "}
           <Link
             href="/pricing"
@@ -108,7 +108,7 @@ export default async function BusinessPricingPage() {
             candidate pricing →
           </Link>
         </p>
-        <p className="mt-2 text-sm text-gray-500">
+        <p className="mt-2 text-sm text-gray-400">
           University or large institution?{" "}
           <Link
             href="/universities"

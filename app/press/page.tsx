@@ -72,7 +72,7 @@ export default function PressPage() {
                 className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-5"
               >
                 <p className="text-2xl font-bold tracking-tight">{s.value}</p>
-                <p className="mt-1 text-xs text-gray-500">{s.label}</p>
+                <p className="mt-1 text-xs text-gray-400">{s.label}</p>
               </div>
             ))}
           </div>
@@ -85,7 +85,7 @@ export default function PressPage() {
             <div className="flex items-center justify-between rounded-2xl border border-white/[0.08] bg-white/[0.03] p-5">
               <div>
                 <p className="font-bold">Logo (SVG + PNG)</p>
-                <p className="mt-0.5 text-xs text-gray-500">
+                <p className="mt-0.5 text-xs text-gray-400">
                   Light and dark variants
                 </p>
               </div>
@@ -99,7 +99,7 @@ export default function PressPage() {
             <div className="flex items-center justify-between rounded-2xl border border-white/[0.08] bg-white/[0.03] p-5">
               <div>
                 <p className="font-bold">Product screenshots</p>
-                <p className="mt-0.5 text-xs text-gray-500">
+                <p className="mt-0.5 text-xs text-gray-400">
                   Dashboard, session, feedback views
                 </p>
               </div>
@@ -111,7 +111,7 @@ export default function PressPage() {
               </a>
             </div>
           </div>
-          <p className="mt-4 text-xs text-gray-600">
+          <p className="mt-4 text-xs text-gray-400">
             Brand guidelines: primary gradient purple (#7C3AED) → fuchsia (#D946EF) → blue (#3B82F6).
             Background: #0a0614. Always use on dark backgrounds.
           </p>
@@ -139,7 +139,7 @@ export default function PressPage() {
               press@aicareermentor.co.uk
             </a>
           </p>
-          <p className="mt-2 text-sm text-gray-600">
+          <p className="mt-2 text-sm text-gray-400">
             We aim to respond to press enquiries within 24 hours.
           </p>
         </section>

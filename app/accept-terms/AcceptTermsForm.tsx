@@ -117,7 +117,7 @@ export function AcceptTermsForm({ version, nextPath }: AcceptTermsFormProps) {
             ))}
           </div>
 
-          <p className="mt-6 text-xs leading-6 text-gray-500">
+          <p className="mt-6 text-xs leading-6 text-gray-400">
             Full text:{" "}
             <Link
               href="/terms"
@@ -194,7 +194,7 @@ export function AcceptTermsForm({ version, nextPath }: AcceptTermsFormProps) {
             {submitting ? "Recording acceptance..." : "Confirm and continue"}
           </button>
 
-          <p className="mt-4 text-center text-[11px] text-gray-600">
+          <p className="mt-4 text-center text-[11px] text-gray-400">
             Version {version} · Your acceptance is recorded with a timestamp.
           </p>
         </div>

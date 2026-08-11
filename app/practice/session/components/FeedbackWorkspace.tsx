@@ -151,7 +151,7 @@ function ScoreCard({
       </p>
       <p className="mt-2 text-2xl font-bold text-white">
         {value}
-        <span className="text-sm text-gray-500">/10</span>
+        <span className="text-sm text-gray-400">/10</span>
       </p>
     </div>
   );
@@ -206,7 +206,7 @@ export function FeedbackList({
             </p>
           ))
         ) : (
-          <p className="text-sm leading-6 text-gray-500">No items yet.</p>
+          <p className="text-sm leading-6 text-gray-400">No items yet.</p>
         )}
       </div>
     </div>

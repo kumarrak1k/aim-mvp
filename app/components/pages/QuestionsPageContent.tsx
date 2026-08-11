@@ -22,7 +22,7 @@ export function QuestionsPageContent({
       <QuestionsClient sets={sets} />
 
       <div className="mt-14 border-t border-white/[0.07] pt-10 text-center">
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-gray-400">
           Want AI-generated questions tailored to your exact role?{" "}
           <Link
             href="/for-candidates/sign-up"

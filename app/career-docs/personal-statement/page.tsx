@@ -145,7 +145,7 @@ export default function PersonalStatementPage() {
       <div className="mx-auto max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] px-4 py-8 sm:px-6">
         {/* Header */}
         <div className="mb-8">
-          <Link href="/career-docs" className="mb-4 inline-flex items-center gap-1.5 text-xs font-bold text-gray-500 hover:text-gray-300 transition">← CV Studio</Link>
+          <Link href="/career-docs" className="mb-4 inline-flex items-center gap-1.5 text-xs font-bold text-gray-400 hover:text-gray-300 transition">← CV Studio</Link>
           <div className="flex items-center gap-3">
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-emerald-400/25 bg-emerald-400/10 text-emerald-300">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
@@ -173,12 +173,12 @@ export default function PersonalStatementPage() {
                       className={`flex w-full items-center gap-3 rounded-xl border px-4 py-3 text-left transition ${
                         statementType === opt.value
                           ? "border-emerald-400/40 bg-emerald-400/10 text-white"
-                          : "border-white/[0.08] bg-white/[0.02] text-gray-500 hover:border-white/20 hover:text-gray-300"
+                          : "border-white/[0.08] bg-white/[0.02] text-gray-400 hover:border-white/20 hover:text-gray-300"
                       }`}>
                       <div className={`h-1.5 w-1.5 rounded-full shrink-0 ${statementType === opt.value ? "bg-emerald-400" : "bg-gray-600"}`} />
                       <div>
                         <p className="text-sm font-bold">{opt.label}</p>
-                        <p className="text-[11px] text-gray-500">{opt.desc}</p>
+                        <p className="text-[11px] text-gray-400">{opt.desc}</p>
                       </div>
                     </button>
                   ))}
@@ -189,14 +189,14 @@ export default function PersonalStatementPage() {
                 <label className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400">Programme or role *</label>
                 <input type="text" value={targetProgramOrRole} onChange={(e) => setTargetProgramOrRole(e.target.value)}
                   placeholder="e.g. Computer Science, McKinsey Business Analyst"
-                  className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-600 outline-none focus:border-emerald-400/40 focus:ring-1 focus:ring-emerald-400/20" required />
+                  className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-400 outline-none focus:border-emerald-400/40 focus:ring-1 focus:ring-emerald-400/20" required />
               </div>
 
               <div>
                 <label className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400">Institution / employer</label>
                 <input type="text" value={institution} onChange={(e) => setInstitution(e.target.value)}
                   placeholder="e.g. University of Edinburgh, Deloitte"
-                  className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-600 outline-none focus:border-emerald-400/40 focus:ring-1 focus:ring-emerald-400/20" />
+                  className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-400 outline-none focus:border-emerald-400/40 focus:ring-1 focus:ring-emerald-400/20" />
               </div>
 
               <div>
@@ -204,7 +204,7 @@ export default function PersonalStatementPage() {
                 <textarea value={whyThis} onChange={(e) => setWhyThis(e.target.value)}
                   placeholder="What drew you to this specifically? Any pivotal moments, projects, experiences, or people that shaped your direction…"
                   rows={4}
-                  className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-600 outline-none focus:border-emerald-400/40 focus:ring-1 focus:ring-emerald-400/20 resize-y" required />
+                  className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-400 outline-none focus:border-emerald-400/40 focus:ring-1 focus:ring-emerald-400/20 resize-y" required />
                 <MinHint value={whyThis} min={20} label="A sentence or two works best" />
               </div>
 
@@ -263,8 +263,8 @@ export default function PersonalStatementPage() {
                 <textarea value={background} onChange={(e) => setBackground(e.target.value)}
                   placeholder="Academic qualifications, relevant work experience, courses, extracurriculars, skills…"
                   rows={4}
-                  className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-600 outline-none focus:border-emerald-400/40 focus:ring-1 focus:ring-emerald-400/20 resize-y" required />
-                <p className={`mt-1 text-right text-[10px] ${background.length > 15000 ? "text-red-400" : "text-gray-600"}`}>
+                  className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-400 outline-none focus:border-emerald-400/40 focus:ring-1 focus:ring-emerald-400/20 resize-y" required />
+                <p className={`mt-1 text-right text-[10px] ${background.length > 15000 ? "text-red-400" : "text-gray-400"}`}>
                   {background.length.toLocaleString()} / 15,000 characters
                 </p>
               </div>
@@ -274,7 +274,7 @@ export default function PersonalStatementPage() {
                 <textarea value={achievements} onChange={(e) => setAchievements(e.target.value)}
                   placeholder="Awards, projects, leadership roles, results you're proud of. Include numbers where possible…"
                   rows={3}
-                  className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-600 outline-none focus:border-emerald-400/40 focus:ring-1 focus:ring-emerald-400/20 resize-y" required />
+                  className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-400 outline-none focus:border-emerald-400/40 focus:ring-1 focus:ring-emerald-400/20 resize-y" required />
                 <MinHint value={achievements} min={10} label="A line per achievement is plenty" />
               </div>
 
@@ -285,7 +285,7 @@ export default function PersonalStatementPage() {
                 <input type="range" min={300} max={1000} step={50} value={wordLimit}
                   onChange={(e) => setWordLimit(Number(e.target.value))}
                   className="w-full accent-emerald-400" />
-                <div className="mt-1 flex justify-between text-[10px] text-gray-600">
+                <div className="mt-1 flex justify-between text-[10px] text-gray-400">
                   <span>300 (concise)</span><span>1000 (detailed)</span>
                 </div>
               </div>
@@ -297,14 +297,14 @@ export default function PersonalStatementPage() {
               className={`flex w-full items-center justify-center gap-2 rounded-2xl px-6 py-4 text-sm font-bold transition-all ${
                 !loading && canSubmit
                   ? "bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg hover:scale-[1.01]"
-                  : "cursor-not-allowed bg-white/[0.05] text-gray-600"
+                  : "cursor-not-allowed bg-white/[0.05] text-gray-400"
               }`}>
               {loading ? (
                 <><svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>Writing your statement…</>
               ) : "Generate personal statement →"}
             </button>
             {!loading && !canSubmit && (
-              <p className="text-center text-[11px] leading-5 text-gray-500">
+              <p className="text-center text-[11px] leading-5 text-gray-400">
                 To enable the button:{" "}
                 {[
                   !targetProgramOrRole.trim() && "add the programme or role",
@@ -325,7 +325,7 @@ export default function PersonalStatementPage() {
                     <path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
                   </svg>
                 </div>
-                <p className="text-sm text-gray-500">Your personal statement will appear here</p>
+                <p className="text-sm text-gray-400">Your personal statement will appear here</p>
               </div>
             )}
 

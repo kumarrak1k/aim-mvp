@@ -132,7 +132,7 @@ export function PracticeSessionHeader({
         </div>
 
         <div className="mt-5">
-          <div className="mb-2 flex items-center justify-between text-xs font-bold text-gray-500">
+          <div className="mb-2 flex items-center justify-between text-xs font-bold text-gray-400">
             <span>Interview progress</span>
             <span>{progressPercent}% complete</span>
           </div>

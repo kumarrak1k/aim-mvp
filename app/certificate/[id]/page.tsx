@@ -73,7 +73,7 @@ export default async function CertificatePage({ params }: Props) {
 
           {/* Body */}
           <div className="px-8 py-10 text-center sm:px-12 sm:py-12">
-            <p className="text-xs tracking-wide text-gray-500">
+            <p className="text-xs tracking-wide text-gray-400">
               This certifies that
             </p>
             <h1 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
@@ -86,14 +86,14 @@ export default async function CertificatePage({ params }: Props) {
 
             {/* Score */}
             <div className="mx-auto mt-8 inline-block rounded-2xl border border-white/[0.1] bg-white/[0.05] px-8 py-5">
-              <p className="text-xs tracking-wide text-gray-500">Overall score</p>
+              <p className="text-xs tracking-wide text-gray-400">Overall score</p>
               <p className={`mt-1 text-4xl font-bold leading-none tracking-tight ${scoreColor}`}>
                 {cert.score}
-                <span className="text-2xl text-gray-600">/10</span>
+                <span className="text-2xl text-gray-400">/10</span>
               </p>
             </div>
 
-            <p className="mt-8 text-xs text-gray-600">
+            <p className="mt-8 text-xs text-gray-400">
               Awarded {dateStr} · AI Career Mentor · aicareermentor.co.uk
             </p>
 
@@ -109,7 +109,7 @@ export default async function CertificatePage({ params }: Props) {
         {/* Actions */}
         <CertificateActions linkedinShareUrl={linkedinShareUrl} shareUrl={shareUrl} />
 
-        <p className="no-print mt-8 text-center text-xs text-gray-600">
+        <p className="no-print mt-8 text-center text-xs text-gray-400">
           Earn your certificate by completing a practice session on{" "}
           <a href="/" className="text-purple-400 hover:text-purple-300">AI Career Mentor</a>
         </p>

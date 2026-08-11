@@ -123,7 +123,7 @@ export function STARScorerClient() {
               placeholder="e.g. Product Manager at a tech startup"
               required
               maxLength={120}
-              className="w-full rounded-2xl border border-white/[0.1] bg-white/[0.05] px-4 py-3 text-sm text-white placeholder-gray-600 outline-none transition focus:border-purple-400/40 focus:bg-white/[0.07]"
+              className="w-full rounded-2xl border border-white/[0.1] bg-white/[0.05] px-4 py-3 text-sm text-white placeholder-gray-400 outline-none transition focus:border-purple-400/40 focus:bg-white/[0.07]"
             />
           </div>
 
@@ -138,7 +138,7 @@ export function STARScorerClient() {
               placeholder="e.g. Tell me about a time you led a project under pressure."
               required
               maxLength={300}
-              className="w-full rounded-2xl border border-white/[0.1] bg-white/[0.05] px-4 py-3 text-sm text-white placeholder-gray-600 outline-none transition focus:border-purple-400/40 focus:bg-white/[0.07]"
+              className="w-full rounded-2xl border border-white/[0.1] bg-white/[0.05] px-4 py-3 text-sm text-white placeholder-gray-400 outline-none transition focus:border-purple-400/40 focus:bg-white/[0.07]"
             />
           </div>
 
@@ -153,9 +153,9 @@ export function STARScorerClient() {
               required
               maxLength={3000}
               rows={10}
-              className="w-full resize-none rounded-2xl border border-white/[0.1] bg-white/[0.05] px-4 py-3 text-sm text-white placeholder-gray-600 outline-none transition focus:border-purple-400/40 focus:bg-white/[0.07]"
+              className="w-full resize-none rounded-2xl border border-white/[0.1] bg-white/[0.05] px-4 py-3 text-sm text-white placeholder-gray-400 outline-none transition focus:border-purple-400/40 focus:bg-white/[0.07]"
             />
-            <p className="mt-1 text-right text-xs text-gray-600">
+            <p className="mt-1 text-right text-xs text-gray-400">
               {answer.length} / 3,000
             </p>
           </div>
@@ -174,7 +174,7 @@ export function STARScorerClient() {
             {isPending ? "Scoring your answer…" : "Score my STAR answer →"}
           </button>
 
-          <p className="text-center text-xs text-gray-600">
+          <p className="text-center text-xs text-gray-400">
             5 free scores per hour · No sign-in required
           </p>
         </form>
@@ -188,7 +188,7 @@ export function STARScorerClient() {
                 <p className="font-bold">Overall STAR score</p>
                 <span className="text-4xl font-bold tracking-tight">
                   {result.overall}
-                  <span className="text-lg text-gray-500">/10</span>
+                  <span className="text-lg text-gray-400">/10</span>
                 </span>
               </div>
               <p className="mt-3 text-sm leading-6 text-gray-400">{result.summary}</p>
@@ -204,7 +204,7 @@ export function STARScorerClient() {
                       <p className="text-sm font-bold">{label}</p>
                     </div>
                     <ScoreBar score={result[key].score} color={color} />
-                    <p className="mt-2 text-xs leading-5 text-gray-500">
+                    <p className="mt-2 text-xs leading-5 text-gray-400">
                       {result[key].feedback}
                     </p>
                   </div>
@@ -249,7 +249,7 @@ export function STARScorerClient() {
               <details key={faq.q} className="group py-4">
                 <summary className="flex cursor-pointer list-none items-start justify-between gap-4 text-sm font-bold text-white">
                   {faq.q}
-                  <span className="mt-0.5 shrink-0 text-gray-500 transition-transform group-open:rotate-45">
+                  <span className="mt-0.5 shrink-0 text-gray-400 transition-transform group-open:rotate-45">
                     +
                   </span>
                 </summary>
@@ -257,7 +257,7 @@ export function STARScorerClient() {
               </details>
             ))}
           </div>
-          <div className="text-center text-xs text-gray-600">
+          <div className="text-center text-xs text-gray-400">
             <Link href="/blog" className="hover:text-gray-400">
               Interview guides
             </Link>{" "}

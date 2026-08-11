@@ -256,7 +256,7 @@ export function PracticeCoachPanel({
                   <p className="text-xs font-bold tracking-wide text-cyan-300">
                     Camera
                   </p>
-                  <p className="mt-1 text-[11px] leading-4 text-gray-500">
+                  <p className="mt-1 text-[11px] leading-4 text-gray-400">
                     Preview
                   </p>
                 </div>

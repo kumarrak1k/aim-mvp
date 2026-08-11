@@ -433,7 +433,7 @@ function SummaryPanel({ session }: { session: PracticeSessionDetail }) {
               <span className="text-5xl font-bold tracking-tight text-white">
                 {session.overallScore}
               </span>
-              <span className="mb-2 text-lg font-bold text-gray-500">/10</span>
+              <span className="mb-2 text-lg font-bold text-gray-400">/10</span>
             </div>
           </div>
 
@@ -891,10 +891,10 @@ function TextBlock({ title, text }: { title: string; text: string }) {
 function MiniScore({ label, value }: { label: string; value?: number }) {
   return (
     <div className="rounded-2xl border border-white/10 bg-black/25 p-3">
-      <p className="text-xs font-bold text-gray-500">{label}</p>
+      <p className="text-xs font-bold text-gray-400">{label}</p>
       <p className="mt-1 text-xl font-bold tracking-tight text-white">
         {typeof value === "number" ? value : 0}
-        <span className="text-xs text-gray-500">/10</span>
+        <span className="text-xs text-gray-400">/10</span>
       </p>
     </div>
   );
@@ -903,7 +903,7 @@ function MiniScore({ label, value }: { label: string; value?: number }) {
 function ScoreTile({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-[1.35rem] border border-white/10 bg-black/25 p-4 text-center">
-      <p className="text-xs font-bold tracking-wide text-gray-500">
+      <p className="text-xs font-bold tracking-wide text-gray-400">
         {label}
       </p>
       <p className="mt-2 text-2xl font-bold tracking-tight text-white">

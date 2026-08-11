@@ -174,7 +174,7 @@ export default function UniversitiesPage() {
                 <div key={item.label} className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-5">
                   <p className="mb-2 text-2xl">{item.icon}</p>
                   <p className="mb-1 text-sm font-bold text-white">{item.label}</p>
-                  <p className="text-xs leading-5 text-gray-500">{item.desc}</p>
+                  <p className="text-xs leading-5 text-gray-400">{item.desc}</p>
                 </div>
               ))}
             </div>
@@ -188,11 +188,11 @@ export default function UniversitiesPage() {
             >
               Request a proposal →
             </button>
-            <p className="mt-3 text-xs text-gray-600">
+            <p className="mt-3 text-xs text-gray-400">
               Or email{" "}
               <a
                 href="mailto:universities@aicareermentor.co.uk"
-                className="text-gray-500 underline hover:text-gray-400"
+                className="text-gray-400 underline hover:text-gray-400"
               >
                 universities@aicareermentor.co.uk
               </a>{" "}

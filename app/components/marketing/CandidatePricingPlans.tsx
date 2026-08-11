@@ -78,7 +78,7 @@ function renderCell(v: string | boolean) {
     return v ? (
       <span className="text-emerald-400" aria-label="Included">✓</span>
     ) : (
-      <span className="text-gray-600" aria-label="Not included">–</span>
+      <span className="text-gray-400" aria-label="Not included">–</span>
     );
   }
   return <span className="text-gray-200">{v}</span>;
@@ -240,7 +240,7 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
     <>
       {/* Billing toggle */}
       <div className="mb-10 flex items-center justify-center gap-3">
-        <span className={`text-sm font-semibold ${!annual ? "text-white" : "text-gray-500"}`}>
+        <span className={`text-sm font-semibold ${!annual ? "text-white" : "text-gray-400"}`}>
           Monthly
         </span>
         <button
@@ -258,7 +258,7 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
             }`}
           />
         </button>
-        <span className={`text-sm font-semibold ${annual ? "text-white" : "text-gray-500"}`}>
+        <span className={`text-sm font-semibold ${annual ? "text-white" : "text-gray-400"}`}>
           Annual
         </span>
         {annual && (
@@ -303,16 +303,16 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
                   {displayPrice}
                 </span>
                 {displayPeriod && (
-                  <span className="mb-1.5 text-sm text-gray-500">{displayPeriod}</span>
+                  <span className="mb-1.5 text-sm text-gray-400">{displayPeriod}</span>
                 )}
               </div>
               {annualMonthlyEquiv && (
-                <p className="mt-1 text-xs text-gray-500">
+                <p className="mt-1 text-xs text-gray-400">
                   {annualMonthlyEquiv}/month, charged as a single annual payment
                 </p>
               )}
               {!annual && plan.annualPrice && (
-                <p className="mt-1 text-xs text-gray-500">
+                <p className="mt-1 text-xs text-gray-400">
                   or{" "}
                   <span className="font-bold text-gray-300">{plan.annualPrice}/year</span>
                   {plan.annualSaving && (
@@ -346,7 +346,7 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
                   <div key={f.text} className="flex items-start gap-2.5 text-sm text-gray-300">
                     <span
                       className={`mt-[3px] h-3.5 w-3.5 shrink-0 ${
-                        plan.highlight ? "text-purple-400" : "text-gray-500"
+                        plan.highlight ? "text-purple-400" : "text-gray-400"
                       }`}
                     >
                       ✓
@@ -447,7 +447,7 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
       </div>
 
       {/* Auto-renewal disclosure — required for recurring UK/EU subscriptions */}
-      <p className="mx-auto mt-8 max-w-2xl text-center text-xs leading-5 text-gray-500">
+      <p className="mx-auto mt-8 max-w-2xl text-center text-xs leading-5 text-gray-400">
         Paid plans are recurring subscriptions that renew automatically
         (monthly or annually) at the price shown until you cancel. You can
         cancel any time from your account, and you keep access until the end of the

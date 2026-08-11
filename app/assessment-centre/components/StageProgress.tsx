@@ -47,7 +47,7 @@ export function StageProgress({ currentStage, selectedStages }: Props) {
                     ? "border-cyan-400/60 bg-gradient-to-br from-purple-500/30 to-cyan-400/20 text-cyan-300 shadow-lg shadow-cyan-900/30 ring-2 ring-cyan-400/30"
                     : isPast
                     ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-400"
-                    : "border-white/10 bg-white/[0.03] text-gray-600"
+                    : "border-white/10 bg-white/[0.03] text-gray-400"
                 }`}
               >
                 {isPast ? (
@@ -67,7 +67,7 @@ export function StageProgress({ currentStage, selectedStages }: Props) {
 
               <span
                 className={`text-[10px] font-bold tracking-wide whitespace-nowrap ${
-                  isActive ? "text-cyan-300" : isPast ? "text-emerald-400/80" : "text-gray-600"
+                  isActive ? "text-cyan-300" : isPast ? "text-emerald-400/80" : "text-gray-400"
                 }`}
               >
                 {stage.label}

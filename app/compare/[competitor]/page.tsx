@@ -66,13 +66,13 @@ export default async function ComparisonPage({ params }: Props) {
         <section className="mb-12">
           <div className="overflow-hidden rounded-[2rem] border border-white/[0.08]">
             <div className="grid grid-cols-[1fr_120px_120px] border-b border-white/[0.08] bg-white/[0.03] px-6 py-4">
-              <p className="text-xs font-bold tracking-wide text-gray-500">
+              <p className="text-xs font-bold tracking-wide text-gray-400">
                 Feature
               </p>
               <p className="text-center text-xs font-bold tracking-wide text-purple-300">
                 AI Career Mentor
               </p>
-              <p className="text-center text-xs font-bold tracking-wide text-gray-500">
+              <p className="text-center text-xs font-bold tracking-wide text-gray-400">
                 {data.name.split(" ")[0]}
               </p>
             </div>
@@ -103,7 +103,7 @@ export default async function ComparisonPage({ params }: Props) {
                       <span className="text-gray-700">–</span>
                     )
                   ) : (
-                    <span className="text-xs text-gray-500">{f.competitor}</span>
+                    <span className="text-xs text-gray-400">{f.competitor}</span>
                   )}
                 </p>
               </div>
@@ -127,7 +127,7 @@ export default async function ComparisonPage({ params }: Props) {
             </ul>
           </div>
           <div className="rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-7">
-            <p className="mb-5 text-xs font-bold tracking-wide text-gray-600">
+            <p className="mb-5 text-xs font-bold tracking-wide text-gray-400">
               Where {data.name.split(" ")[0]} wins
             </p>
             <ul className="space-y-3">
@@ -143,7 +143,7 @@ export default async function ComparisonPage({ params }: Props) {
 
         {/* Verdict */}
         <section className="mb-12 rounded-[2rem] border border-white/[0.09] bg-white/[0.04] p-8">
-          <p className="mb-3 text-xs font-bold tracking-wide text-gray-500">
+          <p className="mb-3 text-xs font-bold tracking-wide text-gray-400">
             Bottom line
           </p>
           <p className="text-base leading-7 text-gray-300">{data.verdict}</p>
@@ -157,7 +157,7 @@ export default async function ComparisonPage({ params }: Props) {
           >
             {data.ctaLabel}
           </Link>
-          <p className="mt-3 text-xs text-gray-600">
+          <p className="mt-3 text-xs text-gray-400">
             Free to start. No credit card required.
           </p>
           <p className="mt-6 text-xs text-gray-700">
@@ -166,7 +166,7 @@ export default async function ComparisonPage({ params }: Props) {
             We aim to be fair and factual, so{" "}
             <a
               href="mailto:press@aicareermentor.co.uk"
-              className="text-gray-600 hover:text-gray-400"
+              className="text-gray-400 hover:text-gray-400"
             >
               contact us
             </a>{" "}

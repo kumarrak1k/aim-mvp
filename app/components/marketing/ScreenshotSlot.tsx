@@ -41,13 +41,13 @@ export function ScreenshotSlot({
                 <circle cx="8.5" cy="8.5" r="1.5" />
                 <path d="m21 15-5-5L5 21" />
               </svg>
-              <p className="text-xs text-gray-600">{alt}</p>
+              <p className="text-xs text-gray-400">{alt}</p>
             </div>
           </div>
         )}
       </div>
       {caption && (
-        <figcaption className="border-t border-white/[0.07] bg-white/[0.03] px-4 py-2.5 text-center text-xs text-gray-500">
+        <figcaption className="border-t border-white/[0.07] bg-white/[0.03] px-4 py-2.5 text-center text-xs text-gray-400">
           {caption}
         </figcaption>
       )}

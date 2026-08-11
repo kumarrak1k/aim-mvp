@@ -236,7 +236,7 @@ export function TrialBanner() {
           <button
             onClick={dismissExpired}
             aria-label="Dismiss"
-            className="text-gray-500 transition hover:text-white"
+            className="text-gray-400 transition hover:text-white"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" d="M18 6L6 18M6 6l12 12" />

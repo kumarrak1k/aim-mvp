@@ -103,7 +103,7 @@ export default function JoinPage() {
               <p className="text-4xl">🔗</p>
               <h1 className="mt-4 text-2xl font-bold tracking-tight text-white">Invite unavailable</h1>
               <p className="mt-3 text-sm text-gray-400">{errorMsg}</p>
-              <p className="mt-2 text-xs text-gray-500">Ask your workspace admin to send a new invite link.</p>
+              <p className="mt-2 text-xs text-gray-400">Ask your workspace admin to send a new invite link.</p>
               <Link
                 href="/for-business"
                 className="mt-6 inline-block rounded-full border border-white/10 bg-white/[0.05] px-5 py-2.5 text-sm font-bold text-white transition hover:bg-white/[0.09]"
@@ -138,7 +138,7 @@ export default function JoinPage() {
                     </p>
                   </div>
                 </div>
-                <p className="mt-3 text-[11px] text-gray-500">
+                <p className="mt-3 text-[11px] text-gray-400">
                   Invite sent to{" "}
                   <span className="text-gray-300">{invite.email}</span>
                   {" · "}expires{" "}
@@ -150,7 +150,7 @@ export default function JoinPage() {
                 </p>
               </div>
 
-              <p className="mt-4 text-xs text-gray-500">
+              <p className="mt-4 text-xs text-gray-400">
                 You must be signed in with a hiring team account to accept. If you don&apos;t have one yet, you&apos;ll be asked to create one first.
               </p>
 
@@ -162,7 +162,7 @@ export default function JoinPage() {
                 {phase === "accepting" ? "Accepting…" : `Accept invitation →`}
               </button>
 
-              <p className="mt-3 text-center text-[11px] text-gray-600">
+              <p className="mt-3 text-center text-[11px] text-gray-400">
                 By accepting you agree to our{" "}
                 <Link href="/terms" className="underline hover:text-gray-400">Terms</Link>
                 {" "}and{" "}

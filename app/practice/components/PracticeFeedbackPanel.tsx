@@ -46,12 +46,12 @@ export function PracticeFeedbackPanel({
 
         {!feedback.error && (
           <div className="rounded-[1.35rem] border border-white/10 bg-black/30 p-4 text-center shadow-xl shadow-black/10 lg:min-w-[170px]">
-            <p className="text-xs font-bold tracking-wide text-gray-500">
+            <p className="text-xs font-bold tracking-wide text-gray-400">
               Overall score
             </p>
             <p className="mt-2 text-4xl font-bold tracking-tight text-white">
               {feedback.overall_score}
-              <span className="text-xl text-gray-500">/10</span>
+              <span className="text-xl text-gray-400">/10</span>
             </p>
             <p className="mt-2 text-xs font-bold text-gray-400">
               {scoreLabel(feedback.overall_score)}
@@ -113,7 +113,7 @@ export function PracticeFeedbackPanel({
                   <h3 className="text-lg font-bold text-cyan-300">
                     Section-by-section coaching
                   </h3>
-                  <p className="mt-1 text-sm leading-6 text-gray-500">
+                  <p className="mt-1 text-sm leading-6 text-gray-400">
                     Use this to identify the exact part of the answer that needs
                     the next improvement.
                   </p>

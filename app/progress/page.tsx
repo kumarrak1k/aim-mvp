@@ -281,7 +281,7 @@ export default function ProgressPage() {
               className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-bold transition-all ${
                 activeTab === "practice"
                   ? "bg-gradient-to-r from-purple-500/20 to-fuchsia-500/20 border border-purple-400/25 text-white shadow-sm"
-                  : "text-gray-500 hover:text-gray-300"
+                  : "text-gray-400 hover:text-gray-300"
               }`}
             >
               <span className={`h-1.5 w-1.5 rounded-full ${activeTab === "practice" ? "bg-fuchsia-400" : "bg-gray-600"}`} />
@@ -297,7 +297,7 @@ export default function ProgressPage() {
               className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-bold transition-all ${
                 activeTab === "assessment"
                   ? "bg-gradient-to-r from-cyan-500/20 to-purple-500/20 border border-cyan-400/25 text-white shadow-sm"
-                  : "text-gray-500 hover:text-gray-300"
+                  : "text-gray-400 hover:text-gray-300"
               }`}
             >
               <span className={`h-1.5 w-1.5 rounded-full ${activeTab === "assessment" ? "bg-cyan-400" : "bg-gray-600"}`} />
@@ -417,7 +417,7 @@ function ProgressDashboard({ stats, isAdvancedPlan, onSessionDeleted }: { stats:
                   <span className="text-5xl font-bold tracking-tight text-white">
                     {latest.overallScore}
                   </span>
-                  <span className="mb-2 text-lg font-bold text-gray-500">
+                  <span className="mb-2 text-lg font-bold text-gray-400">
                     /10
                   </span>
                 </div>
@@ -575,7 +575,7 @@ function MetricCard({
       <p className="mt-3 text-3xl font-bold tracking-tight text-white">
         {value}
       </p>
-      <p className="mt-2 text-xs font-semibold leading-5 text-gray-500">
+      <p className="mt-2 text-xs font-semibold leading-5 text-gray-400">
         {detail}
       </p>
     </div>
@@ -628,8 +628,8 @@ function CategoryLine({
     return (
       <div>
         <div className="mb-2 flex items-center justify-between gap-3">
-          <p className="text-sm font-bold text-gray-600">{label}</p>
-          <p className="text-xs font-bold text-gray-600">
+          <p className="text-sm font-bold text-gray-400">{label}</p>
+          <p className="text-xs font-bold text-gray-400">
             N/A · keyboard only
           </p>
         </div>
@@ -744,7 +744,7 @@ function SessionRow({
           <p className="truncate text-sm font-bold text-white">
             {session.role}
           </p>
-          <p className="mt-1 text-xs leading-5 text-gray-500">
+          <p className="mt-1 text-xs leading-5 text-gray-400">
             {session.interviewType} · {session.difficulty} ·{" "}
             {formatSessionDate(session.createdAt)}
           </p>
@@ -754,7 +754,7 @@ function SessionRow({
           <p className="text-2xl font-bold tracking-tight text-white">
             {session.overallScore}
           </p>
-          <p className="text-[11px] font-bold tracking-wide text-gray-500">
+          <p className="text-[11px] font-bold tracking-wide text-gray-400">
             /10
           </p>
         </div>
@@ -944,7 +944,7 @@ function ACSessionRow({
 }) {
   const score = session.overallScore;
   const scoreCol =
-    score === null ? "text-gray-500"
+    score === null ? "text-gray-400"
     : score >= 7 ? "text-emerald-400"
     : score >= 5 ? "text-amber-300"
     : "text-rose-400";
@@ -975,7 +975,7 @@ function ACSessionRow({
             ))}
           </div>
           <p className="truncate text-sm font-bold text-white">{session.role}</p>
-          <p className="mt-0.5 text-xs leading-5 text-gray-500">
+          <p className="mt-0.5 text-xs leading-5 text-gray-400">
             {session.sector} · {session.experienceLevel} · {formatSessionDate(session.createdAt)}
           </p>
         </div>
@@ -983,7 +983,7 @@ function ACSessionRow({
           <p className={`text-2xl font-bold tracking-tight ${scoreCol}`}>
             {score !== null ? score.toFixed(1) : "–"}
           </p>
-          <p className="text-[10px] font-bold tracking-wide text-gray-500">/10</p>
+          <p className="text-[10px] font-bold tracking-wide text-gray-400">/10</p>
         </div>
       </div>
     </Link>
@@ -1015,28 +1015,28 @@ function ACDashboard({ sessions, onSessionDeleted }: { sessions: ACSession[]; on
           <p className="mt-3 text-3xl font-bold tracking-tight text-white">
             {latest.overallScore !== null ? `${latest.overallScore.toFixed(1)}/10` : "–"}
           </p>
-          <p className="mt-2 text-xs font-semibold text-gray-500">{formatSessionDate(latest.createdAt)}</p>
+          <p className="mt-2 text-xs font-semibold text-gray-400">{formatSessionDate(latest.createdAt)}</p>
         </div>
         <div className="rounded-[1.55rem] border border-white/10 bg-white/[0.055] p-5 shadow-2xl backdrop-blur-2xl">
           <p className="text-xs font-bold tracking-wide text-gray-400">Average</p>
           <p className="mt-3 text-3xl font-bold tracking-tight text-white">
             {avg !== null ? `${avg}/10` : "–"}
           </p>
-          <p className="mt-2 text-xs font-semibold text-gray-500">{sessions.length} completed session{sessions.length !== 1 ? "s" : ""}</p>
+          <p className="mt-2 text-xs font-semibold text-gray-400">{sessions.length} completed session{sessions.length !== 1 ? "s" : ""}</p>
         </div>
         <div className="rounded-[1.55rem] border border-white/10 bg-white/[0.055] p-5 shadow-2xl backdrop-blur-2xl">
           <p className="text-xs font-bold tracking-wide text-gray-400">Best score</p>
           <p className="mt-3 text-3xl font-bold tracking-tight text-white">
             {best !== null ? `${best.toFixed(1)}/10` : "–"}
           </p>
-          <p className="mt-2 text-xs font-semibold text-gray-500">Highest session</p>
+          <p className="mt-2 text-xs font-semibold text-gray-400">Highest session</p>
         </div>
         <div className="rounded-[1.55rem] border border-white/10 bg-white/[0.055] p-5 shadow-2xl backdrop-blur-2xl">
           <p className="text-xs font-bold tracking-wide text-gray-400">Readiness</p>
           <p className="mt-3 text-xl font-bold tracking-tight text-white">
             {report?.readinessLevel ?? "–"}
           </p>
-          <p className="mt-2 text-xs font-semibold text-gray-500">From latest report</p>
+          <p className="mt-2 text-xs font-semibold text-gray-400">From latest report</p>
         </div>
       </div>
 

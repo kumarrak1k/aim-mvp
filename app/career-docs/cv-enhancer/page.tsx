@@ -40,7 +40,7 @@ function ScoreRing({ score }: { score: number }) {
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <span className="text-4xl font-bold" style={{ color: col }}>{score}</span>
-        <span className="text-[10px] font-bold text-gray-500">/10</span>
+        <span className="text-[10px] font-bold text-gray-400">/10</span>
       </div>
     </div>
   );
@@ -276,7 +276,7 @@ export default function CVEnhancerPage() {
       <div className="mx-auto max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] px-4 py-8 sm:px-6">
         {/* Header */}
         <div className="mb-8">
-          <Link href="/career-docs" className="mb-4 inline-flex items-center gap-1.5 text-xs font-bold text-gray-500 hover:text-gray-300 transition">
+          <Link href="/career-docs" className="mb-4 inline-flex items-center gap-1.5 text-xs font-bold text-gray-400 hover:text-gray-300 transition">
             ← CV Studio
           </Link>
           <div className="flex items-center gap-3">
@@ -304,7 +304,7 @@ export default function CVEnhancerPage() {
                   value={targetRole}
                   onChange={(e) => setTargetRole(e.target.value)}
                   placeholder="e.g. Senior Product Manager"
-                  className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-600 outline-none focus:border-purple-400/40 focus:ring-1 focus:ring-purple-400/20"
+                  className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-400 outline-none focus:border-purple-400/40 focus:ring-1 focus:ring-purple-400/20"
                   required
                 />
               </div>
@@ -315,7 +315,7 @@ export default function CVEnhancerPage() {
                   value={industry}
                   onChange={(e) => setIndustry(e.target.value)}
                   placeholder="e.g. Financial Services"
-                  className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-600 outline-none focus:border-purple-400/40 focus:ring-1 focus:ring-purple-400/20"
+                  className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-400 outline-none focus:border-purple-400/40 focus:ring-1 focus:ring-purple-400/20"
                 />
               </div>
 
@@ -323,7 +323,7 @@ export default function CVEnhancerPage() {
               <div>
                 <label className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400">
                   Your CV *
-                  <span className="ml-2 text-[10px] font-semibold normal-case tracking-normal text-gray-600">paste plain text or upload a file</span>
+                  <span className="ml-2 text-[10px] font-semibold normal-case tracking-normal text-gray-400">paste plain text or upload a file</span>
                 </label>
 
                 {/* Saved CV banner */}
@@ -381,10 +381,10 @@ export default function CVEnhancerPage() {
                   placeholder="Paste your full CV here, including all sections: summary, experience, education, skills…"
                   rows={12}
                   maxLength={15000}
-                  className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-600 outline-none focus:border-purple-400/40 focus:ring-1 focus:ring-purple-400/20 resize-y"
+                  className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-400 outline-none focus:border-purple-400/40 focus:ring-1 focus:ring-purple-400/20 resize-y"
                   required
                 />
-                <p className="mt-1 text-right text-[10px] text-gray-600">{cvText.length.toLocaleString()} / 15,000 chars</p>
+                <p className="mt-1 text-right text-[10px] text-gray-400">{cvText.length.toLocaleString()} / 15,000 chars</p>
 
                 {/* Unsaved-edits bar: the textarea is freely editable, so give
                     edits an explicit route back into the saved profile CV. */}
@@ -432,9 +432,9 @@ export default function CVEnhancerPage() {
                     placeholder="Paste the job description here for targeted ATS keyword analysis…"
                     rows={6}
                     maxLength={8000}
-                    className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-600 outline-none focus:border-purple-400/40 focus:ring-1 focus:ring-purple-400/20 resize-y"
+                    className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-400 outline-none focus:border-purple-400/40 focus:ring-1 focus:ring-purple-400/20 resize-y"
                   />
-                  <p className="mt-1 text-right text-[10px] text-gray-600">{jobDescription.length} / 8000 chars</p>
+                  <p className="mt-1 text-right text-[10px] text-gray-400">{jobDescription.length} / 8000 chars</p>
                 </div>
               )}
             </div>
@@ -449,7 +449,7 @@ export default function CVEnhancerPage() {
               className={`flex w-full items-center justify-center gap-2 rounded-2xl px-6 py-4 text-sm font-bold transition-all ${
                 !loading && targetRole.trim() && cvText.trim().length >= 50
                   ? "bg-gradient-to-r from-purple-500 to-fuchsia-500 text-white shadow-lg hover:scale-[1.01]"
-                  : "cursor-not-allowed bg-white/[0.05] text-gray-600"
+                  : "cursor-not-allowed bg-white/[0.05] text-gray-400"
               }`}
             >
               {loading ? (
@@ -473,7 +473,7 @@ export default function CVEnhancerPage() {
                     <path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18" />
                   </svg>
                 </div>
-                <p className="text-sm text-gray-500">Your CV analysis will appear here</p>
+                <p className="text-sm text-gray-400">Your CV analysis will appear here</p>
               </div>
             )}
 
@@ -494,7 +494,7 @@ export default function CVEnhancerPage() {
                   <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
                     <ScoreRing score={result.overallScore} />
                     <div className="text-center sm:text-left">
-                      <p className="text-xs font-bold tracking-wide text-gray-500">Overall CV score</p>
+                      <p className="text-xs font-bold tracking-wide text-gray-400">Overall CV score</p>
                       <p className="mt-1 text-lg font-bold text-white">{result.overallLabel}</p>
                       <p className="mt-2 text-sm leading-6 text-gray-300">{result.summary}</p>
                     </div>
@@ -549,8 +549,8 @@ export default function CVEnhancerPage() {
                       {result.enhancedBullets.map((b, i) => (
                         <div key={i} className="space-y-2">
                           <div className="rounded-lg border border-white/[0.06] bg-white/[0.03] px-3 py-2">
-                            <p className="text-[10px] font-bold tracking-wide text-gray-600 mb-1">Before</p>
-                            <p className="text-xs leading-5 text-gray-500 line-through">{b.original}</p>
+                            <p className="text-[10px] font-bold tracking-wide text-gray-400 mb-1">Before</p>
+                            <p className="text-xs leading-5 text-gray-400 line-through">{b.original}</p>
                           </div>
                           <div className="rounded-lg border border-emerald-400/20 bg-emerald-400/[0.05] px-3 py-2">
                             <div className="mb-1 flex items-center justify-between gap-3">
@@ -661,7 +661,7 @@ export default function CVEnhancerPage() {
                                 onChange={(e) => setGapAnswers((prev) => ({ ...prev, [gap.id]: e.target.value }))}
                                 placeholder={gap.hint}
                                 rows={2}
-                                className="mt-2 w-full resize-none rounded-lg border border-white/[0.08] bg-black/30 px-3 py-2 text-xs text-white placeholder-gray-600 outline-none focus:border-purple-400/40 focus:ring-1 focus:ring-purple-400/20"
+                                className="mt-2 w-full resize-none rounded-lg border border-white/[0.08] bg-black/30 px-3 py-2 text-xs text-white placeholder-gray-400 outline-none focus:border-purple-400/40 focus:ring-1 focus:ring-purple-400/20"
                               />
                             )}
                           </div>
@@ -674,7 +674,7 @@ export default function CVEnhancerPage() {
                                 return next;
                               })
                             }
-                            className="mt-0.5 shrink-0 rounded-lg border border-white/10 bg-white/[0.04] px-3 py-1.5 text-[10px] font-bold text-gray-500 transition hover:text-gray-300"
+                            className="mt-0.5 shrink-0 rounded-lg border border-white/10 bg-white/[0.04] px-3 py-1.5 text-[10px] font-bold text-gray-400 transition hover:text-gray-300"
                           >
                             {skipped ? "Restore" : "Skip"}
                           </button>
@@ -713,7 +713,7 @@ export default function CVEnhancerPage() {
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                 </svg>
                 <p className="text-sm text-gray-400">Rewriting your CV and tracking changes…</p>
-                <p className="text-xs text-gray-600">This takes around 30–45 seconds</p>
+                <p className="text-xs text-gray-400">This takes around 30–45 seconds</p>
               </div>
             )}
 
@@ -753,20 +753,20 @@ export default function CVEnhancerPage() {
                         >
                           <div className="flex items-start gap-3">
                             <div className="min-w-0 flex-1">
-                              <p className="mb-2 text-[10px] font-bold tracking-wide text-gray-500">
+                              <p className="mb-2 text-[10px] font-bold tracking-wide text-gray-400">
                                 {change.section}
                               </p>
                               <div className="space-y-2">
                                 <div className="rounded-lg bg-black/20 px-3 py-2">
-                                  <p className="mb-0.5 text-[9px] font-bold tracking-wide text-gray-600">Before</p>
-                                  <p className="text-xs leading-5 text-gray-500 line-through">{change.original}</p>
+                                  <p className="mb-0.5 text-[9px] font-bold tracking-wide text-gray-400">Before</p>
+                                  <p className="text-xs leading-5 text-gray-400 line-through">{change.original}</p>
                                 </div>
                                 <div className="rounded-lg bg-black/20 px-3 py-2">
                                   <p className="mb-0.5 text-[9px] font-bold tracking-wide text-emerald-500">After</p>
                                   <p className="text-xs leading-5 text-gray-200">{change.replacement}</p>
                                 </div>
                               </div>
-                              <p className="mt-2 text-[10px] leading-4 text-gray-500">→ {change.reason}</p>
+                              <p className="mt-2 text-[10px] leading-4 text-gray-400">→ {change.reason}</p>
                             </div>
                             <button
                               onClick={() => toggleRejection(change.id)}
@@ -810,7 +810,7 @@ export default function CVEnhancerPage() {
                   <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
                     <div>
                       <p className="text-[11px] font-bold tracking-wide text-cyan-300">Your enhanced CV</p>
-                      <p className="mt-0.5 text-xs text-gray-500">
+                      <p className="mt-0.5 text-xs text-gray-400">
                         {enhancedResult.changes.length - rejectedIds.size} of {enhancedResult.changes.length} changes applied
                       </p>
                     </div>

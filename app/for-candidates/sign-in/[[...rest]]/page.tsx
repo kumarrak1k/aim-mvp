@@ -72,14 +72,14 @@ export default function CandidateSignInPage() {
                 formButtonPrimary:
                   "bg-gradient-to-r from-violet-600 to-purple-600 hover:scale-[1.01] shadow-lg shadow-purple-900/30 text-white font-bold normal-case",
                 formFieldInput:
-                  "bg-black/30 border-white/[0.1] text-white placeholder-gray-500",
+                  "bg-black/30 border-white/[0.1] text-white placeholder-gray-400",
                 formFieldLabel: "text-gray-300",
                 footerActionText: "text-gray-400",
                 footerActionLink: "text-purple-300 hover:text-purple-200",
                 identityPreviewText: "text-white",
                 identityPreviewEditButton: "text-purple-300",
                 dividerLine: "bg-white/[0.1]",
-                dividerText: "text-gray-500",
+                dividerText: "text-gray-400",
               },
               variables: {
                 colorPrimary: "#a855f7",
@@ -89,7 +89,7 @@ export default function CandidateSignInPage() {
           />
 
           <div className="mt-4 text-center">
-            <p className="mb-2 text-xs text-gray-500">Don&rsquo;t have an account yet?</p>
+            <p className="mb-2 text-xs text-gray-400">Don&rsquo;t have an account yet?</p>
             <Link
               href="/for-candidates/sign-up"
               className="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/[0.05] px-6 py-2.5 text-sm font-bold text-white transition hover:bg-white/[0.1]"
@@ -100,7 +100,7 @@ export default function CandidateSignInPage() {
         </section>
         </div>
 
-        <footer className="mt-12 border-t border-white/[0.06] pt-4 text-center text-xs text-gray-600">
+        <footer className="mt-12 border-t border-white/[0.06] pt-4 text-center text-xs text-gray-400">
           © {new Date().getFullYear()} AI Career Mentor ·{" "}
           <Link href="/privacy" className="hover:text-gray-400">Privacy</Link> ·{" "}
           <Link href="/terms" className="hover:text-gray-400">Terms</Link> ·{" "}

@@ -120,7 +120,7 @@ export default function ApiDocsPage() {
             <p className="mb-4 text-sm text-gray-400">List all active assessment templates for your company.</p>
             <Block>{`curl -H "Authorization: Bearer aim_..." \\
   ${BASE}/templates`}</Block>
-            <p className="mt-4 mb-2 text-xs font-bold uppercase tracking-wider text-gray-500">Response</p>
+            <p className="mt-4 mb-2 text-xs font-bold uppercase tracking-wider text-gray-400">Response</p>
             <Block>{`{
   "data": [
     {
@@ -147,7 +147,7 @@ export default function ApiDocsPage() {
             <div className="mb-4 overflow-x-auto">
               <table className="w-full text-xs">
                 <thead>
-                  <tr className="border-b border-white/[0.06] text-left text-gray-500">
+                  <tr className="border-b border-white/[0.06] text-left text-gray-400">
                     <th className="pb-2 pr-6">Parameter</th>
                     <th className="pb-2 pr-6">Type</th>
                     <th className="pb-2">Description</th>
@@ -190,11 +190,11 @@ export default function ApiDocsPage() {
   -H "Content-Type: application/json" \\
   -d '{"candidateEmail":"jane@example.com","templateId":"clt_abc123","expiryDays":7}' \\
   ${BASE}/candidates`}</Block>
-            <p className="mt-4 mb-2 text-xs font-bold uppercase tracking-wider text-gray-500">Body parameters</p>
+            <p className="mt-4 mb-2 text-xs font-bold uppercase tracking-wider text-gray-400">Body parameters</p>
             <div className="overflow-x-auto">
               <table className="w-full text-xs">
                 <thead>
-                  <tr className="border-b border-white/[0.06] text-left text-gray-500">
+                  <tr className="border-b border-white/[0.06] text-left text-gray-400">
                     <th className="pb-2 pr-6">Field</th>
                     <th className="pb-2 pr-6">Required</th>
                     <th className="pb-2">Description</th>
@@ -232,7 +232,7 @@ export default function ApiDocsPage() {
             </p>
             <Block>{`curl -H "Authorization: Bearer aim_..." \\
   ${BASE}/candidates/cla_xyz789`}</Block>
-            <p className="mt-4 mb-2 text-xs font-bold uppercase tracking-wider text-gray-500">Result object</p>
+            <p className="mt-4 mb-2 text-xs font-bold uppercase tracking-wider text-gray-400">Result object</p>
             <Block>{`{
   "id": "cla_xyz789",
   "candidateEmail": "jane@example.com",
