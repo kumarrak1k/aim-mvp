@@ -65,6 +65,7 @@ export function BlogClient({ posts }: Props) {
         </div>
         <input
           type="text"
+          aria-label="Search guides"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search guides by topic or keyword, e.g. STAR, assessment centre, salary…"

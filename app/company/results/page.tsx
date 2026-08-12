@@ -235,6 +235,7 @@ export default function CompanyResultsPage() {
           </div>
           <input
             type="search"
+            aria-label="Search candidates by email"
             placeholder="Search candidate email..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}

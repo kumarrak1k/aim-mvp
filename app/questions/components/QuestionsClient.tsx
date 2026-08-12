@@ -62,6 +62,7 @@ export function QuestionsClient({ sets }: Props) {
         </div>
         <input
           type="text"
+          aria-label="Search interview questions"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search by role, skill, or keyword, e.g. product manager, STAR, leadership…"

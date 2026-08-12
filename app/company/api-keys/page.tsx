@@ -139,6 +139,7 @@ export default function ApiKeysPage() {
           <div className="flex gap-3">
             <input
               type="text"
+              aria-label="API key name"
               value={newKeyName}
               onChange={(e) => setNewKeyName(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && createKey()}
