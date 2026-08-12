@@ -57,3 +57,9 @@ next-env.d.ts
 
 # clerk configuration (can include secrets)
 /.clerk/
+
+# Agent skills installed by `npx skills add` - tooling, not app code.
+# .claude/launch.json and settings.json stay tracked; only skills are ignored.
+.claude/skills/
+.agents/
+skills-lock.json
