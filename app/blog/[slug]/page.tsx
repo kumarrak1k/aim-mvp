@@ -1,7 +1,20 @@
 import type { Metadata } from "next";
 
-// Revalidate hourly so scheduled (future-dated) posts publish themselves.
-export const revalidate = 3600;
+// Once a day, not once an hour.
+//
+// Hourly was inherited from the self-publishing mechanism, but that mechanism
+// does not depend on it: getAllPosts() filters future-dated posts out of
+// generateStaticParams, so a scheduled post has no prerendered page and is
+// generated on first request once its date passes. The sitemap and the blog
+// index keep their own faster cadence, which is what actually surfaces a new
+// post.
+//
+// What hourly did buy was regenerating unchanged MDX around the clock:
+// observability showed 232 ISR writes against 209 reads on one post - we were
+// rewriting these pages more often than anyone read them. Daily still refreshes
+// the related-posts links (the only part of an old page that changes when a new
+// post lands) well within a publishing cycle, at a 24th of the writes.
+export const revalidate = 86400;
 
 import Link from "next/link";
 import { notFound } from "next/navigation";
