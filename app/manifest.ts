@@ -16,21 +16,23 @@ export default function manifest(): MetadataRoute.Manifest {
     lang: "en-GB",
     icons: [
       {
-        src: "/brand/logo.jpg",
+        src: "/brand/icon-192.png",
         sizes: "192x192",
-        type: "image/jpeg",
+        type: "image/png",
         purpose: "any",
       },
       {
-        src: "/brand/logo.jpg",
+        src: "/brand/icon-512.png",
         sizes: "512x512",
-        type: "image/jpeg",
+        type: "image/png",
         purpose: "any",
       },
       {
-        src: "/brand/logo.jpg",
+        // Same art: the mark sits inside 62% of the canvas, which clears the
+        // inner-80% safe zone a maskable icon is cropped to.
+        src: "/brand/icon-512.png",
         sizes: "512x512",
-        type: "image/jpeg",
+        type: "image/png",
         purpose: "maskable",
       },
     ],

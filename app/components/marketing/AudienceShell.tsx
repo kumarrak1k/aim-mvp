@@ -192,7 +192,11 @@ export function AudienceShell({
           {/* Right actions — audience-only, no cross-audience switch in the
               header. Switching audiences is intentionally a deliberate action,
               done via "/" or the small footer link. */}
-          <div className="relative z-10 flex shrink-0 items-center gap-2">
+          {/* justify-end because this row lives in the grid's 1fr column: it
+              stretches to whatever the logo leaves behind. Without it the
+              actions were only right-aligned by accident, because the old
+              logo happened to be wide enough to squeeze the column shut. */}
+          <div className="relative z-10 flex shrink-0 items-center justify-end gap-2">
             <Link
               href={theme.signInPath}
               className="hidden whitespace-nowrap rounded-full border border-white/[0.1] bg-white/[0.04] px-4 py-2.5 text-[13px] font-bold text-white/80 transition hover:bg-white/[0.08] hover:text-white sm:block"
