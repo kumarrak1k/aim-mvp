@@ -52,37 +52,53 @@ body {
   color: #ffffff;
 }
 
-button,
-a,
-input,
-select,
-textarea {
-  -webkit-tap-highlight-color: transparent;
+@layer base {
+  button,
+  a,
+  input,
+  select,
+  textarea {
+    -webkit-tap-highlight-color: transparent;
+  }
 }
 
-button {
-  cursor: pointer;
+@layer base {
+  button {
+    cursor: pointer;
+  }
 }
 
-button:disabled {
-  cursor: not-allowed;
+@layer base {
+  button:disabled {
+    cursor: not-allowed;
+  }
 }
 
-input,
-select,
-textarea,
-button {
-  font: inherit;
+/*
+ * Element resets live in @layer base so Tailwind utilities can override them.
+ * Unlayered CSS wins over any layered rule regardless of specificity: the shorthand resets size AND weight, so an unlayered copy silently beat every text-* and font-* utility on buttons and inputs
+ */
+@layer base {
+  input,
+  select,
+  textarea,
+  button {
+    font: inherit;
+  }
 }
 
-input,
-select,
-textarea {
-  color-scheme: dark;
+@layer base {
+  input,
+  select,
+  textarea {
+    color-scheme: dark;
+  }
 }
 
-textarea {
-  resize: vertical;
+@layer base {
+  textarea {
+    resize: vertical;
+  }
 }
 
 img,
@@ -109,9 +125,15 @@ svg {
   }
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+/*
+ * Element resets live in @layer base so Tailwind utilities can override them.
+ * Unlayered CSS wins over any layered rule regardless of specificity: unlayered, this beat every text-* colour utility on a link
+ */
+@layer base {
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
 }
 
 :focus-visible {
