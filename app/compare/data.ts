@@ -138,7 +138,7 @@ export const competitors: Record<string, CompetitorData> = {
     name: "Big Interview",
     tagline: "AI Career Mentor vs Big Interview",
     description:
-      "Big Interview is an established interview preparation platform with video practice and coaching curricula. AI Career Mentor focuses on AI-powered, real-time scoring of answers, voice, and camera presence with a shorter, more focused practice loop.",
+      "Big Interview is an established interview preparation platform with video practice and coaching curricula. AI Career Mentor focuses on AI, real-time scoring of answers, voice, and camera presence with a shorter, more focused practice loop.",
     url: "https://biginterview.com",
     features: [
       { feature: "AI-tailored questions (your exact role)", aim: true, competitor: "Template-based" },

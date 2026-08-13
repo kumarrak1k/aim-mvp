@@ -117,7 +117,7 @@ export const siteConfig = {
       path: "/tools/star-scorer",
       label: "Free STAR Answer Scorer",
       description:
-        "Free AI-powered STAR answer scorer. No sign-in required. Paste your answer and get instant feedback on Situation, Task, Action, and Result.",
+        "Free AI STAR answer scorer. No sign-in required. Paste your answer and get instant feedback on Situation, Task, Action, and Result.",
       priority: 0.8,
     },
     {

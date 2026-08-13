@@ -493,7 +493,7 @@ export function PracticeStartScreen({
             </p>
             <p className="mt-1 text-sm leading-6 text-gray-300">
               The interview page will show a large Guided Answer button. It
-              plays AI-generated question audio and then starts your microphone
+              plays the question audio and then starts your microphone
               recording.
             </p>
           </div>
@@ -724,7 +724,7 @@ export function PracticeStartScreen({
                           </span>
                           {key === "opener" && (
                             <p className="text-[12px] text-gray-400 leading-tight mt-0.5">
-                              AI-generated intro question
+                              Intro question
                             </p>
                           )}
                           {key === "custom" && (

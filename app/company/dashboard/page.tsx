@@ -568,7 +568,7 @@ function DashboardContent() {
                 {[
                   { n: "1", t: "Build a template", d: "Pick the role, type and stages once." },
                   { n: "2", t: "Invite candidates", d: "Share a link; they complete it at their own pace." },
-                  { n: "3", t: "Review results", d: "Compare AI-scored, ranked candidates." },
+                  { n: "3", t: "Review results", d: "Compare scored, ranked candidates." },
                 ].map((s) => (
                   <div key={s.n} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-center">
                     <p className="text-2xl font-bold text-fuchsia-300">{s.n}</p>

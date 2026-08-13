@@ -85,7 +85,7 @@ export const COMPANY_GUIDES: CompanyGuide[] = [
     ],
     practiceRole: "Management Consultant",
     metaDescription:
-      "Complete guide to passing the McKinsey interview: process steps, PEI prep, case interview frameworks, sample questions, and insider tips. Practice with AI-scored mock interviews.",
+      "Complete guide to passing the McKinsey interview: process steps, PEI prep, case interview frameworks, sample questions, and insider tips. Practice with scored mock interviews.",
   },
 
   {
@@ -158,7 +158,7 @@ export const COMPANY_GUIDES: CompanyGuide[] = [
     ],
     practiceRole: "Consultant",
     metaDescription:
-      "Complete guide to passing the Deloitte interview: assessment process, strengths-based questions, commercial awareness prep, and insider tips. Practice with AI-scored mock interviews.",
+      "Complete guide to passing the Deloitte interview: assessment process, strengths-based questions, commercial awareness prep, and insider tips. Practice with scored mock interviews.",
   },
 
   {
@@ -231,7 +231,7 @@ export const COMPANY_GUIDES: CompanyGuide[] = [
     ],
     practiceRole: "Investment Banking Analyst",
     metaDescription:
-      "Complete guide to passing the Goldman Sachs interview: Superday prep, DCF and technical questions, markets awareness, and insider tips. Practice with AI-scored mock interviews.",
+      "Complete guide to passing the Goldman Sachs interview: Superday prep, DCF and technical questions, markets awareness, and insider tips. Practice with scored mock interviews.",
   },
 
   {
@@ -304,7 +304,7 @@ export const COMPANY_GUIDES: CompanyGuide[] = [
     ],
     practiceRole: "Graduate Consultant",
     metaDescription:
-      "Complete guide to passing the KPMG interview: assessment centre prep, values-based questions, commercial awareness, and insider tips. Practice with AI-scored mock interviews.",
+      "Complete guide to passing the KPMG interview: assessment centre prep, values-based questions, commercial awareness, and insider tips. Practice with scored mock interviews.",
   },
 
   {
@@ -377,7 +377,7 @@ export const COMPANY_GUIDES: CompanyGuide[] = [
     ],
     practiceRole: "Policy Advisor",
     metaDescription:
-      "Complete guide to passing the Civil Service Fast Stream: FSAC prep, behaviour questions, Success Profiles framework, and insider tips. Practice with AI-scored mock interviews.",
+      "Complete guide to passing the Civil Service Fast Stream: FSAC prep, behaviour questions, Success Profiles framework, and insider tips. Practice with scored mock interviews.",
   },
 ];
 

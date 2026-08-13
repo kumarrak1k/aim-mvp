@@ -7,7 +7,7 @@ const tools = [
   {
     href: "/career-docs/cv-enhancer",
     label: "CV Enhancer",
-    eyebrow: "AI-powered analysis",
+    eyebrow: "Instant analysis",
     description:
       "Paste your CV, choose your target role, and get an instant score, section-by-section feedback, rewritten bullet points, and the ATS keywords you're missing.",
     cta: "Enhance my CV →",

@@ -10,7 +10,7 @@ export const MIN_TOTAL_QUESTIONS = 3;
 // ── Question mix (Advanced plan only) ────────────────────────────────────────
 
 export type QuestionMixKey =
-  | "opener"      // "Tell me about yourself" style opening question (AI-generated)
+  | "opener"      // "Tell me about yourself" style opening question (AI)
   | "competency"
   | "technical"
   | "leadership"

@@ -12,7 +12,7 @@ type Params = { params: Promise<{ id: string }> };
  *
  * Returns the full evaluation for a single completed assignment in this
  * company — assignment metadata + the linked PracticeSession's per-question
- * results (transcripts, feedback, voice/video analysis) and the AI-generated
+ * results (transcripts, feedback, voice/video analysis) and the AI
  * summary. Drives the /company/results/[id] candidate detail view.
  *
  * Auth: must be a member of the same company that owns the assignment.

@@ -23,7 +23,7 @@ export function QuestionsPageContent({
 
       <div className="mt-14 border-t border-white/[0.07] pt-10 text-center">
         <p className="text-sm text-gray-400">
-          Want AI-generated questions tailored to your exact role?{" "}
+          Want questions tailored to your exact role?{" "}
           <Link
             href="/for-candidates/sign-up"
             className="font-bold text-purple-300 hover:text-purple-200"

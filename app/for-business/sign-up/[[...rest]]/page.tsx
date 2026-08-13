@@ -55,7 +55,7 @@ export default function BusinessSignUpPage() {
               Create your hiring workspace.
             </h1>
             <p className="mt-1.5 text-sm leading-5 text-gray-400">
-              Build templates, send invite links, and review AI-scored candidates.
+              Build templates, send invite links, and review scored candidates.
             </p>
             <p className="mt-2 text-[12px] text-gray-400">
               Job applicant?{" "}

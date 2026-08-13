@@ -16,7 +16,7 @@ export function SiteFooter() {
           <div>
             <SiteLogo href="/" size="sm" showText />
             <p className="mt-4 max-w-xs text-sm leading-6 text-gray-400">
-              AI-powered interview coaching for candidates, hiring teams, and
+              Interview coaching for candidates, hiring teams, and
               university careers services. Built in the UK.
             </p>
             <p className="mt-5 text-xs text-gray-400">

@@ -144,7 +144,7 @@ export default function AssessmentCentreSetupPage() {
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-gray-400">
             Your case study, interview questions and presentation brief will be tailored
-            to your role and level. Each session uses a fresh AI-generated scenario.
+            to your role and level. Each session uses a fresh scenario.
           </p>
         </div>
 
@@ -339,7 +339,7 @@ export default function AssessmentCentreSetupPage() {
           )}
           {canSubmit && !loading && (
             <p className="text-center text-xs text-gray-400">
-              Each session uses a fresh AI-generated scenario
+              Each session uses a fresh scenario
             </p>
           )}
         </div>

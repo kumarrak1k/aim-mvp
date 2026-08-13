@@ -193,14 +193,14 @@ export default function ForBusinessPage() {
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-gray-400">
             A short walkthrough of the whole hiring workflow: build a role template,
-            invite candidates, and review AI-scored, ranked results in one workspace.
+            invite candidates, and review scored, ranked results in one workspace.
           </p>
         </div>
         <DemoVideo
           src="/videos/corporate-demo.mp4"
           poster="/videos/corporate-poster.jpg"
           title="AI Career Mentor for Business: workflow demo"
-          caption="Build a role template, invite candidates, and review AI-scored results, all in one workspace."
+          caption="Build a role template, invite candidates, and review scored results, all in one workspace."
         />
       </section>
 

@@ -21,7 +21,7 @@ const KEY_POINTS = [
   },
   {
     title: "AI feedback is guidance, not advice",
-    body: "Scores, feedback, model answers, and improvement plans are AI-generated and may be inaccurate or incomplete. They are not legal, financial, immigration, or professional career advice.",
+    body: "Scores, feedback, model answers, and improvement plans are AI and may be inaccurate or incomplete. They are not legal, financial, immigration, or professional career advice.",
   },
   {
     title: "Liability is limited",

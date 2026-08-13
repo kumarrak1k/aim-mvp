@@ -120,7 +120,7 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
       features: [
         { text: "Always free, no payment details required" },
         { text: "3 practice sessions every month" },
-        { text: "AI-generated tailored interview questions" },
+        { text: "Tailored interview questions" },
         { text: "Scored feedback and a model answer per question" },
         { text: "1 free mock assessment centre to try" },
         { text: "2 free Career Docs generations to try" },

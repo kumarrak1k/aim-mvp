@@ -220,7 +220,7 @@ const structuredData = {
         {
           "@type": "HowToStep",
           position: 3,
-          name: "Answer AI-generated questions",
+          name: "Answer AI questions",
           text: "Listen to each question delivered as natural audio. Answer as you would in a real interview, speaking aloud or typing. Take your time.",
         },
         {

@@ -275,7 +275,7 @@ Scoring bands (apply to overall_score and to each category):
        light on measurable impact, ownership detail or reflection.
 - 5-6  Adequate. Answers the question but stays generic: no specific situation,
        no numbers, or claims without evidence. Typical of a rehearsed or
-       AI-generated answer.
+       AI answer.
 - 3-4  Weak. Vague assertions about personal qualities with no real example.
 - 0-2  Non-answer, or does not address the question.
 

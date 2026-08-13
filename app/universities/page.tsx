@@ -92,7 +92,7 @@ export default function UniversitiesPage() {
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-gray-400 sm:text-lg sm:leading-9">
             A single institutional licence gives your entire student body unlimited
-            access to AI-powered interview practice, assessment centre preparation,
+            access to AI interview practice, assessment centre preparation,
             and real-time coaching. At a fraction of the cost of human coaching.
           </p>
 

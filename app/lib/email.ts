@@ -122,7 +122,7 @@ function renderHtml({
             Hi,
           </p>
           <p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:#2a2238;">
-            ${escapeHtml(companyName)} has invited you to complete an AI-powered
+            ${escapeHtml(companyName)} has invited you to complete an AI
             interview assessment as part of their hiring process for the
             <strong>${escapeHtml(roleTitle)}</strong> role.
           </p>
@@ -675,7 +675,7 @@ function renderAdminWelcomeHtml({ to, firstName, signInUrl }: SendAdminWelcomePa
           <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#2a2238;">${greeting}</p>
           <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#2a2238;">
             An account has been created for you on AI Career Mentor,
-            an AI-powered platform for interview practice and assessment preparation.
+            an AI platform for interview practice and assessment preparation.
           </p>
           <p style="margin:0 0 28px;font-size:15px;line-height:1.7;color:#2a2238;">
             Click the button below to sign in. You'll be asked to set a

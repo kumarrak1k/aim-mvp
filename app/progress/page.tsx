@@ -886,7 +886,7 @@ function EmptyACState() {
         </h2>
         <p className="mt-3 max-w-2xl text-sm leading-7 text-gray-300">
           Once you finish a full mock assessment centre session (case study,
-          interview, and presentation), your scores and AI-generated report
+          interview, and presentation), your scores and AI report
           will appear here.
         </p>
         <div className="mt-6 flex flex-col gap-3 sm:flex-row">
