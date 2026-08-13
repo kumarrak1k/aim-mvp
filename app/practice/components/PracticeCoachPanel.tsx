@@ -134,7 +134,7 @@ export function PracticeCoachPanel({
                   <div className="absolute -inset-3 rounded-[1.6rem] bg-cyan-400/10 blur-2xl" />
                   <div className="relative rounded-[1.4rem] border border-white/15 bg-white p-2 shadow-xl shadow-black/20">
                     <img
-                      src="/brand/logo.jpg"
+                      src="/brand/logo-mark.svg"
                       alt="AI Career Mentor"
                       className="h-16 w-16 rounded-[1rem] object-contain sm:h-20 sm:w-20"
                     />

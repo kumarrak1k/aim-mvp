@@ -13,7 +13,7 @@ export default function NotFound() {
 
           <div className="mx-auto mb-6 w-fit rounded-[1.5rem] border border-white/15 bg-white p-2 shadow-2xl shadow-purple-950/40">
             <img
-              src="/brand/logo.jpg"
+              src="/brand/logo-mark.svg"
               alt="AI Career Mentor"
               className="h-16 w-16 rounded-2xl object-contain"
             />

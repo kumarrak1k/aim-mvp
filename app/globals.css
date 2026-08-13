@@ -92,11 +92,21 @@ svg {
   max-width: 100%;
 }
 
-img,
-svg,
-video,
-canvas {
-  display: block;
+/*
+ * In @layer base so Tailwind utilities can override it.
+ *
+ * Unlayered CSS beats every layered rule regardless of specificity, so while
+ * this sat outside a layer it silently defeated `hidden`, `inline-block` and
+ * every other display utility on img/svg/video/canvas across the whole app —
+ * found when a responsive `block sm:hidden` on the logo refused to hide.
+ */
+@layer base {
+  img,
+  svg,
+  video,
+  canvas {
+    display: block;
+  }
 }
 
 a {
