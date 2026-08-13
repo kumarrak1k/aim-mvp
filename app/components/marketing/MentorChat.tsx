@@ -12,7 +12,7 @@ interface Message {
 const WELCOME: Message = {
   role: "assistant",
   content:
-    "Hi! I'm your AI Mentor assistant. Ask me anything about the platform: getting started, what's included in each plan, or how a feature works. If I can't help, I'll point you to the right place.",
+    "Hi! I'm your AI Career Mentor assistant. Ask me anything about the platform: getting started, what's included in each plan, or how a feature works. If I can't help, I'll point you to the right place.",
 };
 
 // Chat history survives navigation and reloads for the current browser tab,
@@ -189,7 +189,7 @@ export function MentorChat() {
           className="flex flex-col w-[360px] max-w-[calc(100vw-2rem)] rounded-2xl border border-white/10 shadow-2xl overflow-hidden"
           style={{ height: "min(480px, calc(100dvh - 120px))", background: "#100922" }}
           role="dialog"
-          aria-label="AI Mentor chat"
+          aria-label="AI Career Mentor chat"
           aria-modal="false"
         >
           {/* Header */}
@@ -200,7 +200,7 @@ export function MentorChat() {
                 style={{ background: "var(--brand-purple)" }}
                 aria-hidden="true"
               />
-              <span className="text-sm font-semibold text-white">AI Mentor</span>
+              <span className="text-sm font-semibold text-white">AI Career Mentor</span>
               <span className="text-xs text-gray-400 hidden sm:inline">· here to help</span>
             </div>
             <div className="flex items-center gap-1">
@@ -320,7 +320,7 @@ export function MentorChat() {
       {/* Toggle button */}
       <button
         onClick={() => setOpen((o) => !o)}
-        aria-label={open ? "Close chat" : "Chat with AI Mentor"}
+        aria-label={open ? "Close chat" : "Chat with AI Career Mentor"}
         aria-expanded={open}
         className="w-14 h-14 rounded-full shadow-lg transition-all hover:scale-105 active:scale-95 flex items-center justify-center"
         style={{ background: "var(--brand-purple)", boxShadow: "0 4px 20px rgba(168,85,247,0.45)" }}

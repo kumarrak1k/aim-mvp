@@ -117,7 +117,10 @@ const structuredData = {
       "@id": `${siteUrl}/#organization`,
       name: siteName,
       url: siteUrl,
-      logo: absoluteUrl("/brand/logo.jpg"),
+      // Google needs a raster here (SVG is not accepted) and reads it for the
+      // knowledge panel, so it must be the CURRENT mark, not the retired
+      // photograph. icon-512.png is the new mark on the brand ground.
+      logo: absoluteUrl("/brand/icon-512.png"),
       contactPoint: {
         "@type": "ContactPoint",
         email: "support@aicareermentor.co.uk",

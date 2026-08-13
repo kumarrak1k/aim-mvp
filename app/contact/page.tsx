@@ -21,7 +21,7 @@ const structuredData = {
 
 const contacts = [
   {
-    icon: "🎓",
+    icon: "graduate" as const,
     audience: "Candidates & general enquiries",
     description:
       "Questions about your account, subscription, practice sessions, or anything else about the platform.",
@@ -30,7 +30,7 @@ const contacts = [
     response: "We respond within one working day.",
   },
   {
-    icon: "🏛️",
+    icon: "institution" as const,
     audience: "Universities & careers services",
     description:
       "Campus licensing, institutional pricing, procurement documentation, and onboarding for careers teams.",
@@ -39,7 +39,7 @@ const contacts = [
     response: "We respond within one working day.",
   },
   {
-    icon: "🏢",
+    icon: "corporate" as const,
     audience: "Corporate & hiring teams",
     description:
       "Assessment centre platform, candidate invites, custom templates, and enterprise pricing.",
@@ -63,6 +63,54 @@ const faqs = [
     a: "Make sure you've allowed microphone access in your browser (look for the mic icon in the address bar). Chrome and Edge work best. Safari on iOS requires a manual tap to start recording.",
   },
 ];
+
+/**
+ * Line icons in the site's existing idiom: 24px grid, currentColor, 1.75
+ * stroke, round joins. These replaced emoji, which render as a different
+ * artwork on every OS, carry no consistent weight or colour, and are read
+ * aloud by screen readers ("graduation cap") as if they were content.
+ */
+const ContactIcon = ({ name }: { name: "graduate" | "institution" | "corporate" }) => {
+  const common = {
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 1.75,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+    className: "h-6 w-6",
+    "aria-hidden": true,
+  };
+
+  if (name === "graduate") {
+    return (
+      <svg {...common}>
+        <path d="M21.4 10.9a1 1 0 0 0 0-1.84L12.8 5.2a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.83l8.57 3.9a2 2 0 0 0 1.66 0Z" />
+        <path d="M22 10v6" />
+        <path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5" />
+      </svg>
+    );
+  }
+
+  if (name === "institution") {
+    return (
+      <svg {...common}>
+        <path d="M3 22h18" />
+        <path d="M6 18v-7M10 18v-7M14 18v-7M18 18v-7" />
+        <path d="M12 2 20 7H4Z" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg {...common}>
+      <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18" />
+      <path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2" />
+      <path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2" />
+      <path d="M10 6h4M10 10h4M10 14h4M10 18h4" />
+    </svg>
+  );
+};
 
 export default function ContactPage() {
   return (
@@ -94,7 +142,9 @@ export default function ContactPage() {
                 key={c.audience}
                 className="flex flex-col rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-7"
               >
-                <p className="mb-3 text-3xl">{c.icon}</p>
+                <span className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl border border-purple-400/25 bg-purple-400/10 text-purple-300">
+                  <ContactIcon name={c.icon} />
+                </span>
                 <h2 className="mb-3 font-bold leading-tight text-white">
                   {c.audience}
                 </h2>
