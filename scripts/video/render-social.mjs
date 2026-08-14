@@ -157,6 +157,30 @@ const contentSlide = (s, f) => `<!doctype html><html><head><meta charset="utf-8"
   <div class="foot"><img src="${LOGO}"/><span class="url">${CTA.site}</span></div>
 </body></html>`;
 
+/**
+ * Overlay for a filmed beat: the same caption and footer, on a transparent
+ * ground, to be composited over the footage by the builder.
+ *
+ * Scrims top and bottom because footage is unpredictable. White type over a
+ * bright window or a pale wall is unreadable, and this has to survive whatever
+ * the shot happens to contain.
+ */
+const overlaySlide = (s, f) => `<!doctype html><html><head><meta charset="utf-8"><style>${head(f)}
+  body{background:transparent;justify-content:space-between}
+  .scrim-top{position:absolute;left:0;right:0;top:0;height:${Math.round(f.h * 0.42)}px;
+    background:linear-gradient(180deg,rgba(7,3,16,.90) 0%,rgba(7,3,16,.62) 45%,rgba(7,3,16,0) 100%);z-index:0}
+  .scrim-bot{position:absolute;left:0;right:0;bottom:0;height:${Math.round(f.h * 0.22)}px;
+    background:linear-gradient(0deg,rgba(7,3,16,.88) 0%,rgba(7,3,16,0) 100%);z-index:0}
+  .cap{position:relative;z-index:1;text-shadow:0 4px 28px rgba(0,0,0,.7)}
+  .foot{position:relative;z-index:1}
+</style></head>
+<body>
+  <div class="scrim-top"></div>
+  <div class="scrim-bot"></div>
+  <div class="cap">${s.caption}</div>
+  <div class="foot"><img src="${LOGO}"/><span class="url">${CTA.site}</span></div>
+</body></html>`;
+
 // Closing frame: the only place the offer is stated, so it gets the whole canvas.
 const ctaSlide = (f) => `<!doctype html><html><head><meta charset="utf-8"><style>${head(f)}
   body{justify-content:center;gap:0;padding:80px}
@@ -193,10 +217,16 @@ for (const f of FORMATS) {
       console.log("skip (missing screenshot)", s.image);
       continue;
     }
-    await page.setContent(s.cta ? ctaSlide(f) : contentSlide(s, f), { waitUntil: "load" });
+    // A filmed beat gets a transparent overlay instead of a slide; the builder
+    // composites it over the footage.
+    const html = s.video ? overlaySlide(s, f) : s.cta ? ctaSlide(f) : contentSlide(s, f);
+    await page.setContent(html, { waitUntil: "load" });
     await page.evaluate(() => document.fonts.ready);
     await page.waitForTimeout(180);
-    await page.screenshot({ path: `${OUT}/slides/${f.name}/${s.id}.png` });
+    await page.screenshot({
+      path: `${OUT}/slides/${f.name}/${s.id}.png`,
+      omitBackground: Boolean(s.video),
+    });
   }
   console.log(`slides [${f.name}] ${f.w}x${f.h} → ${SCENES.length} rendered`);
   await page.close();

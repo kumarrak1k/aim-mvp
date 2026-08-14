@@ -66,6 +66,34 @@ for (const f of FORMATS) {
   // from real pixels rather than resampling the final frame.
   scenes.forEach((s, i) => {
     const frames = Math.round(s.dur * 30);
+
+    // ── Filmed beat: real footage under the caption overlay ─────────────────
+    // No Ken-Burns here. The footage already has its own camera move, and
+    // adding a second one on top reads as a mistake.
+    if (s.video) {
+      const src = `${BASE}/footage/${s.video}`;
+      if (!existsSync(src)) {
+        console.error(`Missing footage: ${src}`);
+        process.exit(1);
+      }
+      // Fill the frame and centre-crop. The clips are shot 9:16, so the square
+      // format takes a centre slice rather than letterboxing.
+      // The overlay is rendered at deviceScaleFactor 2, so it is twice the
+      // frame size and has to be scaled down before compositing. Without this
+      // ffmpeg pins it at 0,0 and you see the top-left quarter of the caption.
+      const fc =
+        `[0:v]scale=${f.w}:${f.h}:force_original_aspect_ratio=increase,` +
+        `crop=${f.w}:${f.h},fps=30,setsar=1[bg];` +
+        `[1:v]scale=${f.w}:${f.h}[ov];` +
+        `[bg][ov]overlay=0:0:format=auto,format=yuv420p[out]`;
+      ff(["-y", "-i", src, "-loop", "1", "-i", `${SLIDES}/${s.id}.png`,
+          "-filter_complex", fc, "-map", "[out]", "-t", s.dur.toFixed(2), "-r", "30",
+          "-an", "-c:v", "libx264", "-preset", "medium", "-crf", "19",
+          "-pix_fmt", "yuv420p", `${SEGS}/${s.id}.mp4`]);
+      return;
+    }
+
+    // ── Still beat: slow Ken-Burns push ─────────────────────────────────────
     const A = 0.05;
     const denom = Math.max(1, frames - 1);
     const z = i % 2 === 0 ? `1+${A}*on/${denom}` : `${(1 + A).toFixed(3)}-${A}*on/${denom}`;

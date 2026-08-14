@@ -61,12 +61,20 @@ export const STATIC = {
  */
 export const SCENES = [
   {
+    // The opener is filmed, not a screenshot. Seven beats of dashboard gave the
+    // advert nothing to feel; this is the only beat whose job is recognition
+    // rather than proof.
+    //
+    // The line is deliberately a recognition, not a result. "I scored 4 and
+    // then 8" would convert better and we cannot use it: nobody actually
+    // scored that, and a generated actor delivering it is a fabricated
+    // testimonial. This is true of everyone watching and needs no evidence.
     id: "s1-hook",
     kicker: null,
-    caption: "Interview prep shouldn’t be guesswork.",
-    vo: "You rehearse, and never know if it’s working.",
-    image: "candidate-04-summary.png",
-    dur: 3.0,
+    caption: "You rehearse it in your head.<br/>You still have no idea if you’re any good.",
+    vo: "You rehearse it in your head. You still have no idea if you’re any good.",
+    video: "H1-night-before-v1.mp4",
+    dur: 4.0,
   },
   {
     id: "s2-studio",
@@ -83,6 +91,16 @@ export const SCENES = [
     vo: "Real questions for your exact role.",
     image: "candidate-01-setup.png",
     dur: 2.9,
+  },
+  {
+    // Filmed. He is in profile and barely moving, so there is no lip sync to
+    // give the generation away even though he is speaking.
+    id: "s3b-outloud",
+    kicker: null,
+    caption: "Say it out loud.",
+    vo: "Typed, spoken, or on camera.",
+    video: "H2-doing-the-work-v1.mp4",
+    dur: 2.6,
   },
   {
     id: "s4-answer",
@@ -125,6 +143,17 @@ export const SCENES = [
     vo: "Every session tracked, so progress is visible.",
     image: "candidate-08-trend.png",
     chart: true,
+    dur: 3.0,
+  },
+  {
+    // The payoff. Shot from behind on purpose: it reads as confidence without
+    // needing a face, which is where these generations fall down. The warm
+    // morning light is a deliberate break from the dark opener.
+    id: "s6b-walkin",
+    kicker: null,
+    caption: "Then walk in and do it for real.",
+    vo: "Then walk in and do it for real.",
+    video: "H3-walking-in-v1.mp4",
     dur: 3.0,
   },
   {
