@@ -33,10 +33,13 @@ export function DemoShowcase({
       </div>
 
       <div className="mx-auto mb-6 max-w-4xl">
+        {/* The lead renders at ~896px, which is already readable, so it does
+            not offer the lightbox. The grid shots below are ~368px and do. */}
         <ShotFigure
           shot={lead}
           sizes="(min-width: 1024px) 56rem, 100vw"
           rounded="rounded-3xl"
+          zoomable={false}
         />
       </div>
 

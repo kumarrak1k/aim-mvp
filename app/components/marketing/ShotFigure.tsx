@@ -23,11 +23,18 @@ export function ShotFigure({
   sizes,
   rounded = "rounded-2xl",
   priority = false,
+  zoomable = true,
 }: {
   shot: Shot;
   sizes: string;
   rounded?: string;
   priority?: boolean;
+  /**
+   * Set false where the shot already renders large enough to read, such as the
+   * lead figure. Offering "enlarge" there promises a bigger view than the
+   * lightbox can actually deliver.
+   */
+  zoomable?: boolean;
 }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
@@ -64,6 +71,27 @@ export function ShotFigure({
       document.body.style.overflow = previous;
     };
   }, [open]);
+
+  if (!zoomable) {
+    return (
+      <figure>
+        <div className={`overflow-hidden ${rounded} ring-1 ring-white/10`}>
+          <Image
+            src={shot.src}
+            alt={shot.alt}
+            width={2600}
+            height={1781}
+            sizes={sizes}
+            priority={priority}
+            className="h-auto w-full"
+          />
+        </div>
+        <figcaption className="mt-3 text-center text-sm leading-6 text-gray-400">
+          {shot.caption}
+        </figcaption>
+      </figure>
+    );
+  }
 
   return (
     <figure>
