@@ -55,8 +55,8 @@ const startOf = (i) => COPY_SCENES.slice(0, i).reduce((n, s) => n + s.dur, 0) - 
  * together rather than one person talking.
  */
 const TEMPO = COPY.VO_TEMPO ?? 0.88;
-const LEAD = 0.35;
-const TAIL = 0.55;
+const LEAD = COPY.VO_LEAD ?? 0.35;
+const TAIL = COPY.VO_TAIL ?? 0.55;
 
 for (const f of FORMATS) {
   const SLIDES = `${BASE}/slides/${VARIANT}/${f.name}`;

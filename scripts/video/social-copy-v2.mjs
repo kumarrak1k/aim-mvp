@@ -53,7 +53,7 @@ export const SCENES = [
     // is another woman at a laptop, close enough to the character in beats 1
     // and 7 that it read as a continuity error rather than as someone else.
     video: "H2-doing-the-work-v1.mp4",
-    dur: 5.4,
+    dur: 3.8,
   },
   {
     // THE PRODUCT. The real interface asking a real question.
@@ -62,7 +62,7 @@ export const SCENES = [
     caption: "Realistic interviews, on demand.",
     vo: "Practise realistic interviews.",
     image: "candidate-02-question.png",
-    dur: 4.0,
+    dur: 3.0,
   },
   {
     // THE FEEDBACK. Scored on answer, delivery and presence.
@@ -72,7 +72,7 @@ export const SCENES = [
     vo: "Instant feedback on your answers, delivery and presence.",
     proof: "score",
     image: "candidate-03-feedback.png",
-    dur: 5.9,
+    dur: 4.9,
   },
   {
     // THE MODEL ANSWER. The thing people actually learn from.
@@ -88,7 +88,7 @@ export const SCENES = [
       ],
     },
     image: "candidate-03-feedback.png",
-    dur: 4.1,
+    dur: 2.9,
   },
   {
     // THE IMPROVEMENT. Descriptive caption, not a promise: the arc on the chart
@@ -100,7 +100,7 @@ export const SCENES = [
     vo: "Practise. Improve. Go again.",
     image: "candidate-08-trend.png",
     chart: true,
-    dur: 4.0,
+    dur: 3.2,
   },
   {
     // THE TRANSFORMATION. Same person, composed.
@@ -118,7 +118,7 @@ export const SCENES = [
     caption: null,
     vo: "AI Career Mentor. Start practising free.",
     image: null,
-    dur: 5.7,
+    dur: 4.4,
   },
 ];
 
@@ -127,5 +127,13 @@ export const SCENES = [
  * it already arrives at a natural pace. Stretching it again would drag.
  */
 export const VO_TEMPO = 1;
+
+/**
+ * Tighter than the default. At 171 words per minute the read itself was not
+ * slow; it was the 0.9s of silence wrapped around every line that made the cut
+ * drag. Less air between beats fixes the feel without touching delivery.
+ */
+export const VO_LEAD = 0.3;
+export const VO_TAIL = 0.4;
 
 export const TRANSITION = 0.4;
