@@ -7,6 +7,9 @@
 // Run: node scripts/video/build-social.mjs → marketing/social/advert-square-15s.mp4
 import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync } from "node:fs";
+// Beat order and hold times come from the same file as the words, so the video
+// and the static can never drift apart.
+import { SCENES as COPY_SCENES, TRANSITION } from "./social-copy.mjs";
 
 const FFMPEG =
   process.env.FFMPEG_PATH ||
@@ -17,20 +20,10 @@ const SLIDES = `${BASE}/slides`;
 const SEGS = `${BASE}/segments`;
 const OUT = `${BASE}/advert-square-15s.mp4`;
 const SIZE = 1080;
-const T = 0.4; // crossfade (s)
+const T = TRANSITION;
 mkdirSync(SEGS, { recursive: true });
 
-// Holds are tuned to reading time, not to an even split: the hook and the
-// closing offer need longer than the middle beats, which restate a single idea
-// the caption already carries. Sum minus the crossfades lands on ~15s.
-const SCENES = [
-  { id: "s1-hook", dur: 3.0 },
-  { id: "s2-setup", dur: 2.7 },
-  { id: "s3-question", dur: 2.7 },
-  { id: "s4-feedback", dur: 3.0 },
-  { id: "s5-ac", dur: 2.6 },
-  { id: "s6-cta", dur: 3.0 },
-].filter((s) => existsSync(`${SLIDES}/${s.id}.png`));
+const SCENES = COPY_SCENES.filter((s) => existsSync(`${SLIDES}/${s.id}.png`));
 
 if (!SCENES.length) {
   console.error("No slides found. Run: node scripts/video/render-social.mjs");

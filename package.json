@@ -20,7 +20,8 @@
     "test:pack:stripe": "playwright test -c playwright.tests.config.ts --grep @stripe",
     "test:pack:ui": "playwright test -c playwright.tests.config.ts --ui",
     "test:all": "vitest run && playwright test",
-    "db:drift": "node scripts/check-db-drift.mjs"
+    "db:drift": "node scripts/check-db-drift.mjs",
+    "social": "node scripts/video/render-social.mjs && node scripts/video/build-social.mjs"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.0.12",

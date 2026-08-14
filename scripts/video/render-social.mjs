@@ -10,6 +10,8 @@
 import { chromium } from "@playwright/test";
 import { readFileSync, mkdirSync, existsSync } from "node:fs";
 import sharp from "sharp";
+// Every word and timing lives in social-copy.mjs. Edit that file, not this one.
+import { SCENES, CTA, STATIC } from "./social-copy.mjs";
 
 const SRC = "marketing/screenshots";        // raw 4320x2700 captures
 const OUT = "marketing/social";
@@ -47,17 +49,6 @@ const PROOF = existsSync(`${SRC}/candidate-03-feedback-full.png`)
   ? await cropOf("candidate-03-feedback-full.png", 0.415, 0.3)
   : null;
 
-// Captions stay at six words or fewer: most of the feed watches muted and
-// scrolling, so each beat has to be readable in a glance.
-const SCENES = [
-  { id: "s1-hook",     image: "candidate-04-summary.png",   caption: "Interview prep shouldn’t be guesswork.", kicker: null },
-  { id: "s2-setup",    image: "candidate-01-setup.png",     caption: "Built for your exact role.", kicker: "Practice" },
-  { id: "s3-question", image: "candidate-02-question.png",  caption: "Type, speak, or go on camera.", kicker: "Answer" },
-  { id: "s4-feedback", image: "candidate-03-feedback.png",  caption: "Every answer scored honestly.", kicker: "Feedback", proof: true },
-  { id: "s5-ac",       image: "ac-01-landing.png",          caption: "Mock assessment centres too.", kicker: "Go deeper" },
-  { id: "s6-cta",      image: null,                          caption: null, kicker: null },
-];
-
 const SITE_BG = `
   radial-gradient(900px 620px at 22% -10%, rgba(168,85,247,.34), transparent 62%),
   radial-gradient(760px 560px at 88% 108%, rgba(232,80,180,.20), transparent 62%),
@@ -90,7 +81,7 @@ const contentSlide = (s) => `<!doctype html><html><head><meta charset="utf-8"><s
   <div class="card"><img src="data:image/png;base64,${
     s.proof && PROOF ? PROOF : b64(`${SRC}/${s.image}`)
   }"/></div>
-  <div class="foot"><img src="${LOGO}"/><span class="url">aicareermentor.co.uk</span></div>
+  <div class="foot"><img src="${LOGO}"/><span class="url">${CTA.site}</span></div>
 </body></html>`;
 
 // Closing frame: the only place the offer is stated, so it gets the whole canvas.
@@ -105,10 +96,10 @@ const ctaSlide = () => `<!doctype html><html><head><meta charset="utf-8"><style>
 </style></head>
 <body>
   <img class="lock" src="${LOGO}"/>
-  <div class="line">Walk in already<br/>having done it.</div>
-  <div class="sub">Interview practice and mock assessment centres, scored honestly.</div>
-  <div class="pill">Free to start. No card needed.</div>
-  <div class="site">aicareermentor.co.uk</div>
+  <div class="line">${CTA.headline}</div>
+  <div class="sub">${CTA.subline}</div>
+  <div class="pill">${CTA.button}</div>
+  <div class="site">${CTA.site}</div>
 </body></html>`;
 
 const browser = await chromium.launch();
@@ -146,11 +137,11 @@ const staticAd = `<!doctype html><html><head><meta charset="utf-8"><style>${head
         background:linear-gradient(96deg,#CD9CFA,#A855F7);padding:19px 44px;border-radius:999px;margin-bottom:26px}
 </style></head>
 <body>
-  <div class="cap">Walk in already having done it.</div>
-  <div class="sub">Interview practice and mock assessment centres, scored the way an assessor scores them.</div>
+  <div class="cap">${STATIC.headline}</div>
+  <div class="sub">${STATIC.subline}</div>
   <div class="card"><img src="data:image/png;base64,${PROOF ?? b64(`${SRC}/candidate-03-feedback.png`)}"/></div>
-  <div class="pill">Free to start. No card needed.</div>
-  <div class="foot"><img src="${LOGO}"/><span class="url">aicareermentor.co.uk</span></div>
+  <div class="pill">${STATIC.button}</div>
+  <div class="foot"><img src="${LOGO}"/><span class="url">${STATIC.site}</span></div>
 </body></html>`;
 
 await page.setContent(staticAd, { waitUntil: "load" });
