@@ -74,6 +74,11 @@ export const SCENES = [
     caption: "You rehearse it in your head.<br/>You still have no idea if you’re any good.",
     vo: "You rehearse it in your head. You still have no idea if you’re any good.",
     video: "H1-night-before-v1.mp4",
+    // The generation came back badly underexposed: fine on a calibrated
+    // monitor, unreadable on a phone outdoors, which is where this gets
+    // watched. The curve lifts shadows and midtones while leaving the
+    // highlights alone, so it still reads as night rather than turning grey.
+    grade: "curves=all='0/0.10 0.25/0.47 0.5/0.70 1/1',eq=saturation=1.10",
     dur: 4.0,
   },
   {

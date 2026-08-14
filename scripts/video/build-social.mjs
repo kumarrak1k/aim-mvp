@@ -81,9 +81,11 @@ for (const f of FORMATS) {
       // The overlay is rendered at deviceScaleFactor 2, so it is twice the
       // frame size and has to be scaled down before compositing. Without this
       // ffmpeg pins it at 0,0 and you see the top-left quarter of the caption.
+      // An optional `grade` filter runs before the overlay, so the caption is
+      // never touched by a colour correction meant for the footage.
       const fc =
         `[0:v]scale=${f.w}:${f.h}:force_original_aspect_ratio=increase,` +
-        `crop=${f.w}:${f.h},fps=30,setsar=1[bg];` +
+        `crop=${f.w}:${f.h},fps=30,setsar=1${s.grade ? `,${s.grade}` : ""}[bg];` +
         `[1:v]scale=${f.w}:${f.h}[ov];` +
         `[bg][ov]overlay=0:0:format=auto,format=yuv420p[out]`;
       ff(["-y", "-i", src, "-loop", "1", "-i", `${SLIDES}/${s.id}.png`,
