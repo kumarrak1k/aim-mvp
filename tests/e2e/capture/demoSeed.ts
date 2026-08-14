@@ -41,8 +41,27 @@ function summary(score: number, signal: string, cats: Record<string, number>) {
   };
 }
 
+/**
+ * Which score arc to seed. `DEMO_ARC=short` gives a three-session arc for the
+ * marketing shot of the readiness trend; anything else gives the default
+ * six-week arc used for the site screenshots.
+ *
+ * Both are fictional demo data on the test database. If a number from either
+ * arc is ever shown as a headline rather than as UI furniture, it becomes a
+ * claim about typical results and needs evidence behind it.
+ */
+const ARC = process.env.DEMO_ARC ?? "default";
+
+// A deliberately steep three-session arc, for a shot that has to read at a
+// glance. Fewer points and a wider spread than the default.
+const SHORT_TREND = [
+  { d: 21, score: 4, signal: "Developing", mode: "typed", cats: { content: 4, clarity: 4, relevance: 5, structure: 3, confidence: 4, pace: 4 } },
+  { d: 12, score: 5, signal: "Moderate", mode: "voice", cats: { content: 5, clarity: 6, relevance: 5, structure: 5, confidence: 5, pace: 5, voice_delivery: 5 } },
+  { d: 2, score: 8, signal: "Strong", mode: "voice-camera", cats: { content: 8, clarity: 8, relevance: 8, structure: 8, confidence: 8, pace: 8, voice_delivery: 8, camera_presence: 8 } },
+];
+
 // A believable "getting better over six weeks" arc, ending interview-ready.
-const TREND = [
+const DEFAULT_TREND = [
   { d: 38, score: 6, signal: "Moderate", mode: "typed", cats: { content: 6, clarity: 6, relevance: 6, structure: 5, confidence: 6, pace: 6 } },
   { d: 31, score: 6, signal: "Moderate", mode: "voice", cats: { content: 6, clarity: 7, relevance: 6, structure: 6, confidence: 6, pace: 6, voice_delivery: 6 } },
   { d: 24, score: 7, signal: "Moderate", mode: "voice", cats: { content: 7, clarity: 7, relevance: 7, structure: 7, confidence: 7, pace: 7, voice_delivery: 7 } },
@@ -50,6 +69,9 @@ const TREND = [
   { d: 9, score: 8, signal: "Strong", mode: "voice-camera", cats: { content: 8, clarity: 8, relevance: 8, structure: 8, confidence: 8, pace: 8, voice_delivery: 8, camera_presence: 8 } },
   { d: 3, score: 9, signal: "Strong", mode: "voice-camera", cats: { content: 9, clarity: 9, relevance: 8, structure: 9, confidence: 9, pace: 8, voice_delivery: 9, camera_presence: 9 } },
 ];
+
+const TREND = ARC === "short" ? SHORT_TREND : DEFAULT_TREND;
+console.log(`demo arc [${ARC}] → ${TREND.length} sessions, scores ${TREND.map((t) => t.score).join(" → ")}`);
 
 // A full per-candidate result (summary + per-question feedback + voice/camera),
 // so /company/results and /company/results/[id] render with real, scored content.

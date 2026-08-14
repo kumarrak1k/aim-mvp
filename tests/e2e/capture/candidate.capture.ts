@@ -56,6 +56,27 @@ test.describe("marketing capture — candidate", () => {
     await page.screenshot({ path: `${DIR}/candidate-03-feedback-full.png`, fullPage: true });
   });
 
+  // The readiness trend, shot as an element rather than a viewport. The page
+  // opens on a marketing hero, so a 1440x900 screenshot of /progress captures
+  // a headline and misses the chart entirely, which is the one thing on that
+  // page worth showing. Pair with DEMO_ARC=short for a three-session arc.
+  test("readiness trend chart", async ({ page }) => {
+    await page.goto("/progress");
+    await page.waitForLoadState("networkidle").catch(() => {});
+    await clean(page);
+    const heading = page.getByText("Readiness trend", { exact: true });
+    await heading.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(600); // let the chart's entry animation settle
+
+    // Shoot the chart element itself. Filtering locators by text matches only
+    // the header block, and clipping a union of the two proved fragile; the
+    // chart's fixed 700x260 viewBox is a stable handle, and the bare chart
+    // composes better into marketing artwork than the panel chrome around it.
+    const chart = page.locator('svg[viewBox="0 0 700 260"]').first();
+    await chart.waitFor({ state: "visible", timeout: 10_000 });
+    await chart.screenshot({ path: `${DIR}/candidate-08-trend.png` });
+  });
+
   // The Studio opens the journey: it is where someone who has not been invited
   // to interview yet actually starts, so the marketing needs a shot of it.
   test("cv & application studio", async ({ page }) => {
