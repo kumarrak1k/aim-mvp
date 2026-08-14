@@ -10,7 +10,8 @@ import { chromium } from "@playwright/test";
 import { readFileSync, mkdirSync, existsSync } from "node:fs";
 import sharp from "sharp";
 // Every word and timing lives in social-copy.mjs. Edit that file, not this one.
-import { SCENES, CTA, STATIC } from "./social-copy.mjs";
+import { COPY, VARIANT } from "./social-which.mjs";
+const { SCENES, CTA, STATIC } = COPY;
 
 const SRC = "marketing/screenshots";        // raw 4320x2700 captures
 const OUT = "marketing/social";
@@ -204,7 +205,7 @@ const ctaSlide = (f) => `<!doctype html><html><head><meta charset="utf-8"><style
 const browser = await chromium.launch();
 
 for (const f of FORMATS) {
-  mkdirSync(`${OUT}/slides/${f.name}`, { recursive: true });
+  mkdirSync(`${OUT}/slides/${VARIANT}/${f.name}`, { recursive: true });
   const page = await browser.newPage({
     viewport: { width: f.w, height: f.h },
     // 2x so the Ken-Burns push-in has real pixels to eat into rather than
@@ -224,7 +225,7 @@ for (const f of FORMATS) {
     await page.evaluate(() => document.fonts.ready);
     await page.waitForTimeout(180);
     await page.screenshot({
-      path: `${OUT}/slides/${f.name}/${s.id}.png`,
+      path: `${OUT}/slides/${VARIANT}/${f.name}/${s.id}.png`,
       omitBackground: Boolean(s.video),
     });
   }
@@ -259,7 +260,7 @@ const p = await browser.newPage({ viewport: { width: sq.w, height: sq.h }, devic
 await p.setContent(staticAd, { waitUntil: "load" });
 await p.evaluate(() => document.fonts.ready);
 await p.waitForTimeout(180);
-await p.screenshot({ path: `${OUT}/advert-static.png` });
-console.log("static advert → marketing/social/advert-static.png");
+await p.screenshot({ path: `${OUT}/advert-static-${VARIANT}.png` });
+console.log(`static advert → marketing/social/advert-static-${VARIANT}.png`);
 
 await browser.close();

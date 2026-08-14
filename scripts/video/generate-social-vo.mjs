@@ -16,9 +16,10 @@
 //
 // Run: node scripts/video/generate-social-vo.mjs
 import { readFileSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
-import { SCENES } from "./social-copy.mjs";
+import { COPY, VARIANT } from "./social-which.mjs";
+const { SCENES } = COPY;
 
-const OUT = "marketing/social/vo";
+const OUT = `marketing/social/vo/${VARIANT}`;
 const DH_ENV = "../digital-human/.env";
 
 const fromEnvFile = (path) => {

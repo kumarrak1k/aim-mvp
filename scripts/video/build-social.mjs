@@ -9,7 +9,8 @@ import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync, rmSync } from "node:fs";
 // Beat order and hold times come from the same file as the words, so the
 // video, the static and the narration can never drift apart.
-import { SCENES as COPY_SCENES, TRANSITION } from "./social-copy.mjs";
+import { COPY, VARIANT } from "./social-which.mjs";
+const { SCENES: COPY_SCENES, TRANSITION } = COPY;
 import { FORMATS } from "./render-social.mjs";
 
 const FFMPEG =
@@ -18,8 +19,9 @@ const FFMPEG =
 const FFPROBE = FFMPEG.replace(/ffmpeg\.exe$/i, "ffprobe.exe");
 
 const BASE = "marketing/social";
-const DIST = `${BASE}/final`;
-const VO = `${BASE}/vo`;
+// Everything is namespaced by variant so building v2 cannot overwrite v1.
+const DIST = `${BASE}/final/${VARIANT}`;
+const VO = `${BASE}/vo/${VARIANT}`;
 const T = TRANSITION;
 
 const ff = (args) => execFileSync(FFMPEG, args, { stdio: "ignore" });
@@ -57,8 +59,8 @@ const LEAD = 0.35;
 const TAIL = 0.55;
 
 for (const f of FORMATS) {
-  const SLIDES = `${BASE}/slides/${f.name}`;
-  const SEGS = `${BASE}/segments/${f.name}`;
+  const SLIDES = `${BASE}/slides/${VARIANT}/${f.name}`;
+  const SEGS = `${BASE}/segments/${VARIANT}/${f.name}`;
   mkdirSync(SEGS, { recursive: true });
 
   const scenes = COPY_SCENES.filter((s) => existsSync(`${SLIDES}/${s.id}.png`));
@@ -130,7 +132,7 @@ for (const f of FORMATS) {
 
   // ── Crossfade the clips together ──────────────────────────────────────────
   const files = scenes.map((s) => `${SEGS}/${s.id}.mp4`);
-  const silent = `${DIST}/AI-Career-Mentor-advert-${f.name}-${f.w}x${f.h}-silent.mp4`;
+  const silent = `${DIST}/AI-Career-Mentor-${VARIANT}-${f.name}-${f.w}x${f.h}-silent.mp4`;
   if (files.length === 1) {
     ff(["-y", "-i", files[0], "-c", "copy", silent]);
   } else {
@@ -184,8 +186,8 @@ for (const f of FORMATS) {
       // "non monotonically increasing dts". Regenerating timestamps fixes it.
       `apad=whole_dur=${total.toFixed(3)},asetpts=N/SR/TB[a]`;
 
-    const aud = `${BASE}/_vo-${f.name}.m4a`;
-    const out = `${DIST}/AI-Career-Mentor-advert-${f.name}-${f.w}x${f.h}-voiceover.mp4`;
+    const aud = `${BASE}/_vo-${VARIANT}-${f.name}.m4a`;
+    const out = `${DIST}/AI-Career-Mentor-${VARIANT}-${f.name}-${f.w}x${f.h}-voiceover.mp4`;
     ff(["-y", ...inputs, "-filter_complex", fc, "-map", "[a]",
         "-c:a", "aac", "-b:a", "192k", "-ar", "48000", aud]);
     ff(["-y", "-i", silent, "-i", aud, "-map", "0:v", "-map", "1:a",
