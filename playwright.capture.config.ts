@@ -6,8 +6,11 @@ import { BASE_URL } from "./tests/e2e/pack/fixtures/env";
 
 const useLocalServer = /localhost|127\.0\.0\.1/.test(BASE_URL);
 
-// Retina, marketing-friendly framing.
-const shot = { viewport: { width: 1440, height: 900 }, deviceScaleFactor: 2 } as const;
+// Marketing-friendly framing at 3x. The shots are displayed large (and now
+// open full-size in a lightbox), so 2x left them visibly soft once scaled into
+// the browser frame. 1440x900 CSS at 3x gives a 4320x2700 source, which
+// downsamples to the published width with no upscaling anywhere in the chain.
+const shot = { viewport: { width: 1440, height: 900 }, deviceScaleFactor: 3 } as const;
 
 export default defineConfig({
   testDir: "./tests/e2e/capture",
@@ -49,8 +52,11 @@ export default defineConfig({
   ...(useLocalServer
     ? {
         webServer: {
-          command: "npm run dev",
-          url: "http://localhost:3000",
+          // Port must come from BASE_URL, not a literal. Hardcoding :3000 once
+          // let an unrelated dev server on that port serve the whole capture
+          // run, and the shots came out of the wrong app entirely.
+          command: `npm run dev -- --port ${new URL(BASE_URL).port || "3000"}`,
+          url: BASE_URL,
           reuseExistingServer: true,
           timeout: 120_000,
           env: {

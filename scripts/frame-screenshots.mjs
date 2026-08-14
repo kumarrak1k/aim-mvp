@@ -1,7 +1,21 @@
-// Wrap raw app screenshots in a branded browser frame on a purple gradient.
+// Wrap raw app screenshots in a branded browser frame on a purple gradient,
+// then publish them straight to public/marketing as WebP.
 // Pure composition (no dev server). Run: node scripts/frame-screenshots.mjs
+//
+// The publish step lives here on purpose. It used to be a manual resize, and a
+// hand-run pass once wrote 1200x750 files into a slot the page renders at
+// 2000px wide — every homepage shot was upscaled and soft for weeks with
+// nothing to catch it. One command now owns capture width through to the
+// published asset, and it fails loudly if a source is too small to fill it.
 import { chromium } from "@playwright/test";
 import { readFileSync, mkdirSync, existsSync } from "node:fs";
+import sharp from "sharp";
+
+// Published width. The shots open full-size in a lightbox, so this is the
+// resolution the reader can actually zoom into; next/image derives the smaller
+// srcset entries for the thumbnails from it.
+const PUBLISH_WIDTH = 2600;
+const PUBLIC_DIR = "public/marketing";
 
 const SHOTS = [
   { in: "candidate-01-setup.png", path: "/practice" },
@@ -42,9 +56,13 @@ const html = (b64, path) => `<!doctype html><html><head><meta charset="utf-8"><s
 </body></html>`;
 
 mkdirSync("marketing/framed", { recursive: true });
+mkdirSync(PUBLIC_DIR, { recursive: true });
 const browser = await chromium.launch();
-const page = await browser.newPage({ deviceScaleFactor: 2, viewport: { width: 1568, height: 1180 } });
+// 3x to match the capture config: the raw shot is 4320px wide and sits in a
+// 1440px-wide window, so this reproduces it pixel-for-pixel with no resampling.
+const page = await browser.newPage({ deviceScaleFactor: 3, viewport: { width: 1568, height: 1180 } });
 let n = 0;
+const undersized = [];
 for (const s of SHOTS) {
   const src = `marketing/screenshots/${s.in}`;
   if (!existsSync(src)) { console.log("skip (missing)", s.in); continue; }
@@ -52,9 +70,22 @@ for (const s of SHOTS) {
   await page.setContent(html(b64, s.path), { waitUntil: "load" });
   await page.locator("img.shot").waitFor({ state: "visible" });
   await page.waitForTimeout(200);
-  await page.locator(".stage").screenshot({ path: `marketing/framed/${s.in}` });
-  console.log("framed", s.in);
+  const framed = `marketing/framed/${s.in}`;
+  await page.locator(".stage").screenshot({ path: framed });
+
+  const out = `${PUBLIC_DIR}/${s.in.replace(/\.png$/, ".webp")}`;
+  const meta = await sharp(framed).metadata();
+  if (meta.width < PUBLISH_WIDTH) undersized.push(`${s.in} (${meta.width}px)`);
+  const info = await sharp(framed)
+    .resize({ width: PUBLISH_WIDTH, withoutEnlargement: true })
+    .webp({ quality: 82 })
+    .toFile(out);
+  console.log(`  ${s.in.padEnd(30)} framed ${meta.width}x${meta.height} -> ${info.width}x${info.height} webp ${Math.round(info.size / 1024)}KB`);
   n++;
 }
 await browser.close();
-console.log(`done — ${n} framed → marketing/framed/`);
+console.log(`done — ${n} shots framed and published to ${PUBLIC_DIR}/`);
+if (undersized.length) {
+  console.error(`\nFAIL: framed below the ${PUBLISH_WIDTH}px publish width, so these were NOT upscaled and will look soft:\n  ${undersized.join("\n  ")}\nRe-run the capture at deviceScaleFactor 3.`);
+  process.exit(1);
+}
