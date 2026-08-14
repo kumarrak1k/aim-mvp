@@ -1,10 +1,9 @@
-// Render the square social advert: six 1080x1080 slides, plus a standalone
-// static image using the same layout and headline.
+// Render the social advert slides in every format, plus the standalone static.
 //
 // Separate from render-slides.mjs on purpose. That one is 1920x1080, full-bleed
-// and paced by a voiceover track; a feed advert is square, watched muted, and
-// has to land its point in about 15 seconds, so the composition and the timing
-// are different problems.
+// and paced by a voiceover track; a feed advert is square or vertical, watched
+// muted, and has to land its point in under twenty seconds, so the composition
+// and the timing are different problems.
 //
 // Run: node scripts/video/render-social.mjs
 import { chromium } from "@playwright/test";
@@ -15,17 +14,28 @@ import { SCENES, CTA, STATIC } from "./social-copy.mjs";
 
 const SRC = "marketing/screenshots";        // raw 4320x2700 captures
 const OUT = "marketing/social";
-const SIZE = 1080;
-mkdirSync(`${OUT}/slides`, { recursive: true });
+
+/**
+ * Square is the feed format (LinkedIn, Facebook, Instagram). Vertical is for
+ * Reels, Stories and TikTok, which are full-screen and sound-on by default.
+ * Same beats and same words: only the canvas and the type scale change.
+ */
+export const FORMATS = [
+  { name: "square", w: 1080, h: 1080, cap: 66, card: 942, padTop: 66, padBottom: 58 },
+  // The vertical bottom padding is deliberately large. Reels, Stories and
+  // TikTok overlay the lower ~18% of the frame with the username, caption and
+  // action buttons, so anything inside that band gets covered. Keeping the
+  // logo and URL above roughly 1620px leaves them visible on all three.
+  { name: "vertical", w: 1080, h: 1920, cap: 76, card: 990, padTop: 150, padBottom: 300 },
+];
 
 const b64 = (p) => readFileSync(p).toString("base64");
 const LOGO = "data:image/svg+xml;base64," + b64("public/brand/logo-lockup.svg");
 
 /**
- * A whole app screenshot is unreadable at the ~550px a LinkedIn feed actually
- * renders. So the beats that have to *prove* something use a crop instead: the
- * score, the six metric tiles and the start of the strengths panel, which stay
- * legible at feed size. Fractions are of the full-page capture's height.
+ * A whole app screenshot is unreadable at the width a feed actually renders.
+ * So the beats that have to *prove* something use a crop instead. Fractions are
+ * of the full-page capture's height.
  */
 const cropOf = async (file, topFrac, heightFrac, widthFrac = 1) => {
   const src = `${SRC}/${file}`;
@@ -47,9 +57,7 @@ const cropOf = async (file, topFrac, heightFrac, widthFrac = 1) => {
 //
 //   score   the 8/10 and the six metric tiles: proof that it is marked, not
 //           just commented on
-//   answer  the "Stronger answer example (STAR)" panel: the model answer, which
-//           is the thing people actually learn from, so it has to be legible
-//           rather than described
+//   answer  the "Stronger answer example (STAR)" panel
 //
 // Full width is safe now that the capture hides the support-chat launcher
 // (tests/e2e/capture/hideChrome.ts); it used to overlap the last score tile.
@@ -84,33 +92,31 @@ const SITE_BG = `
   radial-gradient(760px 560px at 88% 108%, rgba(232,80,180,.20), transparent 62%),
   linear-gradient(160deg,#150a2b 0%,#0a0614 55%,#070310 100%)`;
 
-const head = `
+const head = (f) => `
   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap');
   *{margin:0;padding:0;box-sizing:border-box}
-  html,body{width:${SIZE}px;height:${SIZE}px;overflow:hidden}
+  html,body{width:${f.w}px;height:${f.h}px;overflow:hidden}
   body{font-family:'Plus Jakarta Sans',ui-sans-serif,system-ui,sans-serif;
        background:${SITE_BG};color:#F8F4FF;
        display:flex;flex-direction:column;align-items:center;
-       padding:66px 64px 58px;position:relative}
+       padding:${f.padTop}px 56px ${f.padBottom}px;position:relative}
   .kicker{font-size:23px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;
           color:#CD9CFA;margin-bottom:18px}
-  .cap{font-size:66px;font-weight:800;letter-spacing:-.035em;line-height:1.07;
-       text-align:center;max-width:900px;text-wrap:balance}
-  .card{margin-top:auto;margin-bottom:auto;width:942px;border-radius:22px;overflow:hidden;
+  .cap{font-size:${f.cap}px;font-weight:800;letter-spacing:-.035em;line-height:1.07;
+       text-align:center;max-width:920px;text-wrap:balance}
+  .card{margin-top:auto;margin-bottom:auto;width:${f.card}px;border-radius:22px;overflow:hidden;
         border:1px solid rgba(255,255,255,.12);
         box-shadow:0 46px 110px -24px rgba(0,0,0,.8),0 0 0 1px rgba(168,85,247,.12)}
-  .card img{display:block;width:942px;height:auto}
+  .card img{display:block;width:100%;height:auto}
   .foot{display:flex;align-items:center;gap:16px;opacity:.92}
   .foot img{height:40px;width:auto;display:block}
   .foot .url{font-size:24px;font-weight:700;color:#CFC6E6;letter-spacing:.01em}`;
 
-/** Card body: either a screenshot (or crop of one) or a typeset quote. */
+/** Card body: a screenshot, a crop, the trend chart, or a typeset quote. */
 const cardBody = (s) => {
   // The trend chart is captured as a bare SVG with a transparent ground, so it
   // needs its own dark panel rather than sitting straight on the gradient.
-  if (s.chart) {
-    return `<div class="chartwrap"><img src="data:image/png;base64,${CHART}"/></div>`;
-  }
+  if (s.chart) return `<div class="chartwrap"><img src="data:image/png;base64,${CHART}"/></div>`;
   if (s.quote) {
     return `<div class="quote">
       <div class="qlabel">${s.quote.label}</div>
@@ -126,11 +132,11 @@ const cardBody = (s) => {
   }"/>`;
 };
 
-const contentSlide = (s) => `<!doctype html><html><head><meta charset="utf-8"><style>${head}
+const contentSlide = (s, f) => `<!doctype html><html><head><meta charset="utf-8"><style>${head(f)}
   /* Typeset model answer. Sized so it is still readable once the feed scales
-     the square down to phone width, which a screenshot of the same panel is
+     the canvas down to phone width, which a screenshot of the same panel is
      not. Colours are the app's own STAR chips. */
-  .quote{width:942px;padding:52px 56px;background:rgba(255,255,255,.035)}
+  .quote{width:100%;padding:52px 56px;background:rgba(255,255,255,.035)}
   .qlabel{font-size:23px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;
           color:#5EE9C0;margin-bottom:30px}
   .qrow{display:flex;gap:22px;align-items:flex-start;margin-bottom:26px}
@@ -140,9 +146,8 @@ const contentSlide = (s) => `<!doctype html><html><head><meta charset="utf-8"><s
         background:linear-gradient(140deg,#CD9CFA,#A855F7)}
   .qtext{font-size:32px;font-weight:600;line-height:1.4;color:#F8F4FF;padding-top:6px}
   /* Readiness trend: the captured SVG is transparent, so give it a panel of
-     its own and breathing room. The right padding is wider because the chart's
-     "TARGET" label sits hard against its own right edge. */
-  .chartwrap{width:942px;padding:44px 62px 34px 44px;background:rgba(255,255,255,.04)}
+     its own and breathing room. */
+  .chartwrap{width:100%;padding:44px 62px 34px 44px;background:rgba(255,255,255,.04)}
   .chartwrap img{display:block;width:100%;height:auto}
 </style></head>
 <body>
@@ -153,11 +158,13 @@ const contentSlide = (s) => `<!doctype html><html><head><meta charset="utf-8"><s
 </body></html>`;
 
 // Closing frame: the only place the offer is stated, so it gets the whole canvas.
-const ctaSlide = () => `<!doctype html><html><head><meta charset="utf-8"><style>${head}
+const ctaSlide = (f) => `<!doctype html><html><head><meta charset="utf-8"><style>${head(f)}
   body{justify-content:center;gap:0;padding:80px}
-  .lock{height:132px;width:auto;display:block;margin-bottom:52px}
-  .line{font-size:62px;font-weight:800;letter-spacing:-.03em;line-height:1.1;text-align:center;max-width:860px}
-  .sub{margin-top:26px;font-size:31px;font-weight:500;line-height:1.45;color:#B9AEDA;text-align:center;max-width:760px}
+  .lock{height:${f.h > 1200 ? 150 : 132}px;width:auto;display:block;margin-bottom:52px}
+  .line{font-size:${f.cap - 4}px;font-weight:800;letter-spacing:-.03em;line-height:1.1;
+        text-align:center;max-width:880px}
+  .sub{margin-top:26px;font-size:31px;font-weight:500;line-height:1.45;color:#B9AEDA;
+       text-align:center;max-width:780px}
   .pill{margin-top:46px;font-size:30px;font-weight:800;color:#0a0614;
         background:linear-gradient(96deg,#CD9CFA,#A855F7);padding:22px 52px;border-radius:999px}
   .site{margin-top:34px;font-size:27px;font-weight:700;color:#CFC6E6}
@@ -171,36 +178,42 @@ const ctaSlide = () => `<!doctype html><html><head><meta charset="utf-8"><style>
 </body></html>`;
 
 const browser = await chromium.launch();
-const page = await browser.newPage({
-  viewport: { width: SIZE, height: SIZE },
-  // 2x so the Ken-Burns push-in has real pixels to eat into rather than
-  // resampling a 1080px source.
-  deviceScaleFactor: 2,
-});
 
-for (const s of SCENES) {
-  if (s.image && !existsSync(`${SRC}/${s.image}`)) {
-    console.log("skip (missing screenshot)", s.image);
-    continue;
+for (const f of FORMATS) {
+  mkdirSync(`${OUT}/slides/${f.name}`, { recursive: true });
+  const page = await browser.newPage({
+    viewport: { width: f.w, height: f.h },
+    // 2x so the Ken-Burns push-in has real pixels to eat into rather than
+    // resampling the source.
+    deviceScaleFactor: 2,
+  });
+
+  for (const s of SCENES) {
+    if (s.image && !s.chart && !existsSync(`${SRC}/${s.image}`)) {
+      console.log("skip (missing screenshot)", s.image);
+      continue;
+    }
+    await page.setContent(s.cta ? ctaSlide(f) : contentSlide(s, f), { waitUntil: "load" });
+    await page.evaluate(() => document.fonts.ready);
+    await page.waitForTimeout(180);
+    await page.screenshot({ path: `${OUT}/slides/${f.name}/${s.id}.png` });
   }
-  await page.setContent(s.cta ? ctaSlide() : contentSlide(s), { waitUntil: "load" });
-  await page.evaluate(() => document.fonts.ready);
-  await page.waitForTimeout(180);
-  await page.screenshot({ path: `${OUT}/slides/${s.id}.png` });
-  console.log("slide", s.id);
+  console.log(`slides [${f.name}] ${f.w}x${f.h} → ${SCENES.length} rendered`);
+  await page.close();
 }
 
 // The static advert is its own composition rather than a reused frame: a still
 // has to carry the headline, the proof and the offer at once, where the video
-// can spread those over six beats.
-const staticAd = `<!doctype html><html><head><meta charset="utf-8"><style>${head}
+// can spread those over seven beats. Square only, since a still is posted to
+// the feed rather than to a full-screen format.
+const sq = FORMATS[0];
+const staticAd = `<!doctype html><html><head><meta charset="utf-8"><style>${head(sq)}
   /* Centre the stack: laid out from the top it left a dead band along the
      bottom edge, which reads as a cropping mistake in a square feed slot. */
   body{padding:70px 64px 60px;justify-content:center}
   .cap{font-size:70px;max-width:920px}
   .sub{margin-top:22px;font-size:29px;font-weight:500;color:#B9AEDA;text-align:center;max-width:820px;line-height:1.42}
   .card{margin-top:44px;margin-bottom:40px;width:900px}
-  .card img{width:900px}
   .pill{font-size:27px;font-weight:800;color:#0a0614;
         background:linear-gradient(96deg,#CD9CFA,#A855F7);padding:19px 44px;border-radius:999px;margin-bottom:26px}
 </style></head>
@@ -212,10 +225,11 @@ const staticAd = `<!doctype html><html><head><meta charset="utf-8"><style>${head
   <div class="foot"><img src="${LOGO}"/><span class="url">${STATIC.site}</span></div>
 </body></html>`;
 
-await page.setContent(staticAd, { waitUntil: "load" });
-await page.evaluate(() => document.fonts.ready);
-await page.waitForTimeout(180);
-await page.screenshot({ path: `${OUT}/advert-static-1080.png` });
-console.log("static advert → marketing/social/advert-static-1080.png");
+const p = await browser.newPage({ viewport: { width: sq.w, height: sq.h }, deviceScaleFactor: 2 });
+await p.setContent(staticAd, { waitUntil: "load" });
+await p.evaluate(() => document.fonts.ready);
+await p.waitForTimeout(180);
+await p.screenshot({ path: `${OUT}/advert-static.png` });
+console.log("static advert → marketing/social/advert-static.png");
 
 await browser.close();
