@@ -54,7 +54,7 @@ const startOf = (i) => COPY_SCENES.slice(0, i).reduce((n, s) => n + s.dur, 0) - 
  * against the cut on both sides it sounds like separate clips stitched
  * together rather than one person talking.
  */
-const TEMPO = 0.88;
+const TEMPO = COPY.VO_TEMPO ?? 0.88;
 const LEAD = 0.35;
 const TAIL = 0.55;
 

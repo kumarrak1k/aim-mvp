@@ -174,5 +174,12 @@ export const SCENES = [
   },
 ];
 
+/**
+ * How much to slow the narration at build time. The v1 clips come from
+ * ElevenLabs' low-latency model, which reads at over 300 words per minute, so
+ * they need stretching. Anything generated already-paced should use 1.
+ */
+export const VO_TEMPO = 0.88;
+
 /** Crossfade between beats, in seconds. */
 export const TRANSITION = 0.4;
