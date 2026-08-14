@@ -8,6 +8,7 @@ import { statePath } from "../pack/fixtures/env";
 import { answerFor } from "../pack/fixtures/answerBank";
 import { runTypedInterview } from "../pack/fixtures/candidateBot";
 import { stubBrowserSpeech } from "../pack/fixtures/voiceStub";
+import { HIDE_CHROME } from "./hideChrome";
 
 const DIR = "marketing/screenshots";
 
@@ -16,10 +17,7 @@ async function clean(page: Page) {
   await page.getByRole("button", { name: "Got it" }).click({ timeout: 1500 }).catch(() => {});
   await page
     .addStyleTag({
-      content: `
-        button[aria-label="Open Next.js Dev Tools"],
-        nextjs-portal, [data-nextjs-toast], #__next-build-watcher { display: none !important; }
-      `,
+      content: HIDE_CHROME,
     })
     .catch(() => {});
   await page.waitForTimeout(500);

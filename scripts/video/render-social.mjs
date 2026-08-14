@@ -1,0 +1,162 @@
+// Render the square social advert: six 1080x1080 slides, plus a standalone
+// static image using the same layout and headline.
+//
+// Separate from render-slides.mjs on purpose. That one is 1920x1080, full-bleed
+// and paced by a voiceover track; a feed advert is square, watched muted, and
+// has to land its point in about 15 seconds, so the composition and the timing
+// are different problems.
+//
+// Run: node scripts/video/render-social.mjs
+import { chromium } from "@playwright/test";
+import { readFileSync, mkdirSync, existsSync } from "node:fs";
+import sharp from "sharp";
+
+const SRC = "marketing/screenshots";        // raw 4320x2700 captures
+const OUT = "marketing/social";
+const SIZE = 1080;
+mkdirSync(`${OUT}/slides`, { recursive: true });
+
+const b64 = (p) => readFileSync(p).toString("base64");
+const LOGO = "data:image/svg+xml;base64," + b64("public/brand/logo-lockup.svg");
+
+/**
+ * A whole app screenshot is unreadable at the ~550px a LinkedIn feed actually
+ * renders. So the beats that have to *prove* something use a crop instead: the
+ * score, the six metric tiles and the start of the strengths panel, which stay
+ * legible at feed size. Fractions are of the full-page capture's height.
+ */
+const cropOf = async (file, topFrac, heightFrac, widthFrac = 1) => {
+  const src = `${SRC}/${file}`;
+  const m = await sharp(src).metadata();
+  const buf = await sharp(src)
+    .extract({
+      left: 0,
+      top: Math.round(m.height * topFrac),
+      width: Math.round(m.width * widthFrac),
+      height: Math.round(m.height * heightFrac),
+    })
+    .png()
+    .toBuffer();
+  return buf.toString("base64");
+};
+
+// Full width: the support-chat launcher used to overlap the last score tile,
+// but the capture now hides it (tests/e2e/capture/hideChrome.ts), so all six
+// tiles are clean and nothing has to be cropped away.
+const PROOF = existsSync(`${SRC}/candidate-03-feedback-full.png`)
+  ? await cropOf("candidate-03-feedback-full.png", 0.415, 0.3)
+  : null;
+
+// Captions stay at six words or fewer: most of the feed watches muted and
+// scrolling, so each beat has to be readable in a glance.
+const SCENES = [
+  { id: "s1-hook",     image: "candidate-04-summary.png",   caption: "Interview prep shouldn’t be guesswork.", kicker: null },
+  { id: "s2-setup",    image: "candidate-01-setup.png",     caption: "Built for your exact role.", kicker: "Practice" },
+  { id: "s3-question", image: "candidate-02-question.png",  caption: "Type, speak, or go on camera.", kicker: "Answer" },
+  { id: "s4-feedback", image: "candidate-03-feedback.png",  caption: "Every answer scored honestly.", kicker: "Feedback", proof: true },
+  { id: "s5-ac",       image: "ac-01-landing.png",          caption: "Mock assessment centres too.", kicker: "Go deeper" },
+  { id: "s6-cta",      image: null,                          caption: null, kicker: null },
+];
+
+const SITE_BG = `
+  radial-gradient(900px 620px at 22% -10%, rgba(168,85,247,.34), transparent 62%),
+  radial-gradient(760px 560px at 88% 108%, rgba(232,80,180,.20), transparent 62%),
+  linear-gradient(160deg,#150a2b 0%,#0a0614 55%,#070310 100%)`;
+
+const head = `
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:${SIZE}px;height:${SIZE}px;overflow:hidden}
+  body{font-family:'Plus Jakarta Sans',ui-sans-serif,system-ui,sans-serif;
+       background:${SITE_BG};color:#F8F4FF;
+       display:flex;flex-direction:column;align-items:center;
+       padding:66px 64px 58px;position:relative}
+  .kicker{font-size:23px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;
+          color:#CD9CFA;margin-bottom:18px}
+  .cap{font-size:66px;font-weight:800;letter-spacing:-.035em;line-height:1.07;
+       text-align:center;max-width:900px;text-wrap:balance}
+  .card{margin-top:auto;margin-bottom:auto;width:942px;border-radius:22px;overflow:hidden;
+        border:1px solid rgba(255,255,255,.12);
+        box-shadow:0 46px 110px -24px rgba(0,0,0,.8),0 0 0 1px rgba(168,85,247,.12)}
+  .card img{display:block;width:942px;height:auto}
+  .foot{display:flex;align-items:center;gap:16px;opacity:.92}
+  .foot img{height:40px;width:auto;display:block}
+  .foot .url{font-size:24px;font-weight:700;color:#CFC6E6;letter-spacing:.01em}`;
+
+const contentSlide = (s) => `<!doctype html><html><head><meta charset="utf-8"><style>${head}</style></head>
+<body>
+  ${s.kicker ? `<div class="kicker">${s.kicker}</div>` : `<div style="height:41px"></div>`}
+  <div class="cap">${s.caption}</div>
+  <div class="card"><img src="data:image/png;base64,${
+    s.proof && PROOF ? PROOF : b64(`${SRC}/${s.image}`)
+  }"/></div>
+  <div class="foot"><img src="${LOGO}"/><span class="url">aicareermentor.co.uk</span></div>
+</body></html>`;
+
+// Closing frame: the only place the offer is stated, so it gets the whole canvas.
+const ctaSlide = () => `<!doctype html><html><head><meta charset="utf-8"><style>${head}
+  body{justify-content:center;gap:0;padding:80px}
+  .lock{height:132px;width:auto;display:block;margin-bottom:52px}
+  .line{font-size:62px;font-weight:800;letter-spacing:-.03em;line-height:1.1;text-align:center;max-width:860px}
+  .sub{margin-top:26px;font-size:31px;font-weight:500;line-height:1.45;color:#B9AEDA;text-align:center;max-width:760px}
+  .pill{margin-top:46px;font-size:30px;font-weight:800;color:#0a0614;
+        background:linear-gradient(96deg,#CD9CFA,#A855F7);padding:22px 52px;border-radius:999px}
+  .site{margin-top:34px;font-size:27px;font-weight:700;color:#CFC6E6}
+</style></head>
+<body>
+  <img class="lock" src="${LOGO}"/>
+  <div class="line">Walk in already<br/>having done it.</div>
+  <div class="sub">Interview practice and mock assessment centres, scored honestly.</div>
+  <div class="pill">Free to start. No card needed.</div>
+  <div class="site">aicareermentor.co.uk</div>
+</body></html>`;
+
+const browser = await chromium.launch();
+const page = await browser.newPage({
+  viewport: { width: SIZE, height: SIZE },
+  // 2x so the Ken-Burns push-in has real pixels to eat into rather than
+  // resampling a 1080px source.
+  deviceScaleFactor: 2,
+});
+
+for (const s of SCENES) {
+  if (s.image && !existsSync(`${SRC}/${s.image}`)) {
+    console.log("skip (missing screenshot)", s.image);
+    continue;
+  }
+  await page.setContent(s.id === "s6-cta" ? ctaSlide() : contentSlide(s), { waitUntil: "load" });
+  await page.evaluate(() => document.fonts.ready);
+  await page.waitForTimeout(180);
+  await page.screenshot({ path: `${OUT}/slides/${s.id}.png` });
+  console.log("slide", s.id);
+}
+
+// The static advert is its own composition rather than a reused frame: a still
+// has to carry the headline, the proof and the offer at once, where the video
+// can spread those over six beats.
+const staticAd = `<!doctype html><html><head><meta charset="utf-8"><style>${head}
+  /* Centre the stack: laid out from the top it left a dead band along the
+     bottom edge, which reads as a cropping mistake in a square feed slot. */
+  body{padding:70px 64px 60px;justify-content:center}
+  .cap{font-size:70px;max-width:920px}
+  .sub{margin-top:22px;font-size:29px;font-weight:500;color:#B9AEDA;text-align:center;max-width:820px;line-height:1.42}
+  .card{margin-top:44px;margin-bottom:40px;width:900px}
+  .card img{width:900px}
+  .pill{font-size:27px;font-weight:800;color:#0a0614;
+        background:linear-gradient(96deg,#CD9CFA,#A855F7);padding:19px 44px;border-radius:999px;margin-bottom:26px}
+</style></head>
+<body>
+  <div class="cap">Walk in already having done it.</div>
+  <div class="sub">Interview practice and mock assessment centres, scored the way an assessor scores them.</div>
+  <div class="card"><img src="data:image/png;base64,${PROOF ?? b64(`${SRC}/candidate-03-feedback.png`)}"/></div>
+  <div class="pill">Free to start. No card needed.</div>
+  <div class="foot"><img src="${LOGO}"/><span class="url">aicareermentor.co.uk</span></div>
+</body></html>`;
+
+await page.setContent(staticAd, { waitUntil: "load" });
+await page.evaluate(() => document.fonts.ready);
+await page.waitForTimeout(180);
+await page.screenshot({ path: `${OUT}/advert-static-1080.png` });
+console.log("static advert → marketing/social/advert-static-1080.png");
+
+await browser.close();

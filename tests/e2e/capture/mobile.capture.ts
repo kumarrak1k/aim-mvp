@@ -6,6 +6,7 @@
  */
 import { test, type Page } from "@playwright/test";
 import { statePath } from "../pack/fixtures/env";
+import { HIDE_CHROME } from "./hideChrome";
 
 const DIR = process.env.MOBILE_AUDIT_DIR ?? "marketing/screenshots/mobile-audit";
 
@@ -13,10 +14,7 @@ async function clean(page: Page) {
   await page.getByRole("button", { name: "Got it" }).click({ timeout: 1500 }).catch(() => {});
   await page
     .addStyleTag({
-      content: `
-        button[aria-label="Open Next.js Dev Tools"],
-        nextjs-portal, [data-nextjs-toast], #__next-build-watcher { display: none !important; }
-      `,
+      content: HIDE_CHROME,
     })
     .catch(() => {});
   await page.waitForTimeout(400);

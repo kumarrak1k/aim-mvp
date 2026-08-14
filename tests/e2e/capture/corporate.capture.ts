@@ -7,13 +7,14 @@
  */
 import { test, type Page } from "@playwright/test";
 import { statePath } from "../pack/fixtures/env";
+import { HIDE_CHROME } from "./hideChrome";
 
 const DIR = "marketing/screenshots";
 
 async function clean(page: Page) {
   await page.getByRole("button", { name: "Got it" }).click({ timeout: 1500 }).catch(() => {});
   await page
-    .addStyleTag({ content: `button[aria-label="Open Next.js Dev Tools"],nextjs-portal,[data-nextjs-toast]{display:none!important}` })
+    .addStyleTag({ content: HIDE_CHROME })
     .catch(() => {});
   await page.waitForTimeout(500);
 }

@@ -8,6 +8,7 @@
 import { test, type Page } from "@playwright/test";
 import { statePath } from "../pack/fixtures/env";
 import { answerFor } from "../pack/fixtures/answerBank";
+import { HIDE_CHROME } from "./hideChrome";
 
 const VIDEO = { mode: "on" as const, size: { width: 1440, height: 900 } };
 
@@ -15,7 +16,7 @@ async function clean(page: Page) {
   await page.getByRole("button", { name: "Got it" }).click({ timeout: 1500 }).catch(() => {});
   await page
     .addStyleTag({
-      content: `button[aria-label="Open Next.js Dev Tools"],nextjs-portal,[data-nextjs-toast]{display:none!important}`,
+      content: HIDE_CHROME,
     })
     .catch(() => {});
   await page.waitForTimeout(400);
