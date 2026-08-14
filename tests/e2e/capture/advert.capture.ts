@@ -20,11 +20,11 @@ import { HIDE_CHROME } from "./hideChrome";
 const VIDEO = { mode: "on" as const, size: { width: 1440, height: 900 } };
 test.use({ video: VIDEO });
 
+// Kept short on purpose. The advert needs a few seconds of transcript visibly
+// arriving, not the whole answer: at 240ms a word, a full STAR answer would run
+// past twenty seconds of footage nobody will use.
 const ANSWER =
-  "In my final year project our weekly reports took two days to produce, " +
-  "and the delay was holding up decisions. I redesigned the data pipeline " +
-  "and automated the validation checks. Turnaround fell by forty per cent " +
-  "and the team adopted the approach.";
+  "Our weekly reports took two days to produce, and the delay was holding up decisions.";
 
 async function clean(page: Page) {
   await page.getByRole("button", { name: "Got it" }).click({ timeout: 1500 }).catch(() => {});
@@ -53,13 +53,18 @@ test.describe("advert clips", () => {
       page.getByRole("button", { name: /Start Tailored .*Interview/ }).click(),
     ]);
 
-    // Hold on the question while it is read aloud. This is the beat that shows
-    // the product talking to you rather than just displaying text.
     await page.getByTestId("question-text").waitFor({ timeout: 30_000 }).catch(() => {});
-    await beat(page, 3200);
+    await beat(page, 1200);
 
-    // Then the transcript fills in, word by word, from the app's own handler.
-    await beat(page, 7000);
+    // Voice mode does not listen on its own: "Play question + record" reads the
+    // question aloud and then starts recording. Waiting passively for the
+    // transcript is why the first version of this timed out.
+    await page.getByRole("button", { name: "Play question + record" }).click();
+
+    // Hold while the question is spoken, then while the transcript arrives word
+    // by word from the app's own speech handler.
+    await beat(page, 3400);
+    await beat(page, ANSWER.split(/\s+/).length * 240 + 1800);
 
     await page.getByRole("button", { name: "Get AI feedback" }).click().catch(() => {});
     await page.getByText("AI feedback is ready").waitFor({ timeout: 40_000 }).catch(() => {});

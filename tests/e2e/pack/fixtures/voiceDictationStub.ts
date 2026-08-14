@@ -80,21 +80,79 @@ export async function stubDictation(
       w.SpeechRecognition = FakeRecognition;
       w.webkitSpeechRecognition = FakeRecognition;
 
+      // Chromium's --use-fake-device-for-media-stream does not surface a usable
+      // audio input here, so the app shows "Microphone access was not
+      // available" and never starts recording. Synthesising the device keeps
+      // the real recording UI and transcript path running; only the hardware
+      // underneath is simulated, which is what a capture harness is for.
+      try {
+        const md = navigator.mediaDevices ?? ({} as MediaDevices);
+        Object.defineProperty(navigator, "mediaDevices", {
+          configurable: true,
+          value: Object.assign(md, {
+            getUserMedia: async (c: MediaStreamConstraints) => {
+              const tracks: MediaStreamTrack[] = [];
+              if (c?.audio) {
+                const AC =
+                  (window as unknown as { AudioContext: typeof AudioContext }).AudioContext;
+                const ac = new AC();
+                const dst = ac.createMediaStreamDestination();
+                const osc = ac.createOscillator();
+                osc.connect(dst);
+                osc.start();
+                tracks.push(...dst.stream.getAudioTracks());
+              }
+              if (c?.video) {
+                const cv = document.createElement("canvas");
+                cv.width = 640;
+                cv.height = 480;
+                tracks.push(
+                  ...(cv as HTMLCanvasElement & { captureStream(f: number): MediaStream })
+                    .captureStream(30)
+                    .getVideoTracks()
+                );
+              }
+              return new MediaStream(tracks);
+            },
+            enumerateDevices: async () => [
+              { deviceId: "default", kind: "audioinput", label: "Mock microphone", groupId: "mock" },
+              { deviceId: "default", kind: "videoinput", label: "Mock camera", groupId: "mock" },
+            ],
+          }),
+        });
+      } catch {
+        /* leave the real device layer alone if it cannot be replaced */
+      }
+
       // Speech synthesis that takes realistic time rather than returning
       // instantly, so the "question is read to you" beat is visible on camera.
       try {
+        // `speaking` has to actually toggle. Hardcoding it false means any code
+        // that polls the flag to know when the question has finished being read
+        // waits forever, and the capture hangs with no error.
+        let speaking = false;
         Object.defineProperty(window, "speechSynthesis", {
           configurable: true,
           value: {
             speak: (u: { onstart?: () => void; onend?: () => void }) => {
+              speaking = true;
               u?.onstart?.();
-              window.setTimeout(() => u?.onend?.(), speakMs);
+              window.setTimeout(() => {
+                speaking = false;
+                u?.onend?.();
+              }, speakMs);
             },
-            cancel: () => {},
+            cancel: () => {
+              speaking = false;
+            },
             getVoices: () => [],
             onvoiceschanged: null,
-            pending: false,
-            speaking: false,
+            get pending() {
+              return false;
+            },
+            get speaking() {
+              return speaking;
+            },
             paused: false,
           },
         });
