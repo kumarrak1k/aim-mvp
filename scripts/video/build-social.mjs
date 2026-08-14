@@ -40,7 +40,21 @@ const voiced = COPY_SCENES.filter((s) => existsSync(`${VO}/${s.id}.mp3`));
 /** Each beat's start on the finished timeline. Every crossfade overlaps two
  *  clips, so beat i begins one transition earlier for each join before it. */
 const startOf = (i) => COPY_SCENES.slice(0, i).reduce((n, s) => n + s.dur, 0) - i * T;
-const LEAD = 0.25; // let the cut land before the voice comes in
+/**
+ * Voice pacing.
+ *
+ * The model reads fast: measured at over 300 words per minute on the longer
+ * lines, against 140-160 for natural narration. `atempo` slows it without
+ * touching pitch, which is cheaper and more controllable than regenerating.
+ *
+ * LEAD is the gap after a cut before the voice comes in, TAIL the silence
+ * after the line before the next beat. Both matter: with the line butted up
+ * against the cut on both sides it sounds like separate clips stitched
+ * together rather than one person talking.
+ */
+const TEMPO = 0.88;
+const LEAD = 0.35;
+const TAIL = 0.55;
 
 for (const f of FORMATS) {
   const SLIDES = `${BASE}/slides/${f.name}`;
@@ -83,8 +97,15 @@ for (const f of FORMATS) {
       // ffmpeg pins it at 0,0 and you see the top-left quarter of the caption.
       // An optional `grade` filter runs before the overlay, so the caption is
       // never touched by a colour correction meant for the footage.
+      // Stretch the clip if the beat outlasts it. Beat lengths are set by how
+      // long the line takes to say, so a beat can end up slightly longer than
+      // its four seconds of footage; without this the last frame freezes. The
+      // ratios are a few percent, and on a slow camera move that is invisible.
+      const shot = probe(src);
+      const stretch = s.dur > shot ? `setpts=${(s.dur / shot).toFixed(4)}*PTS,` : "";
+
       const fc =
-        `[0:v]scale=${f.w}:${f.h}:force_original_aspect_ratio=increase,` +
+        `[0:v]${stretch}scale=${f.w}:${f.h}:force_original_aspect_ratio=increase,` +
         `crop=${f.w}:${f.h},fps=30,setsar=1${s.grade ? `,${s.grade}` : ""}[bg];` +
         `[1:v]scale=${f.w}:${f.h}[ov];` +
         `[bg][ov]overlay=0:0:format=auto,format=yuv420p[out]`;
@@ -139,23 +160,29 @@ for (const f of FORMATS) {
     voiced.forEach((s, n) => {
       const i = COPY_SCENES.indexOf(s);
       const at = Math.max(0, startOf(i) + LEAD);
-      const spoken = probe(`${VO}/${s.id}.mp3`);
-      const room = s.dur - LEAD;
-      if (spoken > room + 0.35 && f === FORMATS[0]) {
+      const spoken = probe(`${VO}/${s.id}.mp3`) / TEMPO; // as heard, after slowing
+      const room = s.dur - LEAD - TAIL;
+      if (spoken > room && f === FORMATS[0]) {
         console.warn(
-          `  warn: "${s.id}" voice is ${spoken.toFixed(1)}s but the beat gives ${room.toFixed(1)}s. ` +
-            `Shorten its \`vo\` line or raise its \`dur\` in social-copy.mjs.`
+          `  warn: "${s.id}" runs ${spoken.toFixed(2)}s but the beat allows ${room.toFixed(2)}s ` +
+            `(${s.dur}s minus ${LEAD}s lead and ${TAIL}s tail). Raise its \`dur\` to ` +
+            `${(spoken + LEAD + TAIL).toFixed(1)} in social-copy.mjs.`
         );
       }
       inputs.push("-i", `${VO}/${s.id}.mp3`);
-      parts.push(`[${n}:a]aresample=48000,adelay=${Math.round(at * 1000)}:all=1[a${n}];`);
+      parts.push(
+        `[${n}:a]aresample=48000,atempo=${TEMPO},adelay=${Math.round(at * 1000)}:all=1[a${n}];`
+      );
       labels.push(`[a${n}]`);
     });
 
     const fc =
       parts.join("") +
       `${labels.join("")}amix=inputs=${voiced.length}:normalize=0:dropout_transition=0,` +
-      `apad=whole_dur=${total.toFixed(3)}[a]`;
+      // asetpts is required, not cosmetic: with atempo in the chain, apad emits
+      // a NOPTS timestamp and the muxer rejects the stream outright with
+      // "non monotonically increasing dts". Regenerating timestamps fixes it.
+      `apad=whole_dur=${total.toFixed(3)},asetpts=N/SR/TB[a]`;
 
     const aud = `${BASE}/_vo-${f.name}.m4a`;
     const out = `${DIST}/AI-Career-Mentor-advert-${f.name}-${f.w}x${f.h}-voiceover.mp4`;

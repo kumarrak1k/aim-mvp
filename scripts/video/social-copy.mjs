@@ -79,7 +79,7 @@ export const SCENES = [
     // watched. The curve lifts shadows and midtones while leaving the
     // highlights alone, so it still reads as night rather than turning grey.
     grade: "curves=all='0/0.10 0.25/0.47 0.5/0.70 1/1',eq=saturation=1.10",
-    dur: 4.0,
+    dur: 4.3,
   },
   {
     id: "s2-studio",
@@ -87,7 +87,7 @@ export const SCENES = [
     caption: "First, get the interview.",
     vo: "CV, cover letter and personal statement.",
     image: "candidate-07-studio.png",
-    dur: 3.0,
+    dur: 3.3,
   },
   {
     id: "s3-practice",
@@ -95,7 +95,7 @@ export const SCENES = [
     caption: "The questions you’ll actually face.",
     vo: "Real questions for your exact role.",
     image: "candidate-01-setup.png",
-    dur: 2.9,
+    dur: 3.0,
   },
   {
     // Filmed. He is in profile and barely moving, so there is no lip sync to
@@ -105,7 +105,7 @@ export const SCENES = [
     caption: "Say it out loud.",
     vo: "Typed, spoken, or on camera.",
     video: "H2-doing-the-work-v1.mp4",
-    dur: 2.6,
+    dur: 2.7,
   },
   {
     id: "s4-answer",
@@ -125,7 +125,7 @@ export const SCENES = [
       ],
     },
     image: "candidate-03-feedback.png",
-    dur: 3.4,
+    dur: 3.7,
   },
   {
     id: "s5-ac",
@@ -133,7 +133,7 @@ export const SCENES = [
     caption: "Then the whole assessment centre.",
     vo: "Case study, interview and presentation, all scored.",
     image: "ac-01-landing.png",
-    dur: 3.0,
+    dur: 4.2,
   },
   {
     // Deliberately descriptive, not a promise. The chart shows a seeded demo
@@ -148,7 +148,7 @@ export const SCENES = [
     vo: "Every session tracked, so progress is visible.",
     image: "candidate-08-trend.png",
     chart: true,
-    dur: 3.0,
+    dur: 3.3,
   },
   {
     // The payoff. Shot from behind on purpose: it reads as confidence without
@@ -159,7 +159,7 @@ export const SCENES = [
     caption: "Then walk in and do it for real.",
     vo: "Then walk in and do it for real.",
     video: "H3-walking-in-v1.mp4",
-    dur: 3.0,
+    dur: 2.6,
   },
   {
     // `cta: true` selects the closing layout. The renderer used to match on the
@@ -170,7 +170,7 @@ export const SCENES = [
     caption: null,
     vo: "From application to assessment centre. Free to start.",
     image: null,
-    dur: 3.0,
+    dur: 4.2,
   },
 ];
 
