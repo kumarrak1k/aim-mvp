@@ -183,7 +183,14 @@ export function MentorChat() {
   }
 
   return (
-    <div className="fixed bottom-6 right-4 sm:right-6 z-[60] flex flex-col items-end gap-3">
+    // data-capture-hide: the marketing screenshot harness strips this before
+    // shooting. An attribute rather than an aria-label match, so the same
+    // selector keeps working on aicareermentor.com where the labels are
+    // translated and an English selector silently missed fr/de/es.
+    <div
+      data-capture-hide
+      className="fixed bottom-6 right-4 sm:right-6 z-[60] flex flex-col items-end gap-3"
+    >
       {open && (
         <div
           className="flex flex-col w-[360px] max-w-[calc(100vw-2rem)] rounded-2xl border border-white/10 shadow-2xl overflow-hidden"

@@ -65,6 +65,7 @@ export function CookieConsent() {
   return (
     <div
       role="dialog"
+      data-capture-hide
       aria-label="Cookie and analytics notice"
       className="fixed left-1/2 z-[9999] w-[calc(100%-2rem)] max-w-xl -translate-x-1/2 rounded-2xl border border-white/10 bg-[#0e0920]/95 px-5 py-4 shadow-2xl backdrop-blur-2xl sm:px-6 sm:py-5"
       style={{ bottom: "max(1rem, env(safe-area-inset-bottom, 1rem))" }}

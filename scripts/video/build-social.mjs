@@ -26,6 +26,19 @@ mkdirSync(SEGS, { recursive: true });
 
 const SCENES = COPY_SCENES.filter((s) => existsSync(`${SLIDES}/${s.id}.png`));
 
+// A beat with no slide used to be dropped without a word, so renaming or
+// adding one in social-copy.mjs produced a short cut that still reported
+// success. Refuse to build instead: a silently missing beat is worse than a
+// failed run.
+const absent = COPY_SCENES.filter((s) => !existsSync(`${SLIDES}/${s.id}.png`));
+if (absent.length) {
+  console.error(
+    `Missing slides for: ${absent.map((s) => s.id).join(", ")}\n` +
+      `Run scripts/video/render-social.mjs first (or use \`npm run social\`).`
+  );
+  process.exit(1);
+}
+
 if (!SCENES.length) {
   console.error("No slides found. Run: node scripts/video/render-social.mjs");
   process.exit(1);
