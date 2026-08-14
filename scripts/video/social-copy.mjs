@@ -12,13 +12,15 @@
  *
  * House style (see the brand guide): UK English, no em dashes, and never the
  * "AI-" prefix in English copy, since the product is called AI Career Mentor
- * and "AI-powered" therefore says it twice.
+ * and "AI-powered" therefore says it twice. Note "practise" is the verb and
+ * "practice" the noun in UK English; the closing line is an imperative, so it
+ * takes the s.
  */
 
 /** Anything shown on the closing frame of the video. */
 export const CTA = {
-  headline: "Be ready,<br/>not just rehearsed.",
-  subline: "Interview practice and mock assessment centres, scored honestly.",
+  headline: "Practise.<br/>Improve.<br/>Walk in ready.",
+  subline: "From your application to the assessment centre.",
   button: "Free to start. No card needed.",
   site: "aicareermentor.co.uk",
 };
@@ -27,9 +29,9 @@ export const CTA = {
  *  headline, the proof and the offer at once, where the video spreads those
  *  across six beats, so it wants slightly different words. */
 export const STATIC = {
-  headline: "Be ready, not just rehearsed.",
+  headline: "Practise. Improve. Walk in ready.",
   subline:
-    "Interview practice and mock assessment centres, scored the way an assessor scores them.",
+    "From your application to the assessment centre, with every answer scored the way an assessor scores it.",
   button: "Free to start. No card needed.",
   site: "aicareermentor.co.uk",
 };
@@ -45,15 +47,17 @@ export const STATIC = {
  *           about seven words per three seconds; the builder warns if a line
  *           overruns its beat instead of letting it bleed into the next
  *  image    a file in marketing/screenshots/. Ignored on the CTA beat
- *  proof    true swaps the whole app screenshot for a crop of the score panel,
- *           which stays legible at the width a feed actually renders
+ *  proof    "score" shows the marks and the six metric tiles; "answer" shows
+ *           the stronger STAR example. Both are crops, because a whole app
+ *           screenshot is unreadable at the width a feed actually renders
  *  dur      seconds to hold. Total runtime is the sum of these minus one
  *           crossfade (0.4s) per join
  *
- * Order is deliberate: name the problem, show the two things that make the
- * practice real, widen to the assessment centre, then prove it is all scored,
- * then ask. The proof beat sits immediately before the CTA because that is
- * where it does the most work.
+ * The order tells the end-to-end journey rather than listing features: you
+ * cannot practise for an interview you were never offered, so the Studio opens
+ * it. The model answer gets the longest beat because it is the thing people
+ * actually learn from, and it sits in the middle where attention is still
+ * high. The assessment centre closes the capability story just before the ask.
  */
 export const SCENES = [
   {
@@ -62,46 +66,57 @@ export const SCENES = [
     caption: "Interview prep shouldn’t be guesswork.",
     vo: "You rehearse, and never know if it’s working.",
     image: "candidate-04-summary.png",
-    dur: 3.2,
-  },
-  {
-    id: "s2-setup",
-    kicker: "Practice",
-    caption: "The questions you’ll actually face.",
-    vo: "Real questions for your exact role and level.",
-    image: "candidate-01-setup.png",
     dur: 3.0,
   },
   {
-    id: "s3-question",
-    kicker: "Delivery",
-    caption: "How you say it counts.",
-    vo: "Answer typed, spoken, or on camera.",
-    image: "candidate-02-question.png",
-    dur: 2.7,
+    id: "s2-studio",
+    kicker: "Get in the room",
+    caption: "First, get the interview.",
+    vo: "CV, cover letter and personal statement.",
+    image: "candidate-07-studio.png",
+    dur: 3.0,
   },
   {
-    id: "s4-ac",
-    kicker: "Go further",
-    caption: "The whole assessment centre.",
-    vo: "Case study, interview and presentation, scored end to end.",
-    image: "ac-01-landing.png",
+    id: "s3-practice",
+    kicker: "Practise",
+    caption: "The questions you’ll actually face.",
+    vo: "Real questions for your exact role.",
+    image: "candidate-01-setup.png",
+    dur: 2.9,
+  },
+  {
+    id: "s4-answer",
+    kicker: "Learn",
+    caption: "See a stronger answer every time.",
+    vo: "Scored honestly, with a stronger answer to learn from.",
+    // Typeset rather than screenshotted. The model answer panel in the app is
+    // small body text in a very wide strip: cropped into a square it lands at
+    // roughly 6px on a phone, so a screenshot would hide the exact thing this
+    // beat exists to show. These lines are lifted verbatim from a real scored
+    // session, set in brand type at a size that survives the feed.
+    quote: {
+      label: "Stronger answer example",
+      lines: [
+        { tag: "A", text: "I redesigned the data pipeline and automated the validation checks." },
+        { tag: "R", text: "Turnaround fell by 40% and the team adopted the approach." },
+      ],
+    },
+    image: "candidate-03-feedback.png",
     dur: 3.4,
   },
   {
-    id: "s5-feedback",
-    kicker: "Feedback",
-    caption: "Every answer scored honestly.",
-    vo: "Every answer scored, with a stronger example.",
-    image: "candidate-03-feedback.png",
-    proof: true,
+    id: "s5-ac",
+    kicker: "Go further",
+    caption: "Then the whole assessment centre.",
+    vo: "Case study, interview and presentation, all scored.",
+    image: "ac-01-landing.png",
     dur: 3.0,
   },
   {
     id: "s6-cta",
     kicker: null,
     caption: null,
-    vo: "Free to start. No card needed.",
+    vo: "From application to assessment centre. Free to start.",
     image: null,
     dur: 3.0,
   },

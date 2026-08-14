@@ -56,6 +56,16 @@ test.describe("marketing capture — candidate", () => {
     await page.screenshot({ path: `${DIR}/candidate-03-feedback-full.png`, fullPage: true });
   });
 
+  // The Studio opens the journey: it is where someone who has not been invited
+  // to interview yet actually starts, so the marketing needs a shot of it.
+  test("cv & application studio", async ({ page }) => {
+    await page.goto("/career-docs");
+    await page.waitForLoadState("networkidle").catch(() => {});
+    await clean(page);
+    await page.screenshot({ path: `${DIR}/candidate-07-studio.png` });
+    await page.screenshot({ path: `${DIR}/candidate-07-studio-full.png`, fullPage: true });
+  });
+
   // Completion shots: drive a full interview with the proven bot, then capture
   // the readiness summary and the progress dashboard.
   test("completion — summary + progress", async ({ page }) => {

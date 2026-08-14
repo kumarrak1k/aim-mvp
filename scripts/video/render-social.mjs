@@ -42,12 +42,23 @@ const cropOf = async (file, topFrac, heightFrac, widthFrac = 1) => {
   return buf.toString("base64");
 };
 
-// Full width: the support-chat launcher used to overlap the last score tile,
-// but the capture now hides it (tests/e2e/capture/hideChrome.ts), so all six
-// tiles are clean and nothing has to be cropped away.
-const PROOF = existsSync(`${SRC}/candidate-03-feedback-full.png`)
-  ? await cropOf("candidate-03-feedback-full.png", 0.415, 0.3)
-  : null;
+// Two crops from the same full-page capture, because the advert has two
+// different things to prove.
+//
+//   score   the 8/10 and the six metric tiles: proof that it is marked, not
+//           just commented on
+//   answer  the "Stronger answer example (STAR)" panel: the model answer, which
+//           is the thing people actually learn from, so it has to be legible
+//           rather than described
+//
+// Full width is safe now that the capture hides the support-chat launcher
+// (tests/e2e/capture/hideChrome.ts); it used to overlap the last score tile.
+const FULL = `candidate-03-feedback-full.png`;
+const hasFull = existsSync(`${SRC}/${FULL}`);
+const PROOF = {
+  score: hasFull ? await cropOf(FULL, 0.415, 0.3) : null,
+  answer: hasFull ? await cropOf(FULL, 0.71, 0.228) : null,
+};
 
 const SITE_BG = `
   radial-gradient(900px 620px at 22% -10%, rgba(168,85,247,.34), transparent 62%),
@@ -74,13 +85,41 @@ const head = `
   .foot img{height:40px;width:auto;display:block}
   .foot .url{font-size:24px;font-weight:700;color:#CFC6E6;letter-spacing:.01em}`;
 
-const contentSlide = (s) => `<!doctype html><html><head><meta charset="utf-8"><style>${head}</style></head>
+/** Card body: either a screenshot (or crop of one) or a typeset quote. */
+const cardBody = (s) => {
+  if (s.quote) {
+    return `<div class="quote">
+      <div class="qlabel">${s.quote.label}</div>
+      ${s.quote.lines
+        .map(
+          (l) => `<div class="qrow"><span class="qtag">${l.tag}</span><span class="qtext">${l.text}</span></div>`
+        )
+        .join("")}
+    </div>`;
+  }
+  return `<img src="data:image/png;base64,${
+    (s.proof && PROOF[s.proof]) || b64(`${SRC}/${s.image}`)
+  }"/>`;
+};
+
+const contentSlide = (s) => `<!doctype html><html><head><meta charset="utf-8"><style>${head}
+  /* Typeset model answer. Sized so it is still readable once the feed scales
+     the square down to phone width, which a screenshot of the same panel is
+     not. Colours are the app's own STAR chips. */
+  .quote{width:942px;padding:52px 56px;background:rgba(255,255,255,.035)}
+  .qlabel{font-size:23px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;
+          color:#5EE9C0;margin-bottom:30px}
+  .qrow{display:flex;gap:22px;align-items:flex-start;margin-bottom:26px}
+  .qrow:last-child{margin-bottom:0}
+  .qtag{flex:none;width:52px;height:52px;border-radius:14px;display:flex;align-items:center;
+        justify-content:center;font-size:25px;font-weight:800;color:#0a0614;
+        background:linear-gradient(140deg,#CD9CFA,#A855F7)}
+  .qtext{font-size:32px;font-weight:600;line-height:1.4;color:#F8F4FF;padding-top:6px}
+</style></head>
 <body>
   ${s.kicker ? `<div class="kicker">${s.kicker}</div>` : `<div style="height:41px"></div>`}
   <div class="cap">${s.caption}</div>
-  <div class="card"><img src="data:image/png;base64,${
-    s.proof && PROOF ? PROOF : b64(`${SRC}/${s.image}`)
-  }"/></div>
+  <div class="card">${cardBody(s)}</div>
   <div class="foot"><img src="${LOGO}"/><span class="url">${CTA.site}</span></div>
 </body></html>`;
 
@@ -139,7 +178,7 @@ const staticAd = `<!doctype html><html><head><meta charset="utf-8"><style>${head
 <body>
   <div class="cap">${STATIC.headline}</div>
   <div class="sub">${STATIC.subline}</div>
-  <div class="card"><img src="data:image/png;base64,${PROOF ?? b64(`${SRC}/candidate-03-feedback.png`)}"/></div>
+  <div class="card"><img src="data:image/png;base64,${PROOF.score ?? b64(`${SRC}/candidate-03-feedback.png`)}"/></div>
   <div class="pill">${STATIC.button}</div>
   <div class="foot"><img src="${LOGO}"/><span class="url">${STATIC.site}</span></div>
 </body></html>`;
