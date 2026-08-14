@@ -167,16 +167,21 @@ const contentSlide = (s, f) => `<!doctype html><html><head><meta charset="utf-8"
  * the shot happens to contain.
  */
 const overlaySlide = (s, f) => `<!doctype html><html><head><meta charset="utf-8"><style>${head(f)}
-  body{background:transparent;justify-content:space-between}
-  .scrim-top{position:absolute;left:0;right:0;top:0;height:${Math.round(f.h * 0.42)}px;
-    background:linear-gradient(180deg,rgba(7,3,16,.90) 0%,rgba(7,3,16,.62) 45%,rgba(7,3,16,0) 100%);z-index:0}
-  .scrim-bot{position:absolute;left:0;right:0;bottom:0;height:${Math.round(f.h * 0.22)}px;
-    background:linear-gradient(0deg,rgba(7,3,16,.88) 0%,rgba(7,3,16,0) 100%);z-index:0}
-  .cap{position:relative;z-index:1;text-shadow:0 4px 28px rgba(0,0,0,.7)}
+  /* Caption sits low, not at the top: over the top third it lands across the
+     subject's head, which is the one part of a filmed beat worth seeing. Not
+     flush to the bottom either, because Reels and TikTok stamp the username and
+     action buttons over the lower band. Lower-middle clears both.
+
+     It is also set smaller than on the still beats. Type at full size over
+     footage competes with the shot; over a screenshot it is the subject. */
+  body{background:transparent;justify-content:flex-end}
+  .scrim-bot{position:absolute;left:0;right:0;bottom:0;height:${Math.round(f.h * 0.52)}px;
+    background:linear-gradient(0deg,rgba(7,3,16,.92) 0%,rgba(7,3,16,.72) 34%,rgba(7,3,16,0) 100%);z-index:0}
+  .cap{position:relative;z-index:1;font-size:${Math.round(f.cap * 0.78)}px;
+       margin-bottom:${Math.round(f.h * 0.055)}px;text-shadow:0 4px 28px rgba(0,0,0,.75)}
   .foot{position:relative;z-index:1}
 </style></head>
 <body>
-  <div class="scrim-top"></div>
   <div class="scrim-bot"></div>
   <div class="cap">${s.caption}</div>
   <div class="foot"><img src="${LOGO}"/><span class="url">${CTA.site}</span></div>
