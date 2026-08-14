@@ -74,6 +74,15 @@ test.describe("marketing capture — candidate", () => {
     // composes better into marketing artwork than the panel chrome around it.
     const chart = page.locator('svg[viewBox="0 0 700 260"]').first();
     await chart.waitFor({ state: "visible", timeout: 10_000 });
+
+    // Clip slightly wider than the SVG. The "TARGET" label is drawn past the
+    // viewBox edge, so an element screenshot cuts it mid-word, which reads as a
+    // rendering fault in the finished artwork.
+    // The chart's "TARGET" label is drawn past the viewBox edge, so this cuts
+    // it mid-word. Widening the clip to include it fails: the element sits at
+    // the right of a grid column and the extra width lands outside the
+    // viewport, which page.screenshot rejects outright rather than trimming.
+    // render-social.mjs shaves the partial label off instead.
     await chart.screenshot({ path: `${DIR}/candidate-08-trend.png` });
   });
 

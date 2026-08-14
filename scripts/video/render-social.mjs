@@ -60,6 +60,25 @@ const PROOF = {
   answer: hasFull ? await cropOf(FULL, 0.71, 0.228) : null,
 };
 
+/**
+ * Readiness trend chart, with the right edge shaved.
+ *
+ * The app draws a "TARGET" label just past the chart's viewBox, so the element
+ * capture cuts it mid-word and it reads as a rendering fault. Trimming 2.5% off
+ * the right removes the fragment and still clears the final data point.
+ */
+const TREND_FILE = "candidate-08-trend.png";
+const CHART = existsSync(`${SRC}/${TREND_FILE}`)
+  ? await (async () => {
+      const m = await sharp(`${SRC}/${TREND_FILE}`).metadata();
+      const buf = await sharp(`${SRC}/${TREND_FILE}`)
+        .extract({ left: 0, top: 0, width: Math.round(m.width * 0.975), height: m.height })
+        .png()
+        .toBuffer();
+      return buf.toString("base64");
+    })()
+  : null;
+
 const SITE_BG = `
   radial-gradient(900px 620px at 22% -10%, rgba(168,85,247,.34), transparent 62%),
   radial-gradient(760px 560px at 88% 108%, rgba(232,80,180,.20), transparent 62%),
@@ -87,6 +106,11 @@ const head = `
 
 /** Card body: either a screenshot (or crop of one) or a typeset quote. */
 const cardBody = (s) => {
+  // The trend chart is captured as a bare SVG with a transparent ground, so it
+  // needs its own dark panel rather than sitting straight on the gradient.
+  if (s.chart) {
+    return `<div class="chartwrap"><img src="data:image/png;base64,${CHART}"/></div>`;
+  }
   if (s.quote) {
     return `<div class="quote">
       <div class="qlabel">${s.quote.label}</div>
@@ -115,6 +139,11 @@ const contentSlide = (s) => `<!doctype html><html><head><meta charset="utf-8"><s
         justify-content:center;font-size:25px;font-weight:800;color:#0a0614;
         background:linear-gradient(140deg,#CD9CFA,#A855F7)}
   .qtext{font-size:32px;font-weight:600;line-height:1.4;color:#F8F4FF;padding-top:6px}
+  /* Readiness trend: the captured SVG is transparent, so give it a panel of
+     its own and breathing room. The right padding is wider because the chart's
+     "TARGET" label sits hard against its own right edge. */
+  .chartwrap{width:942px;padding:44px 62px 34px 44px;background:rgba(255,255,255,.04)}
+  .chartwrap img{display:block;width:100%;height:auto}
 </style></head>
 <body>
   ${s.kicker ? `<div class="kicker">${s.kicker}</div>` : `<div style="height:41px"></div>`}
@@ -154,7 +183,7 @@ for (const s of SCENES) {
     console.log("skip (missing screenshot)", s.image);
     continue;
   }
-  await page.setContent(s.id === "s6-cta" ? ctaSlide() : contentSlide(s), { waitUntil: "load" });
+  await page.setContent(s.cta ? ctaSlide() : contentSlide(s), { waitUntil: "load" });
   await page.evaluate(() => document.fonts.ready);
   await page.waitForTimeout(180);
   await page.screenshot({ path: `${OUT}/slides/${s.id}.png` });

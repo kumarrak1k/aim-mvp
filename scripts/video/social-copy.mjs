@@ -113,7 +113,25 @@ export const SCENES = [
     dur: 3.0,
   },
   {
-    id: "s6-cta",
+    // Deliberately descriptive, not a promise. The chart shows a seeded demo
+    // arc (4 → 5 → 8); captioning it with those numbers would turn a picture of
+    // the product into a claim about typical results, which needs evidence
+    // behind it under the CAP code and which we do not have yet. "See if you're
+    // actually improving" claims the tracking, which is true, and lets the
+    // chart do the emotional work on its own.
+    id: "s6-progress",
+    kicker: "Track",
+    caption: "See if you’re actually improving.",
+    vo: "Every session tracked, so progress is visible.",
+    image: "candidate-08-trend.png",
+    chart: true,
+    dur: 3.0,
+  },
+  {
+    // `cta: true` selects the closing layout. The renderer used to match on the
+    // id, so renaming this beat silently sent it down the screenshot path.
+    id: "s7-cta",
+    cta: true,
     kicker: null,
     caption: null,
     vo: "From application to assessment centre. Free to start.",
