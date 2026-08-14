@@ -48,6 +48,7 @@ export const STATIC = {
 export const SCENES = [
   {
     id: "s1-hook",
+    vo: "Most interview prep is guesswork.",
     kicker: null,
     caption: "Interview prep shouldn’t be guesswork.",
     image: "candidate-04-summary.png",
@@ -55,6 +56,7 @@ export const SCENES = [
   },
   {
     id: "s2-setup",
+    vo: "This builds one around your exact role.",
     kicker: "Practice",
     caption: "Built for your exact role.",
     image: "candidate-01-setup.png",
@@ -62,6 +64,7 @@ export const SCENES = [
   },
   {
     id: "s3-question",
+    vo: "Answer by typing, speaking, or on camera.",
     kicker: "Answer",
     caption: "Type, speak, or go on camera.",
     image: "candidate-02-question.png",
@@ -69,6 +72,7 @@ export const SCENES = [
   },
   {
     id: "s4-feedback",
+    vo: "Every answer scored, with a stronger example.",
     kicker: "Feedback",
     caption: "Every answer scored honestly.",
     image: "candidate-03-feedback.png",
@@ -77,12 +81,14 @@ export const SCENES = [
   },
   {
     id: "s5-ac",
+    vo: "Plus full mock assessment centres.",
     kicker: "Go deeper",
     caption: "Mock assessment centres too.",
     image: "ac-01-landing.png",
     dur: 2.6,
   },
-  { id: "s6-cta", kicker: null, caption: null, image: null, dur: 3.0 },
+  { id: "s6-cta",
+    vo: "Free to start. No card needed.", kicker: null, caption: null, image: null, dur: 3.0 },
 ];
 
 /** Crossfade between beats, in seconds. */

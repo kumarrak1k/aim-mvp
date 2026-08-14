@@ -19,6 +19,7 @@ const BASE = "marketing/social";
 const SLIDES = `${BASE}/slides`;
 const SEGS = `${BASE}/segments`;
 const OUT = `${BASE}/advert-square-15s.mp4`;
+const OUT_VO = `${BASE}/advert-square-15s-voice.mp4`;
 const SIZE = 1080;
 const T = TRANSITION;
 mkdirSync(SEGS, { recursive: true });
@@ -75,3 +76,59 @@ if (files.length === 1) {
       "-movflags", "+faststart", OUT]);
 }
 console.log(`done → ${OUT} (${total.toFixed(1)}s, ${SIZE}x${SIZE}, silent)`);
+
+// ── Optional voiced cut ─────────────────────────────────────────────────────
+// The silent file above is always produced and stays the primary asset: feed
+// video autoplays muted. If voiceover clips exist, a second file is written
+// alongside it rather than replacing it, so you can post the silent cut to the
+// feed and keep the voiced one for sound-on placements.
+const VO = `${BASE}/vo`;
+const voiced = SCENES.filter((s) => existsSync(`${VO}/${s.id}.mp3`));
+
+if (voiced.length) {
+  const FFPROBE = FFMPEG.replace(/ffmpeg\.exe$/i, "ffprobe.exe");
+  const probe = (f) =>
+    parseFloat(
+      execFileSync(FFPROBE, ["-v", "error", "-show_entries", "format=duration",
+        "-of", "default=nw=1:nk=1", f]).toString().trim()
+    );
+
+  // Each beat's start on the finished timeline. Every crossfade overlaps two
+  // clips, so beat i begins one transition earlier for each join before it.
+  const startOf = (i) => SCENES.slice(0, i).reduce((n, s) => n + s.dur, 0) - i * T;
+  const LEAD = 0.25; // let the cut land before the voice comes in
+
+  const inputs = [];
+  const parts = [];
+  const labels = [];
+  voiced.forEach((s, n) => {
+    const i = SCENES.indexOf(s);
+    const at = Math.max(0, startOf(i) + LEAD);
+    const spoken = probe(`${VO}/${s.id}.mp3`);
+    const room = s.dur - LEAD;
+    if (spoken > room + 0.35) {
+      console.warn(
+        `  warn: "${s.id}" voice is ${spoken.toFixed(1)}s but the beat gives ${room.toFixed(1)}s. ` +
+          `Shorten its \`vo\` line or raise its \`dur\` in social-copy.mjs.`
+      );
+    }
+    inputs.push("-i", `${VO}/${s.id}.mp3`);
+    parts.push(`[${n}:a]aresample=48000,adelay=${Math.round(at * 1000)}:all=1[a${n}];`);
+    labels.push(`[a${n}]`);
+  });
+
+  const fc =
+    parts.join("") +
+    `${labels.join("")}amix=inputs=${voiced.length}:normalize=0:dropout_transition=0,` +
+    `apad=whole_dur=${total.toFixed(3)}[a]`;
+
+  const AUD = `${BASE}/_vo.m4a`;
+  ff(["-y", ...inputs, "-filter_complex", fc, "-map", "[a]",
+      "-c:a", "aac", "-b:a", "192k", "-ar", "48000", AUD]);
+  ff(["-y", "-i", OUT, "-i", AUD, "-map", "0:v", "-map", "1:a",
+      "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-shortest",
+      "-movflags", "+faststart", OUT_VO]);
+  console.log(`done → ${OUT_VO} (${total.toFixed(1)}s, ${SIZE}x${SIZE}, voiced)`);
+} else {
+  console.log(`(no voiceover clips in ${VO}/ — run scripts/video/generate-social-vo.mjs for a voiced cut)`);
+}
