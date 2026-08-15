@@ -13,8 +13,10 @@ import sharp from "sharp";
 import { COPY, VARIANT } from "./social-which.mjs";
 const { SCENES, CTA, STATIC } = COPY;
 
-const SRC = "marketing/screenshots";        // raw 4320x2700 captures
-const FRAMED = "marketing/framed";          // same shots inside the branded browser chrome
+// Overridable so the localised .com cuts can point at that repo's per-locale
+// captures (IMG_SRC=../aim-mvp-com/marketing/screenshots/es etc.).
+const SRC = process.env.IMG_SRC || "marketing/screenshots";
+const FRAMED = process.env.IMG_FRAMED || "marketing/framed";
 const OUT = "marketing/social";
 
 /**
