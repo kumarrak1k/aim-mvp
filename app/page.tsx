@@ -3,6 +3,7 @@ import Link from "next/link";
 import { createPageMetadata } from "@/app/config/seo";
 import { CandidateShell } from "@/app/components/marketing/CandidateShell";
 import { DemoShowcase } from "@/app/components/marketing/DemoShowcase";
+import { DemoVideo } from "@/app/components/marketing/DemoVideo";
 
 export const metadata: Metadata = createPageMetadata({
   path: "/",
@@ -296,6 +297,27 @@ export default async function ForCandidatesPage() {
           },
         ]}
       />
+
+      {/* Advert. Sits after the screenshots rather than replacing them: the
+          gallery explains what the product does, this is the only asset on the
+          page with a person in it. Click to play, never autoplay — DemoVideo
+          uses preload="none" so it costs nothing until someone asks for it. */}
+      <section className="mx-auto max-w-3xl px-4 pb-16 sm:px-6 sm:pb-20">
+        <div className="mb-8 text-center">
+          <p className="text-[12px] font-bold tracking-wide text-purple-300/90">
+            In 30 seconds
+          </p>
+          <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
+            Why people practise before it counts.
+          </h2>
+        </div>
+        <DemoVideo
+          src="/videos/advert-square.mp4"
+          poster="/videos/advert-poster.jpg"
+          title="AI Career Mentor: practise like it's real"
+          caption="From your application to the assessment centre, with every answer scored honestly."
+        />
+      </section>
 
       {/* FAQs */}
       <section className="mx-auto max-w-3xl px-4 pb-16 sm:px-6 sm:pb-20">
