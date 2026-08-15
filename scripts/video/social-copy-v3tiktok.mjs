@@ -38,22 +38,26 @@ export const STATIC = {
 
 export const SCENES = [
   {
-    // THE HOOK. Young, bright, kinetic: she flops onto the bed after an
-    // interview that got away from her. Everyone in the audience has been her.
+    // THE HOOK. Her video interview is going badly: fidgeting, tense,
+    // listening to a question she can't land. Listening, not speaking — that
+    // keeps the acting in her face and hands, where these models are good,
+    // and away from lip sync, where they are not.
     id: "v3-1-hook",
     kicker: null,
-    caption: "Ever left an interview knowing<br/>you could’ve done better?",
+    caption: "Interview going badly?<br/>You know the feeling.",
     vo: "You know you're good. So why don't interviews show it?",
-    video: "T1-flop-v1.mp4",
+    video: "T4-bad-interview-v1.mp4",
     dur: 3.0,
   },
   {
-    // THE PROBLEM. Practising out loud, pacing, energy.
+    // THE AFTERMATH. She flops onto the bed. The T1 shot's framing barely
+    // shows a face, so it reads as the same woman continuing the story even
+    // though it was generated without the identity reference.
     id: "v3-2-problem",
     kicker: null,
     caption: "Knowing it isn’t enough.",
     vo: "Knowing your stuff isn't enough. You've got to deliver it.",
-    video: "T2-pacing-v1.mp4",
+    video: "T1-flop-v1.mp4",
     dur: 3.2,
   },
   {
@@ -93,12 +97,14 @@ export const SCENES = [
     dur: 3.3,
   },
   {
-    // THE PAYOFF. Taking the steps two at a time in morning sun.
+    // THE PAYOFF. The same woman from the hook — identity-referenced — walks
+    // into her next interview smiling. The whole advert is her arc: anxious on
+    // a bad call, practises, walks in unafraid.
     id: "v3-7-ready",
     kicker: null,
     caption: "Then walk in ready.",
     vo: "Then walk in ready.",
-    video: "T3-steps-v1.mp4",
+    video: "T5-smiling-entrance-v1.mp4",
     dur: 2.6,
   },
   {
