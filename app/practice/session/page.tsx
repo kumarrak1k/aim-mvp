@@ -1039,12 +1039,19 @@ export default function PracticeSessionPage() {
         setCleaningTranscript(false);
       }
 
-      // ── Whisper filler enhancement ───────────────────────────────────────
-      // Runs in the background after the initial analysis.  Whisper is far
-      // better than the Web Speech API at capturing hesitation sounds (um,
-      // er, uh) because the browser's engine strips them before emitting
-      // events.  If Whisper finds fillers that aren't in the current
-      // transcript, we update the transcript and re-score voice delivery.
+      // ── Whisper transcript (authoritative) ───────────────────────────────
+      // Runs in the background after the initial analysis. Whisper transcribes
+      // the actual recorded audio and is far more accurate than the browser's
+      // recogniser — especially on regional accents, where Web Speech can
+      // mangle whole phrases (reported by a real user with a strong northern
+      // accent). It also keeps hesitation sounds (um, er) that the browser
+      // strips.
+      //
+      // Whisper's transcript therefore REPLACES the browser transcript
+      // whenever it is plausible, not only when it finds more filler words
+      // (the old rule, which threw the better transcript away and let answers
+      // be scored against mis-heard text). The feedback button is disabled
+      // while this runs, so content scoring always sees the final transcript.
       if (audioBlob && audioBlob.size > 1500) {
         setWhisperEnhancing(true);
 
@@ -1058,40 +1065,47 @@ export default function PracticeSessionPage() {
             const currentTranscript = rawAnswerTranscriptRef.current;
             if (!currentTranscript) return;
 
-            // Count fillers that are already in the current transcript.
-            const SIMPLE_FILLERS = ["um", "umm", "uh", "er", "err", "erm", "ah"];
-            const currentFillerCount = SIMPLE_FILLERS.reduce((sum, f) => {
-              const re = new RegExp(`\\b${f}\\b`, "gi");
-              return sum + (currentTranscript.match(re) || []).length;
-            }, 0);
+            // Strip any question audio that Whisper may have picked up from
+            // the speaker before using the transcript as the answer.
+            const strippedWhisper = stripQuestionLeakageFromTranscript(
+              whisperResult.transcript,
+              activeQuestionRef.current
+            );
+            if (!strippedWhisper) return;
 
-            if (whisperResult.fillerCount > 0 && whisperResult.fillerCount > currentFillerCount) {
-              // Strip any question audio that Whisper may have picked up from
-              // the speaker before using the transcript as the answer.
-              const strippedWhisper = stripQuestionLeakageFromTranscript(
-                whisperResult.transcript,
-                activeQuestionRef.current
+            // Plausibility guards, because Whisper can hallucinate on silence
+            // or truncate on a corrupt blob. A transcript is adopted when it is
+            // non-trivial and not dramatically shorter than the browser's
+            // attempt (or the browser heard nothing at all — the case where
+            // rescuing the answer matters most).
+            const plausible =
+              strippedWhisper.length >= 20 &&
+              (currentTranscript.length < 20 ||
+                strippedWhisper.length >= currentTranscript.length * 0.4);
+            if (!plausible) return;
+
+            // Skip the swap (and the extra voice-analysis call) when the two
+            // engines effectively agree — common for clearly-received speech.
+            const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+            if (norm(strippedWhisper) === norm(currentTranscript)) return;
+
+            // Run through the same moderation + cleaning pipeline as the
+            // Web Speech transcript so hallucinated content can't bypass it.
+            try {
+              const cleanedWhisper = await cleanTranscriptApi(strippedWhisper);
+              const whisperTranscript = cleanedWhisper || strippedWhisper;
+              setTranscript(whisperTranscript);
+              setAnswer(whisperTranscript);
+              rawAnswerTranscriptRef.current = whisperTranscript;
+
+              // Re-score delivery against what was actually said.
+              void runVoiceAnalysis(
+                whisperTranscript,
+                durationSeconds,
+                audioMetrics
               );
-              if (!strippedWhisper) return;
-
-              // Run through the same moderation + cleaning pipeline as the
-              // Web Speech transcript so hallucinated content can't bypass it.
-              try {
-                const cleanedWhisper = await cleanTranscriptApi(strippedWhisper);
-                const whisperTranscript = cleanedWhisper || strippedWhisper;
-                setTranscript(whisperTranscript);
-                setAnswer(whisperTranscript);
-                rawAnswerTranscriptRef.current = whisperTranscript;
-
-                // Re-score with the Whisper transcript so filler score is accurate.
-                void runVoiceAnalysis(
-                  whisperTranscript,
-                  durationSeconds,
-                  audioMetrics
-                );
-              } catch {
-                // Whisper transcript failed moderation — keep existing answer.
-              }
+            } catch {
+              // Whisper transcript failed moderation — keep existing answer.
             }
           })
           .catch(() => {

@@ -134,7 +134,14 @@ export async function POST(req: NextRequest) {
 
     const transcription = await openai.audio.transcriptions.create({
       file: namedFile,
-      model: "whisper-1",
+      // Env-switchable per the AI model rollback runbook: set
+      // AI_MODEL_TRANSCRIBE in Vercel to trial gpt-4o-transcribe (more
+      // accurate, similar price) without a deploy. whisper-1 stays the default
+      // because this route also counts filler words, and whisper-1's
+      // behaviour of keeping disfluencies when prompted is proven; the newer
+      // models tend to tidy them away, which would quietly break the filler
+      // score. Test that before switching.
+      model: process.env.AI_MODEL_TRANSCRIBE || "whisper-1",
       language: "en",
       prompt: whisperPrompt,
       response_format: "text",

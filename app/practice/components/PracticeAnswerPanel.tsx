@@ -184,6 +184,19 @@ export function PracticeAnswerPanel({
           value={answer}
           onChange={(event) => onAnswerChange(event.target.value)}
         />
+
+        {/* Shown only while recording. Real user feedback: watching the live
+            text mis-hear you mid-answer is off-putting, and worrying about it
+            breaks focus. The live text is genuinely only a rough guide now —
+            the answer that gets scored is transcribed from the recorded audio
+            by Whisper after you finish — so say exactly that, at the moment
+            the worry occurs. */}
+        {isListening && (
+          <p className="border-t border-white/[0.06] px-4 py-2.5 text-[12px] leading-5 text-gray-400">
+            Don&apos;t worry if the live text looks off — keep talking. Your
+            answer is transcribed precisely from the audio when you finish.
+          </p>
+        )}
       </div>
 
       {voiceSupported ? (
