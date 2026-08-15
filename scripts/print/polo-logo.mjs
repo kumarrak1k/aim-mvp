@@ -1,16 +1,16 @@
 /**
- * Garment-print artwork: the AI Career Mentor lockup and bare mark as
- * single-colour WHITE art for a purple polo (print shops want one-colour
- * vector + high-res transparent PNG; white guarantees contrast on purple and
- * keeps embroidery to a single thread).
+ * Garment-print artwork from the REAL stacked brand lockup
+ * (public/brand/logo-lockup.svg: gradient mark · divider · AI / CAREER /
+ * MENTOR), in two colourways for a purple polo:
  *
- * Outputs (marketing/print/polo/):
- *   polo-lockup-white.svg / .png   full "AI CAREER MENTOR" lockup, white
- *   polo-mark-white.svg / .png     bare mark (sleeve / collar / big back print)
- *   polo-mockup.png                both on the polo purple, for a quick look
+ *   polo-lockup-colour.*  the brand lockup as-is — gradient mark, purple AI,
+ *                         white text (needs DTG/DTF printing for the gradient)
+ *   polo-lockup-white.*   same geometry, every element pure white — the
+ *                         single-colour version for screen print / embroidery
  *
- * PNGs are 4000px wide with transparent grounds — 300dpi at ~34cm, more than
- * any polo print needs. Left-chest convention: print the lockup 90-100mm wide.
+ * Outputs (marketing/print/polo/): SVG + 4000px transparent PNG each, plus
+ * polo-mockup.png showing both colourways on two polo purples.
+ * Left-chest convention: print the lockup 80-90mm wide.
  *
  * Run: node scripts/print/polo-logo.mjs
  */
@@ -21,50 +21,45 @@ import { chromium } from "@playwright/test";
 const OUT = "marketing/print/polo";
 mkdirSync(OUT, { recursive: true });
 
-// One-colour white lockup: every brand colour in the source collapses to white.
-const lockup = readFileSync("public/brand/logo-lockup-light.svg", "utf8")
-  .replaceAll("#9B4EE3", "#FFFFFF")
-  .replaceAll("#07030D", "#FFFFFF");
-writeFileSync(`${OUT}/polo-lockup-white.svg`, lockup);
+const colour = readFileSync("public/brand/logo-lockup.svg", "utf8");
+writeFileSync(`${OUT}/polo-lockup-colour.svg`, colour);
 
-const mark = readFileSync("public/brand/logo-mono.svg", "utf8")
-  .replaceAll("currentColor", "#FFFFFF");
-writeFileSync(`${OUT}/polo-mark-white.svg`, mark);
+// Single-colour white: gradient strokes, the purple AI, the near-white text
+// and the divider all collapse to pure white.
+const white = colour
+  .replaceAll('stroke="url(#g)"', 'stroke="#FFFFFF"')
+  .replaceAll("#A855F7", "#FFFFFF")
+  .replaceAll("#F8F4FF", "#FFFFFF")
+  .replaceAll('stroke="#4F2876"', 'stroke="#FFFFFF"');
+writeFileSync(`${OUT}/polo-lockup-white.svg`, white);
 
-// High-res transparent PNGs.
-await sharp(Buffer.from(lockup), { density: 900 })
-  .resize({ width: 4000 })
-  .png()
-  .toFile(`${OUT}/polo-lockup-white.png`);
-await sharp(Buffer.from(mark), { density: 900 })
-  .resize({ width: 2000 })
-  .png()
-  .toFile(`${OUT}/polo-mark-white.png`);
+for (const [name, svg] of [["polo-lockup-colour", colour], ["polo-lockup-white", white]]) {
+  await sharp(Buffer.from(svg), { density: 1200 })
+    .resize({ width: 4000 })
+    .png()
+    .toFile(`${OUT}/${name}.png`);
+}
 
-// Mockup: the artwork on a flat polo-purple ground so the contrast can be
-// judged at a glance. Two common polo purples shown side by side.
+// Mockup: both colourways on two common polo purples.
 const b64 = (s) => Buffer.from(s).toString("base64");
+const cell = (bg, svg, tag) => `
+  <div class="half" style="background:${bg}">
+    <img src="data:image/svg+xml;base64,${b64(svg)}"/>
+    <div class="tag">${tag}</div>
+  </div>`;
 const html = `<!doctype html><html><head><meta charset="utf-8"><style>
   *{margin:0;padding:0;box-sizing:border-box}
-  body{width:1600px;font-family:ui-sans-serif,system-ui,sans-serif;display:flex}
-  .half{width:800px;height:900px;display:flex;flex-direction:column;
-        align-items:center;justify-content:center;gap:70px}
-  .deep{background:#3b2064}
-  .bright{background:#5b21b6}
-  img.lockup{width:520px}
-  img.mark{width:150px}
-  .tag{color:rgba(255,255,255,.55);font-size:20px;font-weight:700}
+  body{width:1600px;font-family:ui-sans-serif,system-ui,sans-serif;
+       display:grid;grid-template-columns:1fr 1fr}
+  .half{height:450px;display:flex;flex-direction:column;
+        align-items:center;justify-content:center;gap:44px}
+  img{width:440px}
+  .tag{color:rgba(255,255,255,.55);font-size:19px;font-weight:700}
 </style></head><body>
-  <div class="half deep">
-    <img class="lockup" src="data:image/svg+xml;base64,${b64(lockup)}"/>
-    <img class="mark" src="data:image/svg+xml;base64,${b64(mark)}"/>
-    <div class="tag">deep purple polo</div>
-  </div>
-  <div class="half bright">
-    <img class="lockup" src="data:image/svg+xml;base64,${b64(lockup)}"/>
-    <img class="mark" src="data:image/svg+xml;base64,${b64(mark)}"/>
-    <div class="tag">bright purple polo</div>
-  </div>
+  ${cell("#3b2064", colour, "colour · deep purple")}
+  ${cell("#5b21b6", colour, "colour · bright purple")}
+  ${cell("#3b2064", white, "all white · deep purple")}
+  ${cell("#5b21b6", white, "all white · bright purple")}
 </body></html>`;
 
 const browser = await chromium.launch();
