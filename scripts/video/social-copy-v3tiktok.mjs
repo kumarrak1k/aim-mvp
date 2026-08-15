@@ -50,15 +50,16 @@ export const SCENES = [
     dur: 3.0,
   },
   {
-    // THE AFTERMATH. She flops onto the bed. The T1 shot's framing barely
-    // shows a face, so it reads as the same woman continuing the story even
-    // though it was generated without the identity reference.
+    // THE AFTERMATH. Identity-referenced: the SAME woman drops onto the edge
+    // of the bed, still in the blazer. (The earlier T1 flop shot was a
+    // different woman — visibly, per Rakesh — so every human beat in this cut
+    // now comes from the one reference.)
     id: "v3-2-problem",
     kicker: null,
     caption: "Knowing it isn’t enough.",
     vo: "Knowing your stuff isn't enough. You've got to deliver it.",
-    video: "T1-flop-v1.mp4",
-    dur: 3.2,
+    video: "T6-aftermath-v1.mp4",
+    dur: 4.3,
   },
   {
     // THE PRODUCT. Real interface, real answer, real score.
