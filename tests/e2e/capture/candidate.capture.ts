@@ -56,6 +56,36 @@ test.describe("marketing capture — candidate", () => {
     await page.screenshot({ path: `${DIR}/candidate-03-feedback-full.png`, fullPage: true });
   });
 
+  // The answer archive: the candidate's answer beside the model STAR answer.
+  // This is the clearest proof the product has, because the two columns say
+  // "here is what you said, here is what stronger looks like" without anyone
+  // needing to read a word of it. Uses the seeded demo session, so no real
+  // user's answer text ends up in marketing.
+  test("candidate answer beside model answer", async ({ page }) => {
+    await page.goto("/progress");
+    await page.waitForLoadState("networkidle").catch(() => {});
+    await clean(page);
+
+    // Open the most recent session. "Open" is a button on the progress
+    // dashboard, not a link, which is why matching on link found nothing.
+    await page.getByRole("button", { name: "Open" }).first().click({ timeout: 15_000 });
+    await page.waitForLoadState("networkidle").catch(() => {});
+    await clean(page);
+
+    // Each question on the session page is a collapsed accordion with its own
+    // "Open" button. The markup is present either way, so the panel is in the
+    // DOM but not visible until this is clicked.
+    await page.getByRole("button", { name: "Open" }).first().click({ timeout: 15_000 });
+    await page.waitForTimeout(600);
+
+    const star = page.getByText("Model answer (STAR)").first();
+    await star.waitFor({ timeout: 20_000 });
+    await star.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(700);
+    await page.screenshot({ path: `${DIR}/candidate-09-model-answer.png` });
+    await page.screenshot({ path: `${DIR}/candidate-09-model-answer-full.png`, fullPage: true });
+  });
+
   // The readiness trend, shot as an element rather than a viewport. The page
   // opens on a marketing hero, so a 1440x900 screenshot of /progress captures
   // a headline and misses the chart entirely, which is the one thing on that

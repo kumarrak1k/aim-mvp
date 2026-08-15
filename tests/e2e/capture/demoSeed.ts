@@ -88,6 +88,19 @@ function candidateSession(clerkUserId: string, role: string, score: number, sign
       strengths: ["Clear STAR structure", "Specific, quantified result"],
       improvements: ["Lead with the outcome", "Tighten the opening line"],
       improved_answer: "Situation/Task: I owned X under a tight deadline. Action: I did Y. Result: it delivered Z — a measurable, role-relevant outcome.",
+      // The session page renders improved_answer_star and only falls back to
+      // the flat improved_answer if it is absent. Without this the "Model
+      // answer (STAR)" panel never appears on a seeded session, which is the
+      // single most persuasive screen the product has.
+      improved_answer_star: {
+        situation:
+          "In my final-year project our weekly reports took two days to produce, and the delay was holding up decisions.",
+        task: "I was asked to cut the turnaround without adding headcount.",
+        action:
+          "I redesigned the data pipeline, automated the validation checks, and documented the new process so the whole team could run it.",
+        result:
+          "Turnaround fell by 40% and the approach was adopted across the team, which showed I can deliver a measurable process improvement.",
+      },
     },
     voiceAnalysis: {
       overallVoiceScore: c, paceScore: c, fillerScore: lo, confidenceScore: c, energyScore: c,
@@ -161,7 +174,10 @@ export async function seedDemoData(): Promise<{ sessions: number; company: strin
           overallScore: t.score,
           hireSignal: t.signal,
           summary: summary(t.score, t.signal, t.cats),
-          results: [],
+          // Was []. An empty results array meant the session detail page had no
+          // per-question content at all, so "Review every answer" and the
+          // "Model answer (STAR)" panel never rendered on a seeded session.
+          results: candidateSession(cid, "Product Manager at a fintech scale-up", t.score, t.signal).results,
           createdAt: daysAgo(t.d),
         },
       });
