@@ -15,6 +15,14 @@ test.describe("career docs", () => {
   test.describe("professional persona", () => {
     test.use({ storageState: statePath("professional") });
 
+    // Clerk session tokens live for 60 seconds. These tests call the API via
+    // page.request without rendering a page, so minutes into the pack the
+    // stored token is stale and every call 401s. Navigating first lets
+    // Clerk's client refresh the token (same fix as zz-account.spec).
+    test.beforeEach(async ({ page }) => {
+      await page.goto("/career-docs");
+    });
+
     test("personal statement generator returns a statement", async ({ page }) => {
       const res = await page.request.post("/api/career-docs/personal-statement", {
         data: {
@@ -65,6 +73,11 @@ test.describe("career docs", () => {
 
   test.describe("plus persona (no Professional access)", () => {
     test.use({ storageState: statePath("plus") });
+
+    // Same 60-second-token refresh as above.
+    test.beforeEach(async ({ page }) => {
+      await page.goto("/career-docs");
+    });
 
     // A non-Professional account gets FREE_TIER.careerDocs generations so it can
     // see what the Studio produces, then the upgrade gate returns. Run enough

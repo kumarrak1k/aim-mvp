@@ -11,6 +11,14 @@ import { addCompanyMembers, setCompanyTrialAtCap } from "../fixtures/seedCompany
 test.describe("corporate admin", () => {
   test.use({ storageState: statePath(CORPORATE_ADMIN.key) });
 
+  // Clerk session tokens live for 60 seconds. The invite/assignment tests call
+  // the API via page.request without rendering a page first, so the stored
+  // token is stale by the time they run and the API answers 401. Navigating
+  // first lets Clerk's client refresh it (same fix as zz-account.spec).
+  test.beforeEach(async ({ page }) => {
+    await page.goto("/company/dashboard");
+  });
+
   test("sees the company dashboard for the seeded company", async ({ page }) => {
     await page.goto("/company/dashboard");
     await expect(page.getByText("AIM Test Co").first()).toBeVisible({ timeout: 20_000 });
