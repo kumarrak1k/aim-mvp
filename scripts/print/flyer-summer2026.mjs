@@ -70,14 +70,14 @@ const flyerA = `<!doctype html><html><head><meta charset="utf-8"><style>${BASE_C
 </style></head><body>
   <div class="lockup"><img src="${LOGO}"/><span class="site">aicareermentor.co.uk</span></div>
   <div class="head">
-    <div class="kicker">Interview coming up?</div>
-    <h1>Practise like<br/>it&rsquo;s real.</h1>
-    <p class="sub">Realistic interview practice with an AI coach &mdash; spoken answers, honest scores and model answers that show you what stronger looks like.</p>
+    <div class="kicker">Your next move</div>
+    <h1>New role? First job?<br/>Career change?</h1>
+    <p class="sub">Whatever you&rsquo;re aiming for, AI Career Mentor gets you ready to land it &mdash; from a sharper application to interview answers you&rsquo;ve actually tested out loud.</p>
   </div>
   <div class="points">
-    <div class="pt"><span class="tick">&#10003;</span><span class="txt"><b>Answer out loud</b> &mdash; your words are transcribed and scored, question by question.</span></div>
-    <div class="pt"><span class="tick">&#10003;</span><span class="txt"><b>Honest feedback</b> on your answers, delivery and presence &mdash; instantly.</span></div>
-    <div class="pt"><span class="tick">&#10003;</span><span class="txt"><b>See if you&rsquo;re improving</b> &mdash; every session saved to your progress dashboard.</span></div>
+    <div class="pt"><span class="tick">&#10003;</span><span class="txt"><b>Start with the application</b> &mdash; CV, cover letter and personal statement, sharpened in the Studio.</span></div>
+    <div class="pt"><span class="tick">&#10003;</span><span class="txt"><b>Practise the interview out loud</b> &mdash; honest scores on your answers, delivery and presence, with model answers to learn from.</span></div>
+    <div class="pt"><span class="tick">&#10003;</span><span class="txt"><b>Walk in knowing where you stand</b> &mdash; every session saved, so you can see yourself improving.</span></div>
   </div>
   <div class="spacer"></div>
   <div class="offer">
@@ -94,11 +94,12 @@ const flyerA = `<!doctype html><html><head><meta charset="utf-8"><style>${BASE_C
 
 // ── Design B: story-led ───────────────────────────────────────────────────────
 const flyerB = `<!doctype html><html><head><meta charset="utf-8"><style>${BASE_CSS}
-  .head{margin-top:8mm;text-align:center}
+  .head{margin-top:7mm;text-align:center}
+  .kicker{font-size:3.2mm;font-weight:800;letter-spacing:.18em;color:#F0ABFC;text-transform:uppercase;margin-bottom:2.6mm}
   h1{font-size:8.6mm;font-weight:800;letter-spacing:-.02em;line-height:1.18}
   h1 .dim{color:#CDA9F5}
   .sub{margin:4mm auto 0;max-width:112mm;font-size:3.8mm;line-height:1.55;color:#D9CFF2}
-  .shotwrap{margin-top:6mm;border-radius:4mm;overflow:hidden;
+  .shotwrap{width:86%;margin:5mm auto 0;border-radius:4mm;overflow:hidden;
             box-shadow:0 5mm 12mm rgba(0,0,0,.45)}
   .shotwrap img{display:block;width:100%;height:auto}
   .strip{margin-top:6mm;background:#fff;color:#140a26;border-radius:4.5mm;
@@ -117,8 +118,9 @@ const flyerB = `<!doctype html><html><head><meta charset="utf-8"><style>${BASE_C
 </style></head><body>
   <div class="lockup"><img src="${LOGO}"/><span class="site">aicareermentor.co.uk</span></div>
   <div class="head">
+    <div class="kicker">New role &middot; First job &middot; Career change</div>
     <h1>You rehearse it in your head.<br/><span class="dim">You still have no idea if you&rsquo;re any good.</span></h1>
-    <p class="sub">AI Career Mentor puts you in a real interview &mdash; questions read aloud, your spoken answers scored on content, delivery and presence, with a model answer to learn from.</p>
+    <p class="sub">AI Career Mentor puts you in a real interview &mdash; questions read aloud, your spoken answers scored on content, delivery and presence, with a model answer to learn from. So when the real one comes, you&rsquo;ve already done it.</p>
   </div>
   <div class="shotwrap"><img src="${SHOT}"/></div>
   <div class="spacer"></div>
