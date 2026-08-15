@@ -43,7 +43,7 @@ export const SCENES = [
     caption: "Ever left an interview thinking…<br/>I could have done better?",
     vo: "You know you're capable. So why do interviews make you look like you're not?",
     video: "H4-nervous-before-v1.mp4",
-    dur: 5.7,
+    dur: 6.3,
   },
   {
     // THE PROBLEM. Rehearsing alone, late, getting nowhere.
@@ -55,7 +55,7 @@ export const SCENES = [
     // is another woman at a laptop, close enough to the character in beats 1
     // and 7 that it read as a continuity error rather than as someone else.
     video: "H2-doing-the-work-v1.mp4",
-    dur: 4.3,
+    dur: 4.7,
   },
   {
     // THE PRODUCT. The real interface asking a real question.
@@ -64,7 +64,7 @@ export const SCENES = [
     caption: "Realistic interviews, on demand.",
     vo: "Practise realistic interviews.",
     image: "candidate-02-question.png",
-    dur: 3.5,
+    dur: 2.5,
   },
   {
     // THE FEEDBACK. Scored on answer, delivery and presence.
@@ -90,7 +90,7 @@ export const SCENES = [
       ],
     },
     image: "candidate-03-feedback.png",
-    dur: 3.4,
+    dur: 3.2,
   },
   {
     // THE IMPROVEMENT. Descriptive caption, not a promise: the arc on the chart
@@ -102,7 +102,7 @@ export const SCENES = [
     vo: "Practise. Improve. Go again.",
     image: "candidate-08-trend.png",
     chart: true,
-    dur: 3.9,
+    dur: 4.0,
   },
   {
     // THE TRANSFORMATION. Same person, composed.
@@ -111,7 +111,7 @@ export const SCENES = [
     caption: "Until you’re ready.",
     vo: "Until you're not just prepared. You're ready.",
     video: "H5-confident-after-v1.mp4",
-    dur: 4.3,
+    dur: 3.7,
   },
   {
     id: "v2-8-cta",
@@ -120,7 +120,7 @@ export const SCENES = [
     caption: null,
     vo: "AI Career Mentor. Start practising free.",
     image: null,
-    dur: 5.8,
+    dur: 4.1,
   },
 ];
 
