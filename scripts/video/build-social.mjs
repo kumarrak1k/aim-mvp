@@ -106,9 +106,14 @@ for (const f of FORMATS) {
       const shot = probe(src);
       const stretch = s.dur > shot ? `setpts=${(s.dur / shot).toFixed(4)}*PTS,` : "";
 
+      // Crop from 28% down rather than the centre. Squaring a 9:16 clip takes
+      // the middle of the frame, and in every one of these shots the subject's
+      // head sits above centre, so a centred crop clips the top of it.
+      // `cropY` overrides per scene if a shot is framed differently.
+      const cy = s.cropY ?? 0.28;
       const fc =
         `[0:v]${stretch}scale=${f.w}:${f.h}:force_original_aspect_ratio=increase,` +
-        `crop=${f.w}:${f.h},fps=30,setsar=1${s.grade ? `,${s.grade}` : ""}[bg];` +
+        `crop=${f.w}:${f.h}:(iw-ow)/2:(ih-oh)*${cy},fps=30,setsar=1${s.grade ? `,${s.grade}` : ""}[bg];` +
         `[1:v]scale=${f.w}:${f.h}[ov];` +
         `[bg][ov]overlay=0:0:format=auto,format=yuv420p[out]`;
       ff(["-y", "-i", src, "-loop", "1", "-i", `${SLIDES}/${s.id}.png`,
