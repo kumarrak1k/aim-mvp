@@ -59,7 +59,7 @@ export const SCENES = [
     caption: "Knowing it isn’t enough.",
     vo: "Knowing your stuff isn't enough. You've got to deliver it.",
     video: "T6-aftermath-v1.mp4",
-    dur: 4.4,
+    dur: 3.5,
   },
   {
     // THE PRODUCT. Real interface, real answer, real score.
