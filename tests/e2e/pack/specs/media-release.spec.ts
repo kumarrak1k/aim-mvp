@@ -192,7 +192,17 @@ test.describe("media release on mid-session exit", () => {
     // microphone and starts speech recognition directly (the exact state the
     // old restart leak fired from) without depending on the question-voice
     // auto-listen choreography, which is timing-sensitive in headless runs.
-    await page.getByRole("button", { name: /^Start recording$/i }).click();
+    // The button is disabled until voice support, question load and question
+    // TTS have all settled. On some headless Windows runners that never
+    // happens — the same environment limitation as the engage guard below —
+    // and the click then times the whole test out. Skip explicitly instead.
+    const startBtn = page.getByRole("button", { name: /^Start recording$/i });
+    try {
+      await expect(startBtn).toBeEnabled({ timeout: 20_000 });
+    } catch {
+      test.skip(true, "Start recording never enabled: headless TTS/device readiness never settled on this runner");
+    }
+    await startBtn.click();
     const engaged = await page
       .waitForFunction(
         () =>

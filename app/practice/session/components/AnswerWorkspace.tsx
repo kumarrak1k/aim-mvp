@@ -162,6 +162,19 @@ export function AnswerWorkspace({
           className="min-h-[240px] flex-1 resize-none rounded-[1.25rem] border border-white/10 bg-black/30 p-4 text-base leading-7 text-white placeholder-gray-400 outline-none transition focus:border-purple-300/50 focus:ring-4 focus:ring-purple-500/10 sm:min-h-[300px] xl:min-h-[310px]"
         />
 
+        {/* Shown only while recording. Real user feedback: watching the live
+            text mis-hear you mid-answer is off-putting, and worrying about it
+            breaks focus. The live text is genuinely only a rough guide — the
+            scored answer is transcribed from the recorded audio by Whisper
+            after you finish — so say exactly that, at the moment the worry
+            occurs. */}
+        {isListening && (
+          <p className="mt-2 text-[12px] leading-5 text-gray-400">
+            Don&apos;t worry if the live text looks off — keep talking. Your
+            answer is transcribed precisely from the audio when you finish.
+          </p>
+        )}
+
         {/* Recording controls hidden for keyboard-only (free plan) sessions */}
         <div className={`mt-3 grid gap-3 ${freePlan ? "sm:grid-cols-2" : "sm:grid-cols-3"}`}>
           {!freePlan && (

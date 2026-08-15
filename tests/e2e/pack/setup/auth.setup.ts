@@ -25,6 +25,11 @@ for (const persona of CANDIDATE_PERSONAS) {
 
     // Confirm the session is live on a protected route, then persist it.
     await page.goto("/practice");
+    // Answer the cookie notice before saving state: the dialog floats at
+    // z-[9999] and intercepts clicks on controls underneath it (it swallowed
+    // media-release's "Start recording" click). Seeding "essential" here means
+    // every spec inherits a dismissed banner instead of each dismissing it.
+    await page.evaluate(() => localStorage.setItem("aim_cookie_consent", "essential"));
     await page.context().storageState({ path: statePath(persona.key) });
   });
 }
@@ -42,6 +47,7 @@ setup(`seed + sign in: ${CORPORATE_ADMIN.key}`, async ({ page }) => {
   });
 
   await page.goto("/company/dashboard");
+  await page.evaluate(() => localStorage.setItem("aim_cookie_consent", "essential"));
   await page.context().storageState({ path: statePath(CORPORATE_ADMIN.key) });
 });
 
@@ -55,5 +61,6 @@ setup(`seed + sign in: ${DISPOSABLE_CANDIDATE.key}`, async ({ page }) => {
   });
 
   await page.goto("/practice");
+  await page.evaluate(() => localStorage.setItem("aim_cookie_consent", "essential"));
   await page.context().storageState({ path: statePath(DISPOSABLE_CANDIDATE.key) });
 });
