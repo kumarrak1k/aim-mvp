@@ -89,10 +89,16 @@ const CHART = existsSync(`${SRC}/${TREND_FILE}`)
     })()
   : null;
 
-const SITE_BG = `
+// Per-variant look. A copy file may export THEME to override the ground and
+// accent — the TikTok cut runs hotter and brighter than the brand default
+// without touching the other variants.
+const THEME = COPY.THEME ?? {};
+const SITE_BG = THEME.bg ?? `
   radial-gradient(900px 620px at 22% -10%, rgba(168,85,247,.34), transparent 62%),
   radial-gradient(760px 560px at 88% 108%, rgba(232,80,180,.20), transparent 62%),
   linear-gradient(160deg,#150a2b 0%,#0a0614 55%,#070310 100%)`;
+const ACCENT = THEME.accent ?? "#CD9CFA";
+const CAP_BOOST = THEME.capBoost ?? 0;
 
 const head = (f) => `
   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap');
@@ -103,8 +109,8 @@ const head = (f) => `
        display:flex;flex-direction:column;align-items:center;
        padding:${f.padTop}px 56px ${f.padBottom}px;position:relative}
   .kicker{font-size:23px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;
-          color:#CD9CFA;margin-bottom:18px}
-  .cap{font-size:${f.cap}px;font-weight:800;letter-spacing:-.035em;line-height:1.07;
+          color:${ACCENT};margin-bottom:18px}
+  .cap{font-size:${f.cap + CAP_BOOST}px;font-weight:800;letter-spacing:-.035em;line-height:1.07;
        text-align:center;max-width:920px;text-wrap:balance}
   .card{margin-top:auto;margin-bottom:auto;width:${f.card}px;border-radius:22px;overflow:hidden;
         border:1px solid rgba(255,255,255,.12);
