@@ -93,7 +93,23 @@ export function DataTrustStrip({
       // Blended, not banded: no border and no own background, so the strip
       // floats on the page atmosphere exactly like the signed-in header does.
       <div className="relative z-50">
-        <div className="mx-auto flex max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] flex-wrap items-center justify-center gap-x-5 gap-y-1 px-4 py-2.5 sm:px-6">
+        {/* Phones: one tappable line. The full four-part strip wraps to two
+            lines on a phone, which is a lot of chrome before any content, so
+            below sm the copy abbreviates and the whole line links to the
+            privacy page — a far bigger tap target than the old 12px link. */}
+        <Link
+          href="/privacy"
+          className="flex items-center justify-center gap-1.5 whitespace-nowrap px-3 py-2 sm:hidden"
+        >
+          <ShieldIcon className="h-3 w-3 shrink-0 text-purple-300" />
+          <span className="text-[11px] font-semibold text-gray-100">
+            Never sold · No AI training · Stored in the UK
+          </span>
+          <span className="text-[11px] font-semibold text-purple-300" aria-hidden>
+            →
+          </span>
+        </Link>
+        <div className="mx-auto hidden max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] flex-wrap items-center justify-center gap-x-5 gap-y-1 px-4 py-2.5 sm:flex sm:px-6">
           {items.map(({ Icon, text }, i) => (
             <Fragment key={text}>
               {i > 0 && (
