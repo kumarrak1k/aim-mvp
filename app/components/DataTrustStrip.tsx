@@ -103,7 +103,7 @@ export function DataTrustStrip({
         >
           <ShieldIcon className="h-3 w-3 shrink-0 text-purple-300" />
           <span className="text-[11px] font-semibold text-gray-100">
-            Never sold · No AI training · Stored in the UK
+            Your data is protected and never sold
           </span>
           <span className="text-[11px] font-semibold text-purple-300" aria-hidden>
             →
