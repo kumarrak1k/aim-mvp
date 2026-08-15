@@ -32,9 +32,9 @@ export const CTA = {
 };
 
 export const STATIC = {
-  headline: "Practise like it’s real.",
-  subline: "Real interview practice with honest scores on your answers, delivery and presence.",
-  button: "Start free",
+  headline: "50% off. This summer.",
+  subline: "Half price on your first payment — any plan. Use code SUMMER2026 at checkout. Ends 30 September.",
+  button: "Code: SUMMER2026",
   site: "aicareermentor.co.uk",
 };
 
