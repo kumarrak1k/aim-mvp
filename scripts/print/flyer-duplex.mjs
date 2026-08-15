@@ -26,13 +26,13 @@ const BG = `
   radial-gradient(100mm 70mm at 90% 108%, rgba(232,80,180,.38), transparent 62%),
   linear-gradient(160deg,#2b1655 0%,#1a0f33 55%,#140a26 100%)`;
 
-const CSS = `
+const makeCSS = (w, h, padTop, padSide, padBottom) => `
   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap');
   *{margin:0;padding:0;box-sizing:border-box}
-  @page{size:148mm 210mm;margin:0}
+  @page{size:${w} ${h};margin:0}
   body{font-family:'Plus Jakarta Sans',ui-sans-serif,system-ui,sans-serif;color:#F8F4FF}
-  .sheet{width:148mm;height:210mm;overflow:hidden;background:${BG};
-         display:flex;flex-direction:column;padding:11mm 11mm 8mm;
+  .sheet{width:${w};height:${h};overflow:hidden;background:${BG};
+         display:flex;flex-direction:column;padding:${padTop} ${padSide} ${padBottom};
          page-break-after:always;position:relative}
   .sheet:last-child{page-break-after:auto}
   .lockup{display:flex;align-items:center;justify-content:space-between}
@@ -120,22 +120,27 @@ const BACK = `
     <p class="terms">Scan the code or visit <b>aicareermentor.co.uk</b> and use <b>SUMMER2026</b> at checkout.<br/>50% off your first payment on any Plus or Professional plan, monthly or yearly. Valid until 30 September 2026.</p>
   </div>`;
 
-const html = `<!doctype html><html><head><meta charset="utf-8"><style>${CSS}</style></head><body>${FRONT}${BACK}</body></html>`;
+const htmlFor = (css) => `<!doctype html><html><head><meta charset="utf-8"><style>${css}</style></head><body>${FRONT}${BACK}</body></html>`;
 
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 559, height: 794 }, deviceScaleFactor: 3 });
-await page.setContent(html, { waitUntil: "load" });
+
+// Trim-size PDF (148x210) + side previews.
+await page.setContent(htmlFor(makeCSS("148mm", "210mm", "11mm", "11mm", "8mm")), { waitUntil: "load" });
 await page.evaluate(() => document.fonts.ready);
 await page.waitForTimeout(250);
-await page.pdf({
-  path: `${OUT}/flyer-duplex.pdf`,
-  width: "148mm",
-  height: "210mm",
-  printBackground: true,
-});
-// Side previews.
+await page.pdf({ path: `${OUT}/flyer-duplex.pdf`, width: "148mm", height: "210mm", printBackground: true });
 const sheets = page.locator(".sheet");
 await sheets.nth(0).screenshot({ path: `${OUT}/flyer-duplex-front.png` });
 await sheets.nth(1).screenshot({ path: `${OUT}/flyer-duplex-back.png` });
+
+// Bleed PDF: 3mm on every edge (154x216). The background runs to the bleed
+// edge; the padding grows by the same 3mm so all content sits exactly where
+// it does on the trimmed page, safely inside the trim line.
+await page.setContent(htmlFor(makeCSS("154mm", "216mm", "14mm", "14mm", "11mm")), { waitUntil: "load" });
+await page.evaluate(() => document.fonts.ready);
+await page.waitForTimeout(250);
+await page.pdf({ path: `${OUT}/flyer-duplex-bleed.pdf`, width: "154mm", height: "216mm", printBackground: true });
+
 await browser.close();
-console.log(`done → ${OUT}/flyer-duplex.pdf (2 pages)`);
+console.log(`done → ${OUT}/flyer-duplex.pdf (trim) + flyer-duplex-bleed.pdf (154x216, 3mm bleed)`);
