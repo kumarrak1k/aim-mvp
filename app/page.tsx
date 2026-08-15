@@ -276,7 +276,7 @@ export default async function ForCandidatesPage() {
       <section className="mx-auto max-w-3xl px-4 pb-16 sm:px-6 sm:pb-20">
         <div className="mb-8 text-center">
           <p className="text-[12px] font-bold tracking-wide text-purple-300/90">
-            In 30 seconds
+            In 25 seconds
           </p>
           <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
             Why people practise before it counts.
