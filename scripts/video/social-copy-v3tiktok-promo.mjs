@@ -117,7 +117,7 @@ export const SCENES = [
     caption: null,
     vo: "AI Career Mentor. Get fifty percent off with code Summer twenty twenty-six.",
     image: null,
-    dur: 5.5,
+    dur: 6.2,
   },
 ];
 
