@@ -14,6 +14,7 @@ import { COPY, VARIANT } from "./social-which.mjs";
 const { SCENES, CTA, STATIC } = COPY;
 
 const SRC = "marketing/screenshots";        // raw 4320x2700 captures
+const FRAMED = "marketing/framed";          // same shots inside the branded browser chrome
 const OUT = "marketing/social";
 
 /**
@@ -128,8 +129,11 @@ const cardBody = (s) => {
         .join("")}
     </div>`;
   }
+  // `framed: true` uses the browser-chrome version. It carries the URL bar, so
+  // the beat reads as a real web app rather than a floating UI fragment.
+  const dir = s.framed ? FRAMED : SRC;
   return `<img src="data:image/png;base64,${
-    (s.proof && PROOF[s.proof]) || b64(`${SRC}/${s.image}`)
+    (s.proof && PROOF[s.proof]) || b64(`${dir}/${s.image}`)
   }"/>`;
 };
 

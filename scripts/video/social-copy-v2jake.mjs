@@ -63,7 +63,12 @@ export const SCENES = [
     kicker: "Practise",
     caption: "Realistic interviews, on demand.",
     vo: "Practise realistic interviews.",
-    image: "candidate-02-question.png",
+    // The framed shot of the answered question, not the empty editor. The old
+    // one showed the product waiting; this one shows it working — a real answer
+    // typed, feedback ready, a score returned — and the browser chrome carries
+    // the URL, so it reads as a live web app rather than a UI fragment.
+    image: "candidate-03-feedback.png",
+    framed: true,
     dur: 2.5,
   },
   {
