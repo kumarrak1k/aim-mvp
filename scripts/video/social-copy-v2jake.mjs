@@ -87,14 +87,12 @@ export const SCENES = [
     kicker: "Learn",
     caption: "And a stronger answer to learn from.",
     vo: "And a stronger answer to learn from.",
-    quote: {
-      label: "Stronger answer example",
-      lines: [
-        { tag: "A", text: "I redesigned the data pipeline and automated the validation checks." },
-        { tag: "R", text: "Turnaround fell by 40% and the team adopted the approach." },
-      ],
-    },
-    image: "candidate-03-feedback.png",
+    // The real comparison screen: the candidate's answer beside the model
+    // STAR answer. The two-column shape reads at any size, which is what this
+    // beat needs — nobody has to read the words to understand "here is yours,
+    // here is stronger". The typeset version this replaces was sharper but had
+    // to invent its own layout; this is the actual product.
+    image: "candidate-09-model-answer.png",
     dur: 3.2,
   },
   {
