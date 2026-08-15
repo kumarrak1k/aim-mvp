@@ -47,7 +47,7 @@ export const SCENES = [
     caption: "Interview going badly?<br/>You know the feeling.",
     vo: "You know you're good. So why don't interviews show it?",
     video: "T4-bad-interview-v1.mp4",
-    dur: 3.0,
+    dur: 4.0,
   },
   {
     // THE AFTERMATH. Identity-referenced: the SAME woman drops onto the edge
@@ -59,7 +59,7 @@ export const SCENES = [
     caption: "Knowing it isn’t enough.",
     vo: "Knowing your stuff isn't enough. You've got to deliver it.",
     video: "T6-aftermath-v1.mp4",
-    dur: 4.3,
+    dur: 4.4,
   },
   {
     // THE PRODUCT. Real interface, real answer, real score.
@@ -69,7 +69,7 @@ export const SCENES = [
     vo: "Practise real interviews, any time.",
     image: "candidate-03-feedback.png",
     framed: true,
-    dur: 3.7,
+    dur: 2.6,
   },
   {
     id: "v3-4-feedback",
@@ -78,7 +78,7 @@ export const SCENES = [
     vo: "Instant scores on your answers, delivery and presence.",
     proof: "score",
     image: "candidate-03-feedback.png",
-    dur: 4.4,
+    dur: 3.3,
   },
   {
     id: "v3-5-model",
@@ -86,7 +86,7 @@ export const SCENES = [
     caption: "See a stronger answer.",
     vo: "And a stronger answer to learn from.",
     image: "candidate-09-model-answer.png",
-    dur: 3.0,
+    dur: 2.7,
   },
   {
     id: "v3-6-improve",
@@ -95,7 +95,7 @@ export const SCENES = [
     vo: "Practise. Improve. Go again.",
     image: "candidate-08-trend.png",
     chart: true,
-    dur: 3.3,
+    dur: 3.1,
   },
   {
     // THE PAYOFF. The same woman from the hook — identity-referenced — walks
@@ -115,7 +115,7 @@ export const SCENES = [
     caption: null,
     vo: "AI Career Mentor. Start free.",
     image: null,
-    dur: 2.9,
+    dur: 3.0,
   },
 ];
 
