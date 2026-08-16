@@ -138,10 +138,15 @@ export default clerkMiddleware(async (auth, req) => {
     // Clerk v7's protect() 404s any signed-in user who cannot satisfy the
     // reverification (v6 waved them through), which is why the step-up
     // only runs for sessions that can actually satisfy it.
+    // ADMIN_REQUIRE_MFA=1 arms the mandatory-MFA policy. It stays unarmed
+    // until the Clerk plan actually offers authenticator-app MFA AND the
+    // admin account has enrolled — arming it before then would redirect
+    // every admin session to an enrolment page that cannot enrol anything.
     const fva = (sessionClaims as { fva?: [number, number] } | null)?.fva;
     const hasSecondFactor = Array.isArray(fva) && fva[1] !== -1;
     if (!hasSecondFactor) {
-      if (!isAdminSecurity(req)) {
+      const mfaRequired = process.env.ADMIN_REQUIRE_MFA === "1";
+      if (mfaRequired && !isAdminSecurity(req)) {
         return NextResponse.redirect(new URL("/admin/security?mfa=required", req.url));
       }
     } else {
