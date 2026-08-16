@@ -22,6 +22,7 @@ import {
 const isAdminArea   = createRouteMatcher(["/admin(.*)"]);
 const isAdminSignIn = createRouteMatcher(["/admin/sign-in(.*)"]);
 const isAdminUnlock = createRouteMatcher(["/admin/unlock"]);
+const isAdminSecurity = createRouteMatcher(["/admin/security(.*)"]);
 const isApiRoute    = createRouteMatcher(["/api(.*)"]);
 
 // Routes that require authentication
@@ -123,14 +124,27 @@ export default clerkMiddleware(async (auth, req) => {
     if (!userId) {
       return NextResponse.redirect(new URL("/admin/sign-in", req.url));
     }
-    // MFA step-up ONLY for accounts that actually have a second factor.
+    // MFA is MANDATORY for the admin area. This is what lets the IP
+    // allowlist retire: password + authenticator app from any device
+    // replaces password + known network.
+    //
+    // The fva claim is [firstFactorAge, secondFactorAge] in minutes;
+    // -1 = the session has no second factor (i.e. the account has not
+    // enrolled one, or signed in before enrolment). Such a session may
+    // reach ONLY /admin/security, where Clerk's profile component hosts
+    // the authenticator-app enrolment — never a 404 for the owner, and
+    // never a silent pass for a password-only session.
+    //
     // Clerk v7's protect() 404s any signed-in user who cannot satisfy the
-    // reverification (v6 waved them through), which locked admins out
-    // entirely on instances where MFA is not enabled. The fva claim is
-    // [firstFactorAge, secondFactorAge] in minutes; -1 = no second factor.
+    // reverification (v6 waved them through), which is why the step-up
+    // only runs for sessions that can actually satisfy it.
     const fva = (sessionClaims as { fva?: [number, number] } | null)?.fva;
     const hasSecondFactor = Array.isArray(fva) && fva[1] !== -1;
-    if (hasSecondFactor) {
+    if (!hasSecondFactor) {
+      if (!isAdminSecurity(req)) {
+        return NextResponse.redirect(new URL("/admin/security?mfa=required", req.url));
+      }
+    } else {
       await auth.protect({ reverification: { level: "second_factor", afterMinutes: 10 } });
     }
   }
