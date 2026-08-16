@@ -1,0 +1,72 @@
+{
+  "durs": {
+    "pilot-qotw1": {
+      "q1-hook": 1.52,
+      "q1-question": 2.26,
+      "q1-pause": 1.68,
+      "q1-coach": 2.73,
+      "q1-miss": 1.98,
+      "q1-land": 1.79,
+      "q1-cta": 4.01
+    },
+    "pilot-qotw2": {
+      "q2-hook": 2.29,
+      "q2-question": 2.26,
+      "q2-pause": 1.68,
+      "q2-coach": 2.73,
+      "q2-miss": 1.98,
+      "q2-score": 1.7,
+      "q2-cta": 4.01
+    },
+    "pilot-star": {
+      "st-hook": 1.77,
+      "st-s": 1.23,
+      "st-ta": 1.27,
+      "st-r": 1.43,
+      "st-star": 3.12,
+      "st-land": 1.79,
+      "st-cta": 4.06
+    },
+    "pilot-confidence": {
+      "c-hook": 2.81,
+      "c-outloud": 3.13,
+      "c-nerves": 2.65,
+      "c-walkin": 2.74,
+      "c-ready": 1.82,
+      "c-cta": 2.19
+    },
+    "pilot-qotw1-es": {
+      "e-hook": 2.02,
+      "e-pause": 5.3,
+      "e-model": 2.37,
+      "e-cta": 3.24
+    }
+  },
+  "chosen": {
+    "question-of-the-week": "marketing/social/vo/bank/question-of-the-week-take2.wav",
+    "could-you-answer-this": "marketing/social/vo/bank/could-you-answer-this-take2.wav",
+    "pause-say-it-out-loud": "marketing/social/vo/bank/pause-say-it-out-loud-take1.wav",
+    "strong-answer-covers": "marketing/social/vo/bank/strong-answer-covers-take2.wav",
+    "most-answers-miss-this": "marketing/social/vo/bank/most-answers-miss-this-take1.wav",
+    "thats-how-you-land-it": "marketing/social/vo/bank/thats-how-you-land-it-take2.wav",
+    "try-it-free-cta": "marketing/social/vo/bank/try-it-free-cta-take2.wav",
+    "new-week-new-question": "marketing/social/vo/bank/new-week-new-question-take1.wav",
+    "how-would-you-score": "marketing/social/vo/bank/how-would-you-score-take2.wav",
+    "lets-break-it-down": "marketing/social/vo/bank/lets-break-it-down-take1.wav",
+    "step-one": "marketing/social/vo/bank/step-one-take1.wav",
+    "step-two": "marketing/social/vo/bank/step-two-take2.wav",
+    "step-three": "marketing/social/vo/bank/step-three-take1.wav",
+    "star-structure": "marketing/social/vo/bank/star-structure-take1.wav",
+    "aicm-practise-like-its-real": "marketing/social/vo/bank/aicm-practise-like-its-real-take2.wav",
+    "confidence-isnt-luck": "marketing/social/vo/bank/confidence-isnt-luck-take1.wav",
+    "practise-out-loud-difference": "marketing/social/vo/bank/practise-out-loud-difference-take1.wav",
+    "preparation-nerves-energy": "marketing/social/vo/bank/preparation-nerves-energy-take1.wav",
+    "walk-in-prepared": "marketing/social/vo/bank/walk-in-prepared-take2.wav",
+    "ready-when-it-matters": "marketing/social/vo/bank/ready-when-it-matters-take2.wav",
+    "start-free-today": "marketing/social/vo/bank/start-free-today-take1.wav",
+    "es-pregunta-de-la-semana": "marketing/social/vo/bank/es-pregunta-de-la-semana-take2.wav",
+    "es-pausa-di-tu-respuesta": "marketing/social/vo/bank/es-pausa-di-tu-respuesta-take1.wav",
+    "es-respuesta-modelo": "marketing/social/vo/bank/es-respuesta-modelo-take1.wav",
+    "es-pruebalo-gratis": "marketing/social/vo/bank/es-pruebalo-gratis-take1.wav"
+  }
+}
