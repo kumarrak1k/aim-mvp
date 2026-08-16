@@ -132,6 +132,7 @@ const structuredData = {
       sameAs: [
         "https://www.facebook.com/profile.php?id=61593041205970",
         "https://www.tiktok.com/@aicareermentor",
+        "https://www.linkedin.com/company/aicareermentor",
       ],
     },
     {
