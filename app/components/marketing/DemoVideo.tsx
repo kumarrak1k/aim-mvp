@@ -12,7 +12,7 @@ type DemoVideoProps = {
 export function DemoVideo({
   src,
   title = "AI Career Mentor: Product demo",
-  caption = "A quick overview of AI Career Mentor, interview coaching for candidates and hiring teams.",
+  caption = "A quick overview of AI Career Mentor, interview coaching that helps you land your next role.",
   poster,
 }: DemoVideoProps) {
   const videoRef = useRef<HTMLVideoElement>(null);

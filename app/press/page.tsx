@@ -28,7 +28,7 @@ const stats = [
   { label: "Data residency", value: "EU/UK" },
 ];
 
-const boilerplate = `AI Career Mentor is a UK-built AI coaching platform that helps candidates prepare for job interviews and assessment centres, and gives hiring teams a structured AI assessment platform for fair, scalable screening. The platform scores answer quality, voice delivery and camera presence in real time, and produces a personalised 7-day improvement plan for every candidate. AI Career Mentor is based in the United Kingdom and processes all data under UK GDPR.`;
+const boilerplate = `AI Career Mentor is a UK-built AI coaching platform that helps people land their next role. Candidates practise job interviews and assessment centres with questions read aloud, and the platform scores answer quality, voice delivery and camera presence in real time, producing a personalised 7-day improvement plan for every candidate. AI Career Mentor is based in the United Kingdom and processes all data under UK GDPR.`;
 
 export default function PressPage() {
   return (

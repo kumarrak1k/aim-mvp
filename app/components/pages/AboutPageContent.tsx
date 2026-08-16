@@ -7,7 +7,7 @@ const structuredData = {
   url: absoluteUrl("/about"),
   name: "About AI Career Mentor",
   description:
-    "The mission and story behind AI Career Mentor, a UK-built AI coaching platform for candidates and hiring teams.",
+    "The mission and story behind AI Career Mentor, a UK-built AI coaching platform helping candidates land their next role.",
   mainEntity: {
     "@id": `${siteConfig.url}/#organization`,
   },
@@ -50,9 +50,10 @@ export function AboutPageContent() {
             </span>
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-gray-400 sm:text-lg sm:leading-9">
-            AI Career Mentor is a UK-built platform that gives candidates the kind
-            of preparation that used to cost hundreds of pounds per hour, and
-            gives hiring teams a structured, fair way to assess candidates at scale.
+            AI Career Mentor is a UK-built platform that gives you the kind of
+            interview preparation that used to cost hundreds of pounds per hour
+            &mdash; so the next role, the first job, or the career change is won
+            on preparation, not privilege.
           </p>
         </section>
 
@@ -87,9 +88,9 @@ export function AboutPageContent() {
             </p>
             <p>
               The result is that hiring decisions are influenced not just by capability,
-              but by who had access to preparation. That&rsquo;s not a fair outcome for
-              candidates, and it&rsquo;s not good for employers who miss out on talented
-              people who simply didn&rsquo;t know how to present themselves.
+              but by who had access to preparation. Talented people lose out on roles
+              they could do brilliantly, simply because nobody ever showed them how to
+              present what they already know.
             </p>
             <p className="font-bold text-white">
               AI Career Mentor exists to close that gap. We give every candidate,
@@ -147,7 +148,7 @@ export function AboutPageContent() {
         {/* CTA */}
         <section className="text-center">
           <Link
-            href="/for-candidates"
+            href="/"
             className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-8 py-4 text-base font-bold text-white shadow-2xl shadow-purple-950/40 transition hover:scale-[1.02]"
           >
             Start practising →

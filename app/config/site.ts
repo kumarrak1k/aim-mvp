@@ -184,7 +184,7 @@ export const siteConfig = {
       path: "/about",
       label: "About",
       description:
-        "The mission and story behind AI Career Mentor, a UK-built AI coaching platform for candidates and hiring teams.",
+        "The mission and story behind AI Career Mentor, a UK-built AI coaching platform helping candidates land their next role.",
       priority: 0.7,
     },
     {

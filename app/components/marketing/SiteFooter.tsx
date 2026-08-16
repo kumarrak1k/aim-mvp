@@ -16,8 +16,8 @@ export function SiteFooter() {
           <div>
             <SiteLogo href="/" size="sm" showText />
             <p className="mt-4 max-w-xs text-sm leading-6 text-gray-400">
-              Interview coaching for candidates, hiring teams, and
-              university careers services. Built in the UK.
+              Interview coaching that helps you land your next role.
+              Built in the UK.
             </p>
             <p className="mt-5 text-xs text-gray-400">
               © {new Date().getFullYear()}{" "}AI Career Mentor Ltd · England &amp; Wales · Company No. 17288119

@@ -7,7 +7,7 @@ export const metadata: Metadata = createPageMetadata({
   path: "/contact",
   title: "Contact Us",
   description:
-    "Get in touch with the AI Career Mentor team. Support for candidates, universities, and corporate clients.",
+    "Get in touch with the AI Career Mentor team. Help with your account, practice sessions, billing, and feedback.",
 });
 
 const structuredData = {
@@ -22,29 +22,29 @@ const structuredData = {
 const contacts = [
   {
     icon: "graduate" as const,
-    audience: "Candidates & general enquiries",
+    audience: "Your account & practice",
     description:
-      "Questions about your account, subscription, practice sessions, or anything else about the platform.",
+      "Questions about your account, practice sessions, scores and feedback, or anything else about using the platform.",
     email: "support@aicareermentor.co.uk",
     subject: "Support%20enquiry",
     response: "We respond within one working day.",
   },
   {
-    icon: "institution" as const,
-    audience: "Universities & careers services",
+    icon: "billing" as const,
+    audience: "Billing & subscriptions",
     description:
-      "Campus licensing, institutional pricing, procurement documentation, and onboarding for careers teams.",
-    email: "universities@aicareermentor.co.uk",
-    subject: "University%20enquiry",
+      "Plans, payments, discount codes, upgrades and cancellations. Include the email address on your account.",
+    email: "support@aicareermentor.co.uk",
+    subject: "Billing%20enquiry",
     response: "We respond within one working day.",
   },
   {
-    icon: "corporate" as const,
-    audience: "Corporate & hiring teams",
+    icon: "feedback" as const,
+    audience: "Feedback & ideas",
     description:
-      "Assessment centre platform, candidate invites, custom templates, and enterprise pricing.",
-    email: "corporate@aicareermentor.co.uk",
-    subject: "Corporate%20enquiry",
+      "Spotted something broken, or have an idea that would help you land your next role? We read every message.",
+    email: "support@aicareermentor.co.uk",
+    subject: "Feedback",
     response: "We respond within one working day.",
   },
 ];
@@ -70,7 +70,7 @@ const faqs = [
  * artwork on every OS, carry no consistent weight or colour, and are read
  * aloud by screen readers ("graduation cap") as if they were content.
  */
-const ContactIcon = ({ name }: { name: "graduate" | "institution" | "corporate" }) => {
+const ContactIcon = ({ name }: { name: "graduate" | "billing" | "feedback" }) => {
   const common = {
     viewBox: "0 0 24 24",
     fill: "none",
@@ -92,22 +92,19 @@ const ContactIcon = ({ name }: { name: "graduate" | "institution" | "corporate" 
     );
   }
 
-  if (name === "institution") {
+  if (name === "billing") {
     return (
       <svg {...common}>
-        <path d="M3 22h18" />
-        <path d="M6 18v-7M10 18v-7M14 18v-7M18 18v-7" />
-        <path d="M12 2 20 7H4Z" />
+        <rect x="2" y="5" width="20" height="14" rx="2" />
+        <path d="M2 10h20" />
+        <path d="M6 15h4" />
       </svg>
     );
   }
 
   return (
     <svg {...common}>
-      <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18" />
-      <path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2" />
-      <path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2" />
-      <path d="M10 6h4M10 10h4M10 14h4M10 18h4" />
+      <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8Z" />
     </svg>
   );
 };

@@ -74,7 +74,7 @@ export const competitors: Record<string, CompetitorData> = {
       { feature: "7-day personalised improvement plan", aim: true, competitor: false },
       { feature: "Progress tracking across sessions", aim: true, competitor: false },
       { feature: "Mock assessment centre", aim: true, competitor: false },
-      { feature: "Recruiter assessment platform", aim: true, competitor: false },
+      { feature: "CV, cover letter & personal statement tools", aim: true, competitor: false },
       { feature: "UK GDPR-compliant data handling", aim: true, competitor: "US data" },
       { feature: "Pricing", aim: "Free + from £19/mo", competitor: "Free (LinkedIn Premium required for some features)" },
     ],
@@ -83,7 +83,7 @@ export const competitors: Record<string, CompetitorData> = {
       "Questions tailored to your role, level and interview format, not generic category lists",
       "STAR structure scoring and model answers for every question",
       "7-day improvement plan after every session with specific targets",
-      "Separate recruiter platform for company-issued assessments",
+      "CV and application tools in the same place as your interview practice",
       "UK-hosted, GDPR-first",
     ],
     competitorStrengths: [

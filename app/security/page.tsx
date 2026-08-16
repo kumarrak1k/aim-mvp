@@ -122,7 +122,7 @@ export default function SecurityPage() {
             <span className="font-mono text-gray-400">/tools/star-scorer</span> (free
             STAR answer scorer, IP-rate-limited to 5 requests per hour) and{" "}
             <span className="font-mono text-gray-400">/api/assessment/[token]</span>{" "}
-            (assessment invites issued by hiring teams using single-use cryptographic
+            (assessment invites issued through single-use cryptographic
             tokens). Neither endpoint exposes personal candidate data.
           </p>
         </section>
