@@ -126,7 +126,13 @@ const structuredData = {
         email: "support@aicareermentor.co.uk",
         contactType: "customer support",
       },
-      sameAs: [],
+      // The brand's social profiles — both link back to this domain, which is
+      // what lets Google tie them to the organization entity. (Swap the
+      // Facebook URL for the vanity one once the Page can claim a username.)
+      sameAs: [
+        "https://www.facebook.com/profile.php?id=61593041205970",
+        "https://www.tiktok.com/@aicareermentor",
+      ],
     },
     {
       "@type": "WebSite",
