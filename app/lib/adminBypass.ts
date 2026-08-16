@@ -24,7 +24,7 @@
 export const ADMIN_BYPASS_COOKIE = "aim-admin-bypass";
 
 /** How long a redeemed unlock link keeps a device authorised. */
-export const BYPASS_DAYS = 30;
+export const BYPASS_DAYS = 90;
 
 const encoder = new TextEncoder();
 
