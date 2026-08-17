@@ -25,23 +25,12 @@ type Flagged = { section: string; note: string };
 type EnhancedResult = { fullEnhancedCV: string; changes: Change[]; flagged: Flagged[] };
 type Gap = { id: string; section: string; question: string; hint: string };
 
-function ScoreRing({ score }: { score: number }) {
-  const r = 42;
-  const circ = 2 * Math.PI * r;
-  const offset = circ * (1 - Math.min(10, Math.max(0, score)) / 10);
+function ScoreDisplay({ score }: { score: number }) {
   const col = score >= 7 ? "#34d399" : score >= 5 ? "#fbbf24" : "#f87171";
   return (
-    <div className="relative mx-auto inline-flex">
-      <svg width="112" height="112" viewBox="0 0 112 112">
-        <circle cx="56" cy="56" r={r} fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth="10" />
-        <circle cx="56" cy="56" r={r} fill="none" stroke={col} strokeWidth="10"
-          strokeDasharray={circ} strokeDashoffset={offset}
-          strokeLinecap="round" transform="rotate(-90 56 56)" />
-      </svg>
-      <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-4xl font-bold" style={{ color: col }}>{score}</span>
-        <span className="text-[12px] font-bold text-gray-400">/10</span>
-      </div>
+    <div className="flex shrink-0 items-baseline gap-1">
+      <span className="text-5xl font-bold leading-none" style={{ color: col }}>{score}</span>
+      <span className="text-sm font-bold text-gray-400">/10</span>
     </div>
   );
 }
@@ -499,7 +488,7 @@ export default function CVEnhancerPage() {
                 {/* Overall score */}
                 <div className="rounded-[1.75rem] border border-white/[0.07] bg-white/[0.04] p-6 backdrop-blur-xl">
                   <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
-                    <ScoreRing score={result.overallScore} />
+                    <ScoreDisplay score={result.overallScore} />
                     <div className="text-center sm:text-left">
                       <p className="text-xs font-bold tracking-wide text-gray-400">Overall CV score</p>
                       <p className="mt-1 text-lg font-bold text-white">{result.overallLabel}</p>
