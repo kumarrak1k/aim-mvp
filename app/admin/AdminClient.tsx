@@ -1582,7 +1582,7 @@ function CampaignLinkBuilder() {
 
       <p className="mt-2 text-[12px] leading-4 text-gray-400">
         Preset buttons copy a homepage link tagged for that channel. Links with a promo code
-        (e.g. ?promo=LAUNCH100) are tracked automatically as promo signups.
+        (e.g. ?promo=SUMMER2026) are tracked automatically as promo signups.
       </p>
     </div>
   );

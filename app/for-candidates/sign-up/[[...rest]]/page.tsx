@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { SignUp } from "@clerk/nextjs";
 import { SiteLogo } from "@/app/components/brand/SiteLogo";
 import { DataTrustStrip } from "@/app/components/DataTrustStrip";
@@ -18,6 +19,13 @@ import { DataTrustStrip } from "@/app/components/DataTrustStrip";
  * locked in before the user sees their first authed page.
  */
 export default function CandidateSignUpPage() {
+  // Clerk's path routing renders its later steps (verify-email-address,
+  // continue, sso-callback) inside this same catch-all page. The marketing
+  // checkbox belongs on the initial form only — leaving it mounted on the
+  // later steps made it "flash" mid-transition after submitting the form.
+  const pathname = usePathname();
+  const onFirstStep = (pathname ?? "").replace(/\/+$/, "").endsWith("/sign-up");
+
   // Persist referral code across Clerk's multi-step sign-up flow
   if (typeof window !== "undefined") {
     const ref = new URLSearchParams(window.location.search).get("ref");
@@ -137,7 +145,9 @@ export default function CandidateSignUpPage() {
           />
 
           {/* Marketing preference — ticked by default (PECR soft opt-in); the
-              label is the clear refusal opportunity the exception requires. */}
+              label is the clear refusal opportunity the exception requires.
+              First step only: see onFirstStep above. */}
+          {onFirstStep && (
           <label className="mt-4 flex cursor-pointer items-start gap-3 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-3.5 text-left">
             <input
               type="checkbox"
@@ -152,6 +162,7 @@ export default function CandidateSignUpPage() {
               account emails are always sent.
             </span>
           </label>
+          )}
 
           <div className="mt-4 text-center">
             <p className="mb-2 text-xs text-gray-400">Already have an account?</p>
