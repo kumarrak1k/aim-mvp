@@ -40,6 +40,41 @@
       "e-pause": 5.3,
       "e-model": 2.37,
       "e-cta": 3.24
+    },
+    "pilot-confidence-rakesh": {
+      "c-hook": 2.765,
+      "c-outloud": 3.88,
+      "c-nerves": 3.525,
+      "c-walkin": 3.471,
+      "c-ready": 1.845,
+      "c-cta": 2.011
+    },
+    "pilot-qotw1-rakesh": {
+      "q1-hook": 1.565,
+      "q1-question": 3,
+      "q1-pause": 3.5,
+      "q1-coach": 3,
+      "q1-miss": 1.75,
+      "q1-land": 2.2,
+      "q1-cta": 4.625
+    },
+    "pilot-qotw2-rakesh": {
+      "q2-hook": 2.675,
+      "q2-question": 3,
+      "q2-pause": 3.5,
+      "q2-coach": 3,
+      "q2-miss": 1.75,
+      "q2-score": 1.4,
+      "q2-cta": 4.625
+    },
+    "pilot-star-rakesh": {
+      "st-hook": 1.3,
+      "st-s": 1.565,
+      "st-ta": 0.835,
+      "st-r": 2.165,
+      "st-star": 3.05,
+      "st-land": 2.2,
+      "st-cta": 4.966
     }
   },
   "chosen": {
