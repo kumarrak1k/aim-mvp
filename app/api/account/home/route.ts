@@ -27,7 +27,7 @@ export async function GET(req: Request) {
     // Account type not set yet (mid-onboarding) or Clerk hiccup — the
     // completion page can finish setup; worst case it forwards them on.
     return NextResponse.redirect(
-      new URL("/for-candidates/sign-up/complete", req.url)
+      new URL("/for-candidates/auth-complete", req.url)
     );
   }
 }

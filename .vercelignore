@@ -1,0 +1,5 @@
+# Content bank only — never needed by the build (site assets live in public/).
+# Keeps CLI deploys from uploading ~1GB of banked footage/VO/finals.
+# Anchored to the repo root: a bare "marketing/" would also match
+# app/components/marketing/ and break the build.
+/marketing/

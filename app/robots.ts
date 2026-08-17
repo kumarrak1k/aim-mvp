@@ -34,8 +34,10 @@ export default function robots(): MetadataRoute.Robots {
           // ── Auth flow pages (no standalone SEO value) ─────────────────
           "/for-candidates/sign-in/",
           "/for-candidates/sign-up/complete",
+          "/for-candidates/auth-complete",
           "/for-business/sign-in/",
           "/for-business/sign-up/complete",
+          "/for-business/auth-complete",
         ],
       },
     ],

@@ -10,8 +10,10 @@ import { DataTrustStrip } from "@/app/components/DataTrustStrip";
 /**
  * Dedicated candidate sign-up page.
  *
- * After successful sign-up Clerk redirects to /for-candidates/sign-up/complete,
- * which immediately calls POST /api/account-type to brand the user as
+ * After successful sign-up Clerk redirects to /for-candidates/auth-complete
+ * (deliberately OUTSIDE Clerk's own path — a target inside it is treated as a
+ * sign-up step by Clerk's virtual router and loops), which immediately calls
+ * POST /api/account-type to brand the user as
  * "candidate" in privateMetadata, then forwards them to /practice.
  *
  * This approach (a thin redirect step) keeps Clerk's sign-up flow vanilla
@@ -117,8 +119,8 @@ export default function CandidateSignUpPage() {
             routing="path"
             path="/for-candidates/sign-up"
             signInUrl="/for-candidates/sign-in"
-            forceRedirectUrl="/for-candidates/sign-up/complete"
-            fallbackRedirectUrl="/for-candidates/sign-up/complete"
+            forceRedirectUrl="/for-candidates/auth-complete"
+            fallbackRedirectUrl="/for-candidates/auth-complete"
             appearance={{
               elements: {
                 rootBox: "mx-auto w-full",

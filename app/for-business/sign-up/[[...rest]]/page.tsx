@@ -7,7 +7,7 @@ import { DataTrustStrip } from "@/app/components/DataTrustStrip";
 
 /**
  * Dedicated business / hiring-team sign-up page.
- * After sign-up Clerk redirects to /for-business/sign-up/complete which
+ * After sign-up Clerk redirects to /for-business/auth-complete which
  * stamps accountType = "corporate" and forwards to /company/setup so the
  * recruiter can name their workspace.
  */
@@ -69,8 +69,8 @@ export default function BusinessSignUpPage() {
             routing="path"
             path="/for-business/sign-up"
             signInUrl="/for-business/sign-in"
-            forceRedirectUrl="/for-business/sign-up/complete"
-            fallbackRedirectUrl="/for-business/sign-up/complete"
+            forceRedirectUrl="/for-business/auth-complete"
+            fallbackRedirectUrl="/for-business/auth-complete"
             appearance={{
               elements: {
                 rootBox: "mx-auto w-full",
