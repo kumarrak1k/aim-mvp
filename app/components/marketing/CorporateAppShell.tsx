@@ -1,11 +1,13 @@
 "use client";
 
+
+import { SkipToContent } from "@/app/components/SkipToContent";
 /**
  * Authed corporate / hiring-team app shell.
  *
  * Used by /company/dashboard, /company/templates, /company/candidates,
  * /company/results, /company/setup. Cleanly separated from the candidate
- * area — no Practice / Progress / Profile links, no candidate marketing.
+ * area â€” no Practice / Progress / Profile links, no candidate marketing.
  *
  * Fuchsia/orange identity to distinguish from the purple candidate side.
  */
@@ -60,7 +62,7 @@ export function CorporateAppShell({
     try {
       setShowGuideBanner(localStorage.getItem("aim_company_guide_banner_dismissed") !== "1");
     } catch {
-      // Storage unavailable — keep the banner hidden rather than nag forever.
+      // Storage unavailable â€” keep the banner hidden rather than nag forever.
     }
   }, [currentPath]);
   function dismissGuideBanner() {
@@ -74,7 +76,8 @@ export function CorporateAppShell({
 
   return (
     <div className="relative min-h-screen bg-[#0a0614] text-white">
-      {/* Background — standard brand atmosphere */}
+      <SkipToContent />
+      {/* Background â€” standard brand atmosphere */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_25%_15%,rgba(120,60,255,0.10),transparent),radial-gradient(ellipse_60%_50%_at_75%_85%,rgba(232,80,180,0.06),transparent),linear-gradient(180deg,#0a0614_0%,#100a1f_50%,#0c0816_100%)]" />
         <div className="absolute left-[-160px] top-[-80px] h-[520px] w-[520px] rounded-full bg-purple-500/[0.08] blur-[160px]" />
@@ -93,7 +96,7 @@ export function CorporateAppShell({
             </span>
           </Link>
 
-          {/* Desktop pill nav — absolutely centred so position never shifts */}
+          {/* Desktop pill nav â€” absolutely centred so position never shifts */}
           <nav aria-label="Primary" className="pointer-events-none absolute inset-x-0 hidden justify-center xl:flex">
             <div className="pointer-events-auto flex items-center gap-0.5 rounded-full border border-white/[0.09] bg-white/[0.04] p-1.5">
               {navItems.map((item) => {
@@ -120,7 +123,7 @@ export function CorporateAppShell({
 
           {/* Right actions */}
           <div className="relative z-10 ml-auto flex shrink-0 items-center gap-2">
-            {/* Send invite shortcut — hidden when already on candidates */}
+            {/* Send invite shortcut â€” hidden when already on candidates */}
             {currentPath !== "/company/candidates" &&
               currentPath !== "/company/setup" && (
                 <Link href="/company/candidates" className="hidden sm:block">
@@ -171,7 +174,7 @@ export function CorporateAppShell({
                 </Link>
               );
             })}
-            <span className="flex items-center text-white/[0.15]">·</span>
+            <span className="flex items-center text-white/[0.15]">Â·</span>
             {resourceLinks.map((item) => (
               <Link key={item.href} href={item.href}>
                 <span className="block whitespace-nowrap rounded-full border border-white/[0.08] bg-white/[0.04] px-3.5 py-1.5 text-xs font-bold text-gray-400 transition hover:bg-white/[0.07] hover:text-white">
@@ -182,7 +185,7 @@ export function CorporateAppShell({
           </nav>
         </div>
 
-        {/* Desktop resource links — secondary strip */}
+        {/* Desktop resource links â€” secondary strip */}
         <div className="hidden px-4 py-1.5 lg:block">
           <nav className="mx-auto flex max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] items-center justify-center gap-6">
             {resourceLinks.map((item) => (
@@ -198,12 +201,12 @@ export function CorporateAppShell({
         </div>
       </header>
 
-      {/* New-workspace guide banner — dashboard only, dismissible */}
+      {/* New-workspace guide banner â€” dashboard only, dismissible */}
       {showGuideBanner && (
         <div className="relative z-40 px-4 pt-2 sm:px-6">
           <div className="mx-auto flex max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] items-center justify-between gap-3 rounded-2xl border border-fuchsia-400/30 bg-gradient-to-r from-fuchsia-600/[0.22] via-purple-600/[0.14] to-fuchsia-600/[0.10] px-4 py-3 backdrop-blur-xl sm:px-5">
             <p className="text-[13px] font-bold leading-5 text-purple-50">
-              <span className="mr-1.5" aria-hidden>📘</span>
+              <span className="mr-1.5" aria-hidden>ðŸ“˜</span>
               New workspace? See the whole assessment workflow in six steps.
             </p>
             <div className="flex shrink-0 items-center gap-2">
@@ -211,7 +214,7 @@ export function CorporateAppShell({
                 href="/company/guide"
                 className="whitespace-nowrap rounded-full bg-gradient-to-r from-fuchsia-500 via-purple-500 to-blue-500 px-4 py-1.5 text-[12px] font-bold text-white shadow-lg shadow-purple-950/40 transition hover:scale-[1.03]"
               >
-                Open the guide →
+                Open the guide â†’
               </Link>
               <button
                 type="button"
@@ -219,14 +222,14 @@ export function CorporateAppShell({
                 aria-label="Dismiss the guide banner"
                 className="flex h-7 w-7 items-center justify-center rounded-full text-gray-400 transition hover:bg-white/10 hover:text-white"
               >
-                ✕
+                âœ•
               </button>
             </div>
           </div>
         </div>
       )}
 
-      <main className="relative z-10 pb-20 sm:pb-0">{children}</main>
+      <main id="main-content" className="relative z-10 pb-20 sm:pb-0">{children}</main>
 
       <SiteFooter />
 

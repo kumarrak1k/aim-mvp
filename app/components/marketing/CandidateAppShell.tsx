@@ -4,7 +4,7 @@
  * Authed candidate app shell.
  *
  * Used by /practice, /progress, /profile (and any future candidate-only
- * authed pages). Cleanly separated from the corporate workspace — there
+ * authed pages). Cleanly separated from the corporate workspace â€” there
  * is no "Company" link, no recruiter nav, nothing that would confuse a
  * candidate who's just trying to practise interviews.
  *
@@ -18,6 +18,7 @@ import { UserButton } from "@clerk/nextjs";
 import { useEffect, useState, type ReactNode } from "react";
 import { SiteLogo } from "@/app/components/brand/SiteLogo";
 import { DataTrustStrip } from "@/app/components/DataTrustStrip";
+import { SkipToContent } from "@/app/components/SkipToContent";
 import { SiteFooter } from "@/app/components/marketing/SiteFooter";
 import { PlanPage } from "@/app/components/account/PlanPage";
 import { TrialBanner } from "@/app/components/account/TrialBanner";
@@ -33,13 +34,13 @@ export type CandidateAppPath =
   | "/career-docs/cv-enhancer"
   | "/career-docs/cover-letter"
   | "/career-docs/personal-statement"
-  // Resource pages — visible in the secondary strip, not the main nav
+  // Resource pages â€” visible in the secondary strip, not the main nav
   | "/for-candidates"
   | "/for-candidates/about"
   | "/for-candidates/blog"
   | "/for-candidates/questions"
   | "/for-candidates/star-scorer"
-  // Marketing sub-pages — shown in the audience nav
+  // Marketing sub-pages â€” shown in the audience nav
   | "/interview-practice"
   | "/mock-assessment-centre"
   | "/pricing";
@@ -47,7 +48,7 @@ export type CandidateAppPath =
 type CandidateAppShellProps = {
   children: ReactNode;
   // Accept any path: marketing pages routed through CandidateShell pass
-  // their own path (/blog, /about, …), which the CandidateAppPath union
+  // their own path (/blog, /about, â€¦), which the CandidateAppPath union
   // deliberately doesn't enumerate. Highlighting is string-compared below,
   // so a non-nav path simply highlights nothing.
   currentPath: CandidateAppPath | (string & {});
@@ -56,7 +57,7 @@ type CandidateAppShellProps = {
 /**
  * `proOnly` marks the two Professional-tier features. Without a marker in the
  * nav they look identical to the included ones, so a Free or trial user picks
- * one and lands on an upgrade wall — which reads as bait-and-switch during a
+ * one and lands on an upgrade wall â€” which reads as bait-and-switch during a
  * three-day trial. The badge sets the expectation up front instead.
  */
 const navItems: Array<{
@@ -105,7 +106,7 @@ export function CandidateAppShell({
     try {
       setShowGuideBanner(localStorage.getItem("aim_guide_banner_dismissed") !== "1");
     } catch {
-      // Storage unavailable — keep the banner hidden rather than nag forever.
+      // Storage unavailable â€” keep the banner hidden rather than nag forever.
     }
   }, [currentPath]);
   function dismissGuideBanner() {
@@ -131,7 +132,7 @@ export function CandidateAppShell({
         }
       })
       .catch(() => {
-        // Plan unknown on error — badges stay hidden (see the note above),
+        // Plan unknown on error â€” badges stay hidden (see the note above),
         // which fails closed to a clean nav rather than a flash.
       });
     return () => {
@@ -141,20 +142,21 @@ export function CandidateAppShell({
 
   return (
     <div className="relative min-h-screen bg-[#0a0614] text-white">
-      {/* Background — purple/cyan candidate identity */}
+      {/* Background â€” purple/cyan candidate identity */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_25%_15%,rgba(120,60,255,0.10),transparent),radial-gradient(ellipse_60%_50%_at_75%_85%,rgba(232,80,180,0.06),transparent),linear-gradient(180deg,#0a0614_0%,#100a1f_50%,#0c0816_100%)]" />
         <div className="absolute left-[-160px] top-[-80px] h-[520px] w-[520px] rounded-full bg-purple-500/[0.08] blur-[160px]" />
         <div className="absolute bottom-[-80px] right-[-160px] h-[520px] w-[520px] rounded-full bg-fuchsia-500/[0.08] blur-[160px]" />
       </div>
 
-      {/* Data trust bar — same messages as the signed-out pages */}
+      {/* Data trust bar â€” same messages as the signed-out pages */}
+      <SkipToContent />
       <DataTrustStrip variant="topbar" />
 
       {/* Header */}
       <header className="sticky top-0 z-50 backdrop-blur-2xl">
         {/* Grid so the centred nav lives in its own column and cannot paint over
-            the logo — the old flex + absolute layout let the pill nav overlap
+            the logo â€” the old flex + absolute layout let the pill nav overlap
             "AI Career Mentor" once it grew. */}
         <div className="relative mx-auto grid w-full max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 px-4 py-3 sm:px-6 lg:px-8 lg:py-3.5">
           {/* Logo + badge */}
@@ -216,7 +218,7 @@ export function CandidateAppShell({
             </div>
           </nav>
 
-          {/* Right actions — avatar only; Start Practising moved to its own row. */}
+          {/* Right actions â€” avatar only; Start Practising moved to its own row. */}
           <div className="relative z-10 flex shrink-0 items-center justify-end gap-2">
             <div className="shrink-0 px-2">
               <UserButton>
@@ -237,7 +239,7 @@ export function CandidateAppShell({
           </div>
         </div>
 
-        {/* Tablet/mobile nav — the same hamburger disclosure the signed-out
+        {/* Tablet/mobile nav â€” the same hamburger disclosure the signed-out
             shell uses, so the site behaves identically either side of sign-in.
             Replaces both a horizontally-scrolling strip (whose overflow was
             invisible) and a fixed bottom bar (whose last item sat under the
@@ -298,7 +300,7 @@ export function CandidateAppShell({
           </div>
         </details>
 
-        {/* Start Practising — its own centred row, where the resource strip used
+        {/* Start Practising â€” its own centred row, where the resource strip used
             to be. Hidden on the pages it points at. */}
         {currentPath !== "/practice" &&
           currentPath !== "/practice/session" &&
@@ -314,12 +316,12 @@ export function CandidateAppShell({
           )}
       </header>
 
-      {/* New-user guide banner — practice page only, dismissible */}
+      {/* New-user guide banner â€” practice page only, dismissible */}
       {showGuideBanner && (
         <div className="relative z-40 px-4 pt-2 sm:px-6">
           <div className="mx-auto flex max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] items-center justify-between gap-3 rounded-2xl border border-purple-400/30 bg-gradient-to-r from-purple-600/[0.22] via-fuchsia-600/[0.14] to-purple-600/[0.10] px-4 py-3 backdrop-blur-xl sm:px-5">
             <p className="text-[13px] font-bold leading-5 text-purple-50">
-              <span className="mr-1.5" aria-hidden>📘</span>
+              <span className="mr-1.5" aria-hidden>ðŸ“˜</span>
               New here? Learn the platform in six quick steps.
             </p>
             <div className="flex shrink-0 items-center gap-2">
@@ -327,7 +329,7 @@ export function CandidateAppShell({
                 href="/guide"
                 className="whitespace-nowrap rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-4 py-1.5 text-[12px] font-bold text-white shadow-lg shadow-purple-950/40 transition hover:scale-[1.03]"
               >
-                Open the guide →
+                Open the guide â†’
               </Link>
               <button
                 type="button"
@@ -335,7 +337,7 @@ export function CandidateAppShell({
                 aria-label="Dismiss the guide banner"
                 className="flex h-7 w-7 items-center justify-center rounded-full text-gray-400 transition hover:bg-white/10 hover:text-white"
               >
-                ✕
+                âœ•
               </button>
             </div>
           </div>
@@ -345,7 +347,7 @@ export function CandidateAppShell({
       {/* Reverse-trial countdown / start / upgrade bar */}
       <TrialBanner />
 
-      <main className="relative z-10">{children}</main>
+      <main id="main-content" className="relative z-10">{children}</main>
 
       <SiteFooter />
 

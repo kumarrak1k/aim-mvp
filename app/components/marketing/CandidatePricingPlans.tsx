@@ -76,9 +76,9 @@ function InfoTip({ text }: { text: string }) {
 function renderCell(v: string | boolean) {
   if (typeof v === "boolean") {
     return v ? (
-      <span className="text-emerald-400" aria-label="Included">✓</span>
+      <span className="text-emerald-400" role="img" aria-label="Included">✓</span>
     ) : (
-      <span className="text-gray-400" aria-label="Not included">–</span>
+      <span className="text-gray-400" role="img" aria-label="Not included">–</span>
     );
   }
   return <span className="text-gray-200">{v}</span>;
@@ -246,6 +246,7 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
         <button
           onClick={() => setAnnual((v) => !v)}
           aria-pressed={annual}
+          aria-label="Annual billing"
           className={`relative inline-flex h-7 w-12 items-center rounded-full border transition ${
             annual
               ? "border-purple-400/40 bg-purple-500/30"
@@ -297,7 +298,7 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
               )}
               {!plan.highlight && <div className="mb-5 h-7" />}
 
-              <h3 className="text-xl font-bold tracking-tight">{plan.name}</h3>
+              <h2 className="text-xl font-bold tracking-tight">{plan.name}</h2>
               <div className="mt-3 flex items-end gap-1.5">
                 <span className="text-4xl font-bold leading-none tracking-tight">
                   {displayPrice}

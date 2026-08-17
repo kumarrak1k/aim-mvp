@@ -1,7 +1,7 @@
 /**
  * Audience-aware marketing shell.
  *
- * Used by the post-split marketing pages — /for-candidates/* and
+ * Used by the post-split marketing pages â€” /for-candidates/* and
  * /for-business/*. Each audience gets:
  *   - a unified purple brand identity across audiences
  *   - its own nav focused on its own product (no cross-pollination)
@@ -17,6 +17,7 @@ import type { ReactNode } from "react";
 import { SiteLogo } from "@/app/components/brand/SiteLogo";
 import { SiteFooter } from "@/app/components/marketing/SiteFooter";
 import { DataTrustStrip } from "@/app/components/DataTrustStrip";
+import { SkipToContent } from "@/app/components/SkipToContent";
 
 export type Audience = "candidate" | "business";
 
@@ -74,7 +75,7 @@ const THEMES: Record<Audience, AudienceTheme> = {
     accentBorder: "border-purple-300/20",
     accentTextSoft: "text-purple-300/90",
     accentTextStrong: "text-purple-100",
-    switchAudienceLabel: "I'm a hiring team →",
+    switchAudienceLabel: "I'm a hiring team â†’",
     switchAudienceHref: "/for-business",
   },
   business: {
@@ -94,7 +95,7 @@ const THEMES: Record<Audience, AudienceTheme> = {
     accentBorder: "border-purple-300/20",
     accentTextSoft: "text-purple-300/90",
     accentTextStrong: "text-purple-100",
-    switchAudienceLabel: "I'm a candidate →",
+    switchAudienceLabel: "I'm a candidate â†’",
     switchAudienceHref: "/",
   },
 };
@@ -108,10 +109,11 @@ export function AudienceShell({
 
   return (
     <div className="relative min-h-screen bg-[#0a0614] text-white">
-      {/* Data trust bar — top of every audience page */}
+      <SkipToContent />
+      {/* Data trust bar â€” top of every audience page */}
       <DataTrustStrip variant="topbar" />
 
-      {/* Background atmosphere — tinted by audience */}
+      {/* Background atmosphere â€” tinted by audience */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_25%_15%,rgba(120,60,255,0.10),transparent),radial-gradient(ellipse_60%_50%_at_75%_85%,rgba(232,80,180,0.06),transparent),linear-gradient(180deg,#0a0614_0%,#100a1f_50%,#0c0816_100%)]" />
         <div className="absolute left-[-160px] top-[-80px] h-[520px] w-[520px] rounded-full bg-purple-500/[0.08] blur-[160px]" />
@@ -134,11 +136,11 @@ export function AudienceShell({
             </span>
           </Link>
 
-          {/* Desktop nav — centred in the grid column, lg+ (grid prevents overlap). */}
+          {/* Desktop nav â€” centred in the grid column, lg+ (grid prevents overlap). */}
           <nav aria-label="Primary" className="hidden min-w-0 justify-center xl:flex">
             <div className="flex items-center gap-0.5 rounded-full border border-white/[0.09] bg-white/[0.04] p-1.5">
               {theme.navItems.map((item) => {
-                // "Free tools" — a hover/focus dropdown. CSS-only so this shell
+                // "Free tools" â€” a hover/focus dropdown. CSS-only so this shell
                 // stays a server component; focus-within keeps it keyboard
                 // accessible, and the outer pt-2 is a transparent bridge so the
                 // pointer can cross from trigger to menu without it closing.
@@ -189,7 +191,7 @@ export function AudienceShell({
             </div>
           </nav>
 
-          {/* Right actions — audience-only, no cross-audience switch in the
+          {/* Right actions â€” audience-only, no cross-audience switch in the
               header. Switching audiences is intentionally a deliberate action,
               done via "/" or the small footer link. */}
           {/* justify-end because this row lives in the grid's 1fr column: it
@@ -213,7 +215,7 @@ export function AudienceShell({
           </div>
         </div>
 
-        {/* Mobile + tablet nav — a hamburger disclosure shown below lg. The
+        {/* Mobile + tablet nav â€” a hamburger disclosure shown below lg. The
             old horizontal pill strip overflowed on phones and read as a
             cramped, not-obviously-scrollable row. This is CSS-only (native
             <details>) so the shell stays a server component: the <summary>
@@ -235,7 +237,7 @@ export function AudienceShell({
           <div className="mt-2 overflow-hidden rounded-2xl border border-white/[0.09] bg-[#140a26] p-2 shadow-2xl shadow-black/50">
             {theme.navItems.map((item) => {
               // The "Free tools" dropdown becomes a labelled group with its
-              // children listed underneath — no hover needed on touch.
+              // children listed underneath â€” no hover needed on touch.
               if (item.dropdown) {
                 return (
                   <div key={item.label} className="mt-1 border-t border-white/[0.06] pt-1">
@@ -284,7 +286,7 @@ export function AudienceShell({
               </div>
             )}
 
-            {/* Sign in — hidden in the top bar on phones (sm:block there), so
+            {/* Sign in â€” hidden in the top bar on phones (sm:block there), so
                 surface it inside the menu on the smallest screens. */}
             <div className="mt-1 border-t border-white/[0.06] pt-1 sm:hidden">
               <Link
@@ -297,7 +299,7 @@ export function AudienceShell({
           </div>
         </details>
 
-        {/* Desktop resource strip — business only now. The candidate header
+        {/* Desktop resource strip â€” business only now. The candidate header
             folds these into the primary nav (About us) and the "Free tools"
             dropdown, so the second row is gone. */}
         {audience === "business" && (
@@ -319,7 +321,7 @@ export function AudienceShell({
       </header>
 
       {/* Content */}
-      <main className="relative z-10">{children}</main>
+      <main id="main-content" className="relative z-10">{children}</main>
 
       <SiteFooter />
     </div>

@@ -92,7 +92,10 @@ export function DataTrustStrip({
     return (
       // Blended, not banded: no border and no own background, so the strip
       // floats on the page atmosphere exactly like the signed-in header does.
-      <div className="relative z-50">
+      // An <aside> landmark, not a bare div: it sits above <header>/<main>,
+      // and content outside any landmark fails axe's region rule on every
+      // page that renders it.
+      <aside aria-label="Data protection commitments" className="relative z-50">
         {/* Phones: one tappable line. The full four-part strip wraps to two
             lines on a phone, which is a lot of chrome before any content, so
             below sm the copy abbreviates and the whole line links to the
@@ -133,7 +136,7 @@ export function DataTrustStrip({
             How we protect your data →
           </Link>
         </div>
-      </div>
+      </aside>
     );
   }
 
