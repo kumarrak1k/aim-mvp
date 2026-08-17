@@ -37,8 +37,9 @@ const buildVtt = async (variant, srcLang) => {
 };
 
 const TARGETS = [
-  ["v3tiktok", "C:/Users/rak1k/aim-mvp/public/videos/advert-square.en.vtt"],
-  ["v3tiktok", "C:/Users/rak1k/aim-mvp-com/public/videos/advert-square.en.vtt"],
+  // en = the Rakesh-voiced cut (2026-08-17); es/fr/de remain the Raina cuts.
+  ["v3tiktok-rakesh", "C:/Users/rak1k/aim-mvp/public/videos/advert-square.en.vtt"],
+  ["v3tiktok-rakesh", "C:/Users/rak1k/aim-mvp-com/public/videos/advert-square.en.vtt"],
   ["v3tiktok-es", "C:/Users/rak1k/aim-mvp-com/public/videos/advert-square-es.es.vtt"],
   ["v3tiktok-fr", "C:/Users/rak1k/aim-mvp-com/public/videos/advert-square-fr.fr.vtt"],
   ["v3tiktok-de", "C:/Users/rak1k/aim-mvp-com/public/videos/advert-square-de.de.vtt"],
