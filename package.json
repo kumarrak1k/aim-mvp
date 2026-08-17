@@ -8,6 +8,7 @@
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "eslint",
+    "check:encoding": "node scripts/check-encoding.mjs",
     "generate:blog": "tsx scripts/generate-content.ts --type blog",
     "generate:questions": "tsx scripts/generate-content.ts --type questions",
     "test": "vitest run",
