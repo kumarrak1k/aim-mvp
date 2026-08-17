@@ -1,4 +1,4 @@
-import { auth } from "@clerk/nextjs/server";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/app/lib/prisma";
@@ -21,6 +21,10 @@ const challengeValues = CHALLENGES.map((c) => c.value) as [string, ...string[]];
 const processValues = PROCESS_TYPES.map((p) => p.value) as [string, ...string[]];
 
 const bodySchema = z.object({
+  // Captured on step 1 because Clerk's sign-up form doesn't ask for a name.
+  // Stored on the Clerk user (its natural home — greetings and emails
+  // already read it from there), not on UserProfile.
+  firstName: z.string().trim().max(80).optional(),
   targetRole: z.string().trim().min(1).max(160),
   careerStage: z.enum(stageValues),
   targetSector: z.enum(sectorValues),
@@ -54,6 +58,7 @@ export async function POST(request: NextRequest) {
   const parsed = await parseJsonBody(request, bodySchema);
   if ("response" in parsed) return parsed.response;
   const {
+    firstName,
     targetRole,
     careerStage,
     targetSector,
@@ -102,6 +107,17 @@ export async function POST(request: NextRequest) {
     update: data,
     create: { clerkUserId: userId, ...data },
   });
+
+  // Non-fatal: the profile save is the contract; a Clerk hiccup on the name
+  // must not fail onboarding.
+  if (firstName?.trim()) {
+    try {
+      const client = await clerkClient();
+      await client.users.updateUser(userId, { firstName: firstName.trim() });
+    } catch {
+      // Ignored — the name can be set again from the profile page.
+    }
+  }
 
   return NextResponse.json({ ok: true });
 }

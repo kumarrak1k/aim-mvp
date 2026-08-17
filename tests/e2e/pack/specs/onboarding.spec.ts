@@ -18,8 +18,10 @@ test.describe("candidate onboarding", () => {
   test("walks all six steps and reaches practice via the equipment check", async ({ page }) => {
     await page.goto("/onboarding");
 
-    // Step 1 — who they are
+    // Step 1 — who they are. The name leads: Clerk's sign-up form doesn't
+    // capture one, so onboarding is where the product learns it.
     await expect(page.getByText("Step 1 of 6")).toBeVisible();
+    await page.getByPlaceholder(/What should we call you/i).fill("Alex");
     // The picker is a shortcut into the free-text box, not a separate field:
     // whatever it sets must be what gets saved.
     await page.getByRole("combobox").selectOption("Data Analyst");
@@ -27,28 +29,28 @@ test.describe("candidate onboarding", () => {
     await page.getByPlaceholder(/Operations Analyst/i).fill("Graduate Software Engineer");
     await page.getByRole("button", { name: /Graduate or first role/ }).click();
     await page.getByRole("button", { name: "Technology & data" }).click();
+    await page.getByRole("button", { name: "Continue" }).click();
 
-    // Optional context — the reason this step exists at all is that these
-    // sharpen the generated questions, so they must actually reach the profile.
-    await page.getByRole("button", { name: /Add more detail/ }).click();
+    // Step 2 — tailoring, its own always-visible step (was a collapsed
+    // disclosure nobody opened). Greets by the name just typed; everything on
+    // it is optional but must actually reach the profile.
+    await expect(
+      page.getByRole("heading", { name: /Alex, let's tailor your interview/ })
+    ).toBeVisible();
     await page.getByPlaceholder(/Retail supervisor/i).fill("Retail supervisor");
     await page
       .getByPlaceholder(/Paste the job description/i)
       .fill("We are hiring a graduate software engineer to work on payments.");
-
     await page.getByRole("button", { name: "Continue" }).click();
 
-    // Step 2 — process type
+    // Step 3 — process type
     await page.getByRole("button", { name: /A competency interview/ }).click();
     await page.getByRole("button", { name: "Continue" }).click();
 
-    // Step 3 — biggest challenge (saves to the API on advance)
+    // Step 4 — biggest challenge (saves to the API on advance; the old "your
+    // plan" recap step after it was cut — a click without a question)
     await page.getByRole("button", { name: /answers wander off the question/ }).click();
     await page.getByRole("button", { name: "Continue" }).click();
-
-    // Step 4 — the plan give-back
-    await expect(page.getByText("Your plan")).toBeVisible();
-    await page.getByRole("button", { name: "Looks right" }).click();
 
     // Step 5 — launch choice hands off to the equipment check, not straight out
     await page.getByRole("button", { name: /Start the warm-up/ }).click();
@@ -60,11 +62,12 @@ test.describe("candidate onboarding", () => {
     // REGRESSION (2026-08-05): a refresh here (e.g. after plugging in a new
     // camera) must NOT dump the candidate into practice with the flow
     // unfinished — completion is only stamped when the equipment check hands
-    // off. The saved answers resume the flow at the plan (step 4).
+    // off. The saved answers resume the flow at the warm-up (step 5).
     await page.reload();
-    await expect(page.getByText("Your plan")).toBeVisible({ timeout: 15_000 });
+    await expect(
+      page.getByRole("button", { name: /Start the warm-up/ })
+    ).toBeVisible({ timeout: 15_000 });
     await expect(page).toHaveURL(/\/onboarding/);
-    await page.getByRole("button", { name: "Looks right" }).click();
     await page.getByRole("button", { name: /Start the warm-up/ }).click();
     await expect(page.getByRole("heading", { name: "Quick equipment check" })).toBeVisible();
 

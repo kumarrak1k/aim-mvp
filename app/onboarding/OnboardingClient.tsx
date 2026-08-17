@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   CAREER_STAGES,
@@ -9,19 +9,20 @@ import {
   CHALLENGES,
   PROCESS_TYPES,
   ONBOARDING_STEPS,
-  buildPlanIntro,
-  buildPlanSteps,
   processTypeFor,
 } from "@/app/lib/onboarding";
 import { EquipmentCheck } from "./EquipmentCheck";
 import { useSavedCV } from "@/app/career-docs/hooks/useSavedCV";
 
 /**
- * Six steps: three ask, one gives back, one launches, one checks equipment.
+ * Six steps: name+goal, tailoring, process, challenge, warm-up launch,
+ * equipment check.
  *
- * The give-back at step 4 is the load-bearing part. Four questions followed by
- * an empty practice screen is what we do today, and it is why every profile in
- * the database is blank. The steps have to visibly buy something.
+ * The tailoring step (2) is a full step rather than a collapsed disclosure —
+ * hidden behind "+ Add more detail" almost nobody opened it, and it is the
+ * single biggest lever on question/feedback quality. Everything on it is
+ * still skippable. The old "your plan" recap step was cut: it asked for a
+ * click without asking a question.
  */
 
 const CARD =
@@ -44,27 +45,30 @@ export function OnboardingClient({
   resumeAnswers,
 }: {
   firstName: string;
-  /** Saved answers from an interrupted run — resume at the plan (step 4)
+  /** Saved answers from an interrupted run — resume at the warm-up (step 5)
       instead of asking everything again. */
   resumeAnswers?: OnboardingResumeAnswers | null;
 }) {
   const router = useRouter();
-  const [step, setStep] = useState(resumeAnswers ? 4 : 1);
+  const [step, setStep] = useState(resumeAnswers ? 5 : 1);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
   // Where the candidate chose to go at step 5. Held so the equipment check
   // (step 6) can run first and then complete the journey they picked.
   const [pendingDestination, setPendingDestination] = useState("/practice");
+  // The candidate's name leads step 1 — the product greets people throughout,
+  // and Clerk's sign-up form doesn't ask for a name, so this is where it is
+  // captured. Prefilled when Clerk does know it (e.g. Google sign-up).
+  const [name, setName] = useState(firstName);
   const [targetRole, setTargetRole] = useState(resumeAnswers?.targetRole ?? "");
   const [careerStage, setCareerStage] = useState<string>(resumeAnswers?.careerStage ?? "");
   const [targetSector, setTargetSector] = useState<string>(resumeAnswers?.targetSector ?? "");
   const [biggestChallenge, setBiggestChallenge] = useState<string>(resumeAnswers?.biggestChallenge ?? "");
   const [processType, setProcessType] = useState<string>(resumeAnswers?.processType ?? "");
 
-  // Optional context, all gathered on step 1 behind a disclosure. Empty means
+  // Optional context, gathered on the tailoring step (2). Empty means
   // "not given": the API never blanks an existing profile value from here.
-  const [showContext, setShowContext] = useState(false);
   const [currentRole, setCurrentRole] = useState("");
   const [roleSpec, setRoleSpec] = useState("");
   const [roleSpecFileName, setRoleSpecFileName] = useState("");
@@ -94,26 +98,16 @@ export function OnboardingClient({
     }
   }
 
-  const plan = useMemo(
-    () =>
-      buildPlanIntro({
-        role: targetRole,
-        sector: targetSector || "your sector",
-        stage: careerStage,
-        challenge: biggestChallenge || null,
-      }),
-    [targetRole, targetSector, careerStage, biggestChallenge]
-  );
-  const planSteps = useMemo(
-    () => buildPlanSteps(biggestChallenge || null, processType || null),
-    [biggestChallenge, processType]
-  );
-
   const canAdvance =
-    (step === 1 && targetRole.trim().length > 1 && careerStage && targetSector) ||
-    (step === 2 && processType) ||
-    (step === 3 && biggestChallenge) ||
-    step >= 4;
+    (step === 1 &&
+      name.trim().length > 0 &&
+      targetRole.trim().length > 1 &&
+      careerStage &&
+      targetSector) ||
+    step === 2 || // tailoring — everything on it is optional
+    (step === 3 && processType) ||
+    (step === 4 && biggestChallenge) ||
+    step >= 5;
 
   async function save(): Promise<boolean> {
     setSaving(true);
@@ -123,6 +117,7 @@ export function OnboardingClient({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          firstName: name,
           targetRole,
           careerStage,
           targetSector,
@@ -150,9 +145,9 @@ export function OnboardingClient({
   }
 
   async function next() {
-    // Saved on the way into step 4 so the plan reflects stored state, and so a
-    // candidate who closes the tab there is not asked everything again.
-    if (step === 3) {
+    // Saved on the way out of the last question (step 4) so a candidate who
+    // closes the tab at the warm-up is not asked everything again.
+    if (step === 4) {
       const ok = await save();
       setSaving(false);
       if (!ok) return;
@@ -185,17 +180,28 @@ export function OnboardingClient({
         {step === 1 && (
           <section>
             <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
-              {firstName ? `Right ${firstName} — what are you preparing for?` : "What are you preparing for?"}
+              What are you preparing for?
             </h1>
             <p className="mt-3 text-sm leading-7 text-gray-400">
-              This is the one thing we need. Every question you practise is written for it.
+              Every question you practise is written for it.
             </p>
+
+            <label className="mt-5 block text-[12px] font-bold tracking-wide text-purple-300/90">
+              Your first name
+            </label>
+            <input
+              autoFocus={!firstName}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="What should we call you?"
+              className="mt-2 w-full rounded-[1.25rem] border border-white/[0.09] bg-white/[0.03] px-4 py-3 text-base text-white placeholder:text-gray-400 focus:border-purple-400/60 focus:outline-none"
+            />
 
             <label className="mt-5 block text-[12px] font-bold tracking-wide text-purple-300/90">
               Target role
             </label>
             <input
-              autoFocus
+              autoFocus={!!firstName}
               value={targetRole}
               onChange={(e) => setTargetRole(e.target.value)}
               placeholder="e.g. Operations Analyst, Graduate Software Engineer"
@@ -252,22 +258,25 @@ export function OnboardingClient({
               ))}
             </div>
 
-            {/* Optional context. Collapsed, because step 1 must still read as
-                one question; open, because everything here measurably sharpens
-                the questions and the feedback. */}
-            <button
-              type="button"
-              onClick={() => setShowContext((v) => !v)}
-              className="mt-6 text-sm font-bold text-purple-300 transition hover:text-purple-200"
-            >
-              {showContext ? "− Hide extra detail" : "+ Add more detail (optional)"}
-            </button>
+          </section>
+        )}
 
-            {showContext && (
-              <div className="mt-3 space-y-5 rounded-[1.1rem] border border-white/[0.08] bg-white/[0.02] p-4">
-                <p className="text-[13px] leading-6 text-gray-400">
-                  None of this is required. Each piece makes the questions and the feedback more specific to you.
-                </p>
+        {/* Tailoring — a full step, not a disclosure. Everything on it is
+            optional; each piece measurably sharpens the questions and the
+            feedback. */}
+        {step === 2 && (
+          <section>
+            <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
+              {name.trim()
+                ? `${name.trim()}, let's tailor your interview and experience.`
+                : "Let's tailor your interview and experience."}
+            </h1>
+            <p className="mt-3 text-sm leading-7 text-gray-400">
+              None of this is required. Each piece makes the questions and the feedback more
+              specific to you.
+            </p>
+
+            <div className="mt-5 space-y-5 rounded-[1.1rem] border border-white/[0.08] bg-white/[0.02] p-4">
 
                 <div>
                   <label className="block text-[12px] font-bold tracking-wide text-purple-300/90">
@@ -354,11 +363,18 @@ export function OnboardingClient({
                   />
                 </div>
               </div>
-            )}
+
+            <button
+              type="button"
+              onClick={() => void next()}
+              className="mt-4 text-sm font-bold text-gray-400 transition hover:text-white"
+            >
+              Skip — you can add these any time from your profile
+            </button>
           </section>
         )}
 
-        {step === 2 && (
+        {step === 3 && (
           <section>
             <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
               What are you actually facing?
@@ -382,7 +398,7 @@ export function OnboardingClient({
           </section>
         )}
 
-        {step === 3 && (
+        {step === 4 && (
           <section>
             <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
               What is the hardest part for you?
@@ -404,39 +420,12 @@ export function OnboardingClient({
           </section>
         )}
 
-        {step === 4 && (
-          <section>
-            <p className="text-[12px] font-bold tracking-wide text-emerald-300">
-              Your plan
-            </p>
-            <h1 className="mt-3 text-2xl font-bold leading-[1.15] tracking-tight text-white sm:text-3xl">
-              {plan.headline}
-            </h1>
-            <p className="mt-3 text-sm leading-6 text-gray-300">{plan.body}</p>
-
-            <div className="mt-5 space-y-2">
-              {planSteps.map((s, i) => (
-                <div
-                  key={s.title}
-                  className="flex gap-3 rounded-[1.1rem] border border-white/[0.08] bg-white/[0.03] p-4"
-                >
-                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-purple-500 text-[13px] font-bold text-white">
-                    {i + 1}
-                  </span>
-                  <div>
-                    <p className="font-bold text-white">{s.title}</p>
-                    <p className="mt-0.5 text-[13px] leading-5 text-gray-400">{s.body}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
         {step === 5 && (
           <section className="text-center">
             <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
-              Start with a short warm-up?
+              {name.trim()
+                ? `${name.trim()}, start with a short warm-up?`
+                : "Start with a short warm-up?"}
             </h1>
             <p className="mx-auto mt-4 max-w-md text-base leading-7 text-gray-300">
               Three questions rather than five. It is scored the same way, so you get a real
@@ -515,7 +504,7 @@ export function OnboardingClient({
             disabled={!canAdvance || saving}
             className="rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-8 py-3.5 text-sm font-bold text-white shadow-lg shadow-purple-950/40 transition hover:scale-[1.02] disabled:opacity-35 disabled:hover:scale-100"
           >
-            {saving ? "Saving…" : step === 4 ? "Looks right" : "Continue"}
+            {saving ? "Saving…" : "Continue"}
           </button>
         </div>
       )}

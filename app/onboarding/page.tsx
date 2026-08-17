@@ -37,7 +37,7 @@ export default async function OnboardingPage() {
   if (profile?.onboardingCompletedAt) redirect("/practice");
 
   // Answers saved but no completion stamp = an interrupted run (refresh or
-  // closed tab mid-flow). Resume at the plan rather than re-asking everything.
+  // closed tab mid-flow). Resume at the warm-up rather than re-asking everything.
   const resumeAnswers =
     profile?.targetRole && profile.targetSector && profile.biggestChallenge && profile.processType
       ? {
