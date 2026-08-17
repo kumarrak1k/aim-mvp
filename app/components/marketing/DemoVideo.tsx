@@ -7,6 +7,11 @@ type DemoVideoProps = {
   title?: string;
   caption?: string;
   poster?: string;
+  /** WebVTT captions for the narration (the frames carry burned-in display
+   *  captions; this track serves caption-preference and screen-reader users). */
+  captionsSrc?: string;
+  captionsLang?: string;
+  captionsLabel?: string;
 };
 
 export function DemoVideo({
@@ -14,6 +19,9 @@ export function DemoVideo({
   title = "AI Career Mentor: Product demo",
   caption = "A quick overview of AI Career Mentor, interview coaching that helps you land your next role.",
   poster,
+  captionsSrc,
+  captionsLang = "en",
+  captionsLabel = "English",
 }: DemoVideoProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -44,7 +52,16 @@ export function DemoVideo({
             // Blob, preloading was silently burning data transfer per visit.
             preload="none"
             className="h-full w-full"
-          />
+          >
+            {captionsSrc && (
+              <track
+                kind="captions"
+                src={captionsSrc}
+                srcLang={captionsLang}
+                label={captionsLabel}
+              />
+            )}
+          </video>
           {!started && (
             <button
               type="button"

@@ -287,6 +287,7 @@ export default async function ForCandidatesPage() {
           poster="/videos/advert-poster.jpg"
           title="AI Career Mentor: practise like it's real"
           caption="From your application to the assessment centre, with every answer scored honestly."
+          captionsSrc="/videos/advert-square.en.vtt"
         />
       </section>
 
