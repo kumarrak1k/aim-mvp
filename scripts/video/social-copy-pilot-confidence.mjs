@@ -29,7 +29,9 @@ export const SCENES = [
     kicker: null,
     caption: "Preparation turns nerves into energy.",
     vo: "Preparation turns nerves into energy.",
-    video: "../footage-bank/B19-pregame-shakeout.mp4",
+    // B19-pregame-shakeout dropped on user feedback (the shoulder-loosening
+    // read as an exercise move); stairs-energy matches "nerves into energy".
+    video: "../footage-bank/B07-office-stairs-energy.mp4",
     dur: dur("c-nerves", 3.2),
   },
   {
