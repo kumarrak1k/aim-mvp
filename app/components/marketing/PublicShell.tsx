@@ -1,5 +1,5 @@
 /**
- * PublicShell â€” full-chrome marketing shell for all public pages that are
+ * PublicShell — full-chrome marketing shell for all public pages that are
  * not audience-split (about, blog, press, compare, security, universities,
  * tools, question library).
  *
@@ -34,7 +34,7 @@ export function PublicShell({ children, currentPath }: PublicShellProps) {
   return (
     <div className="relative min-h-screen bg-[#0a0614] text-white">
       <SkipToContent />
-      {/* Data trust bar â€” top of every public page */}
+      {/* Data trust bar — top of every public page */}
       <DataTrustStrip variant="topbar" />
 
       {/* Background */}
@@ -44,7 +44,7 @@ export function PublicShell({ children, currentPath }: PublicShellProps) {
         <div className="absolute bottom-[-80px] right-[-160px] h-[520px] w-[520px] rounded-full bg-fuchsia-500/[0.08] blur-[160px]" />
       </div>
 
-      {/* â”€â”€ Header â”€â”€ */}
+      {/* ── Header ── */}
       <header className="relative z-50">
         <div className="relative mx-auto grid w-full max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] grid-cols-[auto_minmax(0,1fr)_auto] items-center px-4 pt-1.5 pb-6 sm:px-6 sm:pt-2 sm:pb-8 lg:px-10">
           {/* Logo */}
@@ -52,7 +52,7 @@ export function PublicShell({ children, currentPath }: PublicShellProps) {
             <SiteLogo href="/" size="md" showText />
           </div>
 
-          {/* Desktop nav â€” centred in grid column; lg+ only (grid prevents overlap). */}
+          {/* Desktop nav — centred in grid column; lg+ only (grid prevents overlap). */}
           <nav aria-label="Primary" className="hidden min-w-0 justify-center xl:flex">
             <div className="flex items-center gap-0.5 rounded-full border border-white/[0.09] bg-white/[0.04] p-1">
               {NAV_LINKS.map((item) => {
@@ -74,7 +74,7 @@ export function PublicShell({ children, currentPath }: PublicShellProps) {
             </div>
           </nav>
 
-          {/* Phone-only compact CTA â€” the audience pills below need sm+, and
+          {/* Phone-only compact CTA — the audience pills below need sm+, and
               without this the phone header has no action at all. */}
           <WhenSignedOut>
             <Link
@@ -94,7 +94,7 @@ export function PublicShell({ children, currentPath }: PublicShellProps) {
           </WhenSignedIn>
 
           {/* One audience.
-              Was three pills â€” Candidates / Corporates / Universities â€” each
+              Was three pills — Candidates / Corporates / Universities — each
               with its own sign-in. The homepage lost these in 901c0c7, but this
               shell renders the header for /about and every other marketing
               page, so the corporate and university links survived there. Now a
@@ -152,7 +152,7 @@ export function PublicShell({ children, currentPath }: PublicShellProps) {
           </nav>
         </div>
 
-        {/* Site-wide free-trial CTA â€” suppressed on the universities page (B2B enquiry, not self-serve trial) */}
+        {/* Site-wide free-trial CTA — suppressed on the universities page (B2B enquiry, not self-serve trial) */}
         {currentPath !== "/universities" && (
           <div className="flex justify-center px-4 pb-3 pt-1">
             <TrialBadge audience="candidate" />
@@ -160,7 +160,7 @@ export function PublicShell({ children, currentPath }: PublicShellProps) {
         )}
       </header>
 
-      {/* â”€â”€ Content â”€â”€ */}
+      {/* ── Content ── */}
       <main id="main-content" className="relative z-10">{children}</main>
 
       <SiteFooter />

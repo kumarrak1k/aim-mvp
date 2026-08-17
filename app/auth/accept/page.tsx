@@ -1,18 +1,18 @@
-﻿"use client";
+"use client";
 
 /**
  * /auth/accept
  *
  * Minimal token-acceptance page for admin-issued sign-in links.
  *
- * Uses Clerk's <SignIn> component with routing="hash" â€” when the
+ * Uses Clerk's <SignIn> component with routing="hash" — when the
  * component mounts and detects __clerk_ticket in the URL it
  * processes the token automatically (no form shown) and redirects
  * to /auth/redirect, which handles forcePasswordReset and sends
  * the user to the correct portal.
  *
  * Using the Clerk component (vs a custom useSignIn hook) is the
- * reliable approach â€” Clerk's own code handles ticket consumption
+ * reliable approach — Clerk's own code handles ticket consumption
  * timing correctly without the finalize() race condition.
  */
 
