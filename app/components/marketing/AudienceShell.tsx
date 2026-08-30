@@ -123,25 +123,24 @@ export function AudienceShell({
       {/* Header */}
       <header className="relative z-50">
         <div className="relative mx-auto grid w-full max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] grid-cols-[auto_minmax(0,1fr)_auto] items-center px-4 pt-1.5 pb-3 sm:px-6 sm:pt-2 sm:pb-4 lg:px-10">
-          {/* Logo + audience badge */}
+          {/* Logo — no audience badge: the chip next to the logo read as a
+              stray label in the collapsed layout (user feedback 2026-08-30). */}
           <Link
             href={audience === "candidate" ? "/" : "/for-business"}
             className="relative z-10 flex shrink-0 items-center gap-3"
           >
             <SiteLogo href="" size="md" showText />
-            <span
-              className={`hidden rounded-full border px-3 py-1 text-[12px] font-bold tracking-wide sm:inline-block xl:hidden ${theme.accentBorder} bg-white/[0.04] ${theme.accentTextStrong}`}
-            >
-              {theme.eyebrow}
-            </span>
           </Link>
 
-          {/* Desktop nav — centred in the grid column, lg+ (grid prevents overlap). */}
-          {/* Absolutely page-centred at xl to align with the trust strip
+          {/* Desktop nav. Shown from 1200px — NOT xl (1280px): a maximized
+              1080p window at 150% Windows scaling gives a ~1265px viewport
+              (Edge users saw the collapsed menu). Between 1200-1279 it sits
+              in-flow in the grid column (grid prevents overlap); at xl it
+              goes absolutely page-centred to align with the trust strip
               (matches PublicShell). */}
           <nav
             aria-label="Primary"
-            className="hidden min-w-0 justify-center xl:absolute xl:left-1/2 xl:top-1/2 xl:z-20 xl:flex xl:-translate-x-1/2 xl:-translate-y-1/2"
+            className="hidden min-w-0 justify-center min-[1200px]:flex xl:absolute xl:left-1/2 xl:top-1/2 xl:z-20 xl:-translate-x-1/2 xl:-translate-y-1/2"
           >
             <div className="flex items-center gap-0.5 rounded-full border border-white/[0.09] bg-white/[0.04] p-1.5">
               {theme.navItems.map((item) => {
@@ -226,7 +225,7 @@ export function AudienceShell({
             <details>) so the shell stays a server component: the <summary>
             toggles the panel, group-open rotates the chevron, and every
             destination is a full-width row that shows clearly. */}
-        <details className="group/nav px-4 pb-3 sm:px-6 xl:hidden">
+        <details className="group/nav px-4 pb-3 sm:px-6 min-[1200px]:hidden">
           <summary className="flex cursor-pointer list-none items-center justify-between rounded-2xl border border-white/[0.09] bg-white/[0.05] px-4 py-3 text-white [&::-webkit-details-marker]:hidden">
             <span className="flex items-center gap-2.5 text-sm font-bold">
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden>
@@ -308,7 +307,7 @@ export function AudienceShell({
             folds these into the primary nav (About us) and the "Free tools"
             dropdown, so the second row is gone. */}
         {audience === "business" && (
-          <div className="hidden px-4 py-1.5 xl:block">
+          <div className="hidden px-4 py-1.5 min-[1200px]:block">
             <nav className="mx-auto flex max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] items-center justify-center gap-6">
               {BUSINESS_RESOURCE_LINKS.map((item) => (
                 <Link

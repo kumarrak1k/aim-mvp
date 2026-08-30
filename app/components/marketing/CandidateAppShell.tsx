@@ -158,17 +158,14 @@ export function CandidateAppShell({
         {/* Grid so the centred nav lives in its own column and cannot paint over
             the logo — the old flex + absolute layout let the pill nav overlap
             "AI Career Mentor" once it grew. */}
-        <div className="relative mx-auto grid w-full max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 px-4 py-3 sm:px-6 lg:px-8 lg:py-3.5 xl:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]">
+        <div className="relative mx-auto grid w-full max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 px-4 py-3 sm:px-6 lg:px-8 lg:py-3.5 min-[1200px]:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]">
           {/* Logo + badge */}
           <Link href="/" className="relative z-10 flex shrink-0 items-center gap-3">
             <SiteLogo href="" size="md" showText />
-            <span className="hidden rounded-full border border-purple-300/20 bg-white/[0.04] px-3 py-1 text-[12px] font-bold tracking-wide text-purple-100 sm:inline-block xl:hidden">
-              Candidate
-            </span>
           </Link>
 
           {/* Desktop pill nav */}
-          <nav aria-label="Primary" className="hidden min-w-0 justify-center xl:flex">
+          <nav aria-label="Primary" className="hidden min-w-0 justify-center min-[1200px]:flex">
             <div className="flex items-center gap-0.5 rounded-full border border-white/[0.09] bg-white/[0.04] p-1.5">
               {navItems.map((item) => {
                 if (item.dropdown) {
@@ -244,7 +241,7 @@ export function CandidateAppShell({
             Replaces both a horizontally-scrolling strip (whose overflow was
             invisible) and a fixed bottom bar (whose last item sat under the
             floating chat button). */}
-        <details className="group/nav px-4 pb-3 sm:px-6 xl:hidden">
+        <details className="group/nav px-4 pb-3 sm:px-6 min-[1200px]:hidden">
           <summary className="flex cursor-pointer list-none items-center justify-between rounded-2xl border border-white/[0.09] bg-white/[0.05] px-4 py-3 text-white [&::-webkit-details-marker]:hidden">
             <span className="flex items-center gap-2.5 text-sm font-bold">
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden>

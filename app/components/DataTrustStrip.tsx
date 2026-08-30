@@ -97,22 +97,25 @@ export function DataTrustStrip({
       // and content outside any landmark fails axe's region rule on every
       // page that renders it.
       <aside aria-label="Data protection commitments" className="relative z-50">
-        {/* Phones: one tappable line. The full four-part strip wraps to two
-            lines on a phone, which is a lot of chrome before any content, so
-            below sm the copy abbreviates and the whole line links to the
-            privacy page — a far bigger tap target than the old 12px link. */}
-        <Link
-          href="/privacy"
-          className="flex items-center justify-center gap-1.5 whitespace-nowrap px-3 py-2 sm:hidden"
-        >
-          <ShieldIcon className="h-3 w-3 shrink-0 text-purple-300" />
-          <span className="text-[11px] font-semibold text-gray-100">
-            Your data is protected and never sold
-          </span>
-          <span className="text-[11px] font-semibold text-purple-300" aria-hidden>
-            →
-          </span>
-        </Link>
+        {/* Phones: one tappable trust line + the theme selector. The strip is
+            the selector's only home (the footer copy was removed for stale
+            state), so it must be reachable on phones too — without this row
+            mobile users had no way to switch themes (user report 2026-08-30). */}
+        <div className="flex items-center justify-between gap-2 px-3 py-1.5 sm:hidden">
+          <Link
+            href="/privacy"
+            className="flex min-w-0 items-center gap-1.5"
+          >
+            <ShieldIcon className="h-3 w-3 shrink-0 text-purple-300" />
+            <span className="truncate text-[11px] font-semibold text-gray-100">
+              Your data is never sold
+            </span>
+            <span className="text-[11px] font-semibold text-purple-300" aria-hidden>
+              →
+            </span>
+          </Link>
+          <ThemeSelector compact />
+        </div>
         <div className="mx-auto hidden max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] flex-wrap items-center justify-center gap-x-5 gap-y-1 px-4 py-2.5 sm:flex sm:px-6">
           {items.map(({ Icon, text }, i) => (
             <Fragment key={text}>

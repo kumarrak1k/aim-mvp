@@ -40,8 +40,18 @@ const browser = await chromium.launch();
 let blocked = 0;
 const report = [];
 
+// 1440 = plain desktop; 1265 = maximized 1080p window at 150% Windows scaling
+// (what Edge users get — it sat just below the old xl nav breakpoint and
+// showed the collapsed menu, 2026-08-30); 390 = phone.
+const VIEWPORTS = [
+  { width: 1440, height: 900 },
+  { width: 1265, height: 900 },
+  { width: 390, height: 844 },
+];
+
+for (const viewport of VIEWPORTS)
 for (const theme of ["dark", "light"]) {
-  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const ctx = await browser.newContext({ viewport });
   await ctx.addInitScript((t) => {
     try {
       localStorage.setItem("theme-mode", t);
@@ -78,6 +88,10 @@ for (const theme of ["dark", "light"]) {
           if (r.width < 4 || r.height < 4) continue; // hidden/collapsed
           const style = getComputedStyle(el);
           if (style.visibility === "hidden" || style.pointerEvents === "none") continue;
+          // Links inside a CLOSED <details> (the mobile hamburger menu) still
+          // report geometry in Chrome but are not interactable until opened.
+          const det = el.closest("details:not([open])");
+          if (det && !el.closest("summary")) continue;
           el.scrollIntoView({ block: "center", behavior: "instant" });
           const r2 = el.getBoundingClientRect();
           const hit = document.elementFromPoint(
@@ -101,7 +115,7 @@ for (const theme of ["dark", "light"]) {
 
     if (failures.length) {
       blocked += failures.length;
-      report.push(`\n== ${theme.toUpperCase()} ${route} — ${failures.length} blocked element(s)`);
+      report.push(`\n== ${theme.toUpperCase()} @${viewport.width}px ${route} — ${failures.length} blocked element(s)`);
       for (const f of failures) report.push(`   "${f.label}" blocked by ${f.blockedBy}`);
     }
   }
@@ -110,5 +124,5 @@ for (const theme of ["dark", "light"]) {
 
 await browser.close();
 console.log(report.join("\n") || "All interactive elements receive their clicks in both themes.");
-console.log(`\nTOTAL blocked: ${blocked} across ${ROUTES.length} routes x 2 themes`);
+console.log(`\nTOTAL blocked: ${blocked} across ${ROUTES.length} routes x 2 themes x ${VIEWPORTS.length} viewports`);
 process.exit(blocked ? 1 : 0);

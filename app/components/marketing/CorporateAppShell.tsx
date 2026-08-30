@@ -91,13 +91,10 @@ export function CorporateAppShell({
             className="relative z-10 flex shrink-0 items-center gap-3"
           >
             <SiteLogo href="" size="md" showText />
-            <span className="hidden rounded-full border border-purple-300/20 bg-white/[0.04] px-3 py-1 text-[12px] font-bold tracking-wide text-purple-100 sm:inline-block xl:hidden">
-              Hiring team
-            </span>
           </Link>
 
           {/* Desktop pill nav — absolutely centred so position never shifts */}
-          <nav aria-label="Primary" className="pointer-events-none absolute inset-x-0 hidden justify-center xl:flex">
+          <nav aria-label="Primary" className="pointer-events-none absolute inset-x-0 hidden justify-center min-[1200px]:flex">
             <div className="pointer-events-auto flex items-center gap-0.5 rounded-full border border-white/[0.09] bg-white/[0.04] p-1.5">
               {navItems.map((item) => {
                 const active =
@@ -153,7 +150,7 @@ export function CorporateAppShell({
         </div>
 
         {/* Tablet/mobile compact nav row */}
-        <div className="px-4 py-2 sm:px-6 xl:hidden">
+        <div className="px-4 py-2 sm:px-6 min-[1200px]:hidden">
           <nav className="mx-auto flex max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {navItems.map((item) => {
               const active =

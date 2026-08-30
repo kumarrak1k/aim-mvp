@@ -57,7 +57,7 @@ export function PublicShell({ children, currentPath }: PublicShellProps) {
               drifts left because the auth buttons outweigh the logo). */}
           <nav
             aria-label="Primary"
-            className="hidden min-w-0 justify-center xl:absolute xl:left-1/2 xl:top-1/2 xl:z-20 xl:flex xl:-translate-x-1/2 xl:-translate-y-1/2"
+            className="hidden min-w-0 justify-center min-[1200px]:flex xl:absolute xl:left-1/2 xl:top-1/2 xl:z-20 xl:-translate-x-1/2 xl:-translate-y-1/2"
           >
             <div className="flex items-center gap-0.5 rounded-full border border-white/[0.09] bg-white/[0.04] p-1">
               {NAV_LINKS.map((item) => {
@@ -135,8 +135,10 @@ export function PublicShell({ children, currentPath }: PublicShellProps) {
           </WhenSignedIn>
         </div>
 
-        {/* Mobile / tablet scrollable nav strip (shown below xl) */}
-        <div className="px-4 py-2 sm:px-6 xl:hidden">
+        {/* Mobile / tablet scrollable nav strip. Hidden from 1200px — not xl:
+            a maximized 1080p window at 150% scaling is ~1265px, and Edge users
+            were seeing this collapsed strip instead of the desktop nav. */}
+        <div className="px-4 py-2 sm:px-6 min-[1200px]:hidden">
           <nav className="mx-auto flex max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {NAV_LINKS.map((item) => {
               const active = currentPath === item.href;
