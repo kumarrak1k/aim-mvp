@@ -33,7 +33,7 @@ function apply(mode: ThemeMode) {
 export function ThemeSelector({ compact = false }: { compact?: boolean }) {
   // Server renders no selection highlight; the real mode arrives after mount
   // (it lives in localStorage, which the server can't see).
-  const [mode, setMode] = useState<ThemeMode | null>(null);
+  const [mode, setMode] = useState<ThemeMode>("dark");
 
   useEffect(() => {
     let stored: string | null = null;
