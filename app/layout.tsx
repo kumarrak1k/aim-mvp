@@ -281,9 +281,8 @@ export default function RootLayout({
             // continuity), not system — System is offered in the selector.
             dangerouslySetInnerHTML={{
               __html: `(function(){var m=null;try{m=localStorage.getItem("theme-mode")}catch(e){}
-if(m!=="light"&&m!=="dark"&&m!=="system")m="dark";
-var r=m==="system"?(window.matchMedia("(prefers-color-scheme: light)").matches?"light":"dark"):m;
-var d=document.documentElement;d.setAttribute("data-theme-mode",m);d.setAttribute("data-theme",r);})();`,
+if(m!=="light"&&m!=="dark")m="dark";
+var d=document.documentElement;d.setAttribute("data-theme-mode",m);d.setAttribute("data-theme",m);})();`,
             }}
           />
         </head>

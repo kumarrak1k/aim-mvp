@@ -14,25 +14,20 @@ import { useEffect, useState } from "react";
  * this component only ever changes it on a click.
  */
 
-type ThemeMode = "system" | "light" | "dark";
+/* Two options only, per product decision (2026-08-30): the site is a brand
+   experience with dark as its default, so a System option added noise. Any
+   legacy stored "system" value falls back to dark. */
+type ThemeMode = "light" | "dark";
 const STORAGE_KEY = "theme-mode";
 const MODES: { value: ThemeMode; label: string }[] = [
-  { value: "system", label: "System" },
   { value: "light", label: "Light" },
   { value: "dark", label: "Dark" },
 ];
 
-function resolve(mode: ThemeMode): "light" | "dark" {
-  if (mode !== "system") return mode;
-  return window.matchMedia("(prefers-color-scheme: light)").matches
-    ? "light"
-    : "dark";
-}
-
 function apply(mode: ThemeMode) {
   const el = document.documentElement;
   el.setAttribute("data-theme-mode", mode);
-  el.setAttribute("data-theme", resolve(mode));
+  el.setAttribute("data-theme", mode);
 }
 
 export function ThemeSelector({ compact = false }: { compact?: boolean }) {
@@ -47,18 +42,8 @@ export function ThemeSelector({ compact = false }: { compact?: boolean }) {
     } catch {
       /* storage unavailable — selector still works for this page */
     }
-    setMode(stored === "light" || stored === "dark" || stored === "system" ? stored : "dark");
+    setMode(stored === "light" || stored === "dark" ? stored : "dark");
   }, []);
-
-  // While System is active, follow OS changes live without touching the
-  // stored mode.
-  useEffect(() => {
-    if (mode !== "system") return;
-    const mq = window.matchMedia("(prefers-color-scheme: light)");
-    const onChange = () => apply("system");
-    mq.addEventListener("change", onChange);
-    return () => mq.removeEventListener("change", onChange);
-  }, [mode]);
 
   function choose(next: ThemeMode) {
     setMode(next);
@@ -92,11 +77,6 @@ export function ThemeSelector({ compact = false }: { compact?: boolean }) {
                 : "border border-transparent font-semibold text-gray-400 hover:text-white"
             }`}
           >
-            {m.value === "system" && (
-              <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" width="14" height="14">
-                <path fill="none" stroke="currentColor" strokeWidth="2" d="M3 5h18v12H3zM9 21h6" />
-              </svg>
-            )}
             {m.value === "light" && (
               <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" width="14" height="14">
                 <circle cx="12" cy="12" r="4" fill="currentColor" />
