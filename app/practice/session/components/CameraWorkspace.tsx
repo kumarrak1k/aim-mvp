@@ -102,7 +102,7 @@ export function CameraWorkspace({
               <button
                 type="button"
                 onClick={onViewFeedback}
-                className="mt-3 w-full rounded-xl bg-white px-3 py-2 text-[12px] font-bold text-background transition hover:bg-emerald-100"
+                className="mt-3 w-full rounded-xl bg-gradient-to-r from-violet-600 to-purple-600 px-3 py-2 text-[12px] font-bold text-on-accent transition hover:scale-[1.02]"
               >
                 {assessmentMode ? "Continue" : "View feedback"}
               </button>

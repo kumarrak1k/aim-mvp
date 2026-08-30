@@ -88,6 +88,8 @@ for (const theme of ["dark", "light"]) {
           if (el.contains(hit) || hit.contains(el)) continue;
           // The floating chat launcher legitimately overlays the page corner.
           if (hit.closest('[class*="z-[60]"]')) continue;
+              // Clerk injects a dev-keys banner portal on dev servers only.
+              if (hit.closest("#clerk-components")) continue;
           out.push({
             label: (el.textContent || el.getAttribute("aria-label") || "").trim().slice(0, 40),
             blockedBy: `${hit.tagName}.${(hit.className.toString() || "").slice(0, 60)}`,

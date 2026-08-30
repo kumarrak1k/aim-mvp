@@ -47,7 +47,7 @@ export function FeedbackWorkspace({
           <button
             type="button"
             onClick={onNext}
-            className="rounded-2xl bg-white px-6 py-3 text-sm font-bold text-background shadow-xl shadow-purple-950/20 transition hover:bg-purple-100"
+            className="rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-3 text-sm font-bold text-on-accent shadow-xl shadow-purple-900/30 transition hover:scale-[1.02]"
           >
             {nextLabel}
           </button>

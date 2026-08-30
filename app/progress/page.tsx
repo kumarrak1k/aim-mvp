@@ -1247,12 +1247,12 @@ function TrendChart({ sessions }: { sessions: DashboardSession[] }) {
             <g key={v}>
               <line
                 x1={padL} y1={y} x2={padL + cW} y2={y}
-                stroke="rgba(255,255,255,0.055)" strokeWidth="1"
+                stroke="color-mix(in srgb, var(--foreground) 6%, transparent)" strokeWidth="1"
               />
               <text
                 x={padL - 7} y={y + 4}
                 textAnchor="end" fontSize="11"
-                fill="rgba(255,255,255,0.22)" fontWeight="700"
+                fill="color-mix(in srgb, var(--foreground) 45%, transparent)" fontWeight="700"
               >
                 {v}
               </text>
@@ -1310,7 +1310,7 @@ function TrendChart({ sessions }: { sessions: DashboardSession[] }) {
               <text
                 x={pt.x} y={pt.y - 16}
                 textAnchor="middle" fontSize="12"
-                fontWeight="900" fill="white"
+                fontWeight="900" fill="var(--foreground)"
               >
                 {pt.score}
               </text>
@@ -1319,7 +1319,7 @@ function TrendChart({ sessions }: { sessions: DashboardSession[] }) {
               <text
                 x={pt.x} y={padT + cH + 20}
                 textAnchor="middle" fontSize="10.5"
-                fontWeight="700" fill="rgba(255,255,255,0.28)"
+                fontWeight="700" fill="color-mix(in srgb, var(--foreground) 50%, transparent)"
               >
                 S{pt.idx}
               </text>

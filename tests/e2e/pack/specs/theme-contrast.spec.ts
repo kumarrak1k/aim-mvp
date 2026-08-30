@@ -85,7 +85,9 @@ for (const theme of ["dark", "light"] as const) {
               );
               if (!hit) continue;
               if (el.contains(hit) || hit.contains(el)) continue;
-              if (hit.closest('[class*="z-[60]"]')) continue; // chat launcher
+              if (hit.closest('[class*="z-[60]"]')) continue;
+              // Clerk injects a dev-keys banner portal on dev servers only.
+              if (hit.closest("#clerk-components")) continue; // chat launcher
               out.push({
                 label: (el.textContent || el.getAttribute("aria-label") || "").trim().slice(0, 40),
                 blockedBy: `${hit.tagName}.${(hit.className.toString() || "").slice(0, 60)}`,
