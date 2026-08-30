@@ -137,10 +137,15 @@ export function DataTrustStrip({
             How we protect your data →
           </Link>
         </div>
-        {/* Theme selector pinned top-right, above the logo, on wide screens;
-            phones keep the footer instance so the strip stays one line. */}
-        <div className="absolute right-4 top-1/2 hidden -translate-y-1/2 sm:block">
-          <ThemeSelector compact />
+        {/* Theme selector top-right, centred over the header's auth buttons:
+            the overlay mirrors the header container so the alignment tracks
+            every viewport width. */}
+        <div className="pointer-events-none absolute inset-x-0 top-1/2 hidden -translate-y-1/2 sm:block">
+          <div className="mx-auto flex max-w-7xl justify-end px-4 sm:px-6 lg:px-10 xl:max-w-[clamp(80rem,95vw,105rem)]">
+            <div className="pointer-events-auto mr-3">
+              <ThemeSelector compact />
+            </div>
+          </div>
         </div>
       </aside>
     );
