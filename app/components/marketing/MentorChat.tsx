@@ -194,13 +194,13 @@ export function MentorChat() {
       {open && (
         <div
           className="flex flex-col w-[360px] max-w-[calc(100vw-2rem)] rounded-2xl border border-white/10 shadow-2xl overflow-hidden"
-          style={{ height: "min(480px, calc(100dvh - 120px))", background: "#100922" }}
+          style={{ height: "min(480px, calc(100dvh - 120px))", background: "var(--background)" }}
           role="dialog"
           aria-label="AI Career Mentor chat"
           aria-modal="false"
         >
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.08] shrink-0" style={{ background: "#150c2a" }}>
+          <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.08] shrink-0" style={{ background: "var(--brand-panel)" }}>
             <div className="flex items-center gap-2">
               <span
                 className="w-2 h-2 rounded-full"
@@ -274,7 +274,7 @@ export function MentorChat() {
           </div>
 
           {/* Input */}
-          <div className="border-t border-white/[0.08] shrink-0" style={{ background: "#150c2a" }}>
+          <div className="border-t border-white/[0.08] shrink-0" style={{ background: "var(--brand-panel)" }}>
             <form onSubmit={send} className="flex items-center gap-2 px-3 pt-2 pb-1">
               <input
                 ref={inputRef}

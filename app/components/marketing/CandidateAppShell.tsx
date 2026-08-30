@@ -168,8 +168,8 @@ export function CandidateAppShell({
           </Link>
 
           {/* Desktop pill nav */}
-          <nav aria-label="Primary" className="hidden min-w-0 justify-center xl:flex">
-            <div className="flex items-center gap-0.5 rounded-full border border-white/[0.09] bg-white/[0.04] p-1.5">
+          <nav aria-label="Primary" className="pointer-events-none absolute inset-x-0 hidden justify-center xl:flex">
+            <div className="pointer-events-auto flex items-center gap-0.5 rounded-full border border-white/[0.09] bg-white/[0.04] p-1.5">
               {navItems.map((item) => {
                 if (item.dropdown) {
                   return (

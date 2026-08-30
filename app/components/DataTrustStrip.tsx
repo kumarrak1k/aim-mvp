@@ -139,7 +139,7 @@ export function DataTrustStrip({
         </div>
         {/* Theme selector pinned top-right, above the logo, on wide screens;
             phones keep the footer instance so the strip stays one line. */}
-        <div className="absolute right-4 top-1/2 hidden -translate-y-1/2 lg:block">
+        <div className="absolute right-4 top-1/2 hidden -translate-y-1/2 sm:block">
           <ThemeSelector compact />
         </div>
       </aside>

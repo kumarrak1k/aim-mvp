@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { SiteLogo } from "@/app/components/brand/SiteLogo";
 import { DataTrustStrip } from "@/app/components/DataTrustStrip";
-import { ThemeSelector } from "@/app/components/ThemeSelector";
 
 export function SiteFooter() {
   return (
@@ -23,9 +22,6 @@ export function SiteFooter() {
             <p className="mt-5 text-xs text-gray-400">
               © {new Date().getFullYear()}{" "}AI Career Mentor Ltd · England &amp; Wales · Company No. 17288119
             </p>
-            <div className="mt-4">
-              <ThemeSelector />
-            </div>
             <div className="mt-3 -ml-3 flex items-center">
               <a
                 href="https://www.facebook.com/profile.php?id=61593041205970"

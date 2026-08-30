@@ -429,3 +429,11 @@ textarea:focus-visible {
 .cl-card {
   border-radius: 1.5rem !important;
 }
+
+/* Clerk paints its card footer (sign-in/up: the Sign up link + Secured-by
+   row) with an opaque ground of its own - invisible on the dark site but a
+   black slab in light mode. Keep it transparent so the themed card shows. */
+.cl-footer,
+.cl-footerAction {
+  background: transparent !important;
+}
