@@ -12,6 +12,9 @@ type DemoVideoProps = {
   captionsSrc?: string;
   captionsLang?: string;
   captionsLabel?: string;
+  /** Match the container to the file's aspect so a square advert fills the
+   *  frame instead of sitting between black pillars in a 16:9 player. */
+  aspect?: "video" | "square";
 };
 
 export function DemoVideo({
@@ -22,6 +25,7 @@ export function DemoVideo({
   captionsSrc,
   captionsLang = "en",
   captionsLabel = "English",
+  aspect = "video",
 }: DemoVideoProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -37,8 +41,16 @@ export function DemoVideo({
 
   if (src) {
     return (
-      <figure className="mx-auto max-w-4xl overflow-hidden rounded-2xl border border-white/10 shadow-2xl shadow-purple-950/30">
-        <div className="relative aspect-video bg-black">
+      <figure
+        className={`mx-auto overflow-hidden rounded-2xl border border-white/10 shadow-2xl shadow-purple-950/30 ${
+          aspect === "square" ? "max-w-xl" : "max-w-4xl"
+        }`}
+      >
+        <div
+          className={`relative bg-black ${
+            aspect === "square" ? "aspect-square" : "aspect-video"
+          }`}
+        >
           <video
             ref={videoRef}
             src={src}
