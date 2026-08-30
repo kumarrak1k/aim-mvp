@@ -730,7 +730,7 @@ function SessionRow({
         <DeleteSessionButton sessionId={session.id} onDeleted={onDeleted} />
       </div>
     <Link href={`/progress/${session.id}`} className="block">
-      <div className="grid gap-3 rounded-[1.35rem] border border-white/10 bg-black/25 p-4 pr-24 transition hover:-translate-y-0.5 hover:border-cyan-300/25 hover:bg-white/[0.055] sm:grid-cols-[minmax(0,1fr)_120px] sm:items-center">
+      <div className="grid gap-3 rounded-[1.35rem] border border-white/10 bg-recess-25 p-4 pr-24 transition hover:-translate-y-0.5 hover:border-cyan-300/25 hover:bg-white/[0.055] sm:grid-cols-[minmax(0,1fr)_120px] sm:items-center">
         <div className="min-w-0">
           <div className="mb-2 flex flex-wrap items-center gap-2">
             <span className="rounded-full border border-cyan-300/15 bg-cyan-300/10 px-2.5 py-1 text-[12px] font-bold text-cyan-100">
@@ -780,7 +780,7 @@ function SignedOutState() {
 
       <div className="mt-6 flex flex-col gap-3 sm:flex-row">
         <SignInButton mode="modal">
-          <button className="rounded-2xl bg-white px-6 py-4 text-sm font-bold text-black transition hover:bg-purple-100">
+          <button className="rounded-2xl bg-white px-6 py-4 text-sm font-bold text-background transition hover:bg-purple-100">
             Sign in to track progress
           </button>
         </SignInButton>
@@ -965,7 +965,7 @@ function ACSessionRow({
         />
       </div>
     <Link href={`/assessment-centre/${session.id}/report`} className="block">
-      <div className="grid gap-3 rounded-[1.35rem] border border-white/10 bg-black/25 p-4 pr-24 transition hover:-translate-y-0.5 hover:border-cyan-300/25 hover:bg-white/[0.055] sm:grid-cols-[minmax(0,1fr)_100px] sm:items-center">
+      <div className="grid gap-3 rounded-[1.35rem] border border-white/10 bg-recess-25 p-4 pr-24 transition hover:-translate-y-0.5 hover:border-cyan-300/25 hover:bg-white/[0.055] sm:grid-cols-[minmax(0,1fr)_100px] sm:items-center">
         <div className="min-w-0">
           <div className="mb-2 flex flex-wrap items-center gap-1.5">
             {session.selectedStages.map((s) => (
@@ -1190,7 +1190,7 @@ function TrendChart({ sessions }: { sessions: DashboardSession[] }) {
   const targetY = yAt(7);
 
   return (
-    <div className="mt-5 overflow-hidden rounded-[1.5rem] border border-white/[0.07] bg-black/30">
+    <div className="mt-5 overflow-hidden rounded-[1.5rem] border border-white/[0.07] bg-recess-30">
       <svg
         viewBox={`0 0 ${VW} ${VH}`}
         className="w-full"

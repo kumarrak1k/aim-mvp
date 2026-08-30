@@ -410,7 +410,7 @@ export function PracticeStartScreen({
         </label>
 
         <input
-          className="mb-3 w-full rounded-2xl border border-white/10 bg-black/35 p-4 text-white placeholder-gray-400 outline-none transition focus:border-purple-300/50 focus:ring-4 focus:ring-purple-500/10"
+          className="mb-3 w-full rounded-2xl border border-white/10 bg-recess-35 p-4 text-white placeholder-gray-400 outline-none transition focus:border-purple-300/50 focus:ring-4 focus:ring-purple-500/10"
           placeholder={
             isSignedIn && hasCandidateProfileContext(savedCandidateProfile)
               ? "Using your saved profile context"
@@ -420,7 +420,7 @@ export function PracticeStartScreen({
           onChange={(event) => onRoleChange(event.target.value)}
         />
 
-        <div className="mb-5 rounded-2xl border border-white/10 bg-black/25 p-4">
+        <div className="mb-5 rounded-2xl border border-white/10 bg-recess-25 p-4">
           {!isSignedIn && (
             <p className="text-sm leading-6 text-gray-400">
               Sign in and save your profile to auto-fill this field next time.
@@ -510,7 +510,7 @@ export function PracticeStartScreen({
           </div>
         )}
 
-        <div className="mb-5 rounded-[1.7rem] border border-white/10 bg-black/25 p-5">
+        <div className="mb-5 rounded-[1.7rem] border border-white/10 bg-recess-25 p-5">
           <div className="mb-5">
             <p className="text-sm font-bold tracking-wide text-cyan-300">
               Practice mode
@@ -696,7 +696,7 @@ export function PracticeStartScreen({
 
             {/* Hybrid mix builder */}
             {useHybridMix && (
-              <div className="rounded-2xl border border-white/[0.07] bg-black/20 p-4">
+              <div className="rounded-2xl border border-white/[0.07] bg-recess-20 p-4">
                 <div className="mb-3 flex items-center justify-between">
                   <p className="text-sm font-bold text-gray-300">
                     Allocate your {totalQuestions} questions by type
@@ -812,7 +812,7 @@ export function PracticeStartScreen({
         )}
 
         {selectedPracticeMode !== "typed" && (
-        <div className="mb-5 rounded-[1.7rem] border border-white/10 bg-black/25 p-5">
+        <div className="mb-5 rounded-[1.7rem] border border-white/10 bg-recess-25 p-5">
           <div className="mb-5">
             <p className="text-sm font-bold tracking-wide text-purple-300">
               Speaker preference
@@ -941,7 +941,7 @@ export function PracticeStartScreen({
                 and prepare for richer progress tracking.
               </p>
               <SignInButton mode="modal">
-                <button className="w-full rounded-2xl bg-white px-4 py-3 font-bold text-black shadow-xl shadow-purple-950/20 transition hover:bg-purple-100">
+                <button className="w-full rounded-2xl bg-white px-4 py-3 font-bold text-background shadow-xl shadow-purple-950/20 transition hover:bg-purple-100">
                   Sign In
                 </button>
               </SignInButton>
@@ -1022,8 +1022,8 @@ function ModeCard({
               locked
                 ? "border border-purple-300/25 bg-purple-300/[0.1] text-purple-200"
                 : active
-                ? "bg-cyan-200 text-black"
-                : "border border-white/10 bg-black/25 text-gray-300"
+                ? "bg-cyan-200 text-background"
+                : "border border-white/10 bg-recess-25 text-gray-300"
             }`}
           >
             {locked ? "Pro" : badge}
@@ -1033,10 +1033,10 @@ function ModeCard({
         <span
           className={`mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border ${
             locked
-              ? "border-white/10 bg-black/30"
+              ? "border-white/10 bg-recess-30"
               : active
               ? "border-cyan-200 bg-cyan-200 shadow-[0_0_18px_rgba(103,232,249,0.45)]"
-              : "border-white/20 bg-black/30"
+              : "border-white/20 bg-recess-30"
           }`}
         >
           {locked ? (
@@ -1098,7 +1098,7 @@ function PreferenceSelect({
       <select
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="w-full rounded-2xl border border-white/10 bg-black/35 p-4 text-white outline-none transition focus:border-purple-300/50 focus:ring-4 focus:ring-purple-500/10"
+        className="w-full rounded-2xl border border-white/10 bg-recess-35 p-4 text-white outline-none transition focus:border-purple-300/50 focus:ring-4 focus:ring-purple-500/10"
       >
         {options.map((option) => (
           <option

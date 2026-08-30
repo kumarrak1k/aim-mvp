@@ -25,7 +25,7 @@ export function ProfileLoadingState() {
           {["CV context", "Role targeting", "Interview goals"].map((item) => (
             <div
               key={item}
-              className="rounded-[1.5rem] border border-white/10 bg-black/25 p-5"
+              className="rounded-[1.5rem] border border-white/10 bg-recess-25 p-5"
             >
               <div className="h-3 w-20 rounded-full bg-white/10" />
               <div className="mt-5 h-4 w-3/4 rounded-full bg-white/10" />
@@ -67,7 +67,7 @@ export function ProfileSignedOutState() {
               ].map((item) => (
                 <div
                   key={item}
-                  className="rounded-2xl border border-white/10 bg-black/25 p-4 text-sm font-bold text-gray-200"
+                  className="rounded-2xl border border-white/10 bg-recess-25 p-4 text-sm font-bold text-gray-200"
                 >
                   {item}
                 </div>
@@ -90,7 +90,7 @@ export function ProfileSignedOutState() {
             </div>
           </div>
 
-          <div className="overflow-hidden rounded-[1.8rem] border border-white/10 bg-black/25">
+          <div className="overflow-hidden rounded-[1.8rem] border border-white/10 bg-recess-25">
             <img
               src="https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=1400&q=80"
               alt="Premium candidate preparation workspace"

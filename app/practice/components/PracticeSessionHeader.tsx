@@ -57,7 +57,7 @@ export function PracticeSessionHeader({
                 Question {currentQuestionNumber} of {totalQuestions}
               </span>
 
-              <span className="rounded-full border border-white/10 bg-black/25 px-3 py-1.5 text-xs font-bold text-gray-300">
+              <span className="rounded-full border border-white/10 bg-recess-25 px-3 py-1.5 text-xs font-bold text-gray-300">
                 Avg score: {averageQuestionScore}/10
               </span>
 
@@ -78,7 +78,7 @@ export function PracticeSessionHeader({
             </p>
           </div>
 
-          <div className="flex flex-col gap-3 rounded-[1.5rem] border border-white/10 bg-black/25 p-3 xl:min-w-[430px]">
+          <div className="flex flex-col gap-3 rounded-[1.5rem] border border-white/10 bg-recess-25 p-3 xl:min-w-[430px]">
             <div className="grid gap-2 sm:grid-cols-3">
               <ToggleButton active={!speakerEnabled} onClick={setTextOnlyMode}>
                 Text Only
@@ -136,7 +136,7 @@ export function PracticeSessionHeader({
             <span>Interview progress</span>
             <span>{progressPercent}% complete</span>
           </div>
-          <div className="h-2 overflow-hidden rounded-full bg-black/35 ring-1 ring-white/10">
+          <div className="h-2 overflow-hidden rounded-full bg-recess-35 ring-1 ring-white/10">
             <div
               className="h-full rounded-full bg-gradient-to-r from-violet-300 to-purple-200 shadow-[0_0_20px_rgba(168,85,247,0.5)] transition-all duration-500"
               style={{ width: `${progressPercent}%` }}

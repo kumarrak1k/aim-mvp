@@ -360,7 +360,7 @@ function BigStat({
 
 function TimelineItem({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl border border-white/[0.06] bg-black/20 p-3">
+    <div className="rounded-xl border border-white/[0.06] bg-recess-20 p-3">
       <p className="text-[12px] font-bold tracking-wide text-gray-400">
         {label}
       </p>
@@ -392,7 +392,7 @@ function SummaryCard({ summary }: { summary: SessionSummary }) {
       </h2>
 
       {summary.final_recommendation && (
-        <p className="mt-3 rounded-xl border border-white/[0.06] bg-black/20 p-4 text-sm leading-7 text-gray-200">
+        <p className="mt-3 rounded-xl border border-white/[0.06] bg-recess-20 p-4 text-sm leading-7 text-gray-200">
           {summary.final_recommendation}
         </p>
       )}
@@ -464,7 +464,7 @@ function CategoryBar({ label, score }: { label: string; score: number }) {
           : "from-red-400 to-rose-400";
 
   return (
-    <div className="rounded-xl border border-white/[0.06] bg-black/20 p-3">
+    <div className="rounded-xl border border-white/[0.06] bg-recess-20 p-3">
       <div className="mb-1.5 flex items-center justify-between">
         <p className="text-xs font-bold text-white">{label}</p>
         <p className="text-xs font-bold text-gray-300">
@@ -493,7 +493,7 @@ function QuestionCard({
   const fb = item.feedback;
   return (
     <article className="overflow-hidden rounded-[1.5rem] border border-white/10 bg-white/[0.035] shadow-lg shadow-black/10">
-      <div className="border-b border-white/[0.06] bg-black/20 px-5 py-4 sm:px-7 sm:py-5">
+      <div className="border-b border-white/[0.06] bg-recess-20 px-5 py-4 sm:px-7 sm:py-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="min-w-0">
             <p className="text-[12px] font-bold tracking-wide text-cyan-300">
@@ -533,7 +533,7 @@ function QuestionCard({
           <p className="mb-2 text-[12px] font-bold tracking-wide text-purple-300">
             Candidate&rsquo;s answer
           </p>
-          <p className="rounded-xl border border-white/[0.06] bg-black/30 p-4 text-sm leading-7 text-gray-200 whitespace-pre-wrap">
+          <p className="rounded-xl border border-white/[0.06] bg-recess-30 p-4 text-sm leading-7 text-gray-200 whitespace-pre-wrap">
             {item.answer || <span className="italic text-gray-400">No answer recorded.</span>}
           </p>
         </div>
@@ -549,7 +549,7 @@ function QuestionCard({
               {Object.entries(fb.category_scores).map(([k, v]) => (
                 <div
                   key={k}
-                  className="rounded-lg border border-white/[0.06] bg-black/25 px-3 py-2"
+                  className="rounded-lg border border-white/[0.06] bg-recess-25 px-3 py-2"
                 >
                   <p className="text-[12px] font-bold tracking-wide text-gray-400">
                     {CATEGORY_LABELS[k] || k}
@@ -591,7 +591,7 @@ function QuestionCard({
           )}
 
           {fb?.improved_answer && (
-            <details className="mt-3 rounded-xl border border-white/[0.06] bg-black/20 p-3">
+            <details className="mt-3 rounded-xl border border-white/[0.06] bg-recess-20 p-3">
               <summary className="cursor-pointer text-xs font-bold text-cyan-300">
                 Show AI model answer
               </summary>
@@ -608,7 +608,7 @@ function QuestionCard({
 
       {/* Voice/video footer */}
       {(item.voiceAnalysis || item.videoAnalysis) && (
-        <div className="grid gap-3 border-t border-white/[0.06] bg-black/15 px-5 py-4 sm:grid-cols-2 sm:px-7">
+        <div className="grid gap-3 border-t border-white/[0.06] bg-recess-15 px-5 py-4 sm:grid-cols-2 sm:px-7">
           {item.voiceAnalysis && (
             <DeliveryStrip
               title="Voice delivery"
@@ -662,7 +662,7 @@ function DeliveryStrip({
         {present.map((e) => (
           <span
             key={e.label}
-            className="rounded-full border border-white/[0.07] bg-black/30 px-2.5 py-1 text-[12px] font-semibold text-gray-300"
+            className="rounded-full border border-white/[0.07] bg-recess-30 px-2.5 py-1 text-[12px] font-semibold text-gray-300"
           >
             <span className="text-gray-400">{e.label}:</span>{" "}
             <span className="text-white">{e.value}</span>

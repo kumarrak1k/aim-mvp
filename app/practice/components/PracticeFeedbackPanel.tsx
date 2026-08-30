@@ -45,7 +45,7 @@ export function PracticeFeedbackPanel({
         </div>
 
         {!feedback.error && (
-          <div className="rounded-[1.35rem] border border-white/10 bg-black/30 p-4 text-center shadow-xl shadow-black/10 lg:min-w-[170px]">
+          <div className="rounded-[1.35rem] border border-white/10 bg-recess-30 p-4 text-center shadow-xl shadow-black/10 lg:min-w-[170px]">
             <p className="text-xs font-bold tracking-wide text-gray-400">
               Overall score
             </p>
@@ -107,7 +107,7 @@ export function PracticeFeedbackPanel({
           </div>
 
           {feedback.section_feedback && (
-            <div className="rounded-[1.6rem] border border-white/10 bg-black/25 p-4 sm:p-5">
+            <div className="rounded-[1.6rem] border border-white/10 bg-recess-25 p-4 sm:p-5">
               <div className="mb-4 flex flex-col justify-between gap-2 sm:flex-row sm:items-end">
                 <div>
                   <h3 className="text-lg font-bold text-cyan-300">
@@ -165,7 +165,7 @@ export function PracticeFeedbackPanel({
               </span>
             </div>
 
-            <div className="rounded-2xl border border-white/10 bg-black/35 p-5">
+            <div className="rounded-2xl border border-white/10 bg-recess-35 p-5">
               <StarAnswer
                 star={feedback.improved_answer_star}
                 fallbackText={feedback.improved_answer}
@@ -173,7 +173,7 @@ export function PracticeFeedbackPanel({
             </div>
           </div>
 
-          <div className="rounded-[1.6rem] border border-white/10 bg-black/25 p-5">
+          <div className="rounded-[1.6rem] border border-white/10 bg-recess-25 p-5">
             <div className="mb-4 grid gap-4 md:grid-cols-2">
               <FeedbackList
                 title="Strengths"

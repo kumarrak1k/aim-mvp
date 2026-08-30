@@ -159,7 +159,7 @@ export function AnswerWorkspace({
                 ? "Your answer transcript will appear here. You can also type or edit your answer before submitting it."
                 : "Your answer transcript will appear here. You can also type or edit your answer before requesting feedback."
           }
-          className="min-h-[240px] flex-1 resize-none rounded-[1.25rem] border border-white/10 bg-black/30 p-4 text-base leading-7 text-white placeholder-gray-400 outline-none transition focus:border-purple-300/50 focus:ring-4 focus:ring-purple-500/10 sm:min-h-[300px] xl:min-h-[310px]"
+          className="min-h-[240px] flex-1 resize-none rounded-[1.25rem] border border-white/10 bg-recess-30 p-4 text-base leading-7 text-white placeholder-gray-400 outline-none transition focus:border-purple-300/50 focus:ring-4 focus:ring-purple-500/10 sm:min-h-[300px] xl:min-h-[310px]"
         />
 
         {/* Shown only while recording. Real user feedback: watching the live

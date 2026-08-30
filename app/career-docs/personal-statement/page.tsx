@@ -196,14 +196,14 @@ export default function PersonalStatementPage() {
                 <label className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400">Programme or role *</label>
                 <input type="text" value={targetProgramOrRole} onChange={(e) => setTargetProgramOrRole(e.target.value)}
                   placeholder="e.g. Computer Science, McKinsey Business Analyst"
-                  className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-400 outline-none focus:border-emerald-400/40 focus:ring-1 focus:ring-emerald-400/20" required />
+                  className="w-full rounded-xl border border-white/[0.08] bg-recess-30 px-4 py-3 text-sm text-white placeholder-gray-400 outline-none focus:border-emerald-400/40 focus:ring-1 focus:ring-emerald-400/20" required />
               </div>
 
               <div>
                 <label className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400">Institution / employer</label>
                 <input type="text" value={institution} onChange={(e) => setInstitution(e.target.value)}
                   placeholder="e.g. University of Edinburgh, Deloitte"
-                  className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-400 outline-none focus:border-emerald-400/40 focus:ring-1 focus:ring-emerald-400/20" />
+                  className="w-full rounded-xl border border-white/[0.08] bg-recess-30 px-4 py-3 text-sm text-white placeholder-gray-400 outline-none focus:border-emerald-400/40 focus:ring-1 focus:ring-emerald-400/20" />
               </div>
 
               <div>
@@ -211,7 +211,7 @@ export default function PersonalStatementPage() {
                 <textarea value={whyThis} onChange={(e) => setWhyThis(e.target.value)}
                   placeholder="What drew you to this specifically? Any pivotal moments, projects, experiences, or people that shaped your direction…"
                   rows={4}
-                  className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-400 outline-none focus:border-emerald-400/40 focus:ring-1 focus:ring-emerald-400/20 resize-y" required />
+                  className="w-full rounded-xl border border-white/[0.08] bg-recess-30 px-4 py-3 text-sm text-white placeholder-gray-400 outline-none focus:border-emerald-400/40 focus:ring-1 focus:ring-emerald-400/20 resize-y" required />
                 <MinHint value={whyThis} min={20} label="A sentence or two works best" />
               </div>
 
@@ -270,7 +270,7 @@ export default function PersonalStatementPage() {
                 <textarea value={background} onChange={(e) => setBackground(e.target.value)}
                   placeholder="Academic qualifications, relevant work experience, courses, extracurriculars, skills…"
                   rows={4}
-                  className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-400 outline-none focus:border-emerald-400/40 focus:ring-1 focus:ring-emerald-400/20 resize-y" required />
+                  className="w-full rounded-xl border border-white/[0.08] bg-recess-30 px-4 py-3 text-sm text-white placeholder-gray-400 outline-none focus:border-emerald-400/40 focus:ring-1 focus:ring-emerald-400/20 resize-y" required />
                 <p className={`mt-1 text-right text-[12px] ${background.length > 15000 ? "text-red-400" : "text-gray-400"}`}>
                   {background.length.toLocaleString()} / 15,000 characters
                 </p>
@@ -281,7 +281,7 @@ export default function PersonalStatementPage() {
                 <textarea value={achievements} onChange={(e) => setAchievements(e.target.value)}
                   placeholder="Awards, projects, leadership roles, results you're proud of. Include numbers where possible…"
                   rows={3}
-                  className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-400 outline-none focus:border-emerald-400/40 focus:ring-1 focus:ring-emerald-400/20 resize-y" required />
+                  className="w-full rounded-xl border border-white/[0.08] bg-recess-30 px-4 py-3 text-sm text-white placeholder-gray-400 outline-none focus:border-emerald-400/40 focus:ring-1 focus:ring-emerald-400/20 resize-y" required />
                 <MinHint value={achievements} min={10} label="A line per achievement is plenty" />
               </div>
 

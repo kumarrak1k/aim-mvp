@@ -45,7 +45,7 @@ export function NeutralShell({ children }: NeutralShellProps) {
       <main id="main-content" className="relative z-10">{children}</main>
 
       {/* Footer */}
-      <footer className="relative z-10 border-t border-white/[0.08] bg-black/20">
+      <footer className="relative z-10 border-t border-white/[0.08] bg-recess-20">
         <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
           <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
             <div>

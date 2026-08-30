@@ -597,7 +597,7 @@ function SetupStep({
 
         {/* Voice preferences (only when voice/voice-camera) */}
         {showVoicePrefs && (
-          <div className="mt-6 rounded-2xl border border-white/10 bg-black/25 p-5">
+          <div className="mt-6 rounded-2xl border border-white/10 bg-recess-25 p-5">
             <p className="text-[12px] font-bold tracking-wide text-cyan-300">
               Interviewer voice preference
             </p>

@@ -223,7 +223,7 @@ export function PracticeCoachPanel({
                   Current Question
                 </p>
 
-                <span className="rounded-full border border-white/10 bg-black/20 px-3 py-1 text-[12px] font-bold text-gray-300">
+                <span className="rounded-full border border-white/10 bg-recess-20 px-3 py-1 text-[12px] font-bold text-gray-300">
                   {questionLoading ? "Loading" : `Question ${currentQuestionNumber}`}
                 </span>
               </div>
@@ -240,7 +240,7 @@ export function PracticeCoachPanel({
                   <button
                     type="button"
                     onClick={startCameraFromTap}
-                    className="mt-3 rounded-xl bg-white px-4 py-2 text-xs font-bold text-black transition hover:bg-amber-100"
+                    className="mt-3 rounded-xl bg-white px-4 py-2 text-xs font-bold text-background transition hover:bg-amber-100"
                   >
                     Try again
                   </button>
@@ -250,7 +250,7 @@ export function PracticeCoachPanel({
           </div>
 
           <aside className="xl:pl-2">
-            <div className="rounded-[1.6rem] border border-white/10 bg-black/35 p-4">
+            <div className="rounded-[1.6rem] border border-white/10 bg-recess-35 p-4">
               <div className="mb-3 flex items-center justify-between gap-2">
                 <div>
                   <p className="text-xs font-bold tracking-wide text-cyan-300">
@@ -290,7 +290,7 @@ export function PracticeCoachPanel({
                     <button
                       type="button"
                       onClick={startCameraFromTap}
-                      className="rounded-full bg-white px-3 py-2 text-[12px] font-bold text-black transition hover:bg-purple-100"
+                      className="rounded-full bg-white px-3 py-2 text-[12px] font-bold text-background transition hover:bg-purple-100"
                     >
                       Start
                     </button>

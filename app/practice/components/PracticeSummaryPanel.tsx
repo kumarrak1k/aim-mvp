@@ -58,7 +58,7 @@ export function PracticeSummaryPanel({
       {summary && (
         <div className="space-y-7">
           <div className="grid gap-4 lg:grid-cols-[0.85fr_1.15fr]">
-            <div className="rounded-[1.7rem] border border-white/10 bg-black/35 p-5 shadow-xl shadow-black/10">
+            <div className="rounded-[1.7rem] border border-white/10 bg-recess-35 p-5 shadow-xl shadow-black/10">
               <p className="text-sm font-semibold text-gray-400">Final score</p>
               <p className="mt-2 text-5xl font-bold tracking-tight text-white md:text-7xl">
                 {summary.overall_score}
@@ -81,7 +81,7 @@ export function PracticeSummaryPanel({
               </p>
 
               {typeof summary.readiness_score === "number" && (
-                <div className="mt-4 rounded-2xl border border-white/10 bg-black/25 p-4">
+                <div className="mt-4 rounded-2xl border border-white/10 bg-recess-25 p-4">
                   <div className="mb-2 flex items-center justify-between text-sm font-bold">
                     <span className="text-gray-400">Interview readiness</span>
                     <span className="text-white">{summary.readiness_score}/10</span>
@@ -98,7 +98,7 @@ export function PracticeSummaryPanel({
           </div>
 
           {summary.category_breakdown && (
-            <div className="rounded-[1.7rem] border border-white/10 bg-black/25 p-5">
+            <div className="rounded-[1.7rem] border border-white/10 bg-recess-25 p-5">
               <div className="mb-4 flex flex-col justify-between gap-2 sm:flex-row sm:items-end">
                 <div>
                   <h3 className="text-lg font-bold text-cyan-300">
@@ -174,7 +174,7 @@ export function PracticeSummaryPanel({
                 {summary.priority_improvements.map((item, index) => (
                   <div
                     key={`${item}-${index}`}
-                    className="rounded-2xl border border-white/10 bg-black/30 p-4"
+                    className="rounded-2xl border border-white/10 bg-recess-30 p-4"
                   >
                     <p className="mb-2 text-xs font-bold tracking-wide text-purple-200/70">
                       Priority {index + 1}
@@ -188,7 +188,7 @@ export function PracticeSummaryPanel({
             </div>
           )}
 
-          <div className="rounded-[1.7rem] border border-white/10 bg-black/30 p-5">
+          <div className="rounded-[1.7rem] border border-white/10 bg-recess-30 p-5">
             <h3 className="mb-2 text-lg font-bold text-purple-300">
               Final recommendation
             </h3>
@@ -207,7 +207,7 @@ export function PracticeSummaryPanel({
             </div>
 
             {summary.seven_day_action_plan ? (
-              <div className="rounded-[1.7rem] border border-white/10 bg-black/25 p-5">
+              <div className="rounded-[1.7rem] border border-white/10 bg-recess-25 p-5">
                 <h3 className="mb-4 text-lg font-bold text-purple-300">
                   7-day action plan
                 </h3>
@@ -215,7 +215,7 @@ export function PracticeSummaryPanel({
                   {summary.seven_day_action_plan.map((day) => (
                     <div
                       key={day.day}
-                      className="rounded-2xl border border-white/10 bg-black/35 p-4"
+                      className="rounded-2xl border border-white/10 bg-recess-35 p-4"
                     >
                       <p className="font-bold text-white">
                         {day.day}: {day.focus}
@@ -228,7 +228,7 @@ export function PracticeSummaryPanel({
                 </div>
               </div>
             ) : (
-              <div className="rounded-[1.7rem] border border-white/10 bg-black/25 p-5">
+              <div className="rounded-[1.7rem] border border-white/10 bg-recess-25 p-5">
                 <h3 className="mb-2 text-lg font-bold text-purple-300">
                   Suggested next session
                 </h3>

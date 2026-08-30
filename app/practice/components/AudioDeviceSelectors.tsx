@@ -85,7 +85,7 @@ export function AudioDeviceSelectors() {
   }
 
   const selectClass =
-    "w-full rounded-2xl border border-white/10 bg-black/30 p-3 text-sm text-white outline-none transition focus:border-purple-300/50 focus:ring-4 focus:ring-purple-500/10";
+    "w-full rounded-2xl border border-white/10 bg-recess-30 p-3 text-sm text-white outline-none transition focus:border-purple-300/50 focus:ring-4 focus:ring-purple-500/10";
 
   return (
     <div>

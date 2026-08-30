@@ -128,7 +128,7 @@ export default function ReferPage() {
                 Your referral code
               </p>
               <div className="flex items-center gap-3">
-                <code className="flex-1 rounded-xl border border-white/[0.1] bg-black/30 px-4 py-3 font-mono text-lg font-bold tracking-[0.2em] text-white">
+                <code className="flex-1 rounded-xl border border-white/[0.1] bg-recess-30 px-4 py-3 font-mono text-lg font-bold tracking-[0.2em] text-white">
                   {code}
                 </code>
                 <button

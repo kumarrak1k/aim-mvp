@@ -300,7 +300,7 @@ export default function CVEnhancerPage() {
                   value={targetRole}
                   onChange={(e) => setTargetRole(e.target.value)}
                   placeholder="e.g. Senior Product Manager"
-                  className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-400 outline-none focus:border-purple-400/40 focus:ring-1 focus:ring-purple-400/20"
+                  className="w-full rounded-xl border border-white/[0.08] bg-recess-30 px-4 py-3 text-sm text-white placeholder-gray-400 outline-none focus:border-purple-400/40 focus:ring-1 focus:ring-purple-400/20"
                   required
                 />
               </div>
@@ -311,7 +311,7 @@ export default function CVEnhancerPage() {
                   value={industry}
                   onChange={(e) => setIndustry(e.target.value)}
                   placeholder="e.g. Financial Services"
-                  className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-400 outline-none focus:border-purple-400/40 focus:ring-1 focus:ring-purple-400/20"
+                  className="w-full rounded-xl border border-white/[0.08] bg-recess-30 px-4 py-3 text-sm text-white placeholder-gray-400 outline-none focus:border-purple-400/40 focus:ring-1 focus:ring-purple-400/20"
                 />
               </div>
 
@@ -377,7 +377,7 @@ export default function CVEnhancerPage() {
                   placeholder="Paste your full CV here, including all sections: summary, experience, education, skills…"
                   rows={12}
                   maxLength={15000}
-                  className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-400 outline-none focus:border-purple-400/40 focus:ring-1 focus:ring-purple-400/20 resize-y"
+                  className="w-full rounded-xl border border-white/[0.08] bg-recess-30 px-4 py-3 text-sm text-white placeholder-gray-400 outline-none focus:border-purple-400/40 focus:ring-1 focus:ring-purple-400/20 resize-y"
                   required
                 />
                 <p className="mt-1 text-right text-[12px] text-gray-400">{cvText.length.toLocaleString()} / 15,000 chars</p>
@@ -428,7 +428,7 @@ export default function CVEnhancerPage() {
                     placeholder="Paste the job description here for targeted ATS keyword analysis…"
                     rows={6}
                     maxLength={8000}
-                    className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-400 outline-none focus:border-purple-400/40 focus:ring-1 focus:ring-purple-400/20 resize-y"
+                    className="w-full rounded-xl border border-white/[0.08] bg-recess-30 px-4 py-3 text-sm text-white placeholder-gray-400 outline-none focus:border-purple-400/40 focus:ring-1 focus:ring-purple-400/20 resize-y"
                   />
                   <p className="mt-1 text-right text-[12px] text-gray-400">{jobDescription.length} / 8000 chars</p>
                 </div>
@@ -657,7 +657,7 @@ export default function CVEnhancerPage() {
                                 onChange={(e) => setGapAnswers((prev) => ({ ...prev, [gap.id]: e.target.value }))}
                                 placeholder={gap.hint}
                                 rows={2}
-                                className="mt-2 w-full resize-none rounded-lg border border-white/[0.08] bg-black/30 px-3 py-2 text-xs text-white placeholder-gray-400 outline-none focus:border-purple-400/40 focus:ring-1 focus:ring-purple-400/20"
+                                className="mt-2 w-full resize-none rounded-lg border border-white/[0.08] bg-recess-30 px-3 py-2 text-xs text-white placeholder-gray-400 outline-none focus:border-purple-400/40 focus:ring-1 focus:ring-purple-400/20"
                               />
                             )}
                           </div>
@@ -753,11 +753,11 @@ export default function CVEnhancerPage() {
                                 {change.section}
                               </p>
                               <div className="space-y-2">
-                                <div className="rounded-lg bg-black/20 px-3 py-2">
+                                <div className="rounded-lg bg-recess-20 px-3 py-2">
                                   <p className="mb-0.5 text-[12px] font-bold tracking-wide text-gray-400">Before</p>
                                   <p className="text-xs leading-5 text-gray-400 line-through">{change.original}</p>
                                 </div>
-                                <div className="rounded-lg bg-black/20 px-3 py-2">
+                                <div className="rounded-lg bg-recess-20 px-3 py-2">
                                   <p className="mb-0.5 text-[12px] font-bold tracking-wide text-emerald-500">After</p>
                                   <p className="text-xs leading-5 text-gray-200">{change.replacement}</p>
                                 </div>
@@ -840,7 +840,7 @@ export default function CVEnhancerPage() {
                       </button>
                     </div>
                   </div>
-                  <pre className="max-h-[600px] overflow-y-auto rounded-xl border border-white/[0.06] bg-black/20 p-5 font-sans text-xs leading-6 text-gray-300 whitespace-pre-wrap">
+                  <pre className="max-h-[600px] overflow-y-auto rounded-xl border border-white/[0.06] bg-recess-20 p-5 font-sans text-xs leading-6 text-gray-300 whitespace-pre-wrap">
                     {assembleFinalCV(
                       enhancedResult.fullEnhancedCV,
                       enhancedResult.changes,

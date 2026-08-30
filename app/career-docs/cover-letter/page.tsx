@@ -161,13 +161,13 @@ export default function CoverLetterPage() {
                   <label className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400">Company *</label>
                   <input type="text" value={companyName} onChange={(e) => setCompanyName(e.target.value)}
                     placeholder="e.g. Goldman Sachs"
-                    className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-400 outline-none focus:border-cyan-400/40 focus:ring-1 focus:ring-cyan-400/20" required />
+                    className="w-full rounded-xl border border-white/[0.08] bg-recess-30 px-4 py-3 text-sm text-white placeholder-gray-400 outline-none focus:border-cyan-400/40 focus:ring-1 focus:ring-cyan-400/20" required />
                 </div>
                 <div>
                   <label className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400">Job title *</label>
                   <input type="text" value={jobTitle} onChange={(e) => setJobTitle(e.target.value)}
                     placeholder="e.g. Analyst"
-                    className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-400 outline-none focus:border-cyan-400/40 focus:ring-1 focus:ring-cyan-400/20" required />
+                    className="w-full rounded-xl border border-white/[0.08] bg-recess-30 px-4 py-3 text-sm text-white placeholder-gray-400 outline-none focus:border-cyan-400/40 focus:ring-1 focus:ring-cyan-400/20" required />
                 </div>
               </div>
 
@@ -176,7 +176,7 @@ export default function CoverLetterPage() {
                 <textarea value={jobDescription} onChange={(e) => setJobDescription(e.target.value)}
                   placeholder="Paste the job posting here. The more detail, the better for tailoring…"
                   rows={6}
-                  className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-400 outline-none focus:border-cyan-400/40 focus:ring-1 focus:ring-cyan-400/20 resize-y" required />
+                  className="w-full rounded-xl border border-white/[0.08] bg-recess-30 px-4 py-3 text-sm text-white placeholder-gray-400 outline-none focus:border-cyan-400/40 focus:ring-1 focus:ring-cyan-400/20 resize-y" required />
                 <p className={`mt-1 text-right text-[12px] ${jobDescription.length > 10000 ? "text-red-400" : "text-gray-400"}`}>
                   {jobDescription.length.toLocaleString()} / 10,000 characters
                 </p>
@@ -237,7 +237,7 @@ export default function CoverLetterPage() {
                 <textarea value={experience} onChange={(e) => setExperience(e.target.value)}
                   placeholder="Summarise your relevant experience: roles, key achievements, skills. Include numbers and specifics where possible…"
                   rows={5}
-                  className="w-full rounded-xl border border-white/[0.08] bg-black/30 px-4 py-3 text-sm text-white placeholder-gray-400 outline-none focus:border-cyan-400/40 focus:ring-1 focus:ring-cyan-400/20 resize-y" required />
+                  className="w-full rounded-xl border border-white/[0.08] bg-recess-30 px-4 py-3 text-sm text-white placeholder-gray-400 outline-none focus:border-cyan-400/40 focus:ring-1 focus:ring-cyan-400/20 resize-y" required />
                 <p className={`mt-1 text-right text-[12px] ${experience.length > 15000 ? "text-red-400" : "text-gray-400"}`}>
                   {experience.length.toLocaleString()} / 15,000 characters
                 </p>

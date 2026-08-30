@@ -635,7 +635,7 @@ function DashboardContent() {
               /* Success state — show the link to copy */
               <div className="mt-5">
                 <p className="text-sm text-gray-300">Invite created! Share this link with your team member:</p>
-                <div className="mt-3 flex items-center gap-2 rounded-2xl border border-white/10 bg-black/40 px-4 py-3">
+                <div className="mt-3 flex items-center gap-2 rounded-2xl border border-white/10 bg-recess-40 px-4 py-3">
                   <p className="flex-1 truncate text-xs text-fuchsia-200">{memberInviteLink}</p>
                   <button
                     onClick={() => void navigator.clipboard.writeText(memberInviteLink)}
@@ -672,7 +672,7 @@ function DashboardContent() {
                     placeholder="colleague@company.com"
                     disabled={memberInviteLoading}
                     autoFocus
-                    className="mt-2 w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm font-semibold text-white placeholder:text-gray-400 focus:border-fuchsia-400/40 focus:outline-none"
+                    className="mt-2 w-full rounded-2xl border border-white/10 bg-recess-40 px-4 py-3 text-sm font-semibold text-white placeholder:text-gray-400 focus:border-fuchsia-400/40 focus:outline-none"
                   />
                 </div>
                 <div>
@@ -681,7 +681,7 @@ function DashboardContent() {
                     value={memberInviteRole}
                     onChange={(e) => setMemberInviteRole(e.target.value as "recruiter" | "admin" | "viewer")}
                     disabled={memberInviteLoading}
-                    className="mt-2 w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm font-semibold text-white focus:border-fuchsia-400/40 focus:outline-none"
+                    className="mt-2 w-full rounded-2xl border border-white/10 bg-recess-40 px-4 py-3 text-sm font-semibold text-white focus:border-fuchsia-400/40 focus:outline-none"
                   >
                     <option value="recruiter">Recruiter: can create templates &amp; invite candidates</option>
                     <option value="admin">Admin: full access including billing</option>
@@ -754,7 +754,7 @@ function DashboardContent() {
               autoFocus
               disabled={deleteSubmitting}
               placeholder={company.name}
-              className="mt-2 w-full rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm font-semibold text-white placeholder:text-gray-400 focus:border-red-400/40 focus:outline-none"
+              className="mt-2 w-full rounded-2xl border border-white/10 bg-recess-40 px-4 py-3 text-sm font-semibold text-white placeholder:text-gray-400 focus:border-red-400/40 focus:outline-none"
             />
 
             {deleteError && (

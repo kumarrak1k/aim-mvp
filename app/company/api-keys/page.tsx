@@ -112,7 +112,7 @@ export default function ApiKeysPage() {
               Key created. Copy it now, as you won&apos;t see it again.
             </p>
             <div className="flex items-center gap-3">
-              <code className="flex-1 overflow-x-auto rounded-lg bg-black/40 px-4 py-3 text-sm text-green-200">
+              <code className="flex-1 overflow-x-auto rounded-lg bg-recess-40 px-4 py-3 text-sm text-green-200">
                 {createdKey}
               </code>
               <button
@@ -144,7 +144,7 @@ export default function ApiKeysPage() {
               onChange={(e) => setNewKeyName(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && createKey()}
               placeholder="e.g. Greenhouse integration"
-              className="flex-1 rounded-xl border border-white/[0.1] bg-black/30 px-4 py-2.5 text-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+              className="flex-1 rounded-xl border border-white/[0.1] bg-recess-30 px-4 py-2.5 text-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
             />
             <button
               onClick={createKey}

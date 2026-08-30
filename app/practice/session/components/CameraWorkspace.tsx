@@ -74,7 +74,7 @@ export function CameraWorkspace({
               <button
                 type="button"
                 onClick={onStartCameraFromTap}
-                className="rounded-full bg-white px-4 py-2 text-[12px] font-bold text-black transition hover:bg-purple-100"
+                className="rounded-full bg-white px-4 py-2 text-[12px] font-bold text-background transition hover:bg-purple-100"
               >
                 Start
               </button>
@@ -102,13 +102,13 @@ export function CameraWorkspace({
               <button
                 type="button"
                 onClick={onViewFeedback}
-                className="mt-3 w-full rounded-xl bg-white px-3 py-2 text-[12px] font-bold text-black transition hover:bg-emerald-100"
+                className="mt-3 w-full rounded-xl bg-white px-3 py-2 text-[12px] font-bold text-background transition hover:bg-emerald-100"
               >
                 {assessmentMode ? "Continue" : "View feedback"}
               </button>
             </div>
           ) : (
-            <div className="rounded-[1rem] border border-white/10 bg-black/20 p-3 lg:hidden">
+            <div className="rounded-[1rem] border border-white/10 bg-recess-20 p-3 lg:hidden">
               <p className="text-[12px] font-bold text-white">
                 Camera presence
               </p>
@@ -126,7 +126,7 @@ export function CameraWorkspace({
                 <button
                   type="button"
                   onClick={onStartCameraFromTap}
-                  className="mt-2 w-full rounded-xl bg-white px-3 py-1.5 text-[12px] font-bold text-black transition hover:bg-amber-100"
+                  className="mt-2 w-full rounded-xl bg-white px-3 py-1.5 text-[12px] font-bold text-background transition hover:bg-amber-100"
                 >
                   Try again
                 </button>

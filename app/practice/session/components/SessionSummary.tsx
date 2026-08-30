@@ -205,7 +205,7 @@ function QuestionCard({
   const score = result.feedback.overall_score;
 
   return (
-    <div className="rounded-[1.35rem] border border-white/10 bg-black/25 overflow-hidden">
+    <div className="rounded-[1.35rem] border border-white/10 bg-recess-25 overflow-hidden">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}

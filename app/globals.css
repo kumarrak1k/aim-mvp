@@ -52,6 +52,7 @@
   --warn-text-strong: #fde68a;     /* amber-200 role */
   --warn-text-brightest: #fffbeb;  /* amber-50 role */
   --bad-text-strong: #fecaca;      /* red-200 role */
+  --bad-text-bright: #fee2e2;      /* red-100 + rose-100 roles */
   --blue-text: #93c5fd;            /* blue-300 role */
   --blue-text-strong: #bfdbfe;     /* blue-200 role */
   --green-text: #86efac;           /* green-300 role */
@@ -86,8 +87,8 @@
   --accent-text-bright: #5b21b6;
   --tone-200: #3b3157;
   --tone-300: #4c4368;
-  --tone-400: #5f5876;
-  --tone-500: #6f6885;
+  --tone-400: #574f6b;
+  --tone-500: #675f7d;
   --accent-text-strong: #6b21a8;
   --accent-text: #7e22ce;
   --accent-text-mid: #9333ea;
@@ -97,7 +98,7 @@
   --warn-text-mid: #b45309;
   --bad-text: #b91c1c;
   --bad-text-mid: #dc2626;
-  --info-text: #0e7490;
+  --info-text: #155e75;
   --warn-text-brightest: #713f12;
   --blue-text: #1d4ed8;
   --blue-text-strong: #1e40af;
@@ -119,6 +120,7 @@
   --warn-text-bright: #78350f;
   --warn-text-strong: #92400e;
   --bad-text-strong: #991b1b;
+  --bad-text-bright: #7f1d1d;
   --glow-purple: rgba(124, 90, 240, 0.07);
   --glow-cyan: rgba(103, 232, 249, 0.09);
   --glow-fuchsia: rgba(139, 92, 246, 0.03);
@@ -175,6 +177,8 @@
   --color-amber-100: var(--warn-text-bright);
   --color-amber-200: var(--warn-text-strong);
   --color-red-200: var(--bad-text-strong);
+  --color-red-100: var(--bad-text-bright);
+  --color-rose-200: var(--bad-text-bright);
 
   /* Stable roles that must NOT flip with the theme */
   --color-on-accent: #ffffff;      /* text on purple/colored fills */
@@ -190,6 +194,23 @@
 :root:not([data-theme="light"]) .theme-light-only {
   display: none;
 }
+
+/* Recessed surfaces: dark mode carves panels with black alpha; the same veil
+   over the light ground makes mid-grey slabs that sink text contrast, so
+   light mode uses faint ink tints of equivalent visual depth. Scrims at 65%+
+   stay bg-black/N — a modal backdrop should be dark in both themes. */
+.bg-recess-15 { background-color: rgba(0, 0, 0, 0.15); }
+.bg-recess-20 { background-color: rgba(0, 0, 0, 0.2); }
+.bg-recess-25 { background-color: rgba(0, 0, 0, 0.25); }
+.bg-recess-30 { background-color: rgba(0, 0, 0, 0.3); }
+.bg-recess-35 { background-color: rgba(0, 0, 0, 0.35); }
+.bg-recess-40 { background-color: rgba(0, 0, 0, 0.4); }
+[data-theme="light"] .bg-recess-15 { background-color: rgba(36, 22, 64, 0.04); }
+[data-theme="light"] .bg-recess-20 { background-color: rgba(36, 22, 64, 0.05); }
+[data-theme="light"] .bg-recess-25 { background-color: rgba(36, 22, 64, 0.06); }
+[data-theme="light"] .bg-recess-30 { background-color: rgba(36, 22, 64, 0.07); }
+[data-theme="light"] .bg-recess-35 { background-color: rgba(36, 22, 64, 0.08); }
+[data-theme="light"] .bg-recess-40 { background-color: rgba(36, 22, 64, 0.09); }
 
 /* Footer ground: the dark theme's black/20 veil turns the light ground into
    a mid-mauve that sinks link contrast below AA, so light mode uses a faint

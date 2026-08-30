@@ -1047,7 +1047,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                         readOnly
                         value={createdResult.signInUrl}
                         onClick={(e) => (e.target as HTMLInputElement).select()}
-                        className="flex-1 rounded-xl border border-white/10 bg-black/40 px-3 py-2 font-mono text-[12px] text-fuchsia-300 focus:outline-none truncate"
+                        className="flex-1 rounded-xl border border-white/10 bg-recess-40 px-3 py-2 font-mono text-[12px] text-fuchsia-300 focus:outline-none truncate"
                       />
                       <button
                         onClick={() => copyFallbackUrl(createdResult.signInUrl)}
@@ -1077,7 +1077,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                     onChange={(e) => setCreateForm((f) => ({ ...f, email: e.target.value }))}
                     disabled={createLoading}
                     placeholder="user@example.com"
-                    className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2.5 text-sm text-white placeholder:text-gray-400 focus:border-fuchsia-400/40 focus:outline-none"
+                    className="mt-1.5 w-full rounded-xl border border-white/10 bg-recess-40 px-3 py-2.5 text-sm text-white placeholder:text-gray-400 focus:border-fuchsia-400/40 focus:outline-none"
                   />
                 </div>
 
@@ -1088,7 +1088,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                       value={createForm.firstName}
                       onChange={(e) => setCreateForm((f) => ({ ...f, firstName: e.target.value }))}
                       disabled={createLoading}
-                      className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2.5 text-sm text-white placeholder:text-gray-400 focus:border-fuchsia-400/40 focus:outline-none"
+                      className="mt-1.5 w-full rounded-xl border border-white/10 bg-recess-40 px-3 py-2.5 text-sm text-white placeholder:text-gray-400 focus:border-fuchsia-400/40 focus:outline-none"
                     />
                   </div>
                   <div>
@@ -1097,7 +1097,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                       value={createForm.lastName}
                       onChange={(e) => setCreateForm((f) => ({ ...f, lastName: e.target.value }))}
                       disabled={createLoading}
-                      className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2.5 text-sm text-white placeholder:text-gray-400 focus:border-fuchsia-400/40 focus:outline-none"
+                      className="mt-1.5 w-full rounded-xl border border-white/10 bg-recess-40 px-3 py-2.5 text-sm text-white placeholder:text-gray-400 focus:border-fuchsia-400/40 focus:outline-none"
                     />
                   </div>
                 </div>
@@ -1211,7 +1211,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                           onChange={(e) => setCreateForm((f) => ({ ...f, companyName: e.target.value }))}
                           disabled={createLoading}
                           placeholder="Acme Corp"
-                          className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2.5 text-sm text-white placeholder:text-gray-400 focus:border-cyan-400/40 focus:outline-none"
+                          className="mt-1.5 w-full rounded-xl border border-white/10 bg-recess-40 px-3 py-2.5 text-sm text-white placeholder:text-gray-400 focus:border-cyan-400/40 focus:outline-none"
                         />
                         <p className="mt-1.5 text-[12px] text-gray-400">The workspace is created immediately with this person as its admin, so they land straight on a ready dashboard.</p>
                       </div>
@@ -1256,7 +1256,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                     ["Career docs", editingUser.docsCount, editingUser.lastDocAt],
                   ] as const
                 ).map(([label, n, last]) => (
-                  <div key={label} className="rounded-xl bg-black/30 px-2 py-2">
+                  <div key={label} className="rounded-xl bg-recess-30 px-2 py-2">
                     <p className="text-lg font-bold text-white">{n}</p>
                     <p className="text-[12px] text-gray-400">{label}</p>
                     <p className="text-[12px] text-gray-400">{last ? `last ${fmtDate(last)}` : "never"}</p>
@@ -1287,7 +1287,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                     value={editForm.firstName}
                     onChange={(e) => setEditForm((f) => ({ ...f, firstName: e.target.value }))}
                     disabled={editLoading}
-                    className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2.5 text-sm text-white placeholder:text-gray-400 focus:border-fuchsia-400/40 focus:outline-none"
+                    className="mt-1.5 w-full rounded-xl border border-white/10 bg-recess-40 px-3 py-2.5 text-sm text-white placeholder:text-gray-400 focus:border-fuchsia-400/40 focus:outline-none"
                   />
                 </div>
                 <div>
@@ -1296,7 +1296,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                     value={editForm.lastName}
                     onChange={(e) => setEditForm((f) => ({ ...f, lastName: e.target.value }))}
                     disabled={editLoading}
-                    className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2.5 text-sm text-white placeholder:text-gray-400 focus:border-fuchsia-400/40 focus:outline-none"
+                    className="mt-1.5 w-full rounded-xl border border-white/10 bg-recess-40 px-3 py-2.5 text-sm text-white placeholder:text-gray-400 focus:border-fuchsia-400/40 focus:outline-none"
                   />
                 </div>
               </div>
@@ -1364,7 +1364,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                     onChange={(e) => setEditForm((f) => ({ ...f, companyName: e.target.value }))}
                     disabled={editLoading}
                     placeholder="Acme Corp"
-                    className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2.5 text-sm text-white placeholder:text-gray-400 focus:border-fuchsia-400/40 focus:outline-none"
+                    className="mt-1.5 w-full rounded-xl border border-white/10 bg-recess-40 px-3 py-2.5 text-sm text-white placeholder:text-gray-400 focus:border-fuchsia-400/40 focus:outline-none"
                   />
                 </div>
               )}
@@ -1379,7 +1379,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                   value={editForm.periodEnd}
                   onChange={(e) => setEditForm((f) => ({ ...f, periodEnd: e.target.value }))}
                   disabled={editLoading}
-                  className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2.5 text-sm text-white focus:border-fuchsia-400/40 focus:outline-none [color-scheme:dark]"
+                  className="mt-1.5 w-full rounded-xl border border-white/10 bg-recess-40 px-3 py-2.5 text-sm text-white focus:border-fuchsia-400/40 focus:outline-none [color-scheme:dark]"
                 />
               </div>
 
@@ -1411,7 +1411,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                         value={editForm.compUntil}
                         onChange={(e) => setEditForm((f) => ({ ...f, compUntil: e.target.value }))}
                         disabled={editLoading || !editForm.compPlan}
-                        className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2.5 text-sm text-white focus:border-cyan-400/40 focus:outline-none [color-scheme:dark] disabled:opacity-40"
+                        className="mt-1.5 w-full rounded-xl border border-white/10 bg-recess-40 px-3 py-2.5 text-sm text-white focus:border-cyan-400/40 focus:outline-none [color-scheme:dark] disabled:opacity-40"
                       />
                     </div>
                   </div>
@@ -1461,7 +1461,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
               onChange={(e) => { setDeleteConfirm(e.target.value); setDeleteError(""); }}
               disabled={deleteLoading}
               placeholder={deletingUser.email}
-              className="mt-1.5 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2.5 text-sm text-white placeholder:text-gray-400 focus:border-red-400/40 focus:outline-none"
+              className="mt-1.5 w-full rounded-xl border border-white/10 bg-recess-40 px-3 py-2.5 text-sm text-white placeholder:text-gray-400 focus:border-red-400/40 focus:outline-none"
             />
 
             {deleteError && <p className="mt-2 text-sm font-semibold text-red-300">{deleteError}</p>}
@@ -1556,7 +1556,7 @@ function CampaignLinkBuilder() {
       </div>
 
       <div className="mt-2 flex items-center gap-2">
-        <code className="min-w-0 flex-1 truncate rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-[12px] text-fuchsia-200" title={customUrl}>
+        <code className="min-w-0 flex-1 truncate rounded-xl border border-white/10 bg-recess-30 px-3 py-2 text-[12px] text-fuchsia-200" title={customUrl}>
           {customUrl}
         </code>
         <button

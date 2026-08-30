@@ -257,7 +257,7 @@ export default function CompanyResultsPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-white/10 bg-black/20">
+                  <tr className="border-b border-white/10 bg-recess-20">
                     <SortHeader
                       label="Candidate"
                       active={sortKey === "candidate"}

@@ -201,7 +201,7 @@ export function QuestionHero(props: QuestionHeroProps) {
               <button
                 type="button"
                 onClick={() => onAutoFlowDecision?.(true)}
-                className="rounded-xl bg-white px-4 py-2 text-xs font-bold text-black transition hover:bg-fuchsia-100"
+                className="rounded-xl bg-white px-4 py-2 text-xs font-bold text-background transition hover:bg-fuchsia-100"
               >
                 Yes, automate
               </button>
@@ -223,7 +223,7 @@ export function QuestionHero(props: QuestionHeroProps) {
         </div>
 
         {!freePlan && displayAudioMessage && (
-          <div className="mt-3 rounded-2xl border border-white/10 bg-black/20 px-3 py-2">
+          <div className="mt-3 rounded-2xl border border-white/10 bg-recess-20 px-3 py-2">
             <p className="text-xs font-semibold leading-5 text-gray-300 sm:text-sm sm:leading-6">
               {displayAudioMessage}
             </p>

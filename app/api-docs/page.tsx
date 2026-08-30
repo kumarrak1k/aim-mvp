@@ -20,7 +20,7 @@ function Code({ children }: { children: string }) {
 
 function Block({ children }: { children: string }) {
   return (
-    <pre className="overflow-x-auto rounded-xl bg-black/40 p-4 text-xs leading-6 text-green-300 border border-white/[0.06]">
+    <pre className="overflow-x-auto rounded-xl bg-recess-40 p-4 text-xs leading-6 text-green-300 border border-white/[0.06]">
       <code>{children}</code>
     </pre>
   );

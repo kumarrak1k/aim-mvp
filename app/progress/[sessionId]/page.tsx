@@ -449,7 +449,7 @@ function SummaryPanel({ session }: { session: PracticeSessionDetail }) {
         )}
 
         {summary?.final_recommendation && (
-          <div className="mt-4 rounded-[1.25rem] border border-white/10 bg-black/25 p-4">
+          <div className="mt-4 rounded-[1.25rem] border border-white/10 bg-recess-25 p-4">
             <p className="text-xs font-bold tracking-wide text-purple-300">
               Recommendation
             </p>
@@ -555,7 +555,7 @@ function QuestionArchive({
 
       <div className="mt-6 space-y-4">
         {results.length === 0 && (
-          <div className="rounded-[1.4rem] border border-white/10 bg-black/25 p-5">
+          <div className="rounded-[1.4rem] border border-white/10 bg-recess-25 p-5">
             <p className="text-sm leading-7 text-gray-300">
               No question-level results were saved for this session.
             </p>
@@ -591,7 +591,7 @@ function QuestionCard({
   const hasCamera = practiceMode === "voice-camera";
 
   return (
-    <details className="group overflow-hidden rounded-[1.6rem] border border-white/10 bg-black/25">
+    <details className="group overflow-hidden rounded-[1.6rem] border border-white/10 bg-recess-25">
       <summary className="cursor-pointer list-none p-5 transition hover:bg-white/[0.035]">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="min-w-0">
@@ -691,7 +691,7 @@ function SessionInsights({ summary }: { summary?: SessionSummary }) {
           ).map((item, index) => (
             <div
               key={`${item}-${index}`}
-              className="rounded-[1.25rem] border border-white/10 bg-black/25 p-4"
+              className="rounded-[1.25rem] border border-white/10 bg-recess-25 p-4"
             >
               <p className="text-xs font-bold tracking-wide text-cyan-300">
                 Step {index + 1}
@@ -890,7 +890,7 @@ function TextBlock({ title, text }: { title: string; text: string }) {
 
 function MiniScore({ label, value }: { label: string; value?: number }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-black/25 p-3">
+    <div className="rounded-2xl border border-white/10 bg-recess-25 p-3">
       <p className="text-xs font-bold text-gray-400">{label}</p>
       <p className="mt-1 text-xl font-bold tracking-tight text-white">
         {typeof value === "number" ? value : 0}
@@ -902,7 +902,7 @@ function MiniScore({ label, value }: { label: string; value?: number }) {
 
 function ScoreTile({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-[1.35rem] border border-white/10 bg-black/25 p-4 text-center">
+    <div className="rounded-[1.35rem] border border-white/10 bg-recess-25 p-4 text-center">
       <p className="text-xs font-bold tracking-wide text-gray-400">
         {label}
       </p>
@@ -966,7 +966,7 @@ function SignedOutState() {
 
       <div className="mt-6 flex flex-col gap-3 sm:flex-row">
         <SignInButton mode="modal">
-          <button className="rounded-2xl bg-white px-6 py-4 text-sm font-bold text-black transition hover:bg-purple-100">
+          <button className="rounded-2xl bg-white px-6 py-4 text-sm font-bold text-background transition hover:bg-purple-100">
             Sign in
           </button>
         </SignInButton>

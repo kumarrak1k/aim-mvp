@@ -80,7 +80,7 @@ export default function AdminSignInPage() {
               formButtonPrimary:
                 "min-h-[44px] bg-gradient-to-r from-violet-600 to-purple-600 hover:scale-[1.01] shadow-lg text-on-accent font-bold normal-case",
               formFieldInput:
-                "min-h-[44px] bg-black/30 border-white/[0.1] text-white placeholder-gray-400",
+                "min-h-[44px] bg-recess-30 border-white/[0.1] text-white placeholder-gray-400",
               formFieldLabel: "text-gray-300",
               footerActionText: "text-gray-400",
               footerActionLink: "text-purple-300 hover:text-purple-200",

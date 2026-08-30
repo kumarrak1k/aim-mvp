@@ -109,7 +109,7 @@ export function AcceptTermsForm({ version, nextPath }: AcceptTermsFormProps) {
             {KEY_POINTS.map((point) => (
               <div
                 key={point.title}
-                className="rounded-2xl border border-white/[0.08] bg-black/25 p-4"
+                className="rounded-2xl border border-white/[0.08] bg-recess-25 p-4"
               >
                 <h3 className="mb-1 text-sm font-bold text-white">{point.title}</h3>
                 <p className="text-sm leading-6 text-gray-400">{point.body}</p>
@@ -137,7 +137,7 @@ export function AcceptTermsForm({ version, nextPath }: AcceptTermsFormProps) {
           </p>
 
           <div className="mt-7 space-y-3">
-            <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-white/[0.1] bg-black/30 p-4 transition hover:bg-black/40">
+            <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-white/[0.1] bg-recess-30 p-4 transition hover:bg-recess-40">
               <input
                 type="checkbox"
                 checked={acceptTerms}
@@ -158,7 +158,7 @@ export function AcceptTermsForm({ version, nextPath }: AcceptTermsFormProps) {
               </span>
             </label>
 
-            <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-white/[0.1] bg-black/30 p-4 transition hover:bg-black/40">
+            <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-white/[0.1] bg-recess-30 p-4 transition hover:bg-recess-40">
               <input
                 type="checkbox"
                 checked={acceptPrivacy}

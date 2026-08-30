@@ -956,7 +956,7 @@ function QuestionMixSection({
       </button>
 
       {enabled && (
-        <div className="mt-4 rounded-2xl border border-white/[0.07] bg-black/20 p-5">
+        <div className="mt-4 rounded-2xl border border-white/[0.07] bg-recess-20 p-5">
           <div className="mb-3 flex items-center justify-between text-xs">
             <span className="font-bold tracking-wide text-gray-400">
               Question type distribution

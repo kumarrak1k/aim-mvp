@@ -42,7 +42,7 @@ export function SelectField({
       <select
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="w-full rounded-2xl border border-white/10 bg-black/35 p-4 text-white outline-none transition focus:border-purple-300/50 focus:ring-4 focus:ring-purple-500/10"
+        className="w-full rounded-2xl border border-white/10 bg-recess-35 p-4 text-white outline-none transition focus:border-purple-300/50 focus:ring-4 focus:ring-purple-500/10"
       >
         {options.map((option) => (
           <option key={option} value={option} className="bg-background">
@@ -80,7 +80,7 @@ export function ToggleButton({
 
 export function MiniStat({ value, label }: { value: string; label: string }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-black/30 p-4 text-center shadow-xl shadow-black/10">
+    <div className="rounded-2xl border border-white/10 bg-recess-30 p-4 text-center shadow-xl shadow-black/10">
       <p className="text-2xl font-bold tracking-tight">{value}</p>
       <p className="mt-1 text-xs leading-5 text-gray-400">{label}</p>
     </div>
@@ -148,7 +148,7 @@ export function CheckItem({ children }: { children: ReactNode }) {
 
 export function ScoreCard({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-black/35 p-4 text-center shadow-xl shadow-black/10">
+    <div className="rounded-2xl border border-white/10 bg-recess-35 p-4 text-center shadow-xl shadow-black/10">
       <p className="text-xs font-bold tracking-wide text-gray-400">
         {label}
       </p>
@@ -162,7 +162,7 @@ export function ScoreCard({ label, value }: { label: string; value: number }) {
 
 export function MetricCard({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-black/35 p-4 text-center shadow-xl shadow-black/10">
+    <div className="rounded-2xl border border-white/10 bg-recess-35 p-4 text-center shadow-xl shadow-black/10">
       <p className="text-xs font-bold tracking-wide text-gray-400">
         {label}
       </p>
@@ -179,7 +179,7 @@ export function SectionFeedbackCard({
   item: SectionFeedbackItem;
 }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-black/35 p-5 shadow-xl shadow-black/10">
+    <div className="rounded-2xl border border-white/10 bg-recess-35 p-5 shadow-xl shadow-black/10">
       <div className="mb-3 flex items-center justify-between gap-3">
         <h4 className="font-bold text-white">{title}</h4>
         <span className="rounded-full bg-purple-300/15 px-3 py-1 text-sm font-bold text-purple-200">

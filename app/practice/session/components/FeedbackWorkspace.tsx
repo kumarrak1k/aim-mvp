@@ -47,7 +47,7 @@ export function FeedbackWorkspace({
           <button
             type="button"
             onClick={onNext}
-            className="rounded-2xl bg-white px-6 py-3 text-sm font-bold text-black shadow-xl shadow-purple-950/20 transition hover:bg-purple-100"
+            className="rounded-2xl bg-white px-6 py-3 text-sm font-bold text-background shadow-xl shadow-purple-950/20 transition hover:bg-purple-100"
           >
             {nextLabel}
           </button>
@@ -143,7 +143,7 @@ function ScoreCard({
       className={`rounded-[1.15rem] border p-3 sm:rounded-[1.25rem] sm:p-4 ${
         highlight
           ? "border-cyan-300/20 bg-cyan-300/10"
-          : "border-white/10 bg-black/25"
+          : "border-white/10 bg-recess-25"
       }`}
     >
       <p className="text-[12px] font-bold tracking-wide text-gray-400 sm:text-[12px]">
@@ -194,7 +194,7 @@ export function FeedbackList({
   items: string[];
 }) {
   return (
-    <div className="rounded-[1.35rem] border border-white/10 bg-black/25 p-4 sm:rounded-[1.5rem] sm:p-5">
+    <div className="rounded-[1.35rem] border border-white/10 bg-recess-25 p-4 sm:rounded-[1.5rem] sm:p-5">
       <p className="mb-4 text-xs font-bold tracking-wide text-purple-200 sm:text-sm">
         {title}
       </p>

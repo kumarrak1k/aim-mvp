@@ -150,7 +150,7 @@ export function PracticeAnswerPanel({
           <p className="text-xs font-bold tracking-wide text-cyan-300">
             Question reminder
           </p>
-          <span className="rounded-full border border-white/10 bg-black/25 px-3 py-1 text-[12px] font-bold text-gray-300">
+          <span className="rounded-full border border-white/10 bg-recess-25 px-3 py-1 text-[12px] font-bold text-gray-300">
             Keep answer relevant
           </span>
         </div>
@@ -159,7 +159,7 @@ export function PracticeAnswerPanel({
         </p>
       </div>
 
-      <div className="mb-4 overflow-hidden rounded-2xl border border-white/10 bg-black/35 focus-within:border-purple-300/50 focus-within:ring-4 focus-within:ring-purple-500/10">
+      <div className="mb-4 overflow-hidden rounded-2xl border border-white/10 bg-recess-35 focus-within:border-purple-300/50 focus-within:ring-4 focus-within:ring-purple-500/10">
         <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-3">
           <p className="text-xs font-bold tracking-wide text-gray-400">
             Transcript
@@ -256,7 +256,7 @@ export function PracticeAnswerPanel({
 
 function StatusCard({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-black/25 p-3">
+    <div className="rounded-2xl border border-white/10 bg-recess-25 p-3">
       <p className="text-[12px] font-bold tracking-wide text-gray-400">
         {label}
       </p>
