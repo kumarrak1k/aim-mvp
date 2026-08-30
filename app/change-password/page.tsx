@@ -34,7 +34,7 @@ export default function ChangePasswordPage() {
 
   if (!isLoaded || !user) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#0b0918]">
+      <div className="flex min-h-screen items-center justify-center bg-background">
         <div className="h-8 w-8 animate-spin rounded-full border-2 border-fuchsia-500 border-t-transparent" />
       </div>
     );
@@ -78,7 +78,7 @@ export default function ChangePasswordPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#0b0918] px-4">
+    <div className="flex min-h-screen items-center justify-center bg-background px-4">
       {/* Background glow */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 left-1/2 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-fuchsia-600/10 blur-[120px]" />
@@ -158,7 +158,7 @@ export default function ChangePasswordPage() {
                 <button
                   type="submit"
                   disabled={loading || !newPassword || !confirmPassword}
-                  className="mt-2 w-full rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-600 py-3 text-sm font-bold text-white shadow-lg transition hover:scale-[1.02] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+                  className="mt-2 w-full rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-600 py-3 text-sm font-bold text-on-accent shadow-lg transition hover:scale-[1.02] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {loading ? "Setting password…" : "Set password & continue →"}
                 </button>

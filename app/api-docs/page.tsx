@@ -41,7 +41,7 @@ function Tag({ method }: { method: "GET" | "POST" | "DELETE" }) {
 
 export default function ApiDocsPage() {
   return (
-    <div className="min-h-screen bg-[#0a0614] text-white">
+    <div className="min-h-screen bg-background text-white">
       {/* Header */}
       <header className="border-b border-white/[0.06] px-6 py-4">
         <div className="mx-auto flex max-w-5xl items-center justify-between">
@@ -52,7 +52,7 @@ export default function ApiDocsPage() {
             <Link href="/for-business" className="text-gray-400 hover:text-white">For hiring teams</Link>
             <Link
               href="/company/api-keys"
-              className="rounded-full bg-purple-600 px-4 py-1.5 font-bold text-white hover:bg-purple-500"
+              className="rounded-full bg-purple-600 px-4 py-1.5 font-bold text-on-accent hover:bg-purple-500"
             >
               Get API key
             </Link>

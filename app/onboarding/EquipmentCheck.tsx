@@ -305,7 +305,7 @@ export function EquipmentCheck({
         <button
           onClick={() => leave(() => onContinue(allPass ? "voice-camera" : "voice"))}
           disabled={!voiceReady}
-          className="w-full max-w-sm rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-8 py-4 text-sm font-bold text-white shadow-2xl shadow-purple-900/40 transition hover:scale-[1.02] disabled:opacity-35 disabled:hover:scale-100"
+          className="w-full max-w-sm rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-8 py-4 text-sm font-bold text-on-accent shadow-2xl shadow-purple-900/40 transition hover:scale-[1.02] disabled:opacity-35 disabled:hover:scale-100"
         >
           {allPass
             ? "Everything works — let’s go →"

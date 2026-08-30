@@ -1,5 +1,14 @@
 @import "tailwindcss";
 
+/*
+ * Theme tokens. The site is dark-first: bare :root IS the dark palette, and
+ * [data-theme="light"] overrides it. The entire component layer speaks
+ * "white at some opacity over a ground" (text-white, bg-white/[0.04],
+ * border-white/[0.08]) — Tailwind v4 compiles those utilities against the
+ * --color-* variables below, so retargeting a handful of variables per theme
+ * restyles thousands of call sites coherently. Colored surfaces (gradient
+ * CTAs, badges) use text-on-accent, which never flips.
+ */
 :root {
   --background: #07030d;
   --foreground: #f8f4ff;
@@ -11,6 +20,85 @@
   --brand-cyan: #67e8f9;
   --brand-muted: #a1a1aa;
   --focus-ring: rgba(103, 232, 249, 0.45);
+
+  /* Flippable role tokens (dark values = the original design, untouched) */
+  --contrast: #ffffff;          /* "white": headings, alpha surfaces, borders */
+  --tone-50: #f9fafb;
+  --tone-100: #f3f4f6;
+  --tone-200: #e5e7eb;
+  --tone-300: #d1d5db;
+  --tone-400: #9ca3af;
+  --tone-500: #6b7280;
+  --accent-text-brightest: #faf5ff; /* purple-50 role */
+  --accent-text-bright: #f3e8ff;    /* purple-100 role */
+  --accent-text-strong: #e9d5ff;   /* purple-200 role */
+  --accent-text: #d8b4fe;          /* purple-300 role */
+  --accent-text-mid: #c084fc;      /* purple-400 role */
+  --good-text: #6ee7b7;            /* emerald-300 role */
+  --good-text-mid: #34d399;        /* emerald-400 role */
+  --warn-text: #fcd34d;            /* amber-300 role */
+  --warn-text-mid: #fbbf24;        /* amber-400 role */
+  --bad-text: #fca5a5;             /* red-300 role */
+  --bad-text-mid: #f87171;         /* red-400 role */
+  --info-text: #67e8f9;            /* cyan-300 role */
+  --info-text-bright: #cffafe;     /* cyan-100 role */
+  --info-text-strong: #a5f3fc;     /* cyan-200 role */
+  --info-text-mid: #22d3ee;        /* cyan-400 role */
+  --violet-text: #c4b5fd;          /* violet-300 role */
+  --pop-text: #f0abfc;             /* fuchsia-300 role */
+  --pop-text-strong: #f5d0fe;      /* fuchsia-200 role */
+  --good-text-strong: #a7f3d0;     /* emerald-200 role */
+  --warn-text-bright: #fef3c7;     /* amber-100 role */
+  --warn-text-strong: #fde68a;     /* amber-200 role */
+  --bad-text-strong: #fecaca;      /* red-200 role */
+  --glow-purple: rgba(168, 85, 247, 0.18);
+  --glow-cyan: rgba(103, 232, 249, 0.08);
+  --glow-fuchsia: rgba(217, 70, 239, 0.08);
+  --scheme: dark;
+}
+
+[data-theme="light"] {
+  --background: #f7f4fc;
+  --foreground: #241640;
+  --brand-deep: #f7f4fc;
+  --brand-panel: rgba(36, 22, 64, 0.05);
+  --brand-border: rgba(36, 22, 64, 0.12);
+  --brand-muted: #5f5876;
+  --focus-ring: rgba(14, 116, 144, 0.55);
+
+  --contrast: #241640;
+  --tone-50: #2a2145;
+  --tone-100: #322950;
+  --accent-text-brightest: #4c1d95;
+  --accent-text-bright: #5b21b6;
+  --tone-200: #3b3157;
+  --tone-300: #4c4368;
+  --tone-400: #5f5876;
+  --tone-500: #6f6885;
+  --accent-text-strong: #6b21a8;
+  --accent-text: #7e22ce;
+  --accent-text-mid: #9333ea;
+  --good-text: #047857;
+  --good-text-mid: #059669;
+  --warn-text: #a16207;
+  --warn-text-mid: #b45309;
+  --bad-text: #b91c1c;
+  --bad-text-mid: #dc2626;
+  --info-text: #0e7490;
+  --info-text-bright: #164e63;
+  --info-text-strong: #155e75;
+  --info-text-mid: #0891b2;
+  --violet-text: #6d28d9;
+  --pop-text: #a21caf;
+  --pop-text-strong: #86198f;
+  --good-text-strong: #065f46;
+  --warn-text-bright: #78350f;
+  --warn-text-strong: #92400e;
+  --bad-text-strong: #991b1b;
+  --glow-purple: rgba(168, 85, 247, 0.1);
+  --glow-cyan: rgba(103, 232, 249, 0.08);
+  --glow-fuchsia: rgba(217, 70, 239, 0.05);
+  --scheme: light;
 }
 
 @theme inline {
@@ -18,6 +106,64 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans-loaded), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-mono-loaded), ui-monospace, monospace;
+
+  /* Retarget the stock palette entries the design actually uses for TEXT and
+     alpha SURFACES so both themes resolve them; the raw hues (purple-600
+     buttons, gradients, shadows) are shared by both themes and stay stock. */
+  --color-white: var(--contrast);
+  --color-gray-200: var(--tone-200);
+  --color-gray-300: var(--tone-300);
+  --color-gray-400: var(--tone-400);
+  --color-gray-500: var(--tone-500);
+  --color-purple-200: var(--accent-text-strong);
+  --color-purple-300: var(--accent-text);
+  --color-purple-400: var(--accent-text-mid);
+  --color-emerald-300: var(--good-text);
+  --color-emerald-400: var(--good-text-mid);
+  --color-amber-300: var(--warn-text);
+  --color-amber-400: var(--warn-text-mid);
+  --color-red-300: var(--bad-text);
+  --color-red-400: var(--bad-text-mid);
+  --color-cyan-300: var(--info-text);
+  --color-fuchsia-300: var(--pop-text);
+
+  --color-gray-50: var(--tone-50);
+  --color-gray-100: var(--tone-100);
+  --color-purple-50: var(--accent-text-brightest);
+  --color-purple-100: var(--accent-text-bright);
+  --color-violet-300: var(--violet-text);
+  --color-cyan-100: var(--info-text-bright);
+  --color-cyan-200: var(--info-text-strong);
+  --color-cyan-400: var(--info-text-mid);
+  --color-fuchsia-200: var(--pop-text-strong);
+  --color-emerald-200: var(--good-text-strong);
+  --color-amber-100: var(--warn-text-bright);
+  --color-amber-200: var(--warn-text-strong);
+  --color-red-200: var(--bad-text-strong);
+
+  /* Stable roles that must NOT flip with the theme */
+  --color-on-accent: #ffffff;      /* text on purple/colored fills */
+  --color-canvas-dark: #07030d;    /* deliberately-dark surfaces (video wells) */
+}
+
+/* Theme-gated visibility for baked-colour assets (the logo lockups). Kept
+   unlayered deliberately: these two classes exist only for theme switching
+   and must beat the base display rules on img/svg. */
+[data-theme="light"] .theme-dark-only {
+  display: none;
+}
+:root:not([data-theme="light"]) .theme-light-only {
+  display: none;
+}
+
+/* Standard page-glow ground used by full-bleed auth/marketing pages; replaces
+   the repeated bg-[radial-gradient(...#0a0614...)] literal so both themes
+   resolve it from tokens. */
+.page-glow {
+  background:
+    radial-gradient(ellipse 70% 60% at 25% 15%, var(--glow-purple), transparent),
+    radial-gradient(ellipse 60% 50% at 75% 85%, var(--glow-fuchsia), transparent),
+    linear-gradient(180deg, var(--background) 0%, var(--background) 100%);
 }
 
 * {
@@ -27,7 +173,7 @@
 html {
   scroll-behavior: smooth;
   background: var(--background);
-  color-scheme: dark;
+  color-scheme: var(--scheme);
   text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
 }
@@ -36,9 +182,9 @@ body {
   min-height: 100vh;
   overflow-x: clip;
   background:
-    radial-gradient(circle at 50% -10%, rgba(168, 85, 247, 0.18), transparent 36rem),
-    radial-gradient(circle at 100% 10%, rgba(103, 232, 249, 0.08), transparent 28rem),
-    radial-gradient(circle at 0% 40%, rgba(217, 70, 239, 0.08), transparent 28rem),
+    radial-gradient(circle at 50% -10%, var(--glow-purple), transparent 36rem),
+    radial-gradient(circle at 100% 10%, var(--glow-cyan), transparent 28rem),
+    radial-gradient(circle at 0% 40%, var(--glow-fuchsia), transparent 28rem),
     var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
@@ -91,7 +237,7 @@ body {
   input,
   select,
   textarea {
-    color-scheme: dark;
+    color-scheme: var(--scheme);
   }
 }
 
@@ -181,12 +327,12 @@ textarea:focus-visible {
 }
 
 ::-webkit-scrollbar-track {
-  background: #07030d;
+  background: var(--background);
 }
 
 ::-webkit-scrollbar-thumb {
   background: linear-gradient(180deg, #a855f7, #2563eb);
-  border: 3px solid #07030d;
+  border: 3px solid var(--background);
   border-radius: 999px;
 }
 

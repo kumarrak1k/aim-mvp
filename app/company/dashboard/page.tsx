@@ -245,7 +245,7 @@ function DashboardContent() {
           <div className="flex flex-wrap gap-3">
             {member.role !== "viewer" && (
               <Link href="/company/templates/new">
-                <button className="rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 px-5 py-2.5 text-sm font-bold text-white shadow-lg transition hover:scale-[1.02]">
+                <button className="rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 px-5 py-2.5 text-sm font-bold text-on-accent shadow-lg transition hover:scale-[1.02]">
                   + New template
                 </button>
               </Link>
@@ -284,7 +284,7 @@ function DashboardContent() {
               <p className="mt-0.5 text-xs text-amber-200/70">Choose a plan to send invites and create templates. Viewing existing data is unaffected.</p>
             </div>
             <Link href="/company/plan">
-              <button className="shrink-0 rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 px-5 py-2.5 text-sm font-bold text-white shadow-lg transition hover:scale-[1.02]">
+              <button className="shrink-0 rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 px-5 py-2.5 text-sm font-bold text-on-accent shadow-lg transition hover:scale-[1.02]">
                 Choose a plan →
               </button>
             </Link>
@@ -307,7 +307,7 @@ function DashboardContent() {
                 <button
                   onClick={() => void startCheckout("monthly")}
                   disabled={billingLoading}
-                  className="rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 px-5 py-2.5 text-sm font-bold text-white shadow-lg transition hover:scale-[1.02] disabled:opacity-60"
+                  className="rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 px-5 py-2.5 text-sm font-bold text-on-accent shadow-lg transition hover:scale-[1.02] disabled:opacity-60"
                 >
                   {billingLoading ? "Loading…" : "Upgrade · monthly"}
                 </button>
@@ -348,7 +348,7 @@ function DashboardContent() {
               <button
                 onClick={() => void startCheckout()}
                 disabled={billingLoading}
-                className="shrink-0 rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 px-5 py-2.5 text-sm font-bold text-white shadow-lg transition hover:scale-[1.02] disabled:opacity-60"
+                className="shrink-0 rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 px-5 py-2.5 text-sm font-bold text-on-accent shadow-lg transition hover:scale-[1.02] disabled:opacity-60"
               >
                 {billingLoading ? "Loading…" : "Upgrade now →"}
               </button>
@@ -625,7 +625,7 @@ function DashboardContent() {
           onClick={() => { if (!memberInviteLoading) { setShowMemberInviteModal(false); setMemberInviteLink(""); } }}
         >
           <div
-            className="w-full max-w-md rounded-[1.75rem] border border-fuchsia-400/20 bg-[#120a1e] p-6 shadow-2xl shadow-fuchsia-950/40"
+            className="w-full max-w-md rounded-[1.75rem] border border-fuchsia-400/20 bg-background p-6 shadow-2xl shadow-fuchsia-950/40"
             onClick={(e) => e.stopPropagation()}
           >
             <p className="text-[12px] font-bold tracking-wide text-fuchsia-300">Invite team member</p>
@@ -654,7 +654,7 @@ function DashboardContent() {
                   </button>
                   <button
                     onClick={() => { setShowMemberInviteModal(false); setMemberInviteLink(""); }}
-                    className="flex-1 rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 px-4 py-2.5 text-sm font-bold text-white"
+                    className="flex-1 rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 px-4 py-2.5 text-sm font-bold text-on-accent"
                   >
                     Done
                   </button>
@@ -704,7 +704,7 @@ function DashboardContent() {
                   <button
                     onClick={() => void sendMemberInvite()}
                     disabled={memberInviteLoading || !memberInviteEmail.includes("@")}
-                    className="rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 px-5 py-2.5 text-sm font-bold text-white shadow-lg transition hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-50"
+                    className="rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 px-5 py-2.5 text-sm font-bold text-on-accent shadow-lg transition hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {memberInviteLoading ? "Sending…" : "Create invite link →"}
                   </button>
@@ -724,7 +724,7 @@ function DashboardContent() {
           }}
         >
           <div
-            className="w-full max-w-md rounded-[1.75rem] border border-red-500/30 bg-[#160a14] p-6 shadow-2xl shadow-red-950/40"
+            className="w-full max-w-md rounded-[1.75rem] border border-red-500/30 bg-background p-6 shadow-2xl shadow-red-950/40"
             onClick={(e) => e.stopPropagation()}
           >
             <p className="text-[12px] font-bold tracking-wide text-red-300">
@@ -797,7 +797,7 @@ function DashboardContent() {
                   }
                 }}
                 disabled={deleteSubmitting || deleteConfirmName.trim() !== company.name}
-                className="rounded-full bg-red-500/90 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-red-950/40 transition hover:bg-red-500 disabled:cursor-not-allowed disabled:opacity-50"
+                className="rounded-full bg-red-500/90 px-5 py-2.5 text-sm font-bold text-on-accent shadow-lg shadow-red-950/40 transition hover:bg-red-500 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {deleteSubmitting ? "Deleting…" : "Permanently delete"}
               </button>

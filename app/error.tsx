@@ -15,7 +15,7 @@ export default function Error({
   }, [error]);
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[#07030d] text-white">
+    <main className="min-h-screen overflow-hidden bg-background text-white">
       <div className="relative flex min-h-screen items-center justify-center px-4 py-16 sm:px-6">
         <div className="pointer-events-none absolute left-1/2 top-[-260px] h-[620px] w-[920px] -translate-x-1/2 rounded-full bg-purple-700/30 blur-[140px]" />
         <div className="pointer-events-none absolute right-[-220px] top-24 h-[460px] w-[460px] rounded-full bg-cyan-500/15 blur-[120px]" />
@@ -55,7 +55,7 @@ export default function Error({
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
             <button
               onClick={reset}
-              className="w-full rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-7 py-4 text-sm font-bold text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] sm:w-auto"
+              className="w-full rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-7 py-4 text-sm font-bold text-on-accent shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] sm:w-auto"
             >
               Try again
             </button>

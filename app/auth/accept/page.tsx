@@ -21,7 +21,7 @@ import { SiteLogo } from "@/app/components/brand/SiteLogo";
 
 export default function AuthAcceptPage() {
   return (
-    <main className="relative flex min-h-screen flex-col items-center justify-center bg-[#0b0918] px-4 text-white">
+    <main className="relative flex min-h-screen flex-col items-center justify-center bg-background px-4 text-white">
       {/* Background glow */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
         <div className="absolute left-1/2 top-1/3 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-fuchsia-600/[0.10] blur-[120px]" />
@@ -45,7 +45,7 @@ export default function AuthAcceptPage() {
               socialButtonsBlockButton:
                 "min-h-[44px] border-white/[0.1] bg-white/[0.04] hover:bg-white/[0.08] text-white",
               formButtonPrimary:
-                "min-h-[44px] bg-gradient-to-r from-violet-600 to-purple-600 hover:scale-[1.01] shadow-lg text-white font-bold normal-case",
+                "min-h-[44px] bg-gradient-to-r from-violet-600 to-purple-600 hover:scale-[1.01] shadow-lg text-on-accent font-bold normal-case",
               formFieldInput:
                 "min-h-[44px] bg-black/30 border-white/[0.1] text-white placeholder-gray-400",
               formFieldLabel: "text-gray-300",

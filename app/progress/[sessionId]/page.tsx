@@ -331,7 +331,7 @@ function UpgradeNudge() {
         <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
           <Link
             href="/pricing"
-            className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-7 py-3.5 text-sm font-bold text-white shadow-xl shadow-purple-950/35 transition hover:scale-[1.02]"
+            className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-7 py-3.5 text-sm font-bold text-on-accent shadow-xl shadow-purple-950/35 transition hover:scale-[1.02]"
           >
             Upgrade to Plus →
           </Link>
@@ -702,7 +702,7 @@ function SessionInsights({ summary }: { summary?: SessionSummary }) {
         </div>
 
         <Link href="/practice">
-          <button className="mt-5 w-full rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-5 py-3.5 text-sm font-bold text-white shadow-2xl shadow-purple-900/30 transition hover:scale-[1.01]">
+          <button className="mt-5 w-full rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-5 py-3.5 text-sm font-bold text-on-accent shadow-2xl shadow-purple-900/30 transition hover:scale-[1.01]">
             Practise this again
           </button>
         </Link>

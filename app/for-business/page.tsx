@@ -150,7 +150,7 @@ export default function ForBusinessPage() {
         <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link
             href="/for-business/sign-up"
-            className="w-full rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-8 py-4 text-center text-base font-bold text-white shadow-2xl shadow-purple-900/40 transition hover:scale-[1.02] sm:w-auto"
+            className="w-full rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-8 py-4 text-center text-base font-bold text-on-accent shadow-2xl shadow-purple-900/40 transition hover:scale-[1.02] sm:w-auto"
           >
             Create workspace →
           </Link>
@@ -291,7 +291,7 @@ export default function ForBusinessPage() {
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link
               href="/for-business/sign-up"
-              className="w-full rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-8 py-4 text-center text-base font-bold text-white shadow-2xl shadow-purple-900/40 transition hover:scale-[1.02] sm:w-auto"
+              className="w-full rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-8 py-4 text-center text-base font-bold text-on-accent shadow-2xl shadow-purple-900/40 transition hover:scale-[1.02] sm:w-auto"
             >
               Create workspace →
             </Link>

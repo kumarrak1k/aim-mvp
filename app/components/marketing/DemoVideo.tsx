@@ -94,7 +94,7 @@ export function DemoVideo({
 
   return (
     <figure className="mx-auto max-w-4xl overflow-hidden rounded-2xl border border-white/10 shadow-2xl shadow-purple-950/30">
-      <div className="relative flex aspect-video items-center justify-center bg-gradient-to-br from-purple-900/40 via-fuchsia-900/20 to-[#0a0614]">
+      <div className="relative flex aspect-video items-center justify-center bg-gradient-to-br from-purple-900/40 via-fuchsia-900/20 to-background">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_60%_at_50%_50%,rgba(120,60,255,0.15),transparent)]" />
         <div className="relative flex flex-col items-center gap-4 text-center">
           <div className="flex h-16 w-16 items-center justify-center rounded-full border border-purple-300/20 bg-purple-500/20 backdrop-blur-sm">

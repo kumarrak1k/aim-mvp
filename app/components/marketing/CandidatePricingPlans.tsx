@@ -65,7 +65,7 @@ function InfoTip({ text }: { text: string }) {
       </button>
       <span
         role="tooltip"
-        className="pointer-events-none invisible absolute bottom-full left-0 z-20 mb-2 w-64 rounded-xl border border-white/10 bg-[#1a1030] px-3.5 py-2.5 text-left text-xs font-normal leading-5 text-gray-200 opacity-0 shadow-2xl transition group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100"
+        className="pointer-events-none invisible absolute bottom-full left-0 z-20 mb-2 w-64 rounded-xl border border-white/10 bg-background px-3.5 py-2.5 text-left text-xs font-normal leading-5 text-gray-200 opacity-0 shadow-2xl transition group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100"
       >
         {text}
       </span>
@@ -367,7 +367,7 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
                   href="/for-candidates/sign-up"
                   className={`mt-8 flex min-h-[3.75rem] w-full items-center justify-center rounded-2xl px-5 py-3 text-center text-sm font-bold leading-tight transition ${
                     plan.highlight
-                      ? "bg-gradient-to-r from-violet-600 to-purple-600 text-white shadow-xl shadow-purple-950/35 hover:scale-[1.02]"
+                      ? "bg-gradient-to-r from-violet-600 to-purple-600 text-on-accent shadow-xl shadow-purple-950/35 hover:scale-[1.02]"
                       : "border border-white/10 bg-white/[0.06] text-white hover:bg-white/[0.1]"
                   }`}
                 >
@@ -379,7 +379,7 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
                   disabled={checkoutPlan !== null}
                   className={`mt-8 flex min-h-[3.75rem] w-full items-center justify-center rounded-2xl px-5 py-3 text-sm font-bold transition disabled:cursor-not-allowed disabled:opacity-60 ${
                     plan.highlight
-                      ? "bg-gradient-to-r from-violet-600 to-purple-600 text-white shadow-xl shadow-purple-950/35 hover:scale-[1.02]"
+                      ? "bg-gradient-to-r from-violet-600 to-purple-600 text-on-accent shadow-xl shadow-purple-950/35 hover:scale-[1.02]"
                       : "border border-white/10 bg-white/[0.06] text-white hover:bg-white/[0.1]"
                   }`}
                 >

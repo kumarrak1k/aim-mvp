@@ -43,7 +43,7 @@ export default async function CertificatePage({ params }: Props) {
     "text-amber-400";
 
   return (
-    <div className="relative min-h-screen bg-[#0a0614] text-white">
+    <div className="relative min-h-screen bg-background text-white">
       <style>{`
         @media print {
           .no-print { display: none !important; }
@@ -60,7 +60,7 @@ export default async function CertificatePage({ params }: Props) {
 
       <div className="relative z-10 mx-auto max-w-2xl px-4 py-10 sm:px-6">
         {/* Certificate card */}
-        <div className="cert-card overflow-hidden rounded-[2rem] border border-purple-300/25 bg-gradient-to-b from-purple-950/60 to-[#0a0614] shadow-2xl shadow-purple-950/50">
+        <div className="cert-card overflow-hidden rounded-[2rem] border border-purple-300/25 bg-gradient-to-b from-purple-950/60 to-background shadow-2xl shadow-purple-950/50">
           {/* Header band */}
           <div className="bg-gradient-to-r from-purple-600 via-fuchsia-600 to-purple-600 px-8 py-6 text-center">
             <p className="text-[12px] font-bold tracking-wide text-white/80">

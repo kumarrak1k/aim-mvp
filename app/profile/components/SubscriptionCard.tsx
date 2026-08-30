@@ -94,7 +94,7 @@ export function SubscriptionCard() {
         ) : (
           <Link
             href="/pricing"
-            className="shrink-0 rounded-xl bg-gradient-to-r from-violet-600 to-purple-600 px-4 py-2 text-sm font-bold text-white shadow-lg transition hover:scale-[1.02]"
+            className="shrink-0 rounded-xl bg-gradient-to-r from-violet-600 to-purple-600 px-4 py-2 text-sm font-bold text-on-accent shadow-lg transition hover:scale-[1.02]"
           >
             Upgrade
           </Link>

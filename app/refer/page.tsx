@@ -39,7 +39,7 @@ export default function ReferPage() {
   const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(referralUrl)}`;
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#0a0614] text-white">
+    <main className="relative min-h-screen overflow-hidden bg-background text-white">
       <div className="pointer-events-none absolute inset-0 z-0">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_-10%,rgba(120,60,255,0.10),transparent)]" />
         <div className="absolute left-1/2 top-[-200px] h-[480px] w-[800px] -translate-x-1/2 rounded-full bg-purple-600/[0.14] blur-[160px]" />

@@ -75,11 +75,11 @@ export function CorporateAppShell({
   }
 
   return (
-    <div className="relative min-h-screen bg-[#0a0614] text-white">
+    <div className="relative min-h-screen bg-background text-white">
       <SkipToContent />
       {/* Background — standard brand atmosphere */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_25%_15%,rgba(120,60,255,0.10),transparent),radial-gradient(ellipse_60%_50%_at_75%_85%,rgba(232,80,180,0.06),transparent),linear-gradient(180deg,#0a0614_0%,#100a1f_50%,#0c0816_100%)]" />
+        <div className="absolute inset-0 page-glow" />
         <div className="absolute left-[-160px] top-[-80px] h-[520px] w-[520px] rounded-full bg-purple-500/[0.08] blur-[160px]" />
         <div className="absolute bottom-[-80px] right-[-160px] h-[520px] w-[520px] rounded-full bg-purple-500/[0.08] blur-[160px]" />
       </div>
@@ -127,7 +127,7 @@ export function CorporateAppShell({
             {currentPath !== "/company/candidates" &&
               currentPath !== "/company/setup" && (
                 <Link href="/company/candidates" className="hidden sm:block">
-                  <button className="whitespace-nowrap rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-4 py-2.5 text-[13px] font-bold text-white shadow-lg shadow-purple-950/40 transition hover:scale-[1.03] sm:px-5 xl:px-6">
+                  <button className="whitespace-nowrap rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-4 py-2.5 text-[13px] font-bold text-on-accent shadow-lg shadow-purple-950/40 transition hover:scale-[1.03] sm:px-5 xl:px-6">
                     Send invite
                   </button>
                 </Link>
@@ -212,7 +212,7 @@ export function CorporateAppShell({
             <div className="flex shrink-0 items-center gap-2">
               <Link
                 href="/company/guide"
-                className="whitespace-nowrap rounded-full bg-gradient-to-r from-fuchsia-500 via-purple-500 to-blue-500 px-4 py-1.5 text-[12px] font-bold text-white shadow-lg shadow-purple-950/40 transition hover:scale-[1.03]"
+                className="whitespace-nowrap rounded-full bg-gradient-to-r from-fuchsia-500 via-purple-500 to-blue-500 px-4 py-1.5 text-[12px] font-bold text-on-accent shadow-lg shadow-purple-950/40 transition hover:scale-[1.03]"
               >
                 Open the guide →
               </Link>
@@ -235,7 +235,7 @@ export function CorporateAppShell({
 
       {/* Mobile bottom navigation */}
       <nav
-        className="fixed bottom-0 left-0 right-0 z-50 border-t border-white/[0.1] bg-[#080412]/96 backdrop-blur-2xl sm:hidden"
+        className="fixed bottom-0 left-0 right-0 z-50 border-t border-white/[0.1] bg-background/96 backdrop-blur-2xl sm:hidden"
         aria-label="Hiring team navigation"
         style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
       >

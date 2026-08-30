@@ -675,7 +675,7 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
               </div>
               <div className="flex shrink-0 flex-col gap-3 sm:flex-row lg:flex-col">
                 <a href="/pricing">
-                  <button className="w-full whitespace-nowrap rounded-2xl bg-gradient-to-r from-violet-500 to-purple-500 px-6 py-3.5 text-sm font-bold text-white shadow-lg transition hover:scale-[1.02] sm:w-auto lg:w-full">
+                  <button className="w-full whitespace-nowrap rounded-2xl bg-gradient-to-r from-violet-500 to-purple-500 px-6 py-3.5 text-sm font-bold text-on-accent shadow-lg transition hover:scale-[1.02] sm:w-auto lg:w-full">
                     Upgrade to Professional →
                   </button>
                 </a>

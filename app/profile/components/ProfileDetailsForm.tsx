@@ -241,7 +241,7 @@ export function ProfileDetailsForm({
                   type="button"
                   onClick={() => void handleSave()}
                   disabled={saving || destructiveActionRunning}
-                  className="rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-7 py-4 text-sm font-bold text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-60"
+                  className="rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-7 py-4 text-sm font-bold text-on-accent shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {saving ? "Saving..." : "Save Candidate Profile"}
                 </button>

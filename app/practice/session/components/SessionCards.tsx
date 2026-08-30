@@ -63,7 +63,7 @@ export function MissingSessionCard() {
           mode selected on the setup page.
         </p>
         <Link href="/practice">
-          <button className="mt-7 rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-7 py-4 text-sm font-bold text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.02]">
+          <button className="mt-7 rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-7 py-4 text-sm font-bold text-on-accent shadow-2xl shadow-purple-900/35 transition hover:scale-[1.02]">
             Return to setup
           </button>
         </Link>

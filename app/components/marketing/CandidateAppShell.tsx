@@ -141,10 +141,10 @@ export function CandidateAppShell({
   }, []);
 
   return (
-    <div className="relative min-h-screen bg-[#0a0614] text-white">
+    <div className="relative min-h-screen bg-background text-white">
       {/* Background — purple/cyan candidate identity */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_25%_15%,rgba(120,60,255,0.10),transparent),radial-gradient(ellipse_60%_50%_at_75%_85%,rgba(232,80,180,0.06),transparent),linear-gradient(180deg,#0a0614_0%,#100a1f_50%,#0c0816_100%)]" />
+        <div className="absolute inset-0 page-glow" />
         <div className="absolute left-[-160px] top-[-80px] h-[520px] w-[520px] rounded-full bg-purple-500/[0.08] blur-[160px]" />
         <div className="absolute bottom-[-80px] right-[-160px] h-[520px] w-[520px] rounded-full bg-fuchsia-500/[0.08] blur-[160px]" />
       </div>
@@ -185,7 +185,7 @@ export function CandidateAppShell({
                         </svg>
                       </button>
                       <div className="invisible absolute left-1/2 top-full z-50 w-56 -translate-x-1/2 pt-2 opacity-0 transition group-hover/dd:visible group-hover/dd:opacity-100 group-focus-within/dd:visible group-focus-within/dd:opacity-100">
-                        <div className="rounded-2xl border border-white/[0.09] bg-[#140a26] p-1.5 shadow-2xl shadow-black/50">
+                        <div className="rounded-2xl border border-white/[0.09] bg-background p-1.5 shadow-2xl shadow-black/50">
                           {item.dropdown.map((sub) => (
                             <Link key={sub.href} href={sub.href} className="block whitespace-nowrap rounded-xl px-3.5 py-2 text-center text-[13px] font-semibold text-gray-300 transition hover:bg-white/[0.07] hover:text-white">
                               {sub.label}
@@ -257,7 +257,7 @@ export function CandidateAppShell({
             </svg>
           </summary>
 
-          <div className="mt-2 overflow-hidden rounded-2xl border border-white/[0.09] bg-[#140a26] p-2 shadow-2xl shadow-black/50">
+          <div className="mt-2 overflow-hidden rounded-2xl border border-white/[0.09] bg-background p-2 shadow-2xl shadow-black/50">
             {navItems.map((item) => {
               if (item.dropdown) {
                 return (
@@ -308,7 +308,7 @@ export function CandidateAppShell({
             <div className="flex justify-center px-4 pb-2.5 pt-0.5">
               <Link
                 href="/practice"
-                className="whitespace-nowrap rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-2.5 text-[13px] font-bold text-white shadow-lg shadow-purple-950/40 transition hover:scale-[1.03]"
+                className="whitespace-nowrap rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-2.5 text-[13px] font-bold text-on-accent shadow-lg shadow-purple-950/40 transition hover:scale-[1.03]"
               >
                 Start Practising
               </Link>
@@ -327,7 +327,7 @@ export function CandidateAppShell({
             <div className="flex shrink-0 items-center gap-2">
               <Link
                 href="/guide"
-                className="whitespace-nowrap rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-4 py-1.5 text-[12px] font-bold text-white shadow-lg shadow-purple-950/40 transition hover:scale-[1.03]"
+                className="whitespace-nowrap rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-4 py-1.5 text-[12px] font-bold text-on-accent shadow-lg shadow-purple-950/40 transition hover:scale-[1.03]"
               >
                 Open the guide →
               </Link>

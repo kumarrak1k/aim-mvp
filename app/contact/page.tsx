@@ -150,7 +150,7 @@ export default function ContactPage() {
                 </p>
                 <a
                   href={`mailto:${c.email}?subject=${c.subject}`}
-                  className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-5 py-3 text-sm font-bold text-white shadow-lg transition hover:scale-[1.02]"
+                  className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-5 py-3 text-sm font-bold text-on-accent shadow-lg transition hover:scale-[1.02]"
                 >
                   Email us →
                 </a>

@@ -45,7 +45,7 @@ export function SelectField({
         className="w-full rounded-2xl border border-white/10 bg-black/35 p-4 text-white outline-none transition focus:border-purple-300/50 focus:ring-4 focus:ring-purple-500/10"
       >
         {options.map((option) => (
-          <option key={option} value={option} className="bg-[#0b0712]">
+          <option key={option} value={option} className="bg-background">
             {option === defaultOption ? `${option} (default)` : option}
           </option>
         ))}
@@ -69,7 +69,7 @@ export function ToggleButton({
       onClick={onClick}
       className={`rounded-full px-5 py-2.5 text-sm font-bold transition ${
         active
-          ? "bg-gradient-to-r from-violet-600 to-purple-600 text-white shadow-lg shadow-purple-950/30"
+          ? "bg-gradient-to-r from-violet-600 to-purple-600 text-on-accent shadow-lg shadow-purple-950/30"
           : "border border-white/10 bg-white/[0.06] text-gray-300 hover:bg-white/[0.1]"
       }`}
     >

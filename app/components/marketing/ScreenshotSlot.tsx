@@ -22,7 +22,7 @@ export function ScreenshotSlot({
   return (
     <figure className="overflow-hidden rounded-2xl border border-white/10 shadow-2xl shadow-purple-950/20">
       <div
-        className={`relative ${aspectClasses[aspectRatio]} bg-gradient-to-br from-purple-900/30 via-fuchsia-900/10 to-[#0a0614]`}
+        className={`relative ${aspectClasses[aspectRatio]} bg-gradient-to-br from-purple-900/30 via-fuchsia-900/10 to-background`}
       >
         {src ? (
           <Image

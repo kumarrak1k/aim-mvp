@@ -191,14 +191,14 @@ export function PracticeAnswerPanel({
           {isListening ? (
             <button
               onClick={stopVoiceInput}
-              className="rounded-2xl bg-red-500 px-5 py-3 text-sm font-bold text-white shadow-xl shadow-red-950/20 transition hover:bg-red-600"
+              className="rounded-2xl bg-red-500 px-5 py-3 text-sm font-bold text-on-accent shadow-xl shadow-red-950/20 transition hover:bg-red-600"
             >
               Stop Voice Answer
             </button>
           ) : (
             <button
               onClick={startVoiceInput}
-              className="rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-5 py-3 text-sm font-bold text-white shadow-xl shadow-purple-950/30 transition hover:opacity-95"
+              className="rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-5 py-3 text-sm font-bold text-on-accent shadow-xl shadow-purple-950/30 transition hover:opacity-95"
             >
               Start Voice Answer
             </button>

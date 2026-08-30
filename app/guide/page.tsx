@@ -155,7 +155,7 @@ export default function CandidateGuidePage() {
           </p>
           <Link
             href="/practice"
-            className="mt-5 inline-block rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-8 py-3 text-sm font-bold text-white shadow-lg shadow-purple-950/40 transition hover:scale-[1.02]"
+            className="mt-5 inline-block rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-8 py-3 text-sm font-bold text-on-accent shadow-lg shadow-purple-950/40 transition hover:scale-[1.02]"
           >
             Start a practice session
           </Link>

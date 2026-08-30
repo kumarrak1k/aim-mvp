@@ -83,7 +83,7 @@ export default async function BusinessPricingPage() {
         </p>
         <Link
           href="/for-business/sign-up"
-          className="mx-auto mt-6 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-purple-900/40 transition hover:scale-[1.02]"
+          className="mx-auto mt-6 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-5 py-2.5 text-sm font-bold text-on-accent shadow-lg shadow-purple-900/40 transition hover:scale-[1.02]"
         >
           <span aria-hidden>✨</span>
           Try the Team plan free for 14 days: no payment details, 10 candidate invites

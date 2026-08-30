@@ -525,14 +525,14 @@ function ProgressDashboard({ stats, isAdvancedPlan, onSessionDeleted }: { stats:
           <div className="flex shrink-0 flex-col gap-3 sm:flex-row lg:flex-col">
             {isAdvancedPlan ? (
               <Link href="/assessment-centre">
-                <button className="w-full whitespace-nowrap rounded-2xl bg-gradient-to-r from-violet-500 to-purple-500 px-6 py-3.5 text-sm font-bold text-white shadow-lg transition hover:scale-[1.02] sm:w-auto lg:w-full">
+                <button className="w-full whitespace-nowrap rounded-2xl bg-gradient-to-r from-violet-500 to-purple-500 px-6 py-3.5 text-sm font-bold text-on-accent shadow-lg transition hover:scale-[1.02] sm:w-auto lg:w-full">
                   Start mock assessment centre →
                 </button>
               </Link>
             ) : (
               <>
                 <Link href="/pricing">
-                  <button className="w-full whitespace-nowrap rounded-2xl bg-gradient-to-r from-violet-500 to-purple-500 px-6 py-3.5 text-sm font-bold text-white shadow-lg transition hover:scale-[1.02] sm:w-auto lg:w-full">
+                  <button className="w-full whitespace-nowrap rounded-2xl bg-gradient-to-r from-violet-500 to-purple-500 px-6 py-3.5 text-sm font-bold text-on-accent shadow-lg transition hover:scale-[1.02] sm:w-auto lg:w-full">
                     Upgrade to Professional →
                   </button>
                 </Link>
@@ -812,7 +812,7 @@ function EmptyProgressState({ isAdvancedPlan }: { isAdvancedPlan: boolean }) {
 
         <div className="mt-6 flex flex-col gap-3 sm:flex-row">
           <Link href="/practice">
-            <button className="rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-4 text-sm font-bold text-white shadow-2xl shadow-purple-900/30 transition hover:scale-[1.01]">
+            <button className="rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-4 text-sm font-bold text-on-accent shadow-2xl shadow-purple-900/30 transition hover:scale-[1.01]">
               Start tracked interview
             </button>
           </Link>
@@ -837,13 +837,13 @@ function EmptyProgressState({ isAdvancedPlan }: { isAdvancedPlan: boolean }) {
         </p>
         {isAdvancedPlan ? (
           <Link href="/assessment-centre">
-            <button className="mt-4 rounded-2xl bg-gradient-to-r from-violet-500 to-purple-500 px-5 py-3 text-sm font-bold text-white shadow-lg transition hover:scale-[1.02]">
+            <button className="mt-4 rounded-2xl bg-gradient-to-r from-violet-500 to-purple-500 px-5 py-3 text-sm font-bold text-on-accent shadow-lg transition hover:scale-[1.02]">
               Start mock assessment centre →
             </button>
           </Link>
         ) : (
           <Link href="/pricing">
-            <button className="mt-4 rounded-2xl bg-gradient-to-r from-violet-500 to-purple-500 px-5 py-3 text-sm font-bold text-white shadow-lg transition hover:scale-[1.02]">
+            <button className="mt-4 rounded-2xl bg-gradient-to-r from-violet-500 to-purple-500 px-5 py-3 text-sm font-bold text-on-accent shadow-lg transition hover:scale-[1.02]">
               Upgrade to Professional →
             </button>
           </Link>
@@ -891,7 +891,7 @@ function EmptyACState() {
         </p>
         <div className="mt-6 flex flex-col gap-3 sm:flex-row">
           <Link href="/assessment-centre">
-            <button className="rounded-2xl bg-gradient-to-r from-violet-500 to-purple-500 px-6 py-4 text-sm font-bold text-white shadow-2xl shadow-purple-900/30 transition hover:scale-[1.01]">
+            <button className="rounded-2xl bg-gradient-to-r from-violet-500 to-purple-500 px-6 py-4 text-sm font-bold text-on-accent shadow-2xl shadow-purple-900/30 transition hover:scale-[1.01]">
               Start assessment centre →
             </button>
           </Link>
@@ -1131,7 +1131,7 @@ function ACDashboard({ sessions, onSessionDeleted }: { sessions: ACSession[]; on
             <h2 className="mt-1 text-2xl font-bold tracking-tight text-white">All completed sessions</h2>
           </div>
           <Link href="/assessment-centre">
-            <button className="shrink-0 rounded-2xl bg-gradient-to-r from-violet-500 to-purple-500 px-5 py-2.5 text-xs font-bold text-white shadow-lg transition hover:scale-[1.02]">
+            <button className="shrink-0 rounded-2xl bg-gradient-to-r from-violet-500 to-purple-500 px-5 py-2.5 text-xs font-bold text-on-accent shadow-lg transition hover:scale-[1.02]">
               New session →
             </button>
           </Link>

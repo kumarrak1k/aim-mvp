@@ -561,7 +561,7 @@ export function PracticeStartScreen({
               </p>
               <Link
                 href="/pricing"
-                className="shrink-0 rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-4 py-2 text-xs font-bold text-white shadow-lg shadow-purple-950/35 transition hover:scale-[1.03]"
+                className="shrink-0 rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-4 py-2 text-xs font-bold text-on-accent shadow-lg shadow-purple-950/35 transition hover:scale-[1.03]"
               >
                 Upgrade →
               </Link>
@@ -1104,7 +1104,7 @@ function PreferenceSelect({
           <option
             key={option.value}
             value={option.value}
-            className="bg-[#0a0614]"
+            className="bg-background"
           >
             {option.label}
           </option>

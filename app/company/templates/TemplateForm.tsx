@@ -373,7 +373,7 @@ export function TemplateForm({ initial, onSave, onCancel, saving }: TemplateForm
   // ─── styles ────────────────────────────────────────────────────────────────
 
   const selectClass =
-    "w-full rounded-xl border border-white/15 bg-[#1a1328] px-4 py-3 text-white outline-none focus:border-fuchsia-400/60 focus:ring-2 focus:ring-fuchsia-400/20";
+    "w-full rounded-xl border border-white/15 bg-background px-4 py-3 text-white outline-none focus:border-fuchsia-400/60 focus:ring-2 focus:ring-fuchsia-400/20";
   const inputClass =
     "w-full rounded-xl border border-white/15 bg-white/[0.06] px-4 py-3 text-white placeholder-gray-400 outline-none focus:border-fuchsia-400/60 focus:ring-2 focus:ring-fuchsia-400/20";
 
@@ -842,7 +842,7 @@ export function TemplateForm({ initial, onSave, onCancel, saving }: TemplateForm
         <button
           type="submit"
           disabled={saving}
-          className="flex-1 rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 py-3.5 text-sm font-bold text-white shadow-xl shadow-purple-950/35 transition hover:scale-[1.02] disabled:opacity-60"
+          className="flex-1 rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 py-3.5 text-sm font-bold text-on-accent shadow-xl shadow-purple-950/35 transition hover:scale-[1.02] disabled:opacity-60"
         >
           {saving ? "Saving…" : "Save template →"}
         </button>

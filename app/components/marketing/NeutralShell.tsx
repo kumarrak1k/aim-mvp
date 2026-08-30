@@ -20,7 +20,7 @@ type NeutralShellProps = {
 
 export function NeutralShell({ children }: NeutralShellProps) {
   return (
-    <div className="relative min-h-screen bg-[#0a0614] text-white">
+    <div className="relative min-h-screen bg-background text-white">
       <SkipToContent />
       {/* Subtle background — neutral, no audience-tinted blobs */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
@@ -28,7 +28,7 @@ export function NeutralShell({ children }: NeutralShellProps) {
       </div>
 
       {/* Header — minimal: logo + back link */}
-      <header className="sticky top-0 z-50 bg-[#0a0614]/90 backdrop-blur-2xl">
+      <header className="sticky top-0 z-50 bg-background/90 backdrop-blur-2xl">
         <div className="mx-auto flex w-full max-w-5xl items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:py-3.5">
           <Link href="/" className="shrink-0">
             <SiteLogo href="" size="md" showText />

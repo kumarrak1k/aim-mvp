@@ -294,7 +294,7 @@ export default function TermsPage() {
                 </p>
                 <div className="space-y-3">
                   <Link href="/for-candidates/sign-up">
-                    <button className="w-full rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-5 py-3 text-sm font-bold text-white shadow-lg transition hover:scale-[1.02]">
+                    <button className="w-full rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-5 py-3 text-sm font-bold text-on-accent shadow-lg transition hover:scale-[1.02]">
                       Start free
                     </button>
                   </Link>

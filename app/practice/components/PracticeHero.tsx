@@ -59,7 +59,7 @@ export function PracticeHero({
           </p>
           <Link
             href="/pricing"
-            className="shrink-0 rounded-xl bg-gradient-to-r from-violet-600 to-purple-600 px-4 py-2 text-sm font-bold text-white shadow-lg transition hover:scale-[1.02]"
+            className="shrink-0 rounded-xl bg-gradient-to-r from-violet-600 to-purple-600 px-4 py-2 text-sm font-bold text-on-accent shadow-lg transition hover:scale-[1.02]"
           >
             Upgrade to Plus →
           </Link>
@@ -81,7 +81,7 @@ export function PracticeHero({
           type="button"
           onClick={onStartInterview}
           disabled={startDisabled}
-          className="w-full rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-4 text-sm font-bold text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+          className="w-full rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-4 text-sm font-bold text-on-accent shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
         >
           {questionLoading
             ? "Starting..."

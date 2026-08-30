@@ -224,7 +224,7 @@ export default function SecurityPage() {
           </p>
           <a
             href="mailto:security@aicareermentor.co.uk?subject=Enterprise%20security%20review"
-            className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-fuchsia-500 to-purple-500 px-7 py-3.5 text-sm font-bold text-white shadow-xl transition hover:scale-[1.02]"
+            className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-fuchsia-500 to-purple-500 px-7 py-3.5 text-sm font-bold text-on-accent shadow-xl transition hover:scale-[1.02]"
           >
             Contact enterprise team →
           </a>

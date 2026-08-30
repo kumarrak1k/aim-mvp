@@ -213,7 +213,7 @@ export function OnboardingClient({
               onChange={(e) => {
                 if (e.target.value) setTargetRole(e.target.value);
               }}
-              className="mt-2 w-full rounded-[1.25rem] border border-white/[0.09] bg-[#140a26] px-4 py-3 text-sm text-gray-300 focus:border-purple-400/60 focus:outline-none"
+              className="mt-2 w-full rounded-[1.25rem] border border-white/[0.09] bg-background px-4 py-3 text-sm text-gray-300 focus:border-purple-400/60 focus:outline-none"
             >
               <option value="">Or pick a common role…</option>
               {TARGET_ROLE_SUGGESTIONS.map((g) => (
@@ -440,7 +440,7 @@ export function OnboardingClient({
                   setPendingDestination("/practice?warmup=1");
                   setStep(6);
                 }}
-                className="w-full max-w-sm rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-8 py-4 text-sm font-bold text-white shadow-2xl shadow-purple-900/40 transition hover:scale-[1.02]"
+                className="w-full max-w-sm rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-8 py-4 text-sm font-bold text-on-accent shadow-2xl shadow-purple-900/40 transition hover:scale-[1.02]"
               >
                 Start the warm-up →
               </button>
@@ -502,7 +502,7 @@ export function OnboardingClient({
           <button
             onClick={next}
             disabled={!canAdvance || saving}
-            className="rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-8 py-3.5 text-sm font-bold text-white shadow-lg shadow-purple-950/40 transition hover:scale-[1.02] disabled:opacity-35 disabled:hover:scale-100"
+            className="rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-8 py-3.5 text-sm font-bold text-on-accent shadow-lg shadow-purple-950/40 transition hover:scale-[1.02] disabled:opacity-35 disabled:hover:scale-100"
           >
             {saving ? "Saving…" : "Continue"}
           </button>

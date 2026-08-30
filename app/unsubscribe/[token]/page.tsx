@@ -17,9 +17,9 @@ export default async function UnsubscribePage({ params }: Props) {
   const result = await unsubscribeByToken(token).catch(() => ({ ok: false as const }));
 
   return (
-    <main className="relative flex min-h-screen items-center justify-center bg-[#0a0614] px-4 text-white">
+    <main className="relative flex min-h-screen items-center justify-center bg-background px-4 text-white">
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_25%_15%,rgba(120,60,255,0.10),transparent),radial-gradient(ellipse_60%_50%_at_75%_85%,rgba(232,80,180,0.06),transparent),linear-gradient(180deg,#0a0614_0%,#100a1f_50%,#0c0816_100%)]" />
+        <div className="absolute inset-0 page-glow" />
       </div>
 
       <div className="relative z-10 w-full max-w-md rounded-[2rem] border border-white/[0.08] bg-white/[0.03] p-8 text-center shadow-2xl">
@@ -42,7 +42,7 @@ export default async function UnsubscribePage({ params }: Props) {
             </p>
             <Link
               href="/account/notifications"
-              className="mt-6 inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-3 text-sm font-bold text-white shadow-lg transition hover:scale-[1.02]"
+              className="mt-6 inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-3 text-sm font-bold text-on-accent shadow-lg transition hover:scale-[1.02]"
             >
               Manage notification settings →
             </Link>

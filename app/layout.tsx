@@ -263,7 +263,30 @@ export default function RootLayout({
       signUpUrl="/for-candidates/sign-up"
       afterSignOutUrl="/"
     >
-      <html lang="en-GB" className={`${sans.variable} ${mono.variable}`}>
+      {/* data-theme is stamped server-side as dark (the brand default) and
+          corrected before first paint by the inline script below when the
+          visitor has stored a different choice — suppressHydrationWarning
+          because that correction legitimately diverges from the SSR value. */}
+      <html
+        lang="en-GB"
+        className={`${sans.variable} ${mono.variable}`}
+        data-theme="dark"
+        data-theme-mode="dark"
+        suppressHydrationWarning
+      >
+        <head>
+          <meta name="color-scheme" content="dark light" />
+          <script
+            // Anti-flash init: runs before first paint. Default is DARK (brand
+            // continuity), not system — System is offered in the selector.
+            dangerouslySetInnerHTML={{
+              __html: `(function(){var m=null;try{m=localStorage.getItem("theme-mode")}catch(e){}
+if(m!=="light"&&m!=="dark"&&m!=="system")m="dark";
+var r=m==="system"?(window.matchMedia("(prefers-color-scheme: light)").matches?"light":"dark"):m;
+var d=document.documentElement;d.setAttribute("data-theme-mode",m);d.setAttribute("data-theme",r);})();`,
+            }}
+          />
+        </head>
         <body>
           <script
             type="application/ld+json"

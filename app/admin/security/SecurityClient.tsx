@@ -20,7 +20,7 @@ export function SecurityClient() {
   const mfaRequired = params.get("mfa") === "required";
 
   return (
-    <main className="flex min-h-screen flex-col items-center bg-[#080412] px-4 py-10 text-white">
+    <main className="flex min-h-screen flex-col items-center bg-background px-4 py-10 text-white">
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
         <div className="absolute left-1/2 top-1/3 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-purple-600/[0.10] blur-[120px]" />
       </div>
@@ -61,7 +61,7 @@ export function SecurityClient() {
               headerSubtitle: "text-gray-400",
               profileSectionTitleText: "text-white",
               formButtonPrimary:
-                "min-h-[44px] bg-gradient-to-r from-violet-600 to-purple-600 text-white font-bold normal-case",
+                "min-h-[44px] bg-gradient-to-r from-violet-600 to-purple-600 text-on-accent font-bold normal-case",
               formFieldInput:
                 "min-h-[44px] bg-black/30 border-white/[0.1] text-white placeholder-gray-400",
               formFieldLabel: "text-gray-300",

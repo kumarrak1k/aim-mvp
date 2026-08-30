@@ -1,8 +1,10 @@
 // Guards against UTF-8 mojibake sneaking into source. Windows tooling that
 // reads/writes files through the ANSI codepage double-encodes non-ASCII
-// characters ("—" becomes "â€”", "📘" becomes "ðŸ“˜") and PowerShell's
-// Out-File adds a UTF-8 BOM — both shipped to production once (2026-08-17,
-// five shells + auth/accept). Run: node scripts/check-encoding.mjs
+// characters (em dashes and emoji become a-circumflex/eth garbage) and
+// PowerShell's Out-File adds a UTF-8 BOM — both shipped to production once
+// (2026-08-17, five shells + auth/accept). This file skips itself: the
+// detection patterns below ARE the sequences it hunts.
+// Run: node scripts/check-encoding.mjs
 import { execSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 
@@ -13,7 +15,7 @@ const MOJIBAKE = /â€|ðŸ|âœ|â†|â‚¬|Ã[©¼±¤¶¨ £«®¯³º]|Â
 
 const files = execSync("git ls-files", { encoding: "utf8" })
   .split("\n")
-  .filter((f) => EXTENSIONS.test(f));
+  .filter((f) => EXTENSIONS.test(f) && !f.endsWith("check-encoding.mjs"));
 
 let bad = 0;
 for (const file of files) {

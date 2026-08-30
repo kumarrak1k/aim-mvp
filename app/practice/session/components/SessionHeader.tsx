@@ -74,7 +74,7 @@ function CompanyBrandedHeader({
   const safeCompany = companyName || "Hiring company";
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/[0.07] bg-[#0d0520]">
+    <header className="sticky top-0 z-50 border-b border-white/[0.07] bg-background">
       {/* Brand colour stripe — visually anchors this as the company's process */}
       <div className="h-1.5" style={{ background: brandColor }} />
 
@@ -143,7 +143,7 @@ function PersonalPracticeHeader() {
     // background is FIXED, so a transparent header is inherently seamless;
     // the soft gradient scrim (page-top tone fading to nothing) only exists
     // so scrolled content stays legible behind the logo.
-    <header className="sticky top-0 z-50 bg-gradient-to-b from-[#0e0820]/95 via-[#0e0820]/60 to-transparent pb-3">
+    <header className="sticky top-0 z-50 bg-gradient-to-b from-background/95 via-background/60 to-transparent pb-3">
       <div className="mx-auto flex w-full max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] items-center gap-3 px-4 py-3 sm:px-6 lg:gap-6 lg:px-8 lg:py-3">
         {/* Logo */}
         <div className="shrink-0">

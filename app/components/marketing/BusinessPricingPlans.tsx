@@ -237,7 +237,7 @@ export function BusinessPricingPlans({ currency = "GBP" }: { currency?: PricingC
                   disabled={isLoading || loading !== null}
                   className={`mt-8 flex w-full justify-center rounded-2xl px-5 py-3.5 text-sm font-bold transition disabled:opacity-60 disabled:cursor-not-allowed ${
                     plan.highlight
-                      ? "bg-gradient-to-r from-violet-600 to-purple-600 text-white shadow-xl shadow-purple-950/35 hover:scale-[1.02]"
+                      ? "bg-gradient-to-r from-violet-600 to-purple-600 text-on-accent shadow-xl shadow-purple-950/35 hover:scale-[1.02]"
                       : "border border-white/10 bg-white/[0.06] text-white hover:bg-white/[0.1]"
                   }`}
                 >
@@ -248,7 +248,7 @@ export function BusinessPricingPlans({ currency = "GBP" }: { currency?: PricingC
                   href={(plan as { ctaHref: string }).ctaHref}
                   className={`mt-8 flex w-full justify-center rounded-2xl px-5 py-3.5 text-sm font-bold transition ${
                     plan.highlight
-                      ? "bg-gradient-to-r from-violet-600 to-purple-600 text-white shadow-xl shadow-purple-950/35 hover:scale-[1.02]"
+                      ? "bg-gradient-to-r from-violet-600 to-purple-600 text-on-accent shadow-xl shadow-purple-950/35 hover:scale-[1.02]"
                       : "border border-white/10 bg-white/[0.06] text-white hover:bg-white/[0.1]"
                   }`}
                 >

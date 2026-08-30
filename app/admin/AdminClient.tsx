@@ -675,7 +675,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
   // ── Render ────────────────────────────────────────────────────────────────────
 
   return (
-    <div className="min-h-screen bg-[#0b0918] px-4 py-10 text-white sm:px-8">
+    <div className="min-h-screen bg-background px-4 py-10 text-white sm:px-8">
 
       {/* Header */}
       <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -687,7 +687,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
           <p className="mt-1 text-sm text-gray-400">AI Career Mentor · {stats.total} total accounts</p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
-          <button onClick={openCreate} className="shrink-0 rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-600 px-5 py-2.5 text-sm font-bold text-white shadow-lg transition hover:scale-[1.02]">
+          <button onClick={openCreate} className="shrink-0 rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-600 px-5 py-2.5 text-sm font-bold text-on-accent shadow-lg transition hover:scale-[1.02]">
             + Create user
           </button>
           <button onClick={() => exportCsv(sorted)} className="shrink-0 rounded-full border border-white/10 bg-white/[0.05] px-5 py-2.5 text-sm font-bold text-white transition hover:bg-white/[0.09]">
@@ -817,14 +817,14 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
           onChange={(e) => { setSearch(e.target.value); setPage(1); }}
           className="flex-1 rounded-2xl border border-white/10 bg-white/[0.05] px-4 py-2.5 text-sm text-white placeholder:text-gray-400 focus:border-fuchsia-400/40 focus:outline-none"
         />
-        <select value={typeFilter} onChange={(e) => { setTypeFilter(e.target.value); setPage(1); }} className="rounded-2xl border border-white/10 bg-[#0b0918] px-4 py-2.5 text-sm text-white focus:border-fuchsia-400/40 focus:outline-none">
+        <select value={typeFilter} onChange={(e) => { setTypeFilter(e.target.value); setPage(1); }} className="rounded-2xl border border-white/10 bg-background px-4 py-2.5 text-sm text-white focus:border-fuchsia-400/40 focus:outline-none">
           <option value="all">All types</option>
           <option value="candidate">Candidate</option>
           <option value="corporate">Corporate</option>
           <option value="university">University</option>
           <option value="unknown">Unknown</option>
         </select>
-        <select value={statusFilter} onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }} className="rounded-2xl border border-white/10 bg-[#0b0918] px-4 py-2.5 text-sm text-white focus:border-fuchsia-400/40 focus:outline-none">
+        <select value={statusFilter} onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }} className="rounded-2xl border border-white/10 bg-background px-4 py-2.5 text-sm text-white focus:border-fuchsia-400/40 focus:outline-none">
           <option value="all">All statuses</option>
           <option value="paid">Paid / active</option>
           <option value="trial">Trial</option>
@@ -977,7 +977,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
       {/* ── Create user modal ────────────────────────────────────────────────────── */}
       {showCreate && (
         <div className="fixed inset-0 z-[9999] flex items-start justify-center overflow-y-auto bg-black/75 backdrop-blur-sm px-4 py-20" onClick={() => { if (!createLoading) { setShowCreate(false); setCreatedResult(null); } }}>
-          <div className="w-full max-w-md rounded-[1.75rem] border border-fuchsia-400/20 bg-[#120a1e] p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+          <div className="w-full max-w-md rounded-[1.75rem] border border-fuchsia-400/20 bg-background p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
             <p className="text-[12px] font-bold tracking-wide text-fuchsia-300">Create user</p>
             <h3 className="mt-1 text-xl font-bold text-white">New account</h3>
 
@@ -1108,7 +1108,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                     value={createForm.accountType}
                     onChange={(e) => setCreateForm((f) => ({ ...f, accountType: e.target.value, membership: (e.target.value === "corporate" ? "none" : "free") as MembershipKey, compPlan: "", companyName: "" }))}
                     disabled={createLoading}
-                    className="mt-1.5 w-full rounded-xl border border-white/10 bg-[#0b0918] px-3 py-2.5 text-sm text-white focus:border-fuchsia-400/40 focus:outline-none"
+                    className="mt-1.5 w-full rounded-xl border border-white/10 bg-background px-3 py-2.5 text-sm text-white focus:border-fuchsia-400/40 focus:outline-none"
                   >
                     <option value="candidate">Candidate</option>
                     <option value="corporate">Corporate</option>
@@ -1122,7 +1122,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                     value={createForm.membership}
                     onChange={(e) => setCreateForm((f) => ({ ...f, membership: e.target.value as MembershipKey }))}
                     disabled={createLoading || !!createForm.compPlan}
-                    className="mt-1.5 w-full rounded-xl border border-white/10 bg-[#0b0918] px-3 py-2.5 text-sm text-white focus:border-fuchsia-400/40 focus:outline-none disabled:opacity-40"
+                    className="mt-1.5 w-full rounded-xl border border-white/10 bg-background px-3 py-2.5 text-sm text-white focus:border-fuchsia-400/40 focus:outline-none disabled:opacity-40"
                   >
                     {createForm.accountType === "corporate" ? (
                       <>
@@ -1172,7 +1172,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                               : {}),
                           }))}
                           disabled={createLoading || (createForm.accountType === "candidate" ? createForm.membership !== "free" : createForm.membership !== "none")}
-                          className="mt-1.5 w-full rounded-xl border border-white/10 bg-[#0b0918] px-3 py-2.5 text-sm text-white focus:border-cyan-400/40 focus:outline-none disabled:opacity-40"
+                          className="mt-1.5 w-full rounded-xl border border-white/10 bg-background px-3 py-2.5 text-sm text-white focus:border-cyan-400/40 focus:outline-none disabled:opacity-40"
                         >
                           <option value="">None</option>
                           {createForm.accountType === "corporate" ? (
@@ -1194,7 +1194,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                           value={createForm.compDuration}
                           onChange={(e) => setCreateForm((f) => ({ ...f, compDuration: e.target.value }))}
                           disabled={createLoading || !createForm.compPlan}
-                          className="mt-1.5 w-full rounded-xl border border-white/10 bg-[#0b0918] px-3 py-2.5 text-sm text-white focus:border-cyan-400/40 focus:outline-none disabled:opacity-40"
+                          className="mt-1.5 w-full rounded-xl border border-white/10 bg-background px-3 py-2.5 text-sm text-white focus:border-cyan-400/40 focus:outline-none disabled:opacity-40"
                         >
                           <option value="7">1 week</option>
                           <option value="30">1 month</option>
@@ -1226,7 +1226,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                   <button
                     onClick={() => void submitCreate()}
                     disabled={createLoading || !createForm.email.trim()}
-                    className="flex-1 rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 py-2.5 text-sm font-bold text-white shadow-lg transition hover:scale-[1.02] disabled:opacity-60"
+                    className="flex-1 rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 py-2.5 text-sm font-bold text-on-accent shadow-lg transition hover:scale-[1.02] disabled:opacity-60"
                   >
                     {createLoading ? "Creating…" : "Create account"}
                   </button>
@@ -1240,7 +1240,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
       {/* ── Edit modal ──────────────────────────────────────────────────────────── */}
       {editingUser && (
         <div className="fixed inset-0 z-[9999] flex items-start justify-center overflow-y-auto bg-black/75 backdrop-blur-sm px-4 py-20" onClick={() => { if (!editLoading) setEditingUser(null); }}>
-          <div className="w-full max-w-md rounded-[1.75rem] border border-fuchsia-400/20 bg-[#120a1e] p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+          <div className="w-full max-w-md rounded-[1.75rem] border border-fuchsia-400/20 bg-background p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
             <p className="text-[12px] font-bold tracking-wide text-fuchsia-300">Edit user</p>
             <h3 className="mt-1 text-xl font-bold text-white">{editingUser.email}</h3>
             <p className="mt-0.5 text-[12px] text-gray-400">Clerk ID: {editingUser.id}</p>
@@ -1307,7 +1307,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                   value={editForm.accountType}
                   onChange={(e) => setEditForm((f) => ({ ...f, accountType: e.target.value, membership: "free" }))}
                   disabled={editLoading}
-                  className="mt-1.5 w-full rounded-xl border border-white/10 bg-[#0b0918] px-3 py-2.5 text-sm text-white focus:border-fuchsia-400/40 focus:outline-none"
+                  className="mt-1.5 w-full rounded-xl border border-white/10 bg-background px-3 py-2.5 text-sm text-white focus:border-fuchsia-400/40 focus:outline-none"
                 >
                   <option value="candidate">Candidate</option>
                   <option value="corporate">Corporate</option>
@@ -1324,7 +1324,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                   value={editForm.membership}
                   onChange={(e) => setEditForm((f) => ({ ...f, membership: e.target.value as MembershipKey }))}
                   disabled={editLoading || (editForm.accountType === "candidate" && !!editForm.compPlan)}
-                  className="mt-1.5 w-full rounded-xl border border-white/10 bg-[#0b0918] px-3 py-2.5 text-sm text-white focus:border-fuchsia-400/40 focus:outline-none disabled:opacity-40"
+                  className="mt-1.5 w-full rounded-xl border border-white/10 bg-background px-3 py-2.5 text-sm text-white focus:border-fuchsia-400/40 focus:outline-none disabled:opacity-40"
                 >
                   {editForm.accountType === "corporate" ? (
                     <>
@@ -1397,7 +1397,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                         value={editForm.compPlan}
                         onChange={(e) => setEditForm((f) => ({ ...f, compPlan: e.target.value, ...(e.target.value ? { membership: "free" as MembershipKey } : {}) }))}
                         disabled={editLoading || editForm.membership !== "free"}
-                        className="mt-1.5 w-full rounded-xl border border-white/10 bg-[#0b0918] px-3 py-2.5 text-sm text-white focus:border-cyan-400/40 focus:outline-none disabled:opacity-40"
+                        className="mt-1.5 w-full rounded-xl border border-white/10 bg-background px-3 py-2.5 text-sm text-white focus:border-cyan-400/40 focus:outline-none disabled:opacity-40"
                       >
                         <option value="">None</option>
                         <option value="plus">Plus</option>
@@ -1430,7 +1430,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
 
               <div className="flex gap-3 pt-1">
                 <button onClick={() => setEditingUser(null)} disabled={editLoading} className="flex-1 rounded-full border border-white/10 bg-white/[0.04] py-2.5 text-sm font-bold text-white transition hover:bg-white/[0.08] disabled:opacity-50">Cancel</button>
-                <button onClick={() => void saveEdit()} disabled={editLoading} className="flex-1 rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 py-2.5 text-sm font-bold text-white shadow-lg transition hover:scale-[1.02] disabled:opacity-60">
+                <button onClick={() => void saveEdit()} disabled={editLoading} className="flex-1 rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 py-2.5 text-sm font-bold text-on-accent shadow-lg transition hover:scale-[1.02] disabled:opacity-60">
                   {editLoading ? "Saving…" : "Save changes"}
                 </button>
               </div>
@@ -1442,7 +1442,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
       {/* ── Delete modal ─────────────────────────────────────────────────────────── */}
       {deletingUser && (
         <div className="fixed inset-0 z-[9999] flex items-start justify-center overflow-y-auto bg-black/75 backdrop-blur-sm px-4 py-20" onClick={() => { if (!deleteLoading) setDeletingUser(null); }}>
-          <div className="w-full max-w-md rounded-[1.75rem] border border-red-500/30 bg-[#160a14] p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+          <div className="w-full max-w-md rounded-[1.75rem] border border-red-500/30 bg-background p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
             <p className="text-[12px] font-bold tracking-wide text-red-300">Delete account</p>
             <h3 className="mt-1 text-xl font-bold text-white">{fullName(deletingUser)}</h3>
             <p className="mt-0.5 text-sm text-gray-400">{deletingUser.email}</p>
@@ -1471,7 +1471,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
               <button
                 onClick={() => void confirmDelete()}
                 disabled={deleteLoading || deleteConfirm.trim() !== deletingUser.email}
-                className="flex-1 rounded-full bg-red-600/90 py-2.5 text-sm font-bold text-white shadow-lg transition hover:bg-red-600 disabled:cursor-not-allowed disabled:opacity-40"
+                className="flex-1 rounded-full bg-red-600/90 py-2.5 text-sm font-bold text-on-accent shadow-lg transition hover:bg-red-600 disabled:cursor-not-allowed disabled:opacity-40"
               >
                 {deleteLoading ? "Deleting…" : "Delete permanently"}
               </button>

@@ -76,7 +76,7 @@ export function ProfileSignedOutState() {
 
             <div className="mt-8 flex flex-col gap-4 sm:flex-row">
               <SignInButton mode="modal">
-                <button className="rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-7 py-4 text-sm font-bold text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01]">
+                <button className="rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-7 py-4 text-sm font-bold text-on-accent shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01]">
                   Sign in to save profile
                 </button>
               </SignInButton>

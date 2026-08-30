@@ -72,9 +72,9 @@ export default function NotificationSettingsPage() {
   }
 
   return (
-    <main className="relative min-h-screen bg-[#0a0614] px-4 py-10 text-white">
+    <main className="relative min-h-screen bg-background px-4 py-10 text-white">
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_25%_15%,rgba(120,60,255,0.10),transparent),radial-gradient(ellipse_60%_50%_at_75%_85%,rgba(232,80,180,0.06),transparent),linear-gradient(180deg,#0a0614_0%,#100a1f_50%,#0c0816_100%)]" />
+        <div className="absolute inset-0 page-glow" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-xl">
@@ -168,7 +168,7 @@ export default function NotificationSettingsPage() {
           <button
             onClick={deleteAccount}
             disabled={deleteConfirm !== "DELETE" || deleting}
-            className="mt-4 rounded-full bg-red-500/90 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-red-500 disabled:cursor-not-allowed disabled:opacity-50"
+            className="mt-4 rounded-full bg-red-500/90 px-5 py-2.5 text-sm font-bold text-on-accent transition hover:bg-red-500 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {deleting ? "Deleting…" : "Permanently delete my account"}
           </button>

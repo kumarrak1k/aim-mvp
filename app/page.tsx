@@ -121,7 +121,7 @@ export default async function ForCandidatesPage() {
         <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link
             href="/for-candidates/sign-up"
-            className="w-full rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-8 py-4 text-center text-base font-bold text-white shadow-2xl shadow-purple-900/40 transition hover:scale-[1.02] sm:w-auto"
+            className="w-full rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-8 py-4 text-center text-base font-bold text-on-accent shadow-2xl shadow-purple-900/40 transition hover:scale-[1.02] sm:w-auto"
           >
             Start free →
           </Link>
@@ -355,7 +355,7 @@ export default async function ForCandidatesPage() {
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link href="/for-candidates/sign-up">
-              <button className="w-full rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-8 py-4 text-base font-bold text-white shadow-2xl shadow-purple-900/40 transition hover:scale-[1.02] sm:w-auto">
+              <button className="w-full rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-8 py-4 text-base font-bold text-on-accent shadow-2xl shadow-purple-900/40 transition hover:scale-[1.02] sm:w-auto">
                 Start free →
               </button>
             </Link>

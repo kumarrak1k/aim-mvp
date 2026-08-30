@@ -245,7 +245,7 @@ function CandidatesContent() {
                     <select
                       value={templateId}
                       onChange={(e) => setTemplateId(e.target.value)}
-                      className="w-full rounded-xl border border-white/15 bg-[#1a1328] px-4 py-3 text-white outline-none focus:border-fuchsia-400/60 focus:ring-2 focus:ring-fuchsia-400/20"
+                      className="w-full rounded-xl border border-white/15 bg-background px-4 py-3 text-white outline-none focus:border-fuchsia-400/60 focus:ring-2 focus:ring-fuchsia-400/20"
                     >
                       {templates.map((t) => (
                         <option key={t.id} value={t.id}>{t.name} ({t.role})</option>
@@ -305,7 +305,7 @@ function CandidatesContent() {
                 <button
                   type="submit"
                   disabled={sending || templates.length === 0 || !planActive || atInviteCap}
-                  className="w-full rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 py-3.5 text-sm font-bold text-white shadow-xl shadow-purple-950/35 transition hover:scale-[1.02] disabled:opacity-60"
+                  className="w-full rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 py-3.5 text-sm font-bold text-on-accent shadow-xl shadow-purple-950/35 transition hover:scale-[1.02] disabled:opacity-60"
                 >
                   {sending ? "Creating invite…" : atInviteCap ? "Invite limit reached" : "Create invite link →"}
                 </button>

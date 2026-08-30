@@ -150,7 +150,7 @@ export default function CorporateGuidePage() {
           </p>
           <Link
             href="/company/templates"
-            className="mt-5 inline-block rounded-full bg-gradient-to-r from-fuchsia-500 via-purple-500 to-blue-500 px-8 py-3 text-sm font-bold text-white shadow-lg shadow-purple-950/40 transition hover:scale-[1.02]"
+            className="mt-5 inline-block rounded-full bg-gradient-to-r from-fuchsia-500 via-purple-500 to-blue-500 px-8 py-3 text-sm font-bold text-on-accent shadow-lg shadow-purple-950/40 transition hover:scale-[1.02]"
           >
             Create a template
           </Link>

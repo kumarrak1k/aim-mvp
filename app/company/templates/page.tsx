@@ -88,7 +88,7 @@ export default function TemplatesPage() {
           {canEdit && (
             <Link
               href="/company/templates/new"
-              className="rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 px-5 py-2.5 text-sm font-bold text-white shadow-lg transition hover:scale-[1.02]"
+              className="rounded-full bg-gradient-to-r from-fuchsia-500 to-purple-500 px-5 py-2.5 text-sm font-bold text-on-accent shadow-lg transition hover:scale-[1.02]"
             >
               + New template
             </Link>

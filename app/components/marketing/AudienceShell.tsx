@@ -108,14 +108,14 @@ export function AudienceShell({
   const theme = THEMES[audience];
 
   return (
-    <div className="relative min-h-screen bg-[#0a0614] text-white">
+    <div className="relative min-h-screen bg-background text-white">
       <SkipToContent />
       {/* Data trust bar — top of every audience page */}
       <DataTrustStrip variant="topbar" />
 
       {/* Background atmosphere — tinted by audience */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_25%_15%,rgba(120,60,255,0.10),transparent),radial-gradient(ellipse_60%_50%_at_75%_85%,rgba(232,80,180,0.06),transparent),linear-gradient(180deg,#0a0614_0%,#100a1f_50%,#0c0816_100%)]" />
+        <div className="absolute inset-0 page-glow" />
         <div className="absolute left-[-160px] top-[-80px] h-[520px] w-[520px] rounded-full bg-purple-500/[0.08] blur-[160px]" />
         <div className="absolute bottom-[-80px] right-[-160px] h-[520px] w-[520px] rounded-full bg-fuchsia-500/[0.08] blur-[160px]" />
       </div>
@@ -158,7 +158,7 @@ export function AudienceShell({
                         </svg>
                       </button>
                       <div className="invisible absolute left-1/2 top-full z-50 w-56 -translate-x-1/2 pt-2 opacity-0 transition group-hover/dd:visible group-hover/dd:opacity-100 group-focus-within/dd:visible group-focus-within/dd:opacity-100">
-                        <div className="rounded-2xl border border-white/[0.09] bg-[#140a26] p-1.5 shadow-2xl shadow-black/50">
+                        <div className="rounded-2xl border border-white/[0.09] bg-background p-1.5 shadow-2xl shadow-black/50">
                           {item.dropdown.map((sub) => (
                             <Link
                               key={sub.href}
@@ -234,7 +234,7 @@ export function AudienceShell({
             </svg>
           </summary>
 
-          <div className="mt-2 overflow-hidden rounded-2xl border border-white/[0.09] bg-[#140a26] p-2 shadow-2xl shadow-black/50">
+          <div className="mt-2 overflow-hidden rounded-2xl border border-white/[0.09] bg-background p-2 shadow-2xl shadow-black/50">
             {theme.navItems.map((item) => {
               // The "Free tools" dropdown becomes a labelled group with its
               // children listed underneath — no hover needed on touch.

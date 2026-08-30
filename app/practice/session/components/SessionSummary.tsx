@@ -696,7 +696,7 @@ export function SessionSummary({
               <div className="mt-4 flex flex-wrap gap-3">
                 <Link
                   href="/pricing"
-                  className="rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-purple-900/35 transition hover:scale-[1.01]"
+                  className="rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-3 text-sm font-bold text-on-accent shadow-lg shadow-purple-900/35 transition hover:scale-[1.01]"
                 >
                   See plans →
                 </Link>
@@ -729,7 +729,7 @@ export function SessionSummary({
                       <Link
                         href={`/certificate/${certificateId}`}
                         target="_blank"
-                        className="rounded-xl bg-emerald-600 px-4 py-2 text-xs font-bold text-white hover:bg-emerald-500"
+                        className="rounded-xl bg-emerald-600 px-4 py-2 text-xs font-bold text-on-accent hover:bg-emerald-500"
                       >
                         View certificate
                       </Link>
@@ -778,7 +778,7 @@ export function SessionSummary({
         <button
           type="button"
           onClick={onRestart}
-          className="rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-7 py-4 text-sm font-bold text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01]"
+          className="rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-7 py-4 text-sm font-bold text-on-accent shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01]"
         >
           Start a new session
         </button>

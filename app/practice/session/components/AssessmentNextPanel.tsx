@@ -59,7 +59,7 @@ export function AssessmentNextPanel({
           type="button"
           onClick={onNext}
           disabled={busy}
-          className="shrink-0 rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-4 text-sm font-bold text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-60 sm:px-7"
+          className="shrink-0 rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-4 text-sm font-bold text-on-accent shadow-2xl shadow-purple-900/35 transition hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-60 sm:px-7"
         >
           {buttonLabel}
         </button>

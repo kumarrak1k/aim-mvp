@@ -149,7 +149,7 @@ export function AboutPageContent() {
         <section className="text-center">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-8 py-4 text-base font-bold text-white shadow-2xl shadow-purple-950/40 transition hover:scale-[1.02]"
+            className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-8 py-4 text-base font-bold text-on-accent shadow-2xl shadow-purple-950/40 transition hover:scale-[1.02]"
           >
             Start practising →
           </Link>

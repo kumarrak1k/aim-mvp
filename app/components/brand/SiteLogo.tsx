@@ -42,13 +42,25 @@ function LogoContent({
 
   return (
     <span className={`flex min-w-0 shrink-0 items-center ${className || ""}`}>
+      {/* Two lockups, one per theme: the wordmark colour is baked into the
+          SVG, so CSS can't restyle it — globals.css shows exactly one via
+          .theme-dark-only / .theme-light-only. */}
       <Image
         src="/brand/logo-lockup.svg"
         alt="AI Career Mentor"
         width={Math.round(h * RATIO)}
         height={h}
         priority
-        className={`w-auto ${cls}`}
+        className={`theme-dark-only w-auto ${cls}`}
+      />
+      <Image
+        src="/brand/logo-lockup-light.svg"
+        alt=""
+        aria-hidden
+        width={Math.round(h * RATIO)}
+        height={h}
+        priority
+        className={`theme-light-only w-auto ${cls}`}
       />
     </span>
   );

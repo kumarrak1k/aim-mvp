@@ -133,7 +133,7 @@ export default async function AssessmentCentrePage() {
         <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link
             href="/pricing"
-            className="w-full rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-8 py-4 text-center text-base font-bold text-white shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.02] sm:w-auto"
+            className="w-full rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-8 py-4 text-center text-base font-bold text-on-accent shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.02] sm:w-auto"
           >
             Get Professional →
           </Link>
@@ -262,7 +262,7 @@ export default async function AssessmentCentrePage() {
           <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link
               href="/pricing"
-              className="rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-7 py-4 text-center text-base font-bold text-white shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.02]"
+              className="rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-7 py-4 text-center text-base font-bold text-on-accent shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.02]"
             >
               Get Professional →
             </Link>

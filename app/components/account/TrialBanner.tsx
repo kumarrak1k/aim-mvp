@@ -168,7 +168,7 @@ export function TrialBanner() {
         className={`relative z-40 border-b ${
           urgent
             ? "border-amber-400/25 bg-amber-500/[0.12]"
-            : "border-purple-500/25 bg-[#170c2e]"
+            : "border-purple-500/25 bg-background"
         }`}
       >
         <div className="mx-auto flex max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] flex-wrap items-center justify-center gap-x-3 gap-y-1 px-4 py-2 text-center sm:px-6">
@@ -183,7 +183,7 @@ export function TrialBanner() {
           </span>
           <Link
             href="/pricing"
-            className="rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-3.5 py-1 text-[12px] font-bold text-white shadow transition hover:scale-[1.03]"
+            className="rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-3.5 py-1 text-[12px] font-bold text-on-accent shadow transition hover:scale-[1.03]"
           >
             Upgrade to keep access →
           </Link>
@@ -195,7 +195,7 @@ export function TrialBanner() {
   // ── Eligible free user (never trialed) — offer to start ───────────────────
   if (!sub.trialConsumed) {
     return (
-      <div className="relative z-40 border-b border-purple-500/25 bg-[#170c2e]">
+      <div className="relative z-40 border-b border-purple-500/25 bg-background">
         <div className="mx-auto flex max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] flex-wrap items-center justify-center gap-x-3 gap-y-1 px-4 py-2 text-center sm:px-6">
           <span className="text-[13px] font-semibold text-gray-100">
             <span aria-hidden>🎁 </span>
@@ -205,7 +205,7 @@ export function TrialBanner() {
           <button
             onClick={startTrial}
             disabled={starting}
-            className="rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-3.5 py-1 text-[12px] font-bold text-white shadow transition hover:scale-[1.03] disabled:opacity-60"
+            className="rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-3.5 py-1 text-[12px] font-bold text-on-accent shadow transition hover:scale-[1.03] disabled:opacity-60"
           >
             {starting ? "Starting…" : "Start free trial"}
           </button>

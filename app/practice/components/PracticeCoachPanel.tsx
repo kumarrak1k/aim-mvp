@@ -186,7 +186,7 @@ export function PracticeCoachPanel({
                 type="button"
                 onClick={startGuidedAnswer}
                 disabled={primaryDisabled}
-                className="rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-5 py-3 text-sm font-bold text-white shadow-2xl shadow-purple-900/30 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
+                className="rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-5 py-3 text-sm font-bold text-on-accent shadow-2xl shadow-purple-900/30 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {primaryButtonLabel}
               </button>

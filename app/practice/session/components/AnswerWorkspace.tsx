@@ -116,7 +116,7 @@ export function AnswerWorkspace({
               analysing ||
               questionAudioLoading
             }
-            className="hidden rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-5 py-3 text-sm font-bold text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50 sm:inline-flex"
+            className="hidden rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-5 py-3 text-sm font-bold text-on-accent shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50 sm:inline-flex"
           >
             {submitDesktopLabel}
           </button>
@@ -219,7 +219,7 @@ export function AnswerWorkspace({
               analysing ||
               questionAudioLoading
             }
-            className={`rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-5 py-3 text-sm font-bold text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50 ${freePlan ? "" : "sm:hidden"}`}
+            className={`rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-5 py-3 text-sm font-bold text-on-accent shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50 ${freePlan ? "" : "sm:hidden"}`}
           >
             {submitMobileLabel}
           </button>

@@ -222,7 +222,7 @@ export default function CompanyResultsPage() {
               <select
                 value={templateFilter}
                 onChange={(e) => setTemplateFilter(e.target.value)}
-                className="rounded-full border border-white/10 bg-[#1a1328] px-4 py-2 text-xs font-bold text-white outline-none focus:border-fuchsia-400/40"
+                className="rounded-full border border-white/10 bg-background px-4 py-2 text-xs font-bold text-white outline-none focus:border-fuchsia-400/40"
               >
                 <option value="all">All templates</option>
                 {templates.map((t) => (

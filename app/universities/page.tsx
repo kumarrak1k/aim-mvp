@@ -103,7 +103,7 @@ export default function UniversitiesPage() {
               data-tally-overlay="1"
               data-tally-emoji-text="👋"
               data-tally-emoji-animation="wave"
-              className="inline-flex cursor-pointer items-center gap-2 rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-8 py-4 text-base font-bold text-white shadow-2xl shadow-purple-950/40 transition hover:scale-[1.02]"
+              className="inline-flex cursor-pointer items-center gap-2 rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-8 py-4 text-base font-bold text-on-accent shadow-2xl shadow-purple-950/40 transition hover:scale-[1.02]"
             >
               Request a demo →
             </button>
@@ -184,7 +184,7 @@ export default function UniversitiesPage() {
               data-tally-overlay="1"
               data-tally-emoji-text="👋"
               data-tally-emoji-animation="wave"
-              className="inline-flex cursor-pointer items-center gap-2 rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-3.5 text-sm font-bold text-white shadow-lg transition hover:scale-[1.02]"
+              className="inline-flex cursor-pointer items-center gap-2 rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-3.5 text-sm font-bold text-on-accent shadow-lg transition hover:scale-[1.02]"
             >
               Request a proposal →
             </button>

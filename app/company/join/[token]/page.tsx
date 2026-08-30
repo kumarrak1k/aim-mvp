@@ -76,7 +76,7 @@ export default function JoinPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#0b0918] px-4">
+    <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="mb-8 flex justify-center">
@@ -163,7 +163,7 @@ export default function JoinPage() {
               <button
                 onClick={() => void acceptInvite()}
                 disabled={phase === "accepting"}
-                className="mt-6 flex w-full justify-center rounded-2xl bg-gradient-to-r from-fuchsia-500 to-purple-500 px-5 py-3.5 text-sm font-bold text-white shadow-xl shadow-fuchsia-950/35 transition hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-60"
+                className="mt-6 flex w-full justify-center rounded-2xl bg-gradient-to-r from-fuchsia-500 to-purple-500 px-5 py-3.5 text-sm font-bold text-on-accent shadow-xl shadow-fuchsia-950/35 transition hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {phase === "accepting" ? "Accepting…" : `Accept invitation →`}
               </button>
@@ -190,7 +190,7 @@ export default function JoinPage() {
               </p>
               <button
                 onClick={() => router.push("/company/dashboard")}
-                className="mt-6 flex w-full justify-center rounded-2xl bg-gradient-to-r from-fuchsia-500 to-purple-500 px-5 py-3.5 text-sm font-bold text-white shadow-xl shadow-fuchsia-950/35 transition hover:scale-[1.02]"
+                className="mt-6 flex w-full justify-center rounded-2xl bg-gradient-to-r from-fuchsia-500 to-purple-500 px-5 py-3.5 text-sm font-bold text-on-accent shadow-xl shadow-fuchsia-950/35 transition hover:scale-[1.02]"
               >
                 Go to dashboard →
               </button>

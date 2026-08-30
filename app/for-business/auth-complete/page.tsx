@@ -117,9 +117,9 @@ export default function BusinessSignUpCompletePage() {
   if (phase === "warning") {
     const email = user?.primaryEmailAddress?.emailAddress ?? "";
     return (
-      <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#0a0614] px-4 text-white">
+      <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-4 text-white">
         <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_25%_15%,rgba(120,60,255,0.10),transparent),radial-gradient(ellipse_60%_50%_at_75%_85%,rgba(232,80,180,0.06),transparent),linear-gradient(180deg,#0a0614_0%,#100a1f_50%,#0c0816_100%)]" />
+          <div className="absolute inset-0 page-glow" />
           <div className="absolute left-[-160px] top-[-80px] h-[520px] w-[520px] rounded-full bg-purple-500/[0.08] blur-[160px]" />
           <div className="absolute bottom-[-80px] right-[-160px] h-[520px] w-[520px] rounded-full bg-purple-500/[0.15] blur-[160px]" />
         </div>
@@ -145,7 +145,7 @@ export default function BusinessSignUpCompletePage() {
           {/* Primary — confirm they're a recruiter */}
           <button
             onClick={() => setPhase("processing")}
-            className="w-full rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-purple-900/30 transition hover:scale-[1.02]"
+            className="w-full rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-3.5 text-sm font-bold text-on-accent shadow-lg shadow-purple-900/30 transition hover:scale-[1.02]"
           >
             Yes, I&rsquo;m a hiring manager. Continue
           </button>
@@ -170,9 +170,9 @@ export default function BusinessSignUpCompletePage() {
 
   // ── Loading / processing screen ───────────────────────────────────────────
   return (
-    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#0a0614] px-4 text-white">
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-4 text-white">
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_25%_15%,rgba(120,60,255,0.10),transparent),radial-gradient(ellipse_60%_50%_at_75%_85%,rgba(232,80,180,0.06),transparent),linear-gradient(180deg,#0a0614_0%,#100a1f_50%,#0c0816_100%)]" />
+        <div className="absolute inset-0 page-glow" />
         <div className="absolute left-[-160px] top-[-80px] h-[520px] w-[520px] rounded-full bg-purple-500/[0.08] blur-[160px]" />
         <div className="absolute bottom-[-80px] right-[-160px] h-[520px] w-[520px] rounded-full bg-purple-500/[0.15] blur-[160px]" />
       </div>

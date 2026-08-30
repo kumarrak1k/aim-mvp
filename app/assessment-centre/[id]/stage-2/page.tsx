@@ -246,7 +246,7 @@ export default function Stage2Page() {
 
         <button
           onClick={handleStart}
-          className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 px-8 py-5 text-base font-bold text-white shadow-2xl shadow-purple-900/40 transition hover:scale-[1.015]"
+          className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-fuchsia-500 via-purple-500 to-cyan-500 px-8 py-5 text-base font-bold text-on-accent shadow-2xl shadow-purple-900/40 transition hover:scale-[1.015]"
         >
           Start interview →
         </button>

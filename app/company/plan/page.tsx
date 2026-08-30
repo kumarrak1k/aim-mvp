@@ -125,7 +125,7 @@ export default function CompanyPlanPage() {
                 disabled={starting}
                 className={`mt-8 w-full rounded-2xl px-5 py-4 text-sm font-bold transition disabled:opacity-60 ${
                   plan.highlight
-                    ? "bg-gradient-to-r from-fuchsia-500 to-purple-500 text-white shadow-xl shadow-fuchsia-950/35 hover:scale-[1.02]"
+                    ? "bg-gradient-to-r from-fuchsia-500 to-purple-500 text-on-accent shadow-xl shadow-fuchsia-950/35 hover:scale-[1.02]"
                     : "border border-white/10 bg-white/[0.06] text-white hover:bg-white/[0.1]"
                 }`}
               >

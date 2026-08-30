@@ -177,7 +177,7 @@ export default function AssessmentLandingPage() {
 
   if (loading || !isLoaded) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#0a0614]">
+      <div className="flex min-h-screen items-center justify-center bg-background">
         <div className="h-10 w-10 animate-spin rounded-full border-2 border-purple-400 border-t-transparent" />
       </div>
     );
@@ -185,7 +185,7 @@ export default function AssessmentLandingPage() {
 
   if (error) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-[#0a0614] px-4 text-center text-white">
+      <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4 text-center text-white">
         <div className="mb-6 text-5xl">
           {error.code === 409 ? "✅" : error.code === 410 ? "⏰" : "🔗"}
         </div>
@@ -213,9 +213,9 @@ export default function AssessmentLandingPage() {
   const brand = company.brandColor || "#8c5cff";
 
   return (
-    <div className="min-h-screen bg-[#0a0614] text-white">
+    <div className="min-h-screen bg-background text-white">
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_25%_15%,rgba(120,60,255,0.10),transparent),radial-gradient(ellipse_60%_50%_at_75%_85%,rgba(232,80,180,0.06),transparent),linear-gradient(180deg,#0a0614_0%,#100a1f_50%,#0c0816_100%)]" />
+        <div className="absolute inset-0 page-glow" />
         <div className="absolute left-[-160px] top-[-80px] h-[520px] w-[520px] rounded-full bg-purple-500/[0.08] blur-[160px]" />
         <div className="absolute bottom-[-80px] right-[-160px] h-[520px] w-[520px] rounded-full bg-fuchsia-500/[0.08] blur-[160px]" />
       </div>
@@ -577,7 +577,7 @@ function SetupStep({
                     }`}
                   >
                     {selected && (
-                      <span className="h-2 w-2 rounded-full bg-[#0a0614]" />
+                      <span className="h-2 w-2 rounded-full bg-background" />
                     )}
                   </span>
                   <div className="flex-1">

@@ -80,7 +80,7 @@ export default function BusinessPlatformPage() {
         </p>
         <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link href="/for-business/sign-up">
-            <button className="w-full rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-8 py-4 text-base font-bold text-white shadow-2xl shadow-purple-900/40 transition hover:scale-[1.02] sm:w-auto">
+            <button className="w-full rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-8 py-4 text-base font-bold text-on-accent shadow-2xl shadow-purple-900/40 transition hover:scale-[1.02] sm:w-auto">
               Create workspace →
             </button>
           </Link>
@@ -142,7 +142,7 @@ export default function BusinessPlatformPage() {
           </h2>
           <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link href="/for-business/sign-up">
-              <button className="rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-7 py-4 text-base font-bold text-white shadow-2xl shadow-purple-900/40 transition hover:scale-[1.02]">
+              <button className="rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-7 py-4 text-base font-bold text-on-accent shadow-2xl shadow-purple-900/40 transition hover:scale-[1.02]">
                 Create workspace →
               </button>
             </Link>

@@ -251,7 +251,7 @@ export default function CVEnhancerPage() {
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
             <Link
               href="/pricing"
-              className="rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-3.5 text-center text-sm font-bold text-white shadow-lg"
+              className="rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-3.5 text-center text-sm font-bold text-on-accent shadow-lg"
             >
               See plans →
             </Link>
@@ -444,7 +444,7 @@ export default function CVEnhancerPage() {
               disabled={loading || !targetRole.trim() || cvText.trim().length < 50}
               className={`flex w-full items-center justify-center gap-2 rounded-2xl px-6 py-4 text-sm font-bold transition-all ${
                 !loading && targetRole.trim() && cvText.trim().length >= 50
-                  ? "bg-gradient-to-r from-purple-500 to-fuchsia-500 text-white shadow-lg hover:scale-[1.01]"
+                  ? "bg-gradient-to-r from-purple-500 to-fuchsia-500 text-on-accent shadow-lg hover:scale-[1.01]"
                   : "cursor-not-allowed bg-white/[0.05] text-gray-400"
               }`}
             >
@@ -610,7 +610,7 @@ export default function CVEnhancerPage() {
                   </div>
                   <button
                     onClick={() => void handleCheckGaps()}
-                    className="shrink-0 rounded-2xl bg-gradient-to-r from-purple-500 to-fuchsia-500 px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-purple-900/30 transition hover:scale-[1.02]"
+                    className="shrink-0 rounded-2xl bg-gradient-to-r from-purple-500 to-fuchsia-500 px-6 py-3.5 text-sm font-bold text-on-accent shadow-lg shadow-purple-900/30 transition hover:scale-[1.02]"
                   >
                     Generate Enhanced CV →
                   </button>
@@ -693,7 +693,7 @@ export default function CVEnhancerPage() {
                         .map((g) => ({ id: g.id, answer: gapAnswers[g.id] }));
                       void handleGenerateEnhanced(answers);
                     }}
-                    className="rounded-2xl bg-gradient-to-r from-purple-500 to-fuchsia-500 px-6 py-2.5 text-sm font-bold text-white shadow-lg shadow-purple-900/30 transition hover:scale-[1.01]"
+                    className="rounded-2xl bg-gradient-to-r from-purple-500 to-fuchsia-500 px-6 py-2.5 text-sm font-bold text-on-accent shadow-lg shadow-purple-900/30 transition hover:scale-[1.01]"
                   >
                     Generate Enhanced CV →
                   </button>

@@ -13,11 +13,11 @@ import { DataTrustStrip } from "@/app/components/DataTrustStrip";
  */
 export default function BusinessSignUpPage() {
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#0a0614] text-white">
+    <main className="relative min-h-screen overflow-hidden bg-background text-white">
       <DataTrustStrip variant="topbar" />
 
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_25%_15%,rgba(120,60,255,0.10),transparent),radial-gradient(ellipse_60%_50%_at_75%_85%,rgba(232,80,180,0.06),transparent),linear-gradient(180deg,#0a0614_0%,#100a1f_50%,#0c0816_100%)]" />
+        <div className="absolute inset-0 page-glow" />
         <div className="absolute left-[-160px] top-[-80px] h-[520px] w-[520px] rounded-full bg-purple-500/[0.08] blur-[160px]" />
         <div className="absolute bottom-[-80px] right-[-160px] h-[520px] w-[520px] rounded-full bg-purple-500/[0.15] blur-[160px]" />
       </div>
@@ -80,7 +80,7 @@ export default function BusinessSignUpPage() {
                 socialButtonsBlockButton:
                   "min-h-[44px] border-white/[0.1] bg-white/[0.04] hover:bg-white/[0.08] text-white",
                 formButtonPrimary:
-                  "min-h-[44px] bg-gradient-to-r from-violet-600 to-purple-600 hover:scale-[1.01] shadow-lg shadow-purple-900/30 text-white font-bold normal-case",
+                  "min-h-[44px] bg-gradient-to-r from-violet-600 to-purple-600 hover:scale-[1.01] shadow-lg shadow-purple-900/30 text-on-accent font-bold normal-case",
                 formFieldInput:
                   "min-h-[44px] bg-black/30 border-white/[0.1] text-white placeholder-gray-400",
                 formFieldLabel: "text-gray-300",

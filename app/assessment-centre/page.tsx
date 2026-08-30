@@ -123,7 +123,7 @@ function UpgradeGate({ planName }: { planName: string }) {
         <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link
             href="/pricing"
-            className="rounded-2xl bg-gradient-to-r from-violet-500 to-purple-500 px-8 py-4 text-center text-sm font-bold text-white shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.02]"
+            className="rounded-2xl bg-gradient-to-r from-violet-500 to-purple-500 px-8 py-4 text-center text-sm font-bold text-on-accent shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.02]"
           >
             Upgrade to Professional →
           </Link>
@@ -164,7 +164,7 @@ function SignInGate() {
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link
               href="/for-candidates/sign-up"
-              className="rounded-2xl bg-gradient-to-r from-violet-500 to-purple-500 px-8 py-4 text-center text-sm font-bold text-white shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.02]"
+              className="rounded-2xl bg-gradient-to-r from-violet-500 to-purple-500 px-8 py-4 text-center text-sm font-bold text-on-accent shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.02]"
             >
               Get started →
             </Link>
@@ -213,7 +213,7 @@ function AssessmentCentreAccess({ isTaster = false }: { isTaster?: boolean }) {
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link
               href="/assessment-centre/setup"
-              className="rounded-2xl bg-gradient-to-r from-violet-500 to-purple-500 px-8 py-4 text-center text-base font-bold text-white shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.02]"
+              className="rounded-2xl bg-gradient-to-r from-violet-500 to-purple-500 px-8 py-4 text-center text-base font-bold text-on-accent shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.02]"
             >
               Start assessment centre →
             </Link>

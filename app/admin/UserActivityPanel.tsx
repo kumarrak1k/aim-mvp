@@ -126,7 +126,7 @@ export function UserActivityPanel({
       onClick={onClose}
     >
       <div
-        className="w-full max-w-5xl rounded-[1.75rem] border border-purple-400/20 bg-[#120a1e] p-6 shadow-2xl"
+        className="w-full max-w-5xl rounded-[1.75rem] border border-purple-400/20 bg-background p-6 shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-5 flex items-start justify-between gap-4">

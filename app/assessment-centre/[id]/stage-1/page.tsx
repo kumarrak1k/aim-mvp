@@ -515,7 +515,7 @@ export default function Stage1Page() {
                   disabled={wordCount < 50 || submitting}
                   className={`flex w-full items-center justify-center gap-3 rounded-2xl px-6 py-4 text-sm font-bold transition-all ${
                     wordCount >= 50 && !submitting
-                      ? "bg-gradient-to-r from-purple-500 to-fuchsia-500 text-white shadow-lg shadow-purple-900/30 hover:scale-[1.01]"
+                      ? "bg-gradient-to-r from-purple-500 to-fuchsia-500 text-on-accent shadow-lg shadow-purple-900/30 hover:scale-[1.01]"
                       : "cursor-not-allowed bg-white/[0.05] text-gray-400"
                   }`}
                 >
@@ -645,7 +645,7 @@ export default function Stage1Page() {
                   return (
                     <button
                       onClick={() => router.push(nextHref)}
-                      className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-fuchsia-500 to-purple-500 px-6 py-4 text-sm font-bold text-white shadow-lg shadow-purple-900/30 transition hover:scale-[1.01]"
+                      className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-fuchsia-500 to-purple-500 px-6 py-4 text-sm font-bold text-on-accent shadow-lg shadow-purple-900/30 transition hover:scale-[1.01]"
                     >
                       {nextLabel}
                     </button>

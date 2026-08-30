@@ -169,7 +169,7 @@ export function STARScorerClient() {
           <button
             type="submit"
             disabled={isPending}
-            className="w-full rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 py-4 text-base font-bold text-white shadow-2xl shadow-purple-950/40 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-60"
+            className="w-full rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 py-4 text-base font-bold text-on-accent shadow-2xl shadow-purple-950/40 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isPending ? "Scoring your answer…" : "Score my STAR answer →"}
           </button>
@@ -232,7 +232,7 @@ export function STARScorerClient() {
               </p>
               <Link
                 href="/for-candidates/sign-up"
-                className="mt-5 inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-7 py-3.5 text-sm font-bold text-white shadow-xl transition hover:scale-[1.02]"
+                className="mt-5 inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-7 py-3.5 text-sm font-bold text-on-accent shadow-xl transition hover:scale-[1.02]"
               >
                 Start free, no credit card →
               </Link>

@@ -32,14 +32,14 @@ type PublicShellProps = {
 
 export function PublicShell({ children, currentPath }: PublicShellProps) {
   return (
-    <div className="relative min-h-screen bg-[#0a0614] text-white">
+    <div className="relative min-h-screen bg-background text-white">
       <SkipToContent />
       {/* Data trust bar — top of every public page */}
       <DataTrustStrip variant="topbar" />
 
       {/* Background */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_25%_15%,rgba(120,60,255,0.10),transparent),radial-gradient(ellipse_60%_50%_at_75%_85%,rgba(232,80,180,0.06),transparent),linear-gradient(180deg,#0a0614_0%,#100a1f_50%,#0c0816_100%)]" />
+        <div className="absolute inset-0 page-glow" />
         <div className="absolute left-[-160px] top-[-80px] h-[520px] w-[520px] rounded-full bg-purple-500/[0.08] blur-[160px]" />
         <div className="absolute bottom-[-80px] right-[-160px] h-[520px] w-[520px] rounded-full bg-fuchsia-500/[0.08] blur-[160px]" />
       </div>
@@ -79,7 +79,7 @@ export function PublicShell({ children, currentPath }: PublicShellProps) {
           <WhenSignedOut>
             <Link
               href="/for-candidates"
-              className="col-start-3 relative z-10 rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-4 py-2 text-xs font-bold text-white shadow-lg shadow-purple-900/40 sm:hidden"
+              className="col-start-3 relative z-10 rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-4 py-2 text-xs font-bold text-on-accent shadow-lg shadow-purple-900/40 sm:hidden"
             >
               Start free
             </Link>
@@ -87,7 +87,7 @@ export function PublicShell({ children, currentPath }: PublicShellProps) {
           <WhenSignedIn>
             <a
               href="/api/account/home"
-              className="col-start-3 relative z-10 rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-4 py-2 text-xs font-bold text-white shadow-lg shadow-purple-900/40 sm:hidden"
+              className="col-start-3 relative z-10 rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-4 py-2 text-xs font-bold text-on-accent shadow-lg shadow-purple-900/40 sm:hidden"
             >
               My dashboard
             </a>
@@ -109,7 +109,7 @@ export function PublicShell({ children, currentPath }: PublicShellProps) {
               </Link>
               <Link
                 href="/for-candidates/sign-up"
-                className="rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-600 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-purple-900/30 transition hover:scale-[1.02]"
+                className="rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-600 px-5 py-2.5 text-sm font-bold text-on-accent shadow-lg shadow-purple-900/30 transition hover:scale-[1.02]"
               >
                 Start free
               </Link>
@@ -122,7 +122,7 @@ export function PublicShell({ children, currentPath }: PublicShellProps) {
             <div className="col-start-3 relative z-10 hidden shrink-0 sm:flex">
               <a
                 href="/api/account/home"
-                className="rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-600 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-purple-900/30 transition hover:scale-[1.02]"
+                className="rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-600 px-5 py-2.5 text-sm font-bold text-on-accent shadow-lg shadow-purple-900/30 transition hover:scale-[1.02]"
               >
                 My dashboard
               </a>

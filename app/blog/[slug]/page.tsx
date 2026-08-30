@@ -264,7 +264,7 @@ export default async function BlogPostPage({ params }: Props) {
           </p>
           <Link
             href="/for-candidates/sign-up"
-            className="mt-5 inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-7 py-3.5 text-sm font-bold text-white shadow-xl transition hover:scale-[1.02]"
+            className="mt-5 inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-7 py-3.5 text-sm font-bold text-on-accent shadow-xl transition hover:scale-[1.02]"
           >
             Start practising free →
           </Link>

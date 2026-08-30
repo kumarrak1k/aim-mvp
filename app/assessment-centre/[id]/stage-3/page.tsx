@@ -412,7 +412,7 @@ export default function Stage3Page() {
 
             <button
               onClick={startPresenting}
-              className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-violet-500 to-purple-500 px-8 py-5 text-base font-bold text-white shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.015]"
+              className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-violet-500 to-purple-500 px-8 py-5 text-base font-bold text-on-accent shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.015]"
             >
               I&apos;m ready to present →
             </button>
@@ -519,7 +519,7 @@ export default function Stage3Page() {
               disabled={(wordCount < 80 && presentTimeLeft > 0) || submitting}
               className={`flex w-full items-center justify-center gap-3 rounded-2xl px-8 py-5 text-base font-bold transition-all ${
                 (wordCount >= 80 || presentTimeLeft === 0) && !submitting
-                  ? "bg-gradient-to-r from-violet-500 to-purple-500 text-white shadow-2xl shadow-cyan-900/40 hover:scale-[1.015]"
+                  ? "bg-gradient-to-r from-violet-500 to-purple-500 text-on-accent shadow-2xl shadow-cyan-900/40 hover:scale-[1.015]"
                   : "cursor-not-allowed bg-white/[0.05] text-gray-400"
               }`}
             >
@@ -635,7 +635,7 @@ export default function Stage3Page() {
 
             <button
               onClick={() => router.push(`/assessment-centre/${id}/report`)}
-              className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-violet-500 to-purple-500 px-8 py-5 text-base font-bold text-white shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.015]"
+              className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-violet-500 to-purple-500 px-8 py-5 text-base font-bold text-on-accent shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.015]"
             >
               View your full report →
             </button>

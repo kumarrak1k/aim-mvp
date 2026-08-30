@@ -156,7 +156,7 @@ export default async function CompanyGuidePage({ params }: Props) {
         </section>
 
         {/* Practice CTA */}
-        <div className="rounded-2xl bg-gradient-to-br from-purple-900/60 to-[#0a0614] border border-purple-400/20 p-8 text-center">
+        <div className="rounded-2xl bg-gradient-to-br from-purple-900/60 to-background border border-purple-400/20 p-8 text-center">
           <p className="text-xs font-bold tracking-wide text-purple-400">
             AI Career Mentor
           </p>
@@ -171,7 +171,7 @@ export default async function CompanyGuidePage({ params }: Props) {
           </p>
           <Link
             href={`/practice?role=${encodeURIComponent(guide.practiceRole)}`}
-            className="mt-6 inline-block rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-8 py-4 text-sm font-bold text-white shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01]"
+            className="mt-6 inline-block rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-8 py-4 text-sm font-bold text-on-accent shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01]"
           >
             Practise for {guide.name} →
           </Link>
