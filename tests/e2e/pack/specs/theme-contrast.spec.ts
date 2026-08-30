@@ -61,6 +61,44 @@ for (const theme of ["dark", "light"] as const) {
           `contrast violations on ${route} (${theme}):\n` +
             violations.map((v: { data: string; text: string; target: string }) => `  ${v.data} | "${v.text}" | ${v.target}`).join("\n")
         ).toEqual([]);
+
+        // Click integrity: every visible interactive element in the page's
+        // landmarks must actually receive a click at its centre — catches
+        // z-index/absolute-positioning overlays that block interaction
+        // (the class of bug behind "nav buttons don't work", 2026-08-30).
+        const blockedEls = await page.evaluate(() => {
+          const out: { label: string; blockedBy: string }[] = [];
+          const seen = new Set<Element>();
+          for (const scope of document.querySelectorAll("header, nav, aside, footer, main")) {
+            for (const el of scope.querySelectorAll("a[href], button")) {
+              if (seen.has(el)) continue;
+              seen.add(el);
+              const r = el.getBoundingClientRect();
+              if (r.width < 4 || r.height < 4) continue;
+              const cs = getComputedStyle(el);
+              if (cs.visibility === "hidden" || cs.pointerEvents === "none") continue;
+              el.scrollIntoView({ block: "center", behavior: "instant" as ScrollBehavior });
+              const r2 = el.getBoundingClientRect();
+              const hit = document.elementFromPoint(
+                r2.left + r2.width / 2,
+                Math.min(Math.max(r2.top + r2.height / 2, 1), innerHeight - 1)
+              );
+              if (!hit) continue;
+              if (el.contains(hit) || hit.contains(el)) continue;
+              if (hit.closest('[class*="z-[60]"]')) continue; // chat launcher
+              out.push({
+                label: (el.textContent || el.getAttribute("aria-label") || "").trim().slice(0, 40),
+                blockedBy: `${hit.tagName}.${(hit.className.toString() || "").slice(0, 60)}`,
+              });
+            }
+          }
+          return out;
+        });
+        expect(
+          blockedEls,
+          `click-blocked elements on ${route} (${theme}):\n` +
+            blockedEls.map((b) => `  "${b.label}" blocked by ${b.blockedBy}`).join("\n")
+        ).toEqual([]);
       });
     }
   });

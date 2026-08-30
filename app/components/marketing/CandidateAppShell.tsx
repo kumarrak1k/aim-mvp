@@ -158,7 +158,7 @@ export function CandidateAppShell({
         {/* Grid so the centred nav lives in its own column and cannot paint over
             the logo — the old flex + absolute layout let the pill nav overlap
             "AI Career Mentor" once it grew. */}
-        <div className="relative mx-auto grid w-full max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 px-4 py-3 sm:px-6 lg:px-8 lg:py-3.5">
+        <div className="relative mx-auto grid w-full max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 px-4 py-3 sm:px-6 lg:px-8 lg:py-3.5 xl:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]">
           {/* Logo + badge */}
           <Link href="/" className="relative z-10 flex shrink-0 items-center gap-3">
             <SiteLogo href="" size="md" showText />
@@ -168,8 +168,8 @@ export function CandidateAppShell({
           </Link>
 
           {/* Desktop pill nav */}
-          <nav aria-label="Primary" className="pointer-events-none absolute inset-x-0 hidden justify-center xl:flex">
-            <div className="pointer-events-auto flex items-center gap-0.5 rounded-full border border-white/[0.09] bg-white/[0.04] p-1.5">
+          <nav aria-label="Primary" className="hidden min-w-0 justify-center xl:flex">
+            <div className="flex items-center gap-0.5 rounded-full border border-white/[0.09] bg-white/[0.04] p-1.5">
               {navItems.map((item) => {
                 if (item.dropdown) {
                   return (
