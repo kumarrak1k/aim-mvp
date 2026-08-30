@@ -52,8 +52,13 @@ export function PublicShell({ children, currentPath }: PublicShellProps) {
             <SiteLogo href="/" size="md" showText />
           </div>
 
-          {/* Desktop nav — centred in grid column; lg+ only (grid prevents overlap). */}
-          <nav aria-label="Primary" className="hidden min-w-0 justify-center xl:flex">
+          {/* Desktop nav — absolutely page-centred at xl so it lines up with
+              the page-centred trust strip above (the grid column's centre
+              drifts left because the auth buttons outweigh the logo). */}
+          <nav
+            aria-label="Primary"
+            className="hidden min-w-0 justify-center xl:absolute xl:left-1/2 xl:top-1/2 xl:flex xl:-translate-x-1/2 xl:-translate-y-1/2"
+          >
             <div className="flex items-center gap-0.5 rounded-full border border-white/[0.09] bg-white/[0.04] p-1">
               {NAV_LINKS.map((item) => {
                 const active = currentPath === item.href;

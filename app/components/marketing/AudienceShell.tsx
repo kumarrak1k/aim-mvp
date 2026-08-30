@@ -137,7 +137,12 @@ export function AudienceShell({
           </Link>
 
           {/* Desktop nav — centred in the grid column, lg+ (grid prevents overlap). */}
-          <nav aria-label="Primary" className="hidden min-w-0 justify-center xl:flex">
+          {/* Absolutely page-centred at xl to align with the trust strip
+              (matches PublicShell). */}
+          <nav
+            aria-label="Primary"
+            className="hidden min-w-0 justify-center xl:absolute xl:left-1/2 xl:top-1/2 xl:flex xl:-translate-x-1/2 xl:-translate-y-1/2"
+          >
             <div className="flex items-center gap-0.5 rounded-full border border-white/[0.09] bg-white/[0.04] p-1.5">
               {theme.navItems.map((item) => {
                 // "Free tools" — a hover/focus dropdown. CSS-only so this shell
