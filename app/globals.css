@@ -117,6 +117,7 @@
   --pop-text: #86198f;
   --pop-text-strong: #701a75;
   --good-text-strong: #064e3b;
+  --good-text-bright: #065f46;
   --warn-text-bright: #78350f;
   --warn-text-strong: #92400e;
   --bad-text-strong: #991b1b;
@@ -174,6 +175,7 @@
   --color-cyan-400: var(--info-text-mid);
   --color-fuchsia-200: var(--pop-text-strong);
   --color-emerald-200: var(--good-text-strong);
+  --color-emerald-100: var(--good-text-bright);
   --color-amber-100: var(--warn-text-bright);
   --color-amber-200: var(--warn-text-strong);
   --color-red-200: var(--bad-text-strong);
