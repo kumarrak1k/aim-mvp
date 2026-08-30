@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Fragment } from "react";
+import { ThemeSelector } from "@/app/components/ThemeSelector";
 
 /**
  * Data-trust reassurance strip in three variants:
@@ -135,6 +136,11 @@ export function DataTrustStrip({
           >
             How we protect your data →
           </Link>
+        </div>
+        {/* Theme selector pinned top-right, above the logo, on wide screens;
+            phones keep the footer instance so the strip stays one line. */}
+        <div className="absolute right-4 top-1/2 hidden -translate-y-1/2 lg:block">
+          <ThemeSelector compact />
         </div>
       </aside>
     );

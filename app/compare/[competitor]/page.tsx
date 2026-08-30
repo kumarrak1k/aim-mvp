@@ -51,7 +51,7 @@ export default async function ComparisonPage({ params }: Props) {
       <div className="mx-auto max-w-4xl px-4 pb-24 pt-6 sm:px-6">
         {/* Hero */}
         <section className="mb-12 mt-8 text-center">
-          <p className="mb-4 text-[12px] font-bold tracking-wide text-purple-300/70">
+          <p className="mb-4 text-[12px] font-bold tracking-wide text-purple-300">
             Comparison
           </p>
           <h1 className="text-[2rem] font-bold leading-[1.05] tracking-tight sm:text-4xl">
@@ -89,7 +89,7 @@ export default async function ComparisonPage({ params }: Props) {
                     f.aim ? (
                       <span className="font-bold text-emerald-400">✓</span>
                     ) : (
-                      <span className="text-gray-700">–</span>
+                      <span className="text-gray-400">–</span>
                     )
                   ) : (
                     <span className="text-xs text-gray-300">{f.aim}</span>
@@ -100,7 +100,7 @@ export default async function ComparisonPage({ params }: Props) {
                     f.competitor ? (
                       <span className="font-bold text-emerald-400">✓</span>
                     ) : (
-                      <span className="text-gray-700">–</span>
+                      <span className="text-gray-400">–</span>
                     )
                   ) : (
                     <span className="text-xs text-gray-400">{f.competitor}</span>
@@ -114,7 +114,7 @@ export default async function ComparisonPage({ params }: Props) {
         {/* Strengths */}
         <section className="mb-12 grid gap-5 sm:grid-cols-2">
           <div className="rounded-[2rem] border border-purple-300/15 bg-purple-300/[0.04] p-7">
-            <p className="mb-5 text-xs font-bold tracking-wide text-purple-300/70">
+            <p className="mb-5 text-xs font-bold tracking-wide text-purple-300">
               Where AI Career Mentor wins
             </p>
             <ul className="space-y-3">
@@ -160,7 +160,7 @@ export default async function ComparisonPage({ params }: Props) {
           <p className="mt-3 text-xs text-gray-400">
             Free to start. No credit card required.
           </p>
-          <p className="mt-6 text-xs text-gray-700">
+          <p className="mt-6 text-xs text-gray-400">
             Comparison data accurate as of{" "}
             {new Date().toLocaleDateString("en-GB", { month: "long", year: "numeric" })}.
             We aim to be fair and factual, so{" "}

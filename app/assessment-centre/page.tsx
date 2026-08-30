@@ -41,19 +41,19 @@ function StageCard({ stage }: { stage: typeof stages[number] }) {
     purple: {
       border: "border-purple-500/[0.18]",
       bg: "bg-purple-500/[0.05]",
-      text: "text-purple-300/90",
+      text: "text-purple-300",
       dot: "bg-purple-400",
     },
     fuchsia: {
       border: "border-fuchsia-500/[0.18]",
       bg: "bg-fuchsia-500/[0.05]",
-      text: "text-fuchsia-300/90",
+      text: "text-fuchsia-300",
       dot: "bg-fuchsia-400",
     },
     cyan: {
       border: "border-cyan-500/[0.18]",
       bg: "bg-cyan-500/[0.05]",
-      text: "text-cyan-300/90",
+      text: "text-cyan-300",
       dot: "bg-cyan-400",
     },
   }[stage.color] ?? { border: "", bg: "", text: "", dot: "" };
@@ -103,7 +103,7 @@ function UpgradeGate({ planName }: { planName: string }) {
 
       {/* Stages preview */}
       <section className="mb-8">
-        <p className="mb-5 text-center text-[12px] font-bold tracking-wide text-cyan-300/90">
+        <p className="mb-5 text-center text-[12px] font-bold tracking-wide text-cyan-300">
           What&apos;s included
         </p>
         <div className="grid gap-4 sm:grid-cols-3">
@@ -226,7 +226,7 @@ function AssessmentCentreAccess({ isTaster = false }: { isTaster?: boolean }) {
 
       {/* Stages */}
       <section className="mb-8">
-        <p className="mb-5 text-center text-[12px] font-bold tracking-wide text-cyan-300/90">
+        <p className="mb-5 text-center text-[12px] font-bold tracking-wide text-cyan-300">
           Your session
         </p>
         <div className="grid gap-4 sm:grid-cols-3">

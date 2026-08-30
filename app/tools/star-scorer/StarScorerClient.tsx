@@ -214,7 +214,7 @@ export function STARScorerClient() {
 
             {/* Top improvement */}
             <div className="rounded-2xl border border-amber-400/15 bg-amber-400/[0.05] p-6">
-              <p className="mb-1 text-xs font-bold tracking-wide text-amber-300/80">
+              <p className="mb-1 text-xs font-bold tracking-wide text-amber-300">
                 Top improvement
               </p>
               <p className="text-sm leading-6 text-gray-300">

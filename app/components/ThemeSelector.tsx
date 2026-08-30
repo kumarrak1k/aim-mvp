@@ -35,7 +35,7 @@ function apply(mode: ThemeMode) {
   el.setAttribute("data-theme", resolve(mode));
 }
 
-export function ThemeSelector() {
+export function ThemeSelector({ compact = false }: { compact?: boolean }) {
   // Server renders no selection highlight; the real mode arrives after mount
   // (it lives in localStorage, which the server can't see).
   const [mode, setMode] = useState<ThemeMode | null>(null);
@@ -84,7 +84,9 @@ export function ThemeSelector() {
             type="button"
             aria-pressed={selected}
             onClick={() => choose(m.value)}
-            className={`inline-flex min-h-[36px] items-center gap-1.5 rounded-full px-3 text-xs transition ${
+            className={`inline-flex items-center gap-1.5 rounded-full transition ${
+              compact ? "min-h-[28px] px-2 text-[11px]" : "min-h-[36px] px-3 text-xs"
+            } ${
               selected
                 ? "border border-purple-400/60 bg-purple-500/[0.14] font-bold text-white"
                 : "border border-transparent font-semibold text-gray-400 hover:text-white"

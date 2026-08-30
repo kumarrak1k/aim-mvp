@@ -295,7 +295,7 @@ export default function ReportPage() {
                 key={i}
                 className="flex items-start gap-4 rounded-xl border border-white/[0.06] bg-white/[0.03] px-4 py-3.5"
               >
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-purple-500/40 to-cyan-400/30 text-xs font-bold text-white">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-purple-500/40 to-cyan-400/30 text-xs font-bold text-on-accent">
                   {i + 1}
                 </span>
                 <p className="text-sm text-gray-300 leading-6">{action}</p>

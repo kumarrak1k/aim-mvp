@@ -26,7 +26,7 @@ export function SectionHeading({
   return (
     <div className={align === "center" ? "text-center" : ""}>
       {eyebrow && (
-        <p className="mb-3 text-[12px] font-bold tracking-wide text-purple-300/90">
+        <p className="mb-3 text-[12px] font-bold tracking-wide text-purple-300">
           {eyebrow}
         </p>
       )}
@@ -105,12 +105,12 @@ export function PageLinkCard({
           />
         </div>
         <div className="p-6">
-          <p className="mb-2 text-[12px] font-bold tracking-wide text-cyan-300/90">
+          <p className="mb-2 text-[12px] font-bold tracking-wide text-cyan-300">
             {eyebrow}
           </p>
           <h3 className="text-xl font-bold tracking-tight">{title}</h3>
           <p className="mt-2 text-sm leading-7 text-gray-400">{description}</p>
-          <p className="mt-4 text-xs font-bold text-purple-300/80 transition group-hover:text-purple-200">
+          <p className="mt-4 text-xs font-bold text-purple-300 transition group-hover:text-purple-200">
             Explore →
           </p>
         </div>

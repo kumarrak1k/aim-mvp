@@ -5,7 +5,7 @@ import { ThemeSelector } from "@/app/components/ThemeSelector";
 
 export function SiteFooter() {
   return (
-    <footer className="relative z-10 border-t border-white/[0.08] bg-black/20">
+    <footer className="footer-ground relative z-10 border-t border-white/[0.08]">
       {/* Data trust strip — visible on every page */}
       <div className="border-b border-white/[0.05] bg-white/[0.02] px-4 py-3">
         <DataTrustStrip />

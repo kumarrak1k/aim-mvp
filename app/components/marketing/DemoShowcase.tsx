@@ -25,7 +25,7 @@ export function DemoShowcase({
   return (
     <section className="mx-auto max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] px-4 pb-16 sm:px-6 sm:pb-20">
       <div className="mb-10 text-center">
-        <p className="text-[12px] font-bold tracking-wide text-purple-300/90">
+        <p className="text-[12px] font-bold tracking-wide text-purple-300">
           {eyebrow}
         </p>
         <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">{title}</h2>

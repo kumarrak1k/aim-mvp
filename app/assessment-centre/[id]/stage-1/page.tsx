@@ -375,7 +375,7 @@ export default function Stage1Page() {
             <div className="rounded-[1.75rem] border border-purple-500/[0.18] bg-purple-500/[0.05] p-6 backdrop-blur-xl">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <p className="text-[12px] font-bold tracking-wide text-purple-300/90">
+                  <p className="text-[12px] font-bold tracking-wide text-purple-300">
                     Stage 1 · Case Study Analysis
                   </p>
                   <h1 className="mt-1.5 text-2xl font-bold tracking-tight text-white">
@@ -386,7 +386,7 @@ export default function Stage1Page() {
                   {safeStr(scenario.industry)}
                 </span>
               </div>
-              <p className="mt-3 text-[12px] text-purple-300/50 flex items-center gap-1.5">
+              <p className="mt-3 text-[12px] text-purple-300 flex items-center gap-1.5">
                 <svg className="h-3 w-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
                 </svg>

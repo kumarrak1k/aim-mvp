@@ -142,7 +142,7 @@ export function BlogClient({ posts }: Props) {
                 <div className="flex items-start justify-between gap-6">
                   <div className="flex-1">
                     {post.category && (
-                      <p className="mb-2 text-[12px] font-bold tracking-wide text-purple-300/70">
+                      <p className="mb-2 text-[12px] font-bold tracking-wide text-purple-300">
                         {post.category}
                       </p>
                     )}

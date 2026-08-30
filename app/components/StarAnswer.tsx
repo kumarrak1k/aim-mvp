@@ -85,7 +85,7 @@ export function StarAnswer({
         <div key={s.key} className="flex items-start gap-3">
           <span
             aria-hidden
-            className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br ${s.darkBadge} text-[12px] font-bold text-white`}
+            className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br ${s.darkBadge} text-[12px] font-bold text-on-accent`}
           >
             {s.letter}
           </span>

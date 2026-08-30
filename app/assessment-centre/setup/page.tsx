@@ -151,7 +151,7 @@ export default function AssessmentCentreSetupPage() {
         <div className="space-y-8">
           {/* Role input */}
           <div className="rounded-[1.75rem] border border-white/[0.08] bg-white/[0.04] p-6 backdrop-blur-xl">
-            <label className="mb-3 block text-[12px] font-bold tracking-wide text-purple-300/90">
+            <label className="mb-3 block text-[12px] font-bold tracking-wide text-purple-300">
               Your target role
             </label>
             <input
@@ -166,7 +166,7 @@ export default function AssessmentCentreSetupPage() {
 
           {/* Sector grid */}
           <div className="rounded-[1.75rem] border border-white/[0.08] bg-white/[0.04] p-6 backdrop-blur-xl">
-            <p className="mb-4 text-[12px] font-bold tracking-wide text-purple-300/90">
+            <p className="mb-4 text-[12px] font-bold tracking-wide text-purple-300">
               Sector
             </p>
             <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-5">
@@ -188,7 +188,7 @@ export default function AssessmentCentreSetupPage() {
 
           {/* Experience level */}
           <div className="rounded-[1.75rem] border border-white/[0.08] bg-white/[0.04] p-6 backdrop-blur-xl">
-            <p className="mb-4 text-[12px] font-bold tracking-wide text-purple-300/90">
+            <p className="mb-4 text-[12px] font-bold tracking-wide text-purple-300">
               Experience level
             </p>
             <div className="flex flex-wrap gap-2.5">
@@ -218,7 +218,7 @@ export default function AssessmentCentreSetupPage() {
           {/* Stage selector */}
           <div className="rounded-[1.75rem] border border-white/[0.08] bg-white/[0.04] p-6 backdrop-blur-xl">
             <div className="mb-4 flex items-center justify-between">
-              <p className="text-[12px] font-bold tracking-wide text-purple-300/90">
+              <p className="text-[12px] font-bold tracking-wide text-purple-300">
                 Stages to include
               </p>
               <span className="text-[12px] text-gray-400">

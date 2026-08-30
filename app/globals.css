@@ -50,7 +50,18 @@
   --good-text-strong: #a7f3d0;     /* emerald-200 role */
   --warn-text-bright: #fef3c7;     /* amber-100 role */
   --warn-text-strong: #fde68a;     /* amber-200 role */
+  --warn-text-brightest: #fffbeb;  /* amber-50 role */
   --bad-text-strong: #fecaca;      /* red-200 role */
+  --blue-text: #93c5fd;            /* blue-300 role */
+  --blue-text-strong: #bfdbfe;     /* blue-200 role */
+  --green-text: #86efac;           /* green-300 role */
+  --green-text-strong: #bbf7d0;    /* green-200 role */
+  --orange-text: #fdba74;          /* orange-300 role */
+  --orange-text-strong: #fed7aa;   /* orange-200 role */
+  --rose-text: #fda4af;            /* rose-300 role */
+  --rose-text-bright: #ffe4e6;     /* rose-100 role */
+  --yellow-text: #fde047;          /* yellow-300 role */
+  --yellow-text-strong: #fef08a;   /* yellow-200 role */
   --glow-purple: rgba(168, 85, 247, 0.18);
   --glow-cyan: rgba(103, 232, 249, 0.08);
   --glow-fuchsia: rgba(217, 70, 239, 0.08);
@@ -58,9 +69,11 @@
 }
 
 [data-theme="light"] {
-  --background: #f7f4fc;
+  /* Cool, near-neutral ground: the first light palette (#f7f4fc + fuchsia
+     glow) read pink; this keeps a hint of violet-grey without the blush. */
+  --background: #f6f6fa;
   --foreground: #241640;
-  --brand-deep: #f7f4fc;
+  --brand-deep: #f6f6fa;
   --brand-panel: rgba(36, 22, 64, 0.05);
   --brand-border: rgba(36, 22, 64, 0.12);
   --brand-muted: #5f5876;
@@ -78,26 +91,37 @@
   --accent-text-strong: #6b21a8;
   --accent-text: #7e22ce;
   --accent-text-mid: #9333ea;
-  --good-text: #047857;
-  --good-text-mid: #059669;
+  --good-text: #065f46;
+  --good-text-mid: #047857;
   --warn-text: #a16207;
   --warn-text-mid: #b45309;
   --bad-text: #b91c1c;
   --bad-text-mid: #dc2626;
   --info-text: #0e7490;
+  --warn-text-brightest: #713f12;
+  --blue-text: #1d4ed8;
+  --blue-text-strong: #1e40af;
+  --green-text: #15803d;
+  --green-text-strong: #166534;
+  --orange-text: #c2410c;
+  --orange-text-strong: #9a3412;
+  --rose-text: #be123c;
+  --rose-text-bright: #9f1239;
+  --yellow-text: #a16207;
+  --yellow-text-strong: #854d0e;
   --info-text-bright: #164e63;
   --info-text-strong: #155e75;
   --info-text-mid: #0891b2;
   --violet-text: #6d28d9;
-  --pop-text: #a21caf;
-  --pop-text-strong: #86198f;
-  --good-text-strong: #065f46;
+  --pop-text: #86198f;
+  --pop-text-strong: #701a75;
+  --good-text-strong: #064e3b;
   --warn-text-bright: #78350f;
   --warn-text-strong: #92400e;
   --bad-text-strong: #991b1b;
-  --glow-purple: rgba(168, 85, 247, 0.1);
-  --glow-cyan: rgba(103, 232, 249, 0.08);
-  --glow-fuchsia: rgba(217, 70, 239, 0.05);
+  --glow-purple: rgba(124, 90, 240, 0.07);
+  --glow-cyan: rgba(103, 232, 249, 0.09);
+  --glow-fuchsia: rgba(139, 92, 246, 0.03);
   --scheme: light;
 }
 
@@ -132,6 +156,17 @@
   --color-purple-50: var(--accent-text-brightest);
   --color-purple-100: var(--accent-text-bright);
   --color-violet-300: var(--violet-text);
+  --color-amber-50: var(--warn-text-brightest);
+  --color-blue-200: var(--blue-text-strong);
+  --color-blue-300: var(--blue-text);
+  --color-green-200: var(--green-text-strong);
+  --color-green-300: var(--green-text);
+  --color-orange-200: var(--orange-text-strong);
+  --color-orange-300: var(--orange-text);
+  --color-rose-100: var(--rose-text-bright);
+  --color-rose-300: var(--rose-text);
+  --color-yellow-200: var(--yellow-text-strong);
+  --color-yellow-300: var(--yellow-text);
   --color-cyan-100: var(--info-text-bright);
   --color-cyan-200: var(--info-text-strong);
   --color-cyan-400: var(--info-text-mid);
@@ -154,6 +189,16 @@
 }
 :root:not([data-theme="light"]) .theme-light-only {
   display: none;
+}
+
+/* Footer ground: the dark theme's black/20 veil turns the light ground into
+   a mid-mauve that sinks link contrast below AA, so light mode uses a faint
+   ink tint instead. */
+.footer-ground {
+  background: rgba(0, 0, 0, 0.2);
+}
+[data-theme="light"] .footer-ground {
+  background: rgba(36, 22, 64, 0.04);
 }
 
 /* Standard page-glow ground used by full-bleed auth/marketing pages; replaces

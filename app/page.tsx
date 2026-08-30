@@ -141,7 +141,7 @@ export default async function ForCandidatesPage() {
       {/* Two products */}
       <section className="mx-auto max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] px-4 pb-16 sm:px-6 sm:pb-20">
         <div className="mb-10 text-center">
-          <p className="text-[12px] font-bold tracking-wide text-purple-300/90">
+          <p className="text-[12px] font-bold tracking-wide text-purple-300">
             What you get
           </p>
           <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
@@ -169,8 +169,8 @@ export default async function ForCandidatesPage() {
               <p
                 className={`text-[12px] font-bold tracking-wide ${
                   product.accent === "purple"
-                    ? "text-purple-300/90"
-                    : "text-cyan-300/90"
+                    ? "text-purple-300"
+                    : "text-cyan-300"
                 }`}
               >
                 {product.eyebrow}
@@ -221,7 +221,7 @@ export default async function ForCandidatesPage() {
           <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-fuchsia-500/[0.12] blur-3xl" />
           <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
             <div>
-              <p className="text-[12px] font-bold tracking-wide text-fuchsia-300/90">
+              <p className="text-[12px] font-bold tracking-wide text-fuchsia-300">
                 Also included · Professional
               </p>
               <h2 className="mt-3 text-3xl font-bold tracking-tight">
@@ -275,7 +275,7 @@ export default async function ForCandidatesPage() {
           uses preload="none" so it costs nothing until someone asks for it. */}
       <section className="mx-auto max-w-3xl px-4 pb-16 sm:px-6 sm:pb-20">
         <div className="mb-8 text-center">
-          <p className="text-[12px] font-bold tracking-wide text-purple-300/90">
+          <p className="text-[12px] font-bold tracking-wide text-purple-300">
             In 25 seconds
           </p>
           <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
@@ -344,7 +344,7 @@ export default async function ForCandidatesPage() {
       {/* Final CTA */}
       <section className="mx-auto max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] px-4 pb-20 sm:px-6 sm:pb-28">
         <div className="rounded-[2rem] border border-white/[0.1] bg-gradient-to-br from-purple-500/[0.10] via-violet-500/[0.06] to-transparent p-10 text-center sm:p-14">
-          <p className="text-[12px] font-bold tracking-wide text-purple-300/90">
+          <p className="text-[12px] font-bold tracking-wide text-purple-300">
             Get started
           </p>
           <h2 className="mx-auto mt-3 max-w-2xl text-3xl font-bold tracking-tight sm:text-4xl">

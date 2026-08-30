@@ -291,8 +291,11 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
                   : "border-white/10 bg-white/[0.04]"
               }`}
             >
+              {/* bg-white flips to ink in light mode, so the badge label uses
+                  text-background (the page ground) to stay readable on the
+                  pill in BOTH themes. */}
               {plan.highlight && (
-                <span className="mb-5 inline-flex self-start rounded-full bg-white px-3 py-1 text-xs font-bold text-black">
+                <span className="mb-5 inline-flex self-start rounded-full bg-white px-3 py-1 text-xs font-bold text-background">
                   Most popular
                 </span>
               )}
@@ -395,7 +398,7 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
                 </p>
               )}
               {isPaid ? (
-                <p className="mt-3 text-center text-[12px] font-semibold text-emerald-300/90">
+                <p className="mt-3 text-center text-[12px] font-semibold text-emerald-300">
                   7-day money-back guarantee, no questions asked
                 </p>
               ) : (

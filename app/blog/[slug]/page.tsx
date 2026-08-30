@@ -228,7 +228,7 @@ export default async function BlogPostPage({ params }: Props) {
       <div className="mx-auto max-w-3xl px-4 pb-24 pt-10 sm:px-6">
         <header className="mb-10 mt-8 border-b border-white/[0.07] pb-8">
           {post.category && (
-            <p className="mb-3 text-[12px] font-bold tracking-wide text-purple-300/70">
+            <p className="mb-3 text-[12px] font-bold tracking-wide text-purple-300">
               {post.category}
             </p>
           )}

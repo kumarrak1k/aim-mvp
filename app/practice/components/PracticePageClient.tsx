@@ -617,7 +617,7 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
                     ? "Activating your subscription…"
                     : `Welcome to ${confirmedPlanName ?? practiceUsage.planName}!`}
                 </p>
-                <p className="text-xs text-emerald-300/70">
+                <p className="text-xs text-emerald-300">
                   {paymentActivating
                     ? "Confirming your plan with Stripe. This takes just a moment."
                     : "Your plan is now active. Unlimited sessions are unlocked, so start practising below."}

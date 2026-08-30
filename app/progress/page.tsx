@@ -280,7 +280,7 @@ export default function ProgressPage() {
               onClick={() => setActiveTab("practice")}
               className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-bold transition-all ${
                 activeTab === "practice"
-                  ? "bg-gradient-to-r from-purple-500/20 to-fuchsia-500/20 border border-purple-400/25 text-white shadow-sm"
+                  ? "bg-gradient-to-r from-purple-500/20 to-fuchsia-500/20 border border-purple-400/25 text-on-accent shadow-sm"
                   : "text-gray-400 hover:text-gray-300"
               }`}
             >
@@ -296,7 +296,7 @@ export default function ProgressPage() {
               onClick={() => setActiveTab("assessment")}
               className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-bold transition-all ${
                 activeTab === "assessment"
-                  ? "bg-gradient-to-r from-cyan-500/20 to-purple-500/20 border border-cyan-400/25 text-white shadow-sm"
+                  ? "bg-gradient-to-r from-cyan-500/20 to-purple-500/20 border border-cyan-400/25 text-on-accent shadow-sm"
                   : "text-gray-400 hover:text-gray-300"
               }`}
             >

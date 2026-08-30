@@ -149,7 +149,7 @@ export default async function AssessmentCentrePage() {
       {/* Three stages */}
       <section className="mx-auto max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] px-4 pb-16 sm:px-6 sm:pb-20">
         <div className="mb-10 text-center">
-          <p className="text-[12px] font-bold tracking-wide text-cyan-300/90">
+          <p className="text-[12px] font-bold tracking-wide text-cyan-300">
             How it works
           </p>
           <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
@@ -172,10 +172,10 @@ export default async function AssessmentCentrePage() {
               <p
                 className={`text-[12px] font-bold tracking-wide ${
                   stage.accent === "purple"
-                    ? "text-purple-300/90"
+                    ? "text-purple-300"
                     : stage.accent === "fuchsia"
-                      ? "text-fuchsia-300/90"
-                      : "text-cyan-300/90"
+                      ? "text-fuchsia-300"
+                      : "text-cyan-300"
                 }`}
               >
                 {stage.label} · {stage.duration}
@@ -210,7 +210,7 @@ export default async function AssessmentCentrePage() {
       {/* Why */}
       <section className="mx-auto max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] px-4 pb-16 sm:px-6 sm:pb-20">
         <div className="mb-10 text-center">
-          <p className="text-[12px] font-bold tracking-wide text-cyan-300/90">
+          <p className="text-[12px] font-bold tracking-wide text-cyan-300">
             Why it matters
           </p>
           <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">

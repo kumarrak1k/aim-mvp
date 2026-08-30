@@ -28,7 +28,7 @@ export function RelatedContent({ items }: { items: RelatedContentItem[] }) {
             href={item.href}
             className="group flex flex-col rounded-2xl border border-white/10 bg-white/[0.04] p-5 transition hover:border-purple-400/30 hover:bg-white/[0.07]"
           >
-            <p className="mb-2 text-[12px] font-bold tracking-wide text-purple-300/70">
+            <p className="mb-2 text-[12px] font-bold tracking-wide text-purple-300">
               {item.eyebrow}
             </p>
             <p className="font-bold leading-snug text-white transition group-hover:text-purple-200">

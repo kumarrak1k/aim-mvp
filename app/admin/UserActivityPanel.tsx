@@ -83,7 +83,7 @@ function fmtDate(iso: string | null): string {
 }
 
 const CARD = "rounded-[1.25rem] border border-white/[0.08] bg-white/[0.03] p-4";
-const H = "text-[12px] font-bold tracking-wide text-purple-300/90";
+const H = "text-[12px] font-bold tracking-wide text-purple-300";
 
 function Stat({ label, value, tone }: { label: string; value: string; tone?: "warn" | "good" }) {
   const colour =

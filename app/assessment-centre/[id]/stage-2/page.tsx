@@ -239,7 +239,7 @@ export default function Stage2Page() {
         </div>
 
         {/* Tip */}
-        <div className="mb-8 rounded-xl border border-cyan-400/20 bg-cyan-400/[0.05] px-4 py-3 text-xs text-cyan-300/80">
+        <div className="mb-8 rounded-xl border border-cyan-400/20 bg-cyan-400/[0.05] px-4 py-3 text-xs text-cyan-300">
           <strong className="font-bold">Tip:</strong> Answer each question fully. The AI adapts
           follow-up questions based on your responses, just like a real interviewer.
         </div>

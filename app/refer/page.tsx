@@ -52,7 +52,7 @@ export default function ReferPage() {
         </div>
 
         <div className="mb-8 text-center">
-          <p className="mb-3 text-[12px] font-bold tracking-wide text-purple-300/80">
+          <p className="mb-3 text-[12px] font-bold tracking-wide text-purple-300">
             Refer a friend
           </p>
           <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
@@ -124,7 +124,7 @@ export default function ReferPage() {
 
             {/* Code display */}
             <div className="mb-6 rounded-[1.75rem] border border-purple-300/20 bg-purple-300/[0.05] p-6">
-              <p className="mb-3 text-[12px] font-bold tracking-wide text-purple-300/70">
+              <p className="mb-3 text-[12px] font-bold tracking-wide text-purple-300">
                 Your referral code
               </p>
               <div className="flex items-center gap-3">

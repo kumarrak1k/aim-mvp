@@ -135,7 +135,7 @@ export function QuestionsClient({ sets }: Props) {
             <Link key={set.slug} href={`/questions/${set.slug}`}>
               <article className="group h-full rounded-2xl border border-white/[0.08] bg-white/[0.03] p-6 transition hover:border-purple-300/20 hover:bg-purple-300/[0.05]">
                 {set.category && (
-                  <p className="mb-2 text-[12px] font-bold tracking-wide text-purple-300/60">
+                  <p className="mb-2 text-[12px] font-bold tracking-wide text-purple-300">
                     {set.category}
                   </p>
                 )}

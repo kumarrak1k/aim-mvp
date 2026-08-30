@@ -193,7 +193,7 @@ export function BusinessPricingPlans({ currency = "GBP" }: { currency?: PricingC
               }`}
             >
               {plan.highlight && (
-                <span className="mb-5 inline-flex self-start rounded-full bg-white px-3 py-1 text-xs font-bold text-black">
+                <span className="mb-5 inline-flex self-start rounded-full bg-white px-3 py-1 text-xs font-bold text-background">
                   Most popular
                 </span>
               )}

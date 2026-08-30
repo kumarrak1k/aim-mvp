@@ -186,7 +186,7 @@ export function OnboardingClient({
               Every question you practise is written for it.
             </p>
 
-            <label className="mt-5 block text-[12px] font-bold tracking-wide text-purple-300/90">
+            <label className="mt-5 block text-[12px] font-bold tracking-wide text-purple-300">
               Your first name
             </label>
             <input
@@ -197,7 +197,7 @@ export function OnboardingClient({
               className="mt-2 w-full rounded-[1.25rem] border border-white/[0.09] bg-white/[0.03] px-4 py-3 text-base text-white placeholder:text-gray-400 focus:border-purple-400/60 focus:outline-none"
             />
 
-            <label className="mt-5 block text-[12px] font-bold tracking-wide text-purple-300/90">
+            <label className="mt-5 block text-[12px] font-bold tracking-wide text-purple-300">
               Target role
             </label>
             <input
@@ -227,7 +227,7 @@ export function OnboardingClient({
               ))}
             </select>
 
-            <p className="mt-5 text-[12px] font-bold tracking-wide text-purple-300/90">
+            <p className="mt-5 text-[12px] font-bold tracking-wide text-purple-300">
               Where you are
             </p>
             <div className="mt-2 grid gap-2 sm:grid-cols-2">
@@ -243,7 +243,7 @@ export function OnboardingClient({
               ))}
             </div>
 
-            <p className="mt-5 text-[12px] font-bold tracking-wide text-purple-300/90">
+            <p className="mt-5 text-[12px] font-bold tracking-wide text-purple-300">
               Sector
             </p>
             <div className="mt-2 grid gap-2 sm:grid-cols-3">
@@ -279,7 +279,7 @@ export function OnboardingClient({
             <div className="mt-5 space-y-5 rounded-[1.1rem] border border-white/[0.08] bg-white/[0.02] p-4">
 
                 <div>
-                  <label className="block text-[12px] font-bold tracking-wide text-purple-300/90">
+                  <label className="block text-[12px] font-bold tracking-wide text-purple-300">
                     What you do now
                   </label>
                   <input
@@ -291,7 +291,7 @@ export function OnboardingClient({
                 </div>
 
                 <div>
-                  <label className="block text-[12px] font-bold tracking-wide text-purple-300/90">
+                  <label className="block text-[12px] font-bold tracking-wide text-purple-300">
                     Your CV
                   </label>
                   <input
@@ -326,7 +326,7 @@ export function OnboardingClient({
                 </div>
 
                 <div>
-                  <label className="block text-[12px] font-bold tracking-wide text-purple-300/90">
+                  <label className="block text-[12px] font-bold tracking-wide text-purple-300">
                     The job description
                   </label>
                   <input

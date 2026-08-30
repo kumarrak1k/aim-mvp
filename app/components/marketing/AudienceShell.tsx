@@ -73,7 +73,7 @@ const THEMES: Record<Audience, AudienceTheme> = {
       "from-violet-600 to-purple-600",
     primaryShadow: "shadow-purple-900/40",
     accentBorder: "border-purple-300/20",
-    accentTextSoft: "text-purple-300/90",
+    accentTextSoft: "text-purple-300",
     accentTextStrong: "text-purple-100",
     switchAudienceLabel: "I'm a hiring team →",
     switchAudienceHref: "/for-business",
@@ -93,7 +93,7 @@ const THEMES: Record<Audience, AudienceTheme> = {
     primaryGradient: "from-violet-600 to-purple-600",
     primaryShadow: "shadow-purple-900/40",
     accentBorder: "border-purple-300/20",
-    accentTextSoft: "text-purple-300/90",
+    accentTextSoft: "text-purple-300",
     accentTextStrong: "text-purple-100",
     switchAudienceLabel: "I'm a candidate →",
     switchAudienceHref: "/",
@@ -208,7 +208,7 @@ export function AudienceShell({
 
             <Link
               href={theme.signUpPath}
-              className={`inline-flex min-w-0 items-center justify-center whitespace-normal rounded-full bg-gradient-to-r text-center leading-tight ${theme.primaryGradient} min-h-[44px] px-4 py-2.5 text-[13px] font-bold text-white shadow-lg ${theme.primaryShadow} transition hover:scale-[1.03] sm:whitespace-nowrap sm:px-5 lg:px-6`}
+              className={`inline-flex min-w-0 items-center justify-center whitespace-normal rounded-full bg-gradient-to-r text-center leading-tight ${theme.primaryGradient} min-h-[44px] px-4 py-2.5 text-[13px] font-bold text-on-accent shadow-lg ${theme.primaryShadow} transition hover:scale-[1.03] sm:whitespace-nowrap sm:px-5 lg:px-6`}
             >
               {audience === "candidate" ? "Start free" : "Get started"}
             </Link>
