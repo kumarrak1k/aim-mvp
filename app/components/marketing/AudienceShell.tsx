@@ -123,11 +123,11 @@ export function AudienceShell({
 
       {/* Header */}
       <header className="relative z-50">
-        {/* ≥1200 (nav visible): three auto columns with space-between, so the
-            gaps logo↔nav↔actions are EQUAL. Page-centring the nav looked
-            lopsided because the logo and auth clusters have different widths
-            (user flagged it, 2026-08-31). */}
-        <div className="relative mx-auto grid w-full max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] grid-cols-[auto_minmax(0,1fr)_auto] items-center px-4 pt-1.5 pb-3 sm:px-6 sm:pt-2 sm:pb-4 lg:px-10 min-[1200px]:grid-cols-[auto_auto_auto] min-[1200px]:justify-between">
+        {/* 1200–1500 (nav visible, space tight): three auto columns with
+            space-between — equal gaps logo↔nav↔actions. ≥1500: equal-1fr
+            flanks PAGE-centre the nav pill so it aligns with the centred
+            hero below. */}
+        <div className="relative mx-auto grid w-full max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] grid-cols-[auto_minmax(0,1fr)_auto] items-center px-4 pt-1.5 pb-3 sm:px-6 sm:pt-2 sm:pb-4 lg:px-10 min-[1200px]:grid-cols-[auto_auto_auto] min-[1200px]:justify-between min-[1500px]:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]">
           {/* Row 1 (sm+): trust line + theme selector share the grid columns
               with the nav/auth row below, so they centre over the nav pill
               and the auth buttons at every width. */}

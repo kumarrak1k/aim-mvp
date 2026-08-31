@@ -47,9 +47,9 @@ export function PublicShell({ children, currentPath }: PublicShellProps) {
 
       {/* ── Header ── */}
       <header className="relative z-50">
-        {/* ≥1200 (nav visible): three auto columns with space-between, so the
-            gaps logo↔nav↔actions are EQUAL (matches AudienceShell). */}
-        <div className="relative mx-auto grid w-full max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] grid-cols-[auto_minmax(0,1fr)_auto] items-center px-4 pt-1.5 pb-6 sm:px-6 sm:pt-2 sm:pb-8 lg:px-10 min-[1200px]:grid-cols-[auto_auto_auto] min-[1200px]:justify-between">
+        {/* 1200–1500: equal gaps via space-between; ≥1500: equal-1fr flanks
+            page-centre the nav (matches AudienceShell — see its comment). */}
+        <div className="relative mx-auto grid w-full max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] grid-cols-[auto_minmax(0,1fr)_auto] items-center px-4 pt-1.5 pb-6 sm:px-6 sm:pt-2 sm:pb-8 lg:px-10 min-[1200px]:grid-cols-[auto_auto_auto] min-[1200px]:justify-between min-[1500px]:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]">
           {/* Row 1 (sm+): trust line + theme selector share the grid columns
               with the nav/auth row below, so they centre over the nav pill
               and the auth buttons at every width. */}
