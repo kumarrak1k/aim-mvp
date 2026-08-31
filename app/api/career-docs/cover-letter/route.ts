@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { callOpenAIChat } from "@/app/lib/openai-client";
+import { callOpenAIChat , currentDateContext} from "@/app/lib/openai-client";
 import { MODEL_PREMIUM } from "@/app/lib/aiModels";
 import { checkRateLimit } from "@/app/lib/rateLimit";
 import { parseJsonBody } from "@/app/lib/validation";
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
     concise: "sharp, direct, and efficient — every sentence earns its place, no padding",
   }[tone];
 
-  const systemPrompt = `You are an expert career coach and cover letter specialist. You write compelling, tailored cover letters that get candidates interviews. Your letters feel personal, not templated — they connect the candidate's specific achievements to the employer's actual needs. Return only valid JSON.`;
+  const systemPrompt = `You are an expert career coach and cover letter specialist. You write compelling, tailored cover letters that get candidates interviews. Your letters feel personal, not templated — they connect the candidate's specific achievements to the employer's actual needs. ${currentDateContext()} Return only valid JSON.`;
 
   const userPrompt = `Write a cover letter for:
 - Role: ${jobTitle} at ${companyName}

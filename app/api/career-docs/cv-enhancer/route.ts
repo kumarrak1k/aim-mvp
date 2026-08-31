@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { callOpenAIChat } from "@/app/lib/openai-client";
+import { callOpenAIChat , currentDateContext} from "@/app/lib/openai-client";
 import { MODEL_PREMIUM } from "@/app/lib/aiModels";
 import { checkRateLimit } from "@/app/lib/rateLimit";
 import { parseJsonBody } from "@/app/lib/validation";
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "This content can't be processed." }, { status: 400 });
   }
 
-  const systemPrompt = `You are a senior career consultant and professional CV writer with 15+ years of experience helping candidates land roles at top employers. You specialise in ATS optimisation, impactful bullet writing, and making CVs stand out to hiring managers. Return only valid JSON — no markdown, no commentary.`;
+  const systemPrompt = `You are a senior career consultant and professional CV writer with 15+ years of experience helping candidates land roles at top employers. You specialise in ATS optimisation, impactful bullet writing, and making CVs stand out to hiring managers. ${currentDateContext()} Return only valid JSON — no markdown, no commentary.`;
 
   const userPrompt = `Analyse the following CV for a candidate targeting the role of "${targetRole}"${industry ? ` in the ${industry} sector` : ""}.${jobDescription ? `\n\nTarget job description:\n${jobDescription}` : ""}
 

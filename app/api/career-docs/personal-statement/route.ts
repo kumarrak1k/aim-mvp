@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { callOpenAIChat } from "@/app/lib/openai-client";
+import { callOpenAIChat , currentDateContext} from "@/app/lib/openai-client";
 import { MODEL_PREMIUM } from "@/app/lib/aiModels";
 import { checkRateLimit } from "@/app/lib/rateLimit";
 import { parseJsonBody } from "@/app/lib/validation";
@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
 
   const typeLabel = typeLabels[statementType] ?? statementType;
 
-  const systemPrompt = `You are an expert admissions consultant and personal statement writer with experience helping candidates gain places at Oxford, LSE, McKinsey graduate programmes, Big 4 schemes, and top MBA programmes. You write authentic, compelling personal statements that feel genuinely personal — not generic or corporate. Return only valid JSON.`;
+  const systemPrompt = `You are an expert admissions consultant and personal statement writer with experience helping candidates gain places at Oxford, LSE, McKinsey graduate programmes, Big 4 schemes, and top MBA programmes. You write authentic, compelling personal statements that feel genuinely personal — not generic or corporate. ${currentDateContext()} Return only valid JSON.`;
 
   const userPrompt = `Write a personal statement for a ${typeLabel}${institution ? ` at ${institution}` : ""}.
 

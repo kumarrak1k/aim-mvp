@@ -19,6 +19,22 @@ const DEFAULT_TIMEOUT_MS = 30_000;
 const DEFAULT_MAX_ATTEMPTS = 3;
 const RETRY_STATUS_CODES = new Set([408, 425, 429, 500, 502, 503, 504]);
 
+/**
+ * One sentence anchoring the model to the real current date. Prompts that
+ * reason about dates (CV timelines especially) MUST include this: without it
+ * the model falls back to its training-era "today" and flags perfectly
+ * normal dates as future or wrong (user report 2026-08-31: a CV with a
+ * university course starting next month was told its dates were off).
+ */
+export function currentDateContext(): string {
+  const today = new Date().toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+  return `Today's date is ${today}. Judge all dates relative to it: a start date in the near future is normal (for example a university place starting next month), an end date after today means planned completion, and "Present" means ongoing as of today.`;
+}
+
 export type ChatCompletionMessage = {
   role: "system" | "user" | "assistant";
   content: string;

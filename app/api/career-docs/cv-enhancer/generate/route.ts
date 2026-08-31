@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { callOpenAIChat } from "@/app/lib/openai-client";
+import { callOpenAIChat , currentDateContext} from "@/app/lib/openai-client";
 import { MODEL_PREMIUM } from "@/app/lib/aiModels";
 import { checkRateLimit } from "@/app/lib/rateLimit";
 import { parseJsonBody } from "@/app/lib/validation";
@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
   if ("response" in parsed) return parsed.response;
   const { targetRole, industry, cvText, jobDescription, analysis, userGapAnswers } = parsed.data;
 
-  const systemPrompt = `You are a senior professional CV writer. Rewrite the candidate's CV applying all given recommendations. Preserve all facts — never invent metrics, dates, employer names, or roles. Return only valid JSON, no markdown, no commentary.`;
+  const systemPrompt = `You are a senior professional CV writer. Rewrite the candidate's CV applying all given recommendations. Preserve all facts — never invent metrics, dates, employer names, or roles. ${currentDateContext()} Return only valid JSON, no markdown, no commentary.`;
 
   const bulletRewrites = analysis.enhancedBullets
     .map((b) => `  - "${b.original}" → "${b.enhanced}"`)

@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { callOpenAIChat } from "@/app/lib/openai-client";
+import { callOpenAIChat , currentDateContext} from "@/app/lib/openai-client";
 import { MODEL_QUALITY } from "@/app/lib/aiModels";
 import { parseJsonBody } from "@/app/lib/validation";
 import { checkCareerDocAccess } from "@/app/lib/careerDocs";
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
     .map((s) => `  ${s.name}: ${s.suggestion}`)
     .join("\n");
 
-  const prompt = `You are reviewing a CV to identify critical information gaps for a "${targetRole}"${industry ? ` in ${industry}` : ""} role.
+  const prompt = `You are reviewing a CV to identify critical information gaps for a "${targetRole}"${industry ? ` in ${industry}` : ""} role. ${currentDateContext()}
 
 CV TEXT:
 ${cvText}

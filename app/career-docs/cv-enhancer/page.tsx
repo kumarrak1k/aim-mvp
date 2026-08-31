@@ -307,23 +307,33 @@ export default function CVEnhancerPage() {
               </div>
               <div>
                 <label htmlFor="cv-industry" className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400">Industry / sector</label>
-                {/* Native datalist: type-to-filter across the onboarding
-                    SECTORS, and anything typed that isn't listed is kept as
-                    free text (the "Other" case) with no extra control. */}
                 <input
                   id="cv-industry"
                   type="text"
-                  list="cv-industry-options"
                   value={industry}
                   onChange={(e) => setIndustry(e.target.value)}
-                  placeholder="Choose a sector or type your own"
+                  placeholder="Type your sector, or pick one below"
                   className="w-full rounded-xl border border-white/[0.08] bg-recess-30 px-4 py-3 text-sm text-white placeholder-gray-400 outline-none focus:border-purple-400/40 focus:ring-1 focus:ring-purple-400/20"
                 />
-                <datalist id="cv-industry-options">
+                {/* Picking always OVERWRITES the field. The old datalist
+                    filtered its options by the current value, so once a
+                    sector was in the box the other options vanished until
+                    the text was deleted (user report 2026-08-31). */}
+                <select
+                  value=""
+                  onChange={(e) => {
+                    if (e.target.value) setIndustry(e.target.value);
+                  }}
+                  aria-label="Pick a sector"
+                  className="mt-2 w-full rounded-xl border border-white/[0.08] bg-background px-4 py-3 text-sm text-gray-300 outline-none focus:border-purple-400/40 focus:ring-1 focus:ring-purple-400/20"
+                >
+                  <option value="">Or pick a sector…</option>
                   {SECTORS.filter((s) => s !== "Still deciding").map((s) => (
-                    <option key={s} value={s} />
+                    <option key={s} value={s}>
+                      {s}
+                    </option>
                   ))}
-                </datalist>
+                </select>
               </div>
 
               {/* CV field with saved-profile panel */}
