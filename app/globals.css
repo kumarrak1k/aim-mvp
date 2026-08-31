@@ -437,3 +437,32 @@ textarea:focus-visible {
 .cl-footerAction {
   background: transparent !important;
 }
+
+/* ThemeSelector highlight — driven by <html data-theme>, which the anti-flash
+   head script sets BEFORE first paint. Component state can't do this: it
+   hydrates as the dark default and only then reads localStorage, which made
+   the selection visibly jump dark→light on every navigation. Values mirror
+   the old Tailwind classes exactly: selected = border-purple-400/60 +
+   bg-purple-500/[0.14] + bold white; unselected = gray-400, white on hover. */
+.theme-opt {
+  border: 1px solid transparent;
+  font-weight: 600;
+  color: var(--tone-400);
+}
+.theme-opt:hover {
+  color: var(--contrast);
+}
+.theme-opt .theme-opt-check {
+  display: none;
+}
+html[data-theme="light"] .theme-opt[data-value="light"],
+html[data-theme="dark"] .theme-opt[data-value="dark"] {
+  border-color: color-mix(in srgb, var(--accent-text-mid) 60%, transparent);
+  background: color-mix(in oklab, oklch(62.7% 0.265 303.9) 14%, transparent);
+  font-weight: 700;
+  color: var(--contrast);
+}
+html[data-theme="light"] .theme-opt[data-value="light"] .theme-opt-check,
+html[data-theme="dark"] .theme-opt[data-value="dark"] .theme-opt-check {
+  display: inline;
+}

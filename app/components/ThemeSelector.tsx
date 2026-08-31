@@ -31,8 +31,11 @@ function apply(mode: ThemeMode) {
 }
 
 export function ThemeSelector({ compact = false }: { compact?: boolean }) {
-  // Server renders no selection highlight; the real mode arrives after mount
-  // (it lives in localStorage, which the server can't see).
+  // React state feeds aria-pressed ONLY. The visible highlight is pure CSS
+  // keyed off <html data-theme> (.theme-opt rules in globals.css), which the
+  // anti-flash head script sets before first paint — state arrives after
+  // hydration, and highlighting from it made the selection visibly jump
+  // dark→light on every navigation for light-mode users.
   const [mode, setMode] = useState<ThemeMode>("dark");
 
   useEffect(() => {
@@ -62,19 +65,15 @@ export function ThemeSelector({ compact = false }: { compact?: boolean }) {
       className="inline-flex items-center gap-1 rounded-full border border-white/[0.1] bg-white/[0.04] p-1"
     >
       {MODES.map((m) => {
-        const selected = mode === m.value;
         return (
           <button
             key={m.value}
             type="button"
-            aria-pressed={selected}
+            data-value={m.value}
+            aria-pressed={mode === m.value}
             onClick={() => choose(m.value)}
-            className={`inline-flex items-center gap-1.5 rounded-full transition ${
+            className={`theme-opt inline-flex items-center gap-1.5 rounded-full transition ${
               compact ? "min-h-[28px] px-2 text-[11px]" : "min-h-[36px] px-3 text-xs"
-            } ${
-              selected
-                ? "border border-purple-400/60 bg-purple-500/[0.14] font-bold text-white"
-                : "border border-transparent font-semibold text-gray-400 hover:text-white"
             }`}
           >
             {m.value === "light" && (
@@ -89,11 +88,9 @@ export function ThemeSelector({ compact = false }: { compact?: boolean }) {
               </svg>
             )}
             <span>{m.label}</span>
-            {selected && (
-              <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" width="12" height="12">
-                <path fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" d="M5 13l4 4L19 7" />
-              </svg>
-            )}
+            <svg className="theme-opt-check" aria-hidden="true" focusable="false" viewBox="0 0 24 24" width="12" height="12">
+              <path fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" d="M5 13l4 4L19 7" />
+            </svg>
           </button>
         );
       })}
