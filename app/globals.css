@@ -236,16 +236,30 @@
     linear-gradient(180deg, var(--background) 0%, var(--background) 100%);
 }
 
-/* Light mode: damp the decorative atmosphere layers (the fixed/absolute
+/* Light mode: rework the decorative atmosphere layers (the fixed/absolute
    full-bleed glow-blob containers every shell and standalone page renders).
-   Their ~8% purple/fuchsia tints were designed against near-black; over a
-   near-white ground they read pink (user, 2026-08-31). Selecting on the
-   utility-class signature covers all of them without touching components:
-   pointer-events-none + inset-0 + z-0 is, by convention, only ever the
-   decorative background layer. */
-[data-theme="light"] .pointer-events-none.fixed.inset-0.z-0,
-[data-theme="light"] .pointer-events-none.absolute.inset-0.z-0 {
+   Selecting on the utility-class signature covers all of them without
+   touching components: pointer-events-none + inset-0 + z-0 is, by
+   convention, only ever the decorative background layer.
+   1. The blob CHILDREN are damped: their ~8% purple/fuchsia tints were
+      designed against near-black and read pink over near-white (user,
+      2026-08-31).
+   2. An ::after overlay adds a glossy sheen — a diagonal white highlight
+      sweeping from the top plus a whisper of shading at the foot — because
+      the flat matte ground read dull (user, same day). */
+[data-theme="light"] .pointer-events-none.fixed.inset-0.z-0 > div,
+[data-theme="light"] .pointer-events-none.absolute.inset-0.z-0 > div {
   opacity: 0.45;
+}
+[data-theme="light"] .pointer-events-none.fixed.inset-0.z-0::after,
+[data-theme="light"] .pointer-events-none.absolute.inset-0.z-0::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(155deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 42%),
+    radial-gradient(ellipse 75% 45% at 50% -5%, rgba(255, 255, 255, 0.85), transparent 70%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0) 72%, rgba(226, 226, 235, 0.55) 100%);
 }
 
 * {
