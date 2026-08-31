@@ -12,9 +12,15 @@ export default function NotFound() {
           <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/50 to-transparent" />
 
           <div className="mx-auto mb-6 w-fit rounded-[1.5rem] border border-white/15 bg-white p-2 shadow-2xl shadow-purple-950/40">
+            {/* loading="lazy" stops React hoisting a preload for this img into
+                EVERY page's head (the 404 boundary is prerendered into each
+                page), which triggered the "preloaded but not used" console
+                warning site-wide. On the 404 itself it's above the fold and
+                loads immediately. */}
             <img
               src="/brand/logo-mark.svg"
               alt="AI Career Mentor"
+              loading="lazy"
               className="h-16 w-16 rounded-2xl object-contain"
             />
           </div>
