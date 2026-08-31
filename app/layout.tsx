@@ -277,6 +277,10 @@ export default function RootLayout({
       >
         <head>
           <meta name="color-scheme" content="light dark" />
+          {/* Clerk's three script bundles load from this subdomain on every
+              page; warming the connection early takes DNS+TLS off the 4G
+              critical path (homepage mobile LCP pass, audit F6). */}
+          <link rel="preconnect" href="https://clerk.aicareermentor.co.uk" />
           <script
             // Anti-flash init: runs before first paint. Default is LIGHT
             // (user decision 2026-08-31); a stored choice wins. Not system —

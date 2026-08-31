@@ -53,6 +53,12 @@ type CandidateAppShellProps = {
   // deliberately doesn't enumerate. Highlighting is string-compared below,
   // so a non-nav path simply highlights nothing.
   currentPath: CandidateAppPath | (string & {});
+  /** Whether the user has completed at least one practice session — the
+      practice page passes this so the guide banner only appears once there
+      is a first session to build on (activation audit F5: a brand-new
+      user's first dashboard shows one action, not a banner stack).
+      Omitted/null = unknown, banner stays hidden. */
+  hasCompletedSession?: boolean | null;
 };
 
 /**
@@ -98,18 +104,23 @@ function ProBadge() {
 export function CandidateAppShell({
   children,
   currentPath,
+  hasCompletedSession = null,
 }: CandidateAppShellProps) {
-  // New-user guide banner on the practice page. Starts hidden (SSR-safe),
-  // shows after mount unless previously dismissed; dismissal persists.
+  // Guide banner on the practice page. Starts hidden (SSR-safe); shows after
+  // mount once the user has a completed session behind them (F5: never on
+  // the very first visit) and until dismissed; dismissal persists.
   const [showGuideBanner, setShowGuideBanner] = useState(false);
   useEffect(() => {
-    if (currentPath !== "/practice") return;
+    if (currentPath !== "/practice" || hasCompletedSession !== true) {
+      setShowGuideBanner(false);
+      return;
+    }
     try {
       setShowGuideBanner(localStorage.getItem("aim_guide_banner_dismissed") !== "1");
     } catch {
       // Storage unavailable — keep the banner hidden rather than nag forever.
     }
-  }, [currentPath]);
+  }, [currentPath, hasCompletedSession]);
   function dismissGuideBanner() {
     setShowGuideBanner(false);
     try {

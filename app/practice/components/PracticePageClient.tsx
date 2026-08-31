@@ -118,6 +118,10 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
 
   const [speakerEnabled, setSpeakerEnabled] = useState(false);
   const [cameraEnabled, setCameraEnabled] = useState(false);
+  // How many completed sessions this user has — null until known. Gates the
+  // first-visit dashboard: no guide banner or upsell panel before the first
+  // session is done (activation audit F5) so the first visit has one action.
+  const [completedSessionCount, setCompletedSessionCount] = useState<number | null>(null);
   const [speakerPreference, setSpeakerPreference] =
     useState<SpeakerPreference>(defaultSpeakerPreference);
   const [questionLoading, setQuestionLoading] = useState(false);
@@ -399,6 +403,7 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
         } else {
           setPracticeUsage(defaultPracticeUsage);
         }
+        setCompletedSessionCount(Array.isArray(data?.sessions) ? data.sessions.length : 0);
       } catch {
         if (!cancelled) {
           setPracticeUsage(defaultPracticeUsage);
@@ -676,7 +681,10 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
   }
 
   return (
-    <CandidateAppShell currentPath="/practice">
+    <CandidateAppShell
+      currentPath="/practice"
+      hasCompletedSession={completedSessionCount === null ? null : completedSessionCount > 0}
+    >
       <section className="mx-auto max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] px-4 py-6 sm:px-6 sm:py-8 lg:py-10">
         {showPaymentSuccess && (
           <div className="mb-5 flex items-center justify-between gap-4 rounded-2xl border border-emerald-300/25 bg-emerald-300/[0.08] px-5 py-4">
@@ -723,8 +731,10 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
           onStartInterview={startInterview}
         />
 
-        {/* Assessment centre upsell — shown for free plan users */}
-        {isFreePlan && (
+        {/* Assessment centre upsell — free plan users who have completed at
+            least one session. Upselling before first value inverts the order
+            that earns the upsell (activation audit F5). */}
+        {isFreePlan && (completedSessionCount ?? 0) > 0 && (
           <div className="mb-6 overflow-hidden rounded-[2rem] border border-cyan-400/20 bg-gradient-to-br from-cyan-500/[0.07] via-purple-500/[0.05] to-transparent shadow-2xl shadow-purple-950/10 backdrop-blur-2xl sm:mb-8">
             <div className="flex flex-col gap-6 p-6 sm:p-8 lg:flex-row lg:items-center lg:gap-10">
               <div className="flex-1">
