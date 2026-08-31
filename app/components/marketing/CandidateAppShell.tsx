@@ -17,7 +17,8 @@ import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
 import { useEffect, useState, type ReactNode } from "react";
 import { SiteLogo } from "@/app/components/brand/SiteLogo";
-import { DataTrustStrip } from "@/app/components/DataTrustStrip";
+import { DataTrustStrip, TrustRowItems } from "@/app/components/DataTrustStrip";
+import { ThemeSelector } from "@/app/components/ThemeSelector";
 import { SkipToContent } from "@/app/components/SkipToContent";
 import { SiteFooter } from "@/app/components/marketing/SiteFooter";
 import { PlanPage } from "@/app/components/account/PlanPage";
@@ -151,7 +152,7 @@ export function CandidateAppShell({
 
       {/* Data trust bar — same messages as the signed-out pages */}
       <SkipToContent />
-      <DataTrustStrip variant="topbar" />
+      <DataTrustStrip variant="topbar" mobileOnly />
 
       {/* Header */}
       <header className="sticky top-0 z-50 backdrop-blur-2xl">
@@ -162,6 +163,17 @@ export function CandidateAppShell({
             logo, nav and the account cluster (equal-1fr flanks page-centred
             the nav, which looked lopsided since the flanks' contents differ). */}
         <div className="relative mx-auto grid w-full max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 px-4 py-3 sm:px-6 lg:px-8 lg:py-3.5 min-[1200px]:grid-cols-[auto_auto_auto] min-[1200px]:justify-between">
+          {/* Row 1 (sm+): trust line + theme selector share the grid columns
+              with the nav/account row below, so they centre over the nav pill
+              and the account cluster at every width. */}
+          <div aria-hidden className="hidden sm:block" />
+          <div className="hidden min-w-0 flex-wrap items-center justify-center gap-x-5 gap-y-1 pb-1 sm:flex">
+            <TrustRowItems />
+          </div>
+          <div className="hidden items-center justify-center pb-1 sm:flex">
+            <ThemeSelector compact />
+          </div>
+
           {/* Logo + badge */}
           <Link href="/" className="relative z-10 flex shrink-0 items-center gap-3">
             <SiteLogo href="" size="md" showText />

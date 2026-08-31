@@ -78,13 +78,56 @@ const items = [
 
 type Variant = "topbar" | "compact" | "footer";
 
+/**
+ * The desktop trust line (items + privacy link), exported bare so the
+ * marketing/app shells can place it INSIDE their header grid: sharing the
+ * header's columns is what keeps it centred exactly over the nav pill (and
+ * the theme selector over the auth buttons) now that the header lays its
+ * three groups out with space-between — a page-centred overlay no longer
+ * lines up with anything (user report 2026-08-31).
+ */
+export function TrustRowItems() {
+  return (
+    <>
+      {items.map(({ Icon, text }, i) => (
+        <Fragment key={text}>
+          {i > 0 && (
+            <span className="text-purple-400/25" aria-hidden>
+              |
+            </span>
+          )}
+          <span className="flex items-center gap-1.5">
+            <Icon className="h-3.5 w-3.5 text-purple-300" />
+            <span className="text-[12px] font-semibold text-gray-100">
+              {text}
+            </span>
+          </span>
+        </Fragment>
+      ))}
+      <span className="text-purple-400/25" aria-hidden>|</span>
+      <Link
+        href="/privacy"
+        className="text-[12px] font-semibold text-purple-300 underline-offset-2 transition hover:text-white hover:underline"
+      >
+        How we protect your data →
+      </Link>
+    </>
+  );
+}
+
 export function DataTrustStrip({
   variant = "footer",
   // legacy prop kept for backward compat
   compact,
+  // The nav shells render TrustRowItems + the theme selector inside their
+  // header grid at sm+ (shared columns keep everything aligned), so they
+  // only need the phone row from here. Standalone pages (sign-in/up) have
+  // no nav grid and keep the full topbar.
+  mobileOnly = false,
 }: {
   variant?: Variant;
   compact?: boolean;
+  mobileOnly?: boolean;
 }) {
   const v: Variant = compact ? "compact" : variant;
 
@@ -96,7 +139,10 @@ export function DataTrustStrip({
       // An <aside> landmark, not a bare div: it sits above <header>/<main>,
       // and content outside any landmark fails axe's region rule on every
       // page that renders it.
-      <aside aria-label="Data protection commitments" className="relative z-50">
+      <aside
+        aria-label="Data protection commitments"
+        className={`relative z-50 ${mobileOnly ? "sm:hidden" : ""}`}
+      >
         {/* Phones: one tappable trust line + the theme selector. The strip is
             the selector's only home (the footer copy was removed for stale
             state), so it must be reachable on phones too — without this row
@@ -116,40 +162,21 @@ export function DataTrustStrip({
           </Link>
           <ThemeSelector compact />
         </div>
-        <div className="mx-auto hidden max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] flex-wrap items-center justify-center gap-x-5 gap-y-1 px-4 py-2.5 sm:flex sm:px-6">
-          {items.map(({ Icon, text }, i) => (
-            <Fragment key={text}>
-              {i > 0 && (
-                <span className="hidden text-purple-400/25 sm:inline" aria-hidden>
-                  |
-                </span>
-              )}
-              <span className="flex items-center gap-1.5">
-                <Icon className="h-3.5 w-3.5 text-purple-300" />
-                <span className="text-[12px] font-semibold text-gray-100">
-                  {text}
-                </span>
-              </span>
-            </Fragment>
-          ))}
-          <span className="hidden text-purple-400/25 sm:inline" aria-hidden>|</span>
-          <Link
-            href="/privacy"
-            className="text-[12px] font-semibold text-purple-300 underline-offset-2 transition hover:text-white hover:underline"
-          >
-            How we protect your data →
-          </Link>
-        </div>
-        {/* Theme selector top-right, centred over the header's auth buttons:
-            the overlay mirrors the header container so the alignment tracks
-            every viewport width. */}
-        <div className="pointer-events-none absolute inset-x-0 top-1/2 hidden -translate-y-1/2 sm:block">
-          <div className="mx-auto flex max-w-7xl justify-end px-4 sm:px-6 lg:px-10 xl:max-w-[clamp(80rem,95vw,105rem)]">
-            <div className="pointer-events-auto">
-              <ThemeSelector compact />
+        {!mobileOnly && (
+          <>
+            <div className="mx-auto hidden max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] flex-wrap items-center justify-center gap-x-5 gap-y-1 px-4 py-2.5 sm:flex sm:px-6">
+              <TrustRowItems />
             </div>
-          </div>
-        </div>
+            {/* Theme selector top-right (standalone pages only). */}
+            <div className="pointer-events-none absolute inset-x-0 top-1/2 hidden -translate-y-1/2 sm:block">
+              <div className="mx-auto flex max-w-7xl justify-end px-4 sm:px-6 lg:px-10 xl:max-w-[clamp(80rem,95vw,105rem)]">
+                <div className="pointer-events-auto">
+                  <ThemeSelector compact />
+                </div>
+              </div>
+            </div>
+          </>
+        )}
       </aside>
     );
   }

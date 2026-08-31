@@ -14,7 +14,8 @@ import type { ReactNode } from "react";
 import { WhenSignedIn, WhenSignedOut } from "@/app/components/marketing/AuthAwareCta";
 import { SiteLogo } from "@/app/components/brand/SiteLogo";
 import { SiteFooter } from "@/app/components/marketing/SiteFooter";
-import { DataTrustStrip } from "@/app/components/DataTrustStrip";
+import { DataTrustStrip, TrustRowItems } from "@/app/components/DataTrustStrip";
+import { ThemeSelector } from "@/app/components/ThemeSelector";
 import { SkipToContent } from "@/app/components/SkipToContent";
 import { TrialBadge } from "@/app/components/marketing/TrialBadge";
 
@@ -35,7 +36,7 @@ export function PublicShell({ children, currentPath }: PublicShellProps) {
     <div className="relative min-h-screen bg-background text-white">
       <SkipToContent />
       {/* Data trust bar — top of every public page */}
-      <DataTrustStrip variant="topbar" />
+      <DataTrustStrip variant="topbar" mobileOnly />
 
       {/* Background */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
@@ -49,14 +50,24 @@ export function PublicShell({ children, currentPath }: PublicShellProps) {
         {/* ≥1200 (nav visible): three auto columns with space-between, so the
             gaps logo↔nav↔actions are EQUAL (matches AudienceShell). */}
         <div className="relative mx-auto grid w-full max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] grid-cols-[auto_minmax(0,1fr)_auto] items-center px-4 pt-1.5 pb-6 sm:px-6 sm:pt-2 sm:pb-8 lg:px-10 min-[1200px]:grid-cols-[auto_auto_auto] min-[1200px]:justify-between">
+          {/* Row 1 (sm+): trust line + theme selector share the grid columns
+              with the nav/auth row below, so they centre over the nav pill
+              and the auth buttons at every width. */}
+          <div aria-hidden className="hidden sm:block" />
+          <div className="hidden min-w-0 flex-wrap items-center justify-center gap-x-5 gap-y-1 pb-2 pt-1 sm:flex">
+            <TrustRowItems />
+          </div>
+          <div className="hidden items-center justify-center pb-2 pt-1 sm:flex">
+            <ThemeSelector compact />
+          </div>
+
           {/* Logo */}
           <div className="relative z-10">
             <SiteLogo href="/" size="md" showText />
           </div>
 
-          {/* Desktop nav — absolutely page-centred at xl so it lines up with
-              the page-centred trust strip above (the grid column's centre
-              drifts left because the auth buttons outweigh the logo). */}
+          {/* Desktop nav — in flow in the shared grid column; row 1's trust
+              line centres over it. */}
           <nav
             aria-label="Primary"
             className="hidden min-w-0 justify-center min-[1200px]:flex"
