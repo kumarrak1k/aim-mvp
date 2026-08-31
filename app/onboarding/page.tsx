@@ -1,7 +1,9 @@
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 import type { Metadata } from "next";
 import { prisma } from "@/app/lib/prisma";
+import { recordSignupTosAcceptanceIfEligible } from "@/app/lib/legal";
 import { OnboardingClient } from "./OnboardingClient";
 
 export const dynamic = "force-dynamic";
@@ -31,8 +33,23 @@ export default async function OnboardingPage() {
       biggestChallenge: true,
       processType: true,
       defaultExperienceLevel: true,
+      tosAcceptedVersion: true,
     },
   });
+
+  const user = await currentUser();
+
+  // Backup for the sign-up terms stamp (primary lives in the post-signup
+  // /api/account-type call): the sign-up form disclosed the agreement, so
+  // record the FIRST acceptance here rather than interrupting the path to
+  // the first question with the /accept-terms wall (activation audit F2).
+  if (!profile?.tosAcceptedVersion) {
+    try {
+      await recordSignupTosAcceptanceIfEligible(userId, await headers());
+    } catch {
+      // Non-fatal — /accept-terms remains as the final backstop.
+    }
+  }
 
   if (profile?.onboardingCompletedAt) redirect("/practice");
 
@@ -49,7 +66,6 @@ export default async function OnboardingPage() {
         }
       : null;
 
-  const user = await currentUser();
   const firstName = user?.firstName?.trim() ?? "";
 
   return (

@@ -166,6 +166,23 @@ export default function CandidateSignUpPage() {
           </label>
           )}
 
+          {/* Terms disclosure — the recorded acceptance happens at the first
+              authed page load (see app/onboarding/page.tsx), so the path to
+              the first question is never interrupted by a separate wall. */}
+          {onFirstStep && (
+            <p className="mt-3 text-center text-[11px] leading-5 text-gray-400">
+              By creating an account you agree to our{" "}
+              <Link href="/terms" className="underline underline-offset-2 hover:text-gray-300">
+                Terms of Use
+              </Link>{" "}
+              and{" "}
+              <Link href="/privacy" className="underline underline-offset-2 hover:text-gray-300">
+                Privacy Policy
+              </Link>
+              .
+            </p>
+          )}
+
           <div className="mt-4 text-center">
             <p className="mb-2 text-xs text-gray-400">Already have an account?</p>
             <Link

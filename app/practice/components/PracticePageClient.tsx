@@ -485,6 +485,64 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
     usageLoaded,
   ]);
 
+  // Onboarding's "Start the warm-up" hands off here as /practice?warmup=1.
+  // Honour the choice: build a 3-question session from the saved profile and
+  // go straight in — the activation audit (2026-09-01) showed the newest,
+  // highest-intent users being dropped on the dashboard at exactly this
+  // moment and never starting. Falls back to the normal dashboard when the
+  // profile has no usable role or the daily limit is already reached.
+  const warmupRequested = searchParams.get("warmup") === "1";
+  const warmupLaunchedRef = useRef(false);
+  const [warmupFellBack, setWarmupFellBack] = useState(false);
+  useEffect(() => {
+    if (!warmupRequested || warmupLaunchedRef.current) return;
+    if (!usageLoaded || !profileContextLoaded) return;
+    if (signedInLimitReached) {
+      setWarmupFellBack(true);
+      return;
+    }
+    const warmupRole = buildAutofilledRoleFromProfile(savedCandidateProfile);
+    if (!warmupRole) {
+      setWarmupFellBack(true);
+      return;
+    }
+    warmupLaunchedRef.current = true;
+    const warmupMode: PracticeMode = isFreePlan
+      ? "typed"
+      : savedCandidateProfile?.preferredPracticeMode ?? "typed";
+    window.sessionStorage.setItem(
+      PRACTICE_SESSION_CONFIG_KEY,
+      JSON.stringify({
+        role: warmupRole,
+        experienceLevel,
+        interviewType,
+        difficulty,
+        focusArea,
+        speakerEnabled: warmupMode !== "typed",
+        cameraEnabled: warmupMode === "voice-camera",
+        speakerPreference,
+        freePlan: isFreePlan,
+        practiceMode: warmupMode,
+        createdAt: new Date().toISOString(),
+        totalQuestions: 3,
+      })
+    );
+    router.push("/practice/session");
+  }, [
+    warmupRequested,
+    usageLoaded,
+    profileContextLoaded,
+    signedInLimitReached,
+    savedCandidateProfile,
+    isFreePlan,
+    experienceLevel,
+    interviewType,
+    difficulty,
+    focusArea,
+    speakerPreference,
+    router,
+  ]);
+
   const onRoleChange = useCallback((value: string) => {
     roleManuallyEditedRef.current = true;
     setRoleAutofilledFromProfile(false);
@@ -599,6 +657,23 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
     questionMix,
     customQuestions,
   ]);
+
+  // While the warm-up hand-off resolves, hold a quiet setting-up screen
+  // instead of flashing the full dashboard (banners, upsell, a different CTA)
+  // at someone who already chose to start.
+  if (warmupRequested && !warmupFellBack) {
+    return (
+      <CandidateAppShell currentPath="/practice">
+        <section className="mx-auto flex min-h-[60vh] max-w-xl flex-col items-center justify-center px-4 text-center">
+          <div className="h-10 w-10 animate-spin rounded-full border-2 border-purple-400 border-t-transparent" aria-hidden />
+          <h1 className="mt-6 text-xl font-bold text-white">Setting up your warm-up…</h1>
+          <p className="mt-2 text-sm leading-6 text-gray-400">
+            Three questions, written for your target role. The first one is seconds away.
+          </p>
+        </section>
+      </CandidateAppShell>
+    );
+  }
 
   return (
     <CandidateAppShell currentPath="/practice">

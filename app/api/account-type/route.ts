@@ -9,6 +9,7 @@ import {
 import { saveSignupAttributionIfUnset } from "@/app/lib/attribution";
 import { sanitizeAttribution } from "@/app/lib/attributionChannel";
 import { autoStartCandidateTrial } from "@/app/lib/trialAutoStart";
+import { recordSignupTosAcceptanceIfEligible } from "@/app/lib/legal";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -101,6 +102,15 @@ export async function POST(request: NextRequest) {
     if (result.accountType === "candidate") {
       const trial = await autoStartCandidateTrial(userId, request.headers);
       trialStarted = trial.started;
+
+      // Record the sign-up-form terms agreement so the path to the first
+      // question is never interrupted by /accept-terms. Non-fatal: the
+      // onboarding page repeats this as a backup.
+      try {
+        await recordSignupTosAcceptanceIfEligible(userId, request.headers);
+      } catch (err) {
+        console.error("SIGNUP TOS STAMP ERROR:", err);
+      }
     }
 
     return NextResponse.json({

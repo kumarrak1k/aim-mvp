@@ -9,6 +9,16 @@ import { prisma } from "./prisma";
  */
 export const CURRENT_TOS_VERSION = "2026-05-13";
 
+/**
+ * Accounts created on or after this date saw the "By creating an account you
+ * agree to our Terms of Use and Privacy Policy" disclosure on the sign-up
+ * form, so their FIRST acceptance is recorded at the first authed page load
+ * (onboarding) instead of via the interrupting /accept-terms wall. Only
+ * first acceptances: a later CURRENT_TOS_VERSION bump still sends everyone
+ * through /accept-terms to agree to the changed terms explicitly.
+ */
+export const TOS_SIGNUP_CONSENT_SINCE = new Date("2026-08-31T18:00:00Z");
+
 export type TosStatus = {
   accepted: boolean;
   acceptedVersion: string | null;
@@ -62,6 +72,39 @@ export async function recordTosAcceptance(params: {
       },
     }),
   ]);
+}
+
+/**
+ * Records the FIRST terms acceptance for accounts created after the sign-up
+ * form began disclosing "By creating an account you agree to our Terms of Use
+ * and Privacy Policy" (TOS_SIGNUP_CONSENT_SINCE). Called from the post-signup
+ * completion route so a brand-new candidate never meets the /accept-terms
+ * wall on the way to their first question (activation audit F2). No-op when
+ * an acceptance is already recorded — a later CURRENT_TOS_VERSION bump still
+ * sends everyone through /accept-terms explicitly.
+ */
+export async function recordSignupTosAcceptanceIfEligible(
+  clerkUserId: string,
+  requestHeaders: Headers
+): Promise<boolean> {
+  const row = await prisma.userProfile.findUnique({
+    where: { clerkUserId },
+    select: { tosAcceptedVersion: true },
+  });
+  if (row?.tosAcceptedVersion) return false;
+
+  const { clerkClient } = await import("@clerk/nextjs/server");
+  const client = await clerkClient();
+  const user = await client.users.getUser(clerkUserId);
+  if (new Date(user.createdAt) < TOS_SIGNUP_CONSENT_SINCE) return false;
+
+  await recordTosAcceptance({
+    clerkUserId,
+    ipAddress:
+      requestHeaders.get("x-forwarded-for")?.split(",")[0]?.trim() ?? null,
+    userAgent: requestHeaders.get("user-agent"),
+  });
+  return true;
 }
 
 /**
