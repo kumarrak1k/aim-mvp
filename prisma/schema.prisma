@@ -259,11 +259,14 @@ model EmailJob {
 }
 
 model Referral {
-  id        String        @id @default(cuid())
-  userId    String        @unique
-  code      String        @unique
-  usedCount Int           @default(0)
-  createdAt DateTime      @default(now())
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  code           String   @unique
+  usedCount      Int      @default(0)
+  // Free Plus months already granted for activated referrals (see
+  // app/lib/referralRewards.ts).
+  rewardedMonths Int      @default(0)
+  createdAt      DateTime @default(now())
 
   uses ReferralUse[]
 }

@@ -1,6 +1,11 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { prisma } from "@/app/lib/prisma";
+import {
+  ACTIVATIONS_PER_REWARD,
+  REWARD_MONTHS_CAP,
+  evaluateReferralRewards,
+} from "@/app/lib/referralRewards";
 
 export const runtime = "nodejs";
 
@@ -36,8 +41,17 @@ export async function POST() {
 
   if (!referral) return NextResponse.json({ error: "Could not create referral" }, { status: 500 });
 
+  // Evaluate + lazily grant any earned reward months (see referralRewards.ts).
+  const rewards = await evaluateReferralRewards(userId);
+
   return NextResponse.json({
     code: referral.code,
     usedCount: referral.usedCount,
+    activatedCount: rewards.activatedCount,
+    rewardedMonths: rewards.rewardedMonths,
+    towardsNext: rewards.towardsNext,
+    capReached: rewards.capReached,
+    activationsPerReward: ACTIVATIONS_PER_REWARD,
+    rewardMonthsCap: REWARD_MONTHS_CAP,
   });
 }
