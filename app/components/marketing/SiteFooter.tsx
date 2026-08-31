@@ -9,11 +9,14 @@ export function SiteFooter() {
       <div className="border-b border-white/[0.05] bg-white/[0.02] px-4 py-3">
         <DataTrustStrip />
       </div>
-      <div className="mx-auto max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] px-4 py-12 sm:px-6 lg:py-16">
-        <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-[1.6fr_1fr_1fr_1fr]">
+      {/* Compact by design: the old py-3-per-link + space-y-3 rows made the
+          footer ~50px per link and a full screen tall on phones. Phones get
+          two link columns side by side; the brand block spans the row. */}
+      <div className="mx-auto max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] px-4 py-8 sm:px-6 lg:py-10">
+        <div className="grid grid-cols-2 gap-x-6 gap-y-7 md:grid-cols-3 lg:grid-cols-[1.6fr_1fr_1fr_1fr]">
 
           {/* Brand */}
-          <div>
+          <div className="col-span-2 md:col-span-3 lg:col-span-1">
             <SiteLogo href="/" size="sm" showText />
             <p className="mt-4 max-w-xs text-sm leading-6 text-gray-400">
               Interview coaching that helps you land your next role.
@@ -72,27 +75,27 @@ export function SiteFooter() {
 
           {/* For candidates */}
           <div>
-            <p className="mb-4 text-[12px] font-bold tracking-wide text-gray-400">
+            <p className="mb-1 text-[12px] font-bold tracking-wide text-gray-400">
               For candidates
             </p>
-            <div className="space-y-3 text-sm text-gray-400">
-              <Link href="/" className="block py-3 transition hover:text-white">Overview</Link>
-              <Link href="/interview-practice" className="block py-3 transition hover:text-white">Interview practice</Link>
-              <Link href="/mock-assessment-centre" className="block py-3 transition hover:text-white">Assessment centre</Link>
-              <Link href="/pricing" className="block py-3 transition hover:text-white">Pricing</Link>
-              <Link href="/for-candidates/sign-up" className="block py-3 transition hover:text-white">Start free</Link>
+            <div className="text-sm text-gray-400">
+              <Link href="/" className="block py-2 transition hover:text-white">Overview</Link>
+              <Link href="/interview-practice" className="block py-2 transition hover:text-white">Interview practice</Link>
+              <Link href="/mock-assessment-centre" className="block py-2 transition hover:text-white">Assessment centre</Link>
+              <Link href="/pricing" className="block py-2 transition hover:text-white">Pricing</Link>
+              <Link href="/for-candidates/sign-up" className="block py-2 transition hover:text-white">Start free</Link>
             </div>
           </div>
 
           {/* Resources */}
           <div>
-            <p className="mb-4 text-[12px] font-bold tracking-wide text-gray-400">
+            <p className="mb-1 text-[12px] font-bold tracking-wide text-gray-400">
               Free tools
             </p>
-            <div className="space-y-3 text-sm text-gray-400">
-              <Link href="/blog" className="block py-3 transition hover:text-white">Interview guides</Link>
-              <Link href="/questions" className="block py-3 transition hover:text-white">Question library</Link>
-              <Link href="/tools/star-scorer" className="block py-3 transition hover:text-white">Free STAR scorer</Link>
+            <div className="text-sm text-gray-400">
+              <Link href="/blog" className="block py-2 transition hover:text-white">Interview guides</Link>
+              <Link href="/questions" className="block py-2 transition hover:text-white">Question library</Link>
+              <Link href="/tools/star-scorer" className="block py-2 transition hover:text-white">Free STAR scorer</Link>
               {/*
                 "For hiring teams" and "Universities" removed while those offers
                 move to their own site. The pages still resolve for anyone sent
@@ -105,16 +108,16 @@ export function SiteFooter() {
 
           {/* Company */}
           <div>
-            <p className="mb-4 text-[12px] font-bold tracking-wide text-gray-400">
+            <p className="mb-1 text-[12px] font-bold tracking-wide text-gray-400">
               Company
             </p>
-            <div className="space-y-3 text-sm text-gray-400">
-              <Link href="/about" className="block py-3 transition hover:text-white">About</Link>
-              <Link href="/contact" className="block py-3 transition hover:text-white">Contact</Link>
-              <Link href="/press" className="block py-3 transition hover:text-white">Press</Link>
-              <Link href="/security" className="block py-3 transition hover:text-white">Security</Link>
-              <Link href="/privacy" className="block py-3 transition hover:text-white">Privacy</Link>
-              <Link href="/terms" className="block py-3 transition hover:text-white">Terms</Link>
+            <div className="text-sm text-gray-400">
+              <Link href="/about" className="block py-2 transition hover:text-white">About</Link>
+              <Link href="/contact" className="block py-2 transition hover:text-white">Contact</Link>
+              <Link href="/press" className="block py-2 transition hover:text-white">Press</Link>
+              <Link href="/security" className="block py-2 transition hover:text-white">Security</Link>
+              <Link href="/privacy" className="block py-2 transition hover:text-white">Privacy</Link>
+              <Link href="/terms" className="block py-2 transition hover:text-white">Terms</Link>
             </div>
           </div>
 

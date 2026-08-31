@@ -122,7 +122,11 @@ export function AudienceShell({
 
       {/* Header */}
       <header className="relative z-50">
-        <div className="relative mx-auto grid w-full max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] grid-cols-[auto_minmax(0,1fr)_auto] items-center px-4 pt-1.5 pb-3 sm:px-6 sm:pt-2 sm:pb-4 lg:px-10">
+        {/* ≥1200 (nav visible): three auto columns with space-between, so the
+            gaps logo↔nav↔actions are EQUAL. Page-centring the nav looked
+            lopsided because the logo and auth clusters have different widths
+            (user flagged it, 2026-08-31). */}
+        <div className="relative mx-auto grid w-full max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] grid-cols-[auto_minmax(0,1fr)_auto] items-center px-4 pt-1.5 pb-3 sm:px-6 sm:pt-2 sm:pb-4 lg:px-10 min-[1200px]:grid-cols-[auto_auto_auto] min-[1200px]:justify-between">
           {/* Logo — no audience badge: the chip next to the logo read as a
               stray label in the collapsed layout (user feedback 2026-08-30). */}
           <Link
@@ -140,7 +144,7 @@ export function AudienceShell({
               (matches PublicShell). */}
           <nav
             aria-label="Primary"
-            className="hidden min-w-0 justify-center min-[1200px]:flex xl:absolute xl:left-1/2 xl:top-1/2 xl:z-20 xl:-translate-x-1/2 xl:-translate-y-1/2"
+            className="hidden min-w-0 justify-center min-[1200px]:flex"
           >
             <div className="flex items-center gap-0.5 rounded-full border border-white/[0.09] bg-white/[0.04] p-1.5">
               {theme.navItems.map((item) => {

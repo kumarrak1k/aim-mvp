@@ -145,7 +145,7 @@ export function DataTrustStrip({
             every viewport width. */}
         <div className="pointer-events-none absolute inset-x-0 top-1/2 hidden -translate-y-1/2 sm:block">
           <div className="mx-auto flex max-w-7xl justify-end px-4 sm:px-6 lg:px-10 xl:max-w-[clamp(80rem,95vw,105rem)]">
-            <div className="pointer-events-auto mr-3">
+            <div className="pointer-events-auto">
               <ThemeSelector compact />
             </div>
           </div>
