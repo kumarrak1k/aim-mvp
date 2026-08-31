@@ -230,8 +230,11 @@ export function CandidateAppShell({
             </div>
           </nav>
 
-          {/* Right actions — avatar only; Start Practising moved to its own row. */}
-          <div className="relative z-10 flex shrink-0 items-center justify-end gap-2">
+          {/* Right actions — avatar only; Start Practising moved to its own
+              row. Centred at ≥1200: the column is as wide as the theme
+              selector above it, and a right-pushed avatar left a void between
+              the nav and itself (user report 2026-08-31). */}
+          <div className="relative z-10 flex shrink-0 items-center justify-end gap-2 min-[1200px]:justify-center">
             <div className="shrink-0 px-2">
               <UserButton>
                 <UserButton.UserProfilePage
