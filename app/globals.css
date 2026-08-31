@@ -70,11 +70,11 @@
 }
 
 [data-theme="light"] {
-  /* Cool, near-neutral ground: the first light palette (#f7f4fc + fuchsia
-     glow) read pink; this keeps a hint of violet-grey without the blush. */
-  --background: #f6f6fa;
+  /* Near-white ground: #f7f4fc read pink, #f6f6fa still leaned lilac
+     (user, 2026-08-31); #fafafb is white with the faintest cool cast. */
+  --background: #fafafb;
   --foreground: #241640;
-  --brand-deep: #f6f6fa;
+  --brand-deep: #fafafb;
   --brand-panel: rgba(36, 22, 64, 0.05);
   --brand-border: rgba(36, 22, 64, 0.12);
   --brand-muted: #5f5876;
@@ -122,9 +122,11 @@
   --warn-text-strong: #92400e;
   --bad-text-strong: #991b1b;
   --bad-text-bright: #7f1d1d;
-  --glow-purple: rgba(124, 90, 240, 0.07);
-  --glow-cyan: rgba(103, 232, 249, 0.09);
-  --glow-fuchsia: rgba(139, 92, 246, 0.03);
+  /* Halved vs the first light pass: these tints sit over near-white now and
+     anything stronger reads pink (user, 2026-08-31). */
+  --glow-purple: rgba(124, 90, 240, 0.04);
+  --glow-cyan: rgba(103, 232, 249, 0.05);
+  --glow-fuchsia: rgba(139, 92, 246, 0.02);
   --scheme: light;
 }
 
@@ -232,6 +234,18 @@
     radial-gradient(ellipse 70% 60% at 25% 15%, var(--glow-purple), transparent),
     radial-gradient(ellipse 60% 50% at 75% 85%, var(--glow-fuchsia), transparent),
     linear-gradient(180deg, var(--background) 0%, var(--background) 100%);
+}
+
+/* Light mode: damp the decorative atmosphere layers (the fixed/absolute
+   full-bleed glow-blob containers every shell and standalone page renders).
+   Their ~8% purple/fuchsia tints were designed against near-black; over a
+   near-white ground they read pink (user, 2026-08-31). Selecting on the
+   utility-class signature covers all of them without touching components:
+   pointer-events-none + inset-0 + z-0 is, by convention, only ever the
+   decorative background layer. */
+[data-theme="light"] .pointer-events-none.fixed.inset-0.z-0,
+[data-theme="light"] .pointer-events-none.absolute.inset-0.z-0 {
+  opacity: 0.45;
 }
 
 * {
