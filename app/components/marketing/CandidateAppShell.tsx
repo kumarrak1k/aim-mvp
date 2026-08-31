@@ -159,10 +159,12 @@ export function CandidateAppShell({
         {/* Grid so the centred nav lives in its own column and cannot paint over
             the logo — the old flex + absolute layout let the pill nav overlap
             "AI Career Mentor" once it grew. */}
-        {/* ≥1200: three auto columns with space-between — equal gaps between
-            logo, nav and the account cluster (equal-1fr flanks page-centred
-            the nav, which looked lopsided since the flanks' contents differ). */}
-        <div className="relative mx-auto grid w-full max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 px-4 py-3 sm:px-6 lg:px-8 lg:py-3.5 min-[1200px]:grid-cols-[auto_auto_auto] min-[1200px]:justify-between">
+        {/* ≥1200: equal-1fr flank columns PAGE-centre the nav pill (and the
+            trust line above it, which shares its column) so it lines up with
+            the page-centred "Start Practising" button directly below — a
+            space-between layout centred it between unequal flanks and the
+            offset was visible against that button (user report 2026-08-31). */}
+        <div className="relative mx-auto grid w-full max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 px-4 py-3 sm:px-6 lg:px-8 lg:py-3.5 min-[1200px]:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]">
           {/* Row 1 (sm+): trust line + theme selector share the grid columns
               with the nav/account row below, so they centre over the nav pill
               and the account cluster at every width. */}
@@ -170,7 +172,7 @@ export function CandidateAppShell({
           <div className="hidden min-w-0 flex-wrap items-center justify-center gap-x-5 gap-y-1 pb-1 sm:flex">
             <TrustRowItems />
           </div>
-          <div className="hidden items-center justify-center pb-1 sm:flex">
+          <div className="hidden items-center justify-center pb-1 sm:flex min-[1200px]:justify-end">
             <ThemeSelector compact />
           </div>
 
@@ -231,10 +233,9 @@ export function CandidateAppShell({
           </nav>
 
           {/* Right actions — avatar only; Start Practising moved to its own
-              row. Centred at ≥1200: the column is as wide as the theme
-              selector above it, and a right-pushed avatar left a void between
-              the nav and itself (user report 2026-08-31). */}
-          <div className="relative z-10 flex shrink-0 items-center justify-end gap-2 min-[1200px]:justify-center">
+              row. Right-aligned like the theme selector above, so the right
+              rail reads as one column at the container edge. */}
+          <div className="relative z-10 flex shrink-0 items-center justify-end gap-2">
             <div className="shrink-0 px-2">
               <UserButton>
                 <UserButton.UserProfilePage
