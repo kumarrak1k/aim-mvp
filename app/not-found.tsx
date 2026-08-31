@@ -21,6 +21,8 @@ export default function NotFound() {
               src="/brand/logo-mark.svg"
               alt="AI Career Mentor"
               loading="lazy"
+              width={64}
+              height={64}
               className="h-16 w-16 rounded-2xl object-contain"
             />
           </div>

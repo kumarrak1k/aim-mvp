@@ -286,6 +286,8 @@ export function MentorChat() {
                     send(e as unknown as FormEvent);
                   }
                 }}
+                id="mentor-chat-input"
+                name="chat-message"
                 placeholder="Ask a question…"
                 maxLength={500}
                 disabled={loading}
