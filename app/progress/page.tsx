@@ -1212,6 +1212,19 @@ function TrendChart({ sessions }: { sessions: DashboardSession[] }) {
             <stop offset="100%" stopColor="#a855f7" stopOpacity="0" />
           </linearGradient>
 
+          {/* Light-theme twins: deeper stops with real contrast on the pale
+              ground. globals.css --chart-line/--chart-area pick per theme. */}
+          <linearGradient id="tcLineLight" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#7c3aed" />
+            <stop offset="48%" stopColor="#a21caf" />
+            <stop offset="100%" stopColor="#0e7490" />
+          </linearGradient>
+          <linearGradient id="tcAreaLight" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#7c3aed" stopOpacity="0.16" />
+            <stop offset="75%" stopColor="#7c3aed" stopOpacity="0.03" />
+            <stop offset="100%" stopColor="#7c3aed" stopOpacity="0" />
+          </linearGradient>
+
           {/* Glow filter for the line and dots */}
           <filter id="tcGlow" x="-30%" y="-30%" width="160%" height="160%">
             <feGaussianBlur stdDeviation="4" result="blur" />
@@ -1247,12 +1260,12 @@ function TrendChart({ sessions }: { sessions: DashboardSession[] }) {
             <g key={v}>
               <line
                 x1={padL} y1={y} x2={padL + cW} y2={y}
-                stroke="color-mix(in srgb, var(--foreground) 6%, transparent)" strokeWidth="1"
+                stroke="var(--chart-grid)" strokeWidth="1"
               />
               <text
                 x={padL - 7} y={y + 4}
                 textAnchor="end" fontSize="11"
-                fill="color-mix(in srgb, var(--foreground) 45%, transparent)" fontWeight="700"
+                fill="var(--chart-axis)" fontWeight="700"
               >
                 {v}
               </text>
@@ -1260,31 +1273,34 @@ function TrendChart({ sessions }: { sessions: DashboardSession[] }) {
           );
         })}
 
-        {/* Target line at 7 */}
+        {/* Target line at 7. Label sits INSIDE the plot's right edge — the
+            old x = padL+cW+4 ran off the viewBox and clipped to "TARG". */}
         <line
           x1={padL} y1={targetY} x2={padL + cW} y2={targetY}
-          stroke="rgba(52,211,153,0.35)" strokeWidth="1.2"
+          stroke="var(--chart-target)" strokeWidth="1.2"
           strokeDasharray="5 4"
         />
         <text
-          x={padL + cW + 4} y={targetY + 4}
-          fontSize="9.5" fill="rgba(52,211,153,0.6)" fontWeight="900"
+          x={padL + cW - 4} y={targetY - 5}
+          textAnchor="end"
+          fontSize="9.5" fill="var(--chart-target-text)" fontWeight="900"
         >
           TARGET
         </text>
 
         {/* Area fill (clipped) */}
-        <path d={area} fill="url(#tcArea)" clipPath="url(#tcClip)" />
+        <path d={area} fill="var(--chart-area)" clipPath="url(#tcClip)" />
 
         {/* Main curve */}
         <path
           d={curve}
           fill="none"
-          stroke="url(#tcLine)"
+          stroke="var(--chart-line)"
           strokeWidth="2.8"
           strokeLinecap="round"
           strokeLinejoin="round"
           filter="url(#tcGlow)"
+          className="tc-glowed"
           clipPath="url(#tcClip)"
         />
 
@@ -1292,7 +1308,7 @@ function TrendChart({ sessions }: { sessions: DashboardSession[] }) {
         {pts.map((pt) => {
           const isLatest = pt.idx === pts.length;
           const scoreColor =
-            pt.score >= 8 ? "#34d399" : pt.score >= 6 ? "#67e8f9" : pt.score >= 4 ? "#fbbf24" : "#f87171";
+            pt.score >= 8 ? "var(--chart-score-good)" : pt.score >= 6 ? "var(--chart-score-mid)" : pt.score >= 4 ? "var(--chart-score-warn)" : "var(--chart-score-low)";
 
           return (
             <g key={pt.idx}>
@@ -1301,10 +1317,10 @@ function TrendChart({ sessions }: { sessions: DashboardSession[] }) {
                 <circle cx={pt.x} cy={pt.y} r="14" fill={scoreColor} fillOpacity="0.12" />
               )}
               {/* Halo */}
-              <circle cx={pt.x} cy={pt.y} r="9" fill={scoreColor} fillOpacity="0.18" filter="url(#dotGlow)" />
+              <circle cx={pt.x} cy={pt.y} r="9" fill={scoreColor} fillOpacity="0.18" filter="url(#dotGlow)" className="tc-glowed" />
               {/* Core dot */}
-              <circle cx={pt.x} cy={pt.y} r="5" fill={scoreColor} filter="url(#dotGlow)" />
-              <circle cx={pt.x} cy={pt.y} r="2.5" fill="white" />
+              <circle cx={pt.x} cy={pt.y} r="5" fill={scoreColor} filter="url(#dotGlow)" className="tc-glowed" />
+              <circle cx={pt.x} cy={pt.y} r="2.5" fill="var(--chart-dot-core)" />
 
               {/* Score label above dot */}
               <text
@@ -1319,7 +1335,7 @@ function TrendChart({ sessions }: { sessions: DashboardSession[] }) {
               <text
                 x={pt.x} y={padT + cH + 20}
                 textAnchor="middle" fontSize="10.5"
-                fontWeight="700" fill="color-mix(in srgb, var(--foreground) 50%, transparent)"
+                fontWeight="700" fill="var(--chart-axis-strong)"
               >
                 S{pt.idx}
               </text>

@@ -466,3 +466,43 @@ html[data-theme="light"] .theme-opt[data-value="light"] .theme-opt-check,
 html[data-theme="dark"] .theme-opt[data-value="dark"] .theme-opt-check {
   display: inline;
 }
+
+/* Progress-chart palette. The trend SVG was designed additively for the dark
+   ground (glowing gradient line, translucent amber/cyan dots) — the same
+   values wash out to near-invisible on light. The SVG reads these tokens so
+   each theme gets colours with real contrast against its own ground; the
+   line/area swap whole gradient defs (url() is a valid var value for SVG
+   paint). Dark values = the original hardcoded ones, pixel-identical. */
+:root {
+  --chart-grid: color-mix(in srgb, var(--foreground) 6%, transparent);
+  --chart-axis: color-mix(in srgb, var(--foreground) 45%, transparent);
+  --chart-axis-strong: color-mix(in srgb, var(--foreground) 50%, transparent);
+  --chart-target: rgba(52, 211, 153, 0.35);
+  --chart-target-text: rgba(52, 211, 153, 0.6);
+  --chart-line: url(#tcLine);
+  --chart-area: url(#tcArea);
+  --chart-dot-core: #ffffff;
+  --chart-score-good: #34d399;
+  --chart-score-mid: #67e8f9;
+  --chart-score-warn: #fbbf24;
+  --chart-score-low: #f87171;
+}
+/* The glow filters are additive effects tuned for the dark ground; on light
+   they just blur the line and dots into the page. Render crisp instead. */
+[data-theme="light"] .tc-glowed {
+  filter: none;
+}
+[data-theme="light"] {
+  --chart-grid: color-mix(in srgb, var(--foreground) 16%, transparent);
+  --chart-axis: color-mix(in srgb, var(--foreground) 70%, transparent);
+  --chart-axis-strong: color-mix(in srgb, var(--foreground) 75%, transparent);
+  --chart-target: rgba(4, 120, 87, 0.55);
+  --chart-target-text: #047857;
+  --chart-line: url(#tcLineLight);
+  --chart-area: url(#tcAreaLight);
+  --chart-dot-core: var(--background);
+  --chart-score-good: #059669;
+  --chart-score-mid: #0e7490;
+  --chart-score-warn: #b45309;
+  --chart-score-low: #dc2626;
+}
