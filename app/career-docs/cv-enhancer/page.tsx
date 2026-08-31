@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { CandidateAppShell } from "@/app/components/marketing/CandidateAppShell";
 import { useSavedCV } from "@/app/career-docs/hooks/useSavedCV";
+import { SECTORS } from "@/app/lib/onboarding";
 
 type EnhancedBullet = { original: string; enhanced: string };
 type Section = { name: string; score: number; feedback: string; suggestion: string };
@@ -305,14 +306,24 @@ export default function CVEnhancerPage() {
                 />
               </div>
               <div>
-                <label className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400">Industry / sector</label>
+                <label htmlFor="cv-industry" className="mb-1.5 block text-xs font-bold tracking-wide text-gray-400">Industry / sector</label>
+                {/* Native datalist: type-to-filter across the onboarding
+                    SECTORS, and anything typed that isn't listed is kept as
+                    free text (the "Other" case) with no extra control. */}
                 <input
+                  id="cv-industry"
                   type="text"
+                  list="cv-industry-options"
                   value={industry}
                   onChange={(e) => setIndustry(e.target.value)}
-                  placeholder="e.g. Financial Services"
+                  placeholder="Choose a sector or type your own"
                   className="w-full rounded-xl border border-white/[0.08] bg-recess-30 px-4 py-3 text-sm text-white placeholder-gray-400 outline-none focus:border-purple-400/40 focus:ring-1 focus:ring-purple-400/20"
                 />
+                <datalist id="cv-industry-options">
+                  {SECTORS.filter((s) => s !== "Still deciding").map((s) => (
+                    <option key={s} value={s} />
+                  ))}
+                </datalist>
               </div>
 
               {/* CV field with saved-profile panel */}
