@@ -10,13 +10,13 @@ import { useEffect, useState } from "react";
  * "system", it is never collapsed to the resolved theme), and the resolved
  * light/dark lands on <html data-theme> where globals.css picks it up.
  *
- * Site default is dark (brand), applied by the root layout's inline script;
+ * Site default is light, applied by the root layout's inline script;
  * this component only ever changes it on a click.
  */
 
-/* Two options only, per product decision (2026-08-30): the site is a brand
-   experience with dark as its default, so a System option added noise. Any
-   legacy stored "system" value falls back to dark. */
+/* Two options only, per product decision (2026-08-30): a System option added
+   noise. Default is LIGHT (user decision 2026-08-31); any legacy stored
+   "system" value falls back to it. */
 type ThemeMode = "light" | "dark";
 const STORAGE_KEY = "theme-mode";
 const MODES: { value: ThemeMode; label: string }[] = [
@@ -35,8 +35,8 @@ export function ThemeSelector({ compact = false }: { compact?: boolean }) {
   // keyed off <html data-theme> (.theme-opt rules in globals.css), which the
   // anti-flash head script sets before first paint — state arrives after
   // hydration, and highlighting from it made the selection visibly jump
-  // dark→light on every navigation for light-mode users.
-  const [mode, setMode] = useState<ThemeMode>("dark");
+  // on every navigation for non-default-theme users.
+  const [mode, setMode] = useState<ThemeMode>("light");
 
   useEffect(() => {
     let stored: string | null = null;
@@ -45,7 +45,7 @@ export function ThemeSelector({ compact = false }: { compact?: boolean }) {
     } catch {
       /* storage unavailable — selector still works for this page */
     }
-    setMode(stored === "light" || stored === "dark" ? stored : "dark");
+    setMode(stored === "light" || stored === "dark" ? stored : "light");
   }, []);
 
   function choose(next: ThemeMode) {

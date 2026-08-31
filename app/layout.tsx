@@ -263,25 +263,27 @@ export default function RootLayout({
       signUpUrl="/for-candidates/sign-up"
       afterSignOutUrl="/"
     >
-      {/* data-theme is stamped server-side as dark (the brand default) and
-          corrected before first paint by the inline script below when the
-          visitor has stored a different choice — suppressHydrationWarning
-          because that correction legitimately diverges from the SSR value. */}
+      {/* data-theme is stamped server-side as light (the site default,
+          2026-08-31) and corrected before first paint by the inline script
+          below when the visitor has stored a different choice —
+          suppressHydrationWarning because that correction legitimately
+          diverges from the SSR value. */}
       <html
         lang="en-GB"
         className={`${sans.variable} ${mono.variable}`}
-        data-theme="dark"
-        data-theme-mode="dark"
+        data-theme="light"
+        data-theme-mode="light"
         suppressHydrationWarning
       >
         <head>
-          <meta name="color-scheme" content="dark light" />
+          <meta name="color-scheme" content="light dark" />
           <script
-            // Anti-flash init: runs before first paint. Default is DARK (brand
-            // continuity), not system — System is offered in the selector.
+            // Anti-flash init: runs before first paint. Default is LIGHT
+            // (user decision 2026-08-31); a stored choice wins. Not system —
+            // the selector offers Light/Dark explicitly.
             dangerouslySetInnerHTML={{
               __html: `(function(){var m=null;try{m=localStorage.getItem("theme-mode")}catch(e){}
-if(m!=="light"&&m!=="dark")m="dark";
+if(m!=="light"&&m!=="dark")m="light";
 var d=document.documentElement;d.setAttribute("data-theme-mode",m);d.setAttribute("data-theme",m);})();`,
             }}
           />
