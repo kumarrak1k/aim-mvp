@@ -40,6 +40,41 @@ const MOCK_FEEDBACK = {
   },
 };
 
+/** Returned when the candidate's answer is thin (under ~60 words): low-to-mid
+ *  scores and a deliberately comprehensive rebuild, mirroring how the real
+ *  model responds to vague answers with much richer improvement guidance. */
+const MOCK_FEEDBACK_WEAK = {
+  overall_score: 5,
+  category_scores: { content: 5, clarity: 6, relevance: 5, structure: 4, confidence: 5 },
+  pace_score: 6,
+  section_feedback: {
+    content: { score: 5, feedback: "The answer stays general — no specific project, numbers or outcome.", improvement: "Pick one real example and quantify what changed because of you." },
+    clarity: { score: 6, feedback: "Easy to read, but the generic phrasing blurs your actual contribution.", improvement: "Replace 'helped my team' with the specific thing you did." },
+    relevance: { score: 5, feedback: "Little of the answer connects to this role or its skills.", improvement: "Name the role's core skill and evidence it directly." },
+    structure: { score: 4, feedback: "No situation, task, action or result — it reads as a list of traits.", improvement: "Rebuild the answer in STAR order so each sentence has a job." },
+    confidence: { score: 5, feedback: "Hedged language ('I think', 'I guess') undercuts the message.", improvement: "State your example plainly and let the result carry the weight." },
+    pace: { score: 6, feedback: "Comfortable pace.", improvement: "Pause after the result so it lands." },
+  },
+  strengths: ["Positive, willing tone", "Mentions teamwork"],
+  improvements: [
+    "Replace general claims ('hard worker', 'quick learner') with one concrete example",
+    "Use the STAR structure: situation, task, action, result",
+    "Quantify the outcome — a number makes the story credible",
+    "Cut hedging phrases and connect the example to this specific role",
+  ],
+  improved_answer:
+    "In my second year I volunteered to rescue our society's failing sponsorship drive (Situation). With three weeks left we had raised only £400 of a £2,000 target, and I took on coordinating the final push (Task). I rebuilt the sponsor list around local firms that hire graduates, wrote a one-page pitch tailored to each, and split follow-ups across four committee members with a shared tracker so nothing slipped (Action). We closed at £2,300 — 15% over target — and two sponsors renewed the following year, which taught me how much a clear structure and follow-through change an outcome (Result). That is exactly how I would approach targets in this role.",
+  improved_answer_star: {
+    situation:
+      "In my second year, our society's sponsorship drive was failing: with three weeks left we had raised only £400 of a £2,000 target and committee morale was low.",
+    task: "I volunteered to coordinate the final push and was responsible for finding new sponsors and organising the team's follow-ups.",
+    action:
+      "I rebuilt the prospect list around local firms that hire graduates, wrote a tailored one-page pitch for each, split follow-ups across four committee members, and ran a shared tracker with twice-weekly check-ins so no conversation went cold.",
+    result:
+      "We closed at £2,300 — 15% over target — two sponsors renewed the next year, and the tracker became the society's standard process. It showed me that structure and consistent follow-through, not just effort, deliver results.",
+  },
+};
+
 const MOCK_QUESTIONS = [
   "Tell me about yourself and why you're interested in this role.",
   "Describe a time you faced a significant challenge at work and how you handled it.",
@@ -221,9 +256,13 @@ export function mockChatCompletion(request: ChatCompletionRequest): string {
     return JSON.stringify(MOCK_CV_ENHANCER);
   }
 
-  // /feedback — its system prompt defines the category_scores schema.
+  // /feedback — its system prompt defines the category_scores schema. Thin
+  // answers (under ~60 words) get the weak variant, so tests and captures see
+  // the same score-sensitive behaviour as the real model.
   if (sys.includes("category_scores") || all.includes('"category_scores"')) {
-    return JSON.stringify(MOCK_FEEDBACK);
+    const answerMatch = all.match(/Candidate answer:\s*([\s\S]*?)\n\s*\n/);
+    const words = answerMatch ? answerMatch[1].trim().split(/\s+/).length : 999;
+    return JSON.stringify(words < 60 ? MOCK_FEEDBACK_WEAK : MOCK_FEEDBACK);
   }
 
   // /interview — returns one { question } per call. Rotate by how many answers

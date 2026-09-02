@@ -88,8 +88,17 @@ test.describe("journey 01 — sign-up", () => {
   test.beforeEach(async ({ page }) => forceLight(page));
 
   test("sign-up page", async ({ page }) => {
-    await page.goto("/sign-up");
-    await page.waitForTimeout(3500);
+    await page.goto("/for-candidates/sign-up");
+    // Clerk's widget mounts client-side — wait for its card, not a timer.
+    await page.locator(".cl-rootBox, .cl-card").first().waitFor({ timeout: 20_000 }).catch(() => {});
+    await page.waitForTimeout(1500);
+    // The dev instance stamps an orange "Development mode" strip on the card;
+    // production shows no such element, so hide it rather than ship it.
+    await page.evaluate(() => {
+      for (const el of document.querySelectorAll("div, p, span")) {
+        if (el.textContent?.trim() === "Development mode") (el as HTMLElement).style.display = "none";
+      }
+    });
     await clean(page);
     await page.screenshot({ path: `${J1}/01-sign-up.png` });
   });
@@ -106,6 +115,9 @@ test.describe("journey 01 — interview practice (video mode)", () => {
     await selectCameraMode(page);
     await page.getByText("Choose one interview format.").scrollIntoViewIfNeeded().catch(() => {});
     await page.mouse.wheel(0, -160);
+    // Mid-scroll, the translucent sticky header ghosts the hero text through
+    // itself — hide it for this frame; the shot is about the mode cards.
+    await page.addStyleTag({ content: "header.sticky { display: none !important; }" });
     await page.waitForTimeout(600);
     await page.screenshot({ path: `${J1}/02-setup-video-mode.png` });
   });
@@ -164,6 +176,52 @@ test.describe("journey 01 — interview practice (video mode)", () => {
     await page.screenshot({ path: `${J1}/06-model-answer.png` });
   });
 
+  test("weak answer: score 5 + comprehensive model answer", async ({ page }) => {
+    await stubBrowserSpeech(page);
+    await page.goto("/practice");
+    await page.getByPlaceholder(/Example:|saved profile context/i).first().fill(ROLE);
+    await clean(page);
+    await selectCameraMode(page);
+    await Promise.all([
+      page.waitForResponse((r) => r.url().includes("/api/interview") && r.ok(), { timeout: 30_000 }).catch(() => null),
+      page.getByRole("button", { name: /Start Tailored .*Interview/ }).click(),
+    ]);
+    const textarea = page.getByPlaceholder(/Type your answer here|transcript will appear/i);
+    await textarea.waitFor({ state: "visible", timeout: 30_000 });
+    await page.waitForTimeout(1500);
+    await overlayFace(page);
+    // Stop the synthetic camera stream: the overlay keeps the face visible and
+    // stopping the device loop prevents the renderer hang, so this test can
+    // safely wait for the feedback round-trip with the camera rail on screen.
+    await page.evaluate(() => {
+      document.querySelectorAll("video").forEach((v) => {
+        const s = v.srcObject as MediaStream | null;
+        s?.getTracks().forEach((t) => t.stop());
+      });
+    });
+    // Under 60 words and vague on purpose — the coach scores it 5/10 and
+    // responds with the fully worked STAR rebuild.
+    await textarea.fill(
+      "I'm a hard worker and a quick learner. I did some projects at university and helped my team when things got busy. I think this role suits me because I like solving problems and working with people."
+    );
+    await Promise.all([
+      page.waitForResponse((r) => r.url().includes("/api/feedback"), { timeout: 30_000 }).catch(() => null),
+      page.getByRole("button", { name: "Get AI feedback" }).first().click(),
+    ]);
+    await page.getByText("AI feedback is ready").waitFor({ timeout: 30_000 }).catch(() => {});
+    await page.waitForTimeout(800);
+    await page.addStyleTag({ content: HIDE_CHROME }).catch(() => {});
+    await page.waitForTimeout(300);
+    await page.screenshot({ path: `${J1}/08-ai-feedback-score-5.png` });
+
+    await page.getByRole("button", { name: /View feedback/i }).first().click();
+    const modelHeading = page.getByText("Stronger answer example (STAR)");
+    await modelHeading.waitFor({ state: "visible", timeout: 15_000 });
+    await modelHeading.evaluate((el) => el.parentElement?.scrollIntoView({ block: "center" }));
+    await clean(page);
+    await page.screenshot({ path: `${J1}/09-model-answer-detailed.png` });
+  });
+
   test("session summary", async ({ page }) => {
     await runTypedInterview(page, { role: ROLE, totalQuestions: 5 });
     await page.waitForTimeout(1500);
@@ -220,14 +278,19 @@ test.describe("journey 03 — assessment centre", () => {
     await clean(page);
     await page.screenshot({ path: `${J3}/01-landing.png` });
 
+    // The stage picker lives on the setup route, not the landing page.
+    await page.goto("/assessment-centre/setup");
+    await page.waitForLoadState("networkidle").catch(() => {});
+    await clean(page);
     const picker = page.getByText(/Stages to include/i).first();
-    const hasPicker = await picker.isVisible().catch(() => false);
-    if (hasPicker) {
-      await picker.scrollIntoViewIfNeeded().catch(() => {});
-      await page.mouse.wheel(0, -120);
-      await page.waitForTimeout(600);
-      await page.screenshot({ path: `${J3}/02-stage-picker.png` });
-    }
+    await picker.waitFor({ state: "visible", timeout: 15_000 });
+    // Frame the stage cards as the subject: section at the top of the frame,
+    // sticky header hidden so nothing ghosts through it mid-scroll.
+    await picker.evaluate((el) => el.closest("div")?.scrollIntoView({ block: "start" }));
+    await page.mouse.wheel(0, -60);
+    await page.addStyleTag({ content: "header.sticky { display: none !important; }" });
+    await page.waitForTimeout(600);
+    await page.screenshot({ path: `${J3}/02-stage-picker.png` });
 
     const startRes = await page.request.post("/api/assessment-centre/start", {
       data: {
