@@ -669,8 +669,14 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
     return <span className="ml-1 text-fuchsia-400">{sortDir === "asc" ? "↑" : "↓"}</span>;
   }
 
-  const thS = "pb-3 text-left text-xs font-bold tracking-wide text-gray-400 cursor-pointer select-none hover:text-gray-300 transition whitespace-nowrap";
-  const thF = "pb-3 text-left text-xs font-bold tracking-wide text-gray-400 whitespace-nowrap";
+  // Sticky on the header CELLS (not <thead> — broader browser support) with an
+  // opaque bg so rows don't show through: the table is a contained scroll
+  // region (max-h below), so the header stays put on vertical scroll and the
+  // horizontal scrollbar stays reachable in the viewport instead of at the
+  // bottom of a tall table.
+  const thBase = "sticky top-0 z-10 bg-background pt-3 pb-3 text-left text-xs font-bold tracking-wide text-gray-400 whitespace-nowrap";
+  const thS = `${thBase} cursor-pointer select-none hover:text-gray-300 transition`;
+  const thF = thBase;
 
   // ── Render ────────────────────────────────────────────────────────────────────
 
@@ -834,7 +840,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto rounded-[1.5rem] border border-white/10 bg-white/[0.03]">
+      <div className="max-h-[70vh] overflow-auto rounded-[1.5rem] border border-white/10 bg-white/[0.03]">
         <table className="w-full text-sm">
           <thead className="border-b border-white/[0.08]">
             <tr>
