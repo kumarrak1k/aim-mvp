@@ -6,14 +6,30 @@
  */
 import { test as setup } from "@playwright/test";
 import { clerk } from "@clerk/testing/playwright";
+import { PrismaClient } from "@prisma/client";
 import { CANDIDATE_PERSONAS, CORPORATE_ADMIN, DISPOSABLE_CANDIDATE } from "../fixtures/personas";
 import { TEST_PASSWORD, statePath } from "../fixtures/env";
 import { seedPersona } from "../fixtures/seedClerkUser";
 import { seedCompany } from "../fixtures/seedCompany";
 
+const prisma = new PrismaClient();
+
+/** The standing candidate personas represent ESTABLISHED users, so they are
+ *  seeded as already-onboarded — /practice now redirects anyone who has never
+ *  completed or skipped onboarding (the Stripe-return gate). The disposable
+ *  persona is deliberately NOT stamped: onboarding.spec needs a fresh user. */
+async function stampOnboarded(clerkUserId: string) {
+  await prisma.userProfile.upsert({
+    where: { clerkUserId },
+    update: { onboardingCompletedAt: new Date() },
+    create: { clerkUserId, onboardingCompletedAt: new Date() },
+  });
+}
+
 for (const persona of CANDIDATE_PERSONAS) {
   setup(`seed + sign in: ${persona.key}`, async ({ page }) => {
-    await seedPersona(persona);
+    const user = await seedPersona(persona);
+    await stampOnboarded(user.id);
 
     // clerk.signIn() requires a prior navigation to an unprotected page that
     // loads Clerk (the index page).
@@ -36,6 +52,7 @@ for (const persona of CANDIDATE_PERSONAS) {
 
 setup(`seed + sign in: ${CORPORATE_ADMIN.key}`, async ({ page }) => {
   const user = await seedPersona(CORPORATE_ADMIN);
+  await stampOnboarded(user.id);
   // The corporate dashboard reads the company via the signed-in user's
   // CompanyMember — seed a Company + admin member + AC template in the test DB.
   await seedCompany(user.id);

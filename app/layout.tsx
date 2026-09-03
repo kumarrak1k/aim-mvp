@@ -262,6 +262,12 @@ export default function RootLayout({
       signInUrl="/for-candidates/sign-in"
       signUpUrl="/for-candidates/sign-up"
       afterSignOutUrl="/"
+      // NOTE (2026-09-03): do NOT set prefetchUI={false} here. It looks like
+      // the supported "mobile JS diet" knob, but clerk-js then throws "Clerk
+      // was not loaded with Ui components" the moment any prebuilt component
+      // mounts (UserButton in the app shells crashed /practice to the error
+      // boundary). It is only safe for apps built purely on control
+      // components.
     >
       {/* data-theme is stamped server-side as light (the site default,
           2026-08-31) and corrected before first paint by the inline script
