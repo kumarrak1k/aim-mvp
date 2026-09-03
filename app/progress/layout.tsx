@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ClerkAppProvider } from "@/app/components/ClerkAppProvider";
 import { requireTosAcceptance } from "@/app/lib/legal";
 
 export const metadata: Metadata = {
@@ -35,5 +36,5 @@ export default async function ProgressLayout({
   children: React.ReactNode;
 }>) {
   await requireTosAcceptance("/progress");
-  return children;
+  return <ClerkAppProvider>{children}</ClerkAppProvider>;
 }

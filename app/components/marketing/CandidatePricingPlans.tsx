@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@clerk/nextjs";
+import { useAuthState } from "@/app/components/marketing/AuthState";
 
 export type PricingCurrency = "GBP" | "USD" | "EUR";
 
@@ -89,7 +89,7 @@ type PlanFeature = { text: string; isNew?: boolean };
 export function CandidatePricingPlans({ currency = "GBP" }: { currency?: PricingCurrency }) {
   const [annual, setAnnual] = useState(false);
   const router = useRouter();
-  const { isSignedIn } = useAuth();
+  const isSignedIn = useAuthState().status === "signed-in";
   /** Plan id currently being sent to Stripe (drives the button spinner). */
   const [checkoutPlan, setCheckoutPlan] = useState<StripePlanId | null>(null);
   const [checkoutError, setCheckoutError] = useState("");

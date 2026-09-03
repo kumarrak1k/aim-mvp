@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
+import { ClerkAppProvider } from "@/app/components/ClerkAppProvider";
 import { requireTosAcceptance } from "@/app/lib/legal";
 
 export const metadata: Metadata = {
@@ -58,5 +59,7 @@ export default async function PracticeLayout({
   }
 
   await requireTosAcceptance("/practice");
-  return children;
+  // Full Clerk runtime: this surface renders prebuilt Clerk UI (UserButton in
+  // the shells) — the root layout no longer mounts the provider.
+  return <ClerkAppProvider>{children}</ClerkAppProvider>;
 }

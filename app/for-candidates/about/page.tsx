@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
-import { auth } from "@clerk/nextjs/server";
-import { AudienceShell } from "@/app/components/marketing/AudienceShell";
-import { CandidateAppShell } from "@/app/components/marketing/CandidateAppShell";
+import { CandidateShell } from "@/app/components/marketing/CandidateShell";
 import { AboutPageContent } from "@/app/components/pages/AboutPageContent";
 
 export const metadata: Metadata = {
@@ -9,19 +7,9 @@ export const metadata: Metadata = {
 };
 
 export default async function CandidateAboutPage() {
-  const { userId } = await auth();
-
-  if (userId) {
-    return (
-      <CandidateAppShell currentPath="/for-candidates/about">
-        <AboutPageContent />
-      </CandidateAppShell>
-    );
-  }
-
   return (
-    <AudienceShell audience="candidate" currentPath="/for-candidates/about">
-      <AboutPageContent />
-    </AudienceShell>
+    <CandidateShell currentPath="/for-candidates/about">
+        <AboutPageContent />
+      </CandidateShell>
   );
 }
