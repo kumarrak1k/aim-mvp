@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { redirect } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
+import { prisma } from "@/app/lib/prisma";
 import { createPageMetadata } from "@/app/config/seo";
 import {
   resolveCandidatePlanFromClaims,
@@ -25,6 +27,25 @@ export const metadata: Metadata = createPageMetadata({
 
 export default async function PracticePage() {
   const { userId, sessionClaims } = await auth();
+
+  // First-run gate. The post-auth resolver only runs at sign-in, so any entry
+  // path that lands here directly — Stripe's checkout success_url, bookmarks,
+  // shared links — could otherwise show a brand-new candidate the practice
+  // page before they have ever seen onboarding. Same semantics as
+  // resolvePostAuthDestination (finished OR skipped counts as done), and fails
+  // open: a database blip must never lock a candidate out of practice.
+  let needsOnboarding = false;
+  if (userId) {
+    try {
+      const profile = await prisma.userProfile.findUnique({
+        where: { clerkUserId: userId },
+        select: { onboardingCompletedAt: true },
+      });
+      needsOnboarding = !profile?.onboardingCompletedAt;
+    } catch {}
+  }
+  if (needsOnboarding) redirect("/onboarding");
+
   // Resolve the initial plan from JWT session claims — no Clerk API call, so
   // this never fails on a Clerk API 500. Honours the reverse trial (an active
   // trial resolves to "Professional").
