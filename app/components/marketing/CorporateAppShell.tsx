@@ -84,7 +84,7 @@ export function CorporateAppShell({
         <div className="absolute bottom-[-80px] right-[-160px] h-[520px] w-[520px] rounded-full bg-purple-500/[0.08] blur-[160px]" />
       </div>
 
-      <header className="sticky top-0 z-50 backdrop-blur-2xl">
+      <header className="relative z-50">
         <div className="relative mx-auto flex w-full max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] items-center px-4 py-3 sm:px-6 lg:px-8 lg:py-3.5">
           <Link
             href="/company/dashboard"

@@ -28,7 +28,7 @@ export function NeutralShell({ children }: NeutralShellProps) {
       </div>
 
       {/* Header — minimal: logo + back link */}
-      <header className="sticky top-0 z-50 bg-background/90 backdrop-blur-2xl">
+      <header className="relative z-50">
         <div className="mx-auto flex w-full max-w-5xl items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:py-3.5">
           <Link href="/" className="shrink-0">
             <SiteLogo href="" size="md" showText />

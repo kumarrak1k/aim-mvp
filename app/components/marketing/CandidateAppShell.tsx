@@ -166,7 +166,7 @@ export function CandidateAppShell({
       <DataTrustStrip variant="topbar" mobileOnly />
 
       {/* Header */}
-      <header className="sticky top-0 z-50 backdrop-blur-2xl">
+      <header className="relative z-50">
         {/* Grid so the centred nav lives in its own column and cannot paint over
             the logo — the old flex + absolute layout let the pill nav overlap
             "AI Career Mentor" once it grew. */}
