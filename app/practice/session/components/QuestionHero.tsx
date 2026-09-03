@@ -88,7 +88,11 @@ export function QuestionHero(props: QuestionHeroProps) {
     isSpeakingQuestion ||
     isListening ||
     guidedAnswerRunning ||
-    (questionAudioLoading && !questionAudioReady);
+    // Any audio prep/start window — not only when not-yet-ready. Once a
+    // question is prepared (ready) there was still a fetch/buffer gap before
+    // playback where the button stayed clickable and could re-trigger the
+    // question mid-read (seen on iPad).
+    questionAudioLoading;
 
   const playOnlyDisabled =
     questionLoading || !question || (questionAudioLoading && !questionAudioReady);

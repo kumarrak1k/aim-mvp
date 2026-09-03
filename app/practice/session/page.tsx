@@ -344,6 +344,10 @@ export default function PracticeSessionPage() {
     },
   });
 
+  // Browser (device) voice speaking state. The premium OpenAI voice reports
+  // separately via isPreparedQuestionPlaying (from useQuestionAudio, declared
+  // below); the two are combined at the QuestionHero call site to disable the
+  // "Play question + record" button while either voice is presenting.
   const activeIsSpeakingQuestion = isSpeakingQuestion;
 
   const maybeStartPendingAutoRecord = useCallback(async () => {
@@ -358,6 +362,13 @@ export default function PracticeSessionPage() {
     awaitingAutoRecordQuestionRef.current = null;
     questionPlaybackStartedRef.current = false;
 
+    // Warm the microphone stream NOW, during the echo-buffer wait below. The
+    // question audio has already ended, so acquiring the mic here can't lower
+    // its volume, and getUserMedia (slow on iOS, and re-run per answer because
+    // cleanup stops the stream) finishes before recognition starts — which
+    // stops the first words being clipped on iPad/mobile.
+    void primeAudioInput();
+
     // Keep isSpeakingQuestionRef.current = true during the buffer window so
     // any TTS audio still draining through the OS output buffer is blocked by
     // the onresult guard in useBrowserSpeech. onPlaybackEnd intentionally does
@@ -369,13 +380,20 @@ export default function PracticeSessionPage() {
     isSpeakingQuestionRef.current = false;
 
     await startVoiceInputRef.current?.();
-  }, [activeIsSpeakingQuestion, isSpeakingQuestionRef, isListening, question]);
+  }, [
+    activeIsSpeakingQuestion,
+    isSpeakingQuestionRef,
+    isListening,
+    primeAudioInput,
+    question,
+  ]);
 
   const {
     questionAudioLoading,
     questionAudioReady,
     questionAudioError,
     questionAudioMessage,
+    isPreparedQuestionPlaying,
     setQuestionAudioMessage,
     prepareQuestionAudio,
     prepareQuestionAudioBackground,
@@ -1919,7 +1937,7 @@ export default function PracticeSessionPage() {
             questionAudioReady={questionAudioReady}
             questionAudioError={questionAudioError}
             questionAudioMessage={questionAudioMessage}
-            isSpeakingQuestion={activeIsSpeakingQuestion}
+            isSpeakingQuestion={activeIsSpeakingQuestion || isPreparedQuestionPlaying}
             isListening={isListening}
             guidedAnswerRunning={guidedAnswerRunning}
             onPlayQuestion={playQuestionManually}
@@ -1941,7 +1959,7 @@ export default function PracticeSessionPage() {
               feedback={feedback}
               voiceSupported={voiceSupported}
               isListening={isListening}
-              isSpeakingQuestion={activeIsSpeakingQuestion}
+              isSpeakingQuestion={activeIsSpeakingQuestion || isPreparedQuestionPlaying}
               questionLoading={questionLoading}
               questionAudioLoading={questionAudioLoading}
               cleaningTranscript={cleaningTranscript || whisperEnhancing}
