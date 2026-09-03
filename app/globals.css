@@ -466,15 +466,6 @@ textarea:focus-visible {
   background: transparent !important;
 }
 
-/* Below-the-fold marketing sections skip layout and paint until scrolled
-   near (content-visibility). The intrinsic-size placeholder keeps the
-   scrollbar stable. Cuts initial Style & Layout main-thread time on long
-   pages — part of the homepage mobile LCP pass (activation audit F6). */
-.cv-auto {
-  content-visibility: auto;
-  contain-intrinsic-size: auto 700px;
-}
-
 /* ThemeSelector highlight — driven by <html data-theme>, which the anti-flash
    head script sets BEFORE first paint. Component state can't do this: it
    hydrates as the dark default and only then reads localStorage, which made

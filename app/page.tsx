@@ -139,7 +139,7 @@ export default async function ForCandidatesPage() {
       </section>
 
       {/* Two products */}
-      <section className="cv-auto mx-auto max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] px-4 pb-16 sm:px-6 sm:pb-20">
+      <section className="mx-auto max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] px-4 pb-16 sm:px-6 sm:pb-20">
         <div className="mb-10 text-center">
           <p className="text-[12px] font-bold tracking-wide text-purple-300">
             What you get
@@ -216,7 +216,7 @@ export default async function ForCandidatesPage() {
       </section>
 
       {/* CV & Application Studio */}
-      <section className="cv-auto mx-auto max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] px-4 pb-16 sm:px-6 sm:pb-20">
+      <section className="mx-auto max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] px-4 pb-16 sm:px-6 sm:pb-20">
         <article className="relative overflow-hidden rounded-[2rem] border border-fuchsia-500/[0.18] bg-fuchsia-500/[0.05] p-8 sm:p-10">
           <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-fuchsia-500/[0.12] blur-3xl" />
           <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
@@ -273,7 +273,7 @@ export default async function ForCandidatesPage() {
           gallery explains what the product does, this is the only asset on the
           page with a person in it. Click to play, never autoplay — DemoVideo
           uses preload="none" so it costs nothing until someone asks for it. */}
-      <section className="cv-auto mx-auto max-w-3xl px-4 pb-16 sm:px-6 sm:pb-20">
+      <section className="mx-auto max-w-3xl px-4 pb-16 sm:px-6 sm:pb-20">
         <div className="mb-8 text-center">
           <p className="text-[12px] font-bold tracking-wide text-purple-300">
             In 25 seconds
@@ -322,7 +322,7 @@ export default async function ForCandidatesPage() {
       />
 
       {/* FAQs */}
-      <section className="cv-auto mx-auto max-w-3xl px-4 pb-16 sm:px-6 sm:pb-20">
+      <section className="mx-auto max-w-3xl px-4 pb-16 sm:px-6 sm:pb-20">
         <h2 className="mb-8 text-2xl font-bold tracking-tight">
           Frequently asked questions
         </h2>
@@ -342,7 +342,7 @@ export default async function ForCandidatesPage() {
       </section>
 
       {/* Final CTA */}
-      <section className="cv-auto mx-auto max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] px-4 pb-20 sm:px-6 sm:pb-28">
+      <section className="mx-auto max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] px-4 pb-20 sm:px-6 sm:pb-28">
         <div className="rounded-[2rem] border border-white/[0.1] bg-gradient-to-br from-purple-500/[0.10] via-violet-500/[0.06] to-transparent p-10 text-center sm:p-14">
           <p className="text-[12px] font-bold tracking-wide text-purple-300">
             Get started
