@@ -262,6 +262,27 @@
     linear-gradient(180deg, rgba(255, 255, 255, 0) 72%, rgba(226, 226, 235, 0.55) 100%);
 }
 
+/* iOS Safari paint fix (2026-09). The decorative atmosphere every shell renders
+   is a position:fixed full-viewport layer whose glow blobs used
+   filter: blur(160px). On mobile Safari a large fixed blurred layer is
+   re-rasterized against the page on EVERY scroll frame, which left the
+   below-hero sections unpainted for several seconds on real iPhones — while
+   staying near-free on Chromium (why it never showed in lab traces, only on
+   the phone; it regressed with the 2026-08-31 light-theme atmosphere rework).
+   Two cheap levers: promote the layer to its own compositor layer so it
+   rasterizes once instead of per-frame, and cut the blur radius — blur cost
+   scales with the square of the radius, and at this blob size 64px is visually
+   equivalent to 160px. Applies in both themes; scoped off .page-glow, which is
+   pure gradients and needs no blur. */
+.pointer-events-none.fixed.inset-0.z-0,
+.pointer-events-none.absolute.inset-0.z-0 {
+  transform: translateZ(0);
+}
+.pointer-events-none.fixed.inset-0.z-0 > div:not(.page-glow),
+.pointer-events-none.absolute.inset-0.z-0 > div:not(.page-glow) {
+  filter: blur(64px) !important;
+}
+
 * {
   box-sizing: border-box;
 }
