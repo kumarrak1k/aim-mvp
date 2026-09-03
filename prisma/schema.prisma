@@ -424,6 +424,10 @@ model UserProfile {
   // once alongside first-touch attribution so the admin view can tell a UK
   // signup from an overseas one, which changes how a non-conversion reads.
   signupCountry         String?
+  // Device class from the User-Agent at signup: "mobile" | "tablet" |
+  // "desktop". Server-derived (trusted) alongside first-touch attribution, so
+  // the admin view can see which devices people sign up on.
+  signupDevice          String?
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
 

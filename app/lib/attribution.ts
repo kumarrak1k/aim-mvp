@@ -15,7 +15,13 @@ export async function saveSignupAttributionIfUnset(
    * `attr` because attribution is client-derived and therefore spoofable,
    * whereas this is set by the platform and can be trusted.
    */
-  signupCountry?: string | null
+  signupCountry?: string | null,
+  /**
+   * Device class derived server-side from the User-Agent header — trusted,
+   * like signupCountry. Records whether the signup came from a laptop/desktop,
+   * phone or tablet, for the admin acquisition view.
+   */
+  signupDevice?: string | null
 ): Promise<void> {
   const existing = await prisma.userProfile.findUnique({
     where: { clerkUserId },
@@ -41,7 +47,11 @@ export async function saveSignupAttributionIfUnset(
     return; // first touch already recorded
   }
 
-  const data = { ...attr, ...(signupCountry ? { signupCountry } : {}) };
+  const data = {
+    ...attr,
+    ...(signupCountry ? { signupCountry } : {}),
+    ...(signupDevice ? { signupDevice } : {}),
+  };
 
   await prisma.userProfile.upsert({
     where: { clerkUserId },

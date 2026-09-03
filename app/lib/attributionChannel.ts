@@ -19,6 +19,28 @@ const cleanField = (value: unknown, max = 300): string | null => {
   return trimmed ? trimmed.slice(0, max) : null;
 };
 
+export type DeviceType = "mobile" | "tablet" | "desktop";
+
+/**
+ * Classify the signup device from the User-Agent string. Derived server-side
+ * from the request header (trusted, not client-supplied), so it can tell how
+ * people are reaching signup — laptop/desktop vs phone vs tablet.
+ *
+ * Known limitation: iPadOS Safari reports a desktop (Macintosh) UA by default,
+ * so some iPads count as "desktop". Tablet detection therefore catches Android
+ * tablets and older iPads but not modern iPads in default mode.
+ */
+export function classifyDevice(userAgent: string | null | undefined): DeviceType | null {
+  if (!userAgent) return null;
+  const s = userAgent.toLowerCase();
+  if (/ipad|tablet|kindle|silk|playbook|nexus (7|9|10)/.test(s)) return "tablet";
+  if (/android/.test(s) && !/mobile/.test(s)) return "tablet";
+  if (/mobi|iphone|ipod|android|blackberry|bb10|windows phone|iemobile|webos|opera mini/.test(s)) {
+    return "mobile";
+  }
+  return "desktop";
+}
+
 /** Validate/trim an attribution object arriving from the client. */
 export function sanitizeAttribution(raw: unknown): SignupAttribution | null {
   if (!raw || typeof raw !== "object") return null;

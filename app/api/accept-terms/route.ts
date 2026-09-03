@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { getAccountType } from "@/app/lib/accountType";
 import { saveSignupAttributionIfUnset } from "@/app/lib/attribution";
-import { sanitizeAttribution } from "@/app/lib/attributionChannel";
+import { sanitizeAttribution, classifyDevice } from "@/app/lib/attributionChannel";
 import { CURRENT_TOS_VERSION, recordTosAcceptance } from "@/app/lib/legal";
 import { autoStartCandidateTrial } from "@/app/lib/trialAutoStart";
 
@@ -57,7 +57,8 @@ export async function POST(req: Request) {
         await saveSignupAttributionIfUnset(
           userId,
           attribution,
-          req.headers.get("x-vercel-ip-country")
+          req.headers.get("x-vercel-ip-country"),
+          classifyDevice(req.headers.get("user-agent"))
         );
       } catch (err) {
         console.error("SAVE ATTRIBUTION ERROR:", err);

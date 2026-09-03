@@ -155,6 +155,7 @@ export default async function AdminPage() {
         referrer: true,
         landingPath: true,
         signupCountry: true,
+        signupDevice: true,
       },
     }),
     prisma.practiceSession.count({ where: { createdAt: { gte: d7 } } }),
@@ -314,6 +315,7 @@ export default async function AdminPage() {
       referrer: profile?.referrer ?? null,
       landingPath: profile?.landingPath ?? null,
       signupCountry: profile?.signupCountry ?? null,
+      signupDevice: profile?.signupDevice ?? null,
       // Timestamps
       createdAt: new Date(u.createdAt).toISOString(),
       lastSignInAt: u.lastSignInAt

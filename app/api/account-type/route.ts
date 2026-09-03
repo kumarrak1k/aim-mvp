@@ -7,7 +7,7 @@ import {
   type AccountType,
 } from "@/app/lib/accountType";
 import { saveSignupAttributionIfUnset } from "@/app/lib/attribution";
-import { sanitizeAttribution } from "@/app/lib/attributionChannel";
+import { sanitizeAttribution, classifyDevice } from "@/app/lib/attributionChannel";
 import { autoStartCandidateTrial } from "@/app/lib/trialAutoStart";
 import { recordSignupTosAcceptanceIfEligible } from "@/app/lib/legal";
 
@@ -82,7 +82,8 @@ export async function POST(request: NextRequest) {
         await saveSignupAttributionIfUnset(
           userId,
           attribution,
-          request.headers.get("x-vercel-ip-country")
+          request.headers.get("x-vercel-ip-country"),
+          classifyDevice(request.headers.get("user-agent"))
         );
       } catch (err) {
         console.error("SAVE ATTRIBUTION ERROR:", err);

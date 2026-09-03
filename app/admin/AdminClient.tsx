@@ -29,6 +29,7 @@ export type AdminUser = {
   trialEndsAt: string | null;
   trialConsumed: boolean;
   signupCountry: string | null;
+  signupDevice: string | null;
   // Usage aggregates (Prisma)
   practiceCount: number;
   lastPracticeAt: string | null;
@@ -235,7 +236,7 @@ function MembershipBadge({ user }: { user: AdminUser }) {
 // ── CSV export ────────────────────────────────────────────────────────────────
 
 function exportCsv(users: AdminUser[]) {
-  const headers = ["ID","First name","Last name","Email","Account type","Membership","Company","Company role","Period / trial end","Practice sessions","Last session","Assessment centres","Career docs","Profile built","Source channel","UTM source","UTM medium","UTM campaign","Promo code","Referrer","Landing page","Country","Joined","Last sign-in","Last active"];
+  const headers = ["ID","First name","Last name","Email","Account type","Membership","Company","Company role","Period / trial end","Practice sessions","Last session","Assessment centres","Career docs","Profile built","Source channel","UTM source","UTM medium","UTM campaign","Promo code","Referrer","Landing page","Country","Device","Joined","Last sign-in","Last active"];
   const rows = users.map((u) => [
     u.id, u.firstName ?? "", u.lastName ?? "", u.email, u.accountType,
     getMembershipLabel(u), u.companyName ?? "", u.companyRole ?? "",
@@ -248,6 +249,7 @@ function exportCsv(users: AdminUser[]) {
     deriveChannel(u),
     u.utmSource ?? "", u.utmMedium ?? "", u.utmCampaign ?? "",
     u.promoCode ?? "", u.referrer ?? "", u.landingPath ?? "", u.signupCountry ?? "",
+    u.signupDevice ?? "",
     new Date(u.createdAt).toLocaleDateString("en-GB"),
     u.lastSignInAt ? new Date(u.lastSignInAt).toLocaleDateString("en-GB") : "Never",
     u.lastActiveAt ? new Date(u.lastActiveAt).toLocaleDateString("en-GB") : "Never",
@@ -571,6 +573,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
         referrer: null,
         landingPath: null,
         signupCountry: null,
+        signupDevice: null,
         createdAt: new Date().toISOString(),
         lastSignInAt: null,
         lastActiveAt: null,
@@ -919,6 +922,14 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                   >
                     {deriveChannel(u)}
                   </span>
+                  {u.signupDevice && (
+                    <span
+                      className="ml-1.5 rounded-md bg-white/[0.04] px-1.5 py-0.5 text-[11px] font-bold text-gray-400"
+                      title="Signup device (from the User-Agent at signup)"
+                    >
+                      {u.signupDevice}
+                    </span>
+                  )}
                 </td>
                 <td className="whitespace-nowrap py-3.5 pr-4 text-[12px] text-gray-400">{fmtDate(u.createdAt)}</td>
                 <td className="whitespace-nowrap py-3.5 pr-4 text-[12px] text-gray-400">{fmtDate(lastSeen(u))}</td>
