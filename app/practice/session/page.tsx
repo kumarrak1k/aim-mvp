@@ -16,6 +16,7 @@ import { useBrowserSpeech } from "../hooks/useBrowserSpeech";
 import { useCameraTracking } from "../hooks/useCameraTracking";
 import { useDeviceProfile } from "../hooks/useDeviceProfile";
 import { useQuestionAudio } from "../hooks/useQuestionAudio";
+import { unlockAudioOutput } from "../lib/iosAudioUnlock";
 import { defaultAudioMetrics } from "../config";
 import type {
   AudioMetrics,
@@ -1240,6 +1241,11 @@ export default function PracticeSessionPage() {
   );
 
   const startInterview = useCallback(async () => {
+    // iOS: unlock the audio session NOW, inside the real Start gesture, so
+    // question audio can auto-play on every later question advance. This must
+    // run in a gesture — the per-play unlock inside the audio hook fires from
+    // an effect, which iOS blocks, so without this only question 1 spoke.
+    unlockAudioOutput();
     prefetchAbortRef.current?.abort();
     prefetchRef.current = { questionNumber: 0, question: null };
     clearBackgroundAudio();
@@ -1427,6 +1433,7 @@ export default function PracticeSessionPage() {
     // Keyboard-only mode — speaker must never be enabled during the session.
     if (isKeyboardOnly) return;
 
+    unlockAudioOutput();
     setHasUserInteracted(true);
     setSpeakerEnabled(true);
 
@@ -1439,6 +1446,7 @@ export default function PracticeSessionPage() {
     // Keyboard-only mode — guided answer (voice + auto-record) is not available.
     if (isKeyboardOnly) return;
 
+    unlockAudioOutput();
     setHasUserInteracted(true);
     setSpeakerEnabled(true);
     setGuidedAnswerActive(true);
