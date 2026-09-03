@@ -1,5 +1,6 @@
 import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import type { Metadata, Viewport } from "next";
+import { ClerkProvider } from "@clerk/nextjs";
 import { Analytics } from "@vercel/analytics/next";
 import { absoluteUrl, siteConfig } from "@/app/config/site";
 import { AttributionCapture } from "@/app/components/AttributionCapture";
@@ -253,12 +254,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    // ClerkProvider deliberately does NOT wrap the root layout any more:
-    // marketing pages ship zero clerk-js (the mobile blank-below-hero fix).
-    // It mounts via ClerkAppProvider in the app/auth directory layouts and in
-    // CandidateShell's signed-in branch — that component also carries the
-    // Clerk URL config and the prefetchUI warning.
-    <>
+    // Global Clerk URLs: without these, fallback flows (sign-out bounces,
+    // expired sessions, account-portal links) land on Clerk's HOSTED pages at
+    // accounts.aicareermentor.co.uk, which carry default Clerk branding. The
+    // admin area is unaffected (middleware sends it to /admin/sign-in).
+    <ClerkProvider
+      signInUrl="/for-candidates/sign-in"
+      signUpUrl="/for-candidates/sign-up"
+      afterSignOutUrl="/"
+      // NOTE (2026-09-03): do NOT set prefetchUI={false} here. It looks like
+      // the supported "mobile JS diet" knob, but clerk-js then throws "Clerk
+      // was not loaded with Ui components" the moment any prebuilt component
+      // mounts (UserButton in the app shells crashed /practice to the error
+      // boundary). It is only safe for apps built purely on control
+      // components.
+    >
       {/* data-theme is stamped server-side as light (the site default,
           2026-08-31) and corrected before first paint by the inline script
           below when the visitor has stored a different choice —
@@ -305,6 +315,6 @@ var d=document.documentElement;d.setAttribute("data-theme-mode",m);d.setAttribut
           <Analytics />
         </body>
       </html>
-    </>
+    </ClerkProvider>
   );
 }

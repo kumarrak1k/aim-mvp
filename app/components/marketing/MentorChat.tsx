@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, FormEvent } from "react";
 import Link from "next/link";
-import { useAuthState } from "@/app/components/marketing/AuthState";
+import { useAuth } from "@clerk/nextjs";
 
 interface Message {
   role: "user" | "assistant";
@@ -72,9 +72,7 @@ function loadStoredMessages(): Message[] {
 }
 
 export function MentorChat() {
-  const { status, userId } = useAuthState();
-  const isLoaded = status !== "unknown";
-  const isSignedIn = status === "signed-in";
+  const { isLoaded, isSignedIn, userId } = useAuth();
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>(loadStoredMessages);
   const [input, setInput] = useState("");

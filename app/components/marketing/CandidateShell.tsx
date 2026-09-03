@@ -1,7 +1,5 @@
 import type { ReactNode } from "react";
 import { auth } from "@clerk/nextjs/server";
-import { ClerkAppProvider } from "@/app/components/ClerkAppProvider";
-import { AuthStateProvider } from "@/app/components/marketing/AuthState";
 import { AudienceShell } from "@/app/components/marketing/AudienceShell";
 import { CandidateAppShell } from "@/app/components/marketing/CandidateAppShell";
 
@@ -27,23 +25,15 @@ export async function CandidateShell({
 }) {
   const { userId } = await auth();
 
-  // The provider split is the mobile-performance fix: signed-in visitors get
-  // the full Clerk runtime (the app shell's avatar menu needs it); signed-out
-  // visitors get a provider-less tree with the server-known auth state, so
-  // marketing pages ship zero clerk-js.
   if (userId) {
     return (
-      <ClerkAppProvider>
-        <CandidateAppShell currentPath={currentPath}>{children}</CandidateAppShell>
-      </ClerkAppProvider>
+      <CandidateAppShell currentPath={currentPath}>{children}</CandidateAppShell>
     );
   }
 
   return (
-    <AuthStateProvider value={{ status: "signed-out", userId: null }}>
-      <AudienceShell audience="candidate" currentPath={currentPath}>
-        {children}
-      </AudienceShell>
-    </AuthStateProvider>
+    <AudienceShell audience="candidate" currentPath={currentPath}>
+      {children}
+    </AudienceShell>
   );
 }

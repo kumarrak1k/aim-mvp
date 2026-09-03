@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
-import { ClerkAppProvider } from "@/app/components/ClerkAppProvider";
 
 /**
  * Corporate workspace layout.
@@ -26,5 +25,5 @@ export default async function CompanyLayout({
     // primary superadmin protection.
   }
 
-  return <ClerkAppProvider>{children}</ClerkAppProvider>;
+  return <>{children}</>;
 }

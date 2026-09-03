@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { ClerkAppProvider } from "@/app/components/ClerkAppProvider";
 import { requireTosAcceptance } from "@/app/lib/legal";
 
 export const metadata: Metadata = {
@@ -45,5 +44,5 @@ export default async function ProfileLayout({
   children: React.ReactNode;
 }>) {
   await requireTosAcceptance("/profile");
-  return <ClerkAppProvider>{children}</ClerkAppProvider>;
+  return children;
 }

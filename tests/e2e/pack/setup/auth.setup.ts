@@ -32,9 +32,8 @@ for (const persona of CANDIDATE_PERSONAS) {
     await stampOnboarded(user.id);
 
     // clerk.signIn() requires a prior navigation to an unprotected page that
-    // loads Clerk. The index page no longer does for signed-out visitors
-    // (marketing pages ship zero clerk-js), so use the sign-in page.
-    await page.goto("/for-candidates/sign-in");
+    // loads Clerk (the index page).
+    await page.goto("/");
     await clerk.signIn({
       page,
       signInParams: { strategy: "password", identifier: persona.email, password: TEST_PASSWORD },
@@ -58,7 +57,7 @@ setup(`seed + sign in: ${CORPORATE_ADMIN.key}`, async ({ page }) => {
   // CompanyMember — seed a Company + admin member + AC template in the test DB.
   await seedCompany(user.id);
 
-  await page.goto("/for-candidates/sign-in");
+  await page.goto("/");
   await clerk.signIn({
     page,
     signInParams: { strategy: "password", identifier: CORPORATE_ADMIN.email, password: TEST_PASSWORD },
@@ -72,7 +71,7 @@ setup(`seed + sign in: ${CORPORATE_ADMIN.key}`, async ({ page }) => {
 setup(`seed + sign in: ${DISPOSABLE_CANDIDATE.key}`, async ({ page }) => {
   await seedPersona(DISPOSABLE_CANDIDATE);
 
-  await page.goto("/for-candidates/sign-in");
+  await page.goto("/");
   await clerk.signIn({
     page,
     signInParams: { strategy: "password", identifier: DISPOSABLE_CANDIDATE.email, password: TEST_PASSWORD },
