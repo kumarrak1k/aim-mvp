@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useIsIpad } from "@/app/lib/useIsIpad";
 
 /**
  * Final onboarding step: verify microphone, camera and speakers before the
@@ -69,6 +70,7 @@ export function EquipmentCheck({
   const audioCtxRef = useRef<AudioContext | null>(null);
   const rafRef = useRef<number | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const isIpad = useIsIpad();
 
   function stopAllMedia() {
     if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
@@ -248,12 +250,20 @@ export function EquipmentCheck({
             </button>
           )}
           <div className={cam === "checking" || cam === "pass" ? "mt-3" : "hidden"}>
-            <video
-              ref={videoRef}
-              muted
-              playsInline
-              className="h-36 w-48 rounded-xl border border-white/10 bg-black object-cover"
-            />
+            {/* overflow-hidden wrapper so the iPad zoom-crop (below) stays
+                inside the preview box instead of spilling into the layout. */}
+            <div className="h-36 w-48 overflow-hidden rounded-xl border border-white/10 bg-black">
+              <video
+                ref={videoRef}
+                muted
+                playsInline
+                // iPad front cameras are ultra-wide, so the candidate looks far
+                // away at this size. Zoom in on iPad only — laptop and iPhone
+                // (already correct) keep their 1× framing.
+                className="h-full w-full object-cover object-center"
+                style={isIpad ? { transform: "scale(1.5)" } : undefined}
+              />
+            </div>
             {cam === "pass" && (
               <p className="mt-2 text-xs text-gray-400">Looking good.</p>
             )}

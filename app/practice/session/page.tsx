@@ -1041,16 +1041,38 @@ export default function PracticeSessionPage() {
         latestVoiceAnalysisRef.current = latestVoice;
       }
 
+      // The transcript is refined in two stages: a quick clean of the browser
+      // transcript, then the authoritative Whisper transcript from the recorded
+      // audio. To avoid the candidate watching the text visibly rewrite itself
+      // two or three times, we HOLD the on-screen transcript at the raw live
+      // text (what they already saw appear as they spoke) and reveal the
+      // finished version in a SINGLE swap once the best available transcript is
+      // ready. The "Cleaning transcript" chip stays up for the whole window so
+      // it's clear polishing is happening — there just isn't a visible
+      // intermediate state. rawAnswerTranscriptRef always tracks the latest
+      // text so scoring and the Whisper guards use the right value even while
+      // the visible text is held.
+      const willRunWhisper = !!(audioBlob && audioBlob.size > 1500);
+      let cleanedTranscript = rawTranscript;
+      let whisperAdopted = false;
+
       try {
         setCleaningTranscript(true);
         const cleaned = await cleanTranscriptApi(rawTranscript);
-        setTranscript(cleaned || rawTranscript);
-        setAnswer(cleaned || rawTranscript);
-        rawAnswerTranscriptRef.current = cleaned || rawTranscript;
+        cleanedTranscript = cleaned || rawTranscript;
+        rawAnswerTranscriptRef.current = cleanedTranscript;
+        // No Whisper pass coming (typed-length audio, or none) — this cleaned
+        // browser transcript is the final version, so reveal it now.
+        if (!willRunWhisper) {
+          setTranscript(cleanedTranscript);
+          setAnswer(cleanedTranscript);
+        }
       } catch (err) {
         const isModerated =
           err instanceof Error && err.message.includes("can't be processed");
+        setTranscript(rawTranscript);
         setAnswer(rawTranscript);
+        cleanedTranscript = rawTranscript;
         // On moderation failure clear the ref so getFeedback won't re-send
         // the flagged content; the user can edit the visible transcript first.
         rawAnswerTranscriptRef.current = isModerated ? "" : rawTranscript;
@@ -1071,7 +1093,7 @@ export default function PracticeSessionPage() {
       // (the old rule, which threw the better transcript away and let answers
       // be scored against mis-heard text). The feedback button is disabled
       // while this runs, so content scoring always sees the final transcript.
-      if (audioBlob && audioBlob.size > 1500) {
+      if (willRunWhisper) {
         setWhisperEnhancing(true);
 
         fetchWhisperFillerAnalysis(audioBlob)
@@ -1116,6 +1138,7 @@ export default function PracticeSessionPage() {
               setTranscript(whisperTranscript);
               setAnswer(whisperTranscript);
               rawAnswerTranscriptRef.current = whisperTranscript;
+              whisperAdopted = true;
 
               // Re-score delivery against what was actually said.
               void runVoiceAnalysis(
@@ -1132,6 +1155,19 @@ export default function PracticeSessionPage() {
           })
           .finally(() => {
             setWhisperEnhancing(false);
+            // Whisper didn't replace the text (it agreed with the browser, was
+            // implausible, or failed). Reveal the browser-cleaned transcript
+            // now — this is the single visible swap from the raw live text to
+            // the finished version. Skipped when cleaning changed nothing, so
+            // the held raw text simply stays (no pointless flash).
+            if (
+              !whisperAdopted &&
+              cleanedTranscript &&
+              cleanedTranscript !== rawTranscript
+            ) {
+              setTranscript(cleanedTranscript);
+              setAnswer(cleanedTranscript);
+            }
           });
       }
       // ────────────────────────────────────────────────────────────────────

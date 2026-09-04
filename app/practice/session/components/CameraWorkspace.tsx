@@ -1,6 +1,7 @@
 "use client";
 
 import type { RefObject } from "react";
+import { useIsIpad } from "@/app/lib/useIsIpad";
 
 type CameraWorkspaceProps = {
   cameraEnabled: boolean;
@@ -28,6 +29,7 @@ export function CameraWorkspace({
   onViewFeedback,
   assessmentMode = false,
 }: CameraWorkspaceProps) {
+  const isIpad = useIsIpad();
   const statusLabel = cameraEnabled
     ? cameraRequiresTap
       ? "Tap"
@@ -58,12 +60,14 @@ export function CameraWorkspace({
             autoPlay
             muted
             playsInline
-            // Tablet front cameras have a wider field of view than phones, so the
-            // candidate looks further away at the same box size. Zoom the preview
-            // in on tablet widths only (sm–lg); mobile (base) and the xl desktop
-            // sidebar stay at 1×. Display-only — camera-presence analysis reads
-            // the raw, unscaled video frames, so scoring is unaffected.
-            className="h-full w-full object-cover object-center sm:scale-[1.3] lg:scale-100"
+            // iPad front cameras are ultra-wide, so the candidate looks far away
+            // at the same box size. Zoom in on iPad specifically — a landscape
+            // iPad is >=lg wide, so the old width-based zoom (sm–lg) switched
+            // OFF exactly when it was needed. Laptop and iPhone (already correct)
+            // keep their 1× framing. Display-only — camera-presence analysis
+            // reads the raw, unscaled video frames, so scoring is unaffected.
+            className="h-full w-full object-cover object-center"
+            style={isIpad ? { transform: "scale(1.5)" } : undefined}
           />
 
           {cameraEnabled && cameraRequiresTap && (
