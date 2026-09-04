@@ -1529,9 +1529,18 @@ export default function PracticeSessionPage() {
       setFeedbackLoading(true);
       setFeedback(null);
 
+      // Prefer the already-finalised transcript (the polished Whisper text held
+      // in the ref) once recording has stopped. Re-reading the live recogniser
+      // buffer here would visibly REVERT the answer from the Whisper version
+      // back to the rougher browser transcript the moment feedback is requested
+      // — the third "clean-up" step the user saw. The live buffer is only the
+      // better source while still recording, i.e. when "Get feedback" is itself
+      // what stops the recording.
+      const liveCapture = getCombinedTranscript();
       const preStopTranscript = stripQuestionLeakageFromTranscript(
-        getCombinedTranscript() ||
+        (isListening ? liveCapture : "") ||
           rawAnswerTranscriptRef.current.trim() ||
+          liveCapture ||
           answer.trim(),
         activeQuestionRef.current
       );
