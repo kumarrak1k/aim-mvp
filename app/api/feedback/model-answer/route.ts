@@ -61,9 +61,24 @@ export async function POST(req: NextRequest) {
     }
 
     const isAssessment = Boolean(assessmentMode);
-    const savedProfileContext = isAssessment
-      ? buildAssessmentContextBlock(templateContext)
-      : buildSavedProfileContext(await getCandidateProfile(userId));
+    let savedProfileContext: string;
+    if (isAssessment) {
+      savedProfileContext = buildAssessmentContextBlock(templateContext);
+    } else {
+      // Never fail the model answer over a profile-read hiccup (e.g. DB
+      // connection-pool pressure). Personalise when we can, fall back to a
+      // strong generic answer when the read errors, so the STAR example always
+      // renders.
+      try {
+        savedProfileContext = buildSavedProfileContext(
+          await getCandidateProfile(userId)
+        );
+      } catch (err) {
+        console.error("MODEL-ANSWER profile fetch failed; using generic context:", err);
+        savedProfileContext =
+          "No saved candidate profile is available. Write a strong, generic model answer appropriate to the interview question and a typical strong candidate at the target level.";
+      }
+    }
 
     const systemPrompt = `
 You are an elite interview coach. Your only job here is to write ONE model
