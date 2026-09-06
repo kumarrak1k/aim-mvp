@@ -312,6 +312,7 @@ Language and style rules:
 
 Question rules:
 - Generate ONE interview question only.
+- Keep it to a SINGLE focused ask. It may include at most one short embedded clause, but NEVER stack three or four separate questions into one — for example "how did you define the end-state, build the business case, manage dependencies, AND prove the benefits to the board" is four questions in one and is too much to track. If the theme is broad, pick the single most important angle. The candidate must be able to hold the whole question in their head on one listen and know exactly what to answer.
 - Build the question STRICTLY from the company template's role, experience level, interview type, difficulty, focus area and any recruiter custom instructions or competency framework.
 - DO NOT invent or assume a personal CV, work history, prior projects or goals for the candidate. Their background is not in scope.
 - DO NOT ask the candidate to "tell me about your experience at [made-up company]" or reference unspecified previous roles — only ask questions that work for any candidate at the configured level.
@@ -343,6 +344,7 @@ Language and style rules:
 
 Interview question rules:
 - Generate ONE interview question only.
+- Keep it to a SINGLE focused ask. It may include at most one short embedded clause, but NEVER stack three or four separate questions into one — for example "how did you define the end-state, build the business case, manage dependencies, AND prove the benefits to the board" is four questions in one and is too much to track. If the theme is broad, pick the single most important angle. The candidate must be able to hold the whole question in their head on one listen and know exactly what to answer.
 - The question must match the candidate profile, interview type, difficulty and focus area.
 - If saved CV, role specification or interview goals are provided, use them to make the question more personalised and relevant.
 - Prioritise the target role specification over generic role assumptions.

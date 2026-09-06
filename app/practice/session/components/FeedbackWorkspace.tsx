@@ -103,7 +103,7 @@ export function FeedbackWorkspace({
           <FeedbackList title="Improvements" items={feedback.improvements} />
         </div>
 
-        {(feedback.improved_answer || feedback.model_answer_loading) && (
+        {!feedback.error && (
           <div className="mt-5 rounded-[1.35rem] border border-cyan-300/15 bg-cyan-300/10 p-4 sm:rounded-[1.5rem] sm:p-5">
             <p className="mb-3 text-xs font-bold tracking-wide text-cyan-200 sm:text-sm">
               Stronger answer example (STAR)
@@ -115,7 +115,9 @@ export function FeedbackWorkspace({
               />
             ) : (
               <p className="text-sm text-cyan-100/70">
-                Generating a model answer…
+                {feedback.model_answer_loading
+                  ? "Generating a model answer…"
+                  : "We couldn't generate a model answer for this one. Try the next question."}
               </p>
             )}
           </div>

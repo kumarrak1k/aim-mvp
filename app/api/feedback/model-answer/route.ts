@@ -136,7 +136,11 @@ ${savedProfileContext}
       data = await callOpenAIChat({
         model: MODEL_ANSWERS,
         temperature: 0.3,
-        max_tokens: 900,
+        // The answer is returned TWICE (flowing + the four STAR parts) and the
+        // model spends hidden reasoning before it, so keep a generous budget —
+        // too tight and the JSON truncates, fails to parse, and the panel shows
+        // no model answer at all.
+        max_tokens: 1600,
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },
@@ -176,16 +180,24 @@ ${savedProfileContext}
     // Keep improved_answer_star only when all four parts are usable strings —
     // the UI falls back to the flowing improved_answer otherwise.
     const star = parsed.improved_answer_star as Record<string, unknown> | null | undefined;
-    const starValid =
+    const starValid = Boolean(
       star &&
-      typeof star === "object" &&
-      ["situation", "task", "action", "result"].every(
-        (k) => typeof star[k] === "string" && (star[k] as string).trim().length > 0
-      );
+        typeof star === "object" &&
+        ["situation", "task", "action", "result"].every(
+          (k) => typeof star[k] === "string" && (star[k] as string).trim().length > 0
+        )
+    );
+
+    let flowing =
+      typeof parsed.improved_answer === "string" ? parsed.improved_answer.trim() : "";
+    // Never lose the answer to a mismatch: if only one of the two forms came
+    // back, rebuild the other so the STAR example always renders.
+    if (!flowing && starValid) {
+      flowing = [star!.situation, star!.task, star!.action, star!.result].join(" ");
+    }
 
     return NextResponse.json({
-      improved_answer:
-        typeof parsed.improved_answer === "string" ? parsed.improved_answer : "",
+      improved_answer: flowing,
       improved_answer_star: starValid ? parsed.improved_answer_star : null,
     });
   } catch (error) {
