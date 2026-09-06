@@ -166,10 +166,18 @@ export function PracticeFeedbackPanel({
             </div>
 
             <div className="rounded-2xl border border-white/10 bg-recess-35 p-5">
-              <StarAnswer
-                star={feedback.improved_answer_star}
-                fallbackText={feedback.improved_answer}
-              />
+              {feedback.improved_answer ? (
+                <StarAnswer
+                  star={feedback.improved_answer_star}
+                  fallbackText={feedback.improved_answer}
+                />
+              ) : (
+                <p className="text-sm leading-6 text-gray-400">
+                  {feedback.model_answer_loading
+                    ? "Generating a model answer…"
+                    : "No model answer was generated for this question."}
+                </p>
+              )}
             </div>
           </div>
 

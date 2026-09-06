@@ -169,6 +169,39 @@ export const fetchFeedback = async ({
   });
 };
 
+// The exemplar "model answer" is generated separately from scoring (on the
+// stronger, slower model) so scores can render immediately and the answer can
+// fill in a beat later. See /api/feedback/model-answer.
+export const fetchModelAnswer = async ({
+  question,
+  answer,
+  assessmentMode,
+  templateContext,
+}: {
+  question: string;
+  answer: string;
+  assessmentMode?: boolean;
+  templateContext?: AssessmentTemplateContext;
+}) => {
+  return postJson<
+    {
+      improved_answer: string;
+      improved_answer_star?: Feedback["improved_answer_star"];
+    },
+    {
+      question: string;
+      answer: string;
+      assessmentMode?: boolean;
+      templateContext?: AssessmentTemplateContext;
+    }
+  >("/api/feedback/model-answer", {
+    question,
+    answer,
+    ...(assessmentMode ? { assessmentMode: true } : {}),
+    ...(templateContext ? { templateContext } : {}),
+  });
+};
+
 export const fetchInterviewSummary = async ({
   role,
   results,

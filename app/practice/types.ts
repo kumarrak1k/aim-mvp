@@ -43,6 +43,9 @@ export type Feedback = {
     action: string;
     result: string;
   } | null;
+  // True while the exemplar answer is still being generated (scores render
+  // first; the model answer is fetched in parallel and merged in when ready).
+  model_answer_loading?: boolean;
   error?: string;
 };
 

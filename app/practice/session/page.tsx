@@ -37,6 +37,7 @@ import {
 import {
   cleanTranscript as cleanTranscriptApi,
   fetchFeedback,
+  fetchModelAnswer,
   fetchInterviewQuestion,
   fetchInterviewSummary,
   fetchVideoAnalysis,
@@ -175,6 +176,16 @@ export default function PracticeSessionPage() {
 
   const latestVoiceAnalysisRef = useRef<VoiceAnalysis | null>(null);
   const latestVideoAnalysisRef = useRef<VideoAnalysis | null>(null);
+  // Bumped on every getFeedback so a late-arriving model answer from a previous
+  // question can never merge into the current question's feedback.
+  const feedbackRequestIdRef = useRef(0);
+  // Holds the model answer if it resolves BEFORE the scores (the scoring step
+  // then applies it), so ordering between the two parallel calls never matters.
+  const pendingModelAnswerRef = useRef<{
+    id: number;
+    improved_answer: string;
+    improved_answer_star: Feedback["improved_answer_star"];
+  } | null>(null);
   const rawAnswerTranscriptRef = useRef("");
   const recordingStartRef = useRef<number | null>(null);
   const answerDurationSecondsRef = useRef<number | null>(null);
@@ -1610,6 +1621,54 @@ export default function PracticeSessionPage() {
         setAnswer(safeAnswer);
       }
 
+      // Fire scoring and the model answer in PARALLEL. Scores come back fast on
+      // the cheap model and render immediately; the stronger, slower model
+      // answer is merged into the panel a beat later (with a placeholder until
+      // then). The two are independent, so the user is never blocked on the
+      // slow answer just to see their scores.
+      const requestId = ++feedbackRequestIdRef.current;
+
+      const answerPromise = fetchModelAnswer({
+        question,
+        answer: safeAnswer,
+        assessmentMode,
+        templateContext,
+      });
+      // Attach the handler now so a rejection can never surface as an unhandled
+      // rejection. If the answer beats the scores, stash it; the scoring step
+      // below applies any stash for this requestId.
+      answerPromise
+        .then((ans) => {
+          if (feedbackRequestIdRef.current !== requestId) return;
+          pendingModelAnswerRef.current = {
+            id: requestId,
+            improved_answer: ans.improved_answer || "",
+            improved_answer_star: ans.improved_answer_star ?? null,
+          };
+          setFeedback((prev) =>
+            prev
+              ? {
+                  ...prev,
+                  improved_answer: ans.improved_answer || "",
+                  improved_answer_star: ans.improved_answer_star ?? null,
+                  model_answer_loading: false,
+                }
+              : prev
+          );
+        })
+        .catch(() => {
+          if (feedbackRequestIdRef.current !== requestId) return;
+          pendingModelAnswerRef.current = {
+            id: requestId,
+            improved_answer: "",
+            improved_answer_star: null,
+          };
+          // Scores still stand; just stop the placeholder if the answer failed.
+          setFeedback((prev) =>
+            prev ? { ...prev, model_answer_loading: false } : prev
+          );
+        });
+
       const data = await fetchFeedback({
         question,
         answer: safeAnswer,
@@ -1620,7 +1679,18 @@ export default function PracticeSessionPage() {
         templateContext,
       });
 
-      setFeedback(data);
+      // Apply the model answer immediately if it already resolved; otherwise
+      // show the scores now with a placeholder until the answer lands.
+      const stashed =
+        pendingModelAnswerRef.current?.id === requestId
+          ? pendingModelAnswerRef.current
+          : null;
+      setFeedback({
+        ...data,
+        improved_answer: stashed ? stashed.improved_answer : "",
+        improved_answer_star: stashed ? stashed.improved_answer_star : null,
+        model_answer_loading: !stashed,
+      });
     } catch (error) {
       setFeedback(
         createFeedbackError(

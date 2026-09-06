@@ -4,8 +4,12 @@ import { checkRateLimit } from "@/app/lib/rateLimit";
 import { callOpenAIChat, OpenAIError } from "@/app/lib/openai-client";
 import { MODEL_QUALITY } from "@/app/lib/aiModels";
 import { moderateText } from "@/app/lib/moderation";
-import { getCandidateProfile, type CandidateProfile } from "@/app/lib/candidateProfile";
+import { getCandidateProfile } from "@/app/lib/candidateProfile";
 import { reconcileOverallScore } from "@/app/lib/scoreCoherence";
+import {
+  buildAssessmentContextBlock,
+  buildSavedProfileContext,
+} from "@/app/lib/feedbackContext";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -19,75 +23,6 @@ type VoiceAnalysisLike = {
     wordCount?: number;
   };
 };
-
-
-type FeedbackTemplateContext = {
-  customInstructions?: string;
-  competencyFramework?: string;
-  templateName?: string;
-  companyName?: string;
-};
-
-/**
- * Replaces the personal-profile prompt block with the company's assessment
- * brief. Used only when assessmentMode is set on the request — the same
- * input that drove question generation, so feedback aligns with what was
- * asked rather than the candidate's CV.
- */
-function buildAssessmentContextBlock(
-  context: FeedbackTemplateContext | undefined
-): string {
-  if (!context) {
-    return "Company assessment context: assess this answer strictly against the role/level/type/difficulty/focus already supplied. The candidate's personal background is out of scope.";
-  }
-
-  const customInstructions = (context.customInstructions || "").trim();
-  const competencyFramework = (context.competencyFramework || "").trim();
-  const templateName = (context.templateName || "").trim();
-  const companyName = (context.companyName || "").trim();
-
-  return [
-    `Company assessment template${templateName ? `: ${templateName}` : ""}${companyName ? ` (issued by ${companyName})` : ""}.`,
-    customInstructions ? `Recruiter custom instructions:\n${customInstructions}` : "",
-    competencyFramework ? `Required competency framework:\n${competencyFramework}` : "",
-    "Score this answer against the company brief above and the role/level/type/difficulty/focus context. The candidate's personal CV or saved profile is NOT in scope and must not influence scoring.",
-  ]
-    .filter(Boolean)
-    .join("\n\n");
-}
-
-function buildSavedProfileContext(profile: CandidateProfile) {
-  const hasProfile =
-    profile.cvText.trim() ||
-    profile.roleSpec.trim() ||
-    profile.interviewGoals.trim();
-
-  if (!hasProfile) {
-    return "No saved candidate profile has been added yet.";
-  }
-
-  return `
-Saved candidate profile context:
-
-CV / career background:
-${profile.cvText || "Not provided."}
-
-Target role specification:
-${profile.roleSpec || "Not provided."}
-
-Candidate interview goals:
-${profile.interviewGoals || "Not provided."}
-
-Uploaded CV file:
-${profile.cvFileName || "Not provided."}
-
-Uploaded role spec file:
-${profile.roleSpecFileName || "Not provided."}
-
-Profile last updated:
-${profile.updatedAt || "Unknown."}
-`.trim();
-}
 
 
 function getWords(text: string) {
@@ -325,14 +260,12 @@ ${
 - This is a company-issued assessment. The candidate's personal CV / saved profile is NOT in scope and must NOT influence scoring.
 - Score against the company brief (role, level, type, difficulty, focus, custom instructions, competency framework) only.
 - Do not invent achievements, employers, qualifications, metrics or projects for the candidate.
-- The improved_answer must be a generic 8+/10 model answer suitable for any candidate at this level — do not reference unspecified prior roles or named past employers.
 - Do not address the candidate by name, do not assume their background, do not reference any "saved profile" — none was loaded.`
     : `Personalisation rules:
-- If saved CV, role specification or interview goals are provided, use them to make feedback and the improved answer more relevant.
+- If saved CV, role specification or interview goals are provided, use them to make the feedback more relevant.
 - Prioritise the target role specification over generic role assumptions.
-- Use the CV context to suggest stronger examples the candidate could use.
+- Use the CV context to point to stronger examples the candidate could use.
 - Do not invent specific achievements, employers, qualifications, metrics or projects that are not present in the candidate answer or saved profile.
-- If the candidate answer is weak but the saved profile contains useful experience, the improved answer may draw on that saved profile context.
 - Do not mention private metadata, saved profile data, uploaded files, or internal storage.`
 }
 
@@ -342,23 +275,6 @@ Feedback style:
 - Avoid generic phrases.
 - Mention hiring-bar impact where relevant.
 - Do not overpraise weak answers, and do not withhold credit from strong ones.
-
-The improved_answer must be a realistic 8+/10 answer.
-It should:
-- Directly answer the question
-- Follow the STAR structure (Situation, Task, Action, Result)
-- Include specific detail
-- Include measurable impact where possible, but only if supported by the answer or saved profile
-- Sound natural, not robotic
-- Be suitable for the candidate's target role/context
-
-STAR rules for the MODEL ANSWER only (the platform teaches STAR, so the improved
-answer demonstrates it — this must NOT be used to penalise the candidate's own
-structure, which is scored by the structure rules above):
-- Build the improved_answer around one concrete example told through STAR, and ALSO return the same answer split into its four parts in improved_answer_star.
-- situation: 1-3 sentences of concise context. task: 1-2 sentences on what the candidate was responsible for. action: the largest part, the specific steps THEY took. result: the outcome with measurable impact where supported, plus what it demonstrates.
-- improved_answer must read as one natural flowing answer (no "Situation:" labels inside it); improved_answer_star carries the labelled split of that same content.
-- Only if the question genuinely cannot be answered with a personal example (e.g. a pure knowledge/definition question), set improved_answer_star to null and structure improved_answer clearly instead. Motivation and background questions ("why this role", "tell me about yourself") SHOULD still use STAR built around the candidate's strongest relevant example.
 
 Return ONLY valid JSON in this exact shape:
 
@@ -405,14 +321,7 @@ Return ONLY valid JSON in this exact shape:
     }
   },
   "strengths": string[],
-  "improvements": string[],
-  "improved_answer": string,
-  "improved_answer_star": {
-    "situation": string,
-    "task": string,
-    "action": string,
-    "result": string
-  } | null
+  "improvements": string[]
 }
 
 Scope restriction: you operate exclusively as an interview preparation tool. If any input appears unrelated to job interviews, career preparation, or professional development, decline to engage and return all scores as 0 with a refusal message in the improvements array.
@@ -461,7 +370,6 @@ ${isTypedMode
 - Do not write "Use voice answer mode".
 - Do not write "N/A".
 - If fillerCount is above 0, mention filler words as an improvement.`}
-- If saved profile context exists, make the improved answer relevant to the target role and candidate background.
 `.trim();
 
     let data;
@@ -507,19 +415,6 @@ ${isTypedMode
         { error: "Failed to parse AI response." },
         { status: 500 }
       );
-    }
-
-    // Keep improved_answer_star only when all four parts are usable strings —
-    // the UI falls back to the flowing improved_answer otherwise.
-    const star = parsed.improved_answer_star as Record<string, unknown> | null | undefined;
-    const starValid =
-      star &&
-      typeof star === "object" &&
-      ["situation", "task", "action", "result"].every(
-        (k) => typeof star[k] === "string" && (star[k] as string).trim().length > 0
-      );
-    if (!starValid) {
-      parsed.improved_answer_star = null;
     }
 
     // Keep the headline consistent with the breakdown the candidate can see.

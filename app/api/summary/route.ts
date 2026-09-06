@@ -1,5 +1,5 @@
 import OpenAI from "openai";
-import { MODEL_QUALITY } from "@/app/lib/aiModels";
+import { MODEL_ANSWERS } from "@/app/lib/aiModels";
 import { adaptRequestForModel } from "@/app/lib/openai-client";
 import { auth } from "@clerk/nextjs/server";
 import { checkRateLimit } from "@/app/lib/rateLimit";
@@ -514,9 +514,12 @@ Video analysis ${index + 1}:
 
     // Legacy-style params: adaptRequestForModel converts them for GPT-5.x
     // models and passes them through untouched for older fallback models,
-    // so the AI_MODEL_QUALITY env rollback works without code changes.
+    // so the AI_MODEL_ANSWERS env rollback works without code changes. Uses the
+    // ANSWERS tier because the summary's headline output is the STAR model
+    // answer for the weakest question — the strong model earns its keep here,
+    // and this call is at session end so its latency is not user-critical.
     const response = await getOpenAI().chat.completions.create(adaptRequestForModel({
-      model: MODEL_QUALITY,
+      model: MODEL_ANSWERS,
       temperature: 0.35,
       max_tokens: 2500,
       messages: [

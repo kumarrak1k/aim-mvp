@@ -26,6 +26,18 @@ export const MODEL_PREMIUM = process.env.AI_MODEL_PREMIUM || "gpt-5.2";
 export const MODEL_UTILITY = process.env.AI_MODEL_UTILITY || "gpt-5.4-nano";
 
 /**
+ * ANSWERS — the exemplar "model answer" a candidate compares themselves to
+ * (the in-session improved answer and the summary STAR model answer). This is
+ * the one output users judge against pasting the question into a frontier
+ * model, so it runs on the strong model even though scoring/feedback stays on
+ * the cheaper MODEL_QUALITY. Split out 2026-09-06 so the scores can come back
+ * fast (small model) while the answer is generated in parallel by this one.
+ * ROLLBACK: set AI_MODEL_ANSWERS in Vercel + redeploy (e.g. =gpt-5.4-mini to
+ * fold it back to the cheap tier).
+ */
+export const MODEL_ANSWERS = process.env.AI_MODEL_ANSWERS || "gpt-5.2";
+
+/**
  * Interviewer voice (question audio). gpt-4o-mini-tts supports natural-
  * language `instructions` (accent, tone, pacing) which makes the speaker
  * accent preference real; tts-1 ignores accents but supports `speed`.

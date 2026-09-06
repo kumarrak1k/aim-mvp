@@ -256,6 +256,16 @@ export function mockChatCompletion(request: ChatCompletionRequest): string {
     return JSON.stringify(MOCK_CV_ENHANCER);
   }
 
+  // /feedback/model-answer — returns ONLY the exemplar answer. Unique marker:
+  // after the scoring/answer split, only this prompt still asks for
+  // "improved_answer_star". Must precede the /feedback branch below.
+  if (all.includes("improved_answer_star")) {
+    return JSON.stringify({
+      improved_answer: MOCK_FEEDBACK.improved_answer,
+      improved_answer_star: MOCK_FEEDBACK.improved_answer_star,
+    });
+  }
+
   // /feedback — its system prompt defines the category_scores schema. Thin
   // answers (under ~60 words) get the weak variant, so tests and captures see
   // the same score-sensitive behaviour as the real model.
