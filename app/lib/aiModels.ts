@@ -38,6 +38,18 @@ export const MODEL_UTILITY = process.env.AI_MODEL_UTILITY || "gpt-5.4-nano";
 export const MODEL_ANSWERS = process.env.AI_MODEL_ANSWERS || "gpt-5.2";
 
 /**
+ * QUESTIONS — interview question generation. Split from MODEL_QUALITY 2026-09-07
+ * after variety collapsed on the cheap tier: the anti-repetition logic asks the
+ * model to enumerate the competencies already covered and pick a new one, which
+ * is reasoning work the `low`-effort mini tier skips (and temperature, the usual
+ * diversity lever, is stripped for GPT-5 reasoning models). Runs on the strong
+ * model at a higher reasoning effort so the enumeration actually happens and the
+ * range of questions stays wide. Not latency-critical (questions are prefetched).
+ * ROLLBACK: set AI_MODEL_QUESTIONS in Vercel + redeploy.
+ */
+export const MODEL_QUESTIONS = process.env.AI_MODEL_QUESTIONS || "gpt-5.2";
+
+/**
  * Interviewer voice (question audio). gpt-4o-mini-tts supports natural-
  * language `instructions` (accent, tone, pacing) which makes the speaker
  * accent preference real; tts-1 ignores accents but supports `speed`.

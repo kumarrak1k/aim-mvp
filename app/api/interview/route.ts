@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { checkRateLimit } from "@/app/lib/rateLimit";
 import { prisma } from "@/app/lib/prisma";
 import { callOpenAIChat, OpenAIError } from "@/app/lib/openai-client";
-import { MODEL_QUALITY } from "@/app/lib/aiModels";
+import { MODEL_QUESTIONS } from "@/app/lib/aiModels";
 import {
   getQuestionTypeAtPosition,
   type QuestionMix,
@@ -319,6 +319,7 @@ Question rules:
 - If a competency framework is provided, target the question at one of those competencies and rotate across them as the interview progresses.
 - NO REPETITION. Read the previous questions below carefully before writing. Your question must differ from every one of them in the UNDERLYING COMPETENCY being probed, not merely in wording. Rephrasing an earlier question is a repeat: "tell me about a time you handled a difficult stakeholder" and "describe a time you managed a challenging relationship" are the same question and only one may be asked. Likewise a conflict question and a difficult-colleague question overlap too heavily to use both.
 - Before finalising, name to yourself the competency each previous question targeted (for example: teamwork, resilience, influencing, prioritisation, failure, initiative, decision-making, communication) and choose one that has NOT yet been covered. Deliberately widen the set as the interview progresses rather than circling the two or three most obvious competencies.
+- Vary the TYPE of question across the interview too, not just the competency: mix behavioural ("tell me about a time..."), situational ("what would you do if..."), motivational ("why this role / why us"), strengths and development areas, and role-specific or technical questions. The range should feel genuinely broad, never a list of near-identical "tell me about a time" prompts.
 - Do not ask for confidential personal data.
 - Do not include scoring, explanation, tips or model answers.
 - Return ONLY valid JSON in this exact shape:
@@ -352,6 +353,7 @@ Interview question rules:
 - Use the candidate's interview goals to adjust the focus of the question.
 - NO REPETITION. Read the previous questions below carefully before writing. Your question must differ from every one of them in the UNDERLYING COMPETENCY being probed, not merely in wording. Rephrasing an earlier question is a repeat: "tell me about a time you handled a difficult stakeholder" and "describe a time you managed a challenging relationship" are the same question and only one may be asked. Likewise a conflict question and a difficult-colleague question overlap too heavily to use both.
 - Before finalising, name to yourself the competency each previous question targeted (for example: teamwork, resilience, influencing, prioritisation, failure, initiative, decision-making, communication) and choose one that has NOT yet been covered. Deliberately widen the set as the interview progresses rather than circling the two or three most obvious competencies.
+- Vary the TYPE of question across the interview too, not just the competency: mix behavioural ("tell me about a time..."), situational ("what would you do if..."), motivational ("why this role / why us"), strengths and development areas, and role-specific or technical questions. The range should feel genuinely broad, never a list of near-identical "tell me about a time" prompts.
 - Do not ask for confidential personal data.
 - Do not mention that you can see private metadata, saved profile data or uploaded files.
 - Do not include scoring, explanation, tips or model answers.
@@ -399,9 +401,15 @@ Generate the next best UK English interview question.
     let data;
     try {
       data = await callOpenAIChat({
-        model: MODEL_QUALITY,
+        model: MODEL_QUESTIONS,
+        // temperature is kept for any non-reasoning fallback model (it is
+        // stripped for GPT-5 reasoning models). "medium" reasoning is the real
+        // diversity lever here: it makes the model actually enumerate the
+        // competencies already covered and pick a fresh one. max_tokens has
+        // headroom so that reasoning never truncates the question itself.
         temperature: 0.65,
-        max_tokens: 300,
+        reasoning_effort: "medium",
+        max_tokens: 700,
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },
