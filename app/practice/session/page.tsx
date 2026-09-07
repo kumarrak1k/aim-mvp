@@ -1038,7 +1038,12 @@ export default function PracticeSessionPage() {
     );
 
     setTranscript(rawTranscript);
-    setAnswer(rawTranscript);
+    // Do NOT write the raw combined transcript to the visible editor: it already
+    // shows the live text from onAnswerChange. Writing raw here, then the
+    // cleaned version, then Whisper, made the box visibly rewrite itself 2-3
+    // times. Hold the visible text and let the single final reveal below
+    // (Whisper, or the cleaned fallback) be the one swap the candidate sees.
+    // The ref still tracks the raw text so scoring/Whisper guards are correct.
     rawAnswerTranscriptRef.current = rawTranscript;
 
     if (rawTranscript) {
@@ -1557,7 +1562,10 @@ export default function PracticeSessionPage() {
       );
 
       if (preStopTranscript) {
-        setAnswer(preStopTranscript);
+        // Keep the finalised transcript in the ref for scoring, but don't write
+        // it to the visible editor — the box already shows the live text, and
+        // the single final reveal (Whisper/cleaned) happens in the stop
+        // pipeline. Writing here caused an extra visible rewrite.
         rawAnswerTranscriptRef.current = preStopTranscript;
       }
 
@@ -1617,9 +1625,10 @@ export default function PracticeSessionPage() {
         activeQuestionRef.current
       );
 
-      if (safeAnswer !== answer) {
-        setAnswer(safeAnswer);
-      }
+      // safeAnswer is what gets scored (passed to the fetches below), but do NOT
+      // write it to the visible editor here: that produced a mid-flight rewrite
+      // (raw -> cleaned -> Whisper) the candidate could watch. The visible text
+      // settles once via the stop pipeline's single reveal.
 
       // Fire scoring and the model answer in PARALLEL. Scores come back fast on
       // the cheap model and render immediately; the stronger, slower model
