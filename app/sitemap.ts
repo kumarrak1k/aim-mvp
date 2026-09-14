@@ -4,9 +4,15 @@ import { absoluteUrl, siteConfig } from "@/app/config/site";
 import { getAllPosts, getAllQuestionSets } from "@/app/lib/content";
 import { COMPANY_GUIDES } from "@/app/companies/data";
 
-// Revalidate hourly so scheduled (future-dated) posts publish themselves.
-export const revalidate = 3600;
-
+// Rendered per request so scheduled (future-dated) posts appear the moment
+// their date passes.
+//
+// This used to be `revalidate = 3600`, but Next froze the metadata route at
+// build time and never regenerated it: on 14 Sep 2026 the live sitemap's
+// <lastmod> still read the 7 Sep deploy time, and the post dated 13 Sep was
+// missing even though its page was live. Reading the MDX frontmatter is cheap
+// and crawlers fetch this rarely, so there is no cache worth protecting.
+export const dynamic = "force-dynamic";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
