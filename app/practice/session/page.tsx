@@ -207,6 +207,9 @@ export default function PracticeSessionPage() {
     question: string | null;
   }>({ questionNumber: 0, question: null });
   const prefetchAbortRef = useRef<AbortController | null>(null);
+  // One id per interview attempt, sent with question, feedback and save calls
+  // so the server can join started, answered and completed events.
+  const attemptIdRef = useRef<string | undefined>(undefined);
 
   // Zoom-style permission memory: once camera access has been granted (this
   // or any earlier session), touch devices auto-start too instead of waiting
@@ -786,6 +789,7 @@ export default function PracticeSessionPage() {
             // When this session was launched from a company assessment invite,
             // forward the token so the API marks the assignment completed.
             ...(assignmentToken ? { assignmentToken } : {}),
+            ...(attemptIdRef.current ? { attemptId: attemptIdRef.current } : {}),
           }),
         });
 
@@ -1259,6 +1263,7 @@ export default function PracticeSessionPage() {
                   assessmentMode,
                   templateContext,
                   questionMix,
+                  attemptId: attemptIdRef.current,
                 });
         }
 
@@ -1319,6 +1324,10 @@ export default function PracticeSessionPage() {
     prefetchAbortRef.current?.abort();
     prefetchRef.current = { questionNumber: 0, question: null };
     clearBackgroundAudio();
+    attemptIdRef.current =
+      typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
+        ? crypto.randomUUID()
+        : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
 
     setHasUserInteracted(true);
     setInterviewStarted(true);
@@ -1437,6 +1446,7 @@ export default function PracticeSessionPage() {
                 assessmentMode,
                 templateContext,
                 questionMix,
+                attemptId: attemptIdRef.current,
               });
 
         if (abort.signal.aborted) return;
@@ -1686,6 +1696,9 @@ export default function PracticeSessionPage() {
         practiceMode,
         assessmentMode,
         templateContext,
+        attemptId: attemptIdRef.current,
+        questionNumber: currentQuestionNumber,
+        totalQuestions,
       });
 
       // Apply the model answer immediately if it already resolved; otherwise
@@ -1730,6 +1743,8 @@ export default function PracticeSessionPage() {
     voiceAnalysis,
     assessmentMode,
     templateContext,
+    currentQuestionNumber,
+    totalQuestions,
   ]);
 
   const resetInterview = useCallback(() => {

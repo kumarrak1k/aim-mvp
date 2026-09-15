@@ -10,6 +10,8 @@ import {
   buildAssessmentContextBlock,
   buildSavedProfileContext,
 } from "@/app/lib/feedbackContext";
+import { ACTIVITY_EVENTS, recordActivity } from "@/app/lib/activity";
+import { boundedAttemptId, boundedQuestionCount } from "@/app/lib/attemptTracking";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -85,6 +87,8 @@ function detectFillers(answer: string) {
   );
 }
 
+const PRACTICE_MODES: readonly unknown[] = ["typed", "voice", "voice-camera"];
+
 export async function POST(req: NextRequest) {
   try {
     const { userId } = await auth();
@@ -111,6 +115,9 @@ export async function POST(req: NextRequest) {
       practiceMode,
       assessmentMode,
       templateContext,
+      attemptId,
+      questionNumber,
+      totalQuestions,
     } = await req.json();
 
     // "typed" sessions have no audio — never fabricate pace or delivery scores.
@@ -484,6 +491,17 @@ ${isTypedMode
         );
       }
     }
+
+    // Progress instrumentation: one event per scored answer, so the admin view
+    // can see how far an attempt got. The fields come from the client, so they
+    // are bounded and stored as null when malformed. Never blocks the response.
+    recordActivity(userId, ACTIVITY_EVENTS.PRACTICE_ANSWERED, null, {
+      attemptId: boundedAttemptId(attemptId),
+      questionNumber: boundedQuestionCount(questionNumber),
+      totalQuestions: boundedQuestionCount(totalQuestions),
+      practiceMode: PRACTICE_MODES.includes(practiceMode) ? practiceMode : null,
+      isAssessment,
+    });
 
     return NextResponse.json(parsed);
   } catch (error) {

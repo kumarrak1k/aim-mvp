@@ -112,6 +112,8 @@ export const practiceSessionCreateSchema = z.object({
     .nullable()
     .optional(),
   assignmentToken: optionalStringSchema(80),
+  // Joins the saved session to its practice_started/practice_answered events.
+  attemptId: optionalStringSchema(64),
 });
 
 /** Company create / update body. */

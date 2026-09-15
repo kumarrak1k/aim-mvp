@@ -18,6 +18,13 @@ export const ACTIVITY_EVENTS = {
   PRACTICE_STARTED: "practice_started",
   /** A practice interview was completed and saved. */
   PRACTICE_COMPLETED: "practice_completed",
+  /**
+   * One practice answer was scored (recorded server-side by /api/feedback).
+   * detail: { attemptId, questionNumber, totalQuestions, practiceMode, isAssessment }.
+   * Sits between practice_started and practice_completed so an abandoned
+   * attempt shows how far it got instead of looking like it never began.
+   */
+  PRACTICE_ANSWERED: "practice_answered",
   /** A practice save was refused because a usage cap was hit. */
   PRACTICE_CAPPED: "practice_capped",
   /** An assessment centre session was created. */

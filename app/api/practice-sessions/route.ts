@@ -216,6 +216,7 @@ export async function POST(request: NextRequest) {
       results,
       speakerPreference,
       assignmentToken,
+      attemptId,
     } = parsed.data;
 
     // Save the session and (if it fulfils a company assessment invite) mark the
@@ -275,6 +276,8 @@ export async function POST(request: NextRequest) {
       sessionId: session.id,
       role: session.role,
       overallScore: session.overallScore,
+      attemptId: attemptId ?? null,
+      answeredCount: results.length,
     });
 
     // Derive post-save usage locally — the pre-save check already counted, and

@@ -36,6 +36,8 @@ describe("analytics retention scope", () => {
     const mustSurvive = [
       ACTIVITY_EVENTS.PRACTICE_STARTED,
       ACTIVITY_EVENTS.PRACTICE_COMPLETED,
+      // Recorded server-side per scored answer: funnel history, not browsing.
+      ACTIVITY_EVENTS.PRACTICE_ANSWERED,
       ACTIVITY_EVENTS.PRACTICE_CAPPED,
       ACTIVITY_EVENTS.AC_STARTED,
       ACTIVITY_EVENTS.AC_STAGE_SUBMITTED,
@@ -60,6 +62,6 @@ describe("analytics retention scope", () => {
     const pruned = new Set<string>(ANALYTICS_EVENTS);
     const retained = all.filter((e) => !pruned.has(e));
     expect(pruned.size + retained.length).toBe(all.length);
-    expect(all.length).toBe(13);
+    expect(all.length).toBe(14);
   });
 });

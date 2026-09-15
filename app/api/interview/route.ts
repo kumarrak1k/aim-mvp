@@ -14,6 +14,7 @@ import {
   type CandidateBillingMeta,
 } from "@/app/lib/candidatePlan";
 import { recordActivity, ACTIVITY_EVENTS } from "@/app/lib/activity";
+import { boundedAttemptId } from "@/app/lib/attemptTracking";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -164,6 +165,7 @@ export async function POST(req: NextRequest) {
       assessmentMode?: unknown;
       templateContext?: TemplateContext;
       questionMix?: QuestionMix;
+      attemptId?: unknown;
     };
     const {
       role,
@@ -173,6 +175,7 @@ export async function POST(req: NextRequest) {
       assessmentMode,
       templateContext,
       questionMix,
+      attemptId,
     } = body;
 
     if (!role || typeof role !== "string") {
@@ -229,6 +232,7 @@ export async function POST(req: NextRequest) {
           roleInput: String(role ?? "").replace(/\s+/g, " ").slice(0, 120),
           totalQuestions: safeTotalQuestions,
           isAssessment,
+          attemptId: boundedAttemptId(attemptId),
         }
       );
     }

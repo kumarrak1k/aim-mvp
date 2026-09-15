@@ -64,6 +64,7 @@ export const fetchInterviewQuestion = async ({
   assessmentMode,
   templateContext,
   questionMix,
+  attemptId,
 }: {
   role: string;
   questionNumber: number;
@@ -72,6 +73,7 @@ export const fetchInterviewQuestion = async ({
   assessmentMode?: boolean;
   templateContext?: AssessmentTemplateContext;
   questionMix?: QuestionMix;
+  attemptId?: string;
 }) => {
   const data = await postJson<
     { question?: string },
@@ -83,6 +85,7 @@ export const fetchInterviewQuestion = async ({
       assessmentMode?: boolean;
       templateContext?: AssessmentTemplateContext;
       questionMix?: QuestionMix;
+      attemptId?: string;
     }
   >("/api/interview", {
     role,
@@ -95,6 +98,7 @@ export const fetchInterviewQuestion = async ({
     ...(assessmentMode ? { assessmentMode: true } : {}),
     ...(templateContext ? { templateContext } : {}),
     ...(questionMix ? { questionMix } : {}),
+    ...(attemptId ? { attemptId } : {}),
   });
 
   return data.question || "Tell me about yourself.";
@@ -138,6 +142,9 @@ export const fetchFeedback = async ({
   practiceMode,
   assessmentMode,
   templateContext,
+  attemptId,
+  questionNumber,
+  totalQuestions,
 }: {
   question: string;
   answer: string;
@@ -146,6 +153,10 @@ export const fetchFeedback = async ({
   practiceMode?: string;
   assessmentMode?: boolean;
   templateContext?: AssessmentTemplateContext;
+  // Progress tracking only: lets the server record how far an attempt got.
+  attemptId?: string;
+  questionNumber?: number;
+  totalQuestions?: number;
 }) => {
   return postJson<
     Feedback,
@@ -157,6 +168,9 @@ export const fetchFeedback = async ({
       practiceMode?: string;
       assessmentMode?: boolean;
       templateContext?: AssessmentTemplateContext;
+      attemptId?: string;
+      questionNumber?: number;
+      totalQuestions?: number;
     }
   >("/api/feedback", {
     question,
@@ -166,6 +180,7 @@ export const fetchFeedback = async ({
     ...(practiceMode ? { practiceMode } : {}),
     ...(assessmentMode ? { assessmentMode: true } : {}),
     ...(templateContext ? { templateContext } : {}),
+    ...(attemptId ? { attemptId, questionNumber, totalQuestions } : {}),
   });
 };
 
