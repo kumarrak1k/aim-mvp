@@ -48,6 +48,10 @@ export type AdminUser = {
   createdAt: string;
   lastSignInAt: string | null;
   lastActiveAt: string | null;
+  /** Team account: left out of headline numbers (see app/lib/adminCohort). */
+  isTeam: boolean;
+  /** Has a comp plan recorded: left out of headline numbers. */
+  isComp: boolean;
 };
 
 /** Platform-level usage + growth stats computed server-side in page.tsx. */
@@ -292,6 +296,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
   const [search, setSearch]           = useState("");
   const [typeFilter, setTypeFilter]   = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [cohortFilter, setCohortFilter] = useState("all"); // all | real | team | comp
   const [sortKey, setSortKey]         = useState<SortKey>("joined");
   const [sortDir, setSortDir]         = useState<SortDir>("desc");
   const [page, setPage]               = useState(1);
@@ -566,6 +571,9 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
         docsCount: 0,
         lastDocAt: null,
         profileComplete: false,
+        // The server recomputes both on the next load; this is the best local guess.
+        isTeam: /aicareermentor|kumarrak1k|rak1k/i.test(result.email),
+        isComp: Boolean(compPlan),
         utmSource: null,
         utmMedium: null,
         utmCampaign: null,
@@ -647,9 +655,12 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
       if (q && !fullName(u).toLowerCase().includes(q) && !u.email.toLowerCase().includes(q) && !(u.companyName ?? "").toLowerCase().includes(q)) return false;
       if (typeFilter !== "all" && u.accountType !== typeFilter) return false;
       if (statusFilter !== "all" && getStatusGroup(u) !== statusFilter) return false;
+      if (cohortFilter === "real" && (u.isTeam || u.isComp)) return false;
+      if (cohortFilter === "team" && !u.isTeam) return false;
+      if (cohortFilter === "comp" && !u.isComp) return false;
       return true;
     });
-  }, [users, search, typeFilter, statusFilter]);
+  }, [users, search, typeFilter, statusFilter, cohortFilter]);
 
   const sorted = useMemo(() => {
     return [...filtered].sort((a, b) => {
@@ -840,6 +851,12 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
           <option value="free">Free</option>
           <option value="expired">Expired / cancelled</option>
         </select>
+        <select value={cohortFilter} onChange={(e) => { setCohortFilter(e.target.value); setPage(1); }} aria-label="Account group" className="rounded-2xl border border-white/10 bg-background px-4 py-2.5 text-sm text-white focus:border-fuchsia-400/40 focus:outline-none">
+          <option value="all">All accounts</option>
+          <option value="real">Real candidates only</option>
+          <option value="team">Team accounts</option>
+          <option value="comp">Comp accounts</option>
+        </select>
       </div>
 
       {/* Table */}
@@ -870,7 +887,11 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                   <div className="flex items-center gap-3">
                     <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-fuchsia-500/20 text-xs font-bold text-fuchsia-300">{initials(u)}</div>
                     <div>
-                      <p className="font-bold leading-tight text-white">{fullName(u)}</p>
+                      <p className="flex items-center gap-1.5 font-bold leading-tight text-white">
+                        {fullName(u)}
+                        {u.isTeam && <span className="rounded-md bg-sky-500/15 px-1.5 py-0.5 text-[11px] font-bold text-sky-300" title="Team account: not in headline numbers">Team</span>}
+                        {u.isComp && <span className="rounded-md bg-cyan-500/15 px-1.5 py-0.5 text-[11px] font-bold text-cyan-300" title="Comp plan recorded: not in headline numbers">Comp</span>}
+                      </p>
                       <p className="text-[12px] text-gray-400">{u.email}</p>
                     </div>
                   </div>

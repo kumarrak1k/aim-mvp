@@ -2,6 +2,11 @@ import { auth, clerkClient } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { deriveChannel } from "@/app/lib/attributionChannel";
 import { prisma, warmDb } from "@/app/lib/prisma";
+import {
+  hasHadComplimentaryAccess,
+  headlineUserIds,
+  isTeamAccount,
+} from "@/app/lib/adminCohort";
 import { AdminClient, type AdminUser, type AdminOverview } from "./AdminClient";
 
 export const dynamic = "force-dynamic";
@@ -62,10 +67,21 @@ export default async function AdminPage() {
   const client = await clerkClient();
   const getUserListResult = await (async () => {
     try {
-      return await client.users.getUserList({
-        limit: 500,
-        orderBy: "-created_at",
-      });
+      // Page through every user. A single call is capped at 500, and anyone
+      // past the cap would silently drop out of the table and the totals.
+      type ClerkUserPage = Awaited<ReturnType<typeof client.users.getUserList>>["data"];
+      const allUsers: ClerkUserPage = [];
+      const PAGE = 500;
+      for (let offset = 0; offset < 20_000; offset += PAGE) {
+        const { data } = await client.users.getUserList({
+          limit: PAGE,
+          offset,
+          orderBy: "-created_at",
+        });
+        allUsers.push(...data);
+        if (data.length < PAGE) break;
+      }
+      return allUsers;
     } catch {
       return null;
     }
@@ -96,7 +112,7 @@ export default async function AdminPage() {
     );
   }
 
-  const clerkUsers = getUserListResult.data;
+  const clerkUsers = getUserListResult;
 
   // ── Fetch Prisma company + member + usage data ──────────────────────────
   // Usage aggregates are grouped per user in single queries (not N+1), so
@@ -158,12 +174,44 @@ export default async function AdminPage() {
         signupDevice: true,
       },
     }),
-    prisma.practiceSession.count({ where: { createdAt: { gte: d7 } } }),
-    prisma.practiceSession.count({ where: { createdAt: { gte: d30 } } }),
-    prisma.assessmentCentreSession.count({ where: { createdAt: { gte: d7 } } }),
-    prisma.assessmentCentreSession.count({ where: { createdAt: { gte: d30 } } }),
-    prisma.careerDocGeneration.count({ where: { createdAt: { gte: d7 } } }),
-    prisma.careerDocGeneration.count({ where: { createdAt: { gte: d30 } } }),
+    // Windowed counts are grouped per user too, so headline numbers can be
+    // limited to real candidates (global counts included team and orphan rows).
+    prisma.practiceSession.groupBy({
+      by: ["clerkUserId"],
+      where: { createdAt: { gte: d7 } },
+      _count: { _all: true },
+      _max: { createdAt: true },
+    }),
+    prisma.practiceSession.groupBy({
+      by: ["clerkUserId"],
+      where: { createdAt: { gte: d30 } },
+      _count: { _all: true },
+      _max: { createdAt: true },
+    }),
+    prisma.assessmentCentreSession.groupBy({
+      by: ["clerkUserId"],
+      where: { createdAt: { gte: d7 } },
+      _count: { _all: true },
+      _max: { createdAt: true },
+    }),
+    prisma.assessmentCentreSession.groupBy({
+      by: ["clerkUserId"],
+      where: { createdAt: { gte: d30 } },
+      _count: { _all: true },
+      _max: { createdAt: true },
+    }),
+    prisma.careerDocGeneration.groupBy({
+      by: ["clerkUserId"],
+      where: { createdAt: { gte: d7 } },
+      _count: { _all: true },
+      _max: { createdAt: true },
+    }),
+    prisma.careerDocGeneration.groupBy({
+      by: ["clerkUserId"],
+      where: { createdAt: { gte: d30 } },
+      _count: { _all: true },
+      _max: { createdAt: true },
+    }),
   ]).catch((err) => {
     console.error("ADMIN DB ERROR:", err);
     return null;
@@ -202,12 +250,12 @@ export default async function AdminPage() {
     acByUser,
     docsByUser,
     profiles,
-    sessions7d,
-    sessions30d,
-    ac7d,
-    ac30d,
-    docs7d,
-    docs30d,
+    practice7dByUser,
+    practice30dByUser,
+    ac7dByUser,
+    ac30dByUser,
+    docs7dByUser,
+    docs30dByUser,
   ] = dbResult;
 
   type UsageAgg = { count: number; last: string | null };
@@ -223,6 +271,12 @@ export default async function AdminPage() {
   const practiceMap = toUsageMap(practiceByUser);
   const acMap = toUsageMap(acByUser);
   const docsMap = toUsageMap(docsByUser);
+  const practice7dMap = toUsageMap(practice7dByUser);
+  const practice30dMap = toUsageMap(practice30dByUser);
+  const ac7dMap = toUsageMap(ac7dByUser);
+  const ac30dMap = toUsageMap(ac30dByUser);
+  const docs7dMap = toUsageMap(docs7dByUser);
+  const docs30dMap = toUsageMap(docs30dByUser);
   const profileSet = new Set(profiles.map((p) => p.clerkUserId));
   const profileMap = new Map(profiles.map((p) => [p.clerkUserId, p]));
 
@@ -324,29 +378,53 @@ export default async function AdminPage() {
       lastActiveAt: u.lastActiveAt
         ? new Date(u.lastActiveAt).toISOString()
         : null,
+      isTeam: isTeamAccount({ email: primaryEmail, role: meta.role ?? null }),
+      isComp: hasHadComplimentaryAccess({
+        compPlan: meta.compPlan ?? null,
+        compUntil: meta.compUntil ?? null,
+      }),
     };
   });
 
+  // Headline numbers cover real candidates only: team and comp accounts are
+  // left out, and so are database rows whose user no longer exists in Clerk
+  // (usage is summed over these ids, never over the whole table).
+  const headlineIds = headlineUserIds(
+    adminUsers.map((x) => ({
+      id: x.id,
+      email: x.email,
+      role: null,
+      compPlan: x.compPlan,
+    }))
+  );
+  const headlineUsers = adminUsers.filter((x) => headlineIds.has(x.id));
+
   // ── Platform overview ────────────────────────────────────────────────────
-  const candidates = adminUsers.filter((x) => x.accountType === "candidate");
+  const candidates = headlineUsers.filter((x) => x.accountType === "candidate");
   const activeWithin = (days: number) => {
     const cutoff = now - days * 24 * 60 * 60 * 1000;
-    return adminUsers.filter((x) => {
+    return headlineUsers.filter((x) => {
       const seen = x.lastActiveAt ?? x.lastSignInAt;
       return seen !== null && new Date(seen).getTime() >= cutoff;
     }).length;
   };
   const newWithin = (days: number) => {
     const cutoff = now - days * 24 * 60 * 60 * 1000;
-    return adminUsers.filter((x) => new Date(x.createdAt).getTime() >= cutoff).length;
+    return headlineUsers.filter((x) => new Date(x.createdAt).getTime() >= cutoff).length;
   };
   const isPayingCandidate = (x: AdminUser) =>
     x.candidateStatus === "active" ||
     x.candidateStatus === "trialing" ||
     x.candidateStatus === "past_due";
   const payingCandidates = candidates.filter(isPayingCandidate);
-  const compActive = candidates.filter(
-    (x) => x.compPlan && x.compUntil && new Date(x.compUntil).getTime() > now
+  // Comp accounts are outside the headline cohort by definition, so this card
+  // counts them across all candidate accounts.
+  const compActive = adminUsers.filter(
+    (x) =>
+      x.accountType === "candidate" &&
+      x.compPlan &&
+      x.compUntil &&
+      new Date(x.compUntil).getTime() > now
   ).length;
   const trialsActive = candidates.filter(
     (x) =>
@@ -355,12 +433,12 @@ export default async function AdminPage() {
       new Date(x.trialEndsAt).getTime() > now
   ).length;
   const totalOf = (m: Map<string, { count: number }>) =>
-    [...m.values()].reduce((s, v) => s + v.count, 0);
+    [...headlineIds].reduce((s, id) => s + (m.get(id)?.count ?? 0), 0);
 
   // Acquisition channels — one row per channel with all-time and 30-day
   // signup counts, so ad/community spend can be judged from the dashboard.
   const acquisitionCounts = new Map<string, { total: number; last30d: number }>();
-  for (const u of adminUsers) {
+  for (const u of headlineUsers) {
     const channel = deriveChannel(u);
     const row = acquisitionCounts.get(channel) ?? { total: 0, last30d: 0 };
     row.total += 1;
@@ -383,14 +461,14 @@ export default async function AdminPage() {
     payingPlus: payingCandidates.filter((x) => (x.candidatePlanId ?? "").includes("plus")).length,
     payingProfessional: payingCandidates.filter((x) => (x.candidatePlanId ?? "").includes("professional")).length,
     sessionsTotal: totalOf(practiceMap),
-    sessions7d,
-    sessions30d,
+    sessions7d: totalOf(practice7dMap),
+    sessions30d: totalOf(practice30dMap),
     acTotal: totalOf(acMap),
-    ac7d,
-    ac30d,
+    ac7d: totalOf(ac7dMap),
+    ac30d: totalOf(ac30dMap),
     docsTotal: totalOf(docsMap),
-    docs7d,
-    docs30d,
+    docs7d: totalOf(docs7dMap),
+    docs30d: totalOf(docs30dMap),
     funnel: {
       signedUp: candidates.length,
       profileDone: candidates.filter((x) => x.profileComplete).length,
