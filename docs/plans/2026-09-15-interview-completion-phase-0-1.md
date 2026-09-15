@@ -157,6 +157,23 @@ model PracticeSession {
 - Files: `app/[locale]/practice/session/*`, `app/[locale]/onboarding/OnboardingClient.tsx`, `app/[locale]/admin`, `api/{practice-sessions,interview,feedback,summary,onboarding}`, `lib/activity.ts`, `lib/userActivityReport.ts`.
 - Apply the schema change to the .com database too.
 
+## Devices (added 15 Sep 2026)
+Rakesh asked that every change works across devices and whether phones should see a "use a laptop" message.
+
+What the data says (.co.uk, device tracked since late Aug, small sample):
+- Signups with a recorded device: 6 desktop, 3 mobile.
+- Practice starts in the last 90 days: 20 from desktop signups, 1 from a mobile signup, 57 from accounts that signed up before device tracking.
+
+Decision: no blocking or "please switch device" message.
+- The 18 to 25 audience often does real one-way video interviews on a phone, so telling them the product works best elsewhere undercuts the Phase 2 mode.
+- One dismissible tip on the practice setup screen, shown on phones only. Draft: "Works on your phone. For video practice, prop it up at eye level. On a laptop or tablet you'll see your feedback side by side."
+- Revisit if mobile starts keep failing to reach question 2 once practice_answered data builds up (split the admin funnel by device).
+
+Every Phase 1 UI change (exit dialog, finish early, resume card, partial summary) is checked at 375px (iPhone), 768px (tablet) and desktop, in iOS Safari and Android Chrome, before deploy:
+- Buttons at least 44px high and reachable with a thumb; nothing hidden behind the iOS home bar or on-screen keyboard.
+- The resume card needs a tap before any audio (iOS rule, already in the decisions above).
+- Dialogs scroll within the viewport rather than overflowing it.
+
 ## Edge cases
 - **Multiple tabs.** "Duplicate tab" copies sessionStorage, so both tabs share an attemptId. The results-can-only-grow rule plus 409 prevents shrinking; show "continued in another tab".
 - **Voice and voice+camera.** Resume needs a tap before audio on iOS. The camera restarts through `requiresManualCameraStart`.

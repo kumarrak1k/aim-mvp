@@ -1,5 +1,6 @@
 import { prisma } from "./prisma";
 import { ACTIVITY_EVENTS } from "./activity";
+import { summarisePracticeAttempts } from "./practiceAttempts";
 
 /**
  * Builds the per-user activity report behind the admin drill-down.
@@ -150,6 +151,7 @@ export async function buildUserActivityReport(clerkUserId: string) {
 
   const practiceStarted = count(ACTIVITY_EVENTS.PRACTICE_STARTED);
   const practiceCompleted = count(ACTIVITY_EVENTS.PRACTICE_COMPLETED);
+  const attempts = summarisePracticeAttempts(events);
   const acStarted = count(ACTIVITY_EVENTS.AC_STARTED);
 
   // Page popularity — "what they read", ranked by time rather than hits, since
@@ -262,6 +264,10 @@ export async function buildUserActivityReport(clerkUserId: string) {
         practiceStarted > 0 ? Math.max(0, practiceStarted - practice.length) : null,
       /** False when this user's history predates start tracking. */
       practiceAbandonmentKnown: practiceStarted > 0,
+      /** Tracked interviews with at least one scored answer (from 15 Sep 2026). */
+      practiceAnsweredAttempts: attempts.answered,
+      /** Question reached in their latest unfinished interview; null if none is tracked. */
+      lastExitQuestion: attempts.lastExitQuestion,
       acStarted: Math.max(acStarted, acs.length),
       acCompleted: acs.filter((a) => a.status === "complete").length,
       acAbandoned: acs.filter((a) => a.status !== "complete").length,

@@ -33,6 +33,10 @@ export type AdminUser = {
   // Usage aggregates (Prisma)
   practiceCount: number;
   lastPracticeAt: string | null;
+  /** Interviews begun (practice_started, one per attempt). */
+  practiceStarted: number;
+  /** Tracked interviews with at least one scored answer. */
+  practiceAnswered: number;
   acCount: number;
   lastAcAt: string | null;
   docsCount: number;
@@ -75,7 +79,20 @@ export type AdminOverview = {
   docsTotal: number;
   docs7d: number;
   docs30d: number;
-  funnel: { signedUp: number; profileDone: number; practised: number; paying: number };
+  /** Practice interviews by stage; finished = saved sessions. Headline cohort only. */
+  interviews: {
+    started: { d7: number; d30: number; total: number };
+    answered: { d7: number; d30: number; total: number };
+    finished: { d7: number; d30: number; total: number };
+  };
+  funnel: {
+    signedUp: number;
+    profileDone: number;
+    started: number;
+    answered: number;
+    finished: number;
+    paying: number;
+  };
 };
 
 // ── Membership helpers ────────────────────────────────────────────────────────
@@ -566,6 +583,8 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
         trialConsumed: false,
         practiceCount: 0,
         lastPracticeAt: null,
+        practiceStarted: 0,
+        practiceAnswered: 0,
         acCount: 0,
         lastAcAt: null,
         docsCount: 0,
@@ -750,7 +769,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
           { label: "Comp access",      value: overview.compActive,     sub: "guest passes",                            color: "text-cyan-300" },
           { label: "Paying: Plus",     value: overview.payingPlus,     sub: "subscriptions",                           color: "text-emerald-300" },
           { label: "Paying: Pro",      value: overview.payingProfessional, sub: "subscriptions",                       color: "text-emerald-300" },
-          { label: "Sessions",         value: overview.sessions7d,     sub: `${overview.sessions30d} in 30d · ${overview.sessionsTotal} all time`, color: "text-fuchsia-300" },
+          { label: "Interviews",       value: `${overview.interviews.started.d7}▶ ${overview.interviews.answered.d7}✎ ${overview.interviews.finished.d7}✓`, sub: `Started · answered 1+ · finished. 30d: ${overview.interviews.started.d30}▶ ${overview.interviews.answered.d30}✎ ${overview.interviews.finished.d30}✓`, color: "text-fuchsia-300" },
           { label: "AC + career docs", value: overview.ac7d + overview.docs7d, sub: `${overview.acTotal} AC · ${overview.docsTotal} docs all time`, color: "text-amber-300" },
         ].map(({ label, value, sub, color }) => (
           <div key={label} className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
@@ -769,7 +788,9 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
             [
               ["Signed up", overview.funnel.signedUp],
               ["Profile built", overview.funnel.profileDone],
-              ["Practised", overview.funnel.practised],
+              ["Started interview", overview.funnel.started],
+              ["Answered 1+", overview.funnel.answered],
+              ["Finished interview", overview.funnel.finished],
               ["Paying", overview.funnel.paying],
             ] as const
           ).map(([label, n], i, arr) => {
@@ -907,8 +928,8 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                 <td className="whitespace-nowrap py-3.5 pr-4">
                   {u.accountType === "candidate" ? (
                     <span className="inline-flex items-center gap-1 text-[12px] font-bold">
-                      <span className={u.practiceCount > 0 ? "rounded-md bg-fuchsia-500/15 px-1.5 py-0.5 text-fuchsia-300" : "rounded-md bg-white/[0.04] px-1.5 py-0.5 text-gray-400"} title={`${u.practiceCount} practice sessions${u.lastPracticeAt ? ` · last ${fmtDate(u.lastPracticeAt)}` : ""}`}>
-                        {u.practiceCount}S
+                      <span className={u.practiceCount > 0 ? "rounded-md bg-fuchsia-500/15 px-1.5 py-0.5 text-fuchsia-300" : u.practiceStarted > 0 ? "rounded-md bg-rose-500/15 px-1.5 py-0.5 text-rose-300" : "rounded-md bg-white/[0.04] px-1.5 py-0.5 text-gray-400"} title={`Interviews: ${u.practiceStarted} started · ${u.practiceAnswered} answered 1+ · ${u.practiceCount} finished${u.lastPracticeAt ? ` · last finished ${fmtDate(u.lastPracticeAt)}` : ""}`}>
+                        {u.practiceStarted}▶ {u.practiceAnswered}✎ {u.practiceCount}✓
                       </span>
                       <span className={u.acCount > 0 ? "rounded-md bg-amber-500/15 px-1.5 py-0.5 text-amber-300" : "rounded-md bg-white/[0.04] px-1.5 py-0.5 text-gray-400"} title={`${u.acCount} assessment centres${u.lastAcAt ? ` · last ${fmtDate(u.lastAcAt)}` : ""}`}>
                         {u.acCount}AC

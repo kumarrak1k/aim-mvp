@@ -212,6 +212,22 @@ export default async function AdminPage() {
       _count: { _all: true },
       _max: { createdAt: true },
     }),
+    // Interview attempts per user: one per attemptId. Starts recorded before
+    // attempt ids existed (pre 15 Sep 2026) have none, so each counts once.
+    prisma.$queryRaw<
+      Array<{ clerkUserId: string; event: string; total: bigint; d7: bigint; d30: bigint }>
+    >`
+      SELECT "clerkUserId", "event",
+        COUNT(DISTINCT "detail"->>'attemptId')
+          + COUNT(*) FILTER (WHERE "detail"->>'attemptId' IS NULL AND "event" = 'practice_started') AS "total",
+        COUNT(DISTINCT "detail"->>'attemptId') FILTER (WHERE "createdAt" >= ${d7})
+          + COUNT(*) FILTER (WHERE "detail"->>'attemptId' IS NULL AND "event" = 'practice_started' AND "createdAt" >= ${d7}) AS "d7",
+        COUNT(DISTINCT "detail"->>'attemptId') FILTER (WHERE "createdAt" >= ${d30})
+          + COUNT(*) FILTER (WHERE "detail"->>'attemptId' IS NULL AND "event" = 'practice_started' AND "createdAt" >= ${d30}) AS "d30"
+      FROM "ActivityEvent"
+      WHERE "event" IN ('practice_started', 'practice_answered')
+      GROUP BY "clerkUserId", "event"
+    `,
   ]).catch((err) => {
     console.error("ADMIN DB ERROR:", err);
     return null;
@@ -256,6 +272,7 @@ export default async function AdminPage() {
     ac30dByUser,
     docs7dByUser,
     docs30dByUser,
+    attemptRows,
   ] = dbResult;
 
   type UsageAgg = { count: number; last: string | null };
@@ -277,6 +294,18 @@ export default async function AdminPage() {
   const ac30dMap = toUsageMap(ac30dByUser);
   const docs7dMap = toUsageMap(docs7dByUser);
   const docs30dMap = toUsageMap(docs30dByUser);
+  type AttemptCounts = { total: number; d7: number; d30: number };
+  const toAttemptMap = (event: string) =>
+    new Map<string, AttemptCounts>(
+      attemptRows
+        .filter((r) => r.event === event)
+        .map((r) => [
+          r.clerkUserId,
+          { total: Number(r.total), d7: Number(r.d7), d30: Number(r.d30) },
+        ])
+    );
+  const startedMap = toAttemptMap("practice_started");
+  const answeredMap = toAttemptMap("practice_answered");
   const profileSet = new Set(profiles.map((p) => p.clerkUserId));
   const profileMap = new Map(profiles.map((p) => [p.clerkUserId, p]));
 
@@ -356,6 +385,10 @@ export default async function AdminPage() {
       // Usage (Prisma aggregates)
       practiceCount: practice?.count ?? 0,
       lastPracticeAt: practice?.last ?? null,
+      // Saved sessions predate start tracking, so a start count can never
+      // sensibly be lower than the finished count.
+      practiceStarted: Math.max(startedMap.get(u.id)?.total ?? 0, practice?.count ?? 0),
+      practiceAnswered: answeredMap.get(u.id)?.total ?? 0,
       acCount: ac?.count ?? 0,
       lastAcAt: ac?.last ?? null,
       docsCount: docs?.count ?? 0,
@@ -434,6 +467,8 @@ export default async function AdminPage() {
   ).length;
   const totalOf = (m: Map<string, { count: number }>) =>
     [...headlineIds].reduce((s, id) => s + (m.get(id)?.count ?? 0), 0);
+  const sumAttempts = (m: Map<string, AttemptCounts>, window: keyof AttemptCounts) =>
+    [...headlineIds].reduce((s, id) => s + (m.get(id)?.[window] ?? 0), 0);
 
   // Acquisition channels — one row per channel with all-time and 30-day
   // signup counts, so ad/community spend can be judged from the dashboard.
@@ -469,10 +504,30 @@ export default async function AdminPage() {
     docsTotal: totalOf(docsMap),
     docs7d: totalOf(docs7dMap),
     docs30d: totalOf(docs30dMap),
+    interviews: {
+      started: {
+        d7: sumAttempts(startedMap, "d7"),
+        d30: sumAttempts(startedMap, "d30"),
+        // Saved sessions from before start tracking count as starts too.
+        total: headlineUsers.reduce((s, x) => s + x.practiceStarted, 0),
+      },
+      answered: {
+        d7: sumAttempts(answeredMap, "d7"),
+        d30: sumAttempts(answeredMap, "d30"),
+        total: sumAttempts(answeredMap, "total"),
+      },
+      finished: {
+        d7: totalOf(practice7dMap),
+        d30: totalOf(practice30dMap),
+        total: totalOf(practiceMap),
+      },
+    },
     funnel: {
       signedUp: candidates.length,
       profileDone: candidates.filter((x) => x.profileComplete).length,
-      practised: candidates.filter((x) => x.practiceCount > 0).length,
+      started: candidates.filter((x) => x.practiceStarted > 0).length,
+      answered: candidates.filter((x) => x.practiceAnswered > 0 || x.practiceCount > 0).length,
+      finished: candidates.filter((x) => x.practiceCount > 0).length,
       paying: payingCandidates.length,
     },
   };

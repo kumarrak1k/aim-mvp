@@ -34,6 +34,8 @@ type Report = {
     practiceCompleted: number;
     practiceAbandoned: number | null;
     practiceAbandonmentKnown: boolean;
+    practiceAnsweredAttempts: number;
+    lastExitQuestion: number | null;
     acStarted: number;
     acCompleted: number;
     acAbandoned: number;
@@ -192,6 +194,21 @@ export function UserActivityPanel({
                 <Stat
                   label="Practice started"
                   value={String(report.funnel.practiceStarted)}
+                />
+                <Stat
+                  label="Answered 1+"
+                  value={String(report.funnel.practiceAnsweredAttempts)}
+                />
+                <Stat
+                  label="Last left at"
+                  value={
+                    report.funnel.lastExitQuestion === null
+                      ? "n/a"
+                      : report.funnel.lastExitQuestion === 0
+                        ? "Before Q1"
+                        : `After Q${report.funnel.lastExitQuestion}`
+                  }
+                  tone={report.funnel.lastExitQuestion !== null ? "warn" : undefined}
                 />
                 <Stat
                   label="Completed"
