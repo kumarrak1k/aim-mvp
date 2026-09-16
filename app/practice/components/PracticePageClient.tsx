@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import { CandidateAppShell } from "@/app/components/marketing/CandidateAppShell";
-import { MockAssessmentCentreLink, PracticeHero } from "./PracticeHero";
+import { MockAssessmentCentreLink } from "./PracticeHero";
 import { PracticeStartScreen } from "./PracticeStartScreen";
 import { fetchCandidateProfile } from "../lib/interviewApi";
 import { buildAutofilledRoleFromProfile } from "../lib/profileHelpers";
@@ -50,12 +50,6 @@ type PracticeUsage = {
   resetsAt: string;
 };
 
-const practiceModeLabels: Record<PracticeMode, string> = {
-  typed: "Typed answers only",
-  voice: "Voice interview",
-  "voice-camera": "Voice + camera interview",
-};
-
 const defaultPracticeUsage: PracticeUsage = {
   planName: "Free",
   isTrial: false,
@@ -64,15 +58,6 @@ const defaultPracticeUsage: PracticeUsage = {
   remainingToday: 3,
   limitReached: false,
   resetsAt: "",
-};
-
-const formatSpeakerSetup = (
-  speakerEnabled: boolean,
-  speakerPreference: SpeakerPreference
-) => {
-  if (!speakerEnabled) return "typed answers";
-
-  return `${speakerPreference.voice} voice at ${speakerPreference.pace} pace`;
 };
 
 function formatResetTime(value: string) {
@@ -168,22 +153,6 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
     return "typed";
   }, [cameraEnabled, speakerEnabled]);
 
-  const setupSummary = useMemo(() => {
-    const roleLabel = role.trim() || "No target role set";
-    const speakerLabel = formatSpeakerSetup(speakerEnabled, speakerPreference);
-
-    return `${roleLabel} · ${experienceLevel} · ${interviewType} · ${difficulty} difficulty · Focus: ${focusArea} · ${practiceModeLabels[selectedPracticeMode]} · ${speakerLabel}`;
-  }, [
-    difficulty,
-    experienceLevel,
-    focusArea,
-    interviewType,
-    role,
-    selectedPracticeMode,
-    speakerEnabled,
-    speakerPreference,
-  ]);
-
   // Detect ?payment=success, clean the URL, then poll /api/subscription
   // until the webhook has confirmed the plan as active in Clerk metadata.
   useEffect(() => {
@@ -263,8 +232,6 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
     isProPlanName(practiceUsage.planName) ||
     corporatePlanId === "team" ||
     corporatePlanId === "business";
-
-  const canStartInterview = Boolean(role.trim()) && !signedInLimitReached;
 
   const usageSummary = useMemo(() => {
     if (!isLoaded) return "Checking your usage...";
@@ -774,6 +741,7 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
     role,
     router,
     signedInLimitReached,
+    selectedPracticeMode,
     speakerEnabled,
     speakerPreference,
     totalQuestions,
@@ -873,13 +841,9 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
           </div>
         )}
 
-        <PracticeHero
-          setupSummary={setupSummary}
-          usageSummary={usageSummary}
-          usageLimitReached={signedInLimitReached}
-          usageMessage={usageMessage}
-          planName={practiceUsage.planName}
-        />
+        {/* "Your next session" is gone: it restated the choices sitting a few
+            hundred pixels below it and pushed them off the screen. The plan and
+            usage line it carried now sits in the setup panel header. */}
 
         {/* Assessment centre upsell — non-subscribers who have completed at
             least one session. Upselling before first value inverts the order
@@ -968,7 +932,10 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
             customQuestions={customQuestions}
             setCustomQuestions={setCustomQuestions}
             startDisabled={signedInLimitReached}
-            startDisabledMessage={usageSummary}
+            startDisabledMessage={usageMessage || usageSummary}
+            planName={practiceUsage.planName}
+            usageSummary={usageSummary}
+            usageLimitReached={signedInLimitReached}
           />
         </div>
 

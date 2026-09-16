@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { SignInButton, UserButton } from "@clerk/nextjs";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type {
   CandidateProfile,
@@ -15,7 +14,7 @@ import {
   interviewTypes,
 } from "../lib/interviewOptions";
 import { hasCandidateProfileContext } from "../lib/profileHelpers";
-import { CheckItem, GlassCard, SelectField } from "./PracticeUi";
+import { GlassCard, SelectField } from "./PracticeUi";
 import { AudioDeviceSelectors } from "./AudioDeviceSelectors";
 import { DataTrustStrip } from "@/app/components/DataTrustStrip";
 import {
@@ -83,6 +82,10 @@ type PracticeStartScreenProps = {
   setCustomQuestions: (v: string[]) => void;
   startDisabled?: boolean;
   startDisabledMessage?: string;
+  /** Plan and usage, shown in the header now that the status card is gone. */
+  planName: string;
+  usageSummary: string;
+  usageLimitReached: boolean;
 };
 
 const practiceModeLabels: Record<PracticeMode, string> = {
@@ -165,6 +168,9 @@ export function PracticeStartScreen({
   setCustomQuestions,
   startDisabled = false,
   startDisabledMessage = "",
+  planName,
+  usageSummary,
+  usageLimitReached,
 }: PracticeStartScreenProps) {
   const [savingPreference, setSavingPreference] = useState(false);
   // Optional tuning starts folded: three decisions, then Start.
@@ -461,33 +467,36 @@ export function PracticeStartScreen({
     !role.trim() || questionLoading || startDisabled || hybridMixInvalid || customQuestionsInvalid;
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[2fr_0.9fr]">
+    <div className="mx-auto w-full max-w-4xl">
       <GlassCard>
         {/* Everything needed to start is on screen at once. The old layout put
             the role at the top, the format and mode in two tall card decks, and
             the level and type behind a disclosure, so nobody could see what they
             were about to run without scrolling. People were getting lost instead
             of starting. */}
-        <div className="mb-4 flex flex-wrap items-baseline justify-between gap-2">
-          <div>
-            <h2 className="text-xl font-bold tracking-tight">
-              Build a tailored mock interview.
-            </h2>
+        <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+          <h2 className="text-lg font-bold tracking-tight">
+            Build a tailored mock interview.
+          </h2>
+          <div className="flex items-baseline gap-3 text-xs">
+            <span className={usageLimitReached ? "font-semibold text-amber-200" : "text-gray-400"}>
+              {planName} plan · {usageSummary}
+            </span>
+            <Link
+              href="/profile"
+              className="font-bold text-purple-200 underline underline-offset-4 transition hover:text-purple-100"
+            >
+              Add CV / role profile
+            </Link>
           </div>
-          <Link
-            href="/profile"
-            className="text-xs font-bold text-purple-200 underline underline-offset-4 transition hover:text-purple-100"
-          >
-            Add CV / role profile
-          </Link>
         </div>
 
-        <label className="mb-1.5 block text-sm font-bold text-gray-200">
+        <label className="mb-1 block text-xs font-bold text-gray-200">
           Target role or profile
         </label>
 
         <input
-          className="mb-3 w-full rounded-2xl border border-white/10 bg-recess-35 px-4 py-3 text-white placeholder-gray-400 outline-none transition focus:border-purple-300/50 focus:ring-4 focus:ring-purple-500/10"
+          className="mb-2 w-full rounded-xl border border-white/10 bg-recess-35 px-3 py-2.5 text-sm text-white placeholder-gray-400 outline-none transition focus:border-purple-300/50 focus:ring-4 focus:ring-purple-500/10"
           placeholder={
             isSignedIn && hasCandidateProfileContext(savedCandidateProfile)
               ? "Using your saved profile context"
@@ -500,7 +509,7 @@ export function PracticeStartScreen({
         {/* The saved-profile note is one line now. It used to be a paragraph in
             its own bordered box, which pushed the actual choices below the fold. */}
         {isSignedIn && profileContextLoaded && (
-          <div className="mb-4 flex flex-wrap items-center gap-2 text-xs">
+          <div className="mb-3 flex flex-wrap items-center gap-2 text-xs">
             {hasCandidateProfileContext(savedCandidateProfile) ? (
               <>
                 <span className="font-semibold text-emerald-200">
@@ -535,7 +544,7 @@ export function PracticeStartScreen({
 
         {/* Level and type were behind the Customise disclosure. They shape every
             question that gets asked, so they belong where they can be seen. */}
-        <div className="mb-4 grid gap-3 sm:grid-cols-2">
+        <div className="mb-3 grid gap-3 sm:grid-cols-2">
           <SelectField
             label="Experience level"
             value={experienceLevel}
@@ -551,9 +560,9 @@ export function PracticeStartScreen({
           />
         </div>
 
-        <div className="mb-4">
-          <div className="mb-2 flex flex-wrap items-baseline justify-between gap-2">
-            <p className="text-sm font-bold text-gray-200">Interview format</p>
+        <div className="mb-3">
+          <div className="mb-1.5 flex flex-wrap items-baseline justify-between gap-2">
+            <p className="text-xs font-bold text-gray-200">Interview format</p>
             {interviewFormat === "one_way_video" && (
               <button
                 type="button"
@@ -662,8 +671,8 @@ export function PracticeStartScreen({
           )}
         </div>
 
-        <div className="mb-4">
-          <p className="mb-2 text-sm font-bold text-gray-200">
+        <div className="mb-3">
+          <p className="mb-1.5 text-xs font-bold text-gray-200">
             How you answer
             {interviewFormat === "one_way_video" && (
               <span className="ml-2 text-xs font-semibold text-gray-400">
@@ -719,7 +728,7 @@ export function PracticeStartScreen({
         <button
           onClick={startInterview}
           disabled={interviewStartDisabled}
-          className="mb-3 w-full rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-4 text-base font-bold shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
+          className="mb-3 w-full rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-3.5 text-base font-bold shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
         >
           {questionLoading
             ? "Starting..."
@@ -750,12 +759,12 @@ export function PracticeStartScreen({
           type="button"
           onClick={() => setShowCustomise((v) => !v)}
           aria-expanded={showCustomise}
-          className="mb-5 flex w-full items-center justify-between rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-4 text-left transition hover:bg-white/[0.07]"
+          className="mb-4 flex w-full items-center justify-between rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-left transition hover:bg-white/[0.07]"
         >
           <span>
             <span className="block text-sm font-bold text-white">Customise session</span>
             <span className="mt-0.5 block text-xs text-gray-400">
-              Experience level, interview type, difficulty, focus{isAdvancedPlan ? ", question count & mix" : ""}, voice and devices
+              Difficulty, focus{isAdvancedPlan ? ", question count & mix" : ""}, interviewer voice and devices
             </span>
           </span>
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden className={`shrink-0 text-gray-400 transition ${showCustomise ? "rotate-180" : ""}`}>
@@ -1073,56 +1082,9 @@ export function PracticeStartScreen({
         </div>
       </GlassCard>
 
-      <aside className="space-y-6">
-        <GlassCard>
-          <h2 className="mb-4 text-xl font-bold text-white">Account</h2>
-
-          {!isSignedIn && (
-            <>
-              <p className="mb-4 text-sm leading-6 text-gray-400">
-                Sign in to save your candidate profile, reuse your CV context
-                and prepare for richer progress tracking.
-              </p>
-              <SignInButton mode="modal">
-                <button className="w-full rounded-2xl bg-white px-4 py-3 font-bold text-background shadow-xl shadow-purple-950/20 transition hover:bg-purple-100">
-                  Sign In
-                </button>
-              </SignInButton>
-            </>
-          )}
-
-          {isLoaded && isSignedIn && (
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <p className="text-sm text-gray-300">You are signed in.</p>
-                <UserButton />
-              </div>
-
-              <Link
-                href="/profile"
-                className="block w-full rounded-2xl border border-purple-300/20 bg-purple-300/10 px-4 py-3 text-center text-sm font-bold text-purple-100 transition hover:bg-purple-300/15"
-              >
-                Manage Candidate Profile
-              </Link>
-            </div>
-          )}
-        </GlassCard>
-
-        <GlassCard>
-          <h2 className="mb-4 text-xl font-bold text-white">Premium setup</h2>
-          <div className="space-y-3 text-sm leading-6 text-gray-400">
-            <CheckItem>{experienceLevel}</CheckItem>
-            <CheckItem>{interviewType}</CheckItem>
-            <CheckItem>{difficulty} difficulty</CheckItem>
-            <CheckItem>Focus: {focusArea}</CheckItem>
-            <CheckItem>{practiceModeLabels[selectedPracticeMode]}</CheckItem>
-            <CheckItem>
-              {formatPreferenceWord(speakerPreference.voice)} voice,{" "}
-              {speakerPreference.pace} pace
-            </CheckItem>
-          </div>
-        </GlassCard>
-      </aside>
+      {/* The Account and "Premium setup" cards were removed: Account repeated
+          the header's user menu, and the checklist restated the choices sitting
+          next to it. Both were costing the setup panel a third of the width. */}
     </div>
   );
 }

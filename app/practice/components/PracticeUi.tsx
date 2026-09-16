@@ -12,7 +12,7 @@ export function GlassCard({
 }) {
   return (
     <div
-      className={`relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.065] p-5 shadow-2xl shadow-purple-950/10 backdrop-blur-2xl sm:p-6 md:p-7 ${className}`}
+      className={`relative overflow-hidden rounded-[1.7rem] border border-white/10 bg-white/[0.065] p-4 shadow-2xl shadow-purple-950/10 backdrop-blur-2xl sm:p-5 ${className}`}
     >
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent" />
       <div className="relative">{children}</div>
@@ -36,13 +36,13 @@ export function SelectField({
 }) {
   return (
     <div>
-      <label className="mb-2 block text-sm font-bold text-gray-200">
+      <label className="mb-1 block text-xs font-bold text-gray-200">
         {label}
       </label>
       <select
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="w-full rounded-2xl border border-white/10 bg-recess-35 p-4 text-white outline-none transition focus:border-purple-300/50 focus:ring-4 focus:ring-purple-500/10"
+        className="w-full rounded-xl border border-white/10 bg-recess-35 px-3 py-2.5 text-sm text-white outline-none transition focus:border-purple-300/50 focus:ring-4 focus:ring-purple-500/10"
       >
         {options.map((option) => (
           <option key={option} value={option} className="bg-background">
