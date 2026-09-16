@@ -145,7 +145,10 @@ async function startVoiceSession(
 
 /** Exit mid-session, wait out the old bug's 350 ms restart window, assert all released. */
 async function exitAndAssertAllReleased(page: Page): Promise<void> {
-  await page.getByRole("link", { name: "Exit to practice setup" }).click();
+  // Leaving now asks first (answers are saved as the interview runs), so the
+  // exit is a button and the dialog's discard option is what actually leaves.
+  await page.getByRole("button", { name: "Exit to practice setup" }).click();
+  await page.getByTestId("exit-discard").click();
   await expect(page).toHaveURL(/\/practice\/?$/, { timeout: 15_000 });
 
   // The original leak re-acquired the mic ~350 ms after unmount; give any
