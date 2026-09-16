@@ -372,6 +372,26 @@ export function parseSessionConfig(): PracticeSessionConfig | null {
             .map((q) => q.slice(0, MAX_CUSTOM_QUESTION_LENGTH).trim())
             .filter(Boolean)
         : undefined,
+      // Carrying on an unfinished interview. This rebuild drops anything it
+      // does not name, which is what sent every resumed interview back to
+      // question 1 when the field was first added.
+      resume:
+        parsed.resume &&
+        typeof parsed.resume === "object" &&
+        typeof parsed.resume.attemptId === "string" &&
+        parsed.resume.attemptId.length > 0
+          ? {
+              attemptId: parsed.resume.attemptId.slice(0, 64),
+              answeredCount:
+                typeof parsed.resume.answeredCount === "number" &&
+                Number.isFinite(parsed.resume.answeredCount)
+                  ? Math.max(0, Math.floor(parsed.resume.answeredCount))
+                  : 0,
+              results: Array.isArray(parsed.resume.results)
+                ? parsed.resume.results.slice(0, MAX_TOTAL_QUESTIONS)
+                : [],
+            }
+          : undefined,
     };
   } catch {
     return null;
