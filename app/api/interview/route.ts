@@ -318,9 +318,10 @@ export async function POST(req: NextRequest) {
         questionMix: (questionMix as Partial<Record<string, number>> | undefined) ?? null,
       });
 
-      if (slot && slot !== TAILORED) {
+      if (slot && slot.type !== TAILORED) {
         const banked = pickQuestion({
-          type: slot,
+          type: slot.type,
+          stage: slot.stage,
           asked: previouslyAsked,
           usedCompetencies: competenciesAsked(previouslyAsked),
           sector: savedProfile?.targetSector ?? undefined,

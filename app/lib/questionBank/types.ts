@@ -58,6 +58,16 @@ export type BankCompetency = (typeof BANK_COMPETENCIES)[number];
  */
 export type BankLevel = "early" | "graduate" | "experienced";
 
+/**
+ * Where in an interview a question belongs.
+ *
+ * A real interview opens, explores, then closes. "What would make you turn
+ * down an offer from us?" is a question asked once there is an offer in sight,
+ * and putting it second makes the whole thing feel wrong — which is exactly
+ * what happened live. Most questions work anywhere and leave this unset.
+ */
+export type BankStage = "opening" | "middle" | "closing";
+
 export type BankSource =
   /** Written by us from common patterns. */
   | "original"
@@ -75,5 +85,7 @@ export type BankQuestion = {
   sectors?: BankSector[];
   /** Omitted means the question suits any level. */
   levels?: BankLevel[];
+  /** Omitted means the question can be asked at any point. */
+  stage?: BankStage;
   source: BankSource;
 };

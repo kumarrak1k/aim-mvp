@@ -165,8 +165,42 @@ describe("the session blueprint", () => {
   it("opens with the opener and asks why us second", () => {
     const shape = sessionBlueprint(5);
 
-    expect(shape[0]).toBe("opener");
-    expect(shape[1]).toBe("motivation");
+    expect(shape[0].type).toBe("opener");
+    expect(shape[1].type).toBe("motivation");
+  });
+
+  /**
+   * REGRESSION (16 Sep, reported live): question 2 was "What would make you
+   * turn down an offer from us?" — a question an interviewer asks at the END,
+   * once there is an offer in sight. A real interview opens, explores, then
+   * closes, and the bank has to know the difference.
+   */
+  it("never asks a closing question before the end", () => {
+    for (const total of [3, 5, 8, 10]) {
+      const shape = sessionBlueprint(total);
+      const closingSlots = shape
+        .map((slot, index) => ({ index, stage: slot.stage }))
+        .filter((slot) => slot.stage === "closing");
+
+      for (const slot of closingSlots) {
+        expect(slot.index, `closing question at ${slot.index + 1} of ${total}`).toBe(total - 1);
+      }
+    }
+  });
+
+  it("ends a full-length interview on a closing question", () => {
+    const shape = sessionBlueprint(8);
+
+    expect(shape[shape.length - 1].stage).toBe("closing");
+  });
+
+  it("keeps closing questions out of a slot asked early", () => {
+    const early = questionsFor({ type: "motivation", stage: "middle" });
+
+    expect(early.length).toBeGreaterThan(3);
+    for (const question of early) {
+      expect(question.stage).not.toBe("closing");
+    }
   });
 
   it("gives the candidate exactly the number of questions they asked for", () => {
@@ -177,19 +211,19 @@ describe("the session blueprint", () => {
 
   it("always includes one question written from the candidate's own CV", () => {
     for (const total of [3, 5, 8, 10]) {
-      expect(sessionBlueprint(total).filter((slot) => slot === TAILORED)).toHaveLength(1);
+      expect(sessionBlueprint(total).filter((slot) => slot.type === TAILORED)).toHaveLength(1);
     }
   });
 
   it("leans on competency questions, which is what a real screen does", () => {
     const shape = sessionBlueprint(8);
 
-    expect(shape.filter((slot) => slot === "competency").length).toBeGreaterThanOrEqual(3);
+    expect(shape.filter((slot) => slot.type === "competency").length).toBeGreaterThanOrEqual(3);
   });
 
   it("only reaches for commercial awareness in a longer session", () => {
-    expect(sessionBlueprint(3)).not.toContain("commercial");
-    expect(sessionBlueprint(8)).toContain("commercial");
+    expect(sessionBlueprint(3).map((slot) => slot.type)).not.toContain("commercial");
+    expect(sessionBlueprint(8).map((slot) => slot.type)).toContain("commercial");
   });
 });
 
@@ -200,8 +234,8 @@ describe("the session blueprint", () => {
  */
 describe("slotForQuestion", () => {
   it("follows the blueprint when nobody has chosen a mix", () => {
-    expect(slotForQuestion({ questionNumber: 1, totalQuestions: 5 })).toBe("opener");
-    expect(slotForQuestion({ questionNumber: 2, totalQuestions: 5 })).toBe("motivation");
+    expect(slotForQuestion({ questionNumber: 1, totalQuestions: 5 })?.type).toBe("opener");
+    expect(slotForQuestion({ questionNumber: 2, totalQuestions: 5 })?.type).toBe("motivation");
   });
 
   it("obeys a mix that was actually chosen", () => {
@@ -216,8 +250,8 @@ describe("slotForQuestion", () => {
       custom: 0,
     };
 
-    expect(slotForQuestion({ questionNumber: 1, totalQuestions: 3, questionMix })).toBe("technical");
-    expect(slotForQuestion({ questionNumber: 3, totalQuestions: 3, questionMix })).toBe("leadership");
+    expect(slotForQuestion({ questionNumber: 1, totalQuestions: 3, questionMix })?.type).toBe("technical");
+    expect(slotForQuestion({ questionNumber: 3, totalQuestions: 3, questionMix })?.type).toBe("leadership");
   });
 
   it("leaves a verbatim custom slot alone: the bank must not answer it", () => {

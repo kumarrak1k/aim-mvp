@@ -18,6 +18,7 @@ import {
   type BankLevel,
   type BankQuestion,
   type BankSector,
+  type BankStage,
   type BankType,
 } from "./types";
 
@@ -28,6 +29,7 @@ export {
   type BankLevel,
   type BankQuestion,
   type BankSector,
+  type BankStage,
   type BankType,
 };
 
@@ -36,7 +38,14 @@ export const QUESTION_BANK: readonly BankQuestion[] = [...CORE_QUESTIONS, ...SEC
 /** The slot in a session blueprint that the model writes from the CV. */
 export const TAILORED = "tailored" as const;
 
-export type BlueprintSlot = BankType | typeof TAILORED;
+/**
+ * One position in a session: what kind of question, and where in the interview
+ * it sits. The stage is what stops a closing question turning up second.
+ */
+export type BlueprintSlot = {
+  type: BankType | typeof TAILORED;
+  stage?: BankStage;
+};
 
 /** Comparing questions by meaning rather than by punctuation and capitals. */
 function normalise(text: string): string {
@@ -68,9 +77,16 @@ export function questionsFor(filter: {
   type: BankType;
   sector?: string;
   level?: BankLevel;
+  stage?: BankStage;
 }): BankQuestion[] {
   return QUESTION_BANK.filter((question) => {
     if (question.type !== filter.type) return false;
+    // A tagged question only belongs in a slot asking for that stage. An
+    // untagged one works anywhere, which is most of them.
+    if (filter.stage) {
+      if (filter.stage === "closing" && question.stage !== "closing") return false;
+      if (filter.stage !== "closing" && question.stage === "closing") return false;
+    }
     if (question.sectors && question.sectors.length > 0) {
       if (!filter.sector || !question.sectors.includes(filter.sector as BankSector)) return false;
     }
@@ -96,6 +112,8 @@ function hash(seed: string): number {
  */
 export function pickQuestion(options: {
   type: BankType;
+  /** Where in the interview this slot sits. */
+  stage?: BankStage;
   /** Questions already put to this candidate, in this session and recently. */
   asked: string[];
   /** Competencies already covered, so a session is not three teamwork questions. */
@@ -127,34 +145,47 @@ export function pickQuestion(options: {
 export function sessionBlueprint(totalQuestions: number): BlueprintSlot[] {
   const total = Math.max(1, Math.floor(totalQuestions));
 
-  // The full shape, in the order a real screen tends to use. A shorter session
-  // is the front of this list, which is why the opener, motivation and the
-  // tailored question come first.
-  const shape: BlueprintSlot[] = [
-    "opener",
-    "motivation",
-    "competency",
-    TAILORED,
-    "competency",
-    "situational",
-    "competency",
-    "commercial",
-    "strengths",
-    "competency",
+  // An interview opens, explores, then closes. The middle is where competency
+  // lives; the last question is the one an interviewer actually ends on.
+  const opening: BlueprintSlot[] = [
+    { type: "opener", stage: "opening" },
+    { type: "motivation", stage: "middle" },
   ];
 
-  if (total <= shape.length) {
-    const trimmed = shape.slice(0, total);
-    // The tailored question is the point of the exercise, so a very short
-    // session keeps it rather than letting the trim cut it off.
-    if (!trimmed.includes(TAILORED)) trimmed[trimmed.length - 1] = TAILORED;
-    return trimmed;
+  const middle: BlueprintSlot[] = [
+    { type: "competency", stage: "middle" },
+    { type: TAILORED, stage: "middle" },
+    { type: "competency", stage: "middle" },
+    { type: "commercial", stage: "middle" },
+    { type: "competency", stage: "middle" },
+    { type: "situational", stage: "middle" },
+    { type: "strengths", stage: "middle" },
+  ];
+
+  const closing: BlueprintSlot = { type: "motivation", stage: "closing" };
+
+  // Too short for a full shape, but even three questions should open, ask
+  // something from the candidate's own CV, and close properly.
+  if (total === 1) return [{ type: TAILORED, stage: "middle" }];
+  if (total === 2) return [opening[0], { type: TAILORED, stage: "middle" }];
+  if (total === 3) {
+    return [opening[0], { type: TAILORED, stage: "middle" }, closing];
   }
 
-  const extra: BlueprintSlot[] = Array.from({ length: total - shape.length }, (_, i) =>
-    i % 2 === 0 ? "competency" : "situational"
-  );
-  return [...shape, ...extra];
+  // Everything between the opening and the closing question.
+  const bodyLength = total - opening.length - 1;
+  const body: BlueprintSlot[] = [];
+  for (let i = 0; i < bodyLength; i += 1) {
+    body.push(middle[i] ?? { type: i % 2 === 0 ? "competency" : "situational", stage: "middle" });
+  }
+
+  // The tailored question is the point of the exercise, so a session too short
+  // to reach it in the body gets it in place of the last body slot.
+  if (!body.some((slot) => slot.type === TAILORED) && body.length > 0) {
+    body[body.length - 1] = { type: TAILORED, stage: "middle" };
+  }
+
+  return [...opening, ...body, closing];
 }
 
 /**
@@ -180,6 +211,7 @@ export function slotForQuestion(options: {
     return shape[options.questionNumber - 1] ?? null;
   }
 
+
   // The mix is flattened in the same order the setup screen shows it, which is
   // how the client already decides where a verbatim question belongs.
   const MIX_ORDER = [
@@ -198,7 +230,9 @@ export function slotForQuestion(options: {
     const count = mix[key] ?? 0;
     if (options.questionNumber <= position + count) {
       // A custom slot holds the recruiter's own words: never ours.
-      return key === "custom" ? null : (key as BlueprintSlot);
+      // A chosen mix says WHAT to ask, not where in the interview it sits, so
+      // the stage is left open and any fitting question can be used.
+      return key === "custom" ? null : { type: key as BankType };
     }
     position += count;
   }
