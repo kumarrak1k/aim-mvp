@@ -129,7 +129,7 @@ export const PROCESS_TYPES = [
   {
     // Many graduate and corporate processes run both stages. Capturing that
     // here lets the plan (step 4) set up the interview-first path AND plant
-    // the assessment centre — which is where Professional earns its keep.
+    // the assessment centre — which is where Pro earns its keep.
     value: "both",
     label: "Both — an interview and an assessment centre",
     hint: "Interview first, then the full centre",
@@ -272,7 +272,7 @@ export function buildPlanSteps(
             // centre is named now so the candidate knows where this is going
             // (and which plan covers it) before the invite email lands.
             title: "Then the full assessment centre",
-            body: "Once your answers are landing, run the complete centre — case study, interview and presentation, scored stage by stage. Available on the Professional plan when you are ready.",
+            body: "Once your answers are landing, run the complete centre — case study, interview and presentation, scored stage by stage. It is in your free trial, and in Pro after that.",
           }
         : {
             title: "Then watch the trend",

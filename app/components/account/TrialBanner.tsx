@@ -133,7 +133,7 @@ export function TrialBanner() {
 
   // ── Complimentary access ────────────────────────────────────────────────
   //    Comp sets neither isPaid nor isTrial, so without this branch the
-  //    checks below treat a Professional guest as a never-trialled free
+  //    checks below treat a complimentary guest as a never-trialled free
   //    user and offer them a trial they do not need. Shown rather than
   //    hidden because comp access expires and they should see when.
   if (sub.isComp) {
@@ -174,8 +174,8 @@ export function TrialBanner() {
         <div className="mx-auto flex max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] flex-wrap items-center justify-center gap-x-3 gap-y-1 px-4 py-2 text-center sm:px-6">
           <span className="text-[13px] font-semibold text-gray-100">
             <span aria-hidden>✨ </span>
-            You&rsquo;re on the <strong className="font-bold">Plus</strong>{" "}
-            free trial, with{" "}
+            You&rsquo;re on your <strong className="font-bold">free trial</strong>{" "}
+            of everything, with{" "}
             <span className={urgent ? "text-amber-200" : "text-purple-200"}>
               {dayLabel} left
             </span>
@@ -185,7 +185,7 @@ export function TrialBanner() {
             href="/pricing"
             className="rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-3.5 py-1 text-[12px] font-bold text-on-accent shadow transition hover:scale-[1.03]"
           >
-            Upgrade to keep access →
+            Subscribe to keep access →
           </Link>
         </div>
       </div>
@@ -199,7 +199,7 @@ export function TrialBanner() {
         <div className="mx-auto flex max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] flex-wrap items-center justify-center gap-x-3 gap-y-1 px-4 py-2 text-center sm:px-6">
           <span className="text-[13px] font-semibold text-gray-100">
             <span aria-hidden>🎁 </span>
-            Unlock voice &amp; camera coaching and unlimited practice,{" "}
+            Try the whole product, including voice and camera coaching,{" "}
             <strong className="font-bold">free for 3 days, no payment details</strong>.
           </span>
           <button
@@ -225,13 +225,13 @@ export function TrialBanner() {
       <div className="relative z-40 border-b border-white/[0.08] bg-white/[0.03]">
         <div className="mx-auto flex max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] flex-wrap items-center justify-center gap-x-3 gap-y-1 px-4 py-2 text-center sm:px-6">
           <span className="text-[13px] font-semibold text-gray-300">
-            Your free trial has ended. You&rsquo;re on the Free plan.
+            Your free trial has ended. Your saved interviews and reports are still here.
           </span>
           <Link
             href="/pricing"
             className="rounded-full border border-purple-300/25 bg-purple-300/[0.08] px-3.5 py-1 text-[12px] font-bold text-purple-100 transition hover:bg-purple-300/[0.14]"
           >
-            Upgrade →
+            See Pro pricing →
           </Link>
           <button
             onClick={dismissExpired}

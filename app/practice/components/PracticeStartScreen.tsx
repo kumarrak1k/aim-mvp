@@ -217,10 +217,10 @@ export function PracticeStartScreen({
     (mode: PracticeMode) => {
       setPreferenceMessage("");
 
-      // Free plan is keyboard-only — block voice and camera modes.
+      // Without a subscription it is keyboard-only — block voice and camera.
       if (isFreePlan && mode !== "typed") {
         setPreferenceMessage(
-          "Voice and camera modes are available on Plus and Professional plans."
+          "Voice and camera modes are part of Pro."
         );
         return;
       }
@@ -552,18 +552,18 @@ export function PracticeStartScreen({
             />
           </div>
 
-          {/* Upgrade nudge shown when a free user taps a locked mode */}
+          {/* Pro nudge shown when a non-subscriber taps a locked mode */}
           {isFreePlan && (
             <div className="mt-4 flex flex-col gap-2 rounded-2xl border border-purple-300/20 bg-purple-300/[0.07] p-4 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-sm leading-6 text-gray-300">
                 <span className="font-bold text-purple-200">Voice &amp; camera modes</span> are
-                available on Plus and Professional plans.
+                part of Pro.
               </p>
               <Link
                 href="/pricing"
                 className="shrink-0 rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-4 py-2 text-xs font-bold text-on-accent shadow-lg shadow-purple-950/35 transition hover:scale-[1.03]"
               >
-                Upgrade →
+                See pricing →
               </Link>
             </div>
           )}

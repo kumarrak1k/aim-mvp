@@ -37,7 +37,7 @@ export const competitors: Record<string, CompetitorData> = {
       { feature: "Mock assessment centre", aim: true, competitor: false },
       { feature: "Repeatable structured practice loop", aim: true, competitor: false },
       { feature: "UK GDPR-compliant data handling", aim: true, competitor: "US data" },
-      { feature: "Pricing", aim: "Free + from £19/mo", competitor: "Free + $20/mo ChatGPT Plus" },
+      { feature: "Pricing", aim: "3-day free trial, then £15/mo", competitor: "Free + $20/mo ChatGPT Plus" },
     ],
     aimStrengths: [
       "Structured scoring across 6 dimensions, not a chat conversation",
@@ -76,7 +76,7 @@ export const competitors: Record<string, CompetitorData> = {
       { feature: "Mock assessment centre", aim: true, competitor: false },
       { feature: "CV, cover letter & personal statement tools", aim: true, competitor: false },
       { feature: "UK GDPR-compliant data handling", aim: true, competitor: "US data" },
-      { feature: "Pricing", aim: "Free + from £19/mo", competitor: "Free (LinkedIn Premium required for some features)" },
+      { feature: "Pricing", aim: "3-day free trial, then £15/mo", competitor: "Free (LinkedIn Premium required for some features)" },
     ],
     aimStrengths: [
       "Scores the substance of your answers, not just delivery confidence",
@@ -114,7 +114,7 @@ export const competitors: Record<string, CompetitorData> = {
       { feature: "Mock assessment centre", aim: true, competitor: false },
       { feature: "Natural audio question delivery (TTS)", aim: true, competitor: false },
       { feature: "GDPR-compliant (UK/EU)", aim: true, competitor: "US data" },
-      { feature: "Pricing", aim: "Free + paid plans", competitor: "Free" },
+      { feature: "Pricing", aim: "3-day free trial, then £15/month", competitor: "Free" },
     ],
     aimStrengths: [
       "Fully tailored to your role, level and interview type, not generic questions",
@@ -151,7 +151,7 @@ export const competitors: Record<string, CompetitorData> = {
       { feature: "Coaching video curriculum", aim: false, competitor: true },
       { feature: "Resume and CV tools", aim: false, competitor: true },
       { feature: "GDPR-compliant (UK/EU)", aim: true, competitor: "US-based" },
-      { feature: "Pricing", aim: "From £19/month", competitor: "From ~$39/month" },
+      { feature: "Pricing", aim: "3-day free trial, then £15/month", competitor: "From ~$39/month" },
     ],
     aimStrengths: [
       "Questions generated specifically for your role, level, and interview format",
@@ -188,7 +188,7 @@ export const competitors: Record<string, CompetitorData> = {
       { feature: "Pacing and confidence metrics", aim: true, competitor: true },
       { feature: "Mock assessment centre", aim: true, competitor: false },
       { feature: "GDPR-compliant (UK/EU)", aim: true, competitor: "US-based" },
-      { feature: "Pricing", aim: "From £19/month", competitor: "Free + paid plans" },
+      { feature: "Pricing", aim: "3-day free trial, then £15/month", competitor: "Free + paid plans" },
     ],
     aimStrengths: [
       "Scores the substance of your answers, not just how you sound",

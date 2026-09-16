@@ -242,7 +242,7 @@ export const TRANSACTIONAL_NURTURE_TYPES: ReadonlySet<NurtureType> = new Set([
 
 /**
  * Win-back nudges scheduled off the SIGNUP date. Their copy assumes a lapsed
- * free user ("still here?", "your free practice sessions are waiting"), so the
+ * non-paying user ("still here?", "your practice history is waiting"), so the
  * sender must skip anyone paying, on complimentary access, or recently active.
  */
 export const RE_ENGAGEMENT_TYPES: ReadonlySet<NurtureType> = new Set([
@@ -258,11 +258,11 @@ const NURTURE_SUBJECTS: Record<NurtureType, string> = {
   welcome:        "Welcome to AI Career Mentor: your first interview tip",
   day2_tip:       "Most candidates never practise this (but should)",
   day4_social:    "How one user went from nervous to offer in 2 weeks",
-  day7_upgrade:   "Unlock unlimited practice sessions (limited offer)",
+  day7_upgrade:   "Practise as often as you need with Pro",
   day14_reengage: "Got an interview coming up?",
   day21_nudge:    "Still here? Want to run a quick session?",
-  day30_winback:  "Last chance: your free practice sessions are waiting",
-  trial_midway:   "Your Plus trial ends soon",
+  day30_winback:  "Your practice history is still waiting for you",
+  trial_midway:   "Your free trial ends soon",
   trial_ended:    "Your free trial has ended",
 };
 
@@ -378,7 +378,7 @@ function renderNurtureHtml(type: NurtureType, unsubUrl: string): string {
 
     day7_upgrade: `
       <h2 style="margin:0 0 16px;font-size:22px;font-weight:800;color:#1a1426;">
-        Unlock unlimited sessions: special offer for new users.
+        Practise as often as you need.
       </h2>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#2a2238;">
         You've been on the platform for a week. If you've run even one session,
@@ -387,10 +387,11 @@ function renderNurtureHtml(type: NurtureType, unsubUrl: string): string {
       </p>
       <div style="background:#f7f5fb;border-left:3px solid #8c5cff;border-radius:0 12px 12px 0;padding:18px 22px;margin:0 0 24px;">
         <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#7c6a99;">
-          Plus plan: from £14.08/month, billed annually
+          Pro: £15 a month, £38 a quarter, or £120 a year
         </p>
         <p style="margin:0;font-size:15px;line-height:1.7;color:#2a2238;">
-          Unlimited AI mock interviews · Voice &amp; camera delivery coaching ·
+          Unlimited mock interviews · Voice &amp; camera delivery coaching ·
+          Mock assessment centre · CV &amp; Application Studio ·
           Full feedback &amp; model answers · Progress saved and tracked
         </p>
       </div>
@@ -476,16 +477,16 @@ function renderNurtureHtml(type: NurtureType, unsubUrl: string): string {
       </p>
       <div style="background:#f7f5fb;border-left:3px solid #8c5cff;border-radius:0 12px 12px 0;padding:18px 22px;margin:0 0 24px;">
         <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#7c6a99;">
-          Free to use, any time
+          Everything you saved is still here
         </p>
         <p style="margin:0;font-size:15px;line-height:1.7;color:#2a2238;">
-          No subscription needed to start. Log in, pick your role,
-          and run a session. Your account and progress are all saved.
+          Log in and your interviews, reports and the free tools are exactly
+          where you left them.
         </p>
       </div>
       <p style="margin:0 0 28px;font-size:15px;line-height:1.7;color:#2a2238;">
-        When you're ready to go unlimited, the Plus plan is £14.08/month.
-        But there's no pressure. Come back whenever you need us.
+        To run a new interview, subscribe to Pro: £15 a month, £38 a quarter,
+        or £120 a year. No pressure. Come back whenever you need us.
       </p>
       <table role="presentation" cellpadding="0" cellspacing="0">
         <tr><td style="border-radius:12px;background:#8c5cff;">
@@ -497,23 +498,24 @@ function renderNurtureHtml(type: NurtureType, unsubUrl: string): string {
 
     trial_midway: `
       <h2 style="margin:0 0 16px;font-size:22px;font-weight:800;color:#1a1426;">
-        Your Plus trial ends soon.
+        Your free trial ends soon.
       </h2>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#2a2238;">
-        You're partway through your 3-day Plus trial. Make the most of it before
-        it ends:
+        You're partway through your 3-day trial, which covers the whole product.
+        Make the most of it before it ends:
       </p>
       <div style="background:#f7f5fb;border-left:3px solid #8c5cff;border-radius:0 12px 12px 0;padding:18px 22px;margin:0 0 24px;">
         <p style="margin:0;font-size:15px;line-height:1.7;color:#2a2238;">
           <strong>Voice &amp; camera coaching</strong>: see your delivery scored.<br/>
           <strong>Unlimited practice</strong>: interview as many times as you need.<br/>
-          <strong>Tailored questions</strong>: for your exact role and level.
+          <strong>Mock assessment centre</strong>: case study, interview, presentation.<br/>
+          <strong>CV &amp; Application Studio</strong>: CV, cover letter, personal statement.
         </p>
       </div>
       <p style="margin:0 0 28px;font-size:15px;line-height:1.7;color:#2a2238;">
-        When the trial ends you'll move to the Free plan. Upgrade to Plus to keep
-        unlimited voice &amp; camera practice, or Professional for mock assessment
-        centres and the CV & Application Studio. No card needed until you decide.
+        The trial simply stops at the end of day three. You're not charged, and
+        there's nothing to cancel. Your saved interviews and reports stay with
+        you, and you can subscribe to Pro whenever you're ready.
       </p>
       <table role="presentation" cellpadding="0" cellspacing="0" style="margin-bottom:12px;">
         <tr><td style="border-radius:12px;background:#8c5cff;">
@@ -524,7 +526,7 @@ function renderNurtureHtml(type: NurtureType, unsubUrl: string): string {
       </table>
       <p style="margin:0 0 28px;">
         <a href="${upgradeUrl}" style="font-size:14px;color:#8c5cff;text-decoration:none;font-weight:700;">
-          Keep full access: see plans →
+          Keep full access: see Pro pricing →
         </a>
       </p>`,
 
@@ -533,20 +535,20 @@ function renderNurtureHtml(type: NurtureType, unsubUrl: string): string {
         Your free trial has ended.
       </h2>
       <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#2a2238;">
-        Your 3-day Plus trial is now over and your account has moved to
-        the <strong>Free plan</strong>: that's 3 keyboard-only practice sessions.
+        Your 3-day trial is now over. You weren't charged and there's nothing to
+        cancel. Your saved interviews, reports and the free tools are still yours.
       </p>
       <div style="background:#f7f5fb;border-left:3px solid #8c5cff;border-radius:0 12px 12px 0;padding:18px 22px;margin:0 0 24px;">
         <p style="margin:0;font-size:15px;line-height:1.7;color:#2a2238;">
-          Upgrade to <strong>Plus</strong> to keep unlimited voice &amp; camera
-          practice, or <strong>Professional</strong> for mock assessment centres
-          and the CV & Application Studio.
+          To start a new interview, subscribe to <strong>Pro</strong>: £15 a
+          month, £38 a quarter, or £120 a year. It includes unlimited practice,
+          the mock assessment centre and the CV &amp; Application Studio.
         </p>
       </div>
       <table role="presentation" cellpadding="0" cellspacing="0">
         <tr><td style="border-radius:12px;background:#8c5cff;">
           <a href="${upgradeUrl}" style="display:inline-block;padding:14px 28px;color:#fff;font-size:15px;font-weight:800;text-decoration:none;">
-            See plans &amp; upgrade →
+            See Pro pricing →
           </a>
         </td></tr>
       </table>`,
@@ -589,12 +591,12 @@ function renderNurturePlainText(type: NurtureType): string {
     welcome:        `Welcome to AI Career Mentor!\n\nTip #1: The STAR method.\nEvery behavioural question is best answered with Situation → Task → Action → Result.\n\nRun your first session: ${practiceUrl}`,
     day2_tip:       `Most candidates never practise voice delivery, but it's scored in every session.\n\nFix: slow down, cut filler words, finish sentences firmly.\n\nRun a session and check your delivery: ${practiceUrl}`,
     day4_social:    `From nervous to offer in two weeks: real story from a Financial Services graduate.\n\nConsistent, specific feedback makes the difference.\n\nContinue practising: ${practiceUrl}\nShare your referral link: ${referUrl}`,
-    day7_upgrade:   `One week in. Unlock unlimited sessions and interview as many times as you need.\n\nPlus plan from £14.08/month. See pricing: ${upgradeUrl}`,
+    day7_upgrade:   `One week in. Pro lets you interview as many times as you need, and adds the mock assessment centre and the CV & Application Studio.\n\nPro is £15 a month, £38 a quarter, or £120 a year. See pricing: ${upgradeUrl}`,
     day14_reengage: `Got an interview coming up? Run a 10-day sprint: competency, strength, and motivation questions, then a full mock on day 10.\n\nStart here: ${practiceUrl}`,
     day21_nudge:    `Still here? One 15-minute session will move you forward. Pick your role, answer 5 questions, get scored.\n\n${practiceUrl}`,
-    day30_winback:  `Your practice sessions are still here. Come back whenever you're ready.\n\n${practiceUrl}`,
-    trial_midway:   `Your Plus trial ends soon. Make the most of unlimited voice & camera practice before it ends.\n\nJump back in: ${practiceUrl}\nSee plans: ${upgradeUrl}`,
-    trial_ended:    `Your 3-day Plus trial has ended. Your account is now on the Free plan (3 keyboard-only sessions).\n\nUpgrade to Plus to keep unlimited voice & camera practice, or Professional for assessment centres and the CV & Application Studio: ${upgradeUrl}`,
+    day30_winback:  `Your saved interviews and reports are still here. Come back whenever you're ready.\n\n${practiceUrl}`,
+    trial_midway:   `Your free trial ends soon. Make the most of unlimited practice, the mock assessment centre and the CV & Application Studio before it does. Nothing is charged when it ends.\n\nJump back in: ${practiceUrl}\nSee Pro pricing: ${upgradeUrl}`,
+    trial_ended:    `Your 3-day free trial has ended. You weren't charged and there's nothing to cancel, and your saved interviews and reports are still yours.\n\nTo start a new interview, subscribe to Pro (£15 a month, £38 a quarter, or £120 a year): ${upgradeUrl}`,
   };
   return texts[type] + `\n\nAI Career Mentor\n${siteConfig.url}`;
 }

@@ -25,7 +25,7 @@ export type CareerDocAccess =
 
 /**
  * Gate a career-doc generation. `label` is the human name of the tool, used
- * in the Professional-required message (e.g. "CV Enhancer").
+ * in the Pro-required message (e.g. "CV Enhancer").
  */
 export async function checkCareerDocAccess(
   userId: string,
@@ -49,7 +49,7 @@ export async function checkCareerDocAccess(
       return {
         ok: false,
         status: 403,
-        error: `You've used your ${FREE_TIER.careerDocs} free Career Docs generations. Upgrade to Professional for unlimited CV analysis, cover letters and personal statements.`,
+        error: `You've used your ${FREE_TIER.careerDocs} free Career Docs generations. Subscribe to Pro for unlimited CV analysis, cover letters and personal statements.`,
         upgrade: true,
       };
     }
@@ -74,7 +74,7 @@ export async function checkCareerDocAccess(
       return {
         ok: false,
         status: 429,
-        error: `Your free trial includes ${TRIAL_USAGE_CAPS.careerDocs} career-doc generations. Upgrade to Professional for unlimited access.`,
+        error: `Your free trial includes ${TRIAL_USAGE_CAPS.careerDocs} career-doc generations. Subscribe to Pro for unlimited access.`,
         upgrade: true,
       };
     }

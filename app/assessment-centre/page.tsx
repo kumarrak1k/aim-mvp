@@ -8,7 +8,7 @@ import { CandidateAppShell } from "@/app/components/marketing/CandidateAppShell"
 type PlanInfo = {
   planName: string;
   isActive: boolean;
-  /** Free runs left for a non-Professional candidate (see FREE_TIER). */
+  /** Free runs left for a candidate without Pro (see FREE_TIER). */
   tasterAssessmentCentres?: number;
 };
 
@@ -73,9 +73,7 @@ function StageCard({ stage }: { stage: typeof stages[number] }) {
 
 // ─── Upgrade gate (wrong plan) ────────────────────────────────────────────────
 
-function UpgradeGate({ planName }: { planName: string }) {
-  const isProfessional = planName === "Plus";
-
+function UpgradeGate() {
   return (
     <div className="mx-auto max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] px-4 py-8 sm:px-6 lg:py-10">
       {/* Header */}
@@ -93,9 +91,7 @@ function UpgradeGate({ planName }: { planName: string }) {
 
           <div className="mt-8 inline-flex flex-col items-center gap-2">
             <span className="rounded-full border border-amber-400/30 bg-amber-400/[0.08] px-4 py-1.5 text-xs font-bold text-amber-300">
-              {isProfessional
-                ? "Your Plus plan includes interview practice. Upgrade to Professional to unlock the assessment centre."
-                : "This feature requires the Professional plan."}
+              Subscribe to Pro to run the mock assessment centre.
             </span>
           </div>
         </div>
@@ -117,15 +113,15 @@ function UpgradeGate({ planName }: { planName: string }) {
           Unlock the assessment centre
         </h2>
         <p className="mx-auto mt-3 max-w-xl text-sm leading-7 text-gray-400">
-          Upgrade to the Professional plan to run unlimited mock assessment centre sessions
-          with new scenarios each time.
+          Pro includes unlimited mock assessment centre sessions with new scenarios
+          each time, along with everything else on the platform.
         </p>
         <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link
             href="/pricing"
             className="rounded-2xl bg-gradient-to-r from-violet-500 to-purple-500 px-8 py-4 text-center text-sm font-bold text-on-accent shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.02]"
           >
-            Upgrade to Professional →
+            See Pro pricing →
           </Link>
           <Link
             href="/mock-assessment-centre"
@@ -135,7 +131,7 @@ function UpgradeGate({ planName }: { planName: string }) {
           </Link>
         </div>
         <p className="mt-4 text-xs text-gray-400">
-          Already upgraded?{" "}
+          Already subscribed?{" "}
           <button onClick={() => window.location.reload()} className="text-cyan-400 underline hover:text-cyan-300">
             Refresh this page
           </button>{" "}
@@ -201,7 +197,7 @@ function AssessmentCentreAccess({ isTaster = false }: { isTaster?: boolean }) {
                 : "border-emerald-300/20 bg-emerald-300/10 text-emerald-100"
             }`}
           >
-            {isTaster ? "One free run · on us" : "Professional · Unlocked"}
+            {isTaster ? "One free run · on us" : "Pro · Unlocked"}
           </div>
           <h1 className="text-3xl font-bold leading-[1.04] tracking-tight text-white sm:text-4xl lg:text-4xl">
             Mock assessment centre
@@ -281,7 +277,7 @@ export default function AssessmentCentrePage() {
 
     if (!isSignedIn) return <SignInGate />;
     if (isAdvanced || hasTaster) return <AssessmentCentreAccess isTaster={!isAdvanced} />;
-    return <UpgradeGate planName={plan?.planName ?? "Free"} />;
+    return <UpgradeGate />;
   }
 
   return (

@@ -689,30 +689,27 @@ export function SessionSummary({
             </div>
           )}
 
-          {/* ── Free plan upgrade CTA ───────────────────────────────────── */}
+          {/* ── Pro CTA for candidates without a subscription ────────────── */}
           {freePlan && (
             <div className="mb-4 rounded-[1.7rem] border border-purple-400/25 bg-gradient-to-br from-purple-500/10 to-fuchsia-500/10 p-6">
               <p className="text-xs font-bold tracking-wide text-purple-300">
-                Unlock your full potential
+                Everything in one plan
               </p>
               <h3 className="mt-2 text-lg font-bold text-white">
-                {sessionsUsed != null && sessionsUsed >= freeSessionsPerWindow
-                  ? "You've used this month's free sessions"
-                  : sessionsUsed != null
-                  ? `You've used ${sessionsUsed} of ${freeSessionsPerWindow} free session${sessionsUsed === 1 ? "" : "s"}`
-                  : "You're on the free plan"}
+                Subscribe to Pro to keep practising
               </h3>
               <p className="mt-2 text-sm leading-7 text-gray-300">
-                Upgrade to Plus to get unlimited sessions, voice interview mode,
-                camera presence scoring, detailed voice delivery analysis, and your
-                personalised 7-day improvement plan tracked over time.
+                Pro gives you unlimited interviews in typed, voice and camera
+                modes, the mock assessment centre, the CV and Application Studio,
+                and your progress tracked over time. This report stays yours
+                either way.
               </p>
               <div className="mt-4 flex flex-wrap gap-3">
                 <Link
                   href="/pricing"
                   className="rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-3 text-sm font-bold text-on-accent shadow-lg shadow-purple-900/35 transition hover:scale-[1.01]"
                 >
-                  See plans →
+                  See pricing →
                 </Link>
                 <Link
                   href="/practice"

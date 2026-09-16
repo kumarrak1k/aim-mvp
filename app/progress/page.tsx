@@ -519,7 +519,7 @@ function ProgressDashboard({ stats, isAdvancedPlan, onSessionDeleted }: { stats:
               including a case study, presentation, and more.{" "}
               {isAdvancedPlan
                 ? "Simulate the complete format before the real thing. It's included in your plan."
-                : "Upgrade to Professional and simulate the complete format before the real thing."}
+                : "Subscribe to Pro and simulate the complete format before the real thing."}
             </p>
           </div>
           <div className="flex shrink-0 flex-col gap-3 sm:flex-row lg:flex-col">
@@ -533,7 +533,7 @@ function ProgressDashboard({ stats, isAdvancedPlan, onSessionDeleted }: { stats:
               <>
                 <Link href="/pricing">
                   <button className="w-full whitespace-nowrap rounded-2xl bg-gradient-to-r from-violet-500 to-purple-500 px-6 py-3.5 text-sm font-bold text-on-accent shadow-lg transition hover:scale-[1.02] sm:w-auto lg:w-full">
-                    Upgrade to Professional →
+                    See Pro pricing →
                   </button>
                 </Link>
                 <Link href="/mock-assessment-centre">
@@ -826,7 +826,7 @@ function EmptyProgressState({ isAdvancedPlan }: { isAdvancedPlan: boolean }) {
 
       <section className="overflow-hidden rounded-[2rem] border border-cyan-400/20 bg-gradient-to-br from-cyan-500/[0.07] via-purple-500/[0.04] to-transparent p-6 shadow-2xl shadow-purple-950/10 backdrop-blur-2xl">
         <p className="text-[12px] font-bold tracking-wide text-cyan-300">
-          {isAdvancedPlan ? "Your plan · Mock assessment centre" : "Professional · Mock assessment centre"}
+          {isAdvancedPlan ? "Your plan · Mock assessment centre" : "Included in Pro · Mock assessment centre"}
         </p>
         <h3 className="mt-2 text-xl font-bold tracking-tight text-white">
           Going for a role with an assessment centre?
@@ -844,7 +844,7 @@ function EmptyProgressState({ isAdvancedPlan }: { isAdvancedPlan: boolean }) {
         ) : (
           <Link href="/pricing">
             <button className="mt-4 rounded-2xl bg-gradient-to-r from-violet-500 to-purple-500 px-5 py-3 text-sm font-bold text-on-accent shadow-lg transition hover:scale-[1.02]">
-              Upgrade to Professional →
+              See Pro pricing →
             </button>
           </Link>
         )}

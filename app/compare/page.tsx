@@ -43,7 +43,7 @@ const tools: RoundupTool[] = [
     name: "AI Career Mentor",
     capabilities:
       "Answer, voice and camera scoring, STAR analysis, model answers, mock assessment centres",
-    price: "Free + from £19/month",
+    price: "3-day free trial, then £15/month",
     bestFor: "UK candidates preparing seriously for a specific role",
     editorial:
       "AI Career Mentor scores what you say and how you say it: every answer gets structured feedback across content, STAR structure, voice delivery and camera presence, with a model answer to benchmark against. It also includes a mock assessment centre with case study, competency interview and presentation exercises, which none of the other tools here offer. It is built and hosted in the UK with GDPR-first data handling, and questions are generated for your exact role, level and interview format rather than pulled from a generic bank.",
@@ -113,11 +113,11 @@ const tools: RoundupTool[] = [
 const faqs = [
   {
     q: "Are AI interview tools worth it?",
-    a: "Yes, for most candidates. Structured, repeatable practice with instant feedback is the fastest way to improve interview performance, and AI tools deliver it at a fraction of the cost of a human coach. The key is choosing a tool that scores the substance of your answers as well as your delivery, and most tools in this list have a free tier so you can test them before paying.",
+    a: "Yes, for most candidates. Structured, repeatable practice with instant feedback is the fastest way to improve interview performance, and AI tools deliver it at a fraction of the cost of a human coach. The key is choosing a tool that scores the substance of your answers as well as your delivery, and most tools in this list let you try them before paying.",
   },
   {
     q: "What is the best free AI interview practice tool?",
-    a: "Google's Interview Warmup is completely free with no sign-up, which makes it the best zero-commitment starting point. For free feedback with actual scoring, AI Career Mentor's free STAR answer scorer grades a written answer instantly without an account, and its free tier includes tailored practice questions.",
+    a: "Google's Interview Warmup is completely free with no sign-up, which makes it the best zero-commitment starting point. For free feedback with actual scoring, AI Career Mentor's free STAR answer scorer grades a written answer instantly without an account, and its 3-day trial opens the whole product without payment details.",
   },
   {
     q: "Can AI replace a human interview coach?",

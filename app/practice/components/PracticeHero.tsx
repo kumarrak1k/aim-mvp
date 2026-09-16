@@ -55,13 +55,13 @@ export function PracticeHero({
       {usageLimitReached && planName === "Free" ? (
         <div className="mt-4 flex flex-wrap items-center gap-3 rounded-[1.1rem] border border-purple-300/20 bg-purple-300/[0.08] px-4 py-3">
           <p className="min-w-0 flex-1 text-sm font-semibold leading-6 text-gray-200">
-            Free plan · this month&apos;s sessions used. {usageSummary}
+            Your saved interviews and reports stay yours. {usageSummary}
           </p>
           <Link
             href="/pricing"
             className="shrink-0 rounded-xl bg-gradient-to-r from-violet-600 to-purple-600 px-4 py-2 text-sm font-bold text-on-accent shadow-lg transition hover:scale-[1.02]"
           >
-            Upgrade to Plus →
+            See Pro pricing →
           </Link>
         </div>
       ) : (
@@ -108,7 +108,7 @@ export function PracticeHero({
         </p>
       )}
 
-      {/* Assessment centre — direct for Professional users, upsell for others */}
+      {/* Assessment centre — direct for subscribers, upsell for everyone else */}
       <Link
         href={planName === "Professional" ? "/assessment-centre" : "/mock-assessment-centre"}
         className="mt-4 block"
@@ -121,7 +121,7 @@ export function PracticeHero({
             </span>
           </p>
           <span className="text-xs font-bold text-cyan-300">
-            {planName === "Professional" ? "Included — go →" : "Professional — see it →"}
+            {planName === "Professional" ? "Included — go →" : "Included in Pro — see it →"}
           </span>
         </div>
       </Link>

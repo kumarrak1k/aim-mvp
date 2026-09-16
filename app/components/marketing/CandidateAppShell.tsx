@@ -62,10 +62,10 @@ type CandidateAppShellProps = {
 };
 
 /**
- * `proOnly` marks the two Professional-tier features. Without a marker in the
- * nav they look identical to the included ones, so a Free or trial user picks
- * one and lands on an upgrade wall — which reads as bait-and-switch during a
- * three-day trial. The badge sets the expectation up front instead.
+ * `proOnly` marks the two features that need a Pro subscription. Without a
+ * marker in the nav they look identical to the free tools, so someone whose
+ * trial has ended picks one and lands on a wall — which reads as
+ * bait-and-switch. The badge sets the expectation up front instead.
  */
 const navItems: Array<{
   href?: CandidateAppPath;
@@ -89,11 +89,11 @@ const navItems: Array<{
   { href: "/guide",             label: "User Guide"          },
 ];
 
-/** Small "Pro" pill shown beside Professional-only nav items. */
+/** Small "Pro" pill shown beside nav items that need a subscription. */
 function ProBadge() {
   return (
     <span
-      aria-label="Professional plan required"
+      aria-label="Pro subscription required"
       className="ml-1.5 inline-block rounded-full border border-amber-400/30 bg-amber-400/[0.12] px-1.5 py-px align-middle text-[12px] font-bold tracking-wide text-amber-300"
     >
       Pro

@@ -26,10 +26,10 @@ const products = [
     eyebrow: "Product 1",
     title: "Interview practice",
     description:
-      "Tailored questions for your exact role and level: 5 by default, up to 10 on Professional. Honest feedback on every answer. Voice delivery scored. Camera presence reviewed. Model answers included.",
+      "Tailored questions for your exact role and level: 5 by default, or 3 to 10 when you build the session yourself. Honest feedback on every answer. Voice delivery scored. Camera presence reviewed. Model answers included.",
     bullets: [
       "Tailored to your role, level and interview type",
-      "Custom session: 3–10 questions in your own type mix (Professional)",
+      "Custom session: 3–10 questions in your own type mix",
       "Voice and camera delivery feedback",
       "Model answers and improvement steps",
     ],
@@ -57,7 +57,7 @@ const products = [
 const faqs = [
   {
     q: "Is AI Career Mentor free?",
-    a: "Free to start, no payment details required. You can run a complete interview session and receive feedback at no cost. Unlimited sessions with voice and camera are on Plus (from £19/month); mock assessment centres and the CV & Application Studio (CV enhancer, cover letters, personal statements) are on Professional (£29/month).",
+    a: "Every new account starts with a 3-day free trial of the whole product, with no payment details required. After that there is one paid plan, Pro: £15 a month, £38 a quarter or £120 a year. The free tools (the STAR answer scorer, question banks and guides) stay free, and you keep your saved interviews and reports either way.",
   },
   {
     q: "What interview types does it cover?",
@@ -73,7 +73,7 @@ const faqs = [
   },
   {
     q: "Can I choose how many questions I get and what types?",
-    a: "Yes, on the Professional plan. You can set your session length anywhere from 3 to 10 questions and build a custom type mix: for example 3 competency, 3 technical, 2 leadership and 1 motivation question. On Free and Plus plans, sessions use 5 questions of the type you select at setup.",
+    a: "Yes. You can set your session length anywhere from 3 to 10 questions and build a custom type mix: for example 3 competency, 3 technical, 2 leadership and 1 motivation question. It is included in Pro and in your free trial. If you would rather not choose, a standard session is 5 questions of the type you select at setup.",
   },
   {
     q: "What roles and levels does it support?",
@@ -81,7 +81,7 @@ const faqs = [
   },
   {
     q: "Is there a free trial?",
-    a: "Yes. Every new account starts with a 3-day free trial of the Plus plan, with no payment details required. When it ends you move to the Free plan automatically, and every paid plan comes with a 7-day money-back guarantee.",
+    a: "Yes. Every new account starts with a 3-day free trial of everything: unlimited practice in typed, voice and camera modes, the mock assessment centre, and the CV & Application Studio. No payment details are required and the trial ends on its own, with nothing to cancel. If you then subscribe to Pro, there is a 7-day money-back guarantee.",
   },
 ];
 
@@ -134,7 +134,7 @@ export default async function ForCandidatesPage() {
         </div>
 
         <p className="mt-5 text-xs text-gray-400">
-          Free to start. No credit card required.
+          3 days free. No payment details required.
         </p>
       </section>
 
@@ -222,7 +222,7 @@ export default async function ForCandidatesPage() {
           <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
             <div>
               <p className="text-[12px] font-bold tracking-wide text-fuchsia-300">
-                Also included · Professional
+                Also included · Pro
               </p>
               <h2 className="mt-3 text-3xl font-bold tracking-tight">
                 CV &amp; Application Studio
@@ -237,7 +237,7 @@ export default async function ForCandidatesPage() {
                   href="/pricing"
                   className="inline-flex items-center gap-2 rounded-2xl border border-fuchsia-300/30 bg-fuchsia-300/[0.10] px-6 py-3 text-sm font-bold text-white transition hover:scale-[1.01] hover:bg-fuchsia-300/[0.15]"
                 >
-                  See Professional plans →
+                  See Pro pricing →
                 </Link>
               </div>
             </div>
@@ -351,7 +351,7 @@ export default async function ForCandidatesPage() {
             Prepare with the same standard your interviewers will apply.
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-gray-400">
-            Free to start. No credit card required.
+            3 days free. No payment details required.
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link href="/for-candidates/sign-up">

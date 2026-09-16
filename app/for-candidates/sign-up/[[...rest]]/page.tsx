@@ -106,12 +106,12 @@ export default function CandidateSignUpPage() {
               first and payment follows, so the extra step makes sense. */}
           <div className="mb-4 text-center">
             <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-              {pendingPaidPlan ? "Create your account." : "Start practising free."}
+              {pendingPaidPlan ? "Create your account." : "Start your 3-day free trial."}
             </h1>
             <p className="mt-1.5 text-sm leading-5 text-gray-400">
               {pendingPaidPlan
                 ? "One quick step, then we will take you to secure payment."
-                : "Create your account and run your first interview in minutes."}
+                : "No payment details. Create your account and run your first interview in minutes."}
             </p>
           </div>
 

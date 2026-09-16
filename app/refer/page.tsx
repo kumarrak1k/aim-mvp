@@ -70,9 +70,9 @@ export default function ReferPage() {
             Share AI Career Mentor
           </h1>
           <p className="mx-auto mt-4 max-w-md text-sm leading-6 text-gray-400">
-            Share your personal link. Every person who signs up gets instant
-            access to free AI interview coaching: voice feedback, camera
-            presence scoring, and model answers.
+            Share your personal link. Every person who signs up starts a 3-day
+            free trial of the whole product, with no payment details: voice
+            feedback, camera presence scoring, and model answers.
           </p>
         </div>
 
@@ -85,7 +85,7 @@ export default function ReferPage() {
                   <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /><path d="M9 12l2 2 4-4" />
                 </svg>
               ),
-              label: "They get", detail: "Free AI coaching"
+              label: "They get", detail: "A 3-day free trial"
             },
             {
               svg: (
@@ -93,7 +93,7 @@ export default function ReferPage() {
                   <polyline points="20 12 20 22 4 22 4 12" /><rect x="2" y="7" width="20" height="5" /><line x1="12" y1="22" x2="12" y2="7" /><path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z" /><path d="M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z" />
                 </svg>
               ),
-              label: "You get", detail: "1 month of Plus free"
+              label: "You get", detail: "1 free month of Pro"
             },
             {
               svg: (
@@ -136,7 +136,7 @@ export default function ReferPage() {
               <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] px-6 py-5 text-center">
                 <p className="text-4xl font-bold tracking-tight text-white">{rewardedMonths}</p>
                 <p className="mt-1 text-sm text-gray-400">
-                  free {rewardedMonths === 1 ? "month" : "months"} of Plus earned
+                  free {rewardedMonths === 1 ? "month" : "months"} of Pro earned
                 </p>
               </div>
             </div>
@@ -152,7 +152,7 @@ export default function ReferPage() {
                 <>
                   <div className="flex items-center justify-between">
                     <p className="text-sm font-bold text-white">
-                      Next free month of Plus
+                      Next free month of Pro
                     </p>
                     <p className="text-sm font-bold text-purple-300">
                       {towardsNext} of 3
@@ -171,7 +171,7 @@ export default function ReferPage() {
                   <p className="mt-3 text-xs leading-5 text-gray-400">
                     A friend counts once they complete their first practice
                     session ({activatedCount} so far). Every 3 earns you a free
-                    month of Plus, up to 6 months. If you are on a paid plan,
+                    month of Pro, up to 6 months. If you are on a paid plan,
                     free months apply after it ends.
                   </p>
                 </>

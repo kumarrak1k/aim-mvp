@@ -269,13 +269,13 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
 
     if (practiceUsage.limitReached) {
       return practiceUsage.isTrial
-        ? `You've used all ${practiceUsage.dailyLimit} trial sessions. Upgrade to Plus for unlimited practice.`
-        : `You've used all ${practiceUsage.dailyLimit} free sessions. Upgrade to Plus for unlimited practice with voice and camera.`;
+        ? `You've used all ${practiceUsage.dailyLimit} sessions in your trial. Subscribe to Pro for unlimited practice.`
+        : `Subscribe to Pro to start a new interview.`;
     }
 
     return practiceUsage.isTrial
-      ? `${practiceUsage.remainingToday} of ${practiceUsage.dailyLimit} trial sessions left · voice & camera unlocked.`
-      : `${practiceUsage.remainingToday} of ${practiceUsage.dailyLimit} free sessions left · keyboard mode only.`;
+      ? `${practiceUsage.remainingToday} of ${practiceUsage.dailyLimit} trial sessions left · voice & camera included.`
+      : `${practiceUsage.remainingToday} of ${practiceUsage.dailyLimit} sessions left.`;
   }, [isLoaded, isSignedIn, practiceUsage, usageLoaded]);
 
   useEffect(() => {
@@ -852,7 +852,7 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
           onStartInterview={startInterview}
         />
 
-        {/* Assessment centre upsell — free plan users who have completed at
+        {/* Assessment centre upsell — non-subscribers who have completed at
             least one session. Upselling before first value inverts the order
             that earns the upsell (activation audit F5). */}
         {isFreePlan && (completedSessionCount ?? 0) > 0 && (
@@ -860,7 +860,7 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
             <div className="flex flex-col gap-6 p-6 sm:p-8 lg:flex-row lg:items-center lg:gap-10">
               <div className="flex-1">
                 <p className="mb-2 text-[12px] font-bold tracking-wide text-cyan-300">
-                  Professional plan · Mock assessment centre
+                  Included in Pro · Mock assessment centre
                 </p>
                 <h2 className="text-xl font-bold leading-tight tracking-tight text-white sm:text-2xl">
                   Ready to simulate the full assessment centre?
@@ -882,7 +882,7 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
               <div className="flex shrink-0 flex-col gap-3 sm:flex-row lg:flex-col">
                 <a href="/pricing">
                   <button className="w-full whitespace-nowrap rounded-2xl bg-gradient-to-r from-violet-500 to-purple-500 px-6 py-3.5 text-sm font-bold text-on-accent shadow-lg transition hover:scale-[1.02] sm:w-auto lg:w-full">
-                    Upgrade to Professional →
+                    See Pro pricing →
                   </button>
                 </a>
                 <a href="/mock-assessment-centre">

@@ -318,22 +318,22 @@ function UpgradeNudge() {
       <div className="pointer-events-none absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-fuchsia-500/15 blur-3xl" />
       <div className="relative">
         <p className="mb-2 text-[12px] font-bold tracking-wide text-purple-300">
-          Free plan · This month&apos;s sessions used
+          Everything in one plan · Pro
         </p>
         <h2 className="text-2xl font-bold tracking-tight">
           Ready to practise more?
         </h2>
         <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-gray-400">
-          You&apos;ve used this month&apos;s free sessions. They refill automatically, or upgrade to Plus for
-          unlimited daily sessions, plus voice coaching, camera analysis and
-          model answers, all included.
+          This report stays yours. To start a new interview, subscribe to Pro:
+          unlimited practice, voice coaching, camera analysis, model answers,
+          the mock assessment centre and the CV and Application Studio.
         </p>
         <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
           <Link
             href="/pricing"
             className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-7 py-3.5 text-sm font-bold text-on-accent shadow-xl shadow-purple-950/35 transition hover:scale-[1.02]"
           >
-            Upgrade to Plus →
+            See Pro pricing →
           </Link>
           <Link
             href="/practice"
