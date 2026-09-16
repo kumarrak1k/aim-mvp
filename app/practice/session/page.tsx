@@ -95,6 +95,14 @@ import {
   type QuestionMix,
 } from "./utils";
 
+/**
+ * How long TTS audio can still be draining through the operating system's
+ * output buffer after the audio element says it has ended. Anything the
+ * microphone hears inside this window is our own voice reading the question,
+ * not the candidate answering it.
+ */
+const ECHO_BUFFER_MS = 600;
+
 export default function PracticeSessionPage() {
   const router = useRouter();
   const { isLoaded, isSignedIn, user } = useUser();
@@ -395,7 +403,7 @@ export default function PracticeSessionPage() {
       // first words of the answer. The premium path never calls speakQuestion,
       // so this only fires for the fallback and never affects paid playback.
       void (async () => {
-        await wait(600);
+        await wait(ECHO_BUFFER_MS);
         await startVoiceInputRef.current?.();
       })();
     },
@@ -406,6 +414,20 @@ export default function PracticeSessionPage() {
   // below); the two are combined at the QuestionHero call site to disable the
   // "Play question + record" button while either voice is presenting.
   const activeIsSpeakingQuestion = isSpeakingQuestion;
+
+  /**
+   * Let the microphone be heard again once the question has finished playing.
+   *
+   * The wait is the same 600 ms echo buffer the auto-record path uses: TTS
+   * audio can still be draining through the operating system's output buffer
+   * after the audio element reports that it ended, and anything caught in that
+   * window is our own voice, not the candidate's.
+   */
+  const releaseEchoGuardAfterPlayback = useCallback(async () => {
+    await wait(ECHO_BUFFER_MS);
+    isSpeakingQuestionRef.current = false;
+    questionPlaybackStartedRef.current = false;
+  }, [isSpeakingQuestionRef]);
 
   const maybeStartPendingAutoRecord = useCallback(async () => {
     const pendingQuestion = awaitingAutoRecordQuestionRef.current;
@@ -431,7 +453,7 @@ export default function PracticeSessionPage() {
     // the onresult guard in useBrowserSpeech. onPlaybackEnd intentionally does
     // NOT clear this ref; we clear it here just before recognition starts so
     // the first real candidate speech is captured correctly.
-    await wait(600);
+    await wait(ECHO_BUFFER_MS);
 
     // Now it is safe to open the microphone: TTS output buffer is clear.
     isSpeakingQuestionRef.current = false;
@@ -483,6 +505,18 @@ export default function PracticeSessionPage() {
       // maybeStartPendingAutoRecord clears it after the 600 ms TTS echo
       // buffer window, so any OS-buffered TTS audio is blocked by onresult.
       setIsSpeakingQuestion(false);
+
+      // ...but ONLY the auto-record path clears it, and "Play question only"
+      // has no pending auto-record. The guard therefore stayed up for the rest
+      // of the session: every speech result was dropped AND the answer wiped
+      // (see the onresult guard in useBrowserSpeech), so replaying a question
+      // mid-answer silently killed the transcript. Release it here on the same
+      // echo-buffer delay when nothing else is going to.
+      if (!awaitingAutoRecordQuestionRef.current) {
+        void releaseEchoGuardAfterPlayback();
+        return;
+      }
+
       void maybeStartPendingAutoRecord();
     },
     onGuidedPlaybackComplete: () => {

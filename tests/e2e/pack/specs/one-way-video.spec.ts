@@ -52,22 +52,19 @@ test.describe("one-way video interview", () => {
      * and the candidate watched a black box through the whole interview. The
      * element must be carrying the live stream and painting real frames.
      */
+    // Poll until the element is BOTH carrying the stream and decoding frames.
+    // Asserting the width separately raced the first frame and failed on a
+    // working camera.
     await expect
       .poll(
         async () =>
           stage.locator("video").evaluate((el: HTMLVideoElement) => ({
             hasStream: el.srcObject !== null,
-            width: el.videoWidth,
+            painting: el.videoWidth > 0,
           })),
         { timeout: 20_000, message: "the camera preview never attached" }
       )
-      .toEqual({ hasStream: true, width: expect.any(Number) });
-
-    const preview = await stage
-      .locator("video")
-      .evaluate((el: HTMLVideoElement) => ({ hasStream: el.srcObject !== null, width: el.videoWidth }));
-    expect(preview.hasStream, "the video element should hold the camera stream").toBe(true);
-    expect(preview.width, "the preview should be painting real frames").toBeGreaterThan(0);
+      .toEqual({ hasStream: true, painting: true });
 
     // There is no transcript on screen: that is the point of the format.
     await expect(page.getByPlaceholder(/Type your answer here|transcript will appear/i)).toHaveCount(0);
