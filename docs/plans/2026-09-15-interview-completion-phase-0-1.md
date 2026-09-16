@@ -1,5 +1,13 @@
 # Interview completion: Phase 0 (measure) + Phase 1 (stop losing people)
 
+## Status, 16 September 2026
+Shipped to .co.uk: Phase 0 commits 1 to 3 (1a646ef, 9b6569f, 68e5614) and Phase 1 commits 4 to 9 (90d1fee, 384fb20). The schema change was applied to all three databases and `npm run db:drift` is clean.
+
+Still open:
+- Commit 10, the .com mirror. Only prisma/schema.prisma was matched there; no .com code changes yet. The .com site is parked and redirects to .co.uk, and the API changes are backwards compatible, so this is not urgent.
+- Progress saves are typed, voice and voice+camera; the resume tap card promised for iOS audio is the existing start gesture, not a separate card.
+- Stripe Pro Annual still needs its US$150 price added by hand.
+
 Agreed with Rakesh on 15 Sep 2026. Of 7 genuine new signups since 24 Aug, 3 finished onboarding, all 3 started a practice interview, and none finished it (they left after roughly 2, 6 and 9 minutes). An engaged long-standing user started 16 interviews and finished 1.
 
 Causes:
