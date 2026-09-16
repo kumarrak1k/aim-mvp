@@ -92,6 +92,36 @@ describe("checkout — validation", () => {
   });
 });
 
+describe("checkout — discount codes are monthly only", () => {
+  // A 50% "first payment" code against the yearly plan is £60 off in one go,
+  // which is a far bigger giveaway than the offer was meant to be. The coupon
+  // itself is not restricted, so checkout is what holds the line.
+  function reqWithPromo(planId: string) {
+    return new Request("http://localhost/api/stripe/checkout", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ planId, promoCode: "STUDENT50" }),
+    }) as unknown as Parameters<typeof POST>[0];
+  }
+
+  it("applies a code on the monthly plan", async () => {
+    const res = await POST(reqWithPromo("pro_monthly"));
+
+    expect(res.status).toBe(200);
+    expect(h.state.lastParams?.discounts).toEqual([{ promotion_code: "promo_1" }]);
+  });
+
+  for (const planId of ["pro_quarterly", "pro_annual"]) {
+    it(`ignores a code on ${planId}, and offers no code field`, async () => {
+      const res = await POST(reqWithPromo(planId));
+
+      expect(res.status).toBe(200);
+      expect(h.state.lastParams?.discounts).toBeUndefined();
+      expect(h.state.lastParams?.allow_promotion_codes).toBe(false);
+    });
+  }
+});
+
 describe("checkout — a promo code that no longer applies", () => {
   // Old marketing links still carry ?promo=SUMMER2026, whose coupon is tied to
   // the retired Plus and Professional products. Losing the sale over a dead

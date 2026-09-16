@@ -93,12 +93,23 @@ export async function POST(req: NextRequest) {
     });
   }
 
+  /**
+   * Discount codes apply to the monthly plan only.
+   *
+   * The student and seasonal offers are "50% off the first payment". On the
+   * yearly plan that is £60 given away in one go rather than £7.50, which is
+   * not the offer that was intended. The coupon itself carries no product
+   * restriction, so this is where the line is held: no pre-applied discount
+   * and no code box on the longer billing periods.
+   */
+  const discountsAllowed = planId === "pro_monthly";
+
   // Pre-apply a promotion code from a marketing link so the discount shows on
   // the checkout page without typing. Stripe forbids combining `discounts`
   // with `allow_promotion_codes`, so fall back to the manual code field when
   // the code is missing, inactive or fully redeemed.
   let promotionCodeId: string | undefined;
-  if (promoCode) {
+  if (promoCode && discountsAllowed) {
     try {
       const codes = await stripeClient.promotionCodes.list({
         code: promoCode,
@@ -120,7 +131,7 @@ export async function POST(req: NextRequest) {
       cancel_url: absoluteUrl("/pricing?payment=cancelled"),
       ...(withDiscount && promotionCodeId
         ? { discounts: [{ promotion_code: promotionCodeId }] }
-        : { allow_promotion_codes: true }),
+        : { allow_promotion_codes: discountsAllowed }),
       subscription_data: {
         metadata: { clerkUserId: userId, planId },
       },
