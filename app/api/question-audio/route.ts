@@ -280,7 +280,7 @@ export async function GET(request: NextRequest) {
     );
     if (!plan.isUnlimited) {
       return NextResponse.json(
-        { error: "Spoken questions are available on Plus, Professional, or your free trial." },
+        { error: "Spoken questions are part of Pro, including your free trial." },
         { status: 403 }
       );
     }
@@ -346,7 +346,7 @@ export async function POST(request: NextRequest) {
     );
     if (!plan.isUnlimited) {
       return NextResponse.json(
-        { error: "Spoken questions are available on Plus, Professional, or your free trial." },
+        { error: "Spoken questions are part of Pro, including your free trial." },
         { status: 403 }
       );
     }

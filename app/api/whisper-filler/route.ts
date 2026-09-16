@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
     );
     if (!plan.isUnlimited) {
       return NextResponse.json(
-        { error: "Voice practice is available on Plus, Professional, or your free trial." },
+        { error: "Voice practice is part of Pro, including your free trial." },
         { status: 403 }
       );
     }

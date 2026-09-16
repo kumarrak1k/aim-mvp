@@ -62,7 +62,7 @@ export async function POST(
         stage: "presentation",
       });
       return NextResponse.json(
-        { error: "Assessment centre requires the Professional plan." },
+        { error: "The mock assessment centre is part of Pro." },
         { status: 403 }
       );
     }

@@ -233,12 +233,10 @@ export async function POST(request: NextRequest) {
         dailyLimit: usage.dailyLimit,
       });
       const error = usage.isTrial
-        ? `You've reached your free-trial fair-use limit of ${TRIAL_USAGE_CAPS.practiceSessions} practice interviews. Upgrade to Plus for unlimited practice.`
-        : `You've used all ${FREE_TIER.practiceSessionsPerWindow} free sessions for this month. They refill ${
-            usage.resetsAt
-              ? `on ${new Date(usage.resetsAt).toLocaleDateString("en-GB", { day: "numeric", month: "long" })}`
-              : `every ${FREE_TIER.windowDays} days`
-          }, or upgrade to Plus for unlimited practice.`;
+        ? `You've reached the fair-use limit of ${TRIAL_USAGE_CAPS.practiceSessions} practice interviews for the free trial. Subscribe to Pro to carry on.`
+        : FREE_TIER.practiceSessionsPerWindow === 0
+          ? "Your free trial has ended. Your saved interviews and reports are still here, and Pro starts a new one."
+          : `You've used all ${FREE_TIER.practiceSessionsPerWindow} free interviews for this month. Subscribe to Pro for unlimited practice.`;
       return NextResponse.json({ error, usage }, { status: 429 });
     }
 
