@@ -1,5 +1,6 @@
 import * as Sentry from "@sentry/nextjs";
 import { prisma } from "./prisma";
+import { withDbRetry } from "./dbRetry";
 import type { CandidatePlan } from "./candidatePlan";
 
 /**
@@ -113,16 +114,21 @@ export function recordActivity(
     const delegate = prisma?.activityEvent;
     if (!delegate?.create) return;
 
-    void Promise.resolve(
-      delegate.create({
-        data: {
-          clerkUserId,
-          event,
-          plan: plan?.effectivePlan ?? null,
-          isTrial: plan?.isTrial ?? false,
-          detail: detail ? (detail as object) : undefined,
-        },
-      })
+    // Neon hangs up on connections it thinks are idle, so a warm function can
+    // hold a dead socket and lose the first write through it. One retry costs
+    // nothing and turns that into a normal successful write - see ./dbRetry.
+    void withDbRetry(() =>
+      Promise.resolve(
+        delegate.create({
+          data: {
+            clerkUserId,
+            event,
+            plan: plan?.effectivePlan ?? null,
+            isTrial: plan?.isTrial ?? false,
+            detail: detail ? (detail as object) : undefined,
+          },
+        })
+      )
     ).catch((error: unknown) => {
       // Diagnostics must never break the request they observe, but a write that
       // fails silently is worse than no instrumentation: it looks like the

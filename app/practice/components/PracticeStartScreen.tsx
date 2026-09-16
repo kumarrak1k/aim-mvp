@@ -404,6 +404,9 @@ export function PracticeStartScreen({
           interviewGoals: savedCandidateProfile?.interviewGoals || "",
           cvFileName: savedCandidateProfile?.cvFileName || "",
           roleSpecFileName: savedCandidateProfile?.roleSpecFileName || "",
+          // The role they typed is part of the setup: saving everything except
+          // the part they entered by hand is not "save my setup".
+          targetRole: role.trim().slice(0, 160),
           preferredPracticeMode: selectedPracticeMode,
           preferredInterviewFormat: interviewFormat,
           speakerPreference,
@@ -431,7 +434,7 @@ export function PracticeStartScreen({
       }
 
       setPreferenceMessage(
-        "Your full interview setup has been saved as default."
+        "Saved. Your target role, level, type, format and answer mode will be used next time."
       );
     } catch {
       setPreferenceMessage("Something went wrong while saving your setup.");
@@ -444,6 +447,7 @@ export function PracticeStartScreen({
     focusArea,
     interviewFormat,
     interviewType,
+    role,
     isSignedIn,
     isAdvancedPlan,
     questionMix,
@@ -467,7 +471,7 @@ export function PracticeStartScreen({
     !role.trim() || questionLoading || startDisabled || hybridMixInvalid || customQuestionsInvalid;
 
   return (
-    <div className="mx-auto w-full max-w-4xl">
+    <div className="w-full">
       <GlassCard>
         {/* Everything needed to start is on screen at once. The old layout put
             the role at the top, the format and mode in two tall card decks, and
@@ -560,7 +564,8 @@ export function PracticeStartScreen({
           />
         </div>
 
-        <div className="mb-3">
+        <div className="mb-3 grid gap-4 lg:grid-cols-2">
+        <div>
           <div className="mb-1.5 flex flex-wrap items-baseline justify-between gap-2">
             <p className="text-xs font-bold text-gray-200">Interview format</p>
             {interviewFormat === "one_way_video" && (
@@ -671,7 +676,7 @@ export function PracticeStartScreen({
           )}
         </div>
 
-        <div className="mb-3">
+        <div>
           <p className="mb-1.5 text-xs font-bold text-gray-200">
             How you answer
             {interviewFormat === "one_way_video" && (
@@ -723,34 +728,7 @@ export function PracticeStartScreen({
           )}
         </div>
 
-        {/* The start button sits directly under the choices it acts on, rather
-            than at the foot of a long optional-tuning section. */}
-        <button
-          onClick={startInterview}
-          disabled={interviewStartDisabled}
-          className="mb-3 w-full rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-3.5 text-base font-bold shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          {questionLoading
-            ? "Starting..."
-            : hybridMixInvalid
-            ? `Allocate all ${totalQuestions} questions to start`
-            : customQuestionsInvalid
-            ? "Enter text for all custom questions to start"
-            : `Start Tailored ${isAdvancedPlan ? totalQuestions : 5}-Question Interview`}
-        </button>
-
-        {startDisabled && startDisabledMessage && (
-          <p className="mb-3 text-sm font-semibold leading-6 text-gray-400">
-            {startDisabledMessage}
-          </p>
-        )}
-
-        {manualDeviceMode && (
-          <p className="mb-3 text-xs leading-5 text-cyan-200">
-            Phone/tablet mode: the interview page shows a large Guided Answer
-            button that plays the question, then starts recording.
-          </p>
-        )}
+        </div>
 
         {/* Everything below is optional tuning. A first-timer sees three
             decisions - role, mode, start - and this one disclosure opens the
@@ -776,7 +754,8 @@ export function PracticeStartScreen({
           <>
         {/* Experience level and interview type moved up to the main panel:
             they shape every question, so they are not optional tuning. */}
-        <div className="mb-5 grid gap-4 md:grid-cols-2">
+        <div className="mb-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+        <div className="grid gap-3 md:grid-cols-2">
           <SelectField
             label="Difficulty"
             value={difficulty}
@@ -791,10 +770,11 @@ export function PracticeStartScreen({
             options={focusAreas}
           />
         </div>
+        </div>
 
         {/* Advanced plan — question count & hybrid mix */}
         {isAdvancedPlan && (
-          <div className="mb-5 rounded-[1.7rem] border border-purple-400/20 bg-purple-400/[0.05] p-5">
+          <div className="mb-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4">
             <div className="mb-5 flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
               <div>
                 <p className="text-sm font-bold tracking-wide text-purple-300">
@@ -982,7 +962,7 @@ export function PracticeStartScreen({
         )}
 
         {selectedPracticeMode !== "typed" && (
-        <div className="mb-5 rounded-[1.7rem] border border-white/10 bg-recess-25 p-5">
+        <div className="mb-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4">
           <div className="mb-5">
             <p className="text-sm font-bold tracking-wide text-purple-300">
               Speaker preference
@@ -1033,7 +1013,7 @@ export function PracticeStartScreen({
             <AudioDeviceSelectors />
           </div>
 
-          <div className="mt-5 rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+          <div className="mt-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4">
             <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
               <p className="text-sm leading-6 text-gray-300">
                 Current setup:{" "}
@@ -1074,6 +1054,51 @@ export function PracticeStartScreen({
           </>
         )}
 
+        {/* The start button sits directly under the choices it acts on, rather
+            than at the foot of a long optional-tuning section. */}
+        <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center">
+        <button
+          onClick={startInterview}
+          disabled={interviewStartDisabled}
+          className="w-full rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-3.5 text-base font-bold shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50 sm:flex-1"
+        >
+          {questionLoading
+            ? "Starting..."
+            : hybridMixInvalid
+            ? `Allocate all ${totalQuestions} questions to start`
+            : customQuestionsInvalid
+            ? "Enter text for all custom questions to start"
+            : `Start Tailored ${isAdvancedPlan ? totalQuestions : 5}-Question Interview`}
+        </button>
+
+        <button
+          type="button"
+          onClick={() => void savePracticePreference()}
+          disabled={savingPreference || !isSignedIn}
+          className="w-full rounded-2xl border border-white/15 bg-white/[0.06] px-5 py-3.5 text-sm font-bold text-white transition hover:bg-white/[0.1] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+        >
+          {savingPreference ? "Saving..." : "Save as my default setup"}
+        </button>
+        </div>
+
+        {preferenceMessage && (
+          <p className="mb-3 text-xs font-semibold leading-5 text-gray-400">
+            {preferenceMessage}
+          </p>
+        )}
+
+        {startDisabled && startDisabledMessage && (
+          <p className="mb-3 text-sm font-semibold leading-6 text-gray-400">
+            {startDisabledMessage}
+          </p>
+        )}
+
+        {manualDeviceMode && (
+          <p className="mb-3 text-xs leading-5 text-cyan-200">
+            Phone/tablet mode: the interview page shows a large Guided Answer
+            button that plays the question, then starts recording.
+          </p>
+        )}
 
         {/* Start moved up, directly under the choices it acts on. */}
 

@@ -180,6 +180,10 @@ export function QuestionHero(props: QuestionHeroProps) {
           <div className="mb-3 grid gap-2 sm:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2">
             <button
               type="button"
+              // The label cycles through "Starting", "Preparing audio" and
+              // "Recording", so matching on it makes any test that clicks this
+              // button a race against audio loading.
+              data-testid="guided-answer"
               onClick={onStartGuidedAnswer}
               disabled={guidedDisabled}
               className="rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-5 py-3 text-sm font-bold text-on-accent shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"

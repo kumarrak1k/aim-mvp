@@ -6,7 +6,6 @@ import { CandidateAppShell } from "@/app/components/marketing/CandidateAppShell"
 import { ProfileDetailsForm } from "./ProfileDetailsForm";
 import { ProfileHero } from "./ProfileHero";
 import { ProfileLoadingState, ProfileSignedOutState } from "./ProfileStates";
-import { SubscriptionCard } from "./SubscriptionCard";
 import type { CandidateProfile, ProfileUploadTarget } from "../types";
 
 export function CandidateProfileClient() {
@@ -400,7 +399,10 @@ export function CandidateProfileClient() {
         <ProfileSignedOutState />
       ) : (
         <>
-        <SubscriptionCard />
+        {/* The plan band was removed: it restated a plan the header already
+            shows and its only action, Manage billing, is in the account menu's
+            Plan panel. A full-width billing strip in the middle of a profile
+            form read as an interruption. */}
         <ProfileDetailsForm
           cvText={cvText}
           setCvText={setCvText}

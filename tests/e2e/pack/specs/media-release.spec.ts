@@ -243,7 +243,7 @@ test.describe("media release on mid-session exit", () => {
     await instrumentMedia(page, 10_000); // voice still "speaking" when we exit
     await startVoiceSession(page, "Voice + camera interview");
 
-    await page.getByRole("button", { name: /Play question \+ record/i }).click();
+    await page.getByTestId("guided-answer").click();
     // Wait for the fallback voice to actually be speaking, then bail out
     // mid-question — the adversarial cancel() fires onend post-unmount and
     // tries to start the microphone via the guided-flow callback.

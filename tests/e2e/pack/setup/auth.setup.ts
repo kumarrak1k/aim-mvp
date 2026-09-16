@@ -4,7 +4,7 @@
  * a per-persona storageState file. Specs load that state instead of signing in
  * every test — fast, and it exercises the real middleware.
  */
-import { test as setup } from "@playwright/test";
+import { test as setup, type Page } from "@playwright/test";
 import { clerk } from "@clerk/testing/playwright";
 import { PrismaClient } from "@prisma/client";
 import { CANDIDATE_PERSONAS, CORPORATE_ADMIN, DISPOSABLE_CANDIDATE } from "../fixtures/personas";
@@ -26,10 +26,33 @@ async function stampOnboarded(clerkUserId: string) {
   });
 }
 
+/**
+ * Answer the cookie notice before anything navigates.
+ *
+ * The dialog floats at z-[9999] and intercepts clicks on controls underneath
+ * it, so every persona's saved state needs it already dismissed. This used to
+ * be a page.evaluate() after landing on /practice, which raced any redirect
+ * that page issues - the disposable persona is deliberately not onboarding
+ * stamped, so /practice bounces it to onboarding and destroyed the execution
+ * context mid-evaluate. An init script runs on every navigation instead, so
+ * there is no window to lose.
+ */
+async function seedCookieConsent(page: Page) {
+  await page.addInitScript(() => {
+    try {
+      localStorage.setItem("aim_cookie_consent", "essential");
+    } catch {
+      // Private-mode style storage failures are not this helper's problem.
+    }
+  });
+}
+
 for (const persona of CANDIDATE_PERSONAS) {
   setup(`seed + sign in: ${persona.key}`, async ({ page }) => {
     const user = await seedPersona(persona);
     await stampOnboarded(user.id);
+
+    await seedCookieConsent(page);
 
     // clerk.signIn() requires a prior navigation to an unprotected page that
     // loads Clerk (the index page).
@@ -41,11 +64,6 @@ for (const persona of CANDIDATE_PERSONAS) {
 
     // Confirm the session is live on a protected route, then persist it.
     await page.goto("/practice");
-    // Answer the cookie notice before saving state: the dialog floats at
-    // z-[9999] and intercepts clicks on controls underneath it (it swallowed
-    // media-release's "Start recording" click). Seeding "essential" here means
-    // every spec inherits a dismissed banner instead of each dismissing it.
-    await page.evaluate(() => localStorage.setItem("aim_cookie_consent", "essential"));
     await page.context().storageState({ path: statePath(persona.key) });
   });
 }
@@ -57,6 +75,8 @@ setup(`seed + sign in: ${CORPORATE_ADMIN.key}`, async ({ page }) => {
   // CompanyMember — seed a Company + admin member + AC template in the test DB.
   await seedCompany(user.id);
 
+  await seedCookieConsent(page);
+
   await page.goto("/");
   await clerk.signIn({
     page,
@@ -64,12 +84,13 @@ setup(`seed + sign in: ${CORPORATE_ADMIN.key}`, async ({ page }) => {
   });
 
   await page.goto("/company/dashboard");
-  await page.evaluate(() => localStorage.setItem("aim_cookie_consent", "essential"));
   await page.context().storageState({ path: statePath(CORPORATE_ADMIN.key) });
 });
 
 setup(`seed + sign in: ${DISPOSABLE_CANDIDATE.key}`, async ({ page }) => {
   await seedPersona(DISPOSABLE_CANDIDATE);
+
+  await seedCookieConsent(page);
 
   await page.goto("/");
   await clerk.signIn({
@@ -77,7 +98,8 @@ setup(`seed + sign in: ${DISPOSABLE_CANDIDATE.key}`, async ({ page }) => {
     signInParams: { strategy: "password", identifier: DISPOSABLE_CANDIDATE.email, password: TEST_PASSWORD },
   });
 
-  await page.goto("/practice");
-  await page.evaluate(() => localStorage.setItem("aim_cookie_consent", "essential"));
+  // Not /practice: this persona is deliberately un-onboarded, so that route
+  // redirects. The session is already proven by the sign-in above.
+  await page.goto("/profile");
   await page.context().storageState({ path: statePath(DISPOSABLE_CANDIDATE.key) });
 });

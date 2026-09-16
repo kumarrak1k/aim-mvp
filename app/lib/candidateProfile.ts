@@ -58,6 +58,12 @@ export type CandidateProfile = {
    * layer sector questions on top of the core ones.
    */
   targetSector: string;
+  /**
+   * The role they are practising for. Set at onboarding and now also savable
+   * from the practice setup screen, so "save my setup" keeps the role too
+   * rather than everything except the part they typed.
+   */
+  targetRole: string;
   speakerPreference: SpeakerPreference;
   defaultExperienceLevel: string;
   defaultInterviewType: string;
@@ -84,6 +90,7 @@ export const EMPTY_PROFILE: CandidateProfile = {
   preferredPracticeMode: "typed",
   preferredInterviewFormat: "traditional",
   targetSector: "",
+  targetRole: "",
   speakerPreference: DEFAULT_SPEAKER_PREFERENCE,
   defaultExperienceLevel: "Graduate / entry level",
   defaultInterviewType: "Competency / behavioural",
@@ -144,6 +151,7 @@ function rowToProfile(row: {
   preferredPracticeMode: string;
   preferredInterviewFormat?: string | null;
   targetSector?: string | null;
+  targetRole?: string | null;
   speakerPreference: unknown;
   defaultExperienceLevel: string;
   defaultInterviewType: string;
@@ -164,6 +172,7 @@ function rowToProfile(row: {
     preferredPracticeMode: cleanMode(row.preferredPracticeMode, "typed"),
     preferredInterviewFormat: normaliseInterviewFormat(row.preferredInterviewFormat),
     targetSector: row.targetSector ?? "",
+    targetRole: row.targetRole ?? "",
     speakerPreference: cleanSpeaker(row.speakerPreference, DEFAULT_SPEAKER_PREFERENCE),
     defaultExperienceLevel: row.defaultExperienceLevel,
     defaultInterviewType: row.defaultInterviewType,
@@ -198,6 +207,7 @@ async function migrateFromClerk(clerkUserId: string): Promise<CandidateProfile> 
       preferredPracticeMode: cleanMode(cp.preferredPracticeMode, "typed"),
       preferredInterviewFormat: normaliseInterviewFormat(cp.preferredInterviewFormat),
       targetSector: cleanText(cp.targetSector).slice(0, 80),
+      targetRole: cleanText(cp.targetRole).slice(0, 160),
       speakerPreference: cleanSpeaker(cp.speakerPreference, DEFAULT_SPEAKER_PREFERENCE),
       defaultExperienceLevel: cleanText(cp.defaultExperienceLevel) || "Graduate / entry level",
       defaultInterviewType: cleanText(cp.defaultInterviewType) || "Competency / behavioural",
@@ -278,6 +288,10 @@ export async function upsertCandidateProfile(
       updates.preferredInterviewFormat === "traditional" || updates.preferredInterviewFormat === "one_way_video"
         ? updates.preferredInterviewFormat
         : current.preferredInterviewFormat,
+    targetRole:
+      updates.targetRole !== undefined
+        ? cleanText(updates.targetRole).slice(0, 160)
+        : current.targetRole,
     speakerPreference: updates.speakerPreference !== undefined ? cleanSpeaker(updates.speakerPreference, current.speakerPreference) : current.speakerPreference,
     defaultExperienceLevel: typeof updates.defaultExperienceLevel === "string" ? (updates.defaultExperienceLevel.trim().slice(0, 90) || current.defaultExperienceLevel) : current.defaultExperienceLevel,
     defaultInterviewType: typeof updates.defaultInterviewType === "string" ? (updates.defaultInterviewType.trim().slice(0, 90) || current.defaultInterviewType) : current.defaultInterviewType,
