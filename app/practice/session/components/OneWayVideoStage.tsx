@@ -1,6 +1,6 @@
 "use client";
 
-import type { RefObject } from "react";
+import type { Ref } from "react";
 import { formatClock, isFinalWarning, type VideoStageState } from "../oneWayVideo";
 
 type OneWayVideoStageProps = {
@@ -11,7 +11,7 @@ type OneWayVideoStageProps = {
   stage: VideoStageState;
   /** How many retakes are left on this question, already capped by the format. */
   retakesLeft: number;
-  videoRef: RefObject<HTMLVideoElement | null>;
+  videoRef: Ref<HTMLVideoElement>;
   cameraReady: boolean;
   cameraError: string;
   /** True when the browser wants a tap before it will open the camera (iOS). */
@@ -22,6 +22,8 @@ type OneWayVideoStageProps = {
   answerScored: boolean;
   /** True when the recording captured nothing at all. */
   answerMissing: boolean;
+  /** True while the question is being read aloud, which holds the countdown. */
+  questionBeingRead: boolean;
   onStartCameraFromTap: () => void;
   onReadyNow: () => void;
   onSubmitNow: () => void;
@@ -56,6 +58,7 @@ export function OneWayVideoStage({
   processing,
   answerScored,
   answerMissing,
+  questionBeingRead,
   onStartCameraFromTap,
   onReadyNow,
   onSubmitNow,
@@ -133,12 +136,16 @@ export function OneWayVideoStage({
           {preparing && !processing && (
             <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 to-transparent p-4 text-center">
               <p className="text-sm font-bold text-slate-50">
-                Recording starts automatically
+                {questionBeingRead
+                  ? "Reading the question"
+                  : "Recording starts automatically"}
               </p>
               <p className="mx-auto mt-1 max-w-sm text-xs leading-5 text-gray-300">
-                {cameraReady
-                  ? "Read the question and plan your answer. Nothing is being recorded yet."
-                  : "Starting your camera. Read the question and plan your answer."}
+                {questionBeingRead
+                  ? "Your preparation time starts when the question finishes."
+                  : cameraReady
+                    ? "Read the question and plan your answer. Nothing is being recorded yet."
+                    : "Starting your camera. Read the question and plan your answer."}
               </p>
             </div>
           )}
@@ -177,7 +184,13 @@ export function OneWayVideoStage({
             }`}
           >
             <p className="text-xs font-bold uppercase tracking-wide text-gray-400">
-              {preparing ? "Time to prepare" : recording ? "Time left" : "Answer recorded"}
+              {preparing
+                ? questionBeingRead
+                  ? "Listen to the question"
+                  : "Time to prepare"
+                : recording
+                  ? "Time left"
+                  : "Answer recorded"}
             </p>
             <p
               data-testid="video-clock"

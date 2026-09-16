@@ -1,6 +1,6 @@
 "use client";
 
-import type { RefObject } from "react";
+import type { Ref } from "react";
 import { useIsIpad } from "@/app/lib/useIsIpad";
 
 type CameraWorkspaceProps = {
@@ -9,7 +9,7 @@ type CameraWorkspaceProps = {
   cameraError: string;
   cameraRequiresTap: boolean;
   feedbackReady: boolean;
-  videoRef: RefObject<HTMLVideoElement | null>;
+  videoRef: Ref<HTMLVideoElement>;
   onStartCameraFromTap: () => void;
   onViewFeedback: () => void;
   /** Reword the "View feedback" call-to-action when the candidate is taking

@@ -581,7 +581,7 @@ export function PracticeStartScreen({
                 key={format.value}
                 active={interviewFormat === format.value}
                 title={format.label}
-                badge={format.value === "one_way_video" ? "Recorded" : "Feedback each answer"}
+                badge={format.value === "one_way_video" ? "Recorded" : "Feedback after each answer"}
                 description={format.description}
                 onClick={() => selectInterviewFormat(format.value)}
                 locked={format.value === "one_way_video" && isFreePlan}

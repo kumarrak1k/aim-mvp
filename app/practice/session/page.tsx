@@ -335,6 +335,7 @@ export default function PracticeSessionPage() {
 
   const {
     videoRef,
+    setVideoElement,
     cameraReady,
     cameraError,
     setCameraError,
@@ -693,12 +694,11 @@ export default function PracticeSessionPage() {
   );
 
   useEffect(() => {
-    if (!question || !speakerEnabled || !autoFlowActive) return;
-    // In a one-way video interview the question is read on screen, as it is on
-    // the employer platforms, and the preparation clock decides when recording
-    // starts. Playing the question aloud here would both race the clock and put
-    // our own voice into the recording.
-    if (isOneWayVideo) return;
+    if (!question || !speakerEnabled) return;
+    // A one-way interview reads every question aloud whatever the device, because
+    // nothing here auto-starts the microphone: the clock does, after the reading.
+    // If a browser blocks the playback the countdown simply starts instead.
+    if (!autoFlowActive && !isOneWayVideo) return;
     if (!hasUserInteracted) return;
     if (question === lastSpokenQuestionRef.current) return;
 
@@ -706,10 +706,16 @@ export default function PracticeSessionPage() {
 
     const autoPlayQuestion = async () => {
       setQuestionAudioMessage(
-        "Natural question audio will play automatically, then recording will start."
+        isOneWayVideo
+          ? "Reading the question. Your preparation time starts when it finishes."
+          : "Natural question audio will play automatically, then recording will start."
       );
 
-      const played = await playQuestionWithNaturalAudio(question, true);
+      // In a one-way video interview the clock decides when recording starts,
+      // so the question is read aloud but never auto-starts the microphone.
+      // The preparation countdown is held until the reading finishes, so our
+      // own voice can never end up inside the candidate's recording.
+      const played = await playQuestionWithNaturalAudio(question, !isOneWayVideo);
 
       if (cancelled) return;
 
@@ -1958,8 +1964,16 @@ export default function PracticeSessionPage() {
 
   // Only the phase is in the dependency list: a new interval every second would
   // never let a second finish.
+  // The preparation clock waits for the question to finish being read: a
+  // countdown running under the voice asking the question is time the candidate
+  // never had.
+  const questionBeingRead = activeIsSpeakingQuestion || isPreparedQuestionPlaying;
+
   const videoClockRunning =
-    isOneWayVideo && videoStage !== null && videoStage.phase !== "submitting";
+    isOneWayVideo &&
+    videoStage !== null &&
+    videoStage.phase !== "submitting" &&
+    !(videoStage.phase === "preparing" && questionBeingRead);
 
   useEffect(() => {
     if (!videoClockRunning) return;
@@ -2035,8 +2049,11 @@ export default function PracticeSessionPage() {
   const startVideoAnswerNow = useCallback(() => {
     setHasUserInteracted(true);
     unlockAudioOutput();
+    // Stop the question being read before recording starts, so it cannot end
+    // up inside the answer.
+    stopQuestionSpeech();
     setVideoStage((current) => (current ? skipPreparation(current, videoSettings) : current));
-  }, [videoSettings]);
+  }, [stopQuestionSpeech, videoSettings]);
 
   /** "Finish this answer" — the candidate is done before the timer is. */
   const submitVideoAnswerNow = useCallback(() => {
@@ -2505,7 +2522,7 @@ export default function PracticeSessionPage() {
             totalQuestions={totalQuestions}
             stage={videoStage}
             retakesLeft={videoRetakesLeft}
-            videoRef={videoRef}
+            videoRef={setVideoElement}
             cameraReady={cameraReady}
             cameraError={cameraError}
             cameraRequiresTap={cameraRequiresTap}
@@ -2518,6 +2535,7 @@ export default function PracticeSessionPage() {
             }
             answerScored={Boolean(feedback)}
             answerMissing={videoAnswerMissing}
+            questionBeingRead={questionBeingRead}
             onStartCameraFromTap={startCameraFromTap}
             onReadyNow={startVideoAnswerNow}
             onSubmitNow={submitVideoAnswerNow}
@@ -2605,7 +2623,7 @@ export default function PracticeSessionPage() {
                   cameraError={cameraError}
                   cameraRequiresTap={cameraRequiresTap}
                   feedbackReady={Boolean(feedback)}
-                  videoRef={videoRef}
+                  videoRef={setVideoElement}
                   onStartCameraFromTap={startCameraFromTap}
                   onViewFeedback={scrollToFeedback}
                   assessmentMode={assessmentMode}

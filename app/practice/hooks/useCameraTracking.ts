@@ -206,6 +206,39 @@ export function useCameraTracking({
     cameraLoopRef.current = window.requestAnimationFrame(loop);
   }, [cameraEnabled, interviewStarted, stopCameraLoop]);
 
+  /**
+   * Put the live stream into whichever <video> is on screen.
+   *
+   * This used to happen inside startCamera, which meant it only worked if the
+   * element already existed when the camera opened. In a one-way video
+   * interview the stage renders a moment AFTER the camera is asked to start,
+   * so the stream was live (camera light on) and the candidate saw a black
+   * box. Attaching is now idempotent and can be re-run whenever an element
+   * appears.
+   */
+  const attachStreamToVideo = useCallback(async () => {
+    const element = videoRef.current;
+    const stream = cameraStreamRef.current;
+    if (!element || !stream || element.srcObject === stream) return;
+
+    element.srcObject = stream;
+    await waitForVideoReady(element);
+    await element.play().catch(() => undefined);
+  }, [waitForVideoReady]);
+
+  /**
+   * Ref callback for the <video> element. Components use this instead of the
+   * raw ref so a late-mounting preview attaches itself rather than waiting for
+   * a camera restart that never comes.
+   */
+  const setVideoElement = useCallback(
+    (element: HTMLVideoElement | null) => {
+      videoRef.current = element;
+      if (element) void attachStreamToVideo();
+    },
+    [attachStreamToVideo]
+  );
+
   const startCamera = useCallback(async () => {
     if (!cameraEnabled || !interviewStarted) return;
     if (cameraStartInFlightRef.current || disposedRef.current) return;
@@ -238,11 +271,7 @@ export function useCameraTracking({
         cameraStreamRef.current = stream;
       }
 
-      if (videoRef.current) {
-        videoRef.current.srcObject = cameraStreamRef.current;
-        await waitForVideoReady(videoRef.current);
-        await videoRef.current.play().catch(() => undefined);
-      }
+      await attachStreamToVideo();
 
       try {
         await initialiseFaceTracker();
@@ -286,12 +315,12 @@ export function useCameraTracking({
       cameraStartInFlightRef.current = false;
     }
   }, [
+    attachStreamToVideo,
     cameraEnabled,
     initialiseFaceTracker,
     interviewStarted,
     resetVideoFrames,
     startCameraLoop,
-    waitForVideoReady,
   ]);
 
   const calculateCurrentVideoMetrics = useCallback((): VideoMetrics => {
@@ -323,6 +352,12 @@ export function useCameraTracking({
   ]);
 
   useEffect(() => {
+    // Cleared on every mount, not just the first. React's development
+    // double-invoke runs the cleanup below between the two mounts, and the ref
+    // survives it — so without this reset the flag stayed true and every later
+    // startCamera bailed out, leaving a permanently black preview in dev.
+    disposedRef.current = false;
+
     return () => {
       disposedRef.current = true;
       stopCamera();
@@ -331,6 +366,7 @@ export function useCameraTracking({
 
   return {
     videoRef,
+    setVideoElement,
     cameraReady,
     cameraError,
     setCameraError,

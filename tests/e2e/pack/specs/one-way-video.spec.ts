@@ -46,6 +46,29 @@ test.describe("one-way video interview", () => {
     const clock = page.getByTestId("video-clock");
     await expect(clock).toHaveText(/0:(2[0-9]|30)/);
 
+    /**
+     * REGRESSION (16 Sep, reported live): the camera opened but the stage
+     * rendered a moment later, so the stream was never attached to the <video>
+     * and the candidate watched a black box through the whole interview. The
+     * element must be carrying the live stream and painting real frames.
+     */
+    await expect
+      .poll(
+        async () =>
+          stage.locator("video").evaluate((el: HTMLVideoElement) => ({
+            hasStream: el.srcObject !== null,
+            width: el.videoWidth,
+          })),
+        { timeout: 20_000, message: "the camera preview never attached" }
+      )
+      .toEqual({ hasStream: true, width: expect.any(Number) });
+
+    const preview = await stage
+      .locator("video")
+      .evaluate((el: HTMLVideoElement) => ({ hasStream: el.srcObject !== null, width: el.videoWidth }));
+    expect(preview.hasStream, "the video element should hold the camera stream").toBe(true);
+    expect(preview.width, "the preview should be painting real frames").toBeGreaterThan(0);
+
     // There is no transcript on screen: that is the point of the format.
     await expect(page.getByPlaceholder(/Type your answer here|transcript will appear/i)).toHaveCount(0);
 

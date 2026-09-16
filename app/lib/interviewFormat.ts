@@ -24,7 +24,7 @@ export const INTERVIEW_FORMATS: ReadonlyArray<{
 }> = [
   {
     value: "traditional",
-    label: "Traditional interview",
+    label: "Traditional interview with coaching",
     description:
       "A question, your answer, then scored feedback and a model answer before you move on. Best for learning and fixing weak spots.",
   },
