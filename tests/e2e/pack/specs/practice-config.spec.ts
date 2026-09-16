@@ -72,8 +72,13 @@ test.describe("paid candidate setup controls", () => {
     // The format is locked until the plan is known, so wait for the card to
     // stop showing the Pro badge rather than racing the usage request.
     const videoCard = page.getByRole("button", { name: /One-way video interview/ });
-    await expect(videoCard).toContainText("Recorded");
+    // Locked until the plan resolves, and the locked card shows a "Pro" badge.
+    await expect(videoCard).not.toContainText("Pro");
     await videoCard.click();
+
+    // The settings live behind a toggle: the defaults are what employers set,
+    // so they stay out of the way of starting an interview.
+    await page.getByRole("button", { name: "Recording settings" }).click();
 
     const settings = page.getByTestId("video-interview-settings");
     await expect(settings).toBeVisible();

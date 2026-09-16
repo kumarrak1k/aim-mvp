@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import { CandidateAppShell } from "@/app/components/marketing/CandidateAppShell";
-import { PracticeHero } from "./PracticeHero";
+import { MockAssessmentCentreLink, PracticeHero } from "./PracticeHero";
 import { PracticeStartScreen } from "./PracticeStartScreen";
 import { fetchCandidateProfile } from "../lib/interviewApi";
 import { buildAutofilledRoleFromProfile } from "../lib/profileHelpers";
@@ -711,6 +711,10 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
       return;
     }
 
+    // A free plan is keyboard-only, but "free" is only true once we have asked:
+    // before that it is merely unknown.
+    const restrictToTyped = isFreePlan && usageLoaded;
+
     try {
       setQuestionLoading(true);
 
@@ -725,14 +729,20 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
           interviewType,
           difficulty,
           focusArea,
-          speakerEnabled: isFreePlan ? false : speakerEnabled,
-          cameraEnabled: isFreePlan ? false : cameraEnabled,
+          // Only strip voice and camera once the plan is actually known.
+          // isFreePlan defaults to true while usage loads, so a subscriber who
+          // pressed Start quickly was silently downgraded to a typed session.
+          speakerEnabled: restrictToTyped ? false : speakerEnabled,
+          cameraEnabled: restrictToTyped ? false : cameraEnabled,
           speakerPreference,
-          freePlan: isFreePlan,
-          practiceMode: isFreePlan ? "typed" : selectedPracticeMode,
+          // "Confirmed free", not "not yet known": the session page turns this
+          // into keyboard-only, so an unresolved plan used to open a typed
+          // session for a subscriber who started quickly.
+          freePlan: restrictToTyped,
+          practiceMode: restrictToTyped ? "typed" : selectedPracticeMode,
           // A one-way video interview needs the camera, so the free plan can
           // only have the coaching flow.
-          interviewFormat: isFreePlan ? "traditional" : interviewFormat,
+          interviewFormat: restrictToTyped ? "traditional" : interviewFormat,
           videoSettings,
           createdAt: new Date().toISOString(),
           // Advanced plan extras
@@ -759,6 +769,7 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
     isFreePlan,
     isAdvancedPlan,
     practiceUsage.resetsAt,
+    usageLoaded,
     videoSettings,
     role,
     router,
@@ -863,15 +874,11 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
         )}
 
         <PracticeHero
-          totalQuestions={isAdvancedPlan ? totalQuestions : DEFAULT_TOTAL_QUESTIONS}
-          canStartInterview={canStartInterview}
-          questionLoading={questionLoading}
           setupSummary={setupSummary}
           usageSummary={usageSummary}
           usageLimitReached={signedInLimitReached}
           usageMessage={usageMessage}
           planName={practiceUsage.planName}
-          onStartInterview={startInterview}
         />
 
         {/* Assessment centre upsell — non-subscribers who have completed at
@@ -964,6 +971,10 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
             startDisabledMessage={usageSummary}
           />
         </div>
+
+        {/* The assessment centre is a second product: it belongs after the
+            thing this page exists to do, not above it. */}
+        <MockAssessmentCentreLink planName={practiceUsage.planName} />
       </section>
     </CandidateAppShell>
   );

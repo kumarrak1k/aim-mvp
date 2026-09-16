@@ -24,10 +24,14 @@ test.describe("one-way video interview", () => {
     await page.getByPlaceholder(/Example:|saved profile context/i).first().fill("Graduate analyst");
 
     const videoCard = page.getByRole("button", { name: /One-way video interview/ });
-    await expect(videoCard).toContainText("Recorded");
+    // Locked until the plan resolves, and the locked card shows a "Pro" badge.
+    await expect(videoCard).not.toContainText("Pro");
     await videoCard.click();
 
-    // The shortest settings on offer, so the spec is not a stopwatch.
+    // The shortest settings on offer, so the spec is not a stopwatch. They sit
+    // behind a toggle now: the defaults are what employers set, so they stay
+    // out of the way of starting an interview.
+    await page.getByRole("button", { name: "Recording settings" }).click();
     const settings = page.getByTestId("video-interview-settings");
     await settings.getByRole("button", { name: "30 seconds" }).click();
     await settings.getByRole("button", { name: "1 minute" }).click();
@@ -99,7 +103,13 @@ test.describe("switching format mid-interview", () => {
     await stubBrowserSpeech(page);
     await page.goto("/practice");
     await page.getByPlaceholder(/Example:|saved profile context/i).first().fill("Graduate analyst");
-    await page.getByRole("button", { name: "Voice + camera interview" }).click();
+    const cameraMode = page.getByRole("button", { name: /Voice \+ camera interview/ });
+    await cameraMode.click();
+    // The saved profile is applied once the plan resolves and can land AFTER
+    // this click, putting the session back into whatever was stored. Wait for
+    // the choice to stick before starting, or the session may open in another
+    // mode entirely and the switch control will not be there.
+    await expect(cameraMode).toHaveAttribute("aria-pressed", "true");
 
     await Promise.all([
       page.waitForResponse((r) => r.url().includes("/api/interview") && r.ok()).catch(() => null),

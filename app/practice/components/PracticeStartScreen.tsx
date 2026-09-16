@@ -169,6 +169,9 @@ export function PracticeStartScreen({
   const [savingPreference, setSavingPreference] = useState(false);
   // Optional tuning starts folded: three decisions, then Start.
   const [showCustomise, setShowCustomise] = useState(false);
+  // Recording settings stay closed: the defaults are what employers set, so
+  // opening them is the exception rather than part of starting an interview.
+  const [showVideoSettings, setShowVideoSettings] = useState(false);
   const [preferenceMessage, setPreferenceMessage] = useState("");
 
   // Hybrid mix helpers
@@ -221,6 +224,15 @@ export function PracticeStartScreen({
     [setUseHybridMix, setQuestionMix, totalQuestions]
   );
   const appliedSavedPreferencesRef = useRef(false);
+  /**
+   * True once the candidate has chosen a mode or format themselves.
+   *
+   * The saved profile is restored when the plan and profile finish loading,
+   * which can be a second after the page is usable. Anyone who chose in that
+   * second had their choice silently replaced by whatever was stored, and then
+   * started an interview in the wrong mode.
+   */
+  const choiceMadeRef = useRef(false);
 
   const selectedPracticeMode = useMemo<PracticeMode>(() => {
     if (speakerEnabled && cameraEnabled) return "voice-camera";
@@ -229,11 +241,13 @@ export function PracticeStartScreen({
   }, [cameraEnabled, speakerEnabled]);
 
   const selectPracticeMode = useCallback(
-    (mode: PracticeMode) => {
+    (mode: PracticeMode, userInitiated = true) => {
+      if (userInitiated) choiceMadeRef.current = true;
       setPreferenceMessage("");
 
       // Without a subscription it is keyboard-only — block voice and camera.
-      if (isFreePlan && mode !== "typed") {
+      // Only once the plan is known: see the note in selectInterviewFormat.
+      if (isFreePlan && usageLoaded && mode !== "typed") {
         setPreferenceMessage(
           "Voice and camera modes are part of Pro."
         );
@@ -268,6 +282,7 @@ export function PracticeStartScreen({
       setTextOnlyMode,
       speakerEnabled,
       toggleCamera,
+      usageLoaded,
     ]
   );
 
@@ -279,10 +294,14 @@ export function PracticeStartScreen({
    */
   const selectInterviewFormat = useCallback(
     (format: InterviewFormat) => {
+      choiceMadeRef.current = true;
       setPreferenceMessage("");
 
       if (format === "one_way_video") {
-        if (isFreePlan) {
+        // Only refuse once the plan is actually known. isFreePlan defaults to
+        // true while usage loads, so an early click used to be swallowed in
+        // silence — and the explanation lands in a panel that is folded shut.
+        if (isFreePlan && usageLoaded) {
           setPreferenceMessage("One-way video interviews are part of Pro.");
           return;
         }
@@ -293,7 +312,7 @@ export function PracticeStartScreen({
 
       setInterviewFormat("traditional");
     },
-    [isFreePlan, selectPracticeMode, setInterviewFormat]
+    [isFreePlan, selectPracticeMode, setInterviewFormat, usageLoaded]
   );
 
   useEffect(() => {
@@ -321,8 +340,11 @@ export function PracticeStartScreen({
 
     // Practice mode (typed / voice / voice-camera) — only restore for paid
     // users; free users are keyboard-only regardless of saved preference.
+    // Never overwrite a choice the candidate has already made.
+    if (choiceMadeRef.current) return;
+
     if (savedCandidateProfile.preferredPracticeMode && !isFreePlan) {
-      selectPracticeMode(savedCandidateProfile.preferredPracticeMode);
+      selectPracticeMode(savedCandidateProfile.preferredPracticeMode, false);
     }
 
     // Interview format, same rule: one-way video needs the camera, so it is
@@ -441,26 +463,31 @@ export function PracticeStartScreen({
   return (
     <div className="grid gap-6 lg:grid-cols-[2fr_0.9fr]">
       <GlassCard>
-        <div className="mb-6">
-          <p className="mb-2 text-sm font-bold tracking-wide text-purple-300">
-            Start interview
-          </p>
-          <h2 className="text-2xl font-bold tracking-tight md:text-3xl">
-            Build a tailored mock interview.
-          </h2>
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-gray-400">
-            Set your role, experience level and interview focus so the AI coach
-            can generate sharper questions and judge your answers against the
-            right bar.
-          </p>
+        {/* Everything needed to start is on screen at once. The old layout put
+            the role at the top, the format and mode in two tall card decks, and
+            the level and type behind a disclosure, so nobody could see what they
+            were about to run without scrolling. People were getting lost instead
+            of starting. */}
+        <div className="mb-4 flex flex-wrap items-baseline justify-between gap-2">
+          <div>
+            <h2 className="text-xl font-bold tracking-tight">
+              Build a tailored mock interview.
+            </h2>
+          </div>
+          <Link
+            href="/profile"
+            className="text-xs font-bold text-purple-200 underline underline-offset-4 transition hover:text-purple-100"
+          >
+            Add CV / role profile
+          </Link>
         </div>
 
-        <label className="mb-2 block text-sm font-bold text-gray-200">
+        <label className="mb-1.5 block text-sm font-bold text-gray-200">
           Target role or profile
         </label>
 
         <input
-          className="mb-3 w-full rounded-2xl border border-white/10 bg-recess-35 p-4 text-white placeholder-gray-400 outline-none transition focus:border-purple-300/50 focus:ring-4 focus:ring-purple-500/10"
+          className="mb-3 w-full rounded-2xl border border-white/10 bg-recess-35 px-4 py-3 text-white placeholder-gray-400 outline-none transition focus:border-purple-300/50 focus:ring-4 focus:ring-purple-500/10"
           placeholder={
             isSignedIn && hasCandidateProfileContext(savedCandidateProfile)
               ? "Using your saved profile context"
@@ -470,156 +497,118 @@ export function PracticeStartScreen({
           onChange={(event) => onRoleChange(event.target.value)}
         />
 
-        <div className="mb-5 rounded-2xl border border-white/10 bg-recess-25 p-4">
-          {!isSignedIn && (
-            <p className="text-sm leading-6 text-gray-400">
-              Sign in and save your profile to auto-fill this field next time.
-            </p>
-          )}
-
-          {isSignedIn && !profileContextLoaded && (
-            <p className="text-sm leading-6 text-gray-400">
-              Checking for saved profile...
-            </p>
-          )}
-
-          {isSignedIn &&
-            profileContextLoaded &&
-            hasCandidateProfileContext(savedCandidateProfile) && (
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                  <p className="text-sm font-bold text-emerald-200">
-                    Saved profile detected
-                  </p>
-                  <p className="mt-1 text-sm leading-6 text-gray-400">
-                    {roleAutofilledFromProfile
-                      ? "This interview will use your saved CV, role spec and goals."
-                      : "You can use your saved CV, role spec and goals, or type a different role manually."}
-                  </p>
-                </div>
-
-                <div className="flex flex-wrap gap-2">
+        {/* The saved-profile note is one line now. It used to be a paragraph in
+            its own bordered box, which pushed the actual choices below the fold. */}
+        {isSignedIn && profileContextLoaded && (
+          <div className="mb-4 flex flex-wrap items-center gap-2 text-xs">
+            {hasCandidateProfileContext(savedCandidateProfile) ? (
+              <>
+                <span className="font-semibold text-emerald-200">
+                  {roleAutofilledFromProfile
+                    ? "Using your saved CV, role spec and goals."
+                    : "Saved profile available."}
+                </span>
+                {!roleAutofilledFromProfile && (
                   <button
                     type="button"
                     onClick={useSavedProfileForRole}
-                    className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-4 py-2 text-xs font-bold text-emerald-100 transition hover:bg-emerald-300/15"
+                    className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1 font-bold text-emerald-100 transition hover:bg-emerald-300/15"
                   >
                     Use saved profile
                   </button>
-
-                  <Link
-                    href="/profile"
-                    className="rounded-full border border-white/10 bg-white/[0.06] px-4 py-2 text-xs font-bold text-gray-200 transition hover:bg-white/[0.1]"
-                  >
-                    Edit profile
-                  </Link>
-                </div>
-              </div>
+                )}
+              </>
+            ) : (
+              <span className="text-gray-400">
+                No saved profile yet. Type a target role, or add one to personalise
+                future interviews.
+              </span>
             )}
+          </div>
+        )}
 
-          {isSignedIn &&
-            profileContextLoaded &&
-            !hasCandidateProfileContext(savedCandidateProfile) && (
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <p className="text-sm leading-6 text-gray-400">
-                  No saved profile yet. Type a target role here, or create a
-                  profile to personalise future interviews.
-                </p>
+        {!isSignedIn && (
+          <p className="mb-4 text-xs leading-5 text-gray-400">
+            Sign in and save your profile to auto-fill this next time.
+          </p>
+        )}
 
-                <Link
-                  href="/profile"
-                  className="rounded-full border border-purple-300/20 bg-purple-300/10 px-4 py-2 text-xs font-bold text-purple-100 transition hover:bg-purple-300/15"
-                >
-                  Create profile
-                </Link>
-              </div>
-            )}
+        {/* Level and type were behind the Customise disclosure. They shape every
+            question that gets asked, so they belong where they can be seen. */}
+        <div className="mb-4 grid gap-3 sm:grid-cols-2">
+          <SelectField
+            label="Experience level"
+            value={experienceLevel}
+            onChange={setExperienceLevel}
+            options={experienceLevels}
+          />
+          <SelectField
+            label="Interview type"
+            value={interviewType}
+            onChange={setInterviewType}
+            options={interviewTypes}
+            defaultOption="Competency / behavioural"
+          />
         </div>
 
-        {manualDeviceMode && (
-          <div className="mb-5 rounded-2xl border border-cyan-300/15 bg-cyan-300/10 p-4">
-            <p className="text-sm font-bold text-cyan-200">
-              Phone/tablet mode enabled
-            </p>
-            <p className="mt-1 text-sm leading-6 text-gray-300">
-              The interview page will show a large Guided Answer button. It
-              plays the question audio and then starts your microphone
-              recording.
-            </p>
-          </div>
-        )}
-
-        {startDisabled && startDisabledMessage && (
-          <div className="mb-5 rounded-2xl border border-amber-300/20 bg-amber-300/10 p-4">
-            <p className="text-sm font-bold text-amber-100">
-              Daily practice limit reached
-            </p>
-            <p className="mt-1 text-sm leading-6 text-gray-300">
-              {startDisabledMessage}
-            </p>
-          </div>
-        )}
-
-        <div className="mb-5 rounded-[1.7rem] border border-white/10 bg-recess-25 p-5">
-          <div className="mb-5">
-            <p className="text-sm font-bold tracking-wide text-cyan-300">
-              Interview format
-            </p>
-            <h3 className="mt-2 text-xl font-bold tracking-tight text-white">
-              Coaching, or the real thing.
-            </h3>
-            <p className="mt-2 text-sm leading-6 text-gray-400">
-              Most first-round interviews are now recorded with no interviewer
-              on the other end. Practise that format, or take the coaching flow
-              with feedback after every answer.
-            </p>
+        <div className="mb-4">
+          <div className="mb-2 flex flex-wrap items-baseline justify-between gap-2">
+            <p className="text-sm font-bold text-gray-200">Interview format</p>
+            {interviewFormat === "one_way_video" && (
+              <button
+                type="button"
+                onClick={() => setShowVideoSettings((v) => !v)}
+                aria-expanded={showVideoSettings}
+                className="text-xs font-bold text-cyan-200 underline underline-offset-4 transition hover:text-cyan-100"
+              >
+                {showVideoSettings ? "Hide recording settings" : "Recording settings"}
+              </button>
+            )}
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid gap-2 sm:grid-cols-2">
             {INTERVIEW_FORMATS.map((format) => (
               <ModeCard
                 key={format.value}
+                compact
                 active={interviewFormat === format.value}
                 title={format.label}
                 badge={format.value === "one_way_video" ? "Recorded" : "Feedback after each answer"}
-                description={format.description}
+                description={
+                  format.value === "one_way_video"
+                    ? "Recorded to camera with a timer, no feedback until the end."
+                    : "Feedback and a model answer after every question."
+                }
                 onClick={() => selectInterviewFormat(format.value)}
                 locked={format.value === "one_way_video" && isFreePlan}
               />
             ))}
           </div>
 
-          {/* Without this the locked card just refuses to select and the
-              explanation sits inside the folded Customise panel, where nobody
-              sees it. */}
           {isFreePlan && (
-            <div className="mt-4 flex flex-col gap-2 rounded-2xl border border-purple-300/20 bg-purple-300/[0.07] p-4 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-sm leading-6 text-gray-300">
-                <span className="font-bold text-purple-200">One-way video interviews</span> record
-                you on camera, so they are part of Pro.
-              </p>
-              <Link
-                href="/pricing"
-                className="shrink-0 rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-4 py-2 text-xs font-bold text-on-accent shadow-lg shadow-purple-950/35 transition hover:scale-[1.03]"
-              >
-                See pricing →
+            <p className="mt-2 text-xs leading-5 text-gray-400">
+              <span className="font-bold text-purple-200">One-way video interviews</span>{" "}
+              record you on camera, so they are part of Pro.{" "}
+              <Link href="/pricing" className="font-bold text-purple-200 underline underline-offset-4">
+                See pricing
               </Link>
-            </div>
+            </p>
           )}
 
-          {interviewFormat === "one_way_video" && (
+          {/* Settings are deliberately out of the way: the defaults are what
+              employers actually set, so almost nobody needs to open this. */}
+          {interviewFormat === "one_way_video" && showVideoSettings && (
             <div
-              className="mt-4 rounded-2xl border border-white/10 bg-white/[0.04] p-4"
+              className="mt-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4"
               data-testid="video-interview-settings"
             >
-              <p className="text-sm font-bold text-white">Recording settings</p>
-              <p className="mt-1 text-sm leading-6 text-gray-400">
+              <p className="text-xs leading-5 text-gray-400">
                 The defaults match what employers usually set. Answers are still
                 transcribed and scored, you just do not see the transcript while
                 you speak.
               </p>
 
-              <div className="mt-4 grid gap-4 sm:grid-cols-3">
+              <div className="mt-3 grid gap-4 sm:grid-cols-3">
                 <VideoSettingField
                   label="Time to prepare"
                   value={videoSettings.prepSeconds}
@@ -645,17 +634,10 @@ export function PracticeStartScreen({
                 />
               </div>
 
-              <p className="mt-4 text-xs leading-5 text-gray-400">
-                This practises the general format used by employer video
-                interview platforms. AI Career Mentor is independent: it is not
-                affiliated with, endorsed by, or connected to any of them, and
-                it does not reproduce any platform&apos;s own scoring.
-              </p>
-
-              <label className="mt-4 flex items-start gap-3 text-sm leading-6 text-gray-300">
+              <label className="mt-3 flex items-start gap-3 text-xs leading-5 text-gray-300">
                 <input
                   type="checkbox"
-                  className="mt-1 h-4 w-4 shrink-0 accent-cyan-300"
+                  className="mt-0.5 h-4 w-4 shrink-0 accent-cyan-300"
                   checked={videoSettings.feedbackTiming === "each"}
                   onChange={(event) =>
                     setVideoSettings({
@@ -665,74 +647,101 @@ export function PracticeStartScreen({
                   }
                 />
                 <span>
-                  Show feedback after every answer. Leave this off to get the
-                  full report at the end, which is how a real one-way interview
-                  works.
+                  Show feedback after every answer. Leave this off to get the full
+                  report at the end, which is how a real one-way interview works.
                 </span>
               </label>
+
+              <p className="mt-3 text-xs leading-5 text-gray-400">
+                This practises the general format used by employer video interview
+                platforms. AI Career Mentor is independent: it is not affiliated
+                with, endorsed by, or connected to any of them, and it does not
+                reproduce any platform&apos;s own scoring.
+              </p>
             </div>
           )}
         </div>
 
-        <div className="mb-5 rounded-[1.7rem] border border-white/10 bg-recess-25 p-5">
-          <div className="mb-5">
-            <p className="text-sm font-bold tracking-wide text-cyan-300">
-              Practice mode
-            </p>
-            <h3 className="mt-2 text-xl font-bold tracking-tight text-white">
-              Choose how you answer.
-            </h3>
-            <p className="mt-2 text-sm leading-6 text-gray-400">
-              {interviewFormat === "one_way_video"
-                ? "A one-way video interview records you speaking, so voice and camera are both on."
-                : "Select one mode for this session. You can save it as your default in your Candidate Profile and still override it here anytime."}
-            </p>
-          </div>
+        <div className="mb-4">
+          <p className="mb-2 text-sm font-bold text-gray-200">
+            How you answer
+            {interviewFormat === "one_way_video" && (
+              <span className="ml-2 text-xs font-semibold text-gray-400">
+                a recorded interview is spoken, on camera
+              </span>
+            )}
+          </p>
 
-          <div className="grid gap-3 lg:grid-cols-3">
+          <div className="grid gap-2 sm:grid-cols-3">
             <ModeCard
+              compact
               active={selectedPracticeMode === "typed"}
               title="Typed answers only"
               badge="Keyboard"
-              description="Read each question on screen and type your answer. Best when you want to focus only on answer structure."
+              description="Read the question and type your answer."
               onClick={() => selectPracticeMode("typed")}
             />
 
             <ModeCard
+              compact
               active={selectedPracticeMode === "voice"}
               title="Voice interview"
               badge="Audio + transcript"
-              description="Hear the question read aloud, then answer by speaking. Your answer is transcribed for AI feedback."
+              description="Hear the question, answer out loud."
               onClick={() => selectPracticeMode("voice")}
               locked={isFreePlan}
             />
 
             <ModeCard
+              compact
               active={selectedPracticeMode === "voice-camera"}
               title="Voice + camera interview"
               badge="Full practice"
-              description="Practise like a remote interview: question audio, spoken answer, transcript and camera presence analysis."
+              description="Spoken answer with camera presence scored."
               onClick={() => selectPracticeMode("voice-camera")}
               locked={isFreePlan}
             />
           </div>
 
-          {/* Pro nudge shown when a non-subscriber taps a locked mode */}
           {isFreePlan && (
-            <div className="mt-4 flex flex-col gap-2 rounded-2xl border border-purple-300/20 bg-purple-300/[0.07] p-4 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-sm leading-6 text-gray-300">
-                <span className="font-bold text-purple-200">Voice &amp; camera modes</span> are
-                part of Pro.
-              </p>
-              <Link
-                href="/pricing"
-                className="shrink-0 rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-4 py-2 text-xs font-bold text-on-accent shadow-lg shadow-purple-950/35 transition hover:scale-[1.03]"
-              >
-                See pricing →
+            <p className="mt-2 text-xs leading-5 text-gray-400">
+              <span className="font-bold text-purple-200">Voice &amp; camera modes</span> are
+              part of Pro.{" "}
+              <Link href="/pricing" className="font-bold text-purple-200 underline underline-offset-4">
+                See pricing
               </Link>
-            </div>
+            </p>
           )}
         </div>
+
+        {/* The start button sits directly under the choices it acts on, rather
+            than at the foot of a long optional-tuning section. */}
+        <button
+          onClick={startInterview}
+          disabled={interviewStartDisabled}
+          className="mb-3 w-full rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-4 text-base font-bold shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {questionLoading
+            ? "Starting..."
+            : hybridMixInvalid
+            ? `Allocate all ${totalQuestions} questions to start`
+            : customQuestionsInvalid
+            ? "Enter text for all custom questions to start"
+            : `Start Tailored ${isAdvancedPlan ? totalQuestions : 5}-Question Interview`}
+        </button>
+
+        {startDisabled && startDisabledMessage && (
+          <p className="mb-3 text-sm font-semibold leading-6 text-gray-400">
+            {startDisabledMessage}
+          </p>
+        )}
+
+        {manualDeviceMode && (
+          <p className="mb-3 text-xs leading-5 text-cyan-200">
+            Phone/tablet mode: the interview page shows a large Guided Answer
+            button that plays the question, then starts recording.
+          </p>
+        )}
 
         {/* Everything below is optional tuning. A first-timer sees three
             decisions - role, mode, start - and this one disclosure opens the
@@ -756,22 +765,9 @@ export function PracticeStartScreen({
 
         {showCustomise && (
           <>
+        {/* Experience level and interview type moved up to the main panel:
+            they shape every question, so they are not optional tuning. */}
         <div className="mb-5 grid gap-4 md:grid-cols-2">
-          <SelectField
-            label="Experience level"
-            value={experienceLevel}
-            onChange={setExperienceLevel}
-            options={experienceLevels}
-          />
-
-          <SelectField
-            label="Interview type"
-            value={interviewType}
-            onChange={setInterviewType}
-            options={interviewTypes}
-            defaultOption="Competency / behavioural"
-          />
-
           <SelectField
             label="Difficulty"
             value={difficulty}
@@ -1070,25 +1066,7 @@ export function PracticeStartScreen({
         )}
 
 
-        <button
-          onClick={startInterview}
-          disabled={interviewStartDisabled}
-          className="w-full rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-4 text-base font-bold shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          {questionLoading
-            ? "Starting..."
-            : hybridMixInvalid
-            ? `Allocate all ${totalQuestions} questions to start`
-            : customQuestionsInvalid
-            ? "Enter text for all custom questions to start"
-            : `Start Tailored ${isAdvancedPlan ? totalQuestions : 5}-Question Interview`}
-        </button>
-
-        {startDisabled && startDisabledMessage && (
-          <p className="mt-3 text-sm font-semibold leading-6 text-gray-400">
-            {startDisabledMessage}
-          </p>
-        )}
+        {/* Start moved up, directly under the choices it acts on. */}
 
         <div className="mt-4">
           <DataTrustStrip compact />
@@ -1197,6 +1175,7 @@ function ModeCard({
   description,
   onClick,
   locked = false,
+  compact = false,
 }: {
   active: boolean;
   title: string;
@@ -1204,13 +1183,17 @@ function ModeCard({
   description: string;
   onClick: () => void;
   locked?: boolean;
+  /** Denser tile for the setup panel, where every row costs a scroll. */
+  compact?: boolean;
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`group relative h-full rounded-[1.35rem] border p-4 text-left transition ${
+      className={`group relative h-full rounded-[1.35rem] border text-left transition ${
+        compact ? "p-3" : "p-4"
+      } ${
         locked
           ? "cursor-pointer border-white/[0.06] bg-white/[0.025] opacity-60 hover:opacity-80"
           : active
@@ -1218,9 +1201,13 @@ function ModeCard({
           : "border-white/10 bg-white/[0.045] hover:-translate-y-0.5 hover:bg-white/[0.07]"
       }`}
     >
-      <div className="mb-3 flex items-start justify-between gap-3">
+      <div className={`flex items-start justify-between gap-3 ${compact ? "mb-1.5" : "mb-3"}`}>
         <div>
-          <p className="text-base font-bold tracking-tight text-white">
+          <p
+            className={`font-bold tracking-tight text-white ${
+              compact ? "text-sm leading-5" : "text-base"
+            }`}
+          >
             {title}
           </p>
           <p
@@ -1255,7 +1242,9 @@ function ModeCard({
         </span>
       </div>
 
-      <p className="text-sm leading-6 text-gray-300">{description}</p>
+      <p className={compact ? "text-xs leading-5 text-gray-300" : "text-sm leading-6 text-gray-300"}>
+        {description}
+      </p>
     </button>
   );
 }
