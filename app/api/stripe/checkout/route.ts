@@ -111,19 +111,34 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  const session = await stripeClient.checkout.sessions.create({
-    customer: customerId,
-    mode: "subscription",
-    line_items: [{ price: priceId, quantity: 1 }],
-    success_url: absoluteUrl("/practice?payment=success"),
-    cancel_url: absoluteUrl("/pricing?payment=cancelled"),
-    ...(promotionCodeId
-      ? { discounts: [{ promotion_code: promotionCodeId }] }
-      : { allow_promotion_codes: true }),
-    subscription_data: {
-      metadata: { clerkUserId: userId, planId },
-    },
-  });
+  const createSession = (withDiscount: boolean) =>
+    stripeClient.checkout.sessions.create({
+      customer: customerId,
+      mode: "subscription",
+      line_items: [{ price: priceId, quantity: 1 }],
+      success_url: absoluteUrl("/practice?payment=success"),
+      cancel_url: absoluteUrl("/pricing?payment=cancelled"),
+      ...(withDiscount && promotionCodeId
+        ? { discounts: [{ promotion_code: promotionCodeId }] }
+        : { allow_promotion_codes: true }),
+      subscription_data: {
+        metadata: { clerkUserId: userId, planId },
+      },
+    });
+
+  // A promotion code can be valid yet inapplicable — the codes from the old
+  // tiers are tied to products we no longer sell, and Stripe rejects the whole
+  // session rather than ignoring the discount. Losing the sale over a dead
+  // discount is the worst outcome, so fall back to a plain checkout where they
+  // can still type a code.
+  let session;
+  try {
+    session = await createSession(true);
+  } catch (error) {
+    if (!promotionCodeId) throw error;
+    console.warn("CHECKOUT PROMO NOT APPLICABLE:", promoCode, error);
+    session = await createSession(false);
+  }
 
   return NextResponse.json({ url: session.url });
 }

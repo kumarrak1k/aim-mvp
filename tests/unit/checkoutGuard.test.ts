@@ -14,6 +14,8 @@ const h = vi.hoisted(() => ({
     customerCreated: 0,
     sessionsCreated: 0,
     metadataUpdated: 0,
+    rejectDiscounts: false,
+    lastParams: null as Record<string, unknown> | null,
   },
 }));
 
@@ -43,10 +45,19 @@ vi.mock("@/app/lib/stripe", () => ({
         return { id: "cus_new" };
       },
     },
+    promotionCodes: {
+      list: async () => ({ data: [{ id: "promo_1" }] }),
+    },
     checkout: {
       sessions: {
-        create: async () => {
+        create: async (params: Record<string, unknown>) => {
           h.state.sessionsCreated++;
+          h.state.lastParams = params;
+          // Stripe refuses a discount that does not apply to the line item,
+          // which is what a code left over from the old tiers now does.
+          if (h.state.rejectDiscounts && params.discounts) {
+            throw new Error("This promotion code cannot be used on this purchase.");
+          }
           return { url: "https://checkout.stripe.test/session" };
         },
       },
@@ -69,6 +80,8 @@ beforeEach(() => {
   h.state.customerCreated = 0;
   h.state.sessionsCreated = 0;
   h.state.metadataUpdated = 0;
+  h.state.rejectDiscounts = false;
+  h.state.lastParams = null;
 });
 
 describe("checkout — validation", () => {
@@ -76,6 +89,29 @@ describe("checkout — validation", () => {
     const res = await POST(req("bogus_plan"));
     expect(res.status).toBe(400);
     expect(h.state.sessionsCreated).toBe(0);
+  });
+});
+
+describe("checkout — a promo code that no longer applies", () => {
+  // Old marketing links still carry ?promo=SUMMER2026, whose coupon is tied to
+  // the retired Plus and Professional products. Losing the sale over a dead
+  // discount would be the worst possible outcome.
+  it("still opens checkout when Stripe refuses the pre-applied code", async () => {
+    h.state.rejectDiscounts = true;
+    const request = new Request("http://localhost/api/stripe/checkout", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ planId: "pro_monthly", promoCode: "SUMMER2026" }),
+    }) as unknown as Parameters<typeof POST>[0];
+
+    const res = await POST(request);
+
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as { url?: string };
+    expect(body.url).toContain("checkout.stripe.test");
+    // The retry drops the discount and lets them type a code instead.
+    expect(h.state.lastParams?.discounts).toBeUndefined();
+    expect(h.state.lastParams?.allow_promotion_codes).toBe(true);
   });
 });
 
