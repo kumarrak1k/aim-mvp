@@ -43,6 +43,16 @@ Mode labels stay generic: "Traditional interview" and "One-way video interview".
 4. **Onboarding and mid-session switching** — the question at onboarding, the stored default, and the in-session switch.
 5. **Copy, disclaimer and the .com mirror** — including French, German and Spanish for the new strings.
 
+## Status
+
+- **Commit 1 — config and setup: done** (.co.uk 2998840, .com 37fe188). Format cards and recording settings on the setup screen, `UserProfile.preferredInterviewFormat` on all three databases, config carried through sessionStorage.
+- **Commit 2 — session runtime: done** (.co.uk 62fbda8). `app/practice/session/oneWayVideo.ts` holds the clock as pure functions; `OneWayVideoStage` replaces the answer workspace and the camera thumbnail.
+- **Commit 3 — deferred feedback: done as part of 2.** Per-answer scoring still runs, because progress saving and the end report depend on it; what is deferred is the display. The feedback panel is hidden in a one-way interview unless the candidate chose "feedback after every answer", and the stage shows "Question 3 of 6" instead.
+- **Commit 4 — onboarding and switching: done.** The format is asked once in the equipment check, at the moment the candidate is looking at their own camera preview, and stored as the profile default. Either format can be switched mid-session; the switch lands at the next question so the answer in progress is never thrown away.
+- **Commit 5 — copy and the .com mirror: partly done.** The independence note is on the .co.uk setup screen. The .com setup UI and its French, German and Spanish strings are **deferred while .com is parked** (307 to .co.uk): it has the plumbing, the databases and the shared library, so the mirror is a UI-and-translation job to do when .com is unparked.
+
+Open question for Rakesh: whether the explanatory copy should name platforms (HireVue, Sonru, Spark Hire). It currently does not — it says "employer video interview platforms" — which needs no solicitor's review.
+
 ## Things that will bite
 
 - **iOS needs a gesture before audio or camera.** The first recording is covered by the Start tap. Later auto-starts can be blocked, so each question falls back to a single "Start recording" tap rather than failing silently. The existing auto-flow already solves this for voice mode; reuse it.

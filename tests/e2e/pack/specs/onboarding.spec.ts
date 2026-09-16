@@ -87,7 +87,16 @@ test.describe("candidate onboarding", () => {
     await expect(primary).toHaveText(/Continue without camera/);
 
     // The skip path must always exist — typed practice needs no equipment.
-    await page.getByRole("button", { name: /Skip the check/ }).click();
+    await expect(page.getByRole("button", { name: /Skip the check/ })).toBeVisible();
+
+    // With the camera working, the format question is asked here and nowhere
+    // else: the candidate is looking at their own preview, which is the only
+    // moment a recorded interview explains itself.
+    await page.getByRole("button", { name: "Test camera" }).click();
+    await expect(page.getByTestId("onboarding-format-choice")).toBeVisible({ timeout: 20_000 });
+    await page.getByRole("button", { name: /One-way video/ }).click();
+
+    await page.getByRole("button", { name: /Everything works/ }).click();
     await page.waitForURL(/\/practice\?warmup=1/);
 
     // The exit taken IS the mode decision, and it has to be persisted: the
@@ -96,7 +105,8 @@ test.describe("candidate onboarding", () => {
     const profile = await page.request.get("/api/candidate-profile");
     expect(profile.ok(), await profile.text()).toBe(true);
     const body = await profile.json();
-    expect(body.profile.preferredPracticeMode).toBe("typed");
+    expect(body.profile.preferredPracticeMode).toBe("voice-camera");
+    expect(body.profile.preferredInterviewFormat).toBe("one_way_video");
     expect(body.profile.currentRole).toBe("Retail supervisor");
     // A pasted job description must LEAD the role spec, not be overwritten by
     // the generated "Target role / Sector / Level" summary.

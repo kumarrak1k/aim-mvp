@@ -10,6 +10,7 @@
 import { test, expect } from "@playwright/test";
 import { statePath } from "../fixtures/env";
 import { stubBrowserSpeech } from "../fixtures/voiceStub";
+import { answerFor } from "../fixtures/answerBank";
 
 test.describe("one-way video interview", () => {
   test.use({
@@ -58,5 +59,49 @@ test.describe("one-way video interview", () => {
     await stage.getByRole("button", { name: "Finish this answer" }).click();
 
     await expect(stage.getByText("Answer recorded")).toBeVisible({ timeout: 30_000 });
+  });
+});
+
+/**
+ * Switching format mid-interview.
+ *
+ * The two formats suit different moods, so a candidate can move between them
+ * without losing what they have already answered. The switch lands at the next
+ * question, never in the middle of one.
+ */
+test.describe("switching format mid-interview", () => {
+  test.use({
+    storageState: statePath("plus"),
+    permissions: ["microphone", "camera"],
+  });
+
+  test("a coaching session becomes a recorded one at the next question", async ({ page }) => {
+    await stubBrowserSpeech(page);
+    await page.goto("/practice");
+    await page.getByPlaceholder(/Example:|saved profile context/i).first().fill("Graduate analyst");
+    await page.getByRole("button", { name: "Voice + camera interview" }).click();
+
+    await Promise.all([
+      page.waitForResponse((r) => r.url().includes("/api/interview") && r.ok()).catch(() => null),
+      page.getByRole("button", { name: /Start Tailored .*Interview/ }).click(),
+    ]);
+
+    const textarea = page.getByPlaceholder(/Type your answer here|transcript will appear/i);
+    await expect(textarea).toBeVisible({ timeout: 30_000 });
+    await textarea.fill(answerFor(""));
+
+    // Asked during question one, and question one carries on as it was.
+    await page.getByTestId("switch-to-video").click();
+    await expect(page.getByTestId("switch-to-video")).toHaveText(/from the next question/);
+    await expect(textarea).toBeVisible();
+
+    await Promise.all([
+      page.waitForResponse((r) => r.url().includes("/api/feedback")),
+      page.getByRole("button", { name: "Get AI feedback" }).click(),
+    ]);
+    await expect(page.getByTestId("overall-score").first()).toBeVisible({ timeout: 30_000 });
+    await page.getByRole("button", { name: /Next question|Finish interview/ }).first().click();
+
+    await expect(page.getByTestId("one-way-video-stage")).toBeVisible({ timeout: 30_000 });
   });
 });

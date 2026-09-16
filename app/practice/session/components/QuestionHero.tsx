@@ -27,6 +27,14 @@ type QuestionHeroProps = {
   onStopQuestion: () => void;
   onStartGuidedAnswer: () => void;
   onBackToSetup: () => void;
+  /**
+   * Offered only when a recorded interview is actually available (voice and
+   * camera on a paid plan). Switching applies from the next question so the
+   * answer in progress is never thrown away.
+   */
+  onSwitchToVideo?: () => void;
+  /** True once the switch has been asked for and is waiting for the next question. */
+  switchToVideoPending?: boolean;
   /** Hide the "Back" link when the candidate is taking a company-issued
    *  assessment — there's no setup to return to and abandoning loses the
    *  invite. */
@@ -65,6 +73,8 @@ export function QuestionHero(props: QuestionHeroProps) {
     onStopQuestion,
     onStartGuidedAnswer,
     onBackToSetup,
+    onSwitchToVideo,
+    switchToVideoPending = false,
     assessmentMode,
     freePlan,
     showAutoFlowPrompt,
@@ -150,6 +160,20 @@ export function QuestionHero(props: QuestionHeroProps) {
             </button>
           )}
         </div>
+
+        {onSwitchToVideo && (
+          <button
+            type="button"
+            onClick={onSwitchToVideo}
+            disabled={switchToVideoPending}
+            data-testid="switch-to-video"
+            className="mb-3 w-full rounded-xl border border-cyan-300/20 bg-cyan-300/[0.07] px-3 py-2 text-xs font-bold text-cyan-100 transition hover:bg-cyan-300/[0.12] disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {switchToVideoPending
+              ? "Recorded interview from the next question"
+              : "Switch to a recorded one-way interview"}
+          </button>
+        )}
 
         {/* Voice controls — hidden for keyboard-only (free plan) sessions */}
         {!freePlan && (

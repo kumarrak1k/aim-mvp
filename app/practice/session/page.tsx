@@ -132,6 +132,13 @@ export default function PracticeSessionPage() {
     DEFAULT_VIDEO_SETTINGS
   );
   const [videoStage, setVideoStage] = useState<VideoStageState | null>(null);
+  /**
+   * A format switch asked for mid-interview. It takes effect at the next
+   * question so the answer in progress is never thrown away.
+   */
+  const [pendingFormat, setPendingFormat] = useState<
+    { format: InterviewFormat; afterQuestion: string } | null
+  >(null);
   const [assessmentMode, setAssessmentMode] = useState(false);
   const [assignmentToken, setAssignmentToken] = useState<string | undefined>(undefined);
   const [assessmentCentreId, setAssessmentCentreId] = useState<string | undefined>(undefined);
@@ -1905,6 +1912,21 @@ export default function PracticeSessionPage() {
   /** The phase the side effects have already acted on. */
   const videoPhaseRef = useRef<VideoStageState["phase"] | null>(null);
 
+  // A switch asked for during a question lands when the NEXT one does, so the
+  // answer in progress is never thrown away.
+  useEffect(() => {
+    if (!pendingFormat || !question || questionLoading) return;
+    if (question === pendingFormat.afterQuestion) return;
+
+    setInterviewFormat(pendingFormat.format);
+    setPendingFormat(null);
+    if (pendingFormat.format === "traditional") {
+      setVideoStage(null);
+      videoStageQuestionRef.current = null;
+      videoPhaseRef.current = null;
+    }
+  }, [pendingFormat, question, questionLoading]);
+
   useEffect(() => {
     if (!isOneWayVideo || !interviewStarted || interviewFinished) return;
     if (!question || questionLoading) return;
@@ -2501,6 +2523,10 @@ export default function PracticeSessionPage() {
             onSubmitNow={submitVideoAnswerNow}
             onRetake={retakeVideoAnswer}
             onContinue={() => (feedback ? void nextStep() : void getFeedback())}
+            onSwitchToCoaching={() =>
+              setPendingFormat({ format: "traditional", afterQuestion: question })
+            }
+            switchToCoachingPending={pendingFormat?.format === "traditional"}
             onExit={() => setExitDialogOpen(true)}
           />
         ) : (
@@ -2529,6 +2555,14 @@ export default function PracticeSessionPage() {
             onStopQuestion={stopQuestionSpeech}
             onStartGuidedAnswer={() => void startGuidedAnswer()}
             onBackToSetup={() => setExitDialogOpen(true)}
+            // Only offered when a recorded interview is actually possible: it
+            // needs the camera, which a typed or free session does not have.
+            onSwitchToVideo={
+              !isKeyboardOnly && !assessmentMode && cameraEnabled
+                ? () => setPendingFormat({ format: "one_way_video", afterQuestion: question })
+                : undefined
+            }
+            switchToVideoPending={pendingFormat?.format === "one_way_video"}
             assessmentMode={assessmentMode}
             freePlan={isKeyboardOnly}
             showAutoFlowPrompt={showAutoFlowPrompt}

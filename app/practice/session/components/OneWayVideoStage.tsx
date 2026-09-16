@@ -27,6 +27,10 @@ type OneWayVideoStageProps = {
   onSubmitNow: () => void;
   onRetake: () => void;
   onContinue: () => void;
+  /** Swap to the coaching flow from the next question. */
+  onSwitchToCoaching: () => void;
+  /** True once that switch is waiting for the next question. */
+  switchToCoachingPending: boolean;
   onExit: () => void;
 };
 
@@ -57,6 +61,8 @@ export function OneWayVideoStage({
   onSubmitNow,
   onRetake,
   onContinue,
+  onSwitchToCoaching,
+  switchToCoachingPending,
   onExit,
 }: OneWayVideoStageProps) {
   const preparing = stage.phase === "preparing";
@@ -261,6 +267,18 @@ export function OneWayVideoStage({
             answer is still transcribed and scored, and you will see it in your
             report.
           </p>
+
+          <button
+            type="button"
+            onClick={onSwitchToCoaching}
+            disabled={switchToCoachingPending}
+            data-testid="switch-to-coaching"
+            className="text-left text-xs font-bold text-gray-400 underline underline-offset-4 transition hover:text-gray-300 disabled:no-underline disabled:opacity-70"
+          >
+            {switchToCoachingPending
+              ? "Coaching format from the next question"
+              : "Switch to the coaching format"}
+          </button>
 
           {cameraError && (
             <div className="rounded-2xl border border-amber-300/20 bg-amber-300/10 p-3">

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useIsIpad } from "@/app/lib/useIsIpad";
+import { INTERVIEW_FORMATS, type InterviewFormat } from "@/app/lib/interviewFormat";
 
 /**
  * Final onboarding step: verify microphone, camera and speakers before the
@@ -56,11 +57,18 @@ export function EquipmentCheck({
   onContinue,
   onBack,
 }: {
-  onContinue: (mode: "voice-camera" | "voice" | "typed") => void;
+  onContinue: (
+    mode: "voice-camera" | "voice" | "typed",
+    interviewFormat: InterviewFormat
+  ) => void;
   onBack: () => void;
 }) {
   const [mic, setMic] = useState<CheckState>("idle");
   const [cam, setCam] = useState<CheckState>("idle");
+  // Which shape of interview they want to practise. Asked here because the
+  // candidate is looking at their own camera preview, which is the one moment
+  // a recorded interview explains itself without a paragraph of copy.
+  const [interviewFormat, setInterviewFormat] = useState<InterviewFormat>("traditional");
   const [spk, setSpk] = useState<CheckState>("idle");
   const [spkPlayed, setSpkPlayed] = useState(false);
   const [micLevel, setMicLevel] = useState(0);
@@ -311,9 +319,51 @@ export function EquipmentCheck({
         </div>
       </div>
 
+      {cam === "pass" && (
+        <div
+          data-testid="onboarding-format-choice"
+          className="mt-5 rounded-[1.1rem] border border-cyan-300/20 bg-cyan-300/[0.07] p-4"
+        >
+          <p className="font-bold text-white">Which kind of interview?</p>
+          <p className="mt-1 text-xs leading-5 text-gray-400">
+            You can change this before any session.
+          </p>
+
+          <div className="mt-3 grid gap-2 sm:grid-cols-2">
+            {INTERVIEW_FORMATS.map((format) => (
+              <button
+                key={format.value}
+                type="button"
+                onClick={() => setInterviewFormat(format.value)}
+                aria-pressed={interviewFormat === format.value}
+                className={`rounded-[1rem] border p-3 text-left transition ${
+                  interviewFormat === format.value
+                    ? "border-cyan-300/40 bg-cyan-300/15"
+                    : "border-white/10 bg-white/[0.04] hover:bg-white/[0.07]"
+                }`}
+              >
+                <span className="block text-sm font-bold text-white">{format.label}</span>
+                <span className="mt-1 block text-xs leading-5 text-gray-400">
+                  {format.value === "one_way_video"
+                    ? "Recorded to camera with a timer, like most first rounds."
+                    : "Feedback and a model answer after every question."}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className="mt-6 flex flex-col items-center gap-3">
         <button
-          onClick={() => leave(() => onContinue(allPass ? "voice-camera" : "voice"))}
+          onClick={() =>
+            leave(() =>
+              allPass
+                ? onContinue("voice-camera", interviewFormat)
+                : // No camera means no recorded interview, whatever was picked.
+                  onContinue("voice", "traditional")
+            )
+          }
           disabled={!voiceReady}
           className="w-full max-w-sm rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-8 py-4 text-sm font-bold text-on-accent shadow-2xl shadow-purple-900/40 transition hover:scale-[1.02] disabled:opacity-35 disabled:hover:scale-100"
         >
@@ -322,7 +372,7 @@ export function EquipmentCheck({
             : "Continue without camera →"}
         </button>
         <button
-          onClick={() => leave(() => onContinue("typed"))}
+          onClick={() => leave(() => onContinue("typed", "traditional"))}
           className="text-sm font-bold text-gray-400 transition hover:text-white"
         >
           Skip the check — I&rsquo;ll practise typed for now

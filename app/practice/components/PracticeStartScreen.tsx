@@ -645,6 +645,13 @@ export function PracticeStartScreen({
                 />
               </div>
 
+              <p className="mt-4 text-xs leading-5 text-gray-400">
+                This practises the general format used by employer video
+                interview platforms. AI Career Mentor is independent: it is not
+                affiliated with, endorsed by, or connected to any of them, and
+                it does not reproduce any platform&apos;s own scoring.
+              </p>
+
               <label className="mt-4 flex items-start gap-3 text-sm leading-6 text-gray-300">
                 <input
                   type="checkbox"

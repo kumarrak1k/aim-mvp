@@ -476,7 +476,7 @@ export function OnboardingClient({
 
         {step === 6 && (
           <EquipmentCheck
-            onContinue={async (mode) => {
+            onContinue={async (mode, interviewFormat) => {
               // The check IS the mode decision: passing it means the hardware
               // for spoken practice works, so the first session opens in that
               // mode instead of defaulting to typed and quietly showing the
@@ -484,7 +484,10 @@ export function OnboardingClient({
               await fetch("/api/candidate-profile", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ preferredPracticeMode: mode }),
+                body: JSON.stringify({
+                  preferredPracticeMode: mode,
+                  preferredInterviewFormat: interviewFormat,
+                }),
               }).catch(() => {});
               // The whole flow is now behind us — stamp completion, THEN
               // leave. Stamping any earlier lets a mid-flow refresh skip the
