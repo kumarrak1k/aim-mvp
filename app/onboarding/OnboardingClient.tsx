@@ -98,12 +98,11 @@ export function OnboardingClient({
     }
   }
 
+  // Step 1 asks for the two things a first interview genuinely needs. Career
+  // stage and sector moved to step 2 as optional: they were a wall of 13 cards
+  // between a new signup and their first question.
   const canAdvance =
-    (step === 1 &&
-      name.trim().length > 0 &&
-      targetRole.trim().length > 1 &&
-      careerStage &&
-      targetSector) ||
+    (step === 1 && name.trim().length > 0 && targetRole.trim().length > 1) ||
     step === 2 || // tailoring — everything on it is optional
     (step === 3 && processType) ||
     (step === 4 && biggestChallenge) ||
@@ -227,37 +226,6 @@ export function OnboardingClient({
               ))}
             </select>
 
-            <p className="mt-5 text-[12px] font-bold tracking-wide text-purple-300">
-              Where you are
-            </p>
-            <div className="mt-2 grid gap-2 sm:grid-cols-2">
-              {CAREER_STAGES.map((s) => (
-                <button
-                  key={s.value}
-                  onClick={() => setCareerStage(s.value)}
-                  className={`${CARD} ${careerStage === s.value ? CARD_ON : CARD_OFF}`}
-                >
-                  <span className="block font-bold">{s.label}</span>
-                  <span className="mt-0.5 block text-xs text-gray-400">{s.hint}</span>
-                </button>
-              ))}
-            </div>
-
-            <p className="mt-5 text-[12px] font-bold tracking-wide text-purple-300">
-              Sector
-            </p>
-            <div className="mt-2 grid gap-2 sm:grid-cols-3">
-              {SECTORS.map((sec) => (
-                <button
-                  key={sec}
-                  onClick={() => setTargetSector(sec)}
-                  className={`${CARD} ${targetSector === sec ? CARD_ON : CARD_OFF} !py-3 text-sm font-bold`}
-                >
-                  {sec}
-                </button>
-              ))}
-            </div>
-
           </section>
         )}
 
@@ -275,6 +243,51 @@ export function OnboardingClient({
               None of this is required. Each piece makes the questions and the feedback more
               specific to you.
             </p>
+
+            <p className="mt-5 text-[12px] font-bold tracking-wide text-purple-300">
+              Where you are
+            </p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {CAREER_STAGES.map((s) => (
+                <button
+                  key={s.value}
+                  type="button"
+                  aria-pressed={careerStage === s.value}
+                  onClick={() =>
+                    setCareerStage(careerStage === s.value ? "" : s.value)
+                  }
+                  title={s.hint}
+                  className={`min-h-[44px] rounded-full border px-4 py-2.5 text-sm font-bold transition ${
+                    careerStage === s.value
+                      ? "border-purple-400/60 bg-purple-500/15 text-white"
+                      : "border-white/[0.09] bg-white/[0.03] text-gray-300 hover:bg-white/[0.06]"
+                  }`}
+                >
+                  {s.label}
+                </button>
+              ))}
+            </div>
+
+            <p className="mt-5 text-[12px] font-bold tracking-wide text-purple-300">
+              Sector
+            </p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {SECTORS.map((sec) => (
+                <button
+                  key={sec}
+                  type="button"
+                  aria-pressed={targetSector === sec}
+                  onClick={() => setTargetSector(targetSector === sec ? "" : sec)}
+                  className={`min-h-[44px] rounded-full border px-4 py-2.5 text-sm font-bold transition ${
+                    targetSector === sec
+                      ? "border-purple-400/60 bg-purple-500/15 text-white"
+                      : "border-white/[0.09] bg-white/[0.03] text-gray-300 hover:bg-white/[0.06]"
+                  }`}
+                >
+                  {sec}
+                </button>
+              ))}
+            </div>
 
             <div className="mt-5 space-y-5 rounded-[1.1rem] border border-white/[0.08] bg-white/[0.02] p-4">
 

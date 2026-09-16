@@ -27,8 +27,8 @@ test.describe("candidate onboarding", () => {
     await page.getByRole("combobox").selectOption("Data Analyst");
     await expect(page.getByPlaceholder(/Operations Analyst/i)).toHaveValue("Data Analyst");
     await page.getByPlaceholder(/Operations Analyst/i).fill("Graduate Software Engineer");
-    await page.getByRole("button", { name: /Graduate or first role/ }).click();
-    await page.getByRole("button", { name: "Technology & data" }).click();
+    // Career stage and sector moved to step 2 as optional chips: step 1 asks
+    // only for the two things a first interview genuinely needs.
     await page.getByRole("button", { name: "Continue" }).click();
 
     // Step 2 — tailoring, its own always-visible step (was a collapsed
@@ -37,6 +37,8 @@ test.describe("candidate onboarding", () => {
     await expect(
       page.getByRole("heading", { name: /Alex, let's tailor your interview/ })
     ).toBeVisible();
+    await page.getByRole("button", { name: /Graduate or first role/ }).click();
+    await page.getByRole("button", { name: "Technology & data" }).click();
     await page.getByPlaceholder(/Retail supervisor/i).fill("Retail supervisor");
     await page
       .getByPlaceholder(/Paste the job description/i)

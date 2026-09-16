@@ -26,8 +26,10 @@ const bodySchema = z.object({
   // already read it from there), not on UserProfile.
   firstName: z.string().trim().max(80).optional(),
   targetRole: z.string().trim().min(1).max(160),
-  careerStage: z.enum(stageValues),
-  targetSector: z.enum(sectorValues),
+  // Optional since Sep 2026: asking for these before the first interview cost
+  // more signups than the extra context was worth. Empty string means skipped.
+  careerStage: z.union([z.enum(stageValues), z.literal("")]).optional(),
+  targetSector: z.union([z.enum(sectorValues), z.literal("")]).optional(),
   biggestChallenge: z.enum(challengeValues),
   processType: z.enum(processValues),
   // Optional context gathered on step 1. Every one of these measurably
@@ -77,14 +79,24 @@ export async function POST(request: NextRequest) {
   // the way into step 4, but the flow isn't finished until the equipment
   // check (step 6) hands off. Stamping early meant a mid-flow refresh
   // skipped the remaining steps entirely. Completion is PATCH's job.
+  // Skipped answers must not blank an existing profile value, and
+  // defaultExperienceLevel is non-null, so it is only written when given.
+  const roleSpecLines = [
+    `Target role: ${targetRole}`,
+    targetSector ? `Sector: ${targetSector}` : "",
+    careerStage ? `Level: ${careerStage}` : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
+
   const data = {
     targetRole,
-    targetSector,
+    ...(targetSector ? { targetSector } : {}),
     biggestChallenge,
     processType,
     onboardingSkipped: false,
     // Applied to the live defaults so the very next session differs.
-    defaultExperienceLevel: careerStage,
+    ...(careerStage ? { defaultExperienceLevel: careerStage } : {}),
     ...(challenge ? { defaultFocusArea: challenge.focusArea } : {}),
     // Seeds the practice screen's role field, which is otherwise blank and is
     // the one input standing between a new user and their first question.
@@ -92,8 +104,8 @@ export async function POST(request: NextRequest) {
     // so when one is supplied it leads and the summary follows it rather than
     // being overwritten by it.
     roleSpec: roleSpec?.trim()
-      ? `${roleSpec.trim()}\n\n---\nTarget role: ${targetRole}\nSector: ${targetSector}\nLevel: ${careerStage}`
-      : `Target role: ${targetRole}\nSector: ${targetSector}\nLevel: ${careerStage}`,
+      ? `${roleSpec.trim()}\n\n---\n${roleSpecLines}`
+      : roleSpecLines,
     // Only write the optional extras when given: a candidate who skips them
     // here must not have an existing profile value blanked.
     ...(currentRole?.trim() ? { currentRole: currentRole.trim() } : {}),

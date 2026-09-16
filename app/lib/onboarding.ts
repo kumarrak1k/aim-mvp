@@ -220,19 +220,25 @@ export function buildPlanIntro(input: {
 }): { headline: string; body: string } {
   const c = challengeFor(input.challenge);
   const role = input.role.trim() || "your target role";
-  const stageLabel =
-    CAREER_STAGES.find((s) => s.value === input.stage)?.label.toLowerCase() ?? "candidate";
+  // Sector and career stage are optional from Sep 2026, so every clause built
+  // from them has to disappear cleanly rather than leave "for , pitched at".
+  const sector = input.sector.trim().toLowerCase();
+  const stageLabel = input.stage.trim()
+    ? (CAREER_STAGES.find((s) => s.value === input.stage)?.label.toLowerCase() ?? "candidate")
+    : "";
 
   if (!c) {
+    const written = sector ? `Questions written for ${sector}` : `Questions written for ${role}`;
+    const pitched = stageLabel ? `, pitched at ${stageLabel},` : "";
     return {
       headline: `Here is how we will prepare you for ${role}.`,
-      body: `Questions written for ${input.sector.toLowerCase()}, pitched at ${stageLabel}, and scored the way an assessor would score them.`,
+      body: `${written}${pitched} and scored the way an assessor would score them.`,
     };
   }
 
   return {
     headline: `We will build your practice around one thing first.`,
-    body: `You said you ${c.echo}. Sessions will lean on ${c.coaching}, using questions written for ${role} in ${input.sector.toLowerCase()}.`,
+    body: `You said you ${c.echo}. Sessions will lean on ${c.coaching}, using questions written for ${role}${sector ? ` in ${sector}` : ""}.`,
   };
 }
 

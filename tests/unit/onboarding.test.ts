@@ -97,6 +97,39 @@ describe("buildPlanIntro", () => {
     expect(`${headline} ${body}`).not.toMatch(/ {2}|\s,|\s\./);
   });
 
+  // Career stage and sector became optional in Sep 2026, so the payoff copy
+  // has to read properly when the candidate skipped them.
+  it("reads naturally when no sector was given", () => {
+    const { body } = buildPlanIntro({ ...base, sector: "", challenge: null });
+
+    // The sector clause must disappear, not leave "written for , pitched at".
+    expect(body).not.toMatch(/for\s*,/);
+    expect(body).not.toContain("  ");
+    expect(body).not.toContain("undefined");
+    expect(body).toContain("Operations Analyst");
+  });
+
+  it("reads naturally when no career stage was given", () => {
+    const { body } = buildPlanIntro({ ...base, stage: "", challenge: null });
+
+    expect(body).not.toContain("undefined");
+    expect(body).toContain("Financial services".toLowerCase());
+  });
+
+  it("reads naturally when neither sector nor stage was given", () => {
+    const { headline, body } = buildPlanIntro({
+      ...base,
+      sector: "",
+      stage: "",
+      challenge: "wander",
+    });
+
+    expect(headline.length).toBeGreaterThan(10);
+    expect(body).toContain("Operations Analyst");
+    expect(body).not.toContain("undefined");
+    expect(body).not.toMatch(/\bin\s*[.,]/);
+  });
+
   it("produces different copy for different challenges", () => {
     const a = buildPlanIntro({ ...base, challenge: "blank" }).body;
     const b = buildPlanIntro({ ...base, challenge: "flat" }).body;
