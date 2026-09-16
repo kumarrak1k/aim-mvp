@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/nextjs";
 import { prisma } from "./prisma";
 import type { CandidatePlan } from "./candidatePlan";
 
@@ -122,8 +123,11 @@ export function recordActivity(
           detail: detail ? (detail as object) : undefined,
         },
       })
-    ).catch(() => {
-      // Diagnostics must never break the request they observe.
+    ).catch((error: unknown) => {
+      // Diagnostics must never break the request they observe, but a write that
+      // fails silently is worse than no instrumentation: it looks like the
+      // behaviour never happened. Report it and carry on.
+      Sentry.captureException(error, { level: "warning", extra: { event } });
     });
   } catch {
     // As above — including synchronous throws from a mock.
