@@ -62,6 +62,20 @@ import { stripQuestionLeakageFromTranscript } from "../lib/speechGuards";
 import { AnswerWorkspace } from "./components/AnswerWorkspace";
 import { AssessmentNextPanel } from "./components/AssessmentNextPanel";
 import { CameraWorkspace } from "./components/CameraWorkspace";
+import { OneWayVideoStage } from "./components/OneWayVideoStage";
+import {
+  DEFAULT_VIDEO_SETTINGS,
+  type InterviewFormat,
+  type VideoInterviewSettings,
+} from "@/app/lib/interviewFormat";
+import {
+  beginRetake,
+  canRetake,
+  skipPreparation,
+  startQuestion,
+  tick,
+  type VideoStageState,
+} from "./oneWayVideo";
 import { FeedbackWorkspace } from "./components/FeedbackWorkspace";
 import { QuestionHero } from "./components/QuestionHero";
 import {
@@ -110,6 +124,14 @@ export default function PracticeSessionPage() {
   const [questionMix, setQuestionMix] = useState<QuestionMix | undefined>(undefined);
   // Verbatim text for each "custom" slot in the mix (parallel array, index-matched).
   const [customQuestions, setCustomQuestions] = useState<string[]>([]);
+  // One-way video interview: the format and its timings come from the setup
+  // screen, and the clock itself lives in ./oneWayVideo so it can be proved
+  // without a camera.
+  const [interviewFormat, setInterviewFormat] = useState<InterviewFormat>("traditional");
+  const [videoSettings, setVideoSettings] = useState<VideoInterviewSettings>(
+    DEFAULT_VIDEO_SETTINGS
+  );
+  const [videoStage, setVideoStage] = useState<VideoStageState | null>(null);
   const [assessmentMode, setAssessmentMode] = useState(false);
   const [assignmentToken, setAssignmentToken] = useState<string | undefined>(undefined);
   const [assessmentCentreId, setAssessmentCentreId] = useState<string | undefined>(undefined);
@@ -250,6 +272,14 @@ export default function PracticeSessionPage() {
   // it can unlock iOS audio + grant mic before any automated playback.
   const autoFlowActive =
     isComputer || (tabletAutoAdvance === "on" && firstQuestionPlayed);
+
+  /**
+   * A one-way video interview replaces the whole answering screen: the clock
+   * owns when recording starts and stops, so the guided auto-play path is left
+   * alone rather than racing it.
+   */
+  const isOneWayVideo =
+    interviewFormat === "one_way_video" && !isKeyboardOnly && !assessmentMode && cameraEnabled;
 
   const practiceMode = useMemo<PracticeMode>(() => {
     if (speakerEnabled && cameraEnabled) return "voice-camera";
@@ -550,6 +580,14 @@ export default function PracticeSessionPage() {
     setTotalQuestions(config.totalQuestions ?? DEFAULT_TOTAL_QUESTIONS);
     setQuestionMix(config.questionMix);
     setCustomQuestions(config.customQuestions ?? []);
+    // A recruiter-set assessment must stay comparable between candidates, so it
+    // always uses the coaching flow whatever the candidate's own default is.
+    setInterviewFormat(
+      config.assessmentMode || sessionIsKeyboardOnly
+        ? "traditional"
+        : config.interviewFormat ?? "traditional"
+    );
+    setVideoSettings(config.videoSettings ?? DEFAULT_VIDEO_SETTINGS);
     setAssessmentMode(Boolean(config.assessmentMode));
     setAssignmentToken(config.assignmentToken);
     setAssessmentCentreId(config.assessmentCentreId);
@@ -649,6 +687,11 @@ export default function PracticeSessionPage() {
 
   useEffect(() => {
     if (!question || !speakerEnabled || !autoFlowActive) return;
+    // In a one-way video interview the question is read on screen, as it is on
+    // the employer platforms, and the preparation clock decides when recording
+    // starts. Playing the question aloud here would both race the clock and put
+    // our own voice into the recording.
+    if (isOneWayVideo) return;
     if (!hasUserInteracted) return;
     if (question === lastSpokenQuestionRef.current) return;
 
@@ -681,6 +724,7 @@ export default function PracticeSessionPage() {
     autoFlowActive,
     hasUserInteracted,
     lastSpokenQuestionRef,
+    isOneWayVideo,
     playQuestionWithNaturalAudio,
     question,
     setQuestionAudioMessage,
@@ -689,9 +733,11 @@ export default function PracticeSessionPage() {
 
   useEffect(() => {
     if (!question || !interviewStarted || autoFlowActive) return;
+    if (isOneWayVideo) return;
     void prepareQuestionAudio(question, speakerPreference);
   }, [
     autoFlowActive,
+    isOneWayVideo,
     interviewStarted,
     prepareQuestionAudio,
     question,
@@ -773,6 +819,10 @@ export default function PracticeSessionPage() {
             freePlan,
             questionMix,
             customQuestions,
+            // Without these a resumed one-way interview would come back as the
+            // coaching flow.
+            interviewFormat,
+            videoSettings,
           },
         });
       } catch {
@@ -790,8 +840,10 @@ export default function PracticeSessionPage() {
       focusArea,
       freePlan,
       interviewType,
+      interviewFormat,
       practiceMode,
       questionMix,
+      videoSettings,
       role,
       speakerEnabled,
       speakerPreference,
@@ -1843,6 +1895,156 @@ export default function PracticeSessionPage() {
     saveProgress,
   ]);
 
+  // ── One-way video interview runtime ──────────────────────────────────────
+  // The clock in ./oneWayVideo decides the phase; these effects are the only
+  // things that touch the microphone and camera, so nothing else has to know
+  // about the format.
+
+  /** The question the clock is currently running for, so it starts once. */
+  const videoStageQuestionRef = useRef<string | null>(null);
+  /** The phase the side effects have already acted on. */
+  const videoPhaseRef = useRef<VideoStageState["phase"] | null>(null);
+
+  useEffect(() => {
+    if (!isOneWayVideo || !interviewStarted || interviewFinished) return;
+    if (!question || questionLoading) return;
+    if (question === videoStageQuestionRef.current) return;
+
+    videoStageQuestionRef.current = question;
+    videoPhaseRef.current = "preparing";
+    videoTakeDecidedRef.current = false;
+    setVideoAnswerMissing(false);
+    setVideoStage(startQuestion(videoSettings));
+
+    // The camera comes on for the preparation time, not just for the recording:
+    // framing the shot is half of what that minute is for.
+    if (!cameraReady && (!requiresManualCameraStart || cameraUserStarted)) {
+      void startCamera();
+    }
+  }, [
+    cameraReady,
+    cameraUserStarted,
+    interviewFinished,
+    interviewStarted,
+    isOneWayVideo,
+    question,
+    questionLoading,
+    requiresManualCameraStart,
+    startCamera,
+    videoSettings,
+  ]);
+
+  // Only the phase is in the dependency list: a new interval every second would
+  // never let a second finish.
+  const videoClockRunning =
+    isOneWayVideo && videoStage !== null && videoStage.phase !== "submitting";
+
+  useEffect(() => {
+    if (!videoClockRunning) return;
+
+    const id = window.setInterval(() => {
+      setVideoStage((current) => (current ? tick(current, videoSettings) : current));
+    }, 1000);
+
+    return () => window.clearInterval(id);
+  }, [videoClockRunning, videoSettings]);
+
+  const videoPhase = videoStage?.phase ?? null;
+
+  useEffect(() => {
+    if (!isOneWayVideo || !videoPhase) return;
+    if (videoPhaseRef.current === videoPhase) return;
+    videoPhaseRef.current = videoPhase;
+
+    if (videoPhase === "recording") {
+      void startVoiceInput();
+      return;
+    }
+
+    if (videoPhase === "submitting") {
+      void stopVoiceInput();
+    }
+  }, [isOneWayVideo, startVoiceInput, stopVoiceInput, videoPhase]);
+
+  /**
+   * What happens to a finished take, decided only once the transcript has
+   * settled. Whisper can rescue an answer the browser recogniser missed
+   * entirely, and it finishes after the stop pipeline resolves, so deciding any
+   * earlier would call a good answer silence.
+   */
+  const videoTakeDecidedRef = useRef(false);
+  const [videoAnswerMissing, setVideoAnswerMissing] = useState(false);
+
+  useEffect(() => {
+    if (!isOneWayVideo || videoPhase !== "submitting") return;
+    if (videoTakeDecidedRef.current) return;
+    if (isListening || cleaningTranscript || whisperEnhancing) return;
+    if (feedback || feedbackLoading) return;
+
+    videoTakeDecidedRef.current = true;
+
+    const captured = (rawAnswerTranscriptRef.current || answer).trim();
+    if (!captured) {
+      // Nothing was heard. That is not a second attempt at an answer, so it
+      // never costs a retake.
+      setVideoAnswerMissing(true);
+      return;
+    }
+
+    // With no retake on offer there is nothing to decide, so the answer goes
+    // straight for scoring rather than asking a pointless question.
+    if (videoSettings.retakesAllowed === 0) {
+      void getFeedback();
+    }
+  }, [
+    answer,
+    cleaningTranscript,
+    feedback,
+    feedbackLoading,
+    getFeedback,
+    isListening,
+    isOneWayVideo,
+    videoPhase,
+    videoSettings,
+    whisperEnhancing,
+  ]);
+
+  /** "I'm ready" — stop preparing and start recording now. */
+  const startVideoAnswerNow = useCallback(() => {
+    setHasUserInteracted(true);
+    unlockAudioOutput();
+    setVideoStage((current) => (current ? skipPreparation(current, videoSettings) : current));
+  }, [videoSettings]);
+
+  /** "Finish this answer" — the candidate is done before the timer is. */
+  const submitVideoAnswerNow = useCallback(() => {
+    setVideoStage((current) =>
+      current && current.phase === "recording"
+        ? { ...current, phase: "submitting", secondsLeft: 0 }
+        : current
+    );
+  }, []);
+
+  const retakeVideoAnswer = useCallback(() => {
+    videoTakeDecidedRef.current = false;
+    setVideoAnswerMissing(false);
+    setVideoStage((current) => {
+      if (!current) return current;
+      // A take that captured nothing is not a second attempt, so it is allowed
+      // back to the microphone whatever the format's retake count says.
+      const next = videoAnswerMissing
+        ? { ...current, phase: "recording" as const, secondsLeft: videoSettings.answerSeconds }
+        : beginRetake(current, videoSettings);
+      // The phase effect starts the microphone again when it sees "recording".
+      return next;
+    });
+  }, [videoAnswerMissing, videoSettings]);
+
+  const videoRetakesLeft =
+    videoStage && canRetake(videoStage, videoSettings)
+      ? videoSettings.retakesAllowed - videoStage.retakesUsed
+      : 0;
+
   const resetInterview = useCallback(() => {
     prefetchAbortRef.current?.abort();
     prefetchRef.current = { questionNumber: 0, question: null };
@@ -1859,6 +2061,10 @@ export default function PracticeSessionPage() {
     resetVideoFrames();
     resetTranscript();
     clearAudioSamples();
+
+    setVideoStage(null);
+    videoStageQuestionRef.current = null;
+    videoPhaseRef.current = null;
 
     setQuestion("");
     setAnswer("");
@@ -2269,6 +2475,35 @@ export default function PracticeSessionPage() {
              Windows displays sits just under 1280px, which stacked the camera
              below the fold while Chrome showed the sidebar layout. Column
              minimums are sized so lg (1024px) fits with page padding. */}
+        {isOneWayVideo && videoStage ? (
+          <OneWayVideoStage
+            question={question}
+            questionLoading={questionLoading}
+            currentQuestionNumber={currentQuestionNumber}
+            totalQuestions={totalQuestions}
+            stage={videoStage}
+            retakesLeft={videoRetakesLeft}
+            videoRef={videoRef}
+            cameraReady={cameraReady}
+            cameraError={cameraError}
+            cameraRequiresTap={cameraRequiresTap}
+            processing={
+              feedbackLoading ||
+              cleaningTranscript ||
+              whisperEnhancing ||
+              voiceAnalysisLoading ||
+              videoAnalysisLoading
+            }
+            answerScored={Boolean(feedback)}
+            answerMissing={videoAnswerMissing}
+            onStartCameraFromTap={startCameraFromTap}
+            onReadyNow={startVideoAnswerNow}
+            onSubmitNow={submitVideoAnswerNow}
+            onRetake={retakeVideoAnswer}
+            onContinue={() => (feedback ? void nextStep() : void getFeedback())}
+            onExit={() => setExitDialogOpen(true)}
+          />
+        ) : (
         <div className="grid items-start gap-3 lg:grid-cols-[minmax(340px,0.82fr)_minmax(600px,1.18fr)]">
           <QuestionHero
             question={question}
@@ -2345,8 +2580,9 @@ export default function PracticeSessionPage() {
             )}
           </div>
         </div>
+        )}
 
-        {feedback && (
+        {feedback && (!isOneWayVideo || videoSettings.feedbackTiming === "each") && (
           <div id="session-feedback" className="mt-3 scroll-mt-24">
             {assessmentMode ? (
               <AssessmentNextPanel
