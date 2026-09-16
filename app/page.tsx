@@ -4,6 +4,7 @@ import { createPageMetadata } from "@/app/config/seo";
 import { CandidateShell } from "@/app/components/marketing/CandidateShell";
 import { DemoShowcase } from "@/app/components/marketing/DemoShowcase";
 import { DemoVideo } from "@/app/components/marketing/DemoVideo";
+import { HomeCta } from "@/app/components/marketing/HomeCta";
 
 export const metadata: Metadata = createPageMetadata({
   path: "/",
@@ -118,24 +119,7 @@ export default async function ForCandidatesPage() {
           case study, competency interview and presentation, all scored.
         </p>
 
-        <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
-          <Link
-            href="/for-candidates/sign-up"
-            className="w-full rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-8 py-4 text-center text-base font-bold text-on-accent shadow-2xl shadow-purple-900/40 transition hover:scale-[1.02] sm:w-auto"
-          >
-            Start free →
-          </Link>
-          <Link
-            href="/interview-practice"
-            className="w-full rounded-2xl border border-white/[0.1] bg-white/[0.04] px-8 py-4 text-center text-base font-bold text-white transition hover:bg-white/[0.08] sm:w-auto"
-          >
-            How it works
-          </Link>
-        </div>
-
-        <p className="mt-5 text-xs text-gray-400">
-          3 days free. No payment details required.
-        </p>
+        <HomeCta notePosition="below" secondary="how-it-works" />
       </section>
 
       {/* Two products */}
@@ -350,21 +334,7 @@ export default async function ForCandidatesPage() {
           <h2 className="mx-auto mt-3 max-w-2xl text-3xl font-bold tracking-tight sm:text-4xl">
             Prepare with the same standard your interviewers will apply.
           </h2>
-          <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-gray-400">
-            3 days free. No payment details required.
-          </p>
-          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Link href="/for-candidates/sign-up">
-              <button className="w-full rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-8 py-4 text-base font-bold text-on-accent shadow-2xl shadow-purple-900/40 transition hover:scale-[1.02] sm:w-auto">
-                Start free →
-              </button>
-            </Link>
-            <Link href="/for-candidates/sign-in">
-              <button className="w-full rounded-2xl border border-white/[0.1] bg-white/[0.04] px-8 py-4 text-base font-bold text-white transition hover:bg-white/[0.08] sm:w-auto">
-                Already have an account
-              </button>
-            </Link>
-          </div>
+          <HomeCta notePosition="above" />
         </div>
       </section>
       </CandidateShell>

@@ -238,6 +238,8 @@ export default function PracticeSessionPage() {
 
   const awaitingAutoRecordQuestionRef = useRef<string | null>(null);
   const questionPlaybackStartedRef = useRef(false);
+  /** True while a manual replay has the microphone paused mid-answer. */
+  const resumeRecordingAfterReplayRef = useRef(false);
   /** Mirror of tabletAutoAdvance so stable playback callbacks read the latest. */
   const tabletAutoAdvanceRef = useRef<"ask" | "on" | "off">("ask");
   /** Guards the one-time first-play handling (arm / prompt) per interview. */
@@ -427,7 +429,15 @@ export default function PracticeSessionPage() {
     await wait(ECHO_BUFFER_MS);
     isSpeakingQuestionRef.current = false;
     questionPlaybackStartedRef.current = false;
-  }, [isSpeakingQuestionRef]);
+
+    // Recording was paused for the replay: pick it up again. The accumulated
+    // answer is untouched, because stopping the recogniser does not clear the
+    // transcript it has already finalised.
+    if (resumeRecordingAfterReplayRef.current) {
+      resumeRecordingAfterReplayRef.current = false;
+      startRecognitionOnly();
+    }
+  }, [isSpeakingQuestionRef, startRecognitionOnly]);
 
   const maybeStartPendingAutoRecord = useCallback(async () => {
     const pendingQuestion = awaitingAutoRecordQuestionRef.current;
@@ -1697,9 +1707,26 @@ export default function PracticeSessionPage() {
     setHasUserInteracted(true);
     setSpeakerEnabled(true);
 
+    // Replaying the question with the microphone still open feeds our own
+    // voice into the recogniser, and its buffer spans the whole playback: the
+    // question then surfaced inside the candidate's answer as soon as the echo
+    // guard lifted. Muting results is not enough, so recording is paused for
+    // the replay and resumed after the echo buffer with the answer intact.
+    if (isListening) {
+      resumeRecordingAfterReplayRef.current = true;
+      stopRecognitionOnly();
+    }
+
     void playQuestionWithNaturalAudio(question, false);
     lastSpokenQuestionRef.current = question;
-  }, [isKeyboardOnly, lastSpokenQuestionRef, playQuestionWithNaturalAudio, question]);
+  }, [
+    isKeyboardOnly,
+    isListening,
+    lastSpokenQuestionRef,
+    playQuestionWithNaturalAudio,
+    question,
+    stopRecognitionOnly,
+  ]);
 
   const startGuidedAnswer = useCallback(async () => {
     if (!question.trim() || questionLoading) return;
