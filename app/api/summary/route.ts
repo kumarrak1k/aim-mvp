@@ -136,6 +136,11 @@ type PremiumSummary = {
     focus: string;
     task: string;
   }[];
+  /**
+   * No longer requested or rendered: the report shows each question's model
+   * answer inside that question's own card, in the order they were asked.
+   * Kept optional so sessions saved before that still load.
+   */
   star_model_answer?: {
     question: string;
     situation: string;
@@ -610,14 +615,7 @@ Return ONLY valid JSON in this exact shape:
       "focus": "string",
       "task": "string"
     }
-  ],
-  "star_model_answer": {
-    "question": "string",
-    "situation": "string",
-    "task": "string",
-    "action": "string",
-    "result": "string"
-  }
+  ]
 }
 
 Rules:
@@ -647,7 +645,6 @@ language proficiency itself.
 - next_steps must contain 3 to 5 items.
 - seven_day_action_plan must contain exactly 7 days.
 - If video analysis used a neutral fallback score, mention that camera tracking was limited and avoid pretending there was detailed evidence.
-- star_model_answer: write a realistic, role-specific STAR model answer for the weakest question. Each of the four fields (situation, task, action, result) must be 2–4 sentences. The answer should be specific, professional, and demonstrate exactly what a strong candidate would say. Set "question" to the verbatim weakest question text.
 ${isTypedMode
   ? `- IMPORTANT: This session used TYPED (keyboard-only) mode. No audio or video was recorded.
   - Set pace, voice_delivery and camera_presence in category_breakdown to 0.

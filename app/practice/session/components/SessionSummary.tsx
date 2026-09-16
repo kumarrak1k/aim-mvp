@@ -548,52 +548,12 @@ export function SessionSummary({
             </div>
           )}
 
-          {/* ── STAR model answer ───────────────────────────────────────── */}
-          {summary.star_model_answer && (
-            <div className="mb-4 rounded-[1.7rem] border border-cyan-400/20 bg-cyan-400/[0.05] p-5 backdrop-blur-2xl sm:p-6">
-              <p className="mb-1 text-xs font-bold tracking-wide text-cyan-300">
-                STAR model answer
-              </p>
-              <p className="mb-5 text-sm text-gray-400">
-                A strong example answer for your weakest question, structured using the{" "}
-                <span className="font-semibold text-cyan-200">
-                  Situation → Task → Action → Result
-                </span>{" "}
-                framework.
-              </p>
-
-              <p className="mb-5 text-sm font-semibold leading-6 text-white">
-                Q: {summary.star_model_answer.question}
-              </p>
-
-              <div className="space-y-4">
-                <StarSection
-                  letter="S"
-                  label="Situation"
-                  color="cyan"
-                  text={summary.star_model_answer.situation}
-                />
-                <StarSection
-                  letter="T"
-                  label="Task"
-                  color="purple"
-                  text={summary.star_model_answer.task}
-                />
-                <StarSection
-                  letter="A"
-                  label="Action"
-                  color="fuchsia"
-                  text={summary.star_model_answer.action}
-                />
-                <StarSection
-                  letter="R"
-                  label="Result"
-                  color="emerald"
-                  text={summary.star_model_answer.result}
-                />
-              </div>
-            </div>
-          )}
+          {/* The STAR model answer used to be hoisted here, for whichever
+              question scored lowest. It duplicated the model answer already
+              shown inside that question's own card, and pulling one question
+              out of order made the report harder to read than simply working
+              down it. Model answers now appear per question, in the order they
+              were asked. */}
 
           {/* ── Per-question breakdown ──────────────────────────────────── */}
           {results.length > 0 && (
