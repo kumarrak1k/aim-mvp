@@ -33,7 +33,11 @@ Answers are still transcribed and scored exactly as now, so progress saving, the
 
 ## Naming and legal
 
-Mode labels stay generic: "Traditional interview" and "One-way video interview". Explanatory copy may say "the format used by employer platforms such as HireVue, Sonru and Spark Hire", with the disclaimer that those are trade marks of their owners and AI Career Mentor is independent, not affiliated or endorsed, and simulates the general format rather than any platform's scoring. The platform names never appear in a mode name, a product name or ad copy without a solicitor's review.
+Mode labels stay generic: "Traditional interview" and "One-way video interview".
+
+**Decided 16 September 2026 (Rakesh): the product names no platform at all.** The earlier plan allowed explanatory copy to say "such as HireVue, Sonru and Spark Hire" with a disclaimer. It does not. The setup screen says "employer video interview platforms" and carries the independence note: AI Career Mentor is not affiliated with, endorsed by or connected to any of them, and does not reproduce any platform's own scoring. Nothing in the product needs a solicitor's review as a result.
+
+This covers the product. Editorial content that describes the format for readers — the async video interview guide, and the company process guides that state which platform a named employer uses — names them descriptively, which is ordinary nominative use and carries SEO value. Anything new that names a platform in a mode name, a product name or ad copy still needs a solicitor first.
 
 ## Commits
 
@@ -51,7 +55,7 @@ Mode labels stay generic: "Traditional interview" and "One-way video interview".
 - **Commit 4 — onboarding and switching: done.** The format is asked once in the equipment check, at the moment the candidate is looking at their own camera preview, and stored as the profile default. Either format can be switched mid-session; the switch lands at the next question so the answer in progress is never thrown away.
 - **Commit 5 — copy and the .com mirror: partly done.** The independence note is on the .co.uk setup screen. The .com setup UI and its French, German and Spanish strings are **deferred while .com is parked** (307 to .co.uk): it has the plumbing, the databases and the shared library, so the mirror is a UI-and-translation job to do when .com is unparked.
 
-Open question for Rakesh: whether the explanatory copy should name platforms (HireVue, Sonru, Spark Hire). It currently does not — it says "employer video interview platforms" — which needs no solicitor's review.
+Answered 16 September: the copy names no platform. See Naming and legal above.
 
 ## Things that will bite
 
