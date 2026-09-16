@@ -95,7 +95,11 @@ export async function POST(request: Request) {
       line_items: [{ price: priceId, quantity: 1 }],
       success_url: absoluteUrl("/company/dashboard?payment=success"),
       cancel_url: absoluteUrl("/company/dashboard?payment=cancelled"),
-      allow_promotion_codes: true,
+      // Deliberately no promotion code field. Candidate codes (the student and
+      // seasonal offers) are percentage discounts created for the Pro plan, and
+      // Stripe would happily apply one to a Team or Business subscription if it
+      // were typed here. No corporate offer exists today; if one is created,
+      // turn this back on and scope that coupon to the corporate products.
       // companyId on session so checkout.session.completed can update the Company record
       metadata: { companyId: company.id },
       // companyId + planId on subscription so renewal events can update it too
