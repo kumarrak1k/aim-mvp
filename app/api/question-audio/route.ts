@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { checkRateLimit } from "@/app/lib/rateLimit";
 import { MODEL_TTS } from "@/app/lib/aiModels";
+import { recordServiceUsage } from "@/app/lib/serviceUsage";
 import {
   ELEVENLABS_MODEL,
   ELEVENLABS_VOICE_SETTINGS,
@@ -339,7 +340,21 @@ async function synthesiseQuestion(text: string, speakerPreference: SpeakerPrefer
       speakerPreference
     );
 
-    if (response.ok) return { response, model: ELEVENLABS_MODEL };
+    if (response.ok) {
+      // ElevenLabs reports what it charged on the response, which is the only
+      // trustworthy number: it already accounts for the model's rate. Metered
+      // here so the admin page and the low-credit alert both work from what
+      // was actually spent rather than an estimate.
+      void recordServiceUsage({
+        provider: "elevenlabs",
+        operation: "question-audio",
+        units: text.length,
+        unitType: "characters",
+        credits: Number(response.headers.get("character-cost") ?? 0),
+      });
+
+      return { response, model: ELEVENLABS_MODEL };
+    }
 
     // Persistent failure: fall through to OpenAI rather than leave the
     // candidate reading in silence. Logged, because a voice change is the
@@ -352,6 +367,13 @@ async function synthesiseQuestion(text: string, speakerPreference: SpeakerPrefer
 
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) throw new Error("No interviewer voice is configured.");
+
+  void recordServiceUsage({
+    provider: "openai",
+    operation: "question-audio",
+    units: text.length,
+    unitType: "characters",
+  });
 
   return fetchSpeechStream({ apiKey, text, speakerPreference });
 }

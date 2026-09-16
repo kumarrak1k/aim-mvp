@@ -9,6 +9,13 @@ import {
 } from "@/app/lib/adminCohort";
 import { LISTED_STATUS_FILTER } from "@/app/lib/practiceSessionStatus";
 import { AdminClient, type AdminUser, type AdminOverview } from "./AdminClient";
+import {
+  ELEVENLABS_PLANS,
+  allowanceState,
+  creditsRemaining,
+  elevenLabsCreditsUsed,
+  usageThisMonth,
+} from "@/app/lib/serviceUsage";
 
 export const dynamic = "force-dynamic";
 // Headroom for warmDb's full retry window (~28s) plus the query batch, for
@@ -487,6 +494,52 @@ export default async function AdminPage() {
     .sort((a, b) => b.total - a.total)
     .slice(0, 10);
 
+  // ── What the platform costs to run ───────────────────────────────────────
+  // Metered from our own rows rather than from provider dashboards, so it
+  // works for every service and needs no extra API permissions. Non-fatal:
+  // the admin page must still render if the meter is empty or unreachable.
+  const runningCosts = await (async () => {
+    const voicePlan = (process.env.ELEVENLABS_PLAN || "free").toLowerCase();
+    const monthLabel = new Date().toLocaleDateString("en-GB", {
+      month: "long",
+      year: "numeric",
+    });
+
+    try {
+      const [providers, creditsUsed] = await Promise.all([
+        usageThisMonth(),
+        elevenLabsCreditsUsed(),
+      ]);
+
+      return {
+        monthLabel,
+        providers,
+        totalPence: providers.reduce((total, row) => total + row.costPence, 0),
+        voice: {
+          plan: voicePlan,
+          allowance: ELEVENLABS_PLANS[voicePlan] ?? ELEVENLABS_PLANS.free,
+          used: creditsUsed,
+          remaining: creditsRemaining({ plan: voicePlan, creditsUsed }),
+          state: allowanceState({ plan: voicePlan, creditsUsed }),
+        },
+      };
+    } catch (error) {
+      console.error("ADMIN RUNNING COSTS ERROR:", error);
+      return {
+        monthLabel,
+        providers: [],
+        totalPence: 0,
+        voice: {
+          plan: voicePlan,
+          allowance: ELEVENLABS_PLANS[voicePlan] ?? ELEVENLABS_PLANS.free,
+          used: 0,
+          remaining: ELEVENLABS_PLANS[voicePlan] ?? ELEVENLABS_PLANS.free,
+          state: "ok" as const,
+        },
+      };
+    }
+  })();
+
   const overview: AdminOverview = {
     acquisition,
     newUsers7d: newWithin(7),
@@ -532,6 +585,7 @@ export default async function AdminPage() {
       finished: candidates.filter((x) => x.practiceCount > 0).length,
       paying: payingCandidates.length,
     },
+    runningCosts,
   };
 
   // Derive adminEmail from the getUserList result — avoids a separate getUser() call.

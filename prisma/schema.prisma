@@ -462,3 +462,32 @@ model TermsAcceptance {
   @@index([clerkUserId])
   @@index([version])
 }
+
+/**
+ * What the paid services cost us, recorded as we spend.
+ *
+ * Every provider bills differently and none of them tells us in one place, so
+ * the platform meters its own usage: one row per external call worth money,
+ * with the units it consumed and what we believe that costs. It answers two
+ * questions Rakesh actually asks — how much is this month running at, and how
+ * close is a prepaid allowance to running out.
+ */
+model ServiceUsage {
+  id        String   @id @default(cuid())
+  /** "elevenlabs" | "openai" | "whisper" — who is charging us. */
+  provider  String
+  /** What we asked for, e.g. "question-audio", "interview-question". */
+  operation String
+  /** Units consumed: characters, tokens, or seconds, per unitType. */
+  units     Int      @default(0)
+  /** "characters" | "credits" | "tokens" | "seconds". */
+  unitType  String
+  /** Provider-reported credits where they tell us (ElevenLabs does). */
+  credits   Int      @default(0)
+  /** Our best estimate in pence, so a month can be totalled without maths. */
+  costPence Float    @default(0)
+  createdAt DateTime @default(now())
+
+  @@index([provider, createdAt])
+  @@index([createdAt])
+}

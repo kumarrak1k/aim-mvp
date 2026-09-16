@@ -18,6 +18,10 @@
     {
       "path": "/api/cron/prune-analytics",
       "schedule": "0 4 * * *"
+    },
+    {
+      "path": "/api/cron/voice-credits",
+      "schedule": "0 8 * * *"
     }
   ]
 }

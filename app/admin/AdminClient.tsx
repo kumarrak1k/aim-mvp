@@ -93,6 +93,29 @@ export type AdminOverview = {
     finished: number;
     paying: number;
   };
+  /**
+   * What the platform costs to run this month. Everything metered here is a
+   * paid external service; anything free does not appear, because the point is
+   * to see the bill coming rather than to count calls.
+   */
+  runningCosts: {
+    monthLabel: string;
+    providers: Array<{
+      provider: string;
+      operations: number;
+      units: number;
+      credits: number;
+      costPence: number;
+    }>;
+    totalPence: number;
+    voice: {
+      plan: string;
+      allowance: number;
+      used: number;
+      remaining: number;
+      state: "ok" | "low" | "critical" | "exhausted";
+    };
+  };
 };
 
 // ── Membership helpers ────────────────────────────────────────────────────────
@@ -813,6 +836,9 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
           })}
         </div>
       </div>
+
+      {/* What the platform costs to run this month */}
+      <RunningCostsPanel costs={overview.runningCosts} />
 
       {/* Acquisition channels + campaign link builder */}
       <div className="mb-8 grid gap-4 lg:grid-cols-2">
@@ -1552,6 +1578,94 @@ const LINK_PRESETS: Array<{ label: string; source: string; medium: string; campa
   { label: "University pilot", source: "uni",      medium: "partner",   campaign: "pilot" },
   { label: "Google Ads",       source: "google",   medium: "cpc",       campaign: "search" },
 ];
+
+/**
+ * Running costs: every paid external service, month to date.
+ *
+ * Rakesh asked for this so the monthly bill is visible in the same place as
+ * the numbers it pays for, rather than spread across four provider dashboards.
+ * The voice allowance is called out separately because it is prepaid: when it
+ * runs out the questions stop being read aloud, which is a product failure
+ * rather than a billing footnote.
+ */
+function RunningCostsPanel({ costs }: { costs: AdminOverview["runningCosts"] }) {
+  const pounds = (pence: number) => `£${(pence / 100).toFixed(2)}`;
+  const share =
+    costs.voice.allowance > 0
+      ? Math.round((costs.voice.remaining / costs.voice.allowance) * 100)
+      : 0;
+
+  const voiceTone =
+    costs.voice.state === "exhausted" || costs.voice.state === "critical"
+      ? "border-red-400/30 bg-red-400/10 text-red-100"
+      : costs.voice.state === "low"
+        ? "border-amber-300/30 bg-amber-300/10 text-amber-100"
+        : "border-emerald-300/20 bg-emerald-300/10 text-emerald-100";
+
+  return (
+    <div className="mb-8 rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-4">
+      <div className="mb-4 flex flex-wrap items-baseline justify-between gap-2">
+        <p className="text-xs font-semibold text-gray-400">
+          Running costs <span className="text-gray-400">· {costs.monthLabel}, paid services only</span>
+        </p>
+        <p className="text-sm font-bold text-white">{pounds(costs.totalPence)} so far</p>
+      </div>
+
+      <div className={`mb-4 rounded-xl border px-4 py-3 ${voiceTone}`}>
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <p className="text-sm font-bold">Interviewer voice · {costs.voice.plan} plan</p>
+          <p className="text-sm font-bold tabular-nums">
+            {costs.voice.remaining.toLocaleString()} of {costs.voice.allowance.toLocaleString()} credits left ({share}%)
+          </p>
+        </div>
+        <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-black/30">
+          <div
+            className="h-full rounded-full bg-current"
+            style={{ width: `${Math.max(0, Math.min(100, share))}%` }}
+          />
+        </div>
+        {costs.voice.state !== "ok" && (
+          <p className="mt-2 text-xs leading-5">
+            {costs.voice.state === "exhausted"
+              ? "Questions are no longer read in the chosen voice. Upgrade to restore it."
+              : "Upgrade before this runs out — support@aicareermentor.co.uk has been emailed."}
+          </p>
+        )}
+      </div>
+
+      {costs.providers.length === 0 ? (
+        <p className="text-sm text-gray-400">Nothing metered yet this month.</p>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-sm">
+            <thead>
+              <tr className="text-[12px] uppercase tracking-wide text-gray-400">
+                <th className="py-1 pr-4 font-semibold">Service</th>
+                <th className="py-1 pr-4 text-right font-semibold">Calls</th>
+                <th className="py-1 pr-4 text-right font-semibold">Units</th>
+                <th className="py-1 text-right font-semibold">Cost</th>
+              </tr>
+            </thead>
+            <tbody>
+              {costs.providers.map((row) => (
+                <tr key={row.provider} className="border-t border-white/5">
+                  <td className="py-1.5 pr-4 font-semibold text-white">{row.provider}</td>
+                  <td className="py-1.5 pr-4 text-right tabular-nums text-gray-300">
+                    {row.operations.toLocaleString()}
+                  </td>
+                  <td className="py-1.5 pr-4 text-right tabular-nums text-gray-300">
+                    {row.credits > 0 ? `${row.credits.toLocaleString()} credits` : row.units.toLocaleString()}
+                  </td>
+                  <td className="py-1.5 text-right tabular-nums text-white">{pounds(row.costPence)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+}
 
 /**
  * Builds UTM-tagged links so every channel post/ad can be traced back in the
