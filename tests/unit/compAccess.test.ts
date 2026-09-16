@@ -13,10 +13,10 @@ const future = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
 const past = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
 
 describe("comp access is distinguishable from free", () => {
-  it("grants Professional without setting isPaid or isTrial", () => {
+  it("grants Pro without setting isPaid or isTrial", () => {
     const plan = resolveCandidatePlan({ compPlan: "professional", compUntil: future });
-    expect(plan.planName).toBe("Professional");
-    expect(plan.isProfessional).toBe(true);
+    expect(plan.planName).toBe("Pro");
+    expect(plan.isPro).toBe(true);
     expect(plan.isActive).toBe(true);
     // The exact combination that made comp look like a free user.
     expect(plan.isPaid).toBe(false);
@@ -42,11 +42,12 @@ describe("comp access is distinguishable from free", () => {
     expect(plan.compUntil).toBeNull();
   });
 
-  it("supports a Plus-tier comp grant", () => {
+  // Grants written under the old tiers still work: everything is Pro now.
+  it("honours a grant recorded as the old Plus tier", () => {
     const plan = resolveCandidatePlan({ compPlan: "plus", compUntil: future });
-    expect(plan.planName).toBe("Plus");
+    expect(plan.planName).toBe("Pro");
     expect(plan.isComp).toBe(true);
-    expect(plan.isProfessional).toBe(false);
+    expect(plan.isPro).toBe(true);
   });
 
   it("lets a real paid plan take precedence over comp", () => {
@@ -56,7 +57,7 @@ describe("comp access is distinguishable from free", () => {
       compPlan: "plus",
       compUntil: future,
     });
-    expect(plan.planName).toBe("Professional");
+    expect(plan.planName).toBe("Pro");
     expect(plan.isPaid).toBe(true);
     expect(plan.isComp).toBe(false);
   });

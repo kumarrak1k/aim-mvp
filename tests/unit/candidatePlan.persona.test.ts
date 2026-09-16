@@ -44,36 +44,47 @@ describe("resolveCandidatePlan — persona matrix", () => {
     expect(p.isTrial).toBe(false);
   });
 
-  it("Trial: active 7-day reverse trial → Plus access (not Professional), isTrial", () => {
+  it("Trial: the no-card trial grants the whole product, isTrial", () => {
     const p = resolveCandidatePlan(PERSONAS.trial);
-    expect(p.planName).toBe("Plus");
-    expect(p.effectivePlan).toBe("plus");
+    expect(p.planName).toBe("Pro");
+    expect(p.effectivePlan).toBe("pro");
     expect(p.isTrial).toBe(true);
     expect(p.isPaid).toBe(false);
     expect(p.isUnlimited).toBe(true);
-    expect(p.isProfessional).toBe(false);
+    expect(p.isPro).toBe(true);
     expect(p.trialDaysRemaining).toBe(7);
   });
 
-  it("Plus (paid): active plus subscription → Plus, unlimited but not Professional", () => {
+  // The retired tiers still exist on old subscriptions: those people keep the
+  // full product rather than being dropped to Free by a pricing change.
+  it("Legacy Plus subscriber → Pro", () => {
     const p = resolveCandidatePlan(PERSONAS.plus);
-    expect(p.planName).toBe("Plus");
-    expect(p.effectivePlan).toBe("plus");
+    expect(p.planName).toBe("Pro");
+    expect(p.effectivePlan).toBe("pro");
     expect(p.isPaid).toBe(true);
-    expect(p.paidPlanName).toBe("Plus");
+    expect(p.paidPlanName).toBe("Pro");
     expect(p.isUnlimited).toBe(true);
-    expect(p.isProfessional).toBe(false);
+    expect(p.isPro).toBe(true);
     expect(p.isTrial).toBe(false);
   });
 
-  it("Professional (paid): active professional subscription → Professional", () => {
+  it("Legacy Professional subscriber → Pro", () => {
     const p = resolveCandidatePlan(PERSONAS.professional);
-    expect(p.planName).toBe("Professional");
-    expect(p.effectivePlan).toBe("professional");
+    expect(p.planName).toBe("Pro");
+    expect(p.effectivePlan).toBe("pro");
     expect(p.isPaid).toBe(true);
-    expect(p.paidPlanName).toBe("Professional");
-    expect(p.isProfessional).toBe(true);
+    expect(p.paidPlanName).toBe("Pro");
+    expect(p.isPro).toBe(true);
     expect(p.isUnlimited).toBe(true);
+  });
+
+  it("Pro (paid): each billing period resolves the same", () => {
+    for (const planId of ["pro_monthly", "pro_quarterly", "pro_annual"]) {
+      const p = resolveCandidatePlan({ subscriptionStatus: "active", stripePlanId: planId });
+      expect(p.planName).toBe("Pro");
+      expect(p.isPaid).toBe(true);
+      expect(p.isUnlimited).toBe(true);
+    }
   });
 
   // ── Precedence / edge cases the gates rely on ─────────────────────────────
@@ -87,7 +98,7 @@ describe("resolveCandidatePlan — persona matrix", () => {
     });
     expect(p.isPaid).toBe(true);
     expect(p.isTrial).toBe(false);
-    expect(p.planName).toBe("Professional");
+    expect(p.planName).toBe("Pro");
   });
 
   it("null / empty metadata → Free", () => {
@@ -96,17 +107,17 @@ describe("resolveCandidatePlan — persona matrix", () => {
   });
 
   it("past_due grants a grace window (mirrors corporate dunning): keeps paid access, flags isPastDue", () => {
-    const p = resolveCandidatePlan({ subscriptionStatus: "past_due", stripePlanId: "plus_monthly" });
+    const p = resolveCandidatePlan({ subscriptionStatus: "past_due", stripePlanId: "pro_monthly" });
     expect(p.isPaid).toBe(true);
-    expect(p.planName).toBe("Plus");
-    expect(p.effectivePlan).toBe("plus");
+    expect(p.planName).toBe("Pro");
+    expect(p.effectivePlan).toBe("pro");
     expect(p.isUnlimited).toBe(true);
     expect(p.isPastDue).toBe(true);
   });
 
-  it("past_due on Professional keeps Professional features during the grace window", () => {
+  it("past_due keeps every feature during the grace window", () => {
     const p = resolveCandidatePlan({ subscriptionStatus: "past_due", stripePlanId: "professional_annual" });
-    expect(p.isProfessional).toBe(true);
+    expect(p.isPro).toBe(true);
     expect(p.isPastDue).toBe(true);
   });
 
@@ -116,8 +127,8 @@ describe("resolveCandidatePlan — persona matrix", () => {
   });
 
   it("Stripe 'trialing' status counts as paid/active", () => {
-    const p = resolveCandidatePlan({ subscriptionStatus: "trialing", stripePlanId: "plus_monthly" });
+    const p = resolveCandidatePlan({ subscriptionStatus: "trialing", stripePlanId: "pro_monthly" });
     expect(p.isPaid).toBe(true);
-    expect(p.paidPlanName).toBe("Plus");
+    expect(p.paidPlanName).toBe("Pro");
   });
 });

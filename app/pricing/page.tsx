@@ -11,7 +11,7 @@ export const metadata: Metadata = createPageMetadata({
   path: "/pricing",
   title: "Candidate Pricing",
   description:
-    "Transparent candidate pricing for AI interview practice and assessment centre coaching. Every account starts with a 3-day free trial, no payment details required. Annual plans save up to 28%.",
+    "One plan for AI interview practice and assessment centre coaching, from £15 a month. Every account starts with a 3-day free trial, no payment details required. Pay quarterly and save 15%, or yearly and save 33%.",
   keywords: [
     "AI interview coach pricing",
     "assessment centre pricing",
@@ -37,37 +37,37 @@ const faqs = [
   {
     question: "Is there a free trial?",
     answer:
-      "Yes. Every new account starts with a 3-day free trial: unlimited practice with voice and camera coaching, no payment details required. (Mock assessment centres and career documents are on the Professional plan.) When the trial ends you move to the Free plan automatically (no charge), and you can upgrade any time.",
+      "Yes. Every new account starts with 3 days free and no payment details. You get the whole product during those days, not a cut-down version: unlimited interview practice, voice and camera modes, the mock assessment centre and the CV and Application Studio. The trial ends on its own and nothing is charged unless you choose to subscribe.",
   },
   {
-    question: "Can I switch between monthly and annual billing?",
+    question: "What happens when the trial ends?",
     answer:
-      "Yes. You can switch at any time from your account settings. Annual billing is charged upfront and gives you up to 28% off versus monthly.",
+      "You keep your account, your saved interviews, your reports and the free tools. To start a new interview after the trial you subscribe to Pro.",
   },
   {
-    question: "What happens when my trial ends, or I reach the free limit?",
+    question: "Why is there only one plan?",
     answer:
-      "After your 3-day trial you move to the Free plan, which includes 3 keyboard-only practice sessions. Once those are used you can upgrade to Plus for unlimited practice with voice and camera, or Professional to add mock assessment centres.",
+      "Splitting the product into tiers meant most people practised on a thin version of it and judged us on that. One plan is simpler to understand and means everyone gets the part that actually helps.",
   },
   {
-    question: "Does the Professional plan include assessment centre practice?",
+    question: "Can I switch between monthly, quarterly and yearly?",
     answer:
-      "Interview practice (competency, technical, and behavioural) is included on Plus. The full mock assessment centre (case study, interview, and presentation) is a Professional plan feature.",
+      "Yes, at any time from your account. Quarterly saves 15% against paying monthly and yearly saves 33%. Switching keeps you in the currency you signed up in.",
   },
   {
-    question: "Can I customise how many questions I get and what types?",
+    question: "Is everything included?",
     answer:
-      "Yes, on the Professional plan. You can set your session length from 3 to 10 questions and build a hybrid question mix: for example, 3 competency, 3 technical, 2 leadership and 1 motivation question in a single session. This lets you replicate the exact interview format you are preparing for. Free and Plus sessions use 5 questions of the type selected at setup.",
+      "Yes. Unlimited practice in typed, voice and voice with camera modes, scored feedback and a model answer on every question, the full mock assessment centre (case study, interview and presentation), the CV and Application Studio, custom session length and question mix, and your progress tracked over time.",
   },
   {
     question: "Can I cancel at any time?",
     answer:
-      "Yes. Monthly plans can be cancelled at any time with no penalty. Annual plans are charged for the full year upfront. Contact support if you need to discuss early cancellation. Every paid plan also comes with a 7-day money-back guarantee, no questions asked.",
+      "Yes. Cancel from your account and you keep access until the end of the period you have paid for. Quarterly and yearly plans are charged upfront. Every paid plan comes with a 7-day money-back guarantee, no questions asked.",
   },
   {
     question: "Is my data deleted when I cancel?",
     answer:
-      "You stay in control of your data. You can permanently delete your saved practice sessions and profile at any time from your profile page, or email privacy@aicareermentor.co.uk to request full deletion. If you cancel a paid plan you move to the Free plan and keep access to your saved data unless you delete it.",
+      "You stay in control of your data. You can permanently delete your saved practice sessions and profile at any time from your profile page, or email privacy@aicareermentor.co.uk to request full deletion. Cancelling on its own does not delete anything: your saved interviews and reports stay available to you.",
   },
 ];
 
@@ -92,11 +92,11 @@ export default async function CandidatePricingPage() {
       />
       <section className="mx-auto max-w-5xl px-4 pb-12 pt-1 text-center sm:px-6 sm:pt-3">
         <h1 className="text-3xl font-bold leading-[1.04] tracking-tight sm:text-4xl">
-          Start free. Upgrade when the interview matters.
+          Three days free. Then one plan, everything included.
         </h1>
         <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-gray-400 sm:text-lg sm:leading-9">
-          Plans are built around how seriously you&rsquo;re preparing, from
-          first-time practice to full assessment centre prep.
+          No payment details to start, and no cut-down version to be
+          disappointed by. Pay monthly, or save by paying quarterly or yearly.
         </p>
       </section>
 

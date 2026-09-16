@@ -48,11 +48,27 @@ function reversePriceMap(entries: Array<[string | undefined, string]>): Record<s
 }
 
 const CANDIDATE_PLAN_IDS = new Set([
+  "pro_monthly",
+  "pro_quarterly",
+  "pro_annual",
+  // Retired tiers: still live on existing subscriptions.
   "plus_monthly",
   "plus_annual",
   "professional_monthly",
   "professional_annual",
 ]);
+
+/** Product id → plan id for the plans currently on sale. */
+function productPlanMap(): Record<string, string> {
+  const entries: Array<[string | undefined, string]> = [
+    [process.env.STRIPE_PRODUCT_PRO_MONTHLY, "pro_monthly"],
+    [process.env.STRIPE_PRODUCT_PRO_QUARTERLY, "pro_quarterly"],
+    [process.env.STRIPE_PRODUCT_PRO_ANNUAL, "pro_annual"],
+  ];
+  const map: Record<string, string> = {};
+  for (const [id, plan] of entries) if (id) map[id] = plan;
+  return map;
+}
 
 /** Candidate planId (StripePlanId) from a subscription: price lookup_key →
  *  env price-id reverse map → metadata.planId (last resort). */
@@ -62,6 +78,14 @@ export function candidatePlanIdFromSubscription(
   const price = subscription.items?.data?.[0]?.price;
   const lookupKey = price?.lookup_key ?? undefined;
   if (lookupKey && CANDIDATE_PLAN_IDS.has(lookupKey)) return lookupKey;
+
+  // The Pro plans hold one price per currency, so the PRODUCT identifies the
+  // plan and the price does not have to be configured nine times over.
+  const productId = typeof price?.product === "string" ? price.product : price?.product?.id;
+  if (productId) {
+    const byProduct = productPlanMap();
+    if (byProduct[productId]) return byProduct[productId];
+  }
 
   const priceId = price?.id;
   if (priceId) {

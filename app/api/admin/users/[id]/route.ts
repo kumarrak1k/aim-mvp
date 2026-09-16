@@ -70,7 +70,7 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     if (body.compPlan !== undefined) {
       const plan = (body.compPlan ?? "").toLowerCase();
       metaUpdates.compPlan =
-        plan === "plus" || plan === "professional" ? plan : null;
+        plan === "pro" || plan === "plus" || plan === "professional" ? plan : null;
     }
     if (body.compUntil !== undefined) {
       metaUpdates.compUntil = body.compUntil

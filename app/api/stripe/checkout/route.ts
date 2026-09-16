@@ -1,15 +1,15 @@
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
-import { requireStripe, getStripePriceId, StripePlanId } from "@/app/lib/stripe";
+import {
+  requireStripe,
+  resolveProPriceId,
+  normaliseCurrency,
+  StripePlanId,
+} from "@/app/lib/stripe";
 import { absoluteUrl } from "@/app/config/site";
 import { checkRateLimit } from "@/app/lib/rateLimit";
 
-const VALID_PLAN_IDS: StripePlanId[] = [
-  "plus_monthly",
-  "plus_annual",
-  "professional_monthly",
-  "professional_annual",
-];
+const VALID_PLAN_IDS: StripePlanId[] = ["pro_monthly", "pro_quarterly", "pro_annual"];
 
 export async function POST(req: NextRequest) {
   const { userId } = await auth();
@@ -24,9 +24,11 @@ export async function POST(req: NextRequest) {
 
   let planId: string;
   let promoCode: string | undefined;
+  let currency: ReturnType<typeof normaliseCurrency> = "gbp";
   try {
     const body = await req.json();
     planId = body.planId;
+    currency = normaliseCurrency(body.currency);
     // Optional promotion code captured from a ?promo= marketing link.
     if (typeof body.promoCode === "string") {
       promoCode = body.promoCode.trim().slice(0, 50).toUpperCase() || undefined;
@@ -41,7 +43,7 @@ export async function POST(req: NextRequest) {
 
   let priceId: string;
   try {
-    priceId = getStripePriceId(planId as StripePlanId);
+    priceId = await resolveProPriceId(planId as StripePlanId, currency);
   } catch {
     return NextResponse.json({ error: "Plan not available." }, { status: 503 });
   }

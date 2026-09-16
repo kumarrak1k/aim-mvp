@@ -110,7 +110,7 @@ export async function POST(req: NextRequest) {
       Boolean(body.compUntil) && !Number.isNaN(new Date(body.compUntil!).getTime());
     if (
       body.accountType === "candidate" &&
-      (compPlan === "plus" || compPlan === "professional") &&
+      (compPlan === "pro" || compPlan === "pro" || compPlan === "plus" || compPlan === "professional") &&
       compUntilValid
     ) {
       privateMetadata.compPlan  = compPlan;

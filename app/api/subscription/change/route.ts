@@ -1,7 +1,12 @@
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
-import { requireStripe, getStripePriceId, type StripePlanId } from "@/app/lib/stripe";
+import {
+  requireStripe,
+  resolveProPriceId,
+  normaliseCurrency,
+  type StripePlanId,
+} from "@/app/lib/stripe";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -79,6 +84,11 @@ export async function POST(request: NextRequest) {
     const firstItem = subscription.items.data[0];
     const itemId = firstItem.id;
     const currentPriceId = (firstItem.price as { id: string }).id;
+    // Stay in the currency they signed up in: switching billing period must
+    // never quietly move someone from euros to pounds.
+    const subscriptionCurrency = normaliseCurrency(
+      (firstItem.price as { currency?: string }).currency
+    );
     // In Stripe API 2026-04-22+, period timestamps live on the subscription item
     const periodEnd: number = (firstItem as unknown as { current_period_end: number }).current_period_end;
     const periodStart: number = (firstItem as unknown as { current_period_start: number }).current_period_start;
@@ -109,7 +119,10 @@ export async function POST(request: NextRequest) {
       if (!targetPlanId) {
         return NextResponse.json({ error: "Missing targetPlanId" }, { status: 400 });
       }
-      const newPriceId = getStripePriceId(targetPlanId as StripePlanId);
+      const newPriceId = await resolveProPriceId(
+        targetPlanId as StripePlanId,
+        subscriptionCurrency
+      );
 
       // Release any pending downgrade schedule first, otherwise its phase-2
       // price would silently revert this upgrade at the next cycle boundary.
@@ -142,7 +155,10 @@ export async function POST(request: NextRequest) {
       if (!targetPlanId) {
         return NextResponse.json({ error: "Missing targetPlanId" }, { status: 400 });
       }
-      const newPriceId = getStripePriceId(targetPlanId as StripePlanId);
+      const newPriceId = await resolveProPriceId(
+        targetPlanId as StripePlanId,
+        subscriptionCurrency
+      );
 
       // Check if a schedule already exists for this subscription
       const schedules = await stripeClient.subscriptionSchedules.list({

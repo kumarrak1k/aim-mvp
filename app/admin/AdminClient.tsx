@@ -102,8 +102,9 @@ export type AdminOverview = {
  * This is what the dropdowns use — it maps cleanly to/from the raw Clerk + Prisma fields.
  */
 type MembershipKey =
-  // Candidate tiers
-  | "free" | "plus" | "professional"
+  // Candidate: one paid plan. plus/professional are the retired tiers, still
+  // shown for accounts that subscribed under the old pricing.
+  | "free" | "pro" | "plus" | "professional"
   // Corporate tiers + states
   | "none" | "team_trial" | "team" | "business_trial" | "business" | "custom"
   | "team_comp" | "business_comp"
@@ -128,6 +129,7 @@ function toMembershipKey(u: AdminUser): MembershipKey {
   const status = u.candidateStatus ?? "";
   const plan   = (u.candidatePlanId ?? "").toLowerCase();
   if (status !== "active" && status !== "trialing" && status !== "past_due") return "free";
+  if (plan.includes("pro_"))         return "pro";
   if (plan.includes("professional")) return "professional";
   if (plan.includes("plus"))         return "plus";
   return "free";
@@ -157,6 +159,7 @@ function fromMembershipKey(accountType: string, key: MembershipKey): {
   }
   // Candidate
   switch (key) {
+    case "pro":           return { subscriptionStatus: "active", stripePlanId: "pro_monthly",           companyPlanStatus: null, companyPlanId: null };
     case "plus":          return { subscriptionStatus: "active", stripePlanId: "plus_monthly",          companyPlanStatus: null, companyPlanId: null };
     case "professional":  return { subscriptionStatus: "active", stripePlanId: "professional_monthly",  companyPlanStatus: null, companyPlanId: null };
     default:              return { subscriptionStatus: null,     stripePlanId: null,                    companyPlanStatus: null, companyPlanId: null };
@@ -193,7 +196,8 @@ function getMembershipLabel(u: AdminUser): string {
   const tier   = plan.includes("professional") ? "Professional" : plan.includes("plus") ? "Plus" : null;
   if (!tier || (!["active","trialing","past_due"].includes(status))) {
     if (hasActiveComp(u)) {
-      return `${u.compPlan!.toLowerCase() === "professional" ? "Professional" : "Plus"} (Comp)`;
+      // Every comp grant, old tier names included, gives the same access now.
+      return "Pro (Comp)";
     }
     // "Free" alone conflates two very different people: someone who never
     // started a trial (not convinced enough to try) and someone who used the
@@ -1195,8 +1199,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                     ) : (
                       <>
                         <option value="free">Free</option>
-                        <option value="plus">Plus</option>
-                        <option value="professional">Professional</option>
+                        <option value="pro">Pro</option>
                       </>
                     )}
                   </select>
@@ -1241,8 +1244,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                             </>
                           ) : (
                             <>
-                              <option value="plus">Plus</option>
-                              <option value="professional">Professional</option>
+                              <option value="pro">Pro</option>
                             </>
                           )}
                         </select>
@@ -1401,8 +1403,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                   ) : (
                     <>
                       <option value="free">Free</option>
-                      <option value="plus">Plus</option>
-                      <option value="professional">Professional</option>
+                      <option value="pro">Pro</option>
                     </>
                   )}
                 </select>
@@ -1459,8 +1460,7 @@ export function AdminClient({ users: initialUsers, adminEmail, overview }: { use
                         className="mt-1.5 w-full rounded-xl border border-white/10 bg-background px-3 py-2.5 text-sm text-white focus:border-cyan-400/40 focus:outline-none disabled:opacity-40"
                       >
                         <option value="">None</option>
-                        <option value="plus">Plus</option>
-                        <option value="professional">Professional</option>
+                        <option value="pro">Pro</option>
                       </select>
                     </div>
                     <div>

@@ -34,7 +34,8 @@ vi.mock("@clerk/nextjs/server", () => ({
 }));
 
 vi.mock("@/app/lib/stripe", () => ({
-  getStripePriceId: () => "price_x",
+  resolveProPriceId: async () => "price_x",
+  normaliseCurrency: (v: unknown) => (v === "eur" || v === "usd" ? v : "gbp"),
   requireStripe: () => ({
     customers: {
       create: async () => {
@@ -82,7 +83,7 @@ describe("checkout — double-subscribe guard (#9)", () => {
   for (const status of ["active", "trialing", "past_due"]) {
     it(`409 already_subscribed when an existing subscription is ${status}`, async () => {
       h.state.privateMetadata = { stripeSubscriptionId: "sub_1", subscriptionStatus: status };
-      const res = await POST(req("plus_monthly"));
+      const res = await POST(req("pro_monthly"));
       expect(res.status).toBe(409);
       const body = (await res.json()) as { code?: string };
       expect(body.code).toBe("already_subscribed");
@@ -92,7 +93,7 @@ describe("checkout — double-subscribe guard (#9)", () => {
 
   it("a cancelled user can subscribe again (Checkout session created)", async () => {
     h.state.privateMetadata = { stripeSubscriptionId: "sub_old", subscriptionStatus: "cancelled" };
-    const res = await POST(req("plus_monthly"));
+    const res = await POST(req("pro_monthly"));
     expect(res.status).toBe(200);
     const body = (await res.json()) as { url?: string };
     expect(body.url).toContain("checkout.stripe.test");
@@ -101,7 +102,7 @@ describe("checkout — double-subscribe guard (#9)", () => {
 
   it("a brand-new free user gets a customer + Checkout session", async () => {
     h.state.privateMetadata = {};
-    const res = await POST(req("plus_monthly"));
+    const res = await POST(req("pro_monthly"));
     expect(res.status).toBe(200);
     expect(h.state.customerCreated).toBe(1);
     expect(h.state.sessionsCreated).toBe(1);

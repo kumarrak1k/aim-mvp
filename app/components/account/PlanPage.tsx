@@ -352,8 +352,8 @@ export function PlanPage() {
   const isComp = sub?.isComp ?? false;
   const isFreeOrTrial = !isPaid && !isComp;
   const isFree = isFreeOrTrial && !isTrial;
-  const isPlus = isPaid && sub?.planName === "Plus";
-  const isProfessional = isPaid && sub?.planName === "Professional";
+  // One plan now: there is no tier to move between, only a billing period,
+  // which Stripe's own portal handles safely (proration, tax, currency).
   const isMonthly = sub?.billingInterval === "monthly";
   const isAnnual = sub?.billingInterval === "annual";
   const cancelAtPeriodEnd = sub?.cancelAtPeriodEnd ?? false;
@@ -499,39 +499,14 @@ export function PlanPage() {
           </p>
         )}
 
-        {/* Free — usage bar */}
+        {/* No subscription: their work is safe, new interviews need Pro. */}
         {isFree && !isConfirming && (
-          <div style={{ marginTop: "1rem" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.4rem" }}>
-              <span style={{ color: "rgba(255,255,255,0.5)" }}>Trial sessions used</span>
-              <span style={{ fontWeight: 900, color: "white" }}>
-                {totalUsed} / {totalLimit}
-              </span>
-            </div>
-            <div
-              style={{
-                height: "6px",
-                borderRadius: "999px",
-                background: "rgba(255,255,255,0.08)",
-                overflow: "hidden",
-              }}
-            >
-              <div
-                style={{
-                  height: "100%",
-                  borderRadius: "999px",
-                  width: `${progressPct}%`,
-                  background: limitReached
-                    ? "linear-gradient(to right, #f87171, #ef4444)"
-                    : "linear-gradient(to right, #a855f7, #ec4899)",
-                  transition: "width 0.4s ease",
-                }}
-              />
-            </div>
-            <p style={{ marginTop: "0.4rem", fontSize: "0.72rem", color: "rgba(255,255,255,0.4)" }}>
-              {limitReached
-                ? "All trial sessions used. Upgrade to continue."
-                : `${remaining} session${remaining === 1 ? "" : "s"} remaining · keyboard mode only`}
+          <div style={{ marginTop: "0.75rem" }}>
+            <p style={{ color: "rgba(255,255,255,0.5)" }}>
+              Your saved interviews, reports and free tools stay available.
+            </p>
+            <p style={{ marginTop: "0.35rem", fontSize: "0.8rem", color: "rgba(255,255,255,0.45)" }}>
+              Subscribe to Pro to start a new interview.
             </p>
           </div>
         )}
@@ -540,12 +515,12 @@ export function PlanPage() {
         {isTrial && !isConfirming && (
           <div style={{ marginTop: "0.75rem" }}>
             <p style={{ color: "rgba(255,255,255,0.6)" }}>
-              Plus trial · voice, camera &amp; unlimited practice
+              Pro trial · everything included
             </p>
             <p style={{ marginTop: "0.35rem", fontSize: "0.8rem", color: trialDays <= 2 ? "#fbbf24" : "rgba(255,255,255,0.45)" }}>
               {trialDays === 0
-                ? "Your trial ends today. Upgrade to keep your access."
-                : `${trialDays} day${trialDays === 1 ? "" : "s"} left · no payment details on file · upgrade any time to keep access`}
+                ? "Your trial ends today. Subscribe to keep your access."
+                : `${trialDays} day${trialDays === 1 ? "" : "s"} left · no payment details on file · subscribe any time to keep access`}
             </p>
           </div>
         )}
@@ -665,26 +640,36 @@ export function PlanPage() {
               marginBottom: "0.75rem",
             }}
           >
-            {isTrial ? "Keep your access: choose a plan" : "Upgrade your plan"}
+            {isTrial ? "Keep your access: choose how to pay" : "Subscribe to Pro"}
           </p>
 
           {planRow(
-            () => void startCheckout("plus_monthly"),
+            () => void startCheckout("pro_monthly"),
             busy,
-            checkoutLoading === "plus_monthly",
-            "Plus · £19 / month",
-            "Unlimited sessions · Voice · Camera · Model answers",
-            "Upgrade →",
+            checkoutLoading === "pro_monthly",
+            "Pro · £15 / month",
+            "Everything included. Cancel any time.",
+            "Choose →",
             "purple"
           )}
 
           {planRow(
-            () => void startCheckout("professional_monthly"),
+            () => void startCheckout("pro_quarterly"),
             busy,
-            checkoutLoading === "professional_monthly",
-            "Professional · £29 / month",
-            "Everything in Plus · Assessment Centre · Analytics",
-            "Upgrade →",
+            checkoutLoading === "pro_quarterly",
+            "Pro · £38 / quarter",
+            "Save 15%. Works out at £12.67 a month.",
+            "Choose →",
+            "neutral"
+          )}
+
+          {planRow(
+            () => void startCheckout("pro_annual"),
+            busy,
+            checkoutLoading === "pro_annual",
+            "Pro · £120 / year",
+            "Save 33%. Works out at £10 a month.",
+            "Choose →",
             "neutral"
           )}
 
@@ -697,158 +682,14 @@ export function PlanPage() {
             }}
           >
             <a href="/pricing" style={{ color: "#c084fc" }}>
-              See annual plans and full pricing →
+              See what is included →
             </a>
           </p>
         </div>
       )}
 
-      {/* ── Actions — Plus Monthly ────────────────────────────────────────── */}
-      {PAYMENTS_ENABLED && isPlus && isMonthly && !confirm && (
-        <div>
-          <p
-            style={{
-              fontSize: "0.65rem",
-              fontWeight: 900,
-              letterSpacing: "0.16em",
-              color: "rgba(255,255,255,0.35)",
-              textTransform: "uppercase",
-              marginBottom: "0.75rem",
-            }}
-          >
-            Change plan
-          </p>
-
-          {!cancelAtPeriodEnd &&
-            planRow(
-              () =>
-                requestConfirm({
-                  action: "upgrade",
-                  targetPlanId: "professional_monthly",
-                  title: "Upgrade to Professional",
-                  description:
-                    "You'll be charged a prorated amount today for the remainder of your billing cycle, then £29/month from your next renewal. Assessment Centre and advanced analytics unlock immediately.",
-                  confirmLabel: "Confirm upgrade",
-                }),
-              busy,
-              false,
-              "Upgrade to Professional (£29 / month)",
-              "Adds Assessment Centre · Analytics · Custom question mix",
-              "Switch →",
-              "purple"
-            )}
-
-          {cancelAtPeriodEnd
-            ? planRow(
-                () =>
-                  requestConfirm({
-                    action: "undo_cancel",
-                    title: "Keep your Plus plan",
-                    description:
-                      "Your plan will continue normally and renew at your next billing date. Nothing will change.",
-                    confirmLabel: "Keep my plan",
-                  }),
-                busy,
-                actionLoading,
-                "Undo cancellation",
-                `Your plan is set to cancel on ${periodEndDate}; click to reverse this`,
-                "Undo →",
-                "purple"
-              )
-            : planRow(
-                () =>
-                  requestConfirm({
-                    action: "cancel",
-                    title: "Cancel your Plus plan",
-                    description: `Your plan will cancel on ${periodEndDate}. You keep full access to all Plus features until then. After that you'll move to the free plan.`,
-                    confirmLabel: "Confirm cancellation",
-                    danger: true,
-                  }),
-                busy,
-                actionLoading,
-                "Cancel plan",
-                `Cancels on ${periodEndDate}; you keep access until then`,
-                "Cancel →",
-                "danger"
-              )}
-        </div>
-      )}
-
-      {/* ── Actions — Professional Monthly ───────────────────────────────── */}
-      {PAYMENTS_ENABLED && isProfessional && isMonthly && !confirm && (
-        <div>
-          <p
-            style={{
-              fontSize: "0.65rem",
-              fontWeight: 900,
-              letterSpacing: "0.16em",
-              color: "rgba(255,255,255,0.35)",
-              textTransform: "uppercase",
-              marginBottom: "0.75rem",
-            }}
-          >
-            Change plan
-          </p>
-
-          {!cancelAtPeriodEnd && (
-            <>
-              {planRow(
-                () =>
-                  requestConfirm({
-                    action: "downgrade",
-                    targetPlanId: "plus_monthly",
-                    title: "Switch to Plus",
-                    description: `You'll keep Professional until ${periodEndDate}, then automatically switch to Plus (£19/month). Assessment Centre access will end at that point.`,
-                    confirmLabel: "Confirm switch to Plus",
-                  }),
-                busy,
-                actionLoading,
-                "Switch to Plus (£19 / month)",
-                `Takes effect ${periodEndDate}; keeps Professional until then`,
-                "Downgrade →",
-                "neutral"
-              )}
-            </>
-          )}
-
-          {cancelAtPeriodEnd
-            ? planRow(
-                () =>
-                  requestConfirm({
-                    action: "undo_cancel",
-                    title: "Keep your Professional plan",
-                    description:
-                      "Your plan will continue normally and renew at your next billing date.",
-                    confirmLabel: "Keep my plan",
-                  }),
-                busy,
-                actionLoading,
-                "Undo cancellation",
-                `Your plan is set to cancel on ${periodEndDate}; click to reverse this`,
-                "Undo →",
-                "purple"
-              )
-            : planRow(
-                () =>
-                  requestConfirm({
-                    action: "cancel",
-                    title: "Cancel your Professional plan",
-                    description: `Your plan will cancel on ${periodEndDate}. You keep full access to all Professional features until then. After that you'll move to the free plan.`,
-                    confirmLabel: "Confirm cancellation",
-                    danger: true,
-                  }),
-                busy,
-                actionLoading,
-                "Cancel plan",
-                `Cancels on ${periodEndDate}; you keep access until then`,
-                "Cancel →",
-                "danger"
-              )}
-        </div>
-      )}
-
       {/* ── Actions — Annual plans ────────────────────────────────────────── */}
-      {PAYMENTS_ENABLED && isPaid && isAnnual && !confirm && (
+      {PAYMENTS_ENABLED && isPaid && !confirm && (
         <div>
           <p
             style={{
@@ -860,7 +701,7 @@ export function PlanPage() {
               marginBottom: "0.75rem",
             }}
           >
-            Manage annual plan
+            Manage your plan
           </p>
 
           {cancelAtPeriodEnd
@@ -902,8 +743,8 @@ export function PlanPage() {
             () => void openPortal(),
             busy,
             portalLoading,
-            "Change plan or billing",
-            "Switch to monthly or a different plan via the billing portal",
+            "Change billing period",
+            "Switch between monthly, quarterly and yearly in the billing portal",
             "Open →",
             "neutral"
           )}
@@ -911,7 +752,7 @@ export function PlanPage() {
       )}
 
       {/* ── Manage billing (Stripe portal) — paid subscriptions only ─────── */}
-      {PAYMENTS_ENABLED && isPaid && !isAnnual && !confirm && (
+      {PAYMENTS_ENABLED && isPaid && !confirm && (
         <button
           onClick={() => void openPortal()}
           disabled={busy}

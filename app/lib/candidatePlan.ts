@@ -73,18 +73,32 @@ export const TRIAL_USAGE_CAPS = {
  * Set any value to 0 to close that door again — every gate reads from here.
  */
 export const FREE_TIER = {
-  /** Saved practice interviews per rolling window (was: 3 for life). */
-  practiceSessionsPerWindow: 3,
+  /**
+   * Zero since the single-plan switch (Sep 2026). The 3-day trial is the free
+   * sample now: it gives the whole product rather than a thin version of it.
+   * Past results, saved reports and the free tools stay available afterwards —
+   * only starting a new interview needs Pro. Raise these to reopen a free
+   * allowance; every gate reads from here.
+   */
+  practiceSessionsPerWindow: 0,
   /** Length of the rolling window, in days. */
   windowDays: 30,
   /** Lifetime taster: full mock assessment centres a non-paying user may run. */
-  assessmentCentres: 1,
+  assessmentCentres: 0,
   /** Lifetime taster: CV / cover letter / personal statement generations. */
-  careerDocs: 2,
+  careerDocs: 0,
 } as const;
 
-export type CandidatePlanName = "Free" | "Plus" | "Professional";
-export type EffectivePlan = "free" | "plus" | "professional";
+export type CandidatePlanName = "Free" | "Pro";
+export type EffectivePlan = "free" | "pro";
+
+/**
+ * Plan ids seen on subscriptions. The pro_* ids are current; plus_* and
+ * professional_* are the retired tiers, kept so anyone who subscribed under
+ * the old pricing keeps full access.
+ */
+const PAID_PLAN_PATTERN = /(pro|plus|professional)/;
+const COMP_PLANS = new Set(["pro", "plus", "professional"]);
 
 /** The shape of the billing/trial fields we read out of Clerk metadata. */
 export type CandidateBillingMeta = {
@@ -107,7 +121,9 @@ export type CandidatePlan = {
   isActive: boolean;
   /** True if the user gets unlimited sessions (Plus, Professional, or trial). */
   isUnlimited: boolean;
-  /** True if the user gets Professional-only features (or is on trial). */
+  /** True if the user has Pro access (paid, complimentary or trial). */
+  isPro: boolean;
+  /** @deprecated Alias of isPro, kept while call sites migrate. */
   isProfessional: boolean;
   /** True if the access is coming from the free trial (not a paid plan). */
   isTrial: boolean;
@@ -158,9 +174,8 @@ export function resolveCandidatePlan(
   const planId = (meta?.stripePlanId ?? "").toLowerCase();
 
   let paidPlanName: CandidatePlanName = "Free";
-  if (isPaid) {
-    if (planId.includes("professional")) paidPlanName = "Professional";
-    else if (planId.includes("plus")) paidPlanName = "Plus";
+  if (isPaid && PAID_PLAN_PATTERN.test(planId)) {
+    paidPlanName = "Pro";
   }
 
   // ── Reverse trial (no card; independent of Stripe). ───────────────────────
@@ -173,7 +188,7 @@ export function resolveCandidatePlan(
   const compPlanRaw = (meta?.compPlan ?? "").toString().toLowerCase();
   const compUntil = meta?.compUntil ?? null;
   const compActive =
-    (compPlanRaw === "plus" || compPlanRaw === "professional") &&
+    COMP_PLANS.has(compPlanRaw) &&
     !!compUntil &&
     new Date(compUntil).getTime() > Date.now();
 
@@ -185,36 +200,28 @@ export function resolveCandidatePlan(
   let isTrial = false;
   let isComp = false;
 
-  if (paidPlanName === "Professional") {
-    effectivePlan = "professional";
-  } else if (compActive && compPlanRaw === "professional") {
-    effectivePlan = "professional";
-    isComp = true;
-  } else if (paidPlanName === "Plus") {
-    effectivePlan = "plus";
-  } else if (compActive && compPlanRaw === "plus") {
-    effectivePlan = "plus";
+  if (paidPlanName === "Pro") {
+    effectivePlan = "pro";
+  } else if (compActive) {
+    effectivePlan = "pro";
     isComp = true;
   } else if (trialActive) {
-    // The reverse trial grants Plus (voice + camera + unlimited practice), NOT
-    // Professional — assessment centres and career docs stay paid-only.
-    effectivePlan = "plus";
+    // The trial is the whole product for three days, not a thin version of it.
+    effectivePlan = "pro";
     isTrial = true;
   }
 
-  const planName: CandidatePlanName =
-    effectivePlan === "professional"
-      ? "Professional"
-      : effectivePlan === "plus"
-      ? "Plus"
-      : "Free";
+  const planName: CandidatePlanName = effectivePlan === "pro" ? "Pro" : "Free";
 
   return {
     planName,
     effectivePlan,
     isActive: effectivePlan !== "free",
     isUnlimited: effectivePlan !== "free",
-    isProfessional: effectivePlan === "professional",
+    isPro: effectivePlan === "pro",
+    // Retained alias: Pro includes everything the Professional tier had, so
+    // every existing gate keeps working while call sites move to isPro.
+    isProfessional: effectivePlan === "pro",
     isTrial,
     isComp,
     compUntil: compActive ? compUntil : null,
