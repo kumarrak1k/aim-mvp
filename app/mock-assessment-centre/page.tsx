@@ -95,7 +95,7 @@ const faqs = [
   },
   {
     q: "Is it free?",
-    a: "The mock assessment centre is part of the Professional plan (£29/month), with unlimited runs and fresh scenarios. Interview practice itself is free to start, and Plus (£19/month) adds unlimited voice and camera practice.",
+    a: "It is included in your 3-day free trial, which needs no payment details, so you can run a full centre before deciding. After that it is part of Pro (£15 a month, £38 a quarter or £120 a year), with unlimited runs and fresh scenarios each time.",
   },
 ];
 
@@ -135,7 +135,7 @@ export default async function AssessmentCentrePage() {
             href="/pricing"
             className="w-full rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-8 py-4 text-center text-base font-bold text-on-accent shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.02] sm:w-auto"
           >
-            Get Professional →
+            Start your free trial →
           </Link>
           <Link
             href="/interview-practice"
@@ -257,14 +257,14 @@ export default async function AssessmentCentrePage() {
             Walk into your assessment centre fully prepared.
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-gray-400">
-            Included in the Professional plan. Repeat with new scenarios as often as you need.
+            Included in Pro, and in your 3-day free trial. Repeat with new scenarios as often as you need.
           </p>
           <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link
               href="/pricing"
               className="rounded-2xl bg-gradient-to-r from-cyan-400 via-purple-500 to-fuchsia-500 px-7 py-4 text-center text-base font-bold text-on-accent shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.02]"
             >
-              Get Professional →
+              See Pro pricing →
             </Link>
             <Link
               href="/for-candidates/sign-up"

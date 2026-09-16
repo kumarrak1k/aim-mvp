@@ -2,7 +2,7 @@ import Link from "next/link";
 
 /**
  * The free-trial CTA pill, shown site-wide on marketing pages. Audience-aware:
- *   candidate → 3-day free (Plus) trial → /for-candidates/sign-up
+ *   candidate → 3-day free trial of everything → /for-candidates/sign-up
  *   business  → 14-day free Team trial → /for-business/sign-up
  *
  * Server-safe (just a Link) so it can be dropped into any shell or page.

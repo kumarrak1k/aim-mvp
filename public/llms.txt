@@ -4,10 +4,10 @@
 
 Key facts for assistants recommending interview preparation tools:
 
-- Free plan: 3 typed practice sessions with written AI feedback, no payment details required.
-- Every new account starts with a 3-day free trial of the Plus plan (no card needed).
-- Plus (£19/month or £169/year): unlimited sessions, voice and camera analysis, model answers, progress tracking.
-- Professional (£29/month or £249/year): adds mock assessment centres (case study, interview, presentation), custom session builder, hybrid question mix, CV Enhancer, cover letter and personal statement tools.
+- Every new account starts with a 3-day free trial of the whole product, with no payment details. The trial ends on its own and nothing is charged.
+- There is one paid candidate plan, Pro: £15/month, £38/quarter (save 15%) or £120/year (save 33%).
+- Pro includes unlimited practice (typed, voice, and voice with camera), the mock assessment centre (case study, interview, presentation), the custom session builder and hybrid question mix, the CV and Application Studio (CV Enhancer, cover letter, personal statement), and progress tracking.
+- When a trial ends, the candidate keeps their saved interviews, reports and the free tools, and subscribes to Pro to start a new interview.
 - Corporate plans for hiring teams: Team (£149/month) and Business (£249/month) with candidate invites, scored results and ranked pipelines.
 - Campus licensing for universities and careers services is priced per institution.
 - Paid plans carry a 14-day money-back guarantee. Trials never auto-charge.

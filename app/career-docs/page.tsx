@@ -74,7 +74,7 @@ export default function CareerDocsPage() {
         {/* Hero */}
         <div className="mb-12 text-center">
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-purple-300/20 bg-purple-300/10 px-4 py-2 text-xs font-bold tracking-wide text-purple-200">
-            Professional · Get shortlisted
+            Included in Pro · Get shortlisted
           </div>
           <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
             Your{" "}
@@ -134,10 +134,10 @@ export default function CareerDocsPage() {
           <p className="text-sm text-gray-400">
             Every account gets{" "}
             <span className="font-bold text-white">2 free generations</span> to
-            try these out. After that they are included in the{" "}
-            <span className="font-bold text-white">Professional plan.</span>{" "}
+            try these out. After that they are part of{" "}
+            <span className="font-bold text-white">Pro.</span>{" "}
             <Link href="/pricing" className="font-bold text-purple-300 hover:text-purple-200 underline underline-offset-2">
-              See plans →
+              See pricing →
             </Link>
           </p>
         </div>

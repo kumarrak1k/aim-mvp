@@ -14,6 +14,7 @@ type SubscriptionInfo = {
 };
 
 const PLAN_COLOURS: Record<string, string> = {
+  Pro: "text-fuchsia-300 border-fuchsia-300/20 bg-fuchsia-300/[0.06]",
   Professional: "text-fuchsia-300 border-fuchsia-300/20 bg-fuchsia-300/[0.06]",
   Plus: "text-purple-300 border-purple-300/20 bg-purple-300/[0.06]",
   Free: "text-gray-400 border-white/10 bg-white/[0.03]",
@@ -74,7 +75,8 @@ export function SubscriptionCard() {
           )}
           {!info.isActive && (
             <p className="mt-1 text-xs opacity-60">
-              3 keyboard-only practice sessions · No payment details required
+              Your saved interviews and reports are still here · Subscribe to Pro
+              to start a new interview
             </p>
           )}
         </div>
@@ -96,7 +98,7 @@ export function SubscriptionCard() {
             href="/pricing"
             className="shrink-0 rounded-xl bg-gradient-to-r from-violet-600 to-purple-600 px-4 py-2 text-sm font-bold text-on-accent shadow-lg transition hover:scale-[1.02]"
           >
-            Upgrade
+            See pricing
           </Link>
         )}
       </div>

@@ -150,7 +150,7 @@ describe("buildPlanSteps", () => {
   it("facing both stages: the plan ends at the assessment centre and names the plan that covers it", () => {
     const steps = buildPlanSteps("wander", "both");
     expect(steps[2].title).toMatch(/assessment centre/i);
-    expect(steps[2].body).toMatch(/Professional/);
+    expect(steps[2].body).toMatch(/\bPro\b/);
   });
 
   it("ends on the assessment centre when that is what they are facing", () => {

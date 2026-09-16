@@ -244,17 +244,17 @@ export default function CVEnhancerPage() {
               <path d="M8 10V7a4 4 0 0 1 8 0v3" />
             </svg>
           </div>
-          <h1 className="text-2xl font-bold text-white">Professional plan required</h1>
+          <h1 className="text-2xl font-bold text-white">Pro required</h1>
           <p className="mt-3 text-sm leading-7 text-gray-400">
-            CV Enhancer is available on the Professional plan. Upgrade to unlock CV analysis,
-            cover letters, and personal statement generation.
+            CV Enhancer is part of Pro, along with CV analysis, cover letters and
+            personal statement generation.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
             <Link
               href="/pricing"
               className="rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-3.5 text-center text-sm font-bold text-on-accent shadow-lg"
             >
-              See plans →
+              See pricing →
             </Link>
             <Link
               href="/career-docs"
