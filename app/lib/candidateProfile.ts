@@ -53,6 +53,11 @@ export type CandidateProfile = {
    * than only in a session config.
    */
   preferredInterviewFormat: InterviewFormat;
+  /**
+   * Read-only here: onboarding owns this field. The question bank uses it to
+   * layer sector questions on top of the core ones.
+   */
+  targetSector: string;
   speakerPreference: SpeakerPreference;
   defaultExperienceLevel: string;
   defaultInterviewType: string;
@@ -78,6 +83,7 @@ export const EMPTY_PROFILE: CandidateProfile = {
   roleSpecFileName: "",
   preferredPracticeMode: "typed",
   preferredInterviewFormat: "traditional",
+  targetSector: "",
   speakerPreference: DEFAULT_SPEAKER_PREFERENCE,
   defaultExperienceLevel: "Graduate / entry level",
   defaultInterviewType: "Competency / behavioural",
@@ -137,6 +143,7 @@ function rowToProfile(row: {
   roleSpecFileName: string;
   preferredPracticeMode: string;
   preferredInterviewFormat?: string | null;
+  targetSector?: string | null;
   speakerPreference: unknown;
   defaultExperienceLevel: string;
   defaultInterviewType: string;
@@ -156,6 +163,7 @@ function rowToProfile(row: {
     roleSpecFileName: row.roleSpecFileName,
     preferredPracticeMode: cleanMode(row.preferredPracticeMode, "typed"),
     preferredInterviewFormat: normaliseInterviewFormat(row.preferredInterviewFormat),
+    targetSector: row.targetSector ?? "",
     speakerPreference: cleanSpeaker(row.speakerPreference, DEFAULT_SPEAKER_PREFERENCE),
     defaultExperienceLevel: row.defaultExperienceLevel,
     defaultInterviewType: row.defaultInterviewType,
@@ -189,6 +197,7 @@ async function migrateFromClerk(clerkUserId: string): Promise<CandidateProfile> 
       roleSpecFileName: cleanText(cp.roleSpecFileName).slice(0, 180),
       preferredPracticeMode: cleanMode(cp.preferredPracticeMode, "typed"),
       preferredInterviewFormat: normaliseInterviewFormat(cp.preferredInterviewFormat),
+      targetSector: cleanText(cp.targetSector).slice(0, 80),
       speakerPreference: cleanSpeaker(cp.speakerPreference, DEFAULT_SPEAKER_PREFERENCE),
       defaultExperienceLevel: cleanText(cp.defaultExperienceLevel) || "Graduate / entry level",
       defaultInterviewType: cleanText(cp.defaultInterviewType) || "Competency / behavioural",

@@ -14,6 +14,13 @@ import {
   type CandidateBillingMeta,
 } from "@/app/lib/candidatePlan";
 import { recordActivity, ACTIVITY_EVENTS } from "@/app/lib/activity";
+import {
+  competenciesAsked,
+  levelFromExperience,
+  pickQuestion,
+  slotForQuestion,
+  TAILORED,
+} from "@/app/lib/questionBank";
 import { boundedAttemptId } from "@/app/lib/attemptTracking";
 
 export const runtime = "nodejs";
@@ -193,9 +200,8 @@ export async function POST(req: NextRequest) {
     // Instead we use only the template's role/level/etc. plus any
     // recruiter-provided custom instructions and competency framework.
     const isAssessment = Boolean(assessmentMode);
-    const savedProfileContext = isAssessment
-      ? ""
-      : buildSavedProfileContext(await getSignedInCandidateProfile());
+    const savedProfile = isAssessment ? null : await getSignedInCandidateProfile();
+    const savedProfileContext = isAssessment ? "" : buildSavedProfileContext(savedProfile!);
     const templateContextBlock = isAssessment
       ? buildTemplateContextBlock(templateContext)
       : "";
@@ -264,6 +270,12 @@ export async function POST(req: NextRequest) {
     // a database hiccup must degrade de-duplication rather than break the
     // interview.
     let earlierSessionQuestions = "";
+    /** Every question this candidate has already been asked, session and history. */
+    const previouslyAsked: string[] = Array.isArray(history)
+      ? history
+          .map((item) => String(item?.question ?? "").trim())
+          .filter(Boolean)
+      : [];
     try {
       const priorSessions = await prisma.practiceSession.findMany({
         where: { clerkUserId: userId, role: String(role) },
@@ -283,6 +295,7 @@ export async function POST(req: NextRequest) {
 
       // Cap so the prompt cannot bloat on a heavy user.
       const unique = [...new Set(asked)].slice(0, 20);
+      previouslyAsked.push(...unique);
       if (unique.length) {
         earlierSessionQuestions = `\n\nAsked in this candidate's PREVIOUS sessions for the same role. These must not be repeated either, and the same competency-level rule applies: do not reword them.\n${unique
           .map((q) => `- ${q}`)
@@ -290,6 +303,40 @@ export async function POST(req: NextRequest) {
       }
     } catch (err) {
       console.error("INTERVIEW: prior-question lookup failed", err);
+    }
+
+    // ── The bank answers first ────────────────────────────────────────────
+    // Ordinary slots come from questions employers actually ask, written by us
+    // and tagged. The model is kept for the tailored slot (the one question
+    // that should come from this candidate's own CV), for a recruiter's
+    // assessment, where every candidate must get comparable questions, and for
+    // whenever the bank has nothing left that has not already been asked.
+    if (!isAssessment) {
+      const slot = slotForQuestion({
+        questionNumber: safeQuestionNumber,
+        totalQuestions: safeTotalQuestions,
+        questionMix: (questionMix as Partial<Record<string, number>> | undefined) ?? null,
+      });
+
+      if (slot && slot !== TAILORED) {
+        const banked = pickQuestion({
+          type: slot,
+          asked: previouslyAsked,
+          usedCompetencies: competenciesAsked(previouslyAsked),
+          sector: savedProfile?.targetSector ?? undefined,
+          level: levelFromExperience(savedProfile?.defaultExperienceLevel),
+          // Stable within an attempt, different for the next one. Falling back
+          // to the role keeps a signed-out-style request deterministic too.
+          seed: boundedAttemptId(attemptId) || String(role),
+        });
+
+        if (banked) {
+          return NextResponse.json({
+            question: normaliseQuestionToUkEnglish(banked.text),
+            source: "bank",
+          });
+        }
+      }
     }
 
     const previousQuestions = Array.isArray(history)

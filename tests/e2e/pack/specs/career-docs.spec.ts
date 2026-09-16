@@ -21,6 +21,12 @@ test.describe("career docs", () => {
     // Clerk's client refresh the token (same fix as zz-account.spec).
     test.beforeEach(async ({ page }) => {
       await page.goto("/career-docs");
+      // Wait for Clerk to finish hydrating before firing API requests: a
+      // request sent while the token is still refreshing comes back 401 and
+      // looks like a broken gate rather than a race.
+      await expect(page.getByRole("button", { name: /Open user menu/i })).toBeVisible({
+        timeout: 20_000,
+      });
     });
 
     test("personal statement generator returns a statement", async ({ page }) => {
@@ -81,6 +87,12 @@ test.describe("career docs", () => {
 
     test.beforeEach(async ({ page }) => {
       await page.goto("/career-docs");
+      // Wait for Clerk to finish hydrating before firing API requests: a
+      // request sent while the token is still refreshing comes back 401 and
+      // looks like a broken gate rather than a race.
+      await expect(page.getByRole("button", { name: /Open user menu/i })).toBeVisible({
+        timeout: 20_000,
+      });
     });
 
     test("career docs are behind the subscription wall", async ({ page }) => {
@@ -103,6 +115,12 @@ test.describe("career docs", () => {
 
     test.beforeEach(async ({ page }) => {
       await page.goto("/career-docs");
+      // Wait for Clerk to finish hydrating before firing API requests: a
+      // request sent while the token is still refreshing comes back 401 and
+      // looks like a broken gate rather than a race.
+      await expect(page.getByRole("button", { name: /Open user menu/i })).toBeVisible({
+        timeout: 20_000,
+      });
     });
 
     test("keeps full access on a retired price id", async ({ page }) => {
