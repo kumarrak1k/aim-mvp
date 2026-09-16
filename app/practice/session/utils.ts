@@ -1,4 +1,10 @@
 import type { Feedback, PracticeMode, SpeakerPreference } from "../types";
+import {
+  normaliseInterviewFormat,
+  normaliseVideoSettings,
+  type InterviewFormat,
+  type VideoInterviewSettings,
+} from "@/app/lib/interviewFormat";
 
 /** Default question count when none is supplied by config (e.g. classic practice flow). */
 export const DEFAULT_TOTAL_QUESTIONS = 5;
@@ -161,6 +167,13 @@ export type PracticeSessionConfig = {
     companyLogoUrl?: string;
   };
   createdAt?: string;
+  /**
+   * Which shape of interview this is: the coaching flow, or a one-way video
+   * interview with a preparation countdown and a recording timer.
+   */
+  interviewFormat?: InterviewFormat;
+  /** Timings for a one-way video interview. Ignored by the coaching flow. */
+  videoSettings?: VideoInterviewSettings;
   /**
    * Set when the candidate chose to carry on an interview they had left.
    * The session page restores these answers instead of starting at question 1.
@@ -372,6 +385,8 @@ export function parseSessionConfig(): PracticeSessionConfig | null {
             .map((q) => q.slice(0, MAX_CUSTOM_QUESTION_LENGTH).trim())
             .filter(Boolean)
         : undefined,
+      interviewFormat: normaliseInterviewFormat(parsed.interviewFormat),
+      videoSettings: normaliseVideoSettings(parsed.videoSettings),
       // Carrying on an unfinished interview. This rebuild drops anything it
       // does not name, which is what sent every resumed interview back to
       // question 1 when the field was first added.

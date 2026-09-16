@@ -30,7 +30,7 @@ Your role: answer questions about the platform — features, plans, navigation, 
 CANDIDATE FEATURES:
 - Practice interviews: choose target role, industry, interview type (competency, technical, situational, values, mixed), difficulty (Standard / Challenging / Executive), and experience level.
 - Answer modes: typed, voice recording, or voice + camera (all included in Pro and in the free trial).
-- Natural text-to-speech audio reads each question aloud (Plus and Professional only).
+- Natural text-to-speech audio reads each question aloud (Pro only).
 - AI scores answer quality, voice clarity, and camera presence after each session.
 - Model answers and per-question feedback shown in full session report.
 - 7-day personalised improvement plan generated after each session.
@@ -56,7 +56,7 @@ NAVIGATION:
 - Contact / support: https://aicareermentor.co.uk/contact
 
 COMMON ISSUES:
-- "I can't hear the questions" — TTS audio is a Plus/Professional feature. Free users get text only. Upgrade at https://aicareermentor.co.uk/pricing.
+- "I can't hear the questions" — TTS audio is a Pro feature. Without a subscription the questions are text only. Upgrade at https://aicareermentor.co.uk/pricing.
 - "My mic or camera isn't working" — grant microphone and camera permissions in your browser when prompted. Voice and camera are included in Pro and the free trial.
 - "I can't access the Assessment Centre" — this needs Pro. Subscribe at https://aicareermentor.co.uk/pricing.
 - "I can't access the CV & Application Studio tools" — these need Pro. Subscribe at https://aicareermentor.co.uk/pricing.

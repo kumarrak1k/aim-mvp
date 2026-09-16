@@ -20,6 +20,12 @@ import {
   PRACTICE_SESSION_CONFIG_KEY,
   type QuestionMix,
 } from "../session/utils";
+import {
+  DEFAULT_VIDEO_SETTINGS,
+  type InterviewFormat,
+  type VideoInterviewSettings,
+} from "@/app/lib/interviewFormat";
+import { isProPlanName } from "@/app/lib/planName";
 
 /** The unfinished interview returned by GET /api/practice-sessions. */
 type UnfinishedInterview = {
@@ -131,6 +137,11 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
 
   const [speakerEnabled, setSpeakerEnabled] = useState(false);
   const [cameraEnabled, setCameraEnabled] = useState(false);
+  // The shape of the interview, separate from how the answer is given. The
+  // saved profile default is applied on the start screen once the plan is known.
+  const [interviewFormat, setInterviewFormat] = useState<InterviewFormat>("traditional");
+  const [videoSettings, setVideoSettings] =
+    useState<VideoInterviewSettings>(DEFAULT_VIDEO_SETTINGS);
   // How many completed sessions this user has — null until known. Gates the
   // first-visit dashboard: no guide banner or upsell panel before the first
   // session is done (activation audit F5) so the first visit has one action.
@@ -245,8 +256,11 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
   // free users and not-yet-signed-in visitors). While usage is still loading
   // default to free so voice options stay hidden rather than flicker in.
   const isFreePlan = practiceUsage.planName === "Free";
+  // Question count, the hybrid mix and custom questions belong to the paid
+  // plan. This compared the name to "Professional", so renaming the tier to Pro
+  // removed those controls from every paying candidate — see isProPlanName.
   const isAdvancedPlan =
-    practiceUsage.planName === "Professional" ||
+    isProPlanName(practiceUsage.planName) ||
     corporatePlanId === "team" ||
     corporatePlanId === "business";
 
@@ -264,7 +278,9 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
     }
 
     if (practiceUsage.dailyLimit === null) {
-      return `${practiceUsage.planName} plan · Unlimited sessions.`;
+      // The hero already prints "<plan> plan ·" in front of this line, so
+      // naming the plan again read as "Pro plan · Pro plan · Unlimited".
+      return "Unlimited sessions.";
     }
 
     if (practiceUsage.limitReached) {
@@ -714,6 +730,10 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
           speakerPreference,
           freePlan: isFreePlan,
           practiceMode: isFreePlan ? "typed" : selectedPracticeMode,
+          // A one-way video interview needs the camera, so the free plan can
+          // only have the coaching flow.
+          interviewFormat: isFreePlan ? "traditional" : interviewFormat,
+          videoSettings,
           createdAt: new Date().toISOString(),
           // Advanced plan extras
           totalQuestions: isAdvancedPlan ? totalQuestions : DEFAULT_TOTAL_QUESTIONS,
@@ -734,10 +754,12 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
     difficulty,
     experienceLevel,
     focusArea,
+    interviewFormat,
     interviewType,
     isFreePlan,
     isAdvancedPlan,
     practiceUsage.resetsAt,
+    videoSettings,
     role,
     router,
     signedInLimitReached,
@@ -917,6 +939,10 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
             setFocusArea={onFocusAreaChange}
             speakerEnabled={speakerEnabled}
             cameraEnabled={cameraEnabled}
+            interviewFormat={interviewFormat}
+            setInterviewFormat={setInterviewFormat}
+            videoSettings={videoSettings}
+            setVideoSettings={setVideoSettings}
             speakerPreference={speakerPreference}
             setSpeakerPreference={setSpeakerPreference}
             setTextOnlyMode={setTextOnlyMode}

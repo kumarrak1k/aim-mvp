@@ -14,6 +14,7 @@ vi.mock("@clerk/nextjs/server", () => ({ clerkClient: vi.fn() }));
 
 import {
   resolveCandidatePlan,
+  isProPlanName,
   FREE_TIER,
   TRIAL_DURATION_DAYS,
   type CandidateBillingMeta,
@@ -100,5 +101,30 @@ describe("single Pro plan", () => {
 
   it("keeps the trial at three days", () => {
     expect(TRIAL_DURATION_DAYS).toBe(3);
+  });
+});
+
+/**
+ * Renaming the paid tier to Pro silently switched off every feature gate that
+ * compared the plan NAME to "Professional" — question count, hybrid mix,
+ * custom questions, the assessment centre link. One predicate now answers the
+ * question so a future rename cannot repeat it, and the retired names still
+ * count because an old response or a comp record can still carry them.
+ */
+describe("isProPlanName", () => {
+  it("recognises the current paid plan", () => {
+    expect(isProPlanName("Pro")).toBe(true);
+  });
+
+  it("still recognises the retired tier names", () => {
+    expect(isProPlanName("Professional")).toBe(true);
+    expect(isProPlanName("Plus")).toBe(true);
+  });
+
+  it("is false for free and for nothing at all", () => {
+    expect(isProPlanName("Free")).toBe(false);
+    expect(isProPlanName("")).toBe(false);
+    expect(isProPlanName(undefined)).toBe(false);
+    expect(isProPlanName(null)).toBe(false);
   });
 });

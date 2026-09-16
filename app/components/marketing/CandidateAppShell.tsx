@@ -23,6 +23,7 @@ import { SkipToContent } from "@/app/components/SkipToContent";
 import { SiteFooter } from "@/app/components/marketing/SiteFooter";
 import { PlanPage } from "@/app/components/account/PlanPage";
 import { TrialBanner } from "@/app/components/account/TrialBanner";
+import { isProPlanName } from "@/app/lib/planName";
 
 export type CandidateAppPath =
   | "/practice"
@@ -140,7 +141,7 @@ export function CandidateAppShell({
       .then((r) => r.json())
       .then((data: { planName?: string; isActive?: boolean }) => {
         if (!cancelled) {
-          setIsProfessional(data?.planName === "Professional" && !!data.isActive);
+          setIsProfessional(isProPlanName(data?.planName) && !!data.isActive);
         }
       })
       .catch(() => {

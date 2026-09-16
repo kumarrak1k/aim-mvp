@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
     });
     return NextResponse.json(
       {
-        error: `You've used your free mock assessment centre. Upgrade to Professional to run them whenever you like.`,
+        error: `You've used your free mock assessment centre. Upgrade to Pro to run them whenever you like.`,
         upgrade: true,
       },
       { status: 403 }
@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
       });
       return NextResponse.json(
         {
-          error: `Your free trial includes ${TRIAL_USAGE_CAPS.assessmentCentres} mock assessment centres. Upgrade to Professional for unlimited assessment centres.`,
+          error: `Your free trial includes ${TRIAL_USAGE_CAPS.assessmentCentres} mock assessment centres. Upgrade to Pro for unlimited assessment centres.`,
         },
         { status: 429 }
       );

@@ -71,35 +71,50 @@ test.describe("career docs", () => {
     });
   });
 
-  test.describe("plus persona (no Professional access)", () => {
-    test.use({ storageState: statePath("plus") });
+  /**
+   * Since the pricing switch there is no taster: FREE_TIER.careerDocs is 0, so
+   * an account without a subscription is walled at the first call. A candidate
+   * who subscribed under the retired Plus pricing still has full access.
+   */
+  test.describe("free persona (no subscription)", () => {
+    test.use({ storageState: statePath("free") });
 
-    // Same 60-second-token refresh as above.
     test.beforeEach(async ({ page }) => {
       await page.goto("/career-docs");
     });
 
-    // A non-Professional account gets FREE_TIER.careerDocs generations so it can
-    // see what the Studio produces, then the upgrade gate returns. Run enough
-    // times to exhaust the taster and assert the wall is still there at the end.
-    test("career docs give a taster, then require Professional", async ({ page }) => {
-      const call = () =>
-        page.request.post("/api/career-docs/cv-enhancer", {
-          data: {
-            targetRole: "Product Manager",
-            cvText:
-              "Experienced product manager with five years building B2B SaaS products and leading cross-functional teams.",
-          },
-        });
+    test("career docs are behind the subscription wall", async ({ page }) => {
+      expect(FREE_TIER.careerDocs, "a taster would change this expectation").toBe(0);
 
-      const statuses: number[] = [];
-      for (let i = 0; i < FREE_TIER.careerDocs + 1; i++) {
-        statuses.push((await call()).status());
-      }
+      const res = await page.request.post("/api/career-docs/cv-enhancer", {
+        data: {
+          targetRole: "Product Manager",
+          cvText:
+            "Experienced product manager with five years building B2B SaaS products and leading cross-functional teams.",
+        },
+      });
 
-      // Everything before the last call is inside the allowance; the last is not.
-      expect(statuses.slice(0, FREE_TIER.careerDocs).every((s) => s === 200)).toBe(true);
-      expect(statuses.at(-1)).toBe(403);
+      expect(res.status()).toBe(403);
+    });
+  });
+
+  test.describe("legacy Plus subscriber", () => {
+    test.use({ storageState: statePath("plus") });
+
+    test.beforeEach(async ({ page }) => {
+      await page.goto("/career-docs");
+    });
+
+    test("keeps full access on a retired price id", async ({ page }) => {
+      const res = await page.request.post("/api/career-docs/cv-enhancer", {
+        data: {
+          targetRole: "Product Manager",
+          cvText:
+            "Experienced product manager with five years building B2B SaaS products and leading cross-functional teams.",
+        },
+      });
+
+      expect(res.status(), await res.text()).toBe(200);
     });
   });
 });

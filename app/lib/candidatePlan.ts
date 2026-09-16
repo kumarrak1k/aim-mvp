@@ -89,7 +89,11 @@ export const FREE_TIER = {
   careerDocs: 0,
 } as const;
 
-export type CandidatePlanName = "Free" | "Pro";
+// Declared in planName.ts so client components can read it without pulling in
+// Clerk's server SDK, and re-exported here because this file is where callers
+// look for anything plan-shaped.
+import { isProPlanName, type CandidatePlanName } from "./planName";
+export { isProPlanName, type CandidatePlanName };
 export type EffectivePlan = "free" | "pro";
 
 /**

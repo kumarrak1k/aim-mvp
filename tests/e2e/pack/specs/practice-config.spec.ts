@@ -10,7 +10,9 @@ import { test, expect } from "@playwright/test";
 import { statePath } from "../fixtures/env";
 
 test.describe("practice session configuration", () => {
-  test.use({ storageState: statePath("free") });
+  // A paying persona: since the pricing switch, a free account cannot start an
+  // interview at all, so the Start button is disabled and no request is sent.
+  test.use({ storageState: statePath("professional") });
 
   test("the selected interview config is sent to /api/interview", async ({ page }) => {
     await page.goto("/practice");
@@ -41,5 +43,56 @@ test.describe("practice session configuration", () => {
     expect(role, "difficulty should reach the API").toContain("Strict hiring-bar");
     expect(role, "focus area should reach the API").toContain("Confidence");
     expect(role, "experience level should reach the API").toContain("Senior / experienced professional");
+  });
+});
+
+/**
+ * A paying candidate's controls.
+ *
+ * Renaming the paid tier to Pro switched off every gate that compared the plan
+ * NAME to "Professional", which silently removed the question count, the
+ * hybrid mix and custom questions from everyone paying for them (user report,
+ * 16 September). Nothing in the pack noticed, so this spec watches the
+ * controls themselves rather than the plan string.
+ */
+test.describe("paid candidate setup controls", () => {
+  test.use({ storageState: statePath("professional") });
+
+  test("question count and custom questions are available on Pro", async ({ page }) => {
+    await page.goto("/practice");
+    await page.getByRole("button", { name: /Customise session/ }).click();
+
+    await expect(page.getByText("Number of questions")).toBeVisible();
+    await expect(page.getByText("Custom question mix")).toBeVisible();
+  });
+
+  test("choosing a one-way video interview reveals its recording settings", async ({ page }) => {
+    await page.goto("/practice");
+
+    // The format is locked until the plan is known, so wait for the card to
+    // stop showing the Pro badge rather than racing the usage request.
+    const videoCard = page.getByRole("button", { name: /One-way video interview/ });
+    await expect(videoCard).toContainText("Recorded");
+    await videoCard.click();
+
+    const settings = page.getByTestId("video-interview-settings");
+    await expect(settings).toBeVisible();
+    // Defaults are the realistic ones: a minute to think, two to answer, one take.
+    await expect(settings.getByRole("button", { name: "60 seconds" })).toHaveAttribute(
+      "aria-pressed",
+      "true"
+    );
+    await expect(settings.getByRole("button", { name: "2 minutes" })).toHaveAttribute(
+      "aria-pressed",
+      "true"
+    );
+    await expect(
+      settings.getByRole("button", { name: "None, like the real thing" })
+    ).toHaveAttribute("aria-pressed", "true");
+
+    // The format implies voice and camera, so the answer mode follows it.
+    await expect(
+      page.getByRole("button", { name: /Voice \+ camera interview/ })
+    ).toHaveAttribute("aria-pressed", "true");
   });
 });

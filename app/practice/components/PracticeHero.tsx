@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { isProPlanName } from "@/app/lib/planName";
 
 type PracticeHeroProps = {
   totalQuestions: number;
@@ -110,7 +111,7 @@ export function PracticeHero({
 
       {/* Assessment centre — direct for subscribers, upsell for everyone else */}
       <Link
-        href={planName === "Professional" ? "/assessment-centre" : "/mock-assessment-centre"}
+        href={isProPlanName(planName) ? "/assessment-centre" : "/mock-assessment-centre"}
         className="mt-4 block"
       >
         <div className="flex flex-wrap items-center justify-between gap-2 rounded-[1.1rem] border border-white/10 bg-white/[0.04] px-4 py-3 transition hover:border-cyan-400/30 hover:bg-white/[0.06]">
@@ -121,7 +122,7 @@ export function PracticeHero({
             </span>
           </p>
           <span className="text-xs font-bold text-cyan-300">
-            {planName === "Professional" ? "Included — go →" : "Included in Pro — see it →"}
+            {isProPlanName(planName) ? "Included — go →" : "Included in Pro — see it →"}
           </span>
         </div>
       </Link>

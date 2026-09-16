@@ -4,6 +4,7 @@ import Link from "next/link";
 import { SignInButton, useUser } from "@clerk/nextjs";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { CandidateAppShell } from "../components/marketing/CandidateAppShell";
+import { isProPlanName } from "@/app/lib/planName";
 import {
   buildCategoryAverages,
   categoryLabels,
@@ -320,11 +321,11 @@ export default function ProgressPage() {
           <>
             {sessionsLoading && <ProgressLoadingState />}
             {!sessionsLoading && sessionsError && <ErrorState message={sessionsError} />}
-            {!sessionsLoading && !sessionsError && !stats.latestSession && <EmptyProgressState isAdvancedPlan={planName === "Professional"} />}
+            {!sessionsLoading && !sessionsError && !stats.latestSession && <EmptyProgressState isAdvancedPlan={isProPlanName(planName)} />}
             {!sessionsLoading && !sessionsError && stats.latestSession && (
               <ProgressDashboard
                 stats={stats}
-                isAdvancedPlan={planName === "Professional"}
+                isAdvancedPlan={isProPlanName(planName)}
                 onSessionDeleted={(id) =>
                   setSessions((prev) => prev.filter((s) => s.id !== id))
                 }

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { SignInButton, useUser } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 import { CandidateAppShell } from "@/app/components/marketing/CandidateAppShell";
+import { isProPlanName } from "@/app/lib/planName";
 
 type PlanInfo = {
   planName: string;
@@ -261,7 +262,7 @@ export default function AssessmentCentrePage() {
     return () => { cancelled = true; };
   }, [isLoaded, isSignedIn]);
 
-  const isAdvanced = plan?.planName === "Professional" && plan.isActive;
+  const isAdvanced = isProPlanName(plan?.planName) && !!plan?.isActive;
   // A non-paying candidate with a taster left gets in: nobody upgrades to buy
   // something they have never been allowed to see.
   const hasTaster = (plan?.tasterAssessmentCentres ?? 0) > 0;

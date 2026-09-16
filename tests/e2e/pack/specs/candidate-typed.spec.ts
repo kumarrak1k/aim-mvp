@@ -45,11 +45,16 @@ function watchSave(page: Page) {
   };
 }
 
-test.describe("typed interview — Free persona", () => {
-  test.use({ storageState: statePath("free") });
+/**
+ * A trial account, not a free one: since the pricing switch a lapsed free
+ * account has no practice allowance at all, so it cannot reach a summary. The
+ * trial is the path a brand-new candidate actually takes.
+ */
+test.describe("typed interview — trial persona", () => {
+  test.use({ storageState: statePath("trial") });
 
   // @real-ai: this is the one interview the nightly real-AI run exercises (the
-  // Professional path below is the same plumbing, so it stays mock-only).
+  // Pro path below is the same plumbing, so it stays mock-only).
   test("completes a full typed interview and reaches the summary", { tag: "@real-ai" }, async ({ page }) => {
     const save = watchSave(page);
     await runTypedInterview(page, { role: "Graduate software engineer", totalQuestions: 5 });
@@ -57,7 +62,7 @@ test.describe("typed interview — Free persona", () => {
   });
 });
 
-test.describe("typed interview — Professional persona", () => {
+test.describe("typed interview — Pro persona", () => {
   test.use({ storageState: statePath("professional") });
 
   test("completes a full typed interview and reaches the summary", async ({ page }) => {

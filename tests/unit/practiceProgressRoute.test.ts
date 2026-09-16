@@ -7,10 +7,20 @@
  */
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
+/** Stands in for Prisma's P2002 on (clerkUserId, attemptId). */
+class PrismaUniqueError extends Error {
+  code = "P2002";
+  constructor() {
+    super("Unique constraint failed on the fields: (`clerkUserId`,`attemptId`)");
+  }
+}
+
 const h = vi.hoisted(() => ({
   state: {
     existing: null as null | Record<string, unknown>,
     countAnswered: 0,
+    /** Set to make the next create() lose a race, as Postgres does. */
+    createConflicts: false,
   },
   upsert: vi.fn(),
   record: vi.fn(),
@@ -44,6 +54,12 @@ vi.mock("@/app/lib/prisma", () => ({
       count: async () => h.state.countAnswered,
       create: async ({ data }: { data: Record<string, unknown> }) => {
         h.upsert({ op: "create", data });
+        if (h.state.createConflicts) {
+          h.state.createConflicts = false;
+          // The winner's row now exists, which is what the loser must find.
+          h.state.existing = { id: "sess_race", status: "in_progress", answeredCount: 1 };
+          throw new PrismaUniqueError();
+        }
         return { id: "sess_new", ...data };
       },
       update: async (args: Record<string, unknown>) => {
@@ -145,6 +161,29 @@ describe("PUT /api/practice-sessions/progress", () => {
 
     expect(res.status).toBe(400);
     expect(h.upsert).not.toHaveBeenCalled();
+  });
+
+  /**
+   * Two answers finishing at once both saw no row and both inserted. One of
+   * them got a Prisma unique-constraint error, which surfaced as a 500 and lost
+   * that answer. The loser of the race now updates the row the winner made.
+   */
+  it("saves the answer when two writes race to create the same attempt", async () => {
+    h.state.createConflicts = true;
+    h.state.existing = null;
+
+    const res = await PUT(
+      progressRequest({
+        results: [
+          { question: "Q1", answer: "A1" },
+          { question: "Q2", answer: "A2" },
+        ],
+      })
+    );
+
+    expect(res.status).toBe(200);
+    const ops = h.upsert.mock.calls.map((c) => c[0].op);
+    expect(ops).toEqual(["create", "update"]);
   });
 
   it("applies the plan cap when starting a new interview", async () => {

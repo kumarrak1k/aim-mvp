@@ -212,6 +212,7 @@ export type CandidateProfile = {
   cvFileName: string;
   roleSpecFileName: string;
   preferredPracticeMode: PracticeMode;
+  preferredInterviewFormat: import("../lib/interviewFormat").InterviewFormat;
   speakerPreference: SpeakerPreference;
   defaultExperienceLevel: string;
   defaultInterviewType: string;

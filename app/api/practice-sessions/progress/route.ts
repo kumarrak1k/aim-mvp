@@ -140,29 +140,67 @@ export async function PUT(request: NextRequest) {
       }
     }
 
-    const created = await prisma.practiceSession.create({
-      data: {
-        clerkUserId: userId,
-        attemptId,
-        role,
-        experienceLevel,
-        interviewType,
-        difficulty,
-        focusArea,
-        practiceMode,
-        totalQuestions,
-        status: PRACTICE_SESSION_STATUS.IN_PROGRESS,
-        answeredCount,
-        results: results as Prisma.InputJsonValue,
-        summary: {} as Prisma.InputJsonValue,
-        speakerPreference: (speakerPreference ?? null) as Prisma.InputJsonValue,
-        config: (config ?? null) as Prisma.InputJsonValue,
-        lastActivityAt: new Date(),
-      },
-      select: { id: true, answeredCount: true, status: true },
-    });
+    try {
+      const created = await prisma.practiceSession.create({
+        data: {
+          clerkUserId: userId,
+          attemptId,
+          role,
+          experienceLevel,
+          interviewType,
+          difficulty,
+          focusArea,
+          practiceMode,
+          totalQuestions,
+          status: PRACTICE_SESSION_STATUS.IN_PROGRESS,
+          answeredCount,
+          results: results as Prisma.InputJsonValue,
+          summary: {} as Prisma.InputJsonValue,
+          speakerPreference: (speakerPreference ?? null) as Prisma.InputJsonValue,
+          config: (config ?? null) as Prisma.InputJsonValue,
+          lastActivityAt: new Date(),
+        },
+        select: { id: true, answeredCount: true, status: true },
+      });
 
-    return NextResponse.json({ session: created });
+      return NextResponse.json({ session: created });
+    } catch (error) {
+      // Two answers finishing at once both read no row and both inserted. The
+      // loser used to get a 500 and that answer was lost, so it writes onto the
+      // row the winner created instead.
+      const isDuplicateAttempt =
+        error instanceof Prisma.PrismaClientKnownRequestError
+          ? error.code === "P2002"
+          : (error as { code?: string })?.code === "P2002";
+      if (!isDuplicateAttempt) throw error;
+
+      const winner = await prisma.practiceSession.findFirst({
+        where: { clerkUserId: userId, attemptId },
+        select: { id: true, status: true, answeredCount: true },
+      });
+      if (!winner || winner.status !== PRACTICE_SESSION_STATUS.IN_PROGRESS) throw error;
+      if (answeredCount < winner.answeredCount) {
+        return NextResponse.json(
+          {
+            error: "This interview has been continued somewhere else.",
+            answeredCount: winner.answeredCount,
+          },
+          { status: 409 }
+        );
+      }
+
+      const merged = await prisma.practiceSession.update({
+        where: { id: winner.id },
+        data: {
+          results: results as Prisma.InputJsonValue,
+          answeredCount,
+          lastActivityAt: new Date(),
+        },
+        select: { id: true, answeredCount: true, status: true },
+      });
+
+      return NextResponse.json({ session: merged });
+    }
   } catch (error) {
     console.error("PRACTICE SESSION PROGRESS ERROR:", error);
     Sentry.captureException(error);

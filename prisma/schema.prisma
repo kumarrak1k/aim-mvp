@@ -399,6 +399,8 @@ model UserProfile {
   cvFileName            String   @default("")
   roleSpecFileName      String   @default("")
   preferredPracticeMode String   @default("typed")
+  /** "traditional" (coaching flow) or "one_way_video". See app/lib/interviewFormat.ts. */
+  preferredInterviewFormat String @default("traditional")
   speakerPreference     Json     @default("{\"voice\":\"female\",\"pace\":\"natural\"}")
   defaultExperienceLevel String  @default("Graduate / entry level")
   defaultInterviewType  String   @default("Competency / behavioural")

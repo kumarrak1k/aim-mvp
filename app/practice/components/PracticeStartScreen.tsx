@@ -27,6 +27,12 @@ import {
   mixTotal,
   type QuestionMix,
 } from "../session/utils";
+import {
+  INTERVIEW_FORMATS,
+  VIDEO_SETTING_CHOICES,
+  type InterviewFormat,
+  type VideoInterviewSettings,
+} from "@/app/lib/interviewFormat";
 
 type PracticeStartScreenProps = {
   isLoaded: boolean;
@@ -48,6 +54,11 @@ type PracticeStartScreenProps = {
   setFocusArea: (value: string) => void;
   speakerEnabled: boolean;
   cameraEnabled: boolean;
+  /** The shape of the interview: coaching flow, or one-way video. */
+  interviewFormat: InterviewFormat;
+  setInterviewFormat: (value: InterviewFormat) => void;
+  videoSettings: VideoInterviewSettings;
+  setVideoSettings: (value: VideoInterviewSettings) => void;
   speakerPreference: SpeakerPreference;
   setSpeakerPreference: (value: SpeakerPreference) => void;
   setTextOnlyMode: () => void;
@@ -130,6 +141,10 @@ export function PracticeStartScreen({
   setFocusArea,
   speakerEnabled,
   cameraEnabled,
+  interviewFormat,
+  setInterviewFormat,
+  videoSettings,
+  setVideoSettings,
   speakerPreference,
   setSpeakerPreference,
   setTextOnlyMode,
@@ -256,6 +271,31 @@ export function PracticeStartScreen({
     ]
   );
 
+  /**
+   * A one-way video interview is voice and camera by definition, so choosing
+   * it sets the answer mode rather than leaving the two controls to disagree.
+   * It needs the camera, which is a Pro feature, so the free plan gets the
+   * same nudge as the locked answer modes.
+   */
+  const selectInterviewFormat = useCallback(
+    (format: InterviewFormat) => {
+      setPreferenceMessage("");
+
+      if (format === "one_way_video") {
+        if (isFreePlan) {
+          setPreferenceMessage("One-way video interviews are part of Pro.");
+          return;
+        }
+        setInterviewFormat("one_way_video");
+        selectPracticeMode("voice-camera");
+        return;
+      }
+
+      setInterviewFormat("traditional");
+    },
+    [isFreePlan, selectPracticeMode, setInterviewFormat]
+  );
+
   useEffect(() => {
     // Wait until BOTH the candidate profile AND the usage/plan info have
     // loaded. This prevents the race where profile loads first (isFreePlan
@@ -284,11 +324,19 @@ export function PracticeStartScreen({
     if (savedCandidateProfile.preferredPracticeMode && !isFreePlan) {
       selectPracticeMode(savedCandidateProfile.preferredPracticeMode);
     }
+
+    // Interview format, same rule: one-way video needs the camera, so it is
+    // only restored for paid plans. It is applied after the answer mode so it
+    // wins when the two disagree.
+    if (savedCandidateProfile.preferredInterviewFormat === "one_way_video" && !isFreePlan) {
+      selectInterviewFormat("one_way_video");
+    }
   }, [
     isFreePlan,
     isSignedIn,
     profileContextLoaded,
     savedCandidateProfile,
+    selectInterviewFormat,
     selectPracticeMode,
     setSpeakerPreference,
     usageLoaded,
@@ -329,6 +377,7 @@ export function PracticeStartScreen({
           cvFileName: savedCandidateProfile?.cvFileName || "",
           roleSpecFileName: savedCandidateProfile?.roleSpecFileName || "",
           preferredPracticeMode: selectedPracticeMode,
+          preferredInterviewFormat: interviewFormat,
           speakerPreference,
           defaultExperienceLevel: experienceLevel,
           defaultInterviewType: interviewType,
@@ -365,6 +414,7 @@ export function PracticeStartScreen({
     difficulty,
     experienceLevel,
     focusArea,
+    interviewFormat,
     interviewType,
     isSignedIn,
     isAdvancedPlan,
@@ -513,14 +563,122 @@ export function PracticeStartScreen({
         <div className="mb-5 rounded-[1.7rem] border border-white/10 bg-recess-25 p-5">
           <div className="mb-5">
             <p className="text-sm font-bold tracking-wide text-cyan-300">
+              Interview format
+            </p>
+            <h3 className="mt-2 text-xl font-bold tracking-tight text-white">
+              Coaching, or the real thing.
+            </h3>
+            <p className="mt-2 text-sm leading-6 text-gray-400">
+              Most first-round interviews are now recorded with no interviewer
+              on the other end. Practise that format, or take the coaching flow
+              with feedback after every answer.
+            </p>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2">
+            {INTERVIEW_FORMATS.map((format) => (
+              <ModeCard
+                key={format.value}
+                active={interviewFormat === format.value}
+                title={format.label}
+                badge={format.value === "one_way_video" ? "Recorded" : "Feedback each answer"}
+                description={format.description}
+                onClick={() => selectInterviewFormat(format.value)}
+                locked={format.value === "one_way_video" && isFreePlan}
+              />
+            ))}
+          </div>
+
+          {/* Without this the locked card just refuses to select and the
+              explanation sits inside the folded Customise panel, where nobody
+              sees it. */}
+          {isFreePlan && (
+            <div className="mt-4 flex flex-col gap-2 rounded-2xl border border-purple-300/20 bg-purple-300/[0.07] p-4 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-sm leading-6 text-gray-300">
+                <span className="font-bold text-purple-200">One-way video interviews</span> record
+                you on camera, so they are part of Pro.
+              </p>
+              <Link
+                href="/pricing"
+                className="shrink-0 rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-4 py-2 text-xs font-bold text-on-accent shadow-lg shadow-purple-950/35 transition hover:scale-[1.03]"
+              >
+                See pricing →
+              </Link>
+            </div>
+          )}
+
+          {interviewFormat === "one_way_video" && (
+            <div
+              className="mt-4 rounded-2xl border border-white/10 bg-white/[0.04] p-4"
+              data-testid="video-interview-settings"
+            >
+              <p className="text-sm font-bold text-white">Recording settings</p>
+              <p className="mt-1 text-sm leading-6 text-gray-400">
+                The defaults match what employers usually set. Answers are still
+                transcribed and scored, you just do not see the transcript while
+                you speak.
+              </p>
+
+              <div className="mt-4 grid gap-4 sm:grid-cols-3">
+                <VideoSettingField
+                  label="Time to prepare"
+                  value={videoSettings.prepSeconds}
+                  options={VIDEO_SETTING_CHOICES.prepSeconds}
+                  format={(seconds) => `${seconds} seconds`}
+                  onChange={(prepSeconds) => setVideoSettings({ ...videoSettings, prepSeconds })}
+                />
+
+                <VideoSettingField
+                  label="Answer limit"
+                  value={videoSettings.answerSeconds}
+                  options={VIDEO_SETTING_CHOICES.answerSeconds}
+                  format={(seconds) => (seconds === 60 ? "1 minute" : `${seconds / 60} minutes`)}
+                  onChange={(answerSeconds) => setVideoSettings({ ...videoSettings, answerSeconds })}
+                />
+
+                <VideoSettingField
+                  label="Retakes"
+                  value={videoSettings.retakesAllowed}
+                  options={VIDEO_SETTING_CHOICES.retakesAllowed}
+                  format={(count) => (count === 0 ? "None, like the real thing" : "One per question")}
+                  onChange={(retakesAllowed) => setVideoSettings({ ...videoSettings, retakesAllowed })}
+                />
+              </div>
+
+              <label className="mt-4 flex items-start gap-3 text-sm leading-6 text-gray-300">
+                <input
+                  type="checkbox"
+                  className="mt-1 h-4 w-4 shrink-0 accent-cyan-300"
+                  checked={videoSettings.feedbackTiming === "each"}
+                  onChange={(event) =>
+                    setVideoSettings({
+                      ...videoSettings,
+                      feedbackTiming: event.target.checked ? "each" : "end",
+                    })
+                  }
+                />
+                <span>
+                  Show feedback after every answer. Leave this off to get the
+                  full report at the end, which is how a real one-way interview
+                  works.
+                </span>
+              </label>
+            </div>
+          )}
+        </div>
+
+        <div className="mb-5 rounded-[1.7rem] border border-white/10 bg-recess-25 p-5">
+          <div className="mb-5">
+            <p className="text-sm font-bold tracking-wide text-cyan-300">
               Practice mode
             </p>
             <h3 className="mt-2 text-xl font-bold tracking-tight text-white">
-              Choose one interview format.
+              Choose how you answer.
             </h3>
             <p className="mt-2 text-sm leading-6 text-gray-400">
-              Select one mode for this session. You can save it as your default
-              in your Candidate Profile and still override it here anytime.
+              {interviewFormat === "one_way_video"
+                ? "A one-way video interview records you speaking, so voice and camera are both on."
+                : "Select one mode for this session. You can save it as your default in your Candidate Profile and still override it here anytime."}
             </p>
           </div>
 
@@ -980,6 +1138,47 @@ export function PracticeStartScreen({
           </div>
         </GlassCard>
       </aside>
+    </div>
+  );
+}
+
+/**
+ * One recording setting as a small row of buttons rather than a dropdown:
+ * there are only two or three choices, and on a phone a dropdown hides them.
+ */
+function VideoSettingField({
+  label,
+  value,
+  options,
+  format,
+  onChange,
+}: {
+  label: string;
+  value: number;
+  options: readonly number[];
+  format: (value: number) => string;
+  onChange: (value: number) => void;
+}) {
+  return (
+    <div>
+      <p className="mb-2 text-xs font-bold uppercase tracking-wide text-gray-400">{label}</p>
+      <div className="flex flex-wrap gap-2">
+        {options.map((option) => (
+          <button
+            key={option}
+            type="button"
+            onClick={() => onChange(option)}
+            aria-pressed={value === option}
+            className={`rounded-full border px-3 py-2 text-xs font-bold transition ${
+              value === option
+                ? "border-cyan-300/40 bg-cyan-300/15 text-cyan-100"
+                : "border-white/10 bg-white/[0.05] text-gray-300 hover:bg-white/[0.09]"
+            }`}
+          >
+            {format(option)}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

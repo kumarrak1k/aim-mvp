@@ -17,6 +17,7 @@ import {
   MIN_TOTAL_QUESTIONS,
   type QuestionMix,
 } from "@/app/practice/session/utils";
+import { normaliseInterviewFormat, type InterviewFormat } from "@/app/lib/interviewFormat";
 
 export type PracticeMode = "typed" | "voice" | "voice-camera";
 
@@ -46,6 +47,12 @@ export type CandidateProfile = {
   cvFileName: string;
   roleSpecFileName: string;
   preferredPracticeMode: PracticeMode;
+  /**
+   * Which shape of interview the candidate practises by default. Asked at
+   * onboarding and changeable afterwards, so it lives on the profile rather
+   * than only in a session config.
+   */
+  preferredInterviewFormat: InterviewFormat;
   speakerPreference: SpeakerPreference;
   defaultExperienceLevel: string;
   defaultInterviewType: string;
@@ -70,6 +77,7 @@ export const EMPTY_PROFILE: CandidateProfile = {
   cvFileName: "",
   roleSpecFileName: "",
   preferredPracticeMode: "typed",
+  preferredInterviewFormat: "traditional",
   speakerPreference: DEFAULT_SPEAKER_PREFERENCE,
   defaultExperienceLevel: "Graduate / entry level",
   defaultInterviewType: "Competency / behavioural",
@@ -128,6 +136,7 @@ function rowToProfile(row: {
   cvFileName: string;
   roleSpecFileName: string;
   preferredPracticeMode: string;
+  preferredInterviewFormat?: string | null;
   speakerPreference: unknown;
   defaultExperienceLevel: string;
   defaultInterviewType: string;
@@ -146,6 +155,7 @@ function rowToProfile(row: {
     cvFileName: row.cvFileName,
     roleSpecFileName: row.roleSpecFileName,
     preferredPracticeMode: cleanMode(row.preferredPracticeMode, "typed"),
+    preferredInterviewFormat: normaliseInterviewFormat(row.preferredInterviewFormat),
     speakerPreference: cleanSpeaker(row.speakerPreference, DEFAULT_SPEAKER_PREFERENCE),
     defaultExperienceLevel: row.defaultExperienceLevel,
     defaultInterviewType: row.defaultInterviewType,
@@ -178,6 +188,7 @@ async function migrateFromClerk(clerkUserId: string): Promise<CandidateProfile> 
       cvFileName: cleanText(cp.cvFileName).slice(0, 180),
       roleSpecFileName: cleanText(cp.roleSpecFileName).slice(0, 180),
       preferredPracticeMode: cleanMode(cp.preferredPracticeMode, "typed"),
+      preferredInterviewFormat: normaliseInterviewFormat(cp.preferredInterviewFormat),
       speakerPreference: cleanSpeaker(cp.speakerPreference, DEFAULT_SPEAKER_PREFERENCE),
       defaultExperienceLevel: cleanText(cp.defaultExperienceLevel) || "Graduate / entry level",
       defaultInterviewType: cleanText(cp.defaultInterviewType) || "Competency / behavioural",
@@ -216,6 +227,7 @@ export async function getCandidateProfile(clerkUserId: string): Promise<Candidat
         cvFileName: migrated.cvFileName,
         roleSpecFileName: migrated.roleSpecFileName,
         preferredPracticeMode: migrated.preferredPracticeMode,
+        preferredInterviewFormat: migrated.preferredInterviewFormat,
         speakerPreference: migrated.speakerPreference,
         defaultExperienceLevel: migrated.defaultExperienceLevel,
         defaultInterviewType: migrated.defaultInterviewType,
@@ -251,6 +263,12 @@ export async function upsertCandidateProfile(
     roleSpecFileName: typeof updates.roleSpecFileName === "string" ? cleanText(updates.roleSpecFileName).slice(0, 180) : current.roleSpecFileName,
     currentRole: updates.currentRole !== undefined ? cleanText(updates.currentRole).slice(0, 160) : current.currentRole,
     preferredPracticeMode: updates.preferredPracticeMode !== undefined ? cleanMode(updates.preferredPracticeMode, current.preferredPracticeMode) : current.preferredPracticeMode,
+    // A format we do not recognise keeps what is already stored rather than
+    // quietly demoting someone back to the coaching flow.
+    preferredInterviewFormat:
+      updates.preferredInterviewFormat === "traditional" || updates.preferredInterviewFormat === "one_way_video"
+        ? updates.preferredInterviewFormat
+        : current.preferredInterviewFormat,
     speakerPreference: updates.speakerPreference !== undefined ? cleanSpeaker(updates.speakerPreference, current.speakerPreference) : current.speakerPreference,
     defaultExperienceLevel: typeof updates.defaultExperienceLevel === "string" ? (updates.defaultExperienceLevel.trim().slice(0, 90) || current.defaultExperienceLevel) : current.defaultExperienceLevel,
     defaultInterviewType: typeof updates.defaultInterviewType === "string" ? (updates.defaultInterviewType.trim().slice(0, 90) || current.defaultInterviewType) : current.defaultInterviewType,

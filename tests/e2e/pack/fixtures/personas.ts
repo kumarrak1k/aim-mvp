@@ -13,7 +13,8 @@ export type Persona = {
   email: string;
   privateMetadata: Record<string, unknown>;
   /** Plan the persona should resolve to (for spec-level assertions). */
-  planName: "Free" | "Plus" | "Professional";
+  /** Effective plan label, used only in test titles. One paid plan since Sep 2026. */
+  planName: "Free" | "Pro";
   /** True if voice/camera modes should be LOCKED on /practice (Free only). */
   voiceLocked: boolean;
 };
@@ -39,14 +40,16 @@ export const CANDIDATE_PERSONAS: Persona[] = [
       trialEndsAt: iso(NOW + 6.5 * DAY),
       trialConsumed: true,
     },
-    planName: "Plus",
+    planName: "Pro",
     voiceLocked: false,
   },
   {
+    // Deliberately still on a retired price id: an account that subscribed
+    // under the old pricing must keep full access.
     key: "plus",
     email: "plus+aimtest@aimtest.dev",
     privateMetadata: { accountType: "candidate", subscriptionStatus: "active", stripePlanId: "plus_monthly", trialConsumed: true },
-    planName: "Plus",
+    planName: "Pro",
     voiceLocked: false,
   },
   {
@@ -55,10 +58,10 @@ export const CANDIDATE_PERSONAS: Persona[] = [
     privateMetadata: {
       accountType: "candidate",
       subscriptionStatus: "active",
-      stripePlanId: "professional_annual",
+      stripePlanId: "pro_annual",
       trialConsumed: true,
     },
-    planName: "Professional",
+    planName: "Pro",
     voiceLocked: false,
   },
 ];
