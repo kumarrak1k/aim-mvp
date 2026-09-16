@@ -3,6 +3,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { checkRateLimit } from "@/app/lib/rateLimit";
 import { MODEL_TTS } from "@/app/lib/aiModels";
 import {
+  ELEVENLABS_MODEL,
+  ELEVENLABS_VOICE_SETTINGS,
+  elevenLabsVoiceId,
+  resolveVoiceProvider,
+} from "@/app/lib/interviewerVoice";
+import {
   resolveCandidatePlanReliable,
   type CandidateBillingMeta,
 } from "@/app/lib/candidatePlan";
@@ -243,6 +249,38 @@ async function requestSpeechWithRetry(
   return response;
 }
 
+/**
+ * ElevenLabs: natively British voices, so there is no accent brief to slip out
+ * of. Retried on the same terms as OpenAI, because a provider blip must not
+ * change who is speaking.
+ */
+async function requestElevenLabsSpeech(apiKey: string, text: string, pref: SpeakerPreference) {
+  return fetch(
+    `https://api.elevenlabs.io/v1/text-to-speech/${elevenLabsVoiceId(pref.voice)}?output_format=mp3_22050_32`,
+    {
+      method: "POST",
+      headers: { "xi-api-key": apiKey, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        text,
+        model_id: ELEVENLABS_MODEL,
+        voice_settings: ELEVENLABS_VOICE_SETTINGS,
+      }),
+    }
+  );
+}
+
+async function fetchElevenLabsStream(apiKey: string, text: string, pref: SpeakerPreference) {
+  let response = await requestElevenLabsSpeech(apiKey, text, pref);
+
+  for (let attempt = 1; attempt < 3 && !response.ok; attempt += 1) {
+    if (response.status >= 400 && response.status < 500 && response.status !== 429) break;
+    await new Promise((resolve) => setTimeout(resolve, 350 * attempt));
+    response = await requestElevenLabsSpeech(apiKey, text, pref);
+  }
+
+  return response;
+}
+
 async function fetchSpeechStream({
   apiKey,
   text,
@@ -279,6 +317,43 @@ async function fetchSpeechStream({
   }
 
   return { response, model };
+}
+
+/**
+ * Synthesise the question, whoever is providing the voice.
+ *
+ * ElevenLabs first because its voices are natively British; OpenAI behind it so
+ * a missing key or an outage costs a change of voice rather than silence.
+ */
+async function synthesiseQuestion(text: string, speakerPreference: SpeakerPreference) {
+  const provider = resolveVoiceProvider({
+    elevenLabsKey: process.env.ELEVENLABS_API_KEY,
+    openAiKey: process.env.OPENAI_API_KEY,
+    forced: process.env.AI_TTS_PROVIDER,
+  });
+
+  if (provider === "elevenlabs") {
+    const response = await fetchElevenLabsStream(
+      process.env.ELEVENLABS_API_KEY as string,
+      text,
+      speakerPreference
+    );
+
+    if (response.ok) return { response, model: ELEVENLABS_MODEL };
+
+    // Persistent failure: fall through to OpenAI rather than leave the
+    // candidate reading in silence. Logged, because a voice change is the
+    // symptom a candidate reports and the cause has to be findable.
+    const detail = await response.text().catch(() => "");
+    console.error(
+      `QUESTION AUDIO: ElevenLabs failed (${response.status}); falling back to OpenAI. ${detail.slice(0, 200)}`
+    );
+  }
+
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) throw new Error("No interviewer voice is configured.");
+
+  return fetchSpeechStream({ apiKey, text, speakerPreference });
 }
 
 function streamingAudioResponse(ttsResponse: Response, model: string) {
@@ -324,9 +399,13 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const apiKey = process.env.OPENAI_API_KEY;
-
-    if (!apiKey) {
+    if (
+      resolveVoiceProvider({
+        elevenLabsKey: process.env.ELEVENLABS_API_KEY,
+        openAiKey: process.env.OPENAI_API_KEY,
+        forced: process.env.AI_TTS_PROVIDER,
+      }) === "none"
+    ) {
       return getApiKeyErrorResponse();
     }
 
@@ -343,11 +422,7 @@ export async function GET(request: NextRequest) {
       return getMissingTextErrorResponse();
     }
 
-    const { response: ttsResponse, model } = await fetchSpeechStream({
-      apiKey,
-      text,
-      speakerPreference,
-    });
+    const { response: ttsResponse, model } = await synthesiseQuestion(text, speakerPreference);
 
     return streamingAudioResponse(ttsResponse, model);
   } catch (error) {
@@ -390,9 +465,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const apiKey = process.env.OPENAI_API_KEY;
-
-    if (!apiKey) {
+    if (
+      resolveVoiceProvider({
+        elevenLabsKey: process.env.ELEVENLABS_API_KEY,
+        openAiKey: process.env.OPENAI_API_KEY,
+        forced: process.env.AI_TTS_PROVIDER,
+      }) === "none"
+    ) {
       return getApiKeyErrorResponse();
     }
 
@@ -406,11 +485,7 @@ export async function POST(request: NextRequest) {
       return getMissingTextErrorResponse();
     }
 
-    const { response: ttsResponse, model } = await fetchSpeechStream({
-      apiKey,
-      text,
-      speakerPreference,
-    });
+    const { response: ttsResponse, model } = await synthesiseQuestion(text, speakerPreference);
 
     return streamingAudioResponse(ttsResponse, model);
   } catch (error) {
