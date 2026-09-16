@@ -15,41 +15,41 @@ import type { BankQuestion } from "./types";
 
 export const CORE_QUESTIONS: BankQuestion[] = [
   // ── Openers ──────────────────────────────────────────────────────────────
-  { id: "op-01", type: "opener", source: "original", text: "Tell me about yourself." },
-  { id: "op-02", type: "opener", source: "original", text: "Talk me through your CV and what led you to apply for this role." },
-  { id: "op-03", type: "opener", source: "original", text: "Give me a two-minute summary of who you are and what you are looking for." },
-  { id: "op-04", type: "opener", source: "original", text: "What should I know about you that is not on your application?" },
-  { id: "op-05", type: "opener", source: "original", text: "How would the people you have worked with describe you?" },
-  { id: "op-06", type: "opener", source: "original", text: "What are you most proud of so far, and why that?" },
-  { id: "op-07", type: "opener", source: "original", text: "Walk me through the decision that got you to where you are now." },
-  { id: "op-08", type: "opener", source: "original", text: "Introduce yourself as though we had never seen your application." },
+  { id: "op-01", type: "opener", source: "original", text: "I have your CV in front of me, but could you tell me about yourself and draw out the parts of your experience that fit this opportunity?" },
+  { id: "op-02", type: "opener", source: "original", text: "Talk me through your CV. I am less interested in every job title than in why you moved when you did, and what brought you to this role." },
+  { id: "op-03", type: "opener", source: "original", text: "Give me a couple of minutes on who you are and what you are looking for next. What would make this the right move for you?" },
+  { id: "op-04", type: "opener", source: "original", text: "Your application tells me what you have done. What does it not tell me about you that I should know?" },
+  { id: "op-05", type: "opener", source: "original", text: "How would the people you have worked with most closely describe you, and would you say they have you about right?" },
+  { id: "op-06", type: "opener", source: "original", text: "Of everything you have done so far, what are you proudest of, and what makes that the one you picked?" },
+  { id: "op-07", type: "opener", source: "original", text: "Walk me through the decisions that got you from where you started to where you are now. Which one mattered most?" },
+  { id: "op-08", type: "opener", source: "original", text: "Introduce yourself as though I had never seen your application, and tell me what you would want me to remember afterwards." },
 
   // ── Motivation ───────────────────────────────────────────────────────────
-  { id: "mo-01", type: "motivation", source: "original", text: "Why do you want this role?" },
-  { id: "mo-02", type: "motivation", source: "original", text: "Why us rather than one of our competitors?" },
-  { id: "mo-03", type: "motivation", source: "original", text: "What do you know about what we do, and what drew you to it?" },
-  { id: "mo-04", type: "motivation", source: "original", text: "Why this industry?" },
-  { id: "mo-05", type: "motivation", source: "original", text: "What are you hoping to be doing three years from now?" },
-  { id: "mo-06", type: "motivation", source: "original", text: "What made you apply now rather than a year ago?" },
-  { id: "mo-07", type: "motivation", source: "original", text: "What would make you turn down an offer from us?" },
-  { id: "mo-08", type: "motivation", source: "original", text: "Which part of this job do you expect to enjoy least, and how will you handle it?" },
-  { id: "mo-09", type: "motivation", source: "original", text: "What do you want from your first year here?" },
-  { id: "mo-10", type: "motivation", source: "original", text: "Why should we choose you over someone with a similar background?" },
-  { id: "mo-11", type: "motivation", source: "original", text: "What is the most interesting thing you have read or heard about our sector recently?" },
-  { id: "mo-12", type: "motivation", source: "original", text: "Tell me about a piece of work you have done that is closest to what this job involves." },
-  { id: "mo-13", type: "motivation", source: "original", text: "What attracted you to the way this team works?" },
-  { id: "mo-14", type: "motivation", source: "original", text: "If you were not applying for this, what would you be doing instead?" },
+  { id: "mo-01", type: "motivation", source: "original", text: "How would you describe the role you are applying for, and how does your experience line up with it? What makes you a strong candidate?" },
+  { id: "mo-02", type: "motivation", source: "original", text: "Why us, rather than one of the other organisations you could be applying to? What made you pick this one?" },
+  { id: "mo-03", type: "motivation", source: "original", text: "What do you understand about what we actually do day to day, and which part of it drew you in?" },
+  { id: "mo-04", type: "motivation", source: "original", text: "Why this industry? Tell me what pulled you towards it rather than somewhere else." },
+  { id: "mo-05", type: "motivation", source: "original", text: "Where would you like to be in three years, and how does this role get you closer to it?" },
+  { id: "mo-06", type: "motivation", source: "original", text: "What made you apply now rather than a year ago? What has changed for you?" },
+  { id: "mo-07", type: "motivation", source: "original", text: "What would make you turn down an offer from us? I would rather know now than in a month." },
+  { id: "mo-08", type: "motivation", source: "original", text: "Every job has a part nobody enjoys. Which part of this one do you expect that to be, and how will you handle it?" },
+  { id: "mo-09", type: "motivation", source: "original", text: "If you were sitting here a year from now, what would need to have happened for you to call it a good first year?" },
+  { id: "mo-10", type: "motivation", source: "original", text: "We will see candidates with backgrounds a lot like yours. Why should we choose you?" },
+  { id: "mo-11", type: "motivation", source: "original", text: "What have you read or heard about this sector recently that stayed with you, and why that one?" },
+  { id: "mo-12", type: "motivation", source: "original", text: "Tell me about the piece of work on your CV that is closest to what this job actually involves." },
+  { id: "mo-13", type: "motivation", source: "original", text: "What have you picked up about how this team works, and what attracted you to it?" },
+  { id: "mo-14", type: "motivation", source: "original", text: "If you were not applying for roles like this one, what would you be doing instead?" },
 
   // ── Competency: teamwork ─────────────────────────────────────────────────
-  { id: "cp-tw-01", type: "competency", competency: "teamwork", source: "original", text: "Tell me about a time you worked as part of a team to get something finished." },
-  { id: "cp-tw-02", type: "competency", competency: "teamwork", source: "original", text: "Describe a time a team member was not pulling their weight. What did you do?" },
+  { id: "cp-tw-01", type: "competency", competency: "teamwork", source: "original", text: "Tell me about a time you worked as part of a team to get something finished. What was your own contribution?" },
+  { id: "cp-tw-02", type: "competency", competency: "teamwork", source: "original", text: "Describe a time someone in your team was not pulling their weight. What did you do about it?" },
   { id: "cp-tw-03", type: "competency", competency: "teamwork", source: "original", text: "Give me an example of a time you had to work with someone very different from you." },
   { id: "cp-tw-04", type: "competency", competency: "teamwork", source: "original", text: "Tell me about a time you asked a colleague for help. How did that go?" },
   { id: "cp-tw-05", type: "competency", competency: "teamwork", source: "ogl-success-profiles", text: "Describe a time you built a working relationship with someone outside your own team to get something done." },
 
   // ── Competency: resilience ───────────────────────────────────────────────
-  { id: "cp-re-01", type: "competency", competency: "resilience", source: "original", text: "Tell me about a time you were under real pressure. How did you cope?" },
-  { id: "cp-re-02", type: "competency", competency: "resilience", source: "original", text: "Describe a setback you have had and what you did next." },
+  { id: "cp-re-01", type: "competency", competency: "resilience", source: "original", text: "Tell me about a time you were under real pressure. What was going on, and how did you handle it?" },
+  { id: "cp-re-02", type: "competency", competency: "resilience", source: "original", text: "Describe a setback you have had. What did you do next, and what did it change about how you work?" },
   { id: "cp-re-03", type: "competency", competency: "resilience", source: "original", text: "Tell me about a time you had to keep going when something was not working." },
   { id: "cp-re-04", type: "competency", competency: "resilience", source: "original", text: "Give me an example of critical feedback you found hard to hear. What did you do with it?" },
   { id: "cp-re-05", type: "competency", competency: "resilience", source: "original", text: "Describe the busiest period you have had. How did you get through it?" },
@@ -61,26 +61,26 @@ export const CORE_QUESTIONS: BankQuestion[] = [
   { id: "cp-cf-04", type: "competency", competency: "conflict", source: "original", text: "Give me an example of a time you had to deliver an unwelcome message." },
 
   // ── Competency: failure ──────────────────────────────────────────────────
-  { id: "cp-fa-01", type: "competency", competency: "failure", source: "original", text: "Tell me about a time something you were responsible for went wrong." },
+  { id: "cp-fa-01", type: "competency", competency: "failure", source: "original", text: "Tell me about a time something you were responsible for went wrong. What happened, and what did you do?" },
   { id: "cp-fa-02", type: "competency", competency: "failure", source: "original", text: "Describe a mistake you made and how you put it right." },
   { id: "cp-fa-03", type: "competency", competency: "failure", source: "original", text: "Tell me about a decision you would make differently now." },
   { id: "cp-fa-04", type: "competency", competency: "failure", source: "original", text: "Give me an example of a time you missed a deadline. What happened?" },
 
   // ── Competency: problem solving ──────────────────────────────────────────
-  { id: "cp-ps-01", type: "competency", competency: "problem-solving", source: "original", text: "Tell me about a difficult problem you worked out how to solve." },
+  { id: "cp-ps-01", type: "competency", competency: "problem-solving", source: "original", text: "Tell me about a difficult problem you worked out how to solve. Take me through how you got to the answer." },
   { id: "cp-ps-02", type: "competency", competency: "problem-solving", source: "original", text: "Describe a time you had to make a decision without all the information you wanted." },
   { id: "cp-ps-03", type: "competency", competency: "problem-solving", source: "original", text: "Give me an example of a time you spotted the real cause of a problem rather than the obvious one." },
   { id: "cp-ps-04", type: "competency", competency: "problem-solving", source: "ogl-success-profiles", text: "Tell me about a time you used evidence to reach a decision. What did the evidence tell you?" },
   { id: "cp-ps-05", type: "competency", competency: "problem-solving", source: "original", text: "Describe a time you improved the way something was done." },
 
   // ── Competency: communication ────────────────────────────────────────────
-  { id: "cp-cm-01", type: "competency", competency: "communication", source: "original", text: "Tell me about a time you explained something complicated to someone who knew nothing about it." },
+  { id: "cp-cm-01", type: "competency", competency: "communication", source: "original", text: "Tell me about a time you had to explain something complicated to someone who knew nothing about it. How did you pitch it?" },
   { id: "cp-cm-02", type: "competency", competency: "communication", source: "original", text: "Describe a presentation or piece of writing you were pleased with. What made it work?" },
   { id: "cp-cm-03", type: "competency", competency: "communication", source: "original", text: "Give me an example of a time you had to adapt how you said something to reach your audience." },
   { id: "cp-cm-04", type: "competency", competency: "communication", source: "original", text: "Tell me about a time you had to listen carefully before acting." },
 
   // ── Competency: organisation ─────────────────────────────────────────────
-  { id: "cp-or-01", type: "competency", competency: "organisation", source: "original", text: "Tell me how you handled a period when several things were due at once." },
+  { id: "cp-or-01", type: "competency", competency: "organisation", source: "original", text: "Tell me about a period when several things were due at once. How did you decide what got your attention?" },
   { id: "cp-or-02", type: "competency", competency: "organisation", source: "original", text: "Describe a time you had to change your plan part way through." },
   { id: "cp-or-03", type: "competency", competency: "organisation", source: "original", text: "Give me an example of a long piece of work you kept on track." },
   { id: "cp-or-04", type: "competency", competency: "organisation", source: "original", text: "Tell me how you decide what to do first when everything looks urgent." },

@@ -31,13 +31,36 @@ const DEFAULT_SPEAKER_PREFERENCE: SpeakerPreference = {
 const SPEAKER_VOICES: SpeakerVoice[] = ["female", "male"];
 const SPEAKER_PACES: SpeakerPace[] = ["slow", "natural", "energetic"];
 
-// Chosen by ear from a blind audition of all 13 voices under the British brief
-// below. OpenAI documents no accent, nationality or gender for any voice — the
-// docs say only "Voices are currently optimized for English" — so there is no
-// specification to select against and listening is the only method available.
+/**
+ * The interviewer's voice.
+ *
+ * OpenAI documents no accent, nationality or gender for any voice, so this can
+ * only be chosen by ear. The defaults are the newer, warmer voices, which also
+ * follow the delivery instructions below far more closely than the original
+ * set did — "shimmer" in particular reads thin and clipped on short questions.
+ *
+ * Tunable without a deploy: AI_TTS_VOICE_FEMALE / AI_TTS_VOICE_MALE. Worth
+ * trying if these do not land: sage, coral, nova, shimmer (female-sounding);
+ * ballad, ash, fable, onyx (male-sounding).
+ */
 const voiceMap: Record<SpeakerVoice, string> = {
-  female: "shimmer",
-  male: "fable",
+  female: process.env.AI_TTS_VOICE_FEMALE || "coral",
+  male: process.env.AI_TTS_VOICE_MALE || "ballad",
+};
+
+/**
+ * tts-1 only knows the original six voices. If the accented model fails and we
+ * drop to it, the voice has to map to the nearest of those rather than 400 and
+ * leave the candidate in silence.
+ */
+const LEGACY_VOICE_EQUIVALENT: Record<string, string> = {
+  coral: "nova",
+  sage: "nova",
+  ballad: "fable",
+  ash: "onyx",
+  verse: "onyx",
+  marin: "nova",
+  cedar: "onyx",
 };
 
 const speedMap: Record<SpeakerPace, number> = {
@@ -80,7 +103,8 @@ function buildInstructions(pref: SpeakerPreference): string {
     BRITISH_ACCENT_INSTRUCTION,
     paceInstruction[pref.pace],
     "Sound conversational and genuinely curious, not like someone reading from a script.",
-    "Vary your intonation naturally. Never flat or monotone.",
+    "Vary your intonation and your pace across the sentence, and breathe naturally between clauses.",
+    "Never flat, never monotone, and never rushed at the end of a question.",
   ]
     .filter(Boolean)
     .join(" ");
@@ -89,6 +113,13 @@ function buildInstructions(pref: SpeakerPreference): string {
 /** tts-1 family: numeric speed, no instructions. Newer TTS models: reverse. */
 function isLegacyTts(model: string) {
   return model.startsWith("tts-1");
+}
+
+/** The configured voice, mapped to something tts-1 knows when we downgrade. */
+function resolveVoice(model: string, preference: SpeakerVoice): string {
+  const voice = voiceMap[preference];
+  if (!isLegacyTts(model)) return voice;
+  return LEGACY_VOICE_EQUIVALENT[voice] ?? voice;
 }
 
 function cleanSpeakerPreference(value: unknown): SpeakerPreference {
@@ -169,7 +200,7 @@ async function requestSpeech(
     },
     body: JSON.stringify({
       model,
-      voice: voiceMap[pref.voice],
+      voice: resolveVoice(model, pref.voice),
       input: text,
       response_format: "mp3",
       ...(isLegacyTts(model)

@@ -911,10 +911,16 @@ export function useQuestionAudio({
           setActivePreparedAudioEntry(cacheKey, cachedEntry);
           audio = cachedEntry.audio;
         } else {
-          const prepared = await prepareQuestionAudio(
-            safeText,
-            speakerPreference
-          );
+          let prepared = await prepareQuestionAudio(safeText, speakerPreference);
+
+          if (!prepared) {
+            // One retry before the device voice. The device voice is a
+            // different person entirely — a local OS synth, often American —
+            // so one question falling back to it is the "the voice changed"
+            // report. A single transient failure must not be enough to cause
+            // that.
+            prepared = await prepareQuestionAudio(safeText, speakerPreference);
+          }
 
           if (!prepared) {
             fallbackToBrowserSpeech?.(safeText, startRecordingAfterPlayback);
