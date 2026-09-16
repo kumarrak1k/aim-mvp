@@ -12,6 +12,12 @@ import {
   FREE_TIER,
 } from "../../lib/candidatePlan";
 import { recordActivity, ACTIVITY_EVENTS } from "../../lib/activity";
+import {
+  LISTED_STATUS_FILTER,
+  PRACTICE_SESSION_STATUS,
+  USAGE_COUNT_FILTER,
+  isStale,
+} from "../../lib/practiceSessionStatus";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -41,7 +47,11 @@ async function getUsageInfo(clerkUserId: string, plan: CandidatePlan) {
     const cap = TRIAL_USAGE_CAPS.practiceSessions;
     const since = plan.trialStartedAt ? new Date(plan.trialStartedAt) : undefined;
     const used = await prisma.practiceSession.count({
-      where: { clerkUserId, ...(since && { createdAt: { gte: since } }) },
+      where: {
+        clerkUserId,
+        ...USAGE_COUNT_FILTER,
+        ...(since && { createdAt: { gte: since } }),
+      },
     });
     return {
       planName: plan.planName,
@@ -70,8 +80,10 @@ async function getUsageInfo(clerkUserId: string, plan: CandidatePlan) {
   // meant a free user hit a wall they could never get past, so there was never
   // a reason to return; the allowance now refills.
   const windowStart = freeWindowStart();
+  // An interview counts once one answer has been scored, whether or not it was
+  // finished, so the cap cannot be dodged by abandoning every interview.
   const usedInWindow = await prisma.practiceSession.count({
-    where: { clerkUserId, createdAt: { gte: windowStart } },
+    where: { clerkUserId, createdAt: { gte: windowStart }, ...USAGE_COUNT_FILTER },
   });
 
   const remaining = Math.max(0, FREE_TIER.practiceSessionsPerWindow - usedInWindow);
@@ -82,7 +94,7 @@ async function getUsageInfo(clerkUserId: string, plan: CandidatePlan) {
   let resetsAt = "";
   if (limitReached) {
     const oldest = await prisma.practiceSession.findFirst({
-      where: { clerkUserId, createdAt: { gte: windowStart } },
+      where: { clerkUserId, createdAt: { gte: windowStart }, ...USAGE_COUNT_FILTER },
       orderBy: { createdAt: "asc" },
       select: { createdAt: true },
     });
@@ -117,9 +129,9 @@ export async function GET() {
 
     const plan = await getCandidatePlan(userId);
 
-    const [sessions, usage, assessmentLinkedIds] = await Promise.all([
+    const [sessions, unfinished, usage, assessmentLinkedIds] = await Promise.all([
       prisma.practiceSession.findMany({
-        where: { clerkUserId: userId },
+        where: { clerkUserId: userId, ...LISTED_STATUS_FILTER },
         orderBy: { createdAt: "desc" },
         take: 50,
         select: {
@@ -137,6 +149,32 @@ export async function GET() {
           results: true,
           speakerPreference: true,
           createdAt: true,
+          status: true,
+          answeredCount: true,
+        },
+      }),
+      // The interview they walked away from, so the practice page can offer to
+      // carry on instead of silently starting again from question 1.
+      prisma.practiceSession.findFirst({
+        where: {
+          clerkUserId: userId,
+          status: PRACTICE_SESSION_STATUS.IN_PROGRESS,
+          ...USAGE_COUNT_FILTER,
+        },
+        orderBy: { updatedAt: "desc" },
+        select: {
+          id: true,
+          attemptId: true,
+          role: true,
+          totalQuestions: true,
+          answeredCount: true,
+          practiceMode: true,
+          config: true,
+          // Needed to put the candidate back where they were, answers and all.
+          results: true,
+          status: true,
+          lastActivityAt: true,
+          updatedAt: true,
         },
       }),
       getUsageInfo(userId, plan),
@@ -155,6 +193,16 @@ export async function GET() {
         ...session,
         createdAt: session.createdAt.toISOString(),
       })),
+      // Offered as "continue" only while it is fresh; a week-old attempt is
+      // swept up rather than dangled in front of the candidate.
+      inProgress:
+        unfinished && !isStale(unfinished)
+          ? {
+              ...unfinished,
+              lastActivityAt: unfinished.lastActivityAt.toISOString(),
+              updatedAt: unfinished.updatedAt.toISOString(),
+            }
+          : null,
     });
   } catch (error) {
     console.error("PRACTICE SESSIONS GET ERROR:", error);
@@ -217,59 +265,110 @@ export async function POST(request: NextRequest) {
       speakerPreference,
       assignmentToken,
       attemptId,
+      finishedEarly,
     } = parsed.data;
+
+    // A company assessment must be answered in full: stopping early cannot
+    // close the assignment.
+    if (finishedEarly && assignmentToken) {
+      return NextResponse.json(
+        { error: "A company assessment cannot be finished early." },
+        { status: 400 }
+      );
+    }
+
+    const answeredCount = results.length;
+    const status =
+      finishedEarly && answeredCount < totalQuestions
+        ? PRACTICE_SESSION_STATUS.FINISHED_EARLY
+        : PRACTICE_SESSION_STATUS.COMPLETED;
+    const finishedAt = new Date();
 
     // Save the session and (if it fulfils a company assessment invite) mark the
     // assignment complete atomically — so we never end up with a saved session
     // the hiring team can't see, or a completed assignment with no session.
     const session = await prisma.$transaction(async (tx) => {
-      const created = await tx.practiceSession.create({
-        data: {
-          clerkUserId: userId,
-          role,
-          experienceLevel,
-          interviewType,
-          difficulty,
-          focusArea,
-          practiceMode,
-          totalQuestions,
-          overallScore: getSummaryScore(summary),
-          hireSignal: getHireSignal(summary),
-          summary: summary as Prisma.InputJsonValue,
-          results: results as Prisma.InputJsonValue,
-          speakerPreference: (speakerPreference ?? null) as Prisma.InputJsonValue,
-        },
-        select: {
-          id: true,
-          role: true,
-          experienceLevel: true,
-          interviewType: true,
-          difficulty: true,
-          focusArea: true,
-          practiceMode: true,
-          totalQuestions: true,
-          overallScore: true,
-          hireSignal: true,
-          summary: true,
-          results: true,
-          speakerPreference: true,
-          createdAt: true,
-        },
-      });
+      // Answers are saved as the interview runs, so the row usually exists
+      // already. Finishing updates it; without an attempt id (older clients,
+      // assessment centre) it is created here as before.
+      const inProgressRow = attemptId
+        ? await tx.practiceSession.findFirst({
+            where: { clerkUserId: userId, attemptId },
+            select: { id: true, status: true, answeredCount: true },
+          })
+        : null;
 
-      if (assignmentToken) {
+      const finalData = {
+        role,
+        experienceLevel,
+        interviewType,
+        difficulty,
+        focusArea,
+        practiceMode,
+        totalQuestions,
+        overallScore: getSummaryScore(summary),
+        hireSignal: getHireSignal(summary),
+        summary: summary as Prisma.InputJsonValue,
+        results: results as Prisma.InputJsonValue,
+        speakerPreference: (speakerPreference ?? null) as Prisma.InputJsonValue,
+        status,
+        answeredCount,
+        completedAt: finishedAt,
+        lastActivityAt: finishedAt,
+      };
+
+      const savedFields = {
+        id: true,
+        role: true,
+        experienceLevel: true,
+        interviewType: true,
+        difficulty: true,
+        focusArea: true,
+        practiceMode: true,
+        totalQuestions: true,
+        overallScore: true,
+        hireSignal: true,
+        summary: true,
+        results: true,
+        speakerPreference: true,
+        createdAt: true,
+        status: true,
+        answeredCount: true,
+      } as const;
+
+      const saved = inProgressRow
+        ? await tx.practiceSession.update({
+            where: { id: inProgressRow.id },
+            data: finalData,
+            select: savedFields,
+          })
+        : await tx.practiceSession.create({
+            data: {
+              clerkUserId: userId,
+              attemptId: attemptId ?? null,
+              ...finalData,
+            },
+            select: savedFields,
+          });
+
+      // A company assignment is only satisfied by a full interview, so an
+      // early finish or a short answer set leaves it open.
+      const fulfilsAssignment =
+        status === PRACTICE_SESSION_STATUS.COMPLETED && answeredCount >= totalQuestions;
+
+      if (assignmentToken && fulfilsAssignment) {
         const assignment = await tx.candidateAssignment.findUnique({
           where: { inviteToken: assignmentToken },
         });
         if (assignment && assignment.status !== "completed" && assignment.expiresAt > new Date()) {
           await tx.candidateAssignment.update({
             where: { inviteToken: assignmentToken },
-            data: { status: "completed", clerkUserId: userId, sessionId: created.id, completedAt: new Date() },
+            data: { status: "completed", clerkUserId: userId, sessionId: saved.id, completedAt: new Date() },
           });
         }
       }
 
-      return created;
+      return saved;
     });
 
     recordActivity(userId, ACTIVITY_EVENTS.PRACTICE_COMPLETED, plan, {

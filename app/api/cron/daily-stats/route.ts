@@ -1,6 +1,11 @@
 import crypto from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma, warmDb } from "@/app/lib/prisma";
+import {
+  LISTED_STATUS_FILTER,
+  PRACTICE_SESSION_STATUS,
+  STALE_AFTER_DAYS,
+} from "@/app/lib/practiceSessionStatus";
 import { clerkClient } from "@clerk/nextjs/server";
 import { Resend } from "resend";
 
@@ -127,6 +132,19 @@ export async function GET(req: NextRequest) {
   // Absorb Neon cold starts before the parallel queries below fan out.
   await warmDb();
 
+  // Sweep interviews nobody came back to, so they stop being offered as
+  // "carry on where you left off" and stop sitting in the funnel as live.
+  const staleBefore = new Date(Date.now() - STALE_AFTER_DAYS * 24 * 60 * 60 * 1000);
+  await prisma.practiceSession
+    .updateMany({
+      where: {
+        status: PRACTICE_SESSION_STATUS.IN_PROGRESS,
+        lastActivityAt: { lt: staleBefore },
+      },
+      data: { status: PRACTICE_SESSION_STATUS.ABANDONED },
+    })
+    .catch(() => null);
+
   const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
   const sinceMs = since.getTime();
 
@@ -140,8 +158,10 @@ export async function GET(req: NextRequest) {
     comStats,
   ] = await Promise.all([
     (await clerkClient()).users.getUserList({ limit: 500, orderBy: "-created_at" }),
-    prisma.practiceSession.count({ where: { createdAt: { gte: since } } }),
-    prisma.practiceSession.count(),
+    prisma.practiceSession.count({
+      where: { createdAt: { gte: since }, ...LISTED_STATUS_FILTER },
+    }),
+    prisma.practiceSession.count({ where: LISTED_STATUS_FILTER }),
     prisma.assessmentCentreSession.count({
       where: { createdAt: { gte: since }, status: "complete" },
     }),

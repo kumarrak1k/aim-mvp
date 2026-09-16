@@ -52,6 +52,8 @@ export async function GET(request: NextRequest) {
         speakerPreference: true,
         createdAt: true,
         updatedAt: true,
+        status: true,
+        answeredCount: true,
       },
     });
 

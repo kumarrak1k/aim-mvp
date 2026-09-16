@@ -35,6 +35,13 @@ vi.mock("@/app/lib/candidatePlan", () => ({
 vi.mock("@/app/lib/prisma", () => {
   const tx = {
     practiceSession: {
+      // No progress row for this attempt: the save creates one.
+      findFirst: async () => null,
+      update: async ({ data }: { data: Record<string, unknown> }) => ({
+        id: "sess_1",
+        ...data,
+        createdAt: new Date("2026-09-15T10:00:00Z"),
+      }),
       create: async ({ data }: { data: Record<string, unknown> }) => ({
         id: "sess_1",
         ...data,

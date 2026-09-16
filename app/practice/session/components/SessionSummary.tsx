@@ -308,6 +308,10 @@ type SessionSummaryProps = {
   difficulty: string;
   freePlan?: boolean;
   sessionsUsed?: number;
+  /** Set when the candidate stopped before the last question. */
+  finishedEarly?: boolean;
+  totalQuestions?: number;
+  freeSessionsPerWindow?: number;
 };
 
 export function SessionSummary({
@@ -322,6 +326,9 @@ export function SessionSummary({
   difficulty,
   freePlan = false,
   sessionsUsed,
+  finishedEarly = false,
+  totalQuestions,
+  freeSessionsPerWindow = 3,
 }: SessionSummaryProps) {
   const [certificateId, setCertificateId] = useState<string | null>(null);
   const [certLoading, setCertLoading] = useState(false);
@@ -373,8 +380,15 @@ export function SessionSummary({
       {/* ── Header ─────────────────────────────────────────────────────── */}
       <div className="mb-6 rounded-[2rem] border border-white/10 bg-white/[0.055] p-6 shadow-2xl shadow-purple-950/10 backdrop-blur-2xl sm:p-8">
         <p className="text-sm font-bold tracking-wide text-emerald-300">
-          Interview complete
+          {finishedEarly ? "Results so far" : "Interview complete"}
         </p>
+
+        {finishedEarly && totalQuestions && results.length < totalQuestions && (
+          <p className="mt-2 inline-flex rounded-full border border-amber-300/25 bg-amber-300/10 px-3 py-1 text-[12px] font-bold text-amber-100">
+            You answered {results.length} of {totalQuestions} questions, so this
+            report covers those answers only.
+          </p>
+        )}
 
         <h1 className="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">
           {firstName
@@ -682,10 +696,10 @@ export function SessionSummary({
                 Unlock your full potential
               </p>
               <h3 className="mt-2 text-lg font-bold text-white">
-                {sessionsUsed != null && sessionsUsed >= 3
+                {sessionsUsed != null && sessionsUsed >= freeSessionsPerWindow
                   ? "You've used this month's free sessions"
                   : sessionsUsed != null
-                  ? `You've used ${sessionsUsed} of 3 free session${sessionsUsed === 1 ? "" : "s"}`
+                  ? `You've used ${sessionsUsed} of ${freeSessionsPerWindow} free session${sessionsUsed === 1 ? "" : "s"}`
                   : "You're on the free plan"}
               </h3>
               <p className="mt-2 text-sm leading-7 text-gray-300">

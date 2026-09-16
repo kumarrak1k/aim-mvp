@@ -114,6 +114,42 @@ export const practiceSessionCreateSchema = z.object({
   assignmentToken: optionalStringSchema(80),
   // Joins the saved session to its practice_started/practice_answered events.
   attemptId: optionalStringSchema(64),
+  /** The candidate chose to stop and see results before the last question. */
+  finishedEarly: z.boolean().optional(),
+});
+
+/**
+ * Progress save body (PUT /api/practice-sessions/progress).
+ *
+ * Sent after every scored answer, so it must be as forgiving as the completed
+ * save: an interview in flight is never thrown away over a field we can
+ * default. `results` must hold at least one answer, since that is the point.
+ */
+export const practiceProgressSchema = z.object({
+  attemptId: z.string().trim().min(1, "Attempt id is required.").max(64),
+  role: z
+    .string()
+    .trim()
+    .min(1, "Role is required.")
+    .max(8000)
+    .transform((v) => v.slice(0, 300)),
+  experienceLevel: z.enum(EXPERIENCE_LEVELS).catch("Graduate / entry level"),
+  interviewType: z.enum(INTERVIEW_TYPES).catch("Competency / behavioural"),
+  difficulty: z.enum(DIFFICULTIES).catch("Standard"),
+  focusArea: z.enum(FOCUS_AREAS).catch("Balanced"),
+  practiceMode: z.enum(PRACTICE_MODES).catch("typed"),
+  totalQuestions: z.number().int().min(1).max(20).catch(5),
+  results: z.array(z.unknown()).min(1).max(50),
+  speakerPreference: z
+    .object({
+      voice: z.string().max(20).optional(),
+      accent: z.string().max(20).optional(),
+      pace: z.string().max(20).optional(),
+    })
+    .nullable()
+    .optional(),
+  /** Enough of the session setup to resume the interview after a reload. */
+  config: z.record(z.string(), z.unknown()).optional(),
 });
 
 /** Company create / update body. */

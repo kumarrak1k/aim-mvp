@@ -162,6 +162,15 @@ export type PracticeSessionConfig = {
   };
   createdAt?: string;
   /**
+   * Set when the candidate chose to carry on an interview they had left.
+   * The session page restores these answers instead of starting at question 1.
+   */
+  resume?: {
+    attemptId: string;
+    answeredCount: number;
+    results: unknown[];
+  };
+  /**
    * When true this session was started on the free plan and must remain
    * in keyboard/typed mode. The session page uses this to keep voice and
    * camera disabled even if they were somehow set in an earlier config.

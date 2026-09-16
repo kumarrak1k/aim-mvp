@@ -34,6 +34,7 @@ import {
   buildFallbackVideoAnalysis,
   buildLocalVoiceAnalysis,
 } from "../lib/analysisBuilders";
+import { ExitInterviewDialog } from "./components/ExitInterviewDialog";
 import {
   cleanTranscript as cleanTranscriptApi,
   fetchFeedback,
@@ -43,6 +44,7 @@ import {
   fetchVideoAnalysis,
   fetchVoiceAnalysis,
   fetchWhisperFillerAnalysis,
+  saveInterviewProgress,
 } from "../lib/interviewApi";
 import { buildCandidateProfilePrompt } from "../lib/profileHelpers";
 import {
@@ -152,6 +154,9 @@ export default function PracticeSessionPage() {
 
   const [interviewStarted, setInterviewStarted] = useState(false);
   const [interviewFinished, setInterviewFinished] = useState(false);
+  /** Asked before leaving, so an interview is never discarded by accident. */
+  const [exitDialogOpen, setExitDialogOpen] = useState(false);
+  const [finishingEarly, setFinishingEarly] = useState(false);
 
   const [speakerEnabled, setSpeakerEnabled] = useState(false);
   const [hasUserInteracted, setHasUserInteracted] = useState(false);
@@ -729,8 +734,77 @@ export default function PracticeSessionPage() {
     [difficulty, interviewType, role, savedSessionsKey, totalQuestions]
   );
 
+  /**
+   * Save the interview as it happens, so leaving part way no longer throws the
+   * work away. Silent by design: a failed progress save must never interrupt
+   * the interview, and the final save still carries everything.
+   */
+  const saveProgress = useCallback(
+    async (progressResults: ResultItem[]) => {
+      if (progressResults.length === 0) return;
+      if (assessmentMode || assignmentToken || assessmentCentreId) return;
+      const attemptId = attemptIdRef.current;
+      if (!attemptId) return;
+
+      try {
+        await saveInterviewProgress({
+          attemptId,
+          role,
+          experienceLevel,
+          interviewType,
+          difficulty,
+          focusArea,
+          practiceMode,
+          totalQuestions,
+          results: progressResults,
+          speakerPreference,
+          // Enough to put the candidate back where they were on a reload.
+          config: {
+            role,
+            experienceLevel,
+            interviewType,
+            difficulty,
+            focusArea,
+            speakerEnabled,
+            cameraEnabled,
+            speakerPreference,
+            totalQuestions,
+            practiceMode,
+            freePlan,
+            questionMix,
+            customQuestions,
+          },
+        });
+      } catch {
+        // Offline or a stale tab: the interview carries on regardless.
+      }
+    },
+    [
+      assessmentCentreId,
+      assessmentMode,
+      assignmentToken,
+      cameraEnabled,
+      customQuestions,
+      difficulty,
+      experienceLevel,
+      focusArea,
+      freePlan,
+      interviewType,
+      practiceMode,
+      questionMix,
+      role,
+      speakerEnabled,
+      speakerPreference,
+      totalQuestions,
+    ]
+  );
+
   const saveSession = useCallback(
-    async (sessionSummary: InterviewSummary, sessionResults: ResultItem[]) => {
+    async (
+      sessionSummary: InterviewSummary,
+      sessionResults: ResultItem[],
+      options?: { finishedEarly?: boolean }
+    ) => {
       // ── Assessment centre interview ──────────────────────────────────────
       // Skip ALL standalone practice-session saves (local + DB). The results
       // belong exclusively to the AC session — saving them here too is what
@@ -790,6 +864,7 @@ export default function PracticeSessionPage() {
             // forward the token so the API marks the assignment completed.
             ...(assignmentToken ? { assignmentToken } : {}),
             ...(attemptIdRef.current ? { attemptId: attemptIdRef.current } : {}),
+            ...(options?.finishedEarly ? { finishedEarly: true } : {}),
           }),
         });
 
@@ -1324,15 +1399,20 @@ export default function PracticeSessionPage() {
     prefetchAbortRef.current?.abort();
     prefetchRef.current = { questionNumber: 0, question: null };
     clearBackgroundAudio();
-    attemptIdRef.current =
-      typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
+    // Carrying on an interview keeps the original attempt, so the saved row is
+    // continued rather than a second one started.
+    const resume = sessionConfig?.resume;
+    const resumedResults = (resume?.results ?? []) as ResultItem[];
+    attemptIdRef.current = resume?.attemptId
+      ? resume.attemptId
+      : typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
         ? crypto.randomUUID()
         : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
 
     setHasUserInteracted(true);
     setInterviewStarted(true);
     setInterviewFinished(false);
-    setResults([]);
+    setResults(resumedResults);
     setSummary(null);
     setVoiceAnalysis(null);
     setVideoAnalysis(null);
@@ -1369,7 +1449,7 @@ export default function PracticeSessionPage() {
       }
     }
 
-    await fetchQuestion(1, []);
+    await fetchQuestion(resumedResults.length + 1, resumedResults);
 
     if (cameraEnabled && !requiresManualCameraStart) {
       void startCamera();
@@ -1386,6 +1466,7 @@ export default function PracticeSessionPage() {
     setActiveQuestion,
     setGuidedAnswerActive,
     setQuestionAudioMessage,
+    sessionConfig,
     speakerEnabled,
     startCamera,
     voiceSupported,
@@ -1713,6 +1794,19 @@ export default function PracticeSessionPage() {
         improved_answer_star: stashed ? stashed.improved_answer_star : null,
         model_answer_loading: !stashed,
       });
+
+      // People leave while they are reading their feedback, so the answer is
+      // banked here rather than when they click through to the next question.
+      void saveProgress([
+        ...results,
+        {
+          question,
+          answer: safeAnswer,
+          feedback: data,
+          voiceAnalysis: latestVoiceAnalysis,
+          videoAnalysis: latestVideoAnalysis,
+        },
+      ]);
     } catch (error) {
       setFeedback(
         createFeedbackError(
@@ -1745,6 +1839,8 @@ export default function PracticeSessionPage() {
     templateContext,
     currentQuestionNumber,
     totalQuestions,
+    results,
+    saveProgress,
   ]);
 
   const resetInterview = useCallback(() => {
@@ -1823,6 +1919,115 @@ export default function PracticeSessionPage() {
     stopRecognitionOnly,
   ]);
 
+  /**
+   * Score what has been answered so far and show the summary.
+   *
+   * Candidates left half way through and got nothing, so stopping deliberately
+   * now produces real results instead of an empty My Progress page.
+   */
+  const finishEarly = useCallback(async () => {
+    if (finishingEarly) return;
+
+    // Include the answer on screen when its feedback has already come back.
+    const safeAnswer = stripQuestionLeakageFromTranscript(
+      answer,
+      activeQuestionRef.current
+    );
+    const finalResults =
+      feedback && question
+        ? [
+            ...results,
+            {
+              question,
+              answer: safeAnswer,
+              feedback,
+              voiceAnalysis: latestVoiceAnalysisRef.current || voiceAnalysis,
+              videoAnalysis: latestVideoAnalysisRef.current || videoAnalysis,
+            },
+          ]
+        : results;
+
+    if (finalResults.length === 0) return;
+
+    setFinishingEarly(true);
+    setExitDialogOpen(false);
+    prefetchAbortRef.current?.abort();
+    setResults(finalResults);
+    setInterviewFinished(true);
+    setSummaryLoading(true);
+    stopQuestionSpeech();
+
+    try {
+      const data = await fetchInterviewSummary({
+        role: candidateProfile,
+        results: finalResults,
+        practiceMode,
+        assessmentMode,
+        templateContext,
+        answeredCount: finalResults.length,
+        totalQuestions,
+      });
+      setSummary(data);
+      await saveSession(data, finalResults, { finishedEarly: true });
+    } catch {
+      const fallbackSummary = buildFallbackInterviewSummary(finalResults);
+      setSummary(fallbackSummary);
+      await saveSession(fallbackSummary, finalResults, { finishedEarly: true });
+    } finally {
+      setSummaryLoading(false);
+      setFinishingEarly(false);
+      setQuestion("");
+      setAnswer("");
+      setFeedback(null);
+      setQuestionAudioMessage("");
+      setGuidedAnswerActive(false);
+      cleanupPreparedQuestionAudio();
+      latestVoiceAnalysisRef.current = null;
+      latestVideoAnalysisRef.current = null;
+      rawAnswerTranscriptRef.current = "";
+      resetTranscript();
+      setActiveQuestion("");
+    }
+  }, [
+    activeQuestionRef,
+    answer,
+    assessmentMode,
+    candidateProfile,
+    cleanupPreparedQuestionAudio,
+    feedback,
+    finishingEarly,
+    practiceMode,
+    question,
+    resetTranscript,
+    results,
+    saveSession,
+    setActiveQuestion,
+    setGuidedAnswerActive,
+    setQuestionAudioMessage,
+    stopQuestionSpeech,
+    templateContext,
+    totalQuestions,
+    videoAnalysis,
+    voiceAnalysis,
+  ]);
+
+  /** Throw this interview away on purpose, then go back to the setup page. */
+  const discardInterview = useCallback(async () => {
+    const attemptId = attemptIdRef.current;
+    if (attemptId) {
+      try {
+        await fetch("/api/practice-sessions/abandon", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ attemptId }),
+        });
+      } catch {
+        // Nothing to do: the stale sweep picks it up after seven days.
+      }
+    }
+    router.push("/practice");
+  }, [router]);
+
   const nextStep = useCallback(async () => {
     if (!feedback) return;
 
@@ -1845,6 +2050,9 @@ export default function PracticeSessionPage() {
     ];
 
     setResults(updatedResults);
+    // Re-save with the final answer text: Whisper or an edit may have changed
+    // it after the feedback was scored.
+    void saveProgress(updatedResults);
 
     if (updatedResults.length >= totalQuestions) {
       setInterviewFinished(true);
@@ -2043,6 +2251,8 @@ export default function PracticeSessionPage() {
           difficulty={difficulty}
           freePlan={freePlan}
           sessionsUsed={sessionsUsed ?? undefined}
+          finishedEarly={results.length < totalQuestions}
+          totalQuestions={totalQuestions}
         />
       </PracticeSessionShell>
     );
@@ -2052,6 +2262,7 @@ export default function PracticeSessionPage() {
     <PracticeSessionShell
       assessmentMode={assessmentMode}
       templateContext={templateContext}
+      onExitRequest={assessmentMode ? undefined : () => setExitDialogOpen(true)}
     >
       <section className="mx-auto max-w-[1720px] px-4 py-2 sm:px-6 sm:py-3">
         {/* lg (not xl): Edge's effective viewport at 100% zoom on scaled
@@ -2082,7 +2293,7 @@ export default function PracticeSessionPage() {
             onPlayQuestion={playQuestionManually}
             onStopQuestion={stopQuestionSpeech}
             onStartGuidedAnswer={() => void startGuidedAnswer()}
-            onBackToSetup={resetInterview}
+            onBackToSetup={() => setExitDialogOpen(true)}
             assessmentMode={assessmentMode}
             freePlan={isKeyboardOnly}
             showAutoFlowPrompt={showAutoFlowPrompt}
@@ -2153,10 +2364,35 @@ export default function PracticeSessionPage() {
                 totalQuestions={totalQuestions}
                 onNext={() => void nextStep()}
                 practiceMode={practiceMode}
+                onFinishEarly={() => void finishEarly()}
+                finishEarlyDisabled={
+                  finishingEarly ||
+                  isListening ||
+                  feedbackLoading ||
+                  whisperEnhancing ||
+                  summaryLoading
+                }
               />
             )}
           </div>
         )}
+
+        <ExitInterviewDialog
+          open={exitDialogOpen}
+          answeredCount={results.length + (feedback ? 1 : 0)}
+          totalQuestions={totalQuestions}
+          busy={finishingEarly || summaryLoading}
+          onCancel={() => setExitDialogOpen(false)}
+          onFinishNow={() => void finishEarly()}
+          onSaveAndExit={() => {
+            setExitDialogOpen(false);
+            router.push("/practice");
+          }}
+          onDiscard={() => {
+            setExitDialogOpen(false);
+            void discardInterview();
+          }}
+        />
       </section>
     </PracticeSessionShell>
   );
@@ -2166,6 +2402,7 @@ function PracticeSessionShell({
   children,
   assessmentMode,
   templateContext,
+  onExitRequest,
 }: {
   children: ReactNode;
   assessmentMode: boolean;
@@ -2175,6 +2412,7 @@ function PracticeSessionShell({
     companyLogoUrl?: string;
     templateName?: string;
   };
+  onExitRequest?: () => void;
 }) {
   return (
     <main className="min-h-screen overflow-x-hidden bg-background text-white">
@@ -2190,6 +2428,7 @@ function PracticeSessionShell({
         companyBrandColor={templateContext?.companyBrandColor}
         companyLogoUrl={templateContext?.companyLogoUrl}
         templateName={templateContext?.templateName}
+        onExitRequest={onExitRequest}
       />
 
       <div className="relative z-10">

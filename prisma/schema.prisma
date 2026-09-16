@@ -18,19 +18,34 @@ model PracticeSession {
   focusArea         String
   practiceMode      String
   totalQuestions    Int
-  overallScore      Int
-  hireSignal        String
-  summary           Json
+  // Scores arrive with the summary at the end, so a row saved mid-interview
+  // starts empty rather than being impossible to create.
+  overallScore      Int      @default(0)
+  hireSignal        String   @default("")
+  summary           Json     @default("{}")
   results           Json
   speakerPreference Json?
+  /** in_progress | completed | finished_early | abandoned (app/lib/practiceSessionStatus.ts) */
+  status            String   @default("completed")
+  /** Answers saved so far. Drives the usage cap and the "2 of 5" labels. */
+  answeredCount     Int      @default(0)
+  /** Client-generated id shared with the practice_started/answered events. */
+  attemptId         String?
+  /** PracticeSessionConfig (minus assessment fields) so an interview can resume. */
+  config            Json?
+  completedAt       DateTime?
+  lastActivityAt    DateTime @default(now())
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 
+  @@unique([clerkUserId, attemptId])
   @@index([clerkUserId])
   @@index([createdAt])
   // Supports the trial/free usage windowed count (clerkUserId + createdAt >= start)
   // and the dashboard list (clerkUserId, newest first).
   @@index([clerkUserId, createdAt])
+  // Finding a candidate's unfinished interview, and the stale sweep.
+  @@index([clerkUserId, status, updatedAt])
 }
 
 /**

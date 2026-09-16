@@ -1,5 +1,6 @@
 import { clerkClient } from "@clerk/nextjs/server";
 import { prisma } from "@/app/lib/prisma";
+import { LISTED_STATUS_FILTER } from "@/app/lib/practiceSessionStatus";
 
 /**
  * Referral rewards: 1 free month of Plus for every 3 referred friends who
@@ -49,9 +50,11 @@ export async function evaluateReferralRewards(
   const referredIds = referral.uses.map((u) => u.newUserId);
   let activatedCount = 0;
   if (referredIds.length > 0) {
+    // A referral only counts once the person finished an interview, so an
+    // abandoned or in-progress attempt cannot earn a reward.
     const activated = await prisma.practiceSession.groupBy({
       by: ["clerkUserId"],
-      where: { clerkUserId: { in: referredIds } },
+      where: { clerkUserId: { in: referredIds }, ...LISTED_STATUS_FILTER },
     });
     activatedCount = activated.length;
   }

@@ -11,6 +11,9 @@ type FeedbackWorkspaceProps = {
   totalQuestions: number;
   onNext: () => void;
   practiceMode?: string;
+  /** Stop here and score what has been answered so far. */
+  onFinishEarly?: () => void;
+  finishEarlyDisabled?: boolean;
 };
 
 export function FeedbackWorkspace({
@@ -21,6 +24,8 @@ export function FeedbackWorkspace({
   totalQuestions,
   onNext,
   practiceMode,
+  onFinishEarly,
+  finishEarlyDisabled,
 }: FeedbackWorkspaceProps) {
   const showVoiceInsight = practiceMode === "voice" || practiceMode === "voice-camera";
   const showCameraInsight = practiceMode === "voice-camera";
@@ -44,13 +49,28 @@ export function FeedbackWorkspace({
             </p>
           </div>
 
-          <button
-            type="button"
-            onClick={onNext}
-            className="rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-3 text-sm font-bold text-on-accent shadow-xl shadow-purple-900/30 transition hover:scale-[1.02]"
-          >
-            {nextLabel}
-          </button>
+          {/* Stacks on phones so both actions stay full width and thumb-sized. */}
+          <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
+            {onFinishEarly && currentQuestionNumber < totalQuestions && (
+              <button
+                type="button"
+                onClick={onFinishEarly}
+                disabled={finishEarlyDisabled}
+                data-testid="finish-early"
+                className="min-h-[44px] rounded-2xl border border-white/[0.14] bg-white/[0.05] px-5 py-3 text-sm font-bold text-gray-200 transition hover:bg-white/[0.09] hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Finish and see my results
+              </button>
+            )}
+
+            <button
+              type="button"
+              onClick={onNext}
+              className="min-h-[44px] rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-3 text-sm font-bold text-on-accent shadow-xl shadow-purple-900/30 transition hover:scale-[1.02]"
+            >
+              {nextLabel}
+            </button>
+          </div>
         </div>
 
         {feedback.error && (

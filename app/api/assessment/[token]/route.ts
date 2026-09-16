@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "../../../lib/prisma";
+import { PRACTICE_SESSION_STATUS } from "../../../lib/practiceSessionStatus";
 import { assessmentCompleteSchema, parseJsonBody } from "../../../lib/validation";
 import { checkRateLimit, getClientIp } from "../../../lib/rateLimit";
 
@@ -140,8 +141,10 @@ export async function POST(request: NextRequest, { params }: Params) {
     // Confirm the session exists AND belongs to this user. The compound
     // where ensures user A cannot complete the assessment with user B's
     // session id — even if they somehow learn it.
+    // A company assessment is only satisfied by a fully completed interview:
+    // finishing early or abandoning must not close the assignment.
     const session = await prisma.practiceSession.findFirst({
-      where: { id: sessionId, clerkUserId: userId },
+      where: { id: sessionId, clerkUserId: userId, status: PRACTICE_SESSION_STATUS.COMPLETED },
     });
     if (!session) return NextResponse.json({ error: "Session not found." }, { status: 404 });
 

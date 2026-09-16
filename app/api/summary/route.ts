@@ -393,7 +393,17 @@ export async function POST(req: Request) {
       );
     }
 
-    const { role, results, practiceMode, assessmentMode, templateContext } = await req.json();
+    const {
+      role,
+      results,
+      practiceMode,
+      assessmentMode,
+      templateContext,
+      // Set when the candidate stopped early: the report covers what they
+      // answered and must not mark them down for the questions they skipped.
+      answeredCount,
+      totalQuestions,
+    } = await req.json();
     const isAssessment = Boolean(assessmentMode);
     const isTypedMode = practiceMode === "typed";
     const hasCameraMode = practiceMode === "voice-camera";
@@ -632,6 +642,7 @@ still the full band. Comment on clarity only where meaning is genuinely unclear,
 language proficiency itself.
 - category_breakdown should reflect the whole interview, not one answer.
 - strongest_answer and weakest_answer must reference the actual question number.
+- Some interviews stop before the last question. Score only the answers given, never mention or penalise unanswered or missing questions, and do not describe the interview as incomplete.
 - priority_improvements must contain exactly 3 items.
 - next_steps must contain 3 to 5 items.
 - seven_day_action_plan must contain exactly 7 days.
@@ -657,7 +668,14 @@ ${isTypedMode
 ${isAssessment ? "Company assessment brief:" : "Candidate profile:"}
 ${role || "Not provided"}
 ${isAssessment && assessmentBriefBlock ? `\n${assessmentBriefBlock}\n` : ""}
-Interview results:
+${
+  typeof answeredCount === "number" &&
+  typeof totalQuestions === "number" &&
+  answeredCount > 0 &&
+  answeredCount < totalQuestions
+    ? `The candidate chose to stop after ${answeredCount} of ${totalQuestions} planned questions. Report on those answers alone and do not treat the interview as unfinished or deduct marks for questions that were never asked.\n`
+    : ""
+}Interview results:
 ${formattedResults}
           `.trim(),
         },

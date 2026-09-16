@@ -21,6 +21,19 @@ import {
   type QuestionMix,
 } from "../session/utils";
 
+/** The unfinished interview returned by GET /api/practice-sessions. */
+type UnfinishedInterview = {
+  id: string;
+  attemptId: string | null;
+  role: string;
+  totalQuestions: number;
+  answeredCount: number;
+  practiceMode: string;
+  config: Record<string, unknown> | null;
+  results: unknown[] | null;
+  updatedAt: string;
+};
+
 type PracticeUsage = {
   planName: string;
   isTrial: boolean;
@@ -122,6 +135,9 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
   // first-visit dashboard: no guide banner or upsell panel before the first
   // session is done (activation audit F5) so the first visit has one action.
   const [completedSessionCount, setCompletedSessionCount] = useState<number | null>(null);
+  /** An interview they started and left: offered back before anything else. */
+  const [unfinishedInterview, setUnfinishedInterview] = useState<UnfinishedInterview | null>(null);
+  const [resumeBusy, setResumeBusy] = useState(false);
   const [speakerPreference, setSpeakerPreference] =
     useState<SpeakerPreference>(defaultSpeakerPreference);
   const [questionLoading, setQuestionLoading] = useState(false);
@@ -404,6 +420,11 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
           setPracticeUsage(defaultPracticeUsage);
         }
         setCompletedSessionCount(Array.isArray(data?.sessions) ? data.sessions.length : 0);
+        setUnfinishedInterview(
+          data?.inProgress && typeof data.inProgress === "object"
+            ? (data.inProgress as UnfinishedInterview)
+            : null
+        );
       } catch {
         if (!cancelled) {
           setPracticeUsage(defaultPracticeUsage);
@@ -489,6 +510,71 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
     savedCandidateProfile,
     usageLoaded,
   ]);
+
+  /**
+   * Carry on an interview that was left unfinished. The saved config restores
+   * the original setup (voice, camera, question count), and the resume payload
+   * tells the session page which answers are already in.
+   */
+  const resumeUnfinishedInterview = useCallback(() => {
+    const row = unfinishedInterview;
+    if (!row?.attemptId) return;
+    setResumeBusy(true);
+    const savedConfig = (row.config ?? {}) as Record<string, unknown>;
+    window.sessionStorage.setItem(
+      PRACTICE_SESSION_CONFIG_KEY,
+      JSON.stringify({
+        role: row.role,
+        experienceLevel,
+        interviewType,
+        difficulty,
+        focusArea,
+        speakerEnabled: false,
+        cameraEnabled: false,
+        speakerPreference,
+        freePlan: isFreePlan,
+        practiceMode: row.practiceMode,
+        totalQuestions: row.totalQuestions,
+        ...savedConfig,
+        createdAt: new Date().toISOString(),
+        resume: {
+          attemptId: row.attemptId,
+          answeredCount: row.answeredCount,
+          results: Array.isArray(row.results) ? row.results : [],
+        },
+      })
+    );
+    router.push("/practice/session");
+  }, [
+    difficulty,
+    experienceLevel,
+    focusArea,
+    interviewType,
+    isFreePlan,
+    router,
+    speakerPreference,
+    unfinishedInterview,
+  ]);
+
+  /** Let it go and start something new. The row is kept for the funnel. */
+  const discardUnfinishedInterview = useCallback(async () => {
+    const attemptId = unfinishedInterview?.attemptId;
+    setResumeBusy(true);
+    try {
+      if (attemptId) {
+        await fetch("/api/practice-sessions/abandon", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ attemptId }),
+        });
+      }
+    } catch {
+      // The stale sweep clears it after seven days either way.
+    } finally {
+      setUnfinishedInterview(null);
+      setResumeBusy(false);
+    }
+  }, [unfinishedInterview]);
 
   // Onboarding's "Start the warm-up" hands off here as /practice?warmup=1.
   // Honour the choice: build a 3-question session from the saved profile and
@@ -716,6 +802,41 @@ export function PracticePageClient({ initialPlanName = "Free" }: { initialPlanNa
                 ✕
               </button>
             )}
+          </div>
+        )}
+
+        {unfinishedInterview && unfinishedInterview.attemptId && (
+          <div className="mb-6 rounded-[1.75rem] border border-emerald-300/25 bg-emerald-300/[0.07] p-5 sm:p-6">
+            <p className="text-[12px] font-bold tracking-wide text-emerald-300">
+              Carry on where you left off
+            </p>
+            <h2 className="mt-2 text-lg font-bold tracking-tight text-white sm:text-xl">
+              You answered {unfinishedInterview.answeredCount} of{" "}
+              {unfinishedInterview.totalQuestions} questions
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-gray-300">
+              Your answers and feedback were saved. Pick up at question{" "}
+              {unfinishedInterview.answeredCount + 1}, or start a new interview.
+            </p>
+            <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+              <button
+                type="button"
+                disabled={resumeBusy}
+                onClick={() => resumeUnfinishedInterview()}
+                data-testid="resume-interview"
+                className="min-h-[44px] rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 px-5 py-3 text-sm font-bold text-on-accent transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                Continue your interview
+              </button>
+              <button
+                type="button"
+                disabled={resumeBusy}
+                onClick={() => void discardUnfinishedInterview()}
+                className="min-h-[44px] rounded-2xl border border-white/[0.12] bg-white/[0.04] px-5 py-3 text-sm font-bold text-gray-200 transition hover:bg-white/[0.08] hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                Start fresh instead
+              </button>
+            </div>
           </div>
         )}
 

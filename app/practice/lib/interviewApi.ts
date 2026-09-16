@@ -104,6 +104,38 @@ export const fetchInterviewQuestion = async ({
   return data.question || "Tell me about yourself.";
 };
 
+/**
+ * Save the interview as it happens, after every scored answer. Failures are
+ * swallowed by the caller: losing a progress save must never interrupt the
+ * interview the candidate is in the middle of.
+ */
+export const saveInterviewProgress = async (body: {
+  attemptId: string;
+  role: string;
+  experienceLevel: string;
+  interviewType: string;
+  difficulty: string;
+  focusArea: string;
+  practiceMode: string;
+  totalQuestions: number;
+  results: ResultItem[];
+  speakerPreference?: unknown;
+  config?: Record<string, unknown>;
+}) => {
+  const response = await fetch("/api/practice-sessions/progress", {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  const data = (await response.json().catch(() => null)) as
+    | { session?: { id: string; answeredCount: number }; error?: string }
+    | null;
+  if (!response.ok) {
+    return { ok: false as const, status: response.status, error: data?.error ?? "" };
+  }
+  return { ok: true as const, status: response.status, session: data?.session };
+};
+
 export const fetchVoiceAnalysis = async ({
   transcript,
   durationSeconds,
@@ -223,12 +255,17 @@ export const fetchInterviewSummary = async ({
   practiceMode,
   assessmentMode,
   templateContext,
+  answeredCount,
+  totalQuestions,
 }: {
   role: string;
   results: ResultItem[];
   practiceMode?: string;
   assessmentMode?: boolean;
   templateContext?: AssessmentTemplateContext;
+  /** Set when the interview stopped early, so unanswered questions are not marked down. */
+  answeredCount?: number;
+  totalQuestions?: number;
 }) => {
   return postJson<
     InterviewSummary,
@@ -238,6 +275,8 @@ export const fetchInterviewSummary = async ({
       practiceMode?: string;
       assessmentMode?: boolean;
       templateContext?: AssessmentTemplateContext;
+      answeredCount?: number;
+      totalQuestions?: number;
     }
   >("/api/summary", {
     role,
@@ -245,6 +284,7 @@ export const fetchInterviewSummary = async ({
     ...(practiceMode ? { practiceMode } : {}),
     ...(assessmentMode ? { assessmentMode: true } : {}),
     ...(templateContext ? { templateContext } : {}),
+    ...(answeredCount ? { answeredCount, totalQuestions } : {}),
   });
 };
 

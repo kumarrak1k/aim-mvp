@@ -31,6 +31,8 @@ type SessionHeaderProps = {
   companyBrandColor?: string;
   companyLogoUrl?: string;
   templateName?: string;
+  /** Set while an interview is running: ask before leaving instead of linking away. */
+  onExitRequest?: () => void;
 };
 
 export function SessionHeader({
@@ -39,6 +41,7 @@ export function SessionHeader({
   companyBrandColor,
   companyLogoUrl,
   templateName,
+  onExitRequest,
 }: SessionHeaderProps) {
   if (assessmentMode) {
     return (
@@ -51,7 +54,7 @@ export function SessionHeader({
     );
   }
 
-  return <PersonalPracticeHeader />;
+  return <PersonalPracticeHeader onExitRequest={onExitRequest} />;
 }
 
 // ─── Company-branded header (assessment mode) ────────────────────────────────
@@ -134,7 +137,7 @@ function CompanyBrandedHeader({
 
 // ─── Personal practice header (no assessment) ────────────────────────────────
 
-function PersonalPracticeHeader() {
+function PersonalPracticeHeader({ onExitRequest }: { onExitRequest?: () => void }) {
   return (
     // No backdrop-filter here, ever: a sticky blur layer over the live
     // camera preview composites as a smeared band that flickers with each
@@ -152,12 +155,22 @@ function PersonalPracticeHeader() {
 
         {/* Right actions */}
         <div className="ml-auto flex shrink-0 items-center gap-2">
-          <Link
-            href="/practice"
-            className="hidden rounded-full border border-white/[0.1] bg-white/[0.04] px-4 py-2 text-xs font-bold text-gray-300 transition hover:bg-white/[0.08] hover:text-white sm:block"
-          >
-            Exit to practice setup
-          </Link>
+          {onExitRequest ? (
+            <button
+              type="button"
+              onClick={onExitRequest}
+              className="hidden min-h-[40px] rounded-full border border-white/[0.1] bg-white/[0.04] px-4 py-2 text-xs font-bold text-gray-300 transition hover:bg-white/[0.08] hover:text-white sm:block"
+            >
+              Exit to practice setup
+            </button>
+          ) : (
+            <Link
+              href="/practice"
+              className="hidden rounded-full border border-white/[0.1] bg-white/[0.04] px-4 py-2 text-xs font-bold text-gray-300 transition hover:bg-white/[0.08] hover:text-white sm:block"
+            >
+              Exit to practice setup
+            </Link>
+          )}
 
           <Show when="signed-in">
             <div className="shrink-0 px-1">

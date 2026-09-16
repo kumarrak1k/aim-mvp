@@ -1,6 +1,7 @@
 import { prisma } from "./prisma";
 import { ACTIVITY_EVENTS } from "./activity";
 import { summarisePracticeAttempts } from "./practiceAttempts";
+import { LISTED_STATUS_FILTER } from "./practiceSessionStatus";
 
 /**
  * Builds the per-user activity report behind the admin drill-down.
@@ -113,12 +114,12 @@ export async function buildUserActivityReport(clerkUserId: string) {
       select: { event: true, plan: true, isTrial: true, detail: true, createdAt: true },
     }),
     prisma.practiceSession.findMany({
-      where: { clerkUserId },
+      where: { clerkUserId, ...LISTED_STATUS_FILTER },
       orderBy: { createdAt: "desc" },
       select: {
         id: true, role: true, interviewType: true, difficulty: true,
         practiceMode: true, totalQuestions: true, overallScore: true,
-        hireSignal: true, createdAt: true,
+        hireSignal: true, createdAt: true, status: true, answeredCount: true,
       },
     }),
     prisma.assessmentCentreSession.findMany({

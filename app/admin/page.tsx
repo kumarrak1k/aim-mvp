@@ -7,6 +7,7 @@ import {
   headlineUserIds,
   isTeamAccount,
 } from "@/app/lib/adminCohort";
+import { LISTED_STATUS_FILTER } from "@/app/lib/practiceSessionStatus";
 import { AdminClient, type AdminUser, type AdminOverview } from "./AdminClient";
 
 export const dynamic = "force-dynamic";
@@ -148,6 +149,7 @@ export default async function AdminPage() {
     }),
     prisma.practiceSession.groupBy({
       by: ["clerkUserId"],
+      where: LISTED_STATUS_FILTER,
       _count: { _all: true },
       _max: { createdAt: true },
     }),
@@ -178,13 +180,13 @@ export default async function AdminPage() {
     // limited to real candidates (global counts included team and orphan rows).
     prisma.practiceSession.groupBy({
       by: ["clerkUserId"],
-      where: { createdAt: { gte: d7 } },
+      where: { createdAt: { gte: d7 }, ...LISTED_STATUS_FILTER },
       _count: { _all: true },
       _max: { createdAt: true },
     }),
     prisma.practiceSession.groupBy({
       by: ["clerkUserId"],
-      where: { createdAt: { gte: d30 } },
+      where: { createdAt: { gte: d30 }, ...LISTED_STATUS_FILTER },
       _count: { _all: true },
       _max: { createdAt: true },
     }),
