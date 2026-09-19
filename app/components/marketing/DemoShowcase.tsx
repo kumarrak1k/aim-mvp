@@ -14,7 +14,8 @@ export function DemoShowcase({
   subtitle,
   shots,
 }: {
-  eyebrow: string;
+  /** Optional: most sections read better without a label above the heading. */
+  eyebrow?: string;
   title: string;
   subtitle: string;
   shots: Shot[];
@@ -25,10 +26,12 @@ export function DemoShowcase({
   return (
     <section className="mx-auto max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] px-4 pb-16 sm:px-6 sm:pb-20">
       <div className="mb-10 text-center">
-        <p className="text-[12px] font-bold tracking-wide text-purple-300">
-          {eyebrow}
-        </p>
-        <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">{title}</h2>
+        {eyebrow && (
+          <p className="mb-3 text-[12px] font-bold tracking-wide text-purple-300">
+            {eyebrow}
+          </p>
+        )}
+        <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">{title}</h2>
         <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-gray-400">{subtitle}</p>
       </div>
 

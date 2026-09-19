@@ -25,7 +25,7 @@ export const metadata: Metadata = createPageMetadata({
 
 const products = [
   {
-    eyebrow: "Product 1",
+    eyebrow: "",
     title: "Interview practice",
     description:
       "Tailored questions for your exact role and level. Take a coaching interview with feedback after every answer, or a one-way video interview on a timer, the way employers run first rounds. Model answers included.",
@@ -40,7 +40,7 @@ const products = [
     accent: "purple",
   },
   {
-    eyebrow: "Product 2 · NEW",
+    eyebrow: "New",
     title: "Mock assessment centre",
     description:
       "The only platform that runs a realistic AI assessment centre experience. Case study analysis, competency interview, presentation simulation, all scored across competencies in one structured session.",
@@ -55,6 +55,8 @@ const products = [
     accent: "cyan",
   },
 ] as const;
+
+const labelColour = { purple: "text-purple-300", cyan: "text-cyan-300" } as const;
 
 const faqs = [
   {
@@ -132,10 +134,7 @@ export default async function ForCandidatesPage() {
       {/* Two products */}
       <section className="mx-auto max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] px-4 pb-16 sm:px-6 sm:pb-20">
         <div className="mb-10 text-center">
-          <p className="text-[12px] font-bold tracking-wide text-purple-300">
-            What you get
-          </p>
-          <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
             Two products. One workflow.
           </h2>
         </div>
@@ -157,16 +156,12 @@ export default async function ForCandidatesPage() {
                     : "bg-cyan-500/[0.12]"
                 }`}
               />
-              <p
-                className={`text-[12px] font-bold tracking-wide ${
-                  product.accent === "purple"
-                    ? "text-purple-300"
-                    : "text-cyan-300"
-                }`}
-              >
-                {product.eyebrow}
-              </p>
-              <h3 className="mt-3 text-3xl font-bold tracking-tight">
+              {product.eyebrow !== "" && (
+                <p className={`mb-3 text-[12px] font-bold tracking-wide ${labelColour[product.accent]}`}>
+                  {product.eyebrow}
+                </p>
+              )}
+              <h3 className="text-3xl font-bold tracking-tight">
                 {product.title}
               </h3>
               <p className="mt-4 text-base leading-7 text-gray-400">
@@ -213,7 +208,7 @@ export default async function ForCandidatesPage() {
           <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
             <div>
               <p className="text-[12px] font-bold tracking-wide text-fuchsia-300">
-                Also included · Pro
+                Included in Pro
               </p>
               <h2 className="mt-3 text-3xl font-bold tracking-tight">
                 CV &amp; Application Studio
@@ -266,11 +261,8 @@ export default async function ForCandidatesPage() {
           uses preload="none" so it costs nothing until someone asks for it. */}
       <section className="mx-auto max-w-3xl px-4 pb-16 sm:px-6 sm:pb-20">
         <div className="mb-8 text-center">
-          <p className="text-[12px] font-bold tracking-wide text-purple-300">
-            In 25 seconds
-          </p>
-          <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
-            Why people practise before it counts.
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+            See it in 25 seconds.
           </h2>
         </div>
         <DemoVideo
@@ -285,7 +277,6 @@ export default async function ForCandidatesPage() {
 
       {/* See it in action */}
       <DemoShowcase
-        eyebrow="See it in action"
         title="The actual product, not a mockup."
         subtitle="This is exactly what you'll use: tailored questions, scored feedback on every answer, and a readiness verdict that improves with every session."
         shots={[
@@ -335,10 +326,7 @@ export default async function ForCandidatesPage() {
       {/* Final CTA */}
       <section className="mx-auto max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] px-4 pb-20 sm:px-6 sm:pb-28">
         <div className="rounded-[2rem] border border-white/[0.1] bg-gradient-to-br from-purple-500/[0.10] via-violet-500/[0.06] to-transparent p-10 text-center sm:p-14">
-          <p className="text-[12px] font-bold tracking-wide text-purple-300">
-            Get started
-          </p>
-          <h2 className="mx-auto mt-3 max-w-2xl text-3xl font-bold tracking-tight sm:text-4xl">
+          <h2 className="mx-auto max-w-2xl text-3xl font-bold tracking-tight sm:text-4xl">
             Prepare with the same standard your interviewers will apply.
           </h2>
           <HomeCta notePosition="above" />
