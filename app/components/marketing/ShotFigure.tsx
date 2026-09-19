@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { ThemedShot } from "./ThemedShot";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Shot } from "./DemoShowcase";
 
@@ -76,13 +76,11 @@ export function ShotFigure({
     return (
       <figure>
         <div className={`overflow-hidden ${rounded} ring-1 ring-white/10`}>
-          <Image
+          <ThemedShot
             src={shot.src}
             alt={shot.alt}
-            width={2600}
-            height={1781}
             sizes={sizes}
-            priority={priority}
+            highPriority={priority}
             className="h-auto w-full"
           />
         </div>
@@ -101,13 +99,11 @@ export function ShotFigure({
         aria-label={`Enlarge screenshot: ${shot.alt}`}
         className={`group relative block w-full cursor-zoom-in overflow-hidden ${rounded} ring-1 ring-white/10 transition hover:ring-purple-400/40 motion-reduce:transition-none`}
       >
-        <Image
+        <ThemedShot
           src={shot.src}
           alt={shot.alt}
-          width={2600}
-          height={1781}
           sizes={sizes}
-          priority={priority}
+          highPriority={priority}
           className="h-auto w-full"
         />
         {/* Affordance only — the button already carries the accessible name. */}
@@ -150,11 +146,9 @@ export function ShotFigure({
       >
         {open && (
           <figure className="relative flex max-h-full w-full flex-col items-center gap-3 p-4 sm:p-8">
-            <Image
+            <ThemedShot
               src={shot.src}
               alt={shot.alt}
-              width={2600}
-              height={1781}
               sizes="100vw"
               className="h-auto max-h-[82vh] w-auto max-w-full rounded-lg object-contain"
             />

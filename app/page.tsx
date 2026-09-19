@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { shotSrc } from "@/app/components/marketing/screenshotSet";
 import Link from "next/link";
 import { createPageMetadata } from "@/app/config/seo";
 import { CandidateShell } from "@/app/components/marketing/CandidateShell";
@@ -281,22 +282,22 @@ export default async function ForCandidatesPage() {
         subtitle="This is exactly what you'll use: tailored questions, scored feedback on every answer, and a readiness verdict that improves with every session."
         shots={[
           {
-            src: "/marketing/candidate-03-feedback.webp",
+            src: shotSrc("candidate-03-feedback"),
             alt: "AI feedback scoring an interview answer on content, clarity, structure and confidence",
             caption: "Every answer is scored, with a stronger model answer to learn from.",
           },
           {
-            src: "/marketing/candidate-01-setup.webp",
+            src: shotSrc("candidate-01-setup"),
             alt: "Tailored mock-interview setup screen",
             caption: "Build a mock interview tailored to your exact role, level and focus.",
           },
           {
-            src: "/marketing/candidate-04-summary.webp",
+            src: shotSrc("candidate-04-summary"),
             alt: "End-of-session readiness report with an overall score and hire signal",
             caption: "A readiness verdict and hire signal at the end of every session.",
           },
           {
-            src: "/marketing/candidate-05-progress.webp",
+            src: shotSrc("candidate-05-progress"),
             alt: "Progress dashboard showing an improving score trend across sessions",
             caption: "Every session is saved, so you can see yourself improve.",
           },

@@ -8,8 +8,11 @@
 import { test, type Page } from "@playwright/test";
 import { statePath } from "../pack/fixtures/env";
 import { HIDE_CHROME } from "./hideChrome";
+import { CAPTURE_DIR, useCaptureTheme } from "./captureTheme";
 
-const DIR = "marketing/screenshots";
+// Captured in the theme CAPTURE_THEME names; see captureTheme.ts.
+const DIR = CAPTURE_DIR;
+useCaptureTheme();
 
 async function clean(page: Page) {
   await page.getByRole("button", { name: "Got it" }).click({ timeout: 1500 }).catch(() => {});

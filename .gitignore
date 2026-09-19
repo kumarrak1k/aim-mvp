@@ -21,6 +21,8 @@
 
 # marketing capture (raw retina screenshots/clips/framed — large binaries, generated)
 /marketing/screenshots/
+/marketing/screenshots-site-light/
+/marketing/framed-light/
 /marketing/clips/
 /marketing/framed/
 /marketing/verify/

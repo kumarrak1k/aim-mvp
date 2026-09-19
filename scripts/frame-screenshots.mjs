@@ -15,7 +15,52 @@ import sharp from "sharp";
 // resolution the reader can actually zoom into; next/image derives the smaller
 // srcset entries for the thumbnails from it.
 const PUBLISH_WIDTH = 2600;
-const PUBLIC_DIR = "public/marketing";
+
+// The site shows each screenshot in the viewer's own theme, so there are two
+// sets. THEME=light frames the light captures in a light frame and publishes
+// them to public/marketing/light/; the default is the dark set.
+//   CAPTURE_THEME=light npx dotenv-cli -e .env.test -- npx playwright test -c playwright.capture.config.ts candidate corporate
+//   THEME=light node scripts/frame-screenshots.mjs
+const THEME = process.env.THEME === "light" ? "light" : "dark";
+const SOURCE_DIR = THEME === "light" ? "marketing/screenshots-site-light" : "marketing/screenshots";
+const FRAMED_DIR = THEME === "light" ? "marketing/framed-light" : "marketing/framed";
+// Publish into a fresh folder per set: overwriting files in place left the
+// image cache serving the old screenshots. The set name lives in one place.
+const SET = /SCREENSHOT_SET = "([^"]+)"/.exec(
+  readFileSync("app/components/marketing/screenshotSet.ts", "utf8"),
+)?.[1];
+if (!SET) {
+  console.error("could not read SCREENSHOT_SET from app/components/marketing/screenshotSet.ts");
+  process.exit(1);
+}
+const PUBLIC_DIR = THEME === "light" ? `public/marketing/${SET}/light` : `public/marketing/${SET}`;
+
+/** Frame colours per theme. The light frame sits on the light site's lavender. */
+const FRAME = THEME === "light"
+  ? {
+      page: "#f4f1fb",
+      stage: `radial-gradient(1200px 620px at 28% -12%, rgba(168,85,247,.20), transparent 60%),
+      radial-gradient(900px 520px at 92% 112%, rgba(99,102,241,.16), transparent 60%),
+      linear-gradient(160deg,#f3eefe 0%,#f7f5fc 55%,#fafafb 100%)`,
+      border: "rgba(36,22,64,.12)",
+      shadow: "0 50px 120px -20px rgba(60,30,120,.28),0 0 0 1px rgba(168,85,247,.10)",
+      bar: "#ece8f5",
+      barLine: "rgba(36,22,64,.08)",
+      url: "#4b3d6b",
+      urlBg: "rgba(36,22,64,.06)",
+    }
+  : {
+      page: "#070310",
+      stage: `radial-gradient(1200px 620px at 28% -12%, rgba(168,85,247,.38), transparent 60%),
+      radial-gradient(900px 520px at 92% 112%, rgba(99,102,241,.30), transparent 60%),
+      linear-gradient(160deg,#170b30 0%,#0a0614 55%,#070310 100%)`,
+      border: "rgba(255,255,255,.10)",
+      shadow: "0 50px 120px -20px rgba(0,0,0,.75),0 0 0 1px rgba(168,85,247,.10)",
+      bar: "#15101f",
+      barLine: "rgba(255,255,255,.06)",
+      url: "#c4b5e8",
+      urlBg: "rgba(255,255,255,.06)",
+    };
 
 const SHOTS = [
   { in: "candidate-01-setup.png", path: "/practice" },
@@ -29,23 +74,20 @@ const SHOTS = [
 
 const html = (b64, path) => `<!doctype html><html><head><meta charset="utf-8"><style>
   *{margin:0;padding:0;box-sizing:border-box}
-  html,body{background:#070310}
+  html,body{background:${FRAME.page}}
   .stage{width:1568px;padding:64px;
-    background:
-      radial-gradient(1200px 620px at 28% -12%, rgba(168,85,247,.38), transparent 60%),
-      radial-gradient(900px 520px at 92% 112%, rgba(99,102,241,.30), transparent 60%),
-      linear-gradient(160deg,#170b30 0%,#0a0614 55%,#070310 100%);
+    background:${FRAME.stage};
     display:flex;align-items:center;justify-content:center;
     font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
   .window{width:1440px;border-radius:16px;overflow:hidden;
-    border:1px solid rgba(255,255,255,.10);
-    box-shadow:0 50px 120px -20px rgba(0,0,0,.75),0 0 0 1px rgba(168,85,247,.10)}
+    border:1px solid ${FRAME.border};
+    box-shadow:${FRAME.shadow}}
   .bar{height:44px;display:flex;align-items:center;gap:8px;padding:0 18px;
-    background:#15101f;border-bottom:1px solid rgba(255,255,255,.06)}
+    background:${FRAME.bar};border-bottom:1px solid ${FRAME.barLine}}
   .dot{width:12px;height:12px;border-radius:50%}
   .red{background:#ff5f57}.amber{background:#febc2e}.green{background:#28c840}
-  .url{margin-left:14px;color:#c4b5e8;font-size:13px;letter-spacing:.2px;
-    background:rgba(255,255,255,.06);padding:5px 16px;border-radius:999px}
+  .url{margin-left:14px;color:${FRAME.url};font-size:13px;letter-spacing:.2px;
+    background:${FRAME.urlBg};padding:5px 16px;border-radius:999px}
   .shot{display:block;width:1440px;height:auto}
 </style></head><body>
   <div class="stage"><div class="window">
@@ -55,7 +97,7 @@ const html = (b64, path) => `<!doctype html><html><head><meta charset="utf-8"><s
   </div></div>
 </body></html>`;
 
-mkdirSync("marketing/framed", { recursive: true });
+mkdirSync(FRAMED_DIR, { recursive: true });
 mkdirSync(PUBLIC_DIR, { recursive: true });
 const browser = await chromium.launch();
 // 3x to match the capture config: the raw shot is 4320px wide and sits in a
@@ -64,13 +106,13 @@ const page = await browser.newPage({ deviceScaleFactor: 3, viewport: { width: 15
 let n = 0;
 const undersized = [];
 for (const s of SHOTS) {
-  const src = `marketing/screenshots/${s.in}`;
+  const src = `${SOURCE_DIR}/${s.in}`;
   if (!existsSync(src)) { console.log("skip (missing)", s.in); continue; }
   const b64 = readFileSync(src).toString("base64");
   await page.setContent(html(b64, s.path), { waitUntil: "load" });
   await page.locator("img.shot").waitFor({ state: "visible" });
   await page.waitForTimeout(200);
-  const framed = `marketing/framed/${s.in}`;
+  const framed = `${FRAMED_DIR}/${s.in}`;
   await page.locator(".stage").screenshot({ path: framed });
 
   const out = `${PUBLIC_DIR}/${s.in.replace(/\.png$/, ".webp")}`;

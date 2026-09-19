@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { shotSrc } from "@/app/components/marketing/screenshotSet";
 import Link from "next/link";
 import { createPageMetadata } from "@/app/config/seo";
 import { AudienceShell } from "@/app/components/marketing/AudienceShell";
@@ -264,12 +265,12 @@ export default function ForBusinessPage() {
         subtitle="A real look at the recruiter dashboard and the AI assessment centre: structured, comparable, and scored automatically."
         shots={[
           {
-            src: "/marketing/corporate-01-dashboard.webp",
+            src: shotSrc("corporate-01-dashboard"),
             alt: "Recruiter dashboard showing candidates, templates and completed assessments",
             caption: "Track candidates, templates and completed assessments at a glance.",
           },
           {
-            src: "/marketing/ac-01-landing.webp",
+            src: shotSrc("ac-01-landing"),
             alt: "AI assessment centre with case study, competency interview and presentation stages",
             caption: "Run a full assessment centre (case study, interview and presentation) scored into one report.",
           },

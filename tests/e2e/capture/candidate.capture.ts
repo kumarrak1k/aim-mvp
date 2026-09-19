@@ -9,8 +9,11 @@ import { answerFor } from "../pack/fixtures/answerBank";
 import { runTypedInterview } from "../pack/fixtures/candidateBot";
 import { stubBrowserSpeech } from "../pack/fixtures/voiceStub";
 import { HIDE_CHROME } from "./hideChrome";
+import { CAPTURE_DIR, useCaptureTheme } from "./captureTheme";
 
-const DIR = "marketing/screenshots";
+// Captured in the theme CAPTURE_THEME names; see captureTheme.ts.
+const DIR = CAPTURE_DIR;
+useCaptureTheme();
 
 /** Dismiss the cookie banner + hide dev-only overlays, then let things settle. */
 async function clean(page: Page) {
