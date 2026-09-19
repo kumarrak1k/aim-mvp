@@ -11,6 +11,7 @@ import {
 } from "react";
 import { useUser } from "@clerk/nextjs";
 import { SessionHeader } from "./components/SessionHeader";
+import { applyModelAnswer, createModelAnswerTracker } from "./modelAnswers";
 import { useAudioMonitoring } from "../hooks/useAudioMonitoring";
 import { useBrowserSpeech } from "../hooks/useBrowserSpeech";
 import { useCameraTracking } from "../hooks/useCameraTracking";
@@ -94,6 +95,13 @@ import {
   wait,
   type QuestionMix,
 } from "./utils";
+
+/**
+ * How long the report waits for model answers still being written. They
+ * normally take a few seconds; past this the report goes ahead without the
+ * stragglers rather than leaving the candidate looking at a spinner.
+ */
+const MODEL_ANSWER_WAIT_MS = 20_000;
 
 /**
  * How long TTS audio can still be draining through the operating system's
@@ -228,6 +236,9 @@ export default function PracticeSessionPage() {
     improved_answer: string;
     improved_answer_star: Feedback["improved_answer_star"];
   } | null>(null);
+  // Every model answer still in flight, so the report can wait for the ones
+  // that land after the candidate has moved on - see ./modelAnswers.
+  const modelAnswerTrackerRef = useRef(createModelAnswerTracker());
   const rawAnswerTranscriptRef = useRef("");
   const recordingStartRef = useRef<number | null>(null);
   const answerDurationSecondsRef = useRef<number | null>(null);
@@ -1863,8 +1874,26 @@ export default function PracticeSessionPage() {
       // Attach the handler now so a rejection can never surface as an unhandled
       // rejection. If the answer beats the scores, stash it; the scoring step
       // below applies any stash for this requestId.
+      modelAnswerTrackerRef.current.track(
+        question,
+        answerPromise.then((ans) => ({
+          improved_answer: ans.improved_answer || "",
+          improved_answer_star: ans.improved_answer_star ?? null,
+        }))
+      );
       answerPromise
         .then((ans) => {
+          // The candidate may already have moved on - always, in a one-way
+          // interview, whose feedback is hidden - so the saved result needs
+          // the answer as well as the feedback panel.
+          if (ans.improved_answer) {
+            setResults((prev) =>
+              applyModelAnswer(prev, question, {
+                improved_answer: ans.improved_answer,
+                improved_answer_star: ans.improved_answer_star ?? null,
+              })
+            );
+          }
           if (feedbackRequestIdRef.current !== requestId) return;
           pendingModelAnswerRef.current = {
             id: requestId,
@@ -2147,6 +2176,7 @@ export default function PracticeSessionPage() {
 
   const resetInterview = useCallback(() => {
     prefetchAbortRef.current?.abort();
+    modelAnswerTrackerRef.current.clear();
     prefetchRef.current = { questionNumber: 0, question: null };
     clearBackgroundAudio();
 
@@ -2263,22 +2293,29 @@ export default function PracticeSessionPage() {
     setSummaryLoading(true);
     stopQuestionSpeech();
 
+    // The answer just given usually still has its model answer in flight.
+    const completeResults = await modelAnswerTrackerRef.current.complete(
+      finalResults,
+      MODEL_ANSWER_WAIT_MS
+    );
+    setResults(completeResults);
+
     try {
       const data = await fetchInterviewSummary({
         role: candidateProfile,
-        results: finalResults,
+        results: completeResults,
         practiceMode,
         assessmentMode,
         templateContext,
-        answeredCount: finalResults.length,
+        answeredCount: completeResults.length,
         totalQuestions,
       });
       setSummary(data);
-      await saveSession(data, finalResults, { finishedEarly: true });
+      await saveSession(data, completeResults, { finishedEarly: true });
     } catch {
-      const fallbackSummary = buildFallbackInterviewSummary(finalResults);
+      const fallbackSummary = buildFallbackInterviewSummary(completeResults);
       setSummary(fallbackSummary);
-      await saveSession(fallbackSummary, finalResults, { finishedEarly: true });
+      await saveSession(fallbackSummary, completeResults, { finishedEarly: true });
     } finally {
       setSummaryLoading(false);
       setFinishingEarly(false);
@@ -2365,21 +2402,30 @@ export default function PracticeSessionPage() {
       setSummaryLoading(true);
       stopQuestionSpeech();
 
+      // Model answers land after the scores, and the last one is almost
+      // always still in flight here. Wait for them, briefly, so the report
+      // has one for every question.
+      const completeResults = await modelAnswerTrackerRef.current.complete(
+        updatedResults,
+        MODEL_ANSWER_WAIT_MS
+      );
+      setResults(completeResults);
+
       try {
         const data = await fetchInterviewSummary({
           role: candidateProfile,
-          results: updatedResults,
+          results: completeResults,
           practiceMode,
           assessmentMode,
           templateContext,
         });
 
         setSummary(data);
-        await saveSession(data, updatedResults);
+        await saveSession(data, completeResults);
       } catch {
-        const fallbackSummary = buildFallbackInterviewSummary(updatedResults);
+        const fallbackSummary = buildFallbackInterviewSummary(completeResults);
         setSummary(fallbackSummary);
-        await saveSession(fallbackSummary, updatedResults);
+        await saveSession(fallbackSummary, completeResults);
       } finally {
         setSummaryLoading(false);
         setQuestion("");
