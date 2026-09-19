@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, FormEvent } from "react";
 import Link from "next/link";
 import { useAuth } from "@clerk/nextjs";
+import { usePathname } from "next/navigation";
 
 interface Message {
   role: "user" | "assistant";
@@ -71,8 +72,17 @@ function loadStoredMessages(): Message[] {
   return [WELCOME];
 }
 
+/**
+ * Pages where, on a phone, the launcher sits on top of the controls people
+ * are using: the practice setup (its Start bar is pinned to the bottom of the
+ * screen) and anything in the middle of an interview or assessment.
+ */
+const PHONE_HIDDEN_PATHS = /^(\/(de|es|fr))?\/(practice|assessment-centre)(\/|$)/;
+
 export function MentorChat() {
   const { isLoaded, isSignedIn, userId } = useAuth();
+  const pathname = usePathname() ?? "";
+  const hideOnPhone = PHONE_HIDDEN_PATHS.test(pathname);
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>(loadStoredMessages);
   const [input, setInput] = useState("");
@@ -189,7 +199,9 @@ export function MentorChat() {
     // translated and an English selector silently missed fr/de/es.
     <div
       data-capture-hide
-      className="fixed bottom-6 right-4 sm:right-6 z-[60] flex flex-col items-end gap-3"
+      className={`fixed bottom-4 right-3 sm:bottom-6 sm:right-6 z-[60] flex flex-col items-end gap-3${
+        hideOnPhone && !open ? " max-sm:hidden" : ""
+      }`}
     >
       {open && (
         <div
@@ -331,7 +343,7 @@ export function MentorChat() {
         onClick={() => setOpen((o) => !o)}
         aria-label={open ? "Close chat" : "Chat with AI Career Mentor"}
         aria-expanded={open}
-        className="w-14 h-14 rounded-full shadow-lg transition-all hover:scale-105 active:scale-95 flex items-center justify-center"
+        className="h-12 w-12 sm:h-14 sm:w-14 rounded-full shadow-lg transition-all hover:scale-105 active:scale-95 flex items-center justify-center"
         style={{ background: "var(--brand-purple)", boxShadow: "0 4px 20px rgba(168,85,247,0.45)" }}
       >
         {open ? (
