@@ -548,7 +548,13 @@ export function PracticeStartScreen({
 
         {/* Level and type were behind the Customise disclosure. They shape every
             question that gets asked, so they belong where they can be seen. */}
-        <div className="mb-3 grid gap-3 sm:grid-cols-2">
+        {/* The two halves used to run into each other, which made the panel
+            read as one wall of cards. A wide gutter with a faint rule down the
+            middle splits "what the interview is about" (left) from "how it
+            runs" (right) without shrinking anything. Both rows share the same
+            column gap so they line up on the rule. */}
+        <div className="relative mb-5 lg:before:pointer-events-none lg:before:absolute lg:before:inset-y-0 lg:before:left-1/2 lg:before:w-px lg:before:-translate-x-1/2 lg:before:bg-white/10 lg:before:content-['']">
+        <div className="mb-5 grid gap-3 sm:grid-cols-2 lg:gap-x-16">
           <SelectField
             label="Experience level"
             value={experienceLevel}
@@ -564,7 +570,7 @@ export function PracticeStartScreen({
           />
         </div>
 
-        <div className="mb-3 grid gap-4 lg:grid-cols-2">
+        <div className="grid gap-5 lg:grid-cols-2 lg:gap-x-16">
         <div>
           <div className="mb-1.5 flex flex-wrap items-baseline justify-between gap-2">
             <p className="text-xs font-bold text-gray-200">Interview format</p>
@@ -580,7 +586,7 @@ export function PracticeStartScreen({
             )}
           </div>
 
-          <div className="grid gap-2 sm:grid-cols-2">
+          <div className="grid gap-3 sm:grid-cols-2">
             {INTERVIEW_FORMATS.map((format) => (
               <ModeCard
                 key={format.value}
@@ -686,7 +692,7 @@ export function PracticeStartScreen({
             )}
           </p>
 
-          <div className="grid gap-2 sm:grid-cols-3">
+          <div className="grid gap-3 sm:grid-cols-3">
             <ModeCard
               compact
               active={selectedPracticeMode === "typed"}
@@ -728,6 +734,7 @@ export function PracticeStartScreen({
           )}
         </div>
 
+        </div>
         </div>
 
         {/* Everything below is optional tuning. A first-timer sees three
