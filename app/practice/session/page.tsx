@@ -2679,7 +2679,6 @@ export default function PracticeSessionPage() {
             onPlayQuestion={playQuestionManually}
             onStopQuestion={stopQuestionSpeech}
             onStartGuidedAnswer={() => void startGuidedAnswer()}
-            onBackToSetup={() => setExitDialogOpen(true)}
             // Only offered when a recorded interview is actually possible: it
             // needs the camera, which a typed or free session does not have.
             onSwitchToVideo={

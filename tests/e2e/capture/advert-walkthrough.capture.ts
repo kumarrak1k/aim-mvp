@@ -135,7 +135,7 @@ test.describe("advert walkthrough", () => {
     // 5) AI feedback — scores land.
     await Promise.all([
       page.waitForResponse((r) => r.url().includes("/api/feedback"), { timeout: 30_000 }).catch(() => null),
-      // Label is "Get AI feedback" on desktop, "Get feedback" on mobile.
+      // One button, labelled "Get AI feedback" at every width.
       page.getByRole("button", { name: /Get (AI )?feedback/ }).first().click(),
     ]);
     await page.getByText(/feedback is ready/i).waitFor({ timeout: 30_000 }).catch(() => {});

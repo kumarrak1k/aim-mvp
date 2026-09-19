@@ -59,7 +59,7 @@ export function AnswerWorkspace({
 }: AnswerWorkspaceProps) {
   const analysing = feedbackLoading || voiceAnalysisLoading || videoAnalysisLoading;
 
-  const submitDesktopLabel = feedbackLoading
+  const submitLabel = feedbackLoading
     ? assessmentMode
       ? "Submitting..."
       : "Preparing feedback..."
@@ -71,22 +71,14 @@ export function AnswerWorkspace({
         ? "Submit answer"
         : "Get AI feedback";
 
-  const submitMobileLabel = feedbackLoading
-    ? assessmentMode
-      ? "Submitting..."
-      : "Preparing..."
-    : voiceAnalysisLoading || videoAnalysisLoading
-      ? assessmentMode
-        ? "Recording..."
-        : "Analysing..."
-      : assessmentMode
-        ? "Submit"
-        : "Get feedback";
-
   return (
     <section className="flex h-full min-h-0 flex-col overflow-hidden rounded-[1.45rem] border border-white/10 bg-white/[0.055] shadow-2xl shadow-purple-950/10 backdrop-blur-2xl xl:min-h-[420px]">
       <div className="flex flex-1 flex-col p-3 sm:p-4">
-        <div className="mb-3 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+        {/* One submit button, below the answer where typing ends. There used
+            to be a second one up here with a different label ("Get AI
+            feedback" beside "Get feedback"), and on typed sessions both
+            showed at once. */}
+        <div className="mb-3">
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
               <p className="text-xs font-bold tracking-wide text-purple-300">
@@ -106,20 +98,6 @@ export function AnswerWorkspace({
             </h2>
           </div>
 
-          <button
-            type="button"
-            onClick={onFeedback}
-            disabled={
-              !question.trim() ||
-              !answer.trim() ||
-              Boolean(feedback) ||
-              analysing ||
-              questionAudioLoading
-            }
-            className="hidden rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-5 py-3 text-sm font-bold text-on-accent shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50 sm:inline-flex"
-          >
-            {submitDesktopLabel}
-          </button>
         </div>
 
         {/* Feedback-ready banner — appears once AI feedback has loaded */}
@@ -219,9 +197,9 @@ export function AnswerWorkspace({
               analysing ||
               questionAudioLoading
             }
-            className={`rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-5 py-3 text-sm font-bold text-on-accent shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50 ${freePlan ? "" : "sm:hidden"}`}
+            className="rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-5 py-3 text-sm font-bold text-on-accent shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {submitMobileLabel}
+            {submitLabel}
           </button>
         </div>
       </div>

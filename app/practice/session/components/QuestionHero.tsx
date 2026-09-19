@@ -26,7 +26,6 @@ type QuestionHeroProps = {
   onPlayQuestion: () => void;
   onStopQuestion: () => void;
   onStartGuidedAnswer: () => void;
-  onBackToSetup: () => void;
   /**
    * Offered only when a recorded interview is actually available (voice and
    * camera on a paid plan). Switching applies from the next question so the
@@ -35,9 +34,7 @@ type QuestionHeroProps = {
   onSwitchToVideo?: () => void;
   /** True once the switch has been asked for and is waiting for the next question. */
   switchToVideoPending?: boolean;
-  /** Hide the "Back" link when the candidate is taking a company-issued
-   *  assessment — there's no setup to return to and abandoning loses the
-   *  invite. */
+  /** A company-issued assessment rather than self-directed practice. */
   assessmentMode?: boolean;
   /** When true the session is keyboard-only — hide all voice controls. */
   freePlan?: boolean;
@@ -47,6 +44,14 @@ type QuestionHeroProps = {
   /** Called with the candidate's choice from the auto-flow prompt. */
   onAutoFlowDecision?: (enable: boolean) => void;
 };
+
+/** How to pitch an answer, for the kind of interview being practised. */
+function answerTip(interviewType: string): string {
+  if (/competency|behaviou?ral|situational|strength/i.test(interviewType)) {
+    return "Aim for one to two minutes. Use STAR: the situation, your task, what you did, and the result.";
+  }
+  return "Aim for one to two minutes. Lead with your answer, then back it up with one specific example.";
+}
 
 export function QuestionHero(props: QuestionHeroProps) {
   const {
@@ -72,7 +77,6 @@ export function QuestionHero(props: QuestionHeroProps) {
     onPlayQuestion,
     onStopQuestion,
     onStartGuidedAnswer,
-    onBackToSetup,
     onSwitchToVideo,
     switchToVideoPending = false,
     assessmentMode,
@@ -150,15 +154,6 @@ export function QuestionHero(props: QuestionHeroProps) {
             </div>
           </div>
 
-          {!assessmentMode && (
-            <button
-              type="button"
-              onClick={onBackToSetup}
-              className="shrink-0 rounded-xl border border-white/10 bg-white/[0.06] px-3 py-2 text-xs font-bold text-white transition hover:bg-white/[0.1]"
-            >
-              Back
-            </button>
-          )}
         </div>
 
         {onSwitchToVideo && (
@@ -248,10 +243,19 @@ export function QuestionHero(props: QuestionHeroProps) {
           </div>
         )}
 
-        <div className="flex rounded-[1.25rem] border border-cyan-300/15 bg-cyan-300/10 px-4 py-4 sm:px-5 xl:flex-1">
+        <div className="flex flex-col rounded-[1.25rem] border border-cyan-300/15 bg-cyan-300/10 px-4 py-4 sm:px-5 xl:flex-1">
           <p data-testid="question-text" className="self-start text-[1rem] font-bold leading-7 text-white sm:text-[1.08rem] sm:leading-8 xl:text-[1.08rem] 2xl:text-[1.16rem]">
             {questionLoading ? "Generating your question..." : question}
           </p>
+
+          {/* On wide screens this panel stretches to the height of the answer
+              editor beside it, which left a large empty box under the
+              question. A short note on how to answer puts that space to use. */}
+          {!questionLoading && question && (
+            <p className="mt-auto hidden border-t border-cyan-300/15 pt-3 text-xs leading-5 text-gray-300 xl:block">
+              {answerTip(interviewType)}
+            </p>
+          )}
         </div>
 
         {!freePlan && displayAudioMessage && (
