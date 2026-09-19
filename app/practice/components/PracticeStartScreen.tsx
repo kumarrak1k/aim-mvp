@@ -572,8 +572,17 @@ export function PracticeStartScreen({
 
         <div className="grid gap-5 lg:grid-cols-2 lg:gap-x-16">
         <div>
-          <div className="mb-1.5 flex flex-wrap items-baseline justify-between gap-2">
-            <p className="text-xs font-bold text-gray-200">Interview format</p>
+          {/* The two card groups are the main decisions on the page, so their
+              headings are real headings with a one-line explanation, not the
+              small labels used for the dropdowns above. */}
+          <div className="mb-2.5 flex flex-wrap items-end justify-between gap-2">
+            <div>
+              <h3 className="flex items-center gap-2.5 text-lg font-bold tracking-tight text-white">
+                <span aria-hidden className="h-5 w-1.5 shrink-0 rounded-full bg-gradient-to-b from-violet-400 to-cyan-300" />
+                Interview format
+              </h3>
+              <p className="mt-0.5 text-xs leading-5 text-gray-400">Coaching with feedback as you go, or a recorded interview like the real thing.</p>
+            </div>
             {interviewFormat === "one_way_video" && (
               <button
                 type="button"
@@ -683,14 +692,17 @@ export function PracticeStartScreen({
         </div>
 
         <div>
-          <p className="mb-1.5 text-xs font-bold text-gray-200">
-            How you answer
-            {interviewFormat === "one_way_video" && (
-              <span className="ml-2 text-xs font-semibold text-gray-400">
-                a recorded interview is spoken, on camera
-              </span>
-            )}
-          </p>
+          <div className="mb-2.5">
+            <h3 className="flex items-center gap-2.5 text-lg font-bold tracking-tight text-white">
+              <span aria-hidden className="h-5 w-1.5 shrink-0 rounded-full bg-gradient-to-b from-violet-400 to-cyan-300" />
+              How you answer
+            </h3>
+            <p className="mt-0.5 text-xs leading-5 text-gray-400">
+              {interviewFormat === "one_way_video"
+                ? "A recorded interview is answered out loud, on camera."
+                : "Type your answers, say them out loud, or say them on camera."}
+            </p>
+          </div>
 
           <div className="grid gap-3 sm:grid-cols-3">
             <ModeCard
