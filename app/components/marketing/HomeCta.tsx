@@ -17,11 +17,14 @@ import { useUser } from "@clerk/nextjs";
 export function HomeCta({
   notePosition = "below",
   secondary: secondaryAction = "sign-in",
+  align = "center",
 }: {
   /** The trial note sits under the buttons in the hero, above them at the foot. */
   notePosition?: "above" | "below";
   /** The hero offers a way to read more; the foot offers a way back in. */
   secondary?: "how-it-works" | "sign-in";
+  /** "start" lines the buttons up with left-aligned copy on wide screens. */
+  align?: "center" | "start";
 }) {
   const { isLoaded, isSignedIn } = useUser();
   const signedIn = isLoaded && isSignedIn;
@@ -36,7 +39,7 @@ export function HomeCta({
       className={
         notePosition === "above"
           ? "mx-auto mt-4 max-w-xl text-base leading-7 text-gray-400"
-          : "mt-5 text-xs text-gray-400"
+          : `mt-5 text-xs text-gray-400${align === "start" ? " lg:text-left" : ""}`
       }
     >
       3 days free. No payment details required.
@@ -44,7 +47,11 @@ export function HomeCta({
   );
 
   const buttons = (
-    <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+    <div
+      className={`mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row${
+        align === "start" ? " lg:justify-start" : ""
+      }`}
+    >
       {signedIn ? (
         <>
           <Link href="/practice" className={primary}>

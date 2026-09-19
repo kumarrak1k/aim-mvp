@@ -5,6 +5,7 @@ import { CandidateShell } from "@/app/components/marketing/CandidateShell";
 import { DemoShowcase } from "@/app/components/marketing/DemoShowcase";
 import { DemoVideo } from "@/app/components/marketing/DemoVideo";
 import { HomeCta } from "@/app/components/marketing/HomeCta";
+import { HeroShot } from "@/app/components/marketing/HeroShot";
 
 export const metadata: Metadata = createPageMetadata({
   path: "/",
@@ -27,10 +28,10 @@ const products = [
     eyebrow: "Product 1",
     title: "Interview practice",
     description:
-      "Tailored questions for your exact role and level: 5 by default, or 3 to 10 when you build the session yourself. Honest feedback on every answer. Voice delivery scored. Camera presence reviewed. Model answers included.",
+      "Tailored questions for your exact role and level. Take a coaching interview with feedback after every answer, or a one-way video interview on a timer, the way employers run first rounds. Model answers included.",
     bullets: [
       "Tailored to your role, level and interview type",
-      "Custom session: 3–10 questions in your own type mix",
+      "One-way video interviews, timed like the real thing",
       "Voice and camera delivery feedback",
       "Model answers and improvement steps",
     ],
@@ -104,22 +105,28 @@ export default async function ForCandidatesPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
       <CandidateShell currentPath="/">
-      {/* Hero */}
-      <section className="mx-auto max-w-5xl px-4 pb-16 pt-1 text-center sm:px-6 sm:pb-20 sm:pt-3">
-        <h1 className="text-3xl font-bold leading-[1.04] tracking-tight sm:text-4xl lg:text-5xl">
-          Interview practice. Assessment centre prep.{" "}
-          <span className="text-violet-300">
-            One platform built to get you hired.
-          </span>
-        </h1>
+      {/* Hero. Two columns on wide screens: the promise on the left, the
+          product doing it on the right. It used to be centred text only, with
+          the first real screenshot two screens further down, so a visitor had
+          to take the product on trust before they could see it. */}
+      <section className="mx-auto max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] px-4 pb-16 pt-1 sm:px-6 sm:pb-20 sm:pt-3">
+        <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-12">
+          <div className="text-center lg:text-left">
+            <h1 className="text-3xl font-bold leading-[1.08] tracking-tight sm:text-4xl lg:text-5xl">
+              Practise interviews and assessment centres{" "}
+              <span className="text-violet-300">before they count.</span>
+            </h1>
 
-        <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-gray-400 sm:text-lg sm:leading-9">
-          Two complete products in one. Run mock interviews tailored to your
-          role, or step through a full assessment centre experience:
-          case study, competency interview and presentation, all scored.
-        </p>
+            <p className="mx-auto mt-5 max-w-xl text-base leading-7 text-gray-400 sm:text-lg sm:leading-8 lg:mx-0">
+              Mock interviews, one-way video interviews and full assessment
+              centres, tailored to your role and scored on every answer.
+            </p>
 
-        <HomeCta notePosition="below" secondary="how-it-works" />
+            <HomeCta notePosition="below" secondary="how-it-works" align="start" />
+          </div>
+
+          <HeroShot />
+        </div>
       </section>
 
       {/* Two products */}
