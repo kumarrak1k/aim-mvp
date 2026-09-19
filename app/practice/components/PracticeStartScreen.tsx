@@ -1063,7 +1063,14 @@ export function PracticeStartScreen({
 
         {/* The start button sits directly under the choices it acts on, rather
             than at the foot of a long optional-tuning section. */}
-        <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center">
+        {/* On a phone the setup is a long form and Start sat about a screen
+            and a half down it. The row sticks to the bottom of the screen
+            until it reaches its own place, so Start is always one tap away.
+            Save moves out of it on phones, so the bar stays one button tall. */}
+        <div
+          data-testid="start-row"
+          className="mb-3 flex flex-col gap-2 max-sm:sticky max-sm:bottom-3 max-sm:z-30 max-sm:-mx-2 max-sm:rounded-2xl max-sm:bg-background/90 max-sm:p-2 max-sm:shadow-2xl max-sm:shadow-purple-950/20 max-sm:backdrop-blur-md sm:flex-row sm:items-center"
+        >
         {/* Out of practice (the trial has ended, or its sessions are used up):
             the one thing that helps is paying, so the main button does that
             instead of sitting there greyed out with no way forward. */}
@@ -1095,11 +1102,20 @@ export function PracticeStartScreen({
           type="button"
           onClick={() => void savePracticePreference()}
           disabled={savingPreference || !isSignedIn}
-          className="w-full rounded-2xl border border-white/15 bg-white/[0.06] px-5 py-3.5 text-sm font-bold text-white transition hover:bg-white/[0.1] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+          className="w-full rounded-2xl border border-white/15 bg-white/[0.06] px-5 py-3.5 text-sm font-bold text-white transition hover:bg-white/[0.1] disabled:cursor-not-allowed disabled:opacity-50 max-sm:hidden sm:w-auto"
         >
           {savingPreference ? "Saving..." : "Save as my default setup"}
         </button>
         </div>
+
+        <button
+          type="button"
+          onClick={() => void savePracticePreference()}
+          disabled={savingPreference || !isSignedIn}
+          className="mb-3 w-full rounded-2xl border border-white/15 bg-white/[0.06] px-5 py-3 text-sm font-bold text-white transition hover:bg-white/[0.1] disabled:cursor-not-allowed disabled:opacity-50 sm:hidden"
+        >
+          {savingPreference ? "Saving..." : "Save as my default setup"}
+        </button>
 
         {preferenceMessage && (
           <p className="mb-3 text-xs font-semibold leading-5 text-gray-400">

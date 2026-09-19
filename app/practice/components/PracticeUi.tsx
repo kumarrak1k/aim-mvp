@@ -10,9 +10,12 @@ export function GlassCard({
   children: ReactNode;
   className?: string;
 }) {
+  // overflow-clip, not overflow-hidden: it clips the corners the same way but
+  // does not make a scroll container, so a sticky child (the Start bar on a
+  // phone) can still stick to the screen.
   return (
     <div
-      className={`relative overflow-hidden rounded-[1.7rem] border border-white/10 bg-white/[0.065] p-4 shadow-2xl shadow-purple-950/10 backdrop-blur-2xl sm:p-5 ${className}`}
+      className={`relative overflow-clip rounded-[1.7rem] border border-white/10 bg-white/[0.065] p-4 shadow-2xl shadow-purple-950/10 backdrop-blur-2xl sm:p-5 ${className}`}
     >
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent" />
       <div className="relative">{children}</div>
