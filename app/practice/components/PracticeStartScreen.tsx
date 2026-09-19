@@ -573,7 +573,7 @@ export function PracticeStartScreen({
         <div className="grid gap-5 lg:grid-cols-2 lg:gap-x-16">
         <div>
           <div className="mb-1.5 flex flex-wrap items-baseline justify-between gap-2">
-            <p className="text-xs font-bold text-gray-200">Interview format</p>
+            <p className="text-xs font-bold text-purple-300">Interview format</p>
             {interviewFormat === "one_way_video" && (
               <button
                 type="button"
@@ -683,7 +683,7 @@ export function PracticeStartScreen({
         </div>
 
         <div>
-          <p className="mb-1.5 text-xs font-bold text-gray-200">
+          <p className="mb-1.5 text-xs font-bold text-purple-300">
             How you answer
             {interviewFormat === "one_way_video" && (
               <span className="ml-2 text-xs font-semibold text-gray-400">
