@@ -16,7 +16,6 @@ import {
 import { hasCandidateProfileContext } from "../lib/profileHelpers";
 import { GlassCard, SelectField } from "./PracticeUi";
 import { AudioDeviceSelectors } from "./AudioDeviceSelectors";
-import { DataTrustStrip } from "@/app/components/DataTrustStrip";
 import {
   MAX_TOTAL_QUESTIONS,
   MAX_CUSTOM_QUESTION_LENGTH,
@@ -1138,9 +1137,8 @@ export function PracticeStartScreen({
 
         {/* Start moved up, directly under the choices it acts on. */}
 
-        <div className="mt-4">
-          <DataTrustStrip compact />
-        </div>
+        {/* No trust strip here: the same three lines already sit in the
+            header and the footer of every page. */}
       </GlassCard>
 
       {/* The Account and "Premium setup" cards were removed: Account repeated
