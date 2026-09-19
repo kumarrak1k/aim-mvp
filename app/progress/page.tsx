@@ -117,6 +117,8 @@ export default function ProgressPage() {
   const [acSessions, setAcSessions] = useState<ACSession[]>([]);
   const [acLoading, setAcLoading] = useState(false);
   const [acError, setAcError] = useState("");
+  const [practiceFetched, setPracticeFetched] = useState(false);
+  const [acFetched, setAcFetched] = useState(false);
 
   useEffect(() => {
     if (!isLoaded || !isSignedIn) {
@@ -160,6 +162,7 @@ export default function ProgressPage() {
       } finally {
         if (!cancelled) {
           setSessionsLoading(false);
+          setPracticeFetched(true);
         }
       }
     };
@@ -190,12 +193,24 @@ export default function ProgressPage() {
       } catch {
         if (!cancelled) setAcError("Could not load assessment centre results.");
       } finally {
-        if (!cancelled) setAcLoading(false);
+        if (!cancelled) {
+          setAcLoading(false);
+          setAcFetched(true);
+        }
       }
     };
     void loadAC();
     return () => { cancelled = true; };
   }, [isLoaded, isSignedIn]);
+
+  /** Signed in, both histories loaded, and neither has anything in it. */
+  const noHistoryYet =
+    isLoaded &&
+    Boolean(isSignedIn) &&
+    practiceFetched &&
+    acFetched &&
+    sessions.length === 0 &&
+    acSessions.length === 0;
 
   const stats = useMemo<ProgressStats>(() => {
     if (!sessions.length) return emptyStats;
@@ -253,6 +268,13 @@ export default function ProgressPage() {
       <main className="mx-auto max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] px-4 py-8 sm:px-6 lg:py-10">
 
         {/* ── Page header ────────────────────────────────────────────────── */}
+        {/* Someone with nothing saved yet got a large banner about score
+            trends, then two empty tabs, and the button to start their first
+            interview was below the fold. Until there is history, the page is
+            just a title and that call to action. */}
+        {noHistoryYet ? (
+          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">My progress</h1>
+        ) : (
         <section className="relative overflow-hidden rounded-[2.25rem] border border-white/10 bg-white/[0.065] p-6 text-center shadow-2xl shadow-purple-950/20 backdrop-blur-2xl sm:p-10 lg:p-12">
           <div className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-cyan-400/10 blur-3xl" />
           <div className="pointer-events-none absolute -bottom-28 left-10 h-80 w-80 rounded-full bg-purple-500/15 blur-3xl" />
@@ -273,9 +295,10 @@ export default function ProgressPage() {
             </p>
           </div>
         </section>
+        )}
 
         {/* ── Tab bar (only when signed in) ──────────────────────────────── */}
-        {isLoaded && isSignedIn && (
+        {isLoaded && isSignedIn && !noHistoryYet && (
           <div className="mt-6 flex gap-1 rounded-2xl border border-white/[0.08] bg-white/[0.04] p-1.5 backdrop-blur-xl">
             <button
               onClick={() => setActiveTab("practice")}
@@ -807,20 +830,19 @@ function EmptyProgressState({ isAdvancedPlan }: { isAdvancedPlan: boolean }) {
           Complete your first tracked interview.
         </h2>
         <p className="mt-3 max-w-2xl text-sm leading-7 text-gray-300">
-          Once you finish a five-question session, AI Career Mentor will save your score,
-          summary and feedback signals here.
+          Once you finish an interview, AI Career Mentor saves your score,
+          summary and feedback here.
         </p>
 
-        <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-          <Link href="/practice">
-            <button className="rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-4 text-sm font-bold text-on-accent shadow-2xl shadow-purple-900/30 transition hover:scale-[1.01]">
-              Start tracked interview
-            </button>
-          </Link>
-          <Link href={isAdvancedPlan ? "/assessment-centre" : "/mock-assessment-centre"}>
-            <button className="rounded-2xl border border-cyan-400/20 bg-cyan-400/[0.07] px-6 py-4 text-sm font-bold text-cyan-100 transition hover:bg-cyan-400/[0.12]">
-              {isAdvancedPlan ? "Try mock assessment centre →" : "Learn about assessment centres →"}
-            </button>
+        {/* One action. The assessment centre has its own card below, so a
+            second button for it here only repeated that one. A plain link
+            styled as a button: a <button> inside a link is invalid HTML. */}
+        <div className="mt-6">
+          <Link
+            href="/practice"
+            className="inline-flex rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-4 text-sm font-bold text-on-accent shadow-2xl shadow-purple-900/30 transition hover:scale-[1.01]"
+          >
+            Start tracked interview
           </Link>
         </div>
       </section>
