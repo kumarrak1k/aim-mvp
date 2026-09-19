@@ -180,9 +180,16 @@ export function CandidatePricingPlans({
                   : "text-gray-300 hover:bg-white/[0.06] hover:text-white"
               }`}
             >
-              {PERIOD_LABEL[key]}
+              {/* Side by side, the saving goes on its own line under the
+                  period. Left to wrap on its own it broke mid-phrase
+                  ("Quarterly save" / "15%", and "15 % sparen" in German). */}
+              <span className="whitespace-nowrap">{PERIOD_LABEL[key]}</span>
               {option.saving !== null && (
-                <span className={active ? "ml-2 text-on-accent/90" : "ml-2 text-emerald-300"}>
+                <span
+                  className={`ml-2 whitespace-nowrap sm:ml-0 sm:block sm:text-xs ${
+                    active ? "text-on-accent/90" : "text-emerald-300"
+                  }`}
+                >
                   save {option.saving}%
                 </span>
               )}
