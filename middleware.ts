@@ -36,6 +36,7 @@ const isProtected = createRouteMatcher([
   "/progress(.*)",
   "/assessment-centre(.*)",
   "/career-docs(.*)",
+  "/upgrade(.*)",
 ]);
 
 export default clerkMiddleware(async (auth, req) => {

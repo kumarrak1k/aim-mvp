@@ -82,7 +82,17 @@ const INCLUDED: Array<{ title: string; body: string }> = [
   },
 ];
 
-export function CandidatePricingPlans({ currency = "GBP" }: { currency?: PricingCurrency }) {
+export function CandidatePricingPlans({
+  currency = "GBP",
+  compact = false,
+}: {
+  currency?: PricingCurrency;
+  /**
+   * The upgrade page: someone whose trial has just ended has used every one of
+   * these features, so the list is left out and the card is just price and pay.
+   */
+  compact?: boolean;
+}) {
   const [period, setPeriod] = useState<BillingPeriod>("monthly");
   const router = useRouter();
   const { isSignedIn } = useAuth();
@@ -125,7 +135,11 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
       const res = await fetch("/api/stripe/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ planId: selected.planId, currency: currency.toLowerCase() }),
+        body: JSON.stringify({
+          planId: selected.planId,
+          currency: currency.toLowerCase(),
+          ...(compact ? { from: "upgrade" } : {}),
+        }),
       });
       const data = (await res.json().catch(() => null)) as
         | { url?: string; error?: string; code?: string }
@@ -207,6 +221,7 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
           </div>
         </div>
 
+        {!compact && (
         <div className="mt-7 grid gap-4 sm:grid-cols-2">
           {INCLUDED.map((item) => (
             <div key={item.title} className="flex items-start gap-2.5">
@@ -220,8 +235,9 @@ export function CandidatePricingPlans({ currency = "GBP" }: { currency?: Pricing
             </div>
           ))}
         </div>
+        )}
 
-        <div className="mt-8 flex flex-col gap-3">
+        <div className={`${compact ? "mt-6" : "mt-8"} flex flex-col gap-3`}>
           <button
             type="button"
             onClick={() => void startCheckout()}

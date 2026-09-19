@@ -14,6 +14,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { shouldRedirectToUpgrade, UPGRADE_PROMPTED_KEY } from "@/app/lib/upgradePrompt";
 
 type SubscriptionState = {
   isTrial: boolean;
@@ -35,6 +37,8 @@ export function TrialBanner() {
   const [startError, setStartError] = useState("");
   const [portalLoading, setPortalLoading] = useState(false);
   const [expiredDismissed, setExpiredDismissed] = useState(true);
+  const pathname = usePathname() ?? "";
+  const router = useRouter();
 
   useEffect(() => {
     let active = true;
@@ -57,6 +61,27 @@ export function TrialBanner() {
       active = false;
     };
   }, []);
+
+  // A trial that has ended is sent to the upgrade page on the first page of
+  // each visit - the card-free trial otherwise ends with no prompt to pay.
+  // Once per visit, so their saved interviews stay reachable. See upgradePrompt.
+  useEffect(() => {
+    if (!sub) return;
+    let prompted = false;
+    try {
+      prompted = sessionStorage.getItem(UPGRADE_PROMPTED_KEY) === "1";
+    } catch {
+      // No storage: treat as already asked, rather than risk a loop.
+      prompted = true;
+    }
+    if (!shouldRedirectToUpgrade(sub, pathname, prompted)) return;
+    try {
+      sessionStorage.setItem(UPGRADE_PROMPTED_KEY, "1");
+    } catch {
+      return;
+    }
+    router.replace(`/upgrade?next=${encodeURIComponent(pathname)}`);
+  }, [sub, pathname, router]);
 
   async function startTrial() {
     setStarting(true);
@@ -102,6 +127,8 @@ export function TrialBanner() {
   }
 
   if (!sub) return null;
+  // The upgrade page is the prompt; a banner repeating it would be noise.
+  if (pathname === "/upgrade") return null;
 
   // ── Payment past due — grace window. Shown even though access is still live
   //    (isPaid stays true through Stripe's dunning) so the user can fix their
@@ -182,7 +209,7 @@ export function TrialBanner() {
             .
           </span>
           <Link
-            href="/pricing"
+            href="/upgrade"
             className="rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-3.5 py-1 text-[12px] font-bold text-on-accent shadow transition hover:scale-[1.03]"
           >
             Subscribe to keep access →
@@ -228,10 +255,10 @@ export function TrialBanner() {
             Your free trial has ended. Your saved interviews and reports are still here.
           </span>
           <Link
-            href="/pricing"
-            className="rounded-full border border-purple-300/25 bg-purple-300/[0.08] px-3.5 py-1 text-[12px] font-bold text-purple-100 transition hover:bg-purple-300/[0.14]"
+            href="/upgrade"
+            className="rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-3.5 py-1 text-[12px] font-bold text-on-accent shadow transition hover:scale-[1.03]"
           >
-            See Pro pricing →
+            Continue with Pro →
           </Link>
           <button
             onClick={dismissExpired}

@@ -9,6 +9,7 @@
  */
 import { test, expect } from "@playwright/test";
 import { statePath } from "../fixtures/env";
+import { skipUpgradePrompt } from "../fixtures/upgradePrompt";
 import { FREE_TIER } from "../../../../app/lib/candidatePlan";
 
 test.describe("career docs", () => {
@@ -86,6 +87,8 @@ test.describe("career docs", () => {
     test.use({ storageState: statePath("free") });
 
     test.beforeEach(async ({ page }) => {
+      // A lapsed trial is sent to /upgrade first; this is about the API wall.
+      await skipUpgradePrompt(page);
       await page.goto("/career-docs");
       // Wait for Clerk to finish hydrating before firing API requests: a
       // request sent while the token is still refreshing comes back 401 and

@@ -6,6 +6,7 @@
  */
 import { test, expect } from "@playwright/test";
 import { CANDIDATE_PERSONAS } from "../fixtures/personas";
+import { skipUpgradePrompt } from "../fixtures/upgradePrompt";
 import { statePath } from "../fixtures/env";
 
 for (const persona of CANDIDATE_PERSONAS) {
@@ -13,6 +14,9 @@ for (const persona of CANDIDATE_PERSONAS) {
     test.use({ storageState: statePath(persona.key) });
 
     test("signed in on /practice with correct voice/camera gating", async ({ page }) => {
+      // The free persona is a lapsed trial, which is sent to /upgrade first;
+      // this spec is about the practice page's gates, so skip that prompt.
+      await skipUpgradePrompt(page);
       await page.goto("/practice");
 
       // Signed-in candidates reach the start screen (the role input).

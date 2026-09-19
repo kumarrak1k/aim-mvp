@@ -136,7 +136,7 @@ export default function CareerDocsPage() {
             <span className="font-bold text-white">2 free generations</span> to
             try these out. After that they are part of{" "}
             <span className="font-bold text-white">Pro.</span>{" "}
-            <Link href="/pricing" className="font-bold text-purple-300 hover:text-purple-200 underline underline-offset-2">
+            <Link href="/upgrade" className="font-bold text-purple-300 hover:text-purple-200 underline underline-offset-2">
               See pricing →
             </Link>
           </p>

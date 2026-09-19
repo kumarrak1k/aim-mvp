@@ -263,7 +263,7 @@ const NURTURE_SUBJECTS: Record<NurtureType, string> = {
   day21_nudge:    "Still here? Want to run a quick session?",
   day30_winback:  "Your practice history is still waiting for you",
   trial_midway:   "Your free trial ends soon",
-  trial_ended:    "Your free trial has ended",
+  trial_ended:    "Your free trial has ended: continue with Pro",
 };
 
 function renderNurtureHtml(type: NurtureType, unsubUrl: string): string {
@@ -271,7 +271,9 @@ function renderNurtureHtml(type: NurtureType, unsubUrl: string): string {
   const practiceUrl = `${siteConfig.url}/practice`;
   const starUrl     = `${siteConfig.url}/tools/star-scorer`;
 
-  const upgradeUrl = `${siteConfig.url}/pricing`;
+  // Every pay link in these emails goes to /upgrade: there is one plan, so one
+  // page that shows the price and takes payment, not the comparison page.
+  const upgradeUrl = `${siteConfig.url}/upgrade`;
   const referUrl   = `${siteConfig.url}/refer`;
 
   const bodies: Record<NurtureType, string> = {
@@ -526,32 +528,35 @@ function renderNurtureHtml(type: NurtureType, unsubUrl: string): string {
       </table>
       <p style="margin:0 0 28px;">
         <a href="${upgradeUrl}" style="font-size:14px;color:#8c5cff;text-decoration:none;font-weight:700;">
-          Keep full access: see Pro pricing →
+          Keep Pro after your trial →
         </a>
       </p>`,
 
     trial_ended: `
       <h2 style="margin:0 0 16px;font-size:22px;font-weight:800;color:#1a1426;">
-        Your free trial has ended.
+        Your free trial has ended. Carry on with Pro.
       </h2>
-      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#2a2238;">
-        Your 3-day trial is now over. You weren't charged and there's nothing to
-        cancel. Your saved interviews, reports and the free tools are still yours.
+      <p style="margin:0 0 20px;font-size:15px;line-height:1.7;color:#2a2238;">
+        Your 3 days are up, so new interviews are paused. Subscribe to Pro to
+        keep practising with everything you used in the trial: unlimited
+        interviews, voice and camera coaching, the mock assessment centre and
+        the CV &amp; Application Studio.
       </p>
-      <div style="background:#f7f5fb;border-left:3px solid #8c5cff;border-radius:0 12px 12px 0;padding:18px 22px;margin:0 0 24px;">
-        <p style="margin:0;font-size:15px;line-height:1.7;color:#2a2238;">
-          To start a new interview, subscribe to <strong>Pro</strong>: £15 a
-          month, £38 a quarter, or £120 a year. It includes unlimited practice,
-          the mock assessment centre and the CV &amp; Application Studio.
-        </p>
-      </div>
-      <table role="presentation" cellpadding="0" cellspacing="0">
+      <table role="presentation" cellpadding="0" cellspacing="0" style="margin-bottom:12px;">
         <tr><td style="border-radius:12px;background:#8c5cff;">
-          <a href="${upgradeUrl}" style="display:inline-block;padding:14px 28px;color:#fff;font-size:15px;font-weight:800;text-decoration:none;">
-            See Pro pricing →
+          <a href="${upgradeUrl}" style="display:inline-block;padding:16px 32px;color:#fff;font-size:16px;font-weight:800;text-decoration:none;">
+            Continue with Pro →
           </a>
         </td></tr>
-      </table>`,
+      </table>
+      <p style="margin:0 0 24px;font-size:14px;line-height:1.7;color:#5a5068;">
+        £15 a month, or save by paying £38 a quarter or £120 a year.
+        Cancel any time.
+      </p>
+      <p style="margin:0;font-size:13px;line-height:1.7;color:#5a5068;">
+        You weren't charged for the trial and there's nothing to cancel. Your
+        saved interviews and reports are still yours either way.
+      </p>`,
   };
 
   return `<!doctype html>
@@ -585,7 +590,9 @@ function renderNurtureHtml(type: NurtureType, unsubUrl: string): string {
 
 function renderNurturePlainText(type: NurtureType): string {
   const practiceUrl = `${siteConfig.url}/practice`;
-  const upgradeUrl = `${siteConfig.url}/pricing`;
+  // Every pay link in these emails goes to /upgrade: there is one plan, so one
+  // page that shows the price and takes payment, not the comparison page.
+  const upgradeUrl = `${siteConfig.url}/upgrade`;
   const referUrl   = `${siteConfig.url}/refer`;
   const texts: Record<NurtureType, string> = {
     welcome:        `Welcome to AI Career Mentor!\n\nTip #1: The STAR method.\nEvery behavioural question is best answered with Situation → Task → Action → Result.\n\nRun your first session: ${practiceUrl}`,
@@ -595,8 +602,8 @@ function renderNurturePlainText(type: NurtureType): string {
     day14_reengage: `Got an interview coming up? Run a 10-day sprint: competency, strength, and motivation questions, then a full mock on day 10.\n\nStart here: ${practiceUrl}`,
     day21_nudge:    `Still here? One 15-minute session will move you forward. Pick your role, answer 5 questions, get scored.\n\n${practiceUrl}`,
     day30_winback:  `Your saved interviews and reports are still here. Come back whenever you're ready.\n\n${practiceUrl}`,
-    trial_midway:   `Your free trial ends soon. Make the most of unlimited practice, the mock assessment centre and the CV & Application Studio before it does. Nothing is charged when it ends.\n\nJump back in: ${practiceUrl}\nSee Pro pricing: ${upgradeUrl}`,
-    trial_ended:    `Your 3-day free trial has ended. You weren't charged and there's nothing to cancel, and your saved interviews and reports are still yours.\n\nTo start a new interview, subscribe to Pro (£15 a month, £38 a quarter, or £120 a year): ${upgradeUrl}`,
+    trial_midway:   `Your free trial ends soon. Make the most of unlimited practice, the mock assessment centre and the CV & Application Studio before it does. Nothing is charged when it ends.\n\nJump back in: ${practiceUrl}\nContinue with Pro: ${upgradeUrl}`,
+    trial_ended:    `Your free trial has ended. Carry on with Pro.\n\nYour 3 days are up, so new interviews are paused. Subscribe to Pro to keep practising with everything you used in the trial.\n\nContinue with Pro: ${upgradeUrl}\n\n£15 a month, or save by paying £38 a quarter or £120 a year. Cancel any time.\n\nYou weren't charged for the trial and there's nothing to cancel. Your saved interviews and reports are still yours either way.`,
   };
   return texts[type] + `\n\nAI Career Mentor\n${siteConfig.url}`;
 }

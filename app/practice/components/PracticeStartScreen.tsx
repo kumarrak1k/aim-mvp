@@ -609,7 +609,7 @@ export function PracticeStartScreen({
             <p className="mt-2 text-xs leading-5 text-gray-400">
               <span className="font-bold text-purple-200">One-way video interviews</span>{" "}
               record you on camera, so they are part of Pro.{" "}
-              <Link href="/pricing" className="font-bold text-purple-200 underline underline-offset-4">
+              <Link href="/upgrade" className="font-bold text-purple-200 underline underline-offset-4">
                 See pricing
               </Link>
             </p>
@@ -727,7 +727,7 @@ export function PracticeStartScreen({
             <p className="mt-2 text-xs leading-5 text-gray-400">
               <span className="font-bold text-purple-200">Voice &amp; camera modes</span> are
               part of Pro.{" "}
-              <Link href="/pricing" className="font-bold text-purple-200 underline underline-offset-4">
+              <Link href="/upgrade" className="font-bold text-purple-200 underline underline-offset-4">
                 See pricing
               </Link>
             </p>
@@ -1064,6 +1064,18 @@ export function PracticeStartScreen({
         {/* The start button sits directly under the choices it acts on, rather
             than at the foot of a long optional-tuning section. */}
         <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center">
+        {/* Out of practice (the trial has ended, or its sessions are used up):
+            the one thing that helps is paying, so the main button does that
+            instead of sitting there greyed out with no way forward. */}
+        {startDisabled ? (
+          <Link
+            href="/upgrade?next=%2Fpractice"
+            data-testid="continue-with-pro"
+            className="w-full rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-3.5 text-center text-base font-bold text-on-accent shadow-2xl shadow-purple-900/35 transition hover:scale-[1.01] sm:flex-1"
+          >
+            Continue with Pro
+          </Link>
+        ) : (
         <button
           onClick={startInterview}
           disabled={interviewStartDisabled}
@@ -1077,6 +1089,7 @@ export function PracticeStartScreen({
             ? "Enter text for all custom questions to start"
             : `Start Tailored ${isAdvancedPlan ? totalQuestions : 5}-Question Interview`}
         </button>
+        )}
 
         <button
           type="button"

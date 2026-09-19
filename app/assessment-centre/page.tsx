@@ -119,7 +119,7 @@ function UpgradeGate() {
         </p>
         <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link
-            href="/pricing"
+            href="/upgrade"
             className="rounded-2xl bg-gradient-to-r from-violet-500 to-purple-500 px-8 py-4 text-center text-sm font-bold text-on-accent shadow-2xl shadow-cyan-900/40 transition hover:scale-[1.02]"
           >
             See Pro pricing →

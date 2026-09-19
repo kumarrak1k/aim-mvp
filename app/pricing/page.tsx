@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { headers } from "next/headers";
 import { createPageMetadata } from "@/app/config/seo";
 import { CandidateShell } from "@/app/components/marketing/CandidateShell";
-import { CandidatePricingPlans, type PricingCurrency } from "@/app/components/marketing/CandidatePricingPlans";
+import { CandidatePricingPlans } from "@/app/components/marketing/CandidatePricingPlans";
+import { detectCurrency } from "@/app/lib/pricingCurrency";
 import { FAQSection } from "@/app/components/marketing/FAQSection";
 import { LaunchPromoBanner } from "@/app/components/marketing/LaunchPromoBanner";
 
@@ -19,19 +19,6 @@ export const metadata: Metadata = createPageMetadata({
     "interview practice plans",
   ],
 });
-
-const EU_EUR = new Set([
-  "AT","BE","CY","EE","FI","FR","DE","GR","IE","IT","LV","LT","LU","MT",
-  "NL","PT","SK","SI","ES","BG","HR","CZ","DK","HU","PL","RO","SE",
-]);
-
-async function detectCurrency(): Promise<PricingCurrency> {
-  const h = await headers();
-  const country = h.get("x-vercel-ip-country") ?? "GB";
-  if (country === "US" || country === "CA") return "USD";
-  if (EU_EUR.has(country)) return "EUR";
-  return "GBP";
-}
 
 const faqs = [
   {

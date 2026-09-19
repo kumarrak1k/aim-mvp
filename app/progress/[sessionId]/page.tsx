@@ -330,7 +330,7 @@ function UpgradeNudge() {
         </p>
         <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
           <Link
-            href="/pricing"
+            href="/upgrade"
             className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-7 py-3.5 text-sm font-bold text-on-accent shadow-xl shadow-purple-950/35 transition hover:scale-[1.02]"
           >
             See Pro pricing →

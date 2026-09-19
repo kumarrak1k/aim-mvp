@@ -532,7 +532,7 @@ function ProgressDashboard({ stats, isAdvancedPlan, onSessionDeleted }: { stats:
               </Link>
             ) : (
               <>
-                <Link href="/pricing">
+                <Link href="/upgrade">
                   <button className="w-full whitespace-nowrap rounded-2xl bg-gradient-to-r from-violet-500 to-purple-500 px-6 py-3.5 text-sm font-bold text-on-accent shadow-lg transition hover:scale-[1.02] sm:w-auto lg:w-full">
                     See Pro pricing →
                   </button>
@@ -843,7 +843,7 @@ function EmptyProgressState({ isAdvancedPlan }: { isAdvancedPlan: boolean }) {
             </button>
           </Link>
         ) : (
-          <Link href="/pricing">
+          <Link href="/upgrade">
             <button className="mt-4 rounded-2xl bg-gradient-to-r from-violet-500 to-purple-500 px-5 py-3 text-sm font-bold text-on-accent shadow-lg transition hover:scale-[1.02]">
               See Pro pricing →
             </button>

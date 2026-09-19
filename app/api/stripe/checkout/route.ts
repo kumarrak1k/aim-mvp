@@ -25,10 +25,14 @@ export async function POST(req: NextRequest) {
   let planId: string;
   let promoCode: string | undefined;
   let currency: ReturnType<typeof normaliseCurrency> = "gbp";
+  // Where "back" on the Stripe page returns to. Only known pages, never a URL
+  // from the request, so this cannot be turned into an open redirect.
+  let cancelPath = "/pricing";
   try {
     const body = await req.json();
     planId = body.planId;
     currency = normaliseCurrency(body.currency);
+    if (body.from === "upgrade") cancelPath = "/upgrade";
     // Optional promotion code captured from a ?promo= marketing link.
     if (typeof body.promoCode === "string") {
       promoCode = body.promoCode.trim().slice(0, 50).toUpperCase() || undefined;
@@ -128,7 +132,7 @@ export async function POST(req: NextRequest) {
       mode: "subscription",
       line_items: [{ price: priceId, quantity: 1 }],
       success_url: absoluteUrl("/practice?payment=success"),
-      cancel_url: absoluteUrl("/pricing?payment=cancelled"),
+      cancel_url: absoluteUrl(`${cancelPath}?payment=cancelled`),
       ...(withDiscount && promotionCodeId
         ? { discounts: [{ promotion_code: promotionCodeId }] }
         : { allow_promotion_codes: discountsAllowed }),

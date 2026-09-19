@@ -329,10 +329,12 @@ export function CandidateAppShell({
         </details>
 
         {/* Start Practising — its own centred row, where the resource strip used
-            to be. Hidden on the pages it points at. */}
+            to be. Hidden on the pages it points at, and on the upgrade page,
+            which is only shown to someone who cannot start a session. */}
         {currentPath !== "/practice" &&
           currentPath !== "/practice/session" &&
-          currentPath !== "/assessment-centre" && (
+          currentPath !== "/assessment-centre" &&
+          currentPath !== "/upgrade" && (
             <div className="flex justify-center px-4 pb-2.5 pt-0.5">
               <Link
                 href="/practice"

@@ -130,7 +130,7 @@ export default function PersonalStatementPage() {
           <p className="mt-3 text-sm leading-7 text-gray-400">Personal Statement Generator is part of Pro.</p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
             <Link
-              href="/pricing"
+              href="/upgrade"
               className="rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-3.5 text-center text-sm font-bold text-on-accent shadow-lg"
             >
               See pricing →
