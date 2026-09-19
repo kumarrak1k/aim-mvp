@@ -173,9 +173,8 @@ export function CandidateAppShell({
             "AI Career Mentor" once it grew. */}
         {/* ≥1200: equal-1fr flank columns PAGE-centre the nav pill (and the
             trust line above it, which shares its column) so it lines up with
-            the page-centred "Start Practising" button directly below — a
-            space-between layout centred it between unequal flanks and the
-            offset was visible against that button (user report 2026-08-31). */}
+            the page content below. A space-between layout centred it between
+            unequal flanks and the offset was visible (user report 2026-08-31). */}
         <div className="relative mx-auto grid w-full max-w-7xl xl:max-w-[clamp(80rem,95vw,105rem)] grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 px-4 py-3 sm:px-6 lg:px-8 lg:py-3.5 min-[1200px]:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]">
           {/* Row 1 (sm+): trust line + theme selector share the grid columns
               with the nav/account row below, so they centre over the nav pill
@@ -244,9 +243,9 @@ export function CandidateAppShell({
             </div>
           </nav>
 
-          {/* Right actions — avatar only; Start Practising moved to its own
-              row. Right-aligned like the theme selector above, so the right
-              rail reads as one column at the container edge. */}
+          {/* Right actions: avatar only. Right-aligned like the theme selector
+              above, so the right rail reads as one column at the container
+              edge. */}
           <div className="relative z-10 flex shrink-0 items-center justify-end gap-2">
             <div className="shrink-0 px-2">
               <UserButton>
@@ -328,22 +327,9 @@ export function CandidateAppShell({
           </div>
         </details>
 
-        {/* Start Practising — its own centred row, where the resource strip used
-            to be. Hidden on the pages it points at, and on the upgrade page,
-            which is only shown to someone who cannot start a session. */}
-        {currentPath !== "/practice" &&
-          currentPath !== "/practice/session" &&
-          currentPath !== "/assessment-centre" &&
-          currentPath !== "/upgrade" && (
-            <div className="flex justify-center px-4 pb-2.5 pt-0.5">
-              <Link
-                href="/practice"
-                className="whitespace-nowrap rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-6 py-2.5 text-[13px] font-bold text-on-accent shadow-lg shadow-purple-950/40 transition hover:scale-[1.03]"
-              >
-                Start Practising
-              </Link>
-            </div>
-          )}
+        {/* No floating "Start Practising" button here any more: it repeated
+            the Interview Practice link in the menu and pushed every page down
+            a row. */}
       </header>
 
       {/* New-user guide banner — practice page only, dismissible */}
