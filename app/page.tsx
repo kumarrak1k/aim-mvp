@@ -268,7 +268,7 @@ export default async function ForCandidatesPage() {
         </div>
         <DemoVideo
           src="/videos/advert-square.mp4"
-          poster="/videos/advert-poster.jpg"
+          poster="/videos/advert-poster-2026-09-19.jpg"
           title="AI Career Mentor: practise like it's real"
           caption="From your application to the assessment centre, with every answer scored honestly."
           captionsSrc="/videos/advert-square.en.vtt"

@@ -30,9 +30,10 @@ export function DemoVideo({
   const videoRef = useRef<HTMLVideoElement>(null);
 
   /**
-   * The poster artwork carries a "Watch the demo" play badge, so before the
-   * first play the whole surface must start the video, not just the native
-   * control bar. A transparent overlay handles that first click and then
+   * Before the first play the whole surface starts the video, not just the
+   * native control bar, and it shows its own play button: the poster is a
+   * plain frame from the video (it used to be artwork with a "Start free"
+   * button printed on it, which looked clickable and only played the video). A transparent overlay handles that first click and then
    * unmounts, leaving every later click to the browser's own play/pause
    * handling (attaching onClick to the video itself double-fires against
    * Chrome's native click-to-toggle).
@@ -79,8 +80,19 @@ export function DemoVideo({
               type="button"
               aria-label="Play the demo video"
               onClick={() => void videoRef.current?.play()}
-              className="absolute inset-0 z-10 cursor-pointer bg-transparent"
-            />
+              className="group absolute inset-0 z-10 flex cursor-pointer items-center justify-center bg-black/10 transition hover:bg-black/20"
+            >
+              {/* Inline colours: it sits on video, not on the page, so it must
+                  not follow the theme's remapping of white and violet. */}
+              <span
+                className="flex h-16 w-16 items-center justify-center rounded-full shadow-2xl shadow-black/40 transition group-hover:scale-105 motion-reduce:transition-none"
+                style={{ background: "rgba(255,255,255,0.94)" }}
+              >
+                <svg viewBox="0 0 24 24" fill="#6d28d9" aria-hidden="true" className="ml-1 h-7 w-7">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              </span>
+            </button>
           )}
         </div>
         {caption && (
